@@ -26,8 +26,8 @@ class InspireCmsTheme implements Plugin
             ->colors([
                 'danger' => Color::hex('#f44336'),
                 'gray' => Color::hex('#5e5e5e'),
-                'info' => Color::hex('#e5cda4'),
-                'primary' => Color::hex('#D7AC52'),
+                'info' => Color::hex('#88B0BA'),
+                'primary' => Color::hex('#B5834A'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
             ])
