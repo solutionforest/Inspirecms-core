@@ -10,10 +10,10 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use SolutionForest\InspireCms\Testing\TestsInspireCms;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
@@ -57,9 +57,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void
-    {
-    }
+    public function packageRegistered(): void {}
 
     public function packageBooted(): void
     {
@@ -87,7 +85,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
 
         // Testing
-        Testable::mixin(new TestsInspireCms());
+        Testable::mixin(new TestsInspireCms);
     }
 
     protected function getAssetPackageName(): ?string

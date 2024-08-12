@@ -24,18 +24,16 @@ class InspireCmsTheme implements Plugin
         $panel
             ->font('DM Sans')
             ->colors([
-                'danger' => Color::hex("#f44336"),
-                'gray' => Color::hex("#5e5e5e"),
-                'info' => Color::hex("#e5cda4"),
-                'primary' => Color::hex("#D7AC52"),
-                'success' => Color::hex("#76ae51"),
-                'warning' => Color::hex("#f39e19"),
+                'danger' => Color::hex('#f44336'),
+                'gray' => Color::hex('#5e5e5e'),
+                'info' => Color::hex('#e5cda4'),
+                'primary' => Color::hex('#D7AC52'),
+                'success' => Color::hex('#76ae51'),
+                'warning' => Color::hex('#f39e19'),
             ])
             ->theme('inspirecms-core')
             ->maxContentWidth('full');
     }
 
-    public function boot(Panel $panel): void
-    {
-    }
+    public function boot(Panel $panel): void {}
 }

@@ -15,7 +15,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
-use SolutionForest\InspireCms\InspireCmsTheme;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -28,7 +27,7 @@ class CmsPanelProvider extends PanelProvider
             ->login()
             ->plugins([
                 FilamentFieldGroupPlugin::make(),
-                new InspireCmsTheme(),
+                new InspireCmsTheme,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')

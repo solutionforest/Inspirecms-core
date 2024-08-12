@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms;
 
-class InspireCmsManager
-{
-}
+class InspireCmsManager {}
