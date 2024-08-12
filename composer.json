@@ -1,29 +1,29 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "solution-forest/inspirecms-core",
+    "description": "This is my package inspirecms-core",
     "keywords": [
-        ":vendor_name",
+        "solution-forest",
         "laravel",
-        ":package_slug"
+        "inspirecms-core",
+        "cms",
+        "filament"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/solutionforest/inspirecms-core",
     "support": {
-        "issues": "https://github.com/:vendor_slug/:package_slug/issues",
-        "source": "https://github.com/:vendor_slug/:package_slug"
+        "issues": "https://github.com/solutionforest/inspirecms-core/issues",
+        "source": "https://github.com/solutionforest/inspirecms-core"
     },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "carly",
+            "email": "info@solutionforest.net",
             "role": "Developer"
         }
     ],
     "require": {
         "php": "^8.1",
         "filament/filament": "^3.0",
-        "filament/forms": "^3.0",
-        "filament/tables": "^3.0",
         "spatie/laravel-package-tools": "^1.15.0"
     },
     "require-dev": {
@@ -41,13 +41,13 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "SolutionForest\\InspireCms\\": "src/",
+            "SolutionForest\\InspireCms\\Database\\Factories\\": "database/factories/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/"
+            "SolutionForest\\InspireCms\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -67,10 +67,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "SolutionForest\\InspireCms\\InspireCmsServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "InspireCms": "SolutionForest\\InspireCms\\Facades\\InspireCms"
             }
         }
     },
