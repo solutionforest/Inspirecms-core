@@ -9,6 +9,8 @@ return [
     'page' => 'Page',
     'preview_fields' => 'Preview fields',
     'setting' => 'Setting',
+    'title' => 'Title',
+    'id' => 'ID',
 
     'actions' => [
         'save_and_publish' => [
