@@ -16,6 +16,7 @@ class CmsComponentVersion extends Model
     ];
 
     const CREATED_AT = 'version_date';
+
     const UPDATED_AT = 'version_date';
 
     public function __construct(array $attributes = [])
@@ -24,7 +25,7 @@ class CmsComponentVersion extends Model
 
         $this->setTable(config('inspirecms-core.models.component_version.table_name'));
     }
-    
+
     public function component(): MorphTo
     {
         return $this->morphTo();

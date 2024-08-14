@@ -54,11 +54,12 @@ class CreateWithDetailInfoPage extends CreateRecord
     protected function mutateFormDataBeforeCreate(array $data): array
     {
         if ($this->hasDetailInfoForm()) {
-            
+
             $detailInfoData = $this->detailInfoForm->getState();
 
             $data = array_merge($data, $detailInfoData);
         }
+
         return $data;
     }
 }

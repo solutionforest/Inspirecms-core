@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\Settings;
 
+use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
-use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 
 class FieldGroupResource extends BaseResource
 {

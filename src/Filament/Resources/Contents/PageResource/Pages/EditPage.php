@@ -26,12 +26,12 @@ class EditPage extends EditWithDetailInfoPage
                 $this->getSaveAndPublishFormAction(),
                 $this->getSaveFormAction(),
             ])
-            ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
-            ->color('primary')
-            ->icon('heroicon-m-ellipsis-vertical')
-            ->iconPosition('after')
-            ->color('primary')
-            ->button(),
+                ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
+                ->color('primary')
+                ->icon('heroicon-m-ellipsis-vertical')
+                ->iconPosition('after')
+                ->color('primary')
+                ->button(),
 
             $this->getCancelFormAction(),
         ];

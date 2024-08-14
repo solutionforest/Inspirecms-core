@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Models\Concerns;
 
 class CmsPage extends Model
 {

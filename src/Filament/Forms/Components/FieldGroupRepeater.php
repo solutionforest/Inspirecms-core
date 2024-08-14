@@ -21,19 +21,19 @@ use function Filament\Support\generate_search_term_expression;
 
 class FieldGroupRepeater extends Repeater
 {
-    protected string | null $fieldGroupRelationName = null;
+    protected ?string $fieldGroupRelationName = null;
 
-    protected string | null $fieldGroupRecordTitleAttribute = null;
+    protected ?string $fieldGroupRecordTitleAttribute = null;
 
-    protected string | null $fieldGroupRecordOrderAttribute = null;
+    protected ?string $fieldGroupRecordOrderAttribute = null;
 
-    protected Closure | null $itemStateFromAttachFieldGroupUsing = null;
-    
-    protected Closure | null $modifyRecordSelectOptionQueryUsing = null;
+    protected ?Closure $itemStateFromAttachFieldGroupUsing = null;
 
-    protected Closure | null $modifyRecordSelectUsing = null;
+    protected ?Closure $modifyRecordSelectOptionQueryUsing = null;
 
-    protected array | null $recordSelectSearchColumns = null;
+    protected ?Closure $modifyRecordSelectUsing = null;
+
+    protected ?array $recordSelectSearchColumns = null;
 
     protected bool | Closure | null $isSearchForcedCaseInsensitive = null;
 
@@ -127,8 +127,8 @@ class FieldGroupRepeater extends Repeater
 
     public function getFieldGroupRelationship()
     {
-        return Relation::noConstraints(fn () => 
-            $this->getModelInstance()->{$this->getFieldGroupRelationName()}()
+        return Relation::noConstraints(
+            fn () => $this->getModelInstance()->{$this->getFieldGroupRelationName()}()
         );
     }
 
@@ -154,12 +154,12 @@ class FieldGroupRepeater extends Repeater
         $relationship = $this->getFieldGroupRelationship();
 
         $relationshipQuery = $this->getFieldGroupRelationshipQuery();
-        
+
         $getOptions = function (int $optionsLimit, ?string $search = null, ?array $searchColumns = []) use ($relationship, $relationshipQuery): array {
 
             $qualifiedRelatedKeyName = $relationship->getQualifiedRelatedKeyName();
             $keyColumn = Str::afterLast($qualifiedRelatedKeyName, '.');
-            
+
             if ($this->modifyRecordSelectOptionQueryUsing) {
                 $relationshipQuery->where(function (Builder $query) {
                     return $this->evaluate($this->modifyRecordSelectOptionQueryUsing, [
@@ -171,7 +171,7 @@ class FieldGroupRepeater extends Repeater
             if (! isset($relationshipQuery->getQuery()->limit)) {
                 $relationshipQuery->limit($optionsLimit);
             }
-            
+
             $titleAttribute = $this->getFieldGroupRecordTitleAttribute();
             $titleAttribute = filled($titleAttribute) ? $relationshipQuery->qualifyColumn($titleAttribute) : null;
 
@@ -203,7 +203,6 @@ class FieldGroupRepeater extends Repeater
                 });
             }
 
-            
             $orderAttribute = $this->getFieldGroupRecordOrderAttribute();
             $orderAttribute = filled($orderAttribute) ? $relationshipQuery->qualifyColumn($orderAttribute) : null;
             if (empty($relationshipQuery->getQuery()->orders)) {
@@ -220,9 +219,10 @@ class FieldGroupRepeater extends Repeater
             ->options(fn () => $getOptions(50))
             ->required()->searchable($this->getRecordSelectSearchColumns() ?? true)
             ->getSearchResultsUsing(static fn (Select $component, string $search): array => $getOptions(
-                optionsLimit: $component->getOptionsLimit(), 
-                search: $search, 
-                searchColumns: $component->getSearchColumns()))
+                optionsLimit: $component->getOptionsLimit(),
+                search: $search,
+                searchColumns: $component->getSearchColumns()
+            ))
             ->getOptionLabelUsing(function ($value) use ($relationshipQuery): string {
                 return $this->getRecordTitle($relationshipQuery->find($value));
             })
@@ -265,7 +265,7 @@ class FieldGroupRepeater extends Repeater
                     ]);
             })
             ->action(function (FieldGroupRepeater $component, array $data, Form $form): void {
-                
+
                 if (! $component->getItemStateFromAttachFieldGroupUsing()) {
                     throw new Exception("FieldGroupRepeater field [{$component->getStatePath()}] must have a [itemStateFromAttachFieldGroupUsing()] closure set.");
                 }

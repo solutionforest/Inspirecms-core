@@ -24,6 +24,7 @@ class PageTypeResource extends Resource
             if ($fieldGroup === null) {
                 return [];
             }
+
             return [
                 'field_group_id' => $fieldGroup->getKey(),
                 'field_group_title' => $fieldGroup->title,
@@ -54,8 +55,8 @@ class PageTypeResource extends Resource
                     ->label(Str::plural(__('inspirecms-core::inspirecms-core.field_group')))
                     ->validationAttribute(Str::lower(Str::plural(__('inspirecms-core::inspirecms-core.field_group'))))
                     ->modifyRecordSelectUsing(fn ($select) => $select)
-                    ->modifyRecordSelectOptionQueryUsing(function  ($query, FieldGroupRepeater $component) {
-                        
+                    ->modifyRecordSelectOptionQueryUsing(function ($query, FieldGroupRepeater $component) {
+
                         $existingFieldGroupIds = array_values(
                             array_filter(
                                 array_map(
@@ -80,6 +81,7 @@ class PageTypeResource extends Resource
                         }
 
                         $fieldGroup = $component->getFieldGroupRelationshipQuery()->find($id);
+
                         return $getItemStateFromFieldGroup($fieldGroup);
                     })
                     ->itemLabel(fn (array $state): ?string => data_get($state, 'field_group_title'))
@@ -88,7 +90,7 @@ class PageTypeResource extends Resource
                         $state = collect($records)
                             ->pluck('fieldGroup')
                             ->mapWithKeys(fn ($fieldGroup) => [
-                                (string)Str::uuid() => $getItemStateFromFieldGroup($fieldGroup),
+                                (string) Str::uuid() => $getItemStateFromFieldGroup($fieldGroup),
                             ])
                             ->toArray();
                         $component->state($state);
@@ -121,6 +123,7 @@ class PageTypeResource extends Resource
                                         </div>
                                     Html)
                                     ->implode('');
+
                                 return new HtmlString($previewHtmlString);
                             }),
                     ]),
@@ -140,10 +143,10 @@ class PageTypeResource extends Resource
                 Forms\Components\Toggle::make('is_root_level')
                     ->inlineLabel()
                     ->label(__('inspirecms-core::inspirecms-core.is_root_level'))
-                    ->validationAttribute(Str::lower(__('inspirecms-core::inspirecms-core.is_root_level')))
+                    ->validationAttribute(Str::lower(__('inspirecms-core::inspirecms-core.is_root_level'))),
             ]);
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table

@@ -14,7 +14,7 @@ class SaveAndPublishAction extends Action
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'));
     }
 }

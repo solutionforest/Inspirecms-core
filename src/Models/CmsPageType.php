@@ -13,7 +13,7 @@ class CmsPageType extends Model
     protected $guarded = ['id'];
 
     protected $casts = [
-        'is_root_level' => 'boolean',    
+        'is_root_level' => 'boolean',
     ];
 
     public function __construct(array $attributes = [])

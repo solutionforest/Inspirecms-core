@@ -18,7 +18,7 @@ class EditWithDetailInfoPage extends EditRecord
         parent::mount($record);
 
         if ($this->hasDetailInfoForm()) {
-        
+
             $extraData = [];
             $data = $this->mutateFormDataBeforeFill([
                 ...$this->getRecord()->attributesToArray(),
@@ -61,11 +61,12 @@ class EditWithDetailInfoPage extends EditRecord
     protected function mutateFormDataBeforeSave(array $data): array
     {
         if ($this->hasDetailInfoForm()) {
-            
+
             $detailInfoData = $this->detailInfoForm->getState();
 
             $data = array_merge($data, $detailInfoData);
         }
+
         return $data;
     }
 }

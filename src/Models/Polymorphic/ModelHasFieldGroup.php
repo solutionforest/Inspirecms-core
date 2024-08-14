@@ -11,7 +11,7 @@ use Spatie\EloquentSortable\SortableTrait;
 class ModelHasFieldGroup extends Model implements Sortable
 {
     use SortableTrait;
-    
+
     protected $guarded = ['id'];
 
     public $incrementing = false;
