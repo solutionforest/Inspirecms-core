@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -26,13 +27,20 @@ class CmsPanelProvider extends PanelProvider
             ->default()
             ->login()
             ->plugins([
-                FilamentFieldGroupPlugin::make(),
+                FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
                 new InspireCmsTheme,
+            ])
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label(fn () => __('inspirecms-core::inspirecms-core.content')),
+                NavigationGroup::make()
+                    ->label(fn () => __('inspirecms-core::inspirecms-core.setting')),
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
-            ->discoverClusters(in: app_path('Filament/Clusters'), for: 'App\\Filament\\Clusters')
+            ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
             ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets')
+            ->resources(config('inspirecms-core.resources', []))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

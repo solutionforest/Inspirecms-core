@@ -143,7 +143,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getMigrations(): array
     {
         return [
-            // 'create_filament-cms-website-plugin_table',
+            'create_inspire-cms-core_table',
         ];
     }
 }
