@@ -4,44 +4,35 @@ namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pag
 
 use Filament\Actions;
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use SolutionForest\InspireCms\Filament\Actions\SaveAndPublishAction;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\Pages\Concerns\HasSaveAndPublishAction;
 use SolutionForest\InspireCms\Filament\Resources\Pages\EditWithDetailInfoPage;
 
 class EditPage extends EditWithDetailInfoPage
 {
+    use HasSaveAndPublishAction;
+
     protected function getHeaderActions(): array
     {
         return [
             Actions\DeleteAction::make(),
         ];
     }
-
     protected function getFormActions(): array
     {
         return [
-
-            ActionGroup::make([
+            $this->getSaveAndPublishGroupAction([
                 $this->getSaveAndPublishFormAction(),
-                $this->getSaveFormAction(),
-            ])
-                ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
-                ->color('primary')
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->iconPosition('after')
-                ->color('primary')
-                ->button(),
-
+                $this->getCreateFormAction(),
+            ]),
             $this->getCancelFormAction(),
         ];
     }
 
-    protected function getSaveAndPublishFormAction(): Action
+    protected function getCreateFormAction(): Action
     {
-        return SaveAndPublishAction::make()
-            ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
-            ->submit('saveAndPublish');
+        return parent::getCreateFormAction()
+            ->label(__('inspirecms::inspirecms.actions.save.label'));
     }
 
     public function saveAndPublish()

@@ -3,37 +3,29 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 
 use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use SolutionForest\InspireCms\Filament\Actions\SaveAndPublishAction;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\Pages\Concerns\HasSaveAndPublishAction;
 use SolutionForest\InspireCms\Filament\Resources\Pages\CreateWithDetailInfoPage;
 
 class CreatePage extends CreateWithDetailInfoPage
 {
+    use HasSaveAndPublishAction;
+
     protected function getFormActions(): array
     {
         return [
-
-            ActionGroup::make([
+            $this->getSaveAndPublishGroupAction([
                 $this->getSaveAndPublishFormAction(),
                 $this->getCreateFormAction(),
-            ])
-                ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
-                ->color('primary')
-                ->icon('heroicon-m-ellipsis-vertical')
-                ->iconPosition('after')
-                ->color('primary')
-                ->button(),
-
+            ]),
             $this->getCancelFormAction(),
         ];
     }
 
-    protected function getSaveAndPublishFormAction(): Action
+    protected function getCreateFormAction(): Action
     {
-        return SaveAndPublishAction::make()
-            ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
-            ->submit('saveAndPublish');
+        return parent::getCreateFormAction()
+            ->label(__('inspirecms::inspirecms.actions.save.label'));
     }
 
     public static function getResource(): string

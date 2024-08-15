@@ -16,5 +16,8 @@ return [
         'save_and_publish' => [
             'label' => 'Save and publish',
         ],
+        'save' => [
+            'label' => 'Save',
+        ],
     ],
 ];
