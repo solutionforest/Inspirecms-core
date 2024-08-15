@@ -4,7 +4,7 @@
         'fi-resource-' . str_replace('/', '-', $this->getResource()::getSlug()),
     ])
 >
-    <x-inspirecms-core::with-detail-info-container
+    <x-inspirecms::with-detail-info-container
         formSubmitLiveiwreAction="create"
         :wrapMainFormBySection="$this->wrapMainFormBySection()"
     >
@@ -25,7 +25,7 @@
             />
         </x-slot>
                 
-    </x-inspirecms-core::with-detail-info-container>
+    </x-inspirecms::with-detail-info-container>
 
     <x-filament-panels::page.unsaved-data-changes-alert />
 

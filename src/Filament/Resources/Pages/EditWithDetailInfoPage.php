@@ -7,7 +7,7 @@ use Filament\Support\Enums\Alignment;
 
 class EditWithDetailInfoPage extends EditRecord
 {
-    protected static string $view = 'inspirecms-core::filament.pages.cms-pages.edit';
+    protected static string $view = 'inspirecms::filament.pages.cms-pages.edit';
 
     public array $detailInfoData = [];
 

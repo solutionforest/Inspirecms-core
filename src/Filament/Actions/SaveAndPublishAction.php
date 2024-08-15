@@ -15,6 +15,6 @@ class SaveAndPublishAction extends Action
     {
         parent::setUp();
 
-        $this->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'));
+        $this->label(__('inspirecms::inspirecms.actions.save_and_publish.label'));
     }
 }

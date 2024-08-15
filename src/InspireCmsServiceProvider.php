@@ -2,14 +2,12 @@
 
 namespace SolutionForest\InspireCms;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
-use Filament\Support\Assets\Css;
-use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Filesystem\Filesystem;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\InspireCms\Commands\PublishPanel;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -17,9 +15,9 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'inspirecms-core';
+    public static string $name = 'inspirecms';
 
-    public static string $viewNamespace = 'inspirecms-core';
+    public static string $viewNamespace = 'inspirecms';
 
     public function configurePackage(Package $package): void
     {
@@ -35,7 +33,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('solutionforest/inspirecms-core');
+                    ->askToStarRepoOnGitHub('solutionforest/inspirecms')
+                    ->endWith(function (InstallCommand $command) {
+                        $command->call(PublishPanel::class);
+                        $command->call(\Filament\Support\Commands\AssetsCommand::class);
+                    });
+
             });
 
         $configFileName = $package->shortName();
@@ -79,8 +82,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (app()->runningInConsole()) {
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
-                    $file->getRealPath() => base_path("stubs/inspirecms-core/{$file->getFilename()}"),
-                ], 'inspirecms-core-stubs');
+                    $file->getRealPath() => base_path("stubs/inspirecms/{$file->getFilename()}"),
+                ], 'inspirecms-stubs');
             }
         }
 
@@ -90,7 +93,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function getAssetPackageName(): ?string
     {
-        return 'solution-forest/inspirecms-core';
+        return 'solution-forest/inspirecms';
     }
 
     /**
@@ -99,9 +102,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getAssets(): array
     {
         return [
-            // AlpineComponent::make('inspirecms-core', __DIR__ . '/../resources/dist/components/inspirecms-core.js'),
-            // Css::make('inspirecms-core-styles', __DIR__ . '/../resources/dist/inspirecms-core.css'),
-            // Js::make('inspirecms-core-scripts', __DIR__ . '/../resources/dist/inspirecms-core.js'),
+            // AlpineComponent::make('inspirecms', __DIR__ . '/../resources/dist/components/inspirecms.js'),
+            // Css::make('inspirecms-styles', __DIR__ . '/../resources/dist/inspirecms.css'),
+            // Js::make('inspirecms-scripts', __DIR__ . '/../resources/dist/inspirecms.js'),
         ];
     }
 
@@ -110,7 +113,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getCommands(): array
     {
-        return [];
+        return [
+            PublishPanel::class,
+        ];
     }
 
     /**

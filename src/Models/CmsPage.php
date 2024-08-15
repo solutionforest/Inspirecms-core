@@ -14,6 +14,6 @@ class CmsPage extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('inspirecms-core.models.page.table_name'));
+        $this->setTable(config('inspirecms.models.page.table_name'));
     }
 }

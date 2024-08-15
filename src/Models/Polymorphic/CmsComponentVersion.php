@@ -23,7 +23,7 @@ class CmsComponentVersion extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('inspirecms-core.models.component_version.table_name'));
+        $this->setTable(config('inspirecms.models.component_version.table_name'));
     }
 
     public function component(): MorphTo

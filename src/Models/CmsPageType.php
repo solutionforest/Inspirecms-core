@@ -20,16 +20,16 @@ class CmsPageType extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('inspirecms-core.models.page_type.table_name'));
+        $this->setTable(config('inspirecms.models.page_type.table_name'));
     }
 
     public function fieldGroups(): MorphToMany
     {
-        return $this->morphToMany(config('filament-field-group.models.field_group', FieldGroup::class), 'model', config('inspirecms-core.models.model_has_field_groups.table_name', 'cms_model_has_field_groups'));
+        return $this->morphToMany(config('filament-field-group.models.field_group', FieldGroup::class), 'model', config('inspirecms.models.model_has_field_groups.table_name', 'cms_model_has_field_groups'));
     }
 
     public function morphFieldGroups(): MorphMany
     {
-        return $this->morphMany(config('inspirecms-core.models.model_has_field_groups.fqcn', ModelHasFieldGroup::class), 'model');
+        return $this->morphMany(config('inspirecms.models.model_has_field_groups.fqcn', ModelHasFieldGroup::class), 'model');
     }
 }

@@ -17,6 +17,6 @@ class EditPageType extends EditWithDetailInfoPage
 
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.page_type', PageTypeResource::class);
+        return config('inspirecms.resources.page_type', PageTypeResource::class);
     }
 }

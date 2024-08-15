@@ -32,15 +32,15 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->navigationGroups([
                 NavigationGroup::make()
-                    ->label(fn () => __('inspirecms-core::inspirecms-core.content')),
+                    ->label(fn () => __('inspirecms::inspirecms.content')),
                 NavigationGroup::make()
-                    ->label(fn () => __('inspirecms-core::inspirecms-core.setting')),
+                    ->label(fn () => __('inspirecms::inspirecms.setting')),
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
             ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
             ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets')
-            ->resources(config('inspirecms-core.resources', []))
+            ->resources(config('inspirecms.resources', []))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

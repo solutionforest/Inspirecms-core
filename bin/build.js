@@ -46,5 +46,5 @@ const defaultOptions = {
 compile({
     ...defaultOptions,
     entryPoints: ['./resources/js/index.js'],
-    outfile: './resources/dist/inspirecms-core.js',
+    outfile: './resources/dist/inspirecms.js',
 })

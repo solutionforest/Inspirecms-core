@@ -26,7 +26,7 @@ class EditPage extends EditWithDetailInfoPage
                 $this->getSaveAndPublishFormAction(),
                 $this->getSaveFormAction(),
             ])
-                ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
+                ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
                 ->color('primary')
                 ->icon('heroicon-m-ellipsis-vertical')
                 ->iconPosition('after')
@@ -40,7 +40,7 @@ class EditPage extends EditWithDetailInfoPage
     protected function getSaveAndPublishFormAction(): Action
     {
         return SaveAndPublishAction::make()
-            ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
+            ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
             ->submit('saveAndPublish');
     }
 
@@ -51,6 +51,6 @@ class EditPage extends EditWithDetailInfoPage
 
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.page', PageResource::class);
+        return config('inspirecms.resources.page', PageResource::class);
     }
 }

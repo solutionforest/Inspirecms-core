@@ -40,7 +40,7 @@ class PageTypeResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label(__('inspirecms-core::inspirecms-core.title'))
+                    ->label(__('inspirecms::inspirecms.title'))
                     ->inlineLabel()
                     ->columnSpanFull()
                     ->required(),
@@ -51,9 +51,9 @@ class PageTypeResource extends Resource
                     ->reorderable()->orderColumn($morphFieldGroupsSortColumn)
                     ->reorderableWithButtons()
                     ->addAction(fn (Forms\Components\Actions\Action $action) => $action->extraAttributes(['class' => 'w-full'], true))
-                    ->addActionLabel(fn () => __('inspirecms-core::inspirecms-core.add_xxx', ['name' => Str::lower(__('inspirecms-core::inspirecms-core.field_group'))]))
-                    ->label(Str::plural(__('inspirecms-core::inspirecms-core.field_group')))
-                    ->validationAttribute(Str::lower(Str::plural(__('inspirecms-core::inspirecms-core.field_group'))))
+                    ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => Str::lower(__('inspirecms::inspirecms.field_group'))]))
+                    ->label(Str::plural(__('inspirecms::inspirecms.field_group')))
+                    ->validationAttribute(Str::lower(Str::plural(__('inspirecms::inspirecms.field_group'))))
                     ->modifyRecordSelectUsing(fn ($select) => $select)
                     ->modifyRecordSelectOptionQueryUsing(function ($query, FieldGroupRepeater $component) {
 
@@ -100,7 +100,7 @@ class PageTypeResource extends Resource
                         Forms\Components\Hidden::make('field_group_title'),
                         Forms\Components\Hidden::make('field_group_fields'),
                         Forms\Components\Placeholder::make('preview_fields')
-                            ->label(__('inspirecms-core::inspirecms-core.preview_fields'))
+                            ->label(__('inspirecms::inspirecms.preview_fields'))
                             ->content(function ($get) {
                                 $fieldsData = $get('field_group_fields');
 
@@ -142,8 +142,8 @@ class PageTypeResource extends Resource
 
                 Forms\Components\Toggle::make('is_root_level')
                     ->inlineLabel()
-                    ->label(__('inspirecms-core::inspirecms-core.is_root_level'))
-                    ->validationAttribute(Str::lower(__('inspirecms-core::inspirecms-core.is_root_level'))),
+                    ->label(__('inspirecms::inspirecms.is_root_level'))
+                    ->validationAttribute(Str::lower(__('inspirecms::inspirecms.is_root_level'))),
             ]);
     }
 
@@ -154,10 +154,10 @@ class PageTypeResource extends Resource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
-                    ->label(__('inspirecms-core::inspirecms-core.id'))
+                    ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms-core::inspirecms-core.title'))
+                    ->label(__('inspirecms::inspirecms.title'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->sortable(),
@@ -188,11 +188,11 @@ class PageTypeResource extends Resource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms-core::inspirecms-core.page_type');
+        return __('inspirecms::inspirecms.page_type');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('inspirecms-core::inspirecms-core.setting');
+        return __('inspirecms::inspirecms.setting');
     }
 }

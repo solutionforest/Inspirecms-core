@@ -18,8 +18,8 @@ class PageResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('title')
-                    ->label(__('inspirecms-core::inspirecms-core.title'))
-                    ->validationAttribute(Str::lower(__('inspirecms-core::inspirecms-core.title')))
+                    ->label(__('inspirecms::inspirecms.title'))
+                    ->validationAttribute(Str::lower(__('inspirecms::inspirecms.title')))
                     ->required(),
             ]);
     }
@@ -32,7 +32,7 @@ class PageResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('id')->width('1%')->sortable(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms-core::inspirecms-core.title'))
+                    ->label(__('inspirecms::inspirecms.title'))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->sortable(),
@@ -58,16 +58,16 @@ class PageResource extends Resource
 
     public static function getModel(): string
     {
-        return config('inspirecms-core.models.page.fqcn', CmsPage::class);
+        return config('inspirecms.models.page.fqcn', CmsPage::class);
     }
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms-core::inspirecms-core.page');
+        return __('inspirecms::inspirecms.page');
     }
 
     public static function getNavigationGroup(): ?string
     {
-        return __('inspirecms-core::inspirecms-core.content');
+        return __('inspirecms::inspirecms.content');
     }
 }

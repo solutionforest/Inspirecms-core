@@ -20,20 +20,20 @@ composer require solution-forest/inspirecms-core
 You can publish and run the migrations with:
 
 ```bash
-php artisan vendor:publish --tag="inspirecms-core-migrations"
+php artisan vendor:publish --tag="inspirecms-migrations"
 php artisan migrate
 ```
 
 You can publish the config file with:
 
 ```bash
-php artisan vendor:publish --tag="inspirecms-core-config"
+php artisan vendor:publish --tag="inspirecms-config"
 ```
 
 Optionally, you can publish the views using
 
 ```bash
-php artisan vendor:publish --tag="inspirecms-core-views"
+php artisan vendor:publish --tag="inspirecms-views"
 ```
 
 This is the contents of the published config file:

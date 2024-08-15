@@ -6,7 +6,7 @@
     ])
 >
     @capture($form)
-        <x-inspirecms-core::with-detail-info-container
+        <x-inspirecms::with-detail-info-container
             formSubmitLiveiwreAction="save"
             :wrapMainFormBySection="$this->wrapMainFormBySection()"
         >
@@ -27,7 +27,7 @@
                 />
             </x-slot>
                     
-        </x-inspirecms-core::with-detail-info-container>
+        </x-inspirecms::with-detail-info-container>
     @endcapture
 
     @php

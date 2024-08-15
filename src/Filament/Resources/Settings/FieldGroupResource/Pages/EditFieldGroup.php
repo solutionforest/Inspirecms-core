@@ -9,11 +9,26 @@ class EditFieldGroup extends EditWithDetailInfoPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.field_group', FieldGroupResource::class);
+        return config('inspirecms.resources.field_group', FieldGroupResource::class);
     }
 
     public function wrapMainFormBySection(): bool
     {
         return false;
+    }
+
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
+
+    public function getContentTabIcon(): ?string
+    {
+        return 'heroicon-m-cog';
+    }
+
+    public function getContentTabLabel(): ?string
+    {
+        return $this->getTitle();
     }
 }

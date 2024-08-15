@@ -18,7 +18,7 @@ class CreatePage extends CreateWithDetailInfoPage
                 $this->getSaveAndPublishFormAction(),
                 $this->getCreateFormAction(),
             ])
-                ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
+                ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
                 ->color('primary')
                 ->icon('heroicon-m-ellipsis-vertical')
                 ->iconPosition('after')
@@ -32,12 +32,12 @@ class CreatePage extends CreateWithDetailInfoPage
     protected function getSaveAndPublishFormAction(): Action
     {
         return SaveAndPublishAction::make()
-            ->label(__('inspirecms-core::inspirecms-core.actions.save_and_publish.label'))
+            ->label(__('inspirecms::inspirecms.actions.save_and_publish.label'))
             ->submit('saveAndPublish');
     }
 
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.page', PageResource::class);
+        return config('inspirecms.resources.page', PageResource::class);
     }
 }

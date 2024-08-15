@@ -7,7 +7,7 @@ use Filament\Support\Enums\Alignment;
 
 class CreateWithDetailInfoPage extends CreateRecord
 {
-    protected static string $view = 'inspirecms-core::filament.pages.cms-pages.create';
+    protected static string $view = 'inspirecms::filament.pages.cms-pages.create';
 
     public array $detailInfoData = [];
 

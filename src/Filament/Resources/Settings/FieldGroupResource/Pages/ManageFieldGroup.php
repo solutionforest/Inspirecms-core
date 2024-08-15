@@ -9,6 +9,6 @@ class ManageFieldGroup extends BasePage
 {
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.field_group', FieldGroupResource::class);
+        return config('inspirecms.resources.field_group', FieldGroupResource::class);
     }
 }

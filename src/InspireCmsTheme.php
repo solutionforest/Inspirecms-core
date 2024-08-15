@@ -12,13 +12,13 @@ class InspireCmsTheme implements Plugin
 {
     public function getId(): string
     {
-        return 'inspirecms-core';
+        return 'inspirecms';
     }
 
     public function register(Panel $panel): void
     {
         FilamentAsset::register([
-            Theme::make('inspirecms-core', __DIR__ . '/../resources/dist/inspirecms-core.css'),
+            Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
         ]);
 
         $panel
@@ -31,7 +31,7 @@ class InspireCmsTheme implements Plugin
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
             ])
-            ->theme('inspirecms-core')
+            ->theme('inspirecms')
             ->maxContentWidth('full');
     }
 

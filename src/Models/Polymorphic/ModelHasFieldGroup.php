@@ -27,7 +27,7 @@ class ModelHasFieldGroup extends Model implements Sortable
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('inspirecms-core.models.model_has_field_groups.table_name'));
+        $this->setTable(config('inspirecms.models.model_has_field_groups.table_name'));
     }
 
     public function fieldGroup(): BelongsTo

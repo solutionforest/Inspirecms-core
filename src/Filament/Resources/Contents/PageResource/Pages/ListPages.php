@@ -17,6 +17,6 @@ class ListPages extends ListRecords
 
     public static function getResource(): string
     {
-        return config('inspirecms-core.resources.page', PageResource::class);
+        return config('inspirecms.resources.page', PageResource::class);
     }
 }

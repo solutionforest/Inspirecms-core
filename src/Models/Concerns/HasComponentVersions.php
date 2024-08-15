@@ -20,6 +20,6 @@ trait HasComponentVersions
 
     protected function getCmsComponentVersionModel(): string
     {
-        return config('inspirecms-core.models.component_version.fqcn', CmsComponentVersion::class);
+        return config('inspirecms.models.component_version.fqcn', CmsComponentVersion::class);
     }
 }

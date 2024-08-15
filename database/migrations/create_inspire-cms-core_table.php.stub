@@ -55,7 +55,7 @@ return new class extends Migration
     private function getTableNames()
     {
         return Arr::whereNotNull(
-            Arr::map(config('inspirecms-core.models', []), fn ($arr) => $arr['table_name'] ?? null)
+            Arr::map(config('inspirecms.models', []), fn ($arr) => $arr['table_name'] ?? null)
         );
     }
 };
