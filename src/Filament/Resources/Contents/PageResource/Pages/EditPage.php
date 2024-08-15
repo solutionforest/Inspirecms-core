@@ -18,6 +18,7 @@ class EditPage extends EditWithDetailInfoPage
             Actions\DeleteAction::make(),
         ];
     }
+
     protected function getFormActions(): array
     {
         return [
