@@ -12,12 +12,11 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'inspirecms:publish-panel')]
 class PublishPanel extends Command
 {
-
     public function handle(): int
     {
         $this->publishPanelProvider(CmsPanelProvider::class);
 
-        $this->components->info("CMS panel installed successfully.");
+        $this->components->info('CMS panel installed successfully.');
 
         return static::SUCCESS;
     }
