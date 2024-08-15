@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Filament\Resources\Pages;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Enums\Alignment;
 
+/**
+ * @property ?Form $detailInfoForm
+ */
 class CreateWithDetailInfoPage extends CreateRecord
 {
     protected static string $view = 'inspirecms::filament.pages.cms-pages.create';
@@ -46,7 +49,7 @@ class CreateWithDetailInfoPage extends CreateRecord
         return true;
     }
 
-    public function hasDetailInfoForm()
+    public function hasDetailInfoForm(): bool
     {
         return data_get($this->getForms(), 'detailInfoForm') != null;
     }

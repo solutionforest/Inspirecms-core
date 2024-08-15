@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Filament\Resources\Pages;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
 
+/**
+ * @property ?Form $detailInfoForm
+ */
 class EditWithDetailInfoPage extends EditRecord
 {
     protected static string $view = 'inspirecms::filament.pages.cms-pages.edit';
@@ -53,7 +56,7 @@ class EditWithDetailInfoPage extends EditRecord
         return true;
     }
 
-    public function hasDetailInfoForm()
+    public function hasDetailInfoForm(): bool
     {
         return data_get($this->getForms(), 'detailInfoForm') != null;
     }
