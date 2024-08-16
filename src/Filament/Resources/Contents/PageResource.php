@@ -173,6 +173,7 @@ class PageResource extends Resource
     protected static function documentTypeSelect(string $name = 'document_type_id')
     {
         $parentFieldName = 'parent_page_id';
+
         return Forms\Components\Select::make($name)
             ->label(__('inspirecms::inspirecms.document_type'))
             ->searchable(['id'])

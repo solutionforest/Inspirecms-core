@@ -10,7 +10,9 @@ use SolutionForest\InspireCms\Models\CmsDocumentType;
 class DocumentTypeDTO extends BaseDTO
 {
     public int $id;
+
     public string $title;
+
     public bool $is_root;
 
     public static function fromModel($documentType): static
