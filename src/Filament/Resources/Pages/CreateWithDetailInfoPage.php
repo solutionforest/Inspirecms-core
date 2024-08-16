@@ -35,7 +35,7 @@ class CreateWithDetailInfoPage extends CreateRecord
                 $this->makeForm()
                     ->operation('create')
                     ->model($this->getModel())
-                    ->statePath('detailInfoData')
+                    ->statePath($this->getDetailInfoFormStatePath())
                     ->columns($this->hasInlineLabels() ? 1 : 2)
                     ->inlineLabel($this->hasInlineLabels()),
             ));
@@ -45,6 +45,11 @@ class CreateWithDetailInfoPage extends CreateRecord
     }
 
     public function wrapMainFormBySection(): bool
+    {
+        return false;
+    }
+
+    public function wrapDetailInfoFormBySection(): bool
     {
         return true;
     }
@@ -64,5 +69,10 @@ class CreateWithDetailInfoPage extends CreateRecord
         }
 
         return $data;
+    }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'detailInfoData';
     }
 }

@@ -4,28 +4,46 @@ namespace SolutionForest\InspireCms\Filament\Resources\Settings;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
-use SolutionForest\FilamentFieldGroup\Models\FieldGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource
 {
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
                 Forms\Components\Tabs::make()
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('General')
+                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.general'))
                             ->schema([
                                 Forms\Components\TextInput::make('title')
-                                    ->required(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make('Settings')
-                            ->schema([
+                                    ->label(__('inspirecms::inspirecms.title'))
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
+                                        // Fill slug if empty / operation is create
+                                        if ($operation === 'create' || empty($get('name'))) { 
+                                            $set('name', Str::slug($state, '_'));
+                                        }
+                                    }),
                                 Forms\Components\TextInput::make('name')
-                                    ->required(),
-                                Forms\Components\Toggle::make('is_active'),
+                                    ->label(__('inspirecms::inspirecms.name'))
+                                    ->required()
+                                    ->maxLength(255)
+                                    ->live(debounce: 500)
+                                    ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
+                                    ->unique(ignoreRecord: true),
+                            ]),
+                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.setting'))
+                            ->schema([
+                                Forms\Components\Toggle::make('active')
+                                    ->label(__('inspirecms::inspirecms.is_active'))
+                                    ->default(true),
                             ]),
                     ]),
             ]);
@@ -41,7 +59,7 @@ class FieldGroupResource extends BaseResource
 
     public static function getModel(): string
     {
-        return config('filament-field-group.models.field_group', FieldGroup::class);
+        return InspireCmsConfig::getFieldGroupModelClass();
     }
 
     public static function getModelLabel(): string

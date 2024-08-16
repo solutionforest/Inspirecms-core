@@ -42,7 +42,7 @@ class EditWithDetailInfoPage extends EditRecord
                 $this->makeForm()
                     ->operation('edit')
                     ->model($this->getRecord())
-                    ->statePath('detailInfoData')
+                    ->statePath($this->getDetailInfoFormStatePath())
                     ->columns($this->hasInlineLabels() ? 1 : 2)
                     ->inlineLabel($this->hasInlineLabels()),
             ));
@@ -52,6 +52,11 @@ class EditWithDetailInfoPage extends EditRecord
     }
 
     public function wrapMainFormBySection(): bool
+    {
+        return false;
+    }
+
+    public function wrapDetailInfoFormBySection(): bool
     {
         return true;
     }
@@ -71,5 +76,10 @@ class EditWithDetailInfoPage extends EditRecord
         }
 
         return $data;
+    }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'detailInfoData';
     }
 }

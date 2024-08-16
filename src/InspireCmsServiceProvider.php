@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Arr;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Commands\PublishPanel;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -60,7 +62,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void {}
+    public function packageRegistered(): void 
+    {
+        $this->registerPolymorphism();
+    }
 
     public function packageBooted(): void
     {
@@ -150,5 +155,17 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             'create_inspire-cms-core_table',
         ];
+    }
+
+    /**
+     * Register Polymorphic Types
+     */
+    protected function registerPolymorphism()
+    {
+        $map = Arr::pluck(config('inspirecms.models'), 'fqcn', 'polymorphic_type');
+        
+        if (!empty($map)) {
+            Relation::enforceMorphMap($map);
+        }
     }
 }

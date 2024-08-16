@@ -13,32 +13,49 @@ return new class extends Migration
 
         Schema::create($tableNames['page'], function (Blueprint $table) {
             $table->id();
+
+            $table->integer('document_type_id');
+            $table->integer('parent_page_id')->nullable();
             $table->string('title');
-            $table->integer('page_type_id');
-            $table->integer('template_id')->nullable();
+            $table->string('slug');
+
             $table->timestamps();
 
-            $table->index('template_id');
-            $table->index('page_type_id');
+            $table->index('document_type_id');
+            $table->index('title');
+            $table->unique(['slug', 'parent_page_id']);
         });
-        Schema::create($tableNames['page_type'], function (Blueprint $table) {
+        Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->boolean('is_root_level')->default(false);
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
+
+            $table->index('parent_id');
         });
-        Schema::create($tableNames['model_has_field_groups'], function (Blueprint $table) {
+        Schema::create($tableNames['component_field_group'], function (Blueprint $table) {
             $table->id();
             $table->integer('field_group_id')->index();
             $table->morphs('model');
-            $table->integer('sort')->default(0);
+            $table->integer('order')->default(0);
+        });
+        Schema::create($tableNames['component_tree'], function (Blueprint $table) {
+            $table->id();
+            $table->integer('parent_id')->default(-1);
+            $table->integer('order')->default(0);
+            $table->morphs('nestable');
+            $table->timestamps();
+
+            $table->index(['parent_id']);
         });
         Schema::create($tableNames['component_version'], function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->boolean('is_current')->default(false);
-            $table->boolean('is_published')->default(false);
             $table->timestamp('version_date', 0)->nullable();
+            $table->boolean('is_current')->default(false);
+            $table->string('status');
+            $table->json('properties');
+
+            $table->index(['status']);
         });
     }
 
@@ -47,8 +64,9 @@ return new class extends Migration
         $tableNames = $this->getTableNames();
         
         Schema::dropIfExists($tableNames['component_version']);
-        Schema::dropIfExists($tableNames['model_has_field_groups']);
-        Schema::dropIfExists($tableNames['page_type']);
+        Schema::dropIfExists($tableNames['component_tree']);
+        Schema::dropIfExists($tableNames['component_field_group']);
+        Schema::dropIfExists($tableNames['document_type']);
         Schema::dropIfExists($tableNames['page']);
     }
 

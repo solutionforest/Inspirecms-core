@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsComponentVersion extends Model
 {
@@ -11,7 +12,7 @@ class CmsComponentVersion extends Model
 
     protected $casts = [
         'is_current' => 'boolean',
-        'is_published' => 'boolean',
+        'properties' => 'json',
         'version_date' => 'datetime',
     ];
 
@@ -23,7 +24,7 @@ class CmsComponentVersion extends Model
     {
         parent::__construct($attributes);
 
-        $this->setTable(config('inspirecms.models.component_version.table_name'));
+        $this->setTable(InspireCmsConfig::getComponentVersionTableName());
     }
 
     public function component(): MorphTo

@@ -4,22 +4,22 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentVersion;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasComponentVersions
 {
+    public static function bootHasComponentVersions()
+    {
+        //
+    }
+
     public function versions(): MorphMany
     {
-        return $this->morphMany($this->getCmsComponentVersionModel(), 'component');
+        return $this->morphMany(InspireCmsConfig::getComponentVersionModelClass(), 'component');
     }
 
     public function latestVersion(): MorphOne
     {
-        return $this->morphOne($this->getCmsComponentVersionModel(), 'component')->ofMany('version_date', 'max');
-    }
-
-    protected function getCmsComponentVersionModel(): string
-    {
-        return config('inspirecms.models.component_version.fqcn', CmsComponentVersion::class);
+        return $this->morphOne(InspireCmsConfig::getComponentVersionModelClass(), 'component')->ofMany('version_date', 'max');
     }
 }

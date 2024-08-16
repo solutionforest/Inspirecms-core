@@ -4,23 +4,11 @@ namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pag
 
 use Filament\Actions\Action;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
-use SolutionForest\InspireCms\Filament\Resources\Pages\Concerns\HasSaveAndPublishAction;
 use SolutionForest\InspireCms\Filament\Resources\Pages\CreateWithDetailInfoPage;
 
 class CreatePage extends CreateWithDetailInfoPage
 {
-    use HasSaveAndPublishAction;
-
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getSaveAndPublishGroupAction([
-                $this->getSaveAndPublishFormAction(),
-                $this->getCreateFormAction(),
-            ]),
-            $this->getCancelFormAction(),
-        ];
-    }
+    protected static bool $canCreateAnother = false;
 
     protected function getCreateFormAction(): Action
     {
@@ -31,5 +19,15 @@ class CreatePage extends CreateWithDetailInfoPage
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
+    }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'data';
+    }
+
+    public function wrapDetailInfoFormBySection(): bool
+    {
+        return false;
     }
 }

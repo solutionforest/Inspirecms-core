@@ -2,4 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+    .fi-fo-repeater.preview-fields-with-bg .fi-fo-repeater-item {
+        @apply !bg-gray-300/50 dark:!bg-gray-700;
+    }
+}
+
 @import '../../vendor/filament/filament/resources/css/theme.css';

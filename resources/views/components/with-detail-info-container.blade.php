@@ -3,7 +3,6 @@
     'formSubmitLiveiwreAction',
     'formSubmitAction' => null,
     'detailInfoForm' => null,
-    'wrapMainFormBySection' => true,
 ])
 
 @php
@@ -20,30 +19,21 @@
         <div 
             @class([
                 'w-full',
-                'flex flex-col lg:flex-row-reverse px-0.5 gap-2' => $haveDetailInfoForm,
+                'flex flex-col lg:flex-row-reverse px-0.5 gap-4' => $haveDetailInfoForm,
             ])
         >
-
             @if ($haveDetailInfoForm)
                 <div class="w-full flex-col lg:w-1/3">
-                    <x-filament::section>
-                        {{ $detailInfoForm }}
-                    </x-filament::section>
+                    {{ $detailInfoForm }}
                 </div>
             @endif
 
-            @if ($wrapMainFormBySection)
-                <x-filament::section 
-                    @class([
-                        'w-full',
-                        'flex flex-col lg:w-2/3 gap-3' => $haveDetailInfoForm,
-                    ])
-                >
-                    {{ $form }}
-                </x-filament::section>
-            @else
+            <div @class([
+                'w-full',
+                'flex flex-col lg:w-2/3 gap-3' => $haveDetailInfoForm,
+            ])>
                 {{ $form }}
-            @endif
+            </div>
         </div>
 
         @if ($formSubmitAction)

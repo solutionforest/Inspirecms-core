@@ -44,7 +44,7 @@ class FieldGroupRepeater extends Repeater
         $this->defaultItems(0);
 
         $this->relationship('morphFieldGroups');
-        $this->fieldGroupRelationName('fieldGroups', 'title', 'sort');
+        $this->fieldGroupRelationName('fieldGroups', 'title', 'order');
         $this->live();
         $this->addable(true);
 
@@ -216,7 +216,6 @@ class FieldGroupRepeater extends Repeater
 
         $select = Select::make('recordId')
             ->hiddenLabel()
-            ->options(fn () => $getOptions(50))
             ->required()->searchable($this->getRecordSelectSearchColumns() ?? true)
             ->getSearchResultsUsing(static fn (Select $component, string $search): array => $getOptions(
                 optionsLimit: $component->getOptionsLimit(),
