@@ -18,6 +18,7 @@ class InspireCmsConfig
     public static function getPageModelClass(): string
     {
         $class = config('inspirecms.models.page.fqcn', CmsPage::class);
+
         return self::ensureClassExists($class, 'CmsPage model');
     }
 
@@ -29,6 +30,7 @@ class InspireCmsConfig
     public static function getDocumentTypeModelClass(): string
     {
         $class = config('inspirecms.models.document_type.fqcn', CmsDocumentType::class);
+
         return self::ensureClassExists($class, 'CmsDocumentType model');
     }
 
@@ -40,6 +42,7 @@ class InspireCmsConfig
     public static function getComponentVersionModelClass(): string
     {
         $class = config('inspirecms.models.component_version.fqcn', CmsComponentVersion::class);
+
         return self::ensureClassExists($class, 'CmsComponentVersion model');
     }
 
@@ -51,6 +54,7 @@ class InspireCmsConfig
     public static function getComponentFieldGroupModelClass(): string
     {
         $class = config('inspirecms.models.component_field_group.fqcn', CmsComponentFieldGroup::class);
+
         return self::ensureClassExists($class, 'CmsComponentFieldGroup model');
     }
 
@@ -62,6 +66,7 @@ class InspireCmsConfig
     public static function getComponentTreeModelClass(): string
     {
         $class = config('inspirecms.models.component_tree.fqcn', CmsComponentTree::class);
+
         return self::ensureClassExists($class, 'CmsComponentTree model');
     }
 
@@ -88,14 +93,15 @@ class InspireCmsConfig
     /**
      * Ensure that a class exists, or throw an exception.
      *
-     * @param string $class The fully qualified class name
-     * @param string $type A description of the class type (e.g., 'model', 'service')
+     * @param  string  $class  The fully qualified class name
+     * @param  string  $type  A description of the class type (e.g., 'model', 'service')
      * @return string The class name if it exists
+     *
      * @throws \Exception If the class does not exist
      */
     protected static function ensureClassExists(string $class, string $type): string
     {
-        if (!class_exists($class)) {
+        if (! class_exists($class)) {
             throw new \Exception("The {$type} class '{$class}' does not exist. Please check your configuration.");
         }
 

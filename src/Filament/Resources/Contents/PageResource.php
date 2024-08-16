@@ -32,7 +32,7 @@ class PageResource extends Resource
                                     ->validationAttribute(Str::lower(__('inspirecms::inspirecms.title')))
                                     ->live(debounce: 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
                                         // Fill slug if empty / operation is create
-                                        if ($operation === 'create' || empty($get('slug'))) { 
+                                        if ($operation === 'create' || empty($get('slug'))) {
                                             $set('slug', Str::slug($state));
                                         }
                                     })
@@ -43,9 +43,9 @@ class PageResource extends Resource
                             ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
                             ->searchable(['title', 'slug'])
                             ->preload()
-                            ->placeholder('('.strtolower(__('inspirecms::inspirecms.no_parent').')'))
+                            ->placeholder('(' . strtolower(__('inspirecms::inspirecms.no_parent') . ')'))
                             ->live(),
-        
+
                         static::documentTypeSelect('document_type_id')
                             // Load field group from page type
                             ->live(debounce: 300)
@@ -71,16 +71,18 @@ class PageResource extends Resource
                             ->with(['fieldGroups'])
                             ->whereHas('fieldGroups')
                             ->find($documentTypeKey);
-                        if (!$documentType) {
+                        if (! $documentType) {
                             return [];
                         }
-                        $documentTypes = collect($documentType->ancestors())->push($documentType); 
+                        $documentTypes = collect($documentType->ancestors())->push($documentType);
                         $componentsSchema = $documentTypes->pluck('fieldGroups')
-                            ->flatMap(fn ($fieldGroups) => collect($fieldGroups)
-                                ->map(fn ($fieldGroup) => $fieldGroup?->toFilamentComponent() ?? null)
+                            ->flatMap(
+                                fn ($fieldGroups) => collect($fieldGroups)
+                                    ->map(fn ($fieldGroup) => $fieldGroup?->toFilamentComponent() ?? null)
                             )
                             ->filter()
                             ->toArray();
+
                         return $componentsSchema;
                     })
                     ->saveRelationshipsUsing(function ($record, $state) {
@@ -123,14 +125,14 @@ class PageResource extends Resource
                                 // fill publish time as now is the status change to "Published"
                                 if ($state == ComponentStatus::Published->value) {
                                     $set('published_at', now());
-                                } 
+                                }
                                 // reset state if creating
-                                else if ($operation == 'create' && $state == ComponentStatus::Draft->value) {
+                                elseif ($operation == 'create' && $state == ComponentStatus::Draft->value) {
                                     $set('published_at', '');
                                 }
                             }),
                     ]),
-                ]);
+            ]);
     }
 
     public static function table(Table $table): Table

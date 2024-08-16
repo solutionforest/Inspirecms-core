@@ -62,7 +62,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
-    public function packageRegistered(): void 
+    public function packageRegistered(): void
     {
         $this->registerPolymorphism();
     }
@@ -163,8 +163,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function registerPolymorphism()
     {
         $map = Arr::pluck(config('inspirecms.models'), 'fqcn', 'polymorphic_type');
-        
-        if (!empty($map)) {
+
+        if (! empty($map)) {
             Relation::enforceMorphMap($map);
         }
     }

@@ -8,8 +8,8 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsPage extends Model
 {
-    use Concerns\HasComponentVersions;
     use Concerns\BelongToCmsComponentTree;
+    use Concerns\HasComponentVersions;
     use Concerns\NestableTrait;
 
     protected $guarded = ['id'];

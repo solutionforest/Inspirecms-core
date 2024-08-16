@@ -17,6 +17,7 @@ class BelongsToParentSelect extends Select
                 $descendantIds = $record->descendants()->pluck('id')->toArray();
                 $query->whereNotIn('id', $descendantIds);
             }
+
             return $query;
         });
     }

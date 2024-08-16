@@ -27,7 +27,7 @@ class FieldGroupResource extends BaseResource
                                     ->live(debounce: 500)
                                     ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
                                         // Fill slug if empty / operation is create
-                                        if ($operation === 'create' || empty($get('name'))) { 
+                                        if ($operation === 'create' || empty($get('name'))) {
                                             $set('name', Str::slug($state, '_'));
                                         }
                                     }),

@@ -16,8 +16,8 @@ use Spatie\EloquentSortable\SortableTrait;
  */
 class CmsComponentTree extends Model implements Sortable
 {
-    use SortableTrait;
     use NestableTrait;
+    use SortableTrait;
 
     protected $guarded = ['id'];
 
@@ -40,8 +40,8 @@ class CmsComponentTree extends Model implements Sortable
 
     public function buildSortQuery(): Builder
     {
-        $query = method_exists(parent::class,'buildSortQuery') ? parent::buildSortQuery() : static::query();
-        
+        $query = method_exists(parent::class, 'buildSortQuery') ? parent::buildSortQuery() : static::query();
+
         return $query->where('parent_id', $this->parent_id);
     }
 }

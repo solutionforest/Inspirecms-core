@@ -23,7 +23,7 @@ trait NestableTrait
         //     ]);
         // });
     }
-    
+
     public function parent(): BelongsTo
     {
         return $this->belongsTo(static::class, $this->getNestableParentIdColumn());

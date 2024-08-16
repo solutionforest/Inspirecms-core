@@ -11,7 +11,7 @@ class EditFieldGroup extends EditWithDetailInfoPage
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-        ->label(__('inspirecms::inspirecms.actions.save.label'));
+            ->label(__('inspirecms::inspirecms.actions.save.label'));
     }
 
     public static function getResource(): string

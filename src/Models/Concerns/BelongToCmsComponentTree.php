@@ -112,7 +112,7 @@ trait BelongToCmsComponentTree
                 ->get();
 
         } catch (\Exception $e) {
-            
+
             // Throw exception that have problem in getSortQuery
             throw new \Exception('Have error on \'' . __METHOD__ . '\'. Please check you table columns or the method \'getParentId\'.', $e->getCode(), $e);
         }

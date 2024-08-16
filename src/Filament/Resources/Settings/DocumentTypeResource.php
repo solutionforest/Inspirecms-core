@@ -41,7 +41,7 @@ class DocumentTypeResource extends Resource
                             ->addable(false)->reorderable(false)->deletable(false)
                             ->schema(static::getFieldGroupsRepeaterSchema())
                             ->extraAttributes(['class' => 'preview-fields-with-bg']),
-        
+
                         FieldGroupRepeater::make('morphFieldGroups')
                             ->columnSpanFull()
                             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => Str::lower(__('inspirecms::inspirecms.field_group'))]))
@@ -63,11 +63,11 @@ class DocumentTypeResource extends Resource
                                         )
                                     )
                                 );
-        
+
                                 if (count($existingFieldGroupIds) > 0) {
                                     $query->whereKeyNot($existingFieldGroupIds);
                                 }
-        
+
                                 return $query
                                     ->with(['fields']) // load preview
                                     ->where('active', true);
@@ -77,9 +77,9 @@ class DocumentTypeResource extends Resource
                                 if ($id === null) {
                                     return [];
                                 }
-        
+
                                 $fieldGroup = $component->getFieldGroupRelationshipQuery()->find($id);
-        
+
                                 return static::getFieldGroupsItemStateFromFieldGroup($fieldGroup);
                             })
                             ->itemLabel(fn (array $state): ?string => data_get($state, 'field_group_title'))
@@ -101,30 +101,32 @@ class DocumentTypeResource extends Resource
     public static function detailInfoForm(Form $form): Form
     {
         $getFieldGroupsItemStatesFromParent = function ($parentId) {
-            if (!$parentId) {
+            if (! $parentId) {
                 return [];
             }
             $parent = static::getEloquentQuery()->with('fieldGroups')->find($parentId);
-            if (!$parent) {
+            if (! $parent) {
                 return [];
             }
-            $parentAncestors = collect($parent->ancestors())->push($parent); 
+            $parentAncestors = collect($parent->ancestors())->push($parent);
             $state = $parentAncestors->pluck('fieldGroups')
                 ->flatMap(fn ($fieldGroups) => collect($fieldGroups)->map(fn ($fieldGroup) => static::getFieldGroupsItemStateFromFieldGroup($fieldGroup)))
-                ->mapWithKeys(fn ($stateItem) => [(string)Str::uuid() => $stateItem])
+                ->mapWithKeys(fn ($stateItem) => [(string) Str::uuid() => $stateItem])
                 ->toArray();
+
             return $state;
         };
+
         return $form
             ->columns(1)
             ->schema([
-                            
+
                 BelongsToParentSelect::make('parent_id')
                     ->label(__('inspirecms::inspirecms.parent'))
                     ->nestableParentRelationship('parent', 'title', ignoreRecord: true)
                     ->searchable(['title'])
                     ->preload()
-                    ->placeholder('('.strtolower(__('inspirecms::inspirecms.no_parent').')'))
+                    ->placeholder('(' . strtolower(__('inspirecms::inspirecms.no_parent') . ')'))
                     ->hintIcon(
                         'heroicon-o-information-circle',
                         __('inspirecms::inspirecms.document_types.empty_parent_description', [

@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource;
 class CreateDocumentType extends CreateWithDetailInfoPage
 {
     protected static bool $canCreateAnother = false;
-    
+
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
