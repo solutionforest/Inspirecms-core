@@ -172,11 +172,19 @@ class PageResource extends Resource
      */
     protected static function documentTypeSelect(string $name = 'document_type_id')
     {
+        $parentFieldName = 'parent_page_id';
         return Forms\Components\Select::make($name)
             ->label(__('inspirecms::inspirecms.document_type'))
             ->searchable(['id'])
             ->preload()
-            ->relationship(name: 'documentType', titleAttribute: 'title')
+            ->relationship(name: 'documentType', titleAttribute: 'title', modifyQueryUsing: function ($query, $get) use ($parentFieldName) {
+                $isThisPageInRoot = $get($parentFieldName) == null;
+                if ($isThisPageInRoot) {
+                    return $query->whereNull('parent_id');
+                } else {
+                    return $query->whereNotNull('parent_id');
+                }
+            })
             ->required();
     }
 
