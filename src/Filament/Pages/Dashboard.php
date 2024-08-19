@@ -25,7 +25,7 @@ class Dashboard extends Page
         return __('inspirecms::inspirecms.dashboard');
     }
 
-    public function getTitle(): string|Htmlable
+    public function getTitle(): string | Htmlable
     {
         return __('inspirecms::inspirecms.dashboard');
     }
