@@ -18,6 +18,8 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentTypeResource extends Resource
 {
+    protected static ?int $navigationSort = -10;
+
     public static function form(Form $form): Form
     {
         $morphFieldGroupsSortColumn = 'order';

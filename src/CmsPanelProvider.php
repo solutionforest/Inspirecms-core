@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationBuilder;
 use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -16,31 +18,35 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
+use SolutionForest\InspireCms\Filament\Pages;
+use SolutionForest\InspireCms\Filament\Resources;
 
 class CmsPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        return $panel
+        $panel = $panel
             ->id('cms')
             ->path('cms')
             ->default()
             ->login()
+            ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([
                 FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
                 new InspireCmsTheme,
             ])
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.content')),
-                NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.setting')),
+            ->resources([
+                Resources\Settings\DocumentTypeResource::class,
+                Resources\Settings\FieldGroupResource::class,
+                Resources\Contents\PageResource::class,
+            ])
+            ->pages([
+                Pages\Dashboard::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
             ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
             ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets')
-            ->resources(config('inspirecms.resources', []))
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -54,6 +60,22 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ]);
+
+        $this->configureNavigation($panel);
+
+        return $panel;
+    }
+
+    protected function configureNavigation(Panel $panel): Panel
+    {
+        return $panel
+            ->topNavigation()
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label(fn () => __('inspirecms::inspirecms.content')),
+                NavigationGroup::make()
+                    ->label(fn () => __('inspirecms::inspirecms.setting')),
             ]);
     }
 }

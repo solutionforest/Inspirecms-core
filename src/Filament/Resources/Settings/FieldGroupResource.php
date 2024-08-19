@@ -11,6 +11,8 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource
 {
+    protected static ?int $navigationSort = -9;
+
     public static function form(Form $form): Form
     {
         return $form

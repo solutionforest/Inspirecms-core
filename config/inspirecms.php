@@ -1,14 +1,11 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Resources;
 use SolutionForest\InspireCms\Models;
 
 // config for SolutionForest/InspireCms
 return [
-    'resources' => [
-        'field_group' => Resources\Settings\FieldGroupResource::class,
-        'page' => Resources\Contents\PageResource::class,
-        'document_type' => Resources\Settings\DocumentTypeResource::class,
+    'template' => [
+        'path' => env('INSPIRECMS_TEMPLATE_PATH', resource_path('views/inspire-cms/templates')),
     ],
     'models' => [
         'page' => [

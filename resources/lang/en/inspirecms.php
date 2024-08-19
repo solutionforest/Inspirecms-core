@@ -20,6 +20,8 @@ return [
     'slug' => 'Slug',
     'status' => 'Status',
     'title' => 'Title',
+    'template' => 'Template',
+    'dashboard' => 'Dashboard',
 
     'document_types' => [
         'empty_parent_description' => 'Only root level :name can use this :documentType if left empty.',
@@ -28,6 +30,13 @@ return [
     'actions' => [
         'save' => [
             'label' => 'Save',
+        ],
+    ],
+
+    'notification' => [
+        'template_directory_not_found' => [
+            'title' => 'Template Directory Not Found',
+            'body' => 'The specified template directory does not exist. Please check your configuration.',
         ],
     ],
 ];

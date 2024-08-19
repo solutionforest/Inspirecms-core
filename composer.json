@@ -68,7 +68,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "SolutionForest\\InspireCms\\InspireCmsServiceProvider"
+                "SolutionForest\\InspireCms\\InspireCmsServiceProvider",
+                "SolutionForest\\InspireCms\\CmsPanelProvider"
             ],
             "aliases": {
                 "InspireCms": "SolutionForest\\InspireCms\\Facades\\InspireCms"
