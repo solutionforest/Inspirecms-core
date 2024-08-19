@@ -1,13 +1,13 @@
 <?php
 
-namespace SolutionForest\InspireCms\DTOs;
+namespace SolutionForest\InspireCms\Dtos;
 
 use SolutionForest\InspireCms\Models\CmsDocumentType;
 
 /**
- * @extends BaseDTO<CmsDocumentType>
+ * @extends BaseDto<CmsDocumentType>
  */
-class DocumentTypeDTO extends BaseDTO
+class DocumentTypeDTO extends BaseDto
 {
     public int $id;
 

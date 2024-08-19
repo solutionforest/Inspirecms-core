@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\DTOs;
+namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Model;
 
