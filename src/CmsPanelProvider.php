@@ -73,7 +73,9 @@ class CmsPanelProvider extends PanelProvider
                 NavigationGroup::make()
                     ->label(fn () => __('inspirecms::inspirecms.content')),
                 NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.setting')),
+                    ->label(fn () => __('inspirecms::inspirecms.setting'))
+                    // Child navigation must haven't navigationIcon
+                    ->icon('heroicon-o-cog-6-tooth'),
             ]);
     }
 }

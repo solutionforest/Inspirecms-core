@@ -13,6 +13,8 @@ class FieldGroupResource extends BaseResource
 {
     protected static ?int $navigationSort = -9;
 
+    protected static ?string $navigationIcon = null;
+
     public static function form(Form $form): Form
     {
         return $form
