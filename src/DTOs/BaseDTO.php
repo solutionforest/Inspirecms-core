@@ -10,9 +10,10 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseDTO
 {
     /**
-     * @param Model $model
+     * @param  Model  $model
      */
     abstract public static function fromModel($model): static;
+
     abstract public function toArray(): array;
 
     public function __construct(array $parameters = [])
