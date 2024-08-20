@@ -7,7 +7,7 @@ use SolutionForest\InspireCms\Models\CmsDocumentType;
 /**
  * @extends BaseDto<CmsDocumentType>
  */
-class DocumentTypeDTO extends BaseDto
+class DocumentTypeDto extends BaseDto
 {
     public int $id;
 

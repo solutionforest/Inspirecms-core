@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 /**
  * @template TModel of Model
  */
-abstract class BaseDTO
+abstract class BaseDto
 {
     /**
      * @param  Model  $model
