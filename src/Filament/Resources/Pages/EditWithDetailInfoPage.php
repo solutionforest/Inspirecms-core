@@ -16,7 +16,7 @@ class EditWithDetailInfoPage extends EditRecord
 
     protected array $detailInfoDataAfterMutate = [];
 
-    public static string | Alignment $formActionsAlignment = Alignment::End;
+    public static string $formActionsAlignment = Alignment::End;
 
     protected function getForms(): array
     {
