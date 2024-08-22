@@ -67,7 +67,6 @@ class CreateWithDetailInfoPage extends CreateRecord
             }
         }
 
-
         return $data;
     }
 

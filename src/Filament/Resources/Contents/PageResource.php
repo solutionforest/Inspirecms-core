@@ -32,13 +32,13 @@ class PageResource extends Resource
                     ->tabs([
                         Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.general'))
                             ->schema([
-                                    static::getTitleFormComponent(),
-                                    static::getParentPageFormComponent(),
-                                    static::documentTypeSelectComponent(),
+                                static::getTitleFormComponent(),
+                                static::getParentPageFormComponent(),
+                                static::documentTypeSelectComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.setting'))
                             ->schema([
-                                    static::getSlugFormComponent(),
+                                static::getSlugFormComponent(),
                             ]),
                     ]),
 
@@ -79,26 +79,26 @@ class PageResource extends Resource
                     ->label(__('inspirecms::inspirecms.title'))
                     ->sortable(),
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
-                ->columns([
+                    ->columns([
 
-                    Tables\Columns\TextColumn::make('status')
-                        ->label(__('inspirecms::inspirecms.status'))
-                        ->formatStateUsing(fn ($state) => PageStatus::tryFrom($state)?->getLabel() ?? '')
-                        ->color(fn ($state) => PageStatus::tryFrom($state)?->getColor() ?? 'gray')
-                        ->badge()
-                        ->icon(fn (Model|CmsContent $record) => $record->isPublished() ? 'heroicon-m-eye' : null)
-                        ->iconPosition(IconPosition::After),
+                        Tables\Columns\TextColumn::make('status')
+                            ->label(__('inspirecms::inspirecms.status'))
+                            ->formatStateUsing(fn ($state) => PageStatus::tryFrom($state)?->getLabel() ?? '')
+                            ->color(fn ($state) => PageStatus::tryFrom($state)?->getColor() ?? 'gray')
+                            ->badge()
+                            ->icon(fn (Model | CmsContent $record) => $record->isPublished() ? 'heroicon-m-eye' : null)
+                            ->iconPosition(IconPosition::After),
 
-                    Tables\Columns\TextColumn::make('current_version')
-                        ->label(__('inspirecms::inspirecms.current_version'))
-                        ->getStateUsing(fn (Model|CmsContent $record) => "TODO")
-                        // ->getStateUsing(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
-                        ->color(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getColor() ?? 'gray')
-                        ->badge(),
+                        Tables\Columns\TextColumn::make('current_version')
+                            ->label(__('inspirecms::inspirecms.current_version'))
+                            ->getStateUsing(fn (Model | CmsContent $record) => 'TODO')
+                            // ->getStateUsing(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
+                            ->color(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getColor() ?? 'gray')
+                            ->badge(),
 
-                    Tables\Columns\TextColumn::make('published_at')
-                        ->label(__('inspirecms::inspirecms.publish_at')),
-                ]),
+                        Tables\Columns\TextColumn::make('published_at')
+                            ->label(__('inspirecms::inspirecms.publish_at')),
+                    ]),
                 Tables\Columns\TextColumn::make('created_at')->sortable(),
                 Tables\Columns\TextColumn::make('updated_at')->sortable(),
             ])
@@ -121,7 +121,7 @@ class PageResource extends Resource
         ];
     }
 
-    #region Form field(s)/component(s)
+    //region Form field(s)/component(s)
     protected static function getTitleFormComponent(): Forms\Components\Component
     {
         return Forms\Components\Grid::make(2)
@@ -168,6 +168,7 @@ class PageResource extends Resource
                 ) {
                     return true;
                 }
+
                 return false;
             })
             // save data the field is disabled
@@ -201,8 +202,7 @@ class PageResource extends Resource
                 // fill publish time as now is the status change to "Publish"
                 if ($state == PageStatus::Publish->value) {
                     $set('published_at', now());
-                }
-                elseif ($operation === 'create' && $state == PageStatus::Pending->value) {
+                } elseif ($operation === 'create' && $state == PageStatus::Pending->value) {
                     $set('published_at', null);
                 }
             })
@@ -267,7 +267,7 @@ class PageResource extends Resource
             });
     }
 
-    #endregion Form field(s)/component(s)
+    //endregion Form field(s)/component(s)
 
     public static function getModel(): string
     {

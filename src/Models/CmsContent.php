@@ -11,8 +11,8 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class CmsContent extends Model
 {
     use Concerns\BelongToCmsComponentTree;
-    use Concerns\NestableTrait;
     use Concerns\HasPropertyData;
+    use Concerns\NestableTrait;
 
     protected $guarded = ['id'];
 
@@ -59,7 +59,7 @@ class CmsContent extends Model
             $publishStatus[] = PageStatus::Private->value;
         }
 
-        if (!in_array($status, $publishStatus)) {
+        if (! in_array($status, $publishStatus)) {
             return false;
         }
 

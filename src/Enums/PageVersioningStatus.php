@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum PageVersioningStatus: string implements HasLabel, HasColor
+enum PageVersioningStatus: string implements HasColor, HasLabel
 {
     case Draft = 'draft';
     case Published = 'published';

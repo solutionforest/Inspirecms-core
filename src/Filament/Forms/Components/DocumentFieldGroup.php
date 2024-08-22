@@ -70,11 +70,11 @@ class DocumentFieldGroup extends Forms\Components\Group
                     ->toArray();
 
                 $components = collect($fieldGroupState)
-                    ->map(fn ($itemState, $key) =>
-                        Forms\Components\Section::make($itemState['field_group_title'])
-                        ->description(__('inspirecms::inspirecms.hints.inherited_from_parent_document_type'))
-                        ->schema([
-                                $this->getPreviewFieldsComponent($itemState['field_group_fields'] ?? [])->name($key)
+                    ->map(
+                        fn ($itemState, $key) => Forms\Components\Section::make($itemState['field_group_title'])
+                            ->description(__('inspirecms::inspirecms.hints.inherited_from_parent_document_type'))
+                            ->schema([
+                                $this->getPreviewFieldsComponent($itemState['field_group_fields'] ?? [])->name($key),
                             ])
                     )
                     ->all();
@@ -129,7 +129,7 @@ class DocumentFieldGroup extends Forms\Components\Group
                 return $itemState;
             })
             ->itemLabel(fn (array $state): ?string => data_get($state, 'field_group_title'))
-            ->mutateRelationshipDataBeforeFillUsing(function (array $data, Model|CmsDocumentType $record) {
+            ->mutateRelationshipDataBeforeFillUsing(function (array $data, Model | CmsDocumentType $record) {
 
                 $records = $record->fieldGroups
                     ->sortBy($this->getMorphFieldGroupsSortColumn())
@@ -143,11 +143,9 @@ class DocumentFieldGroup extends Forms\Components\Group
     }
 
     /**
-     * @param null|Model|integer|string $fieldGroup
-     * @param ?Collection $existingFieldGroups The field group collection that key by primary key.
-     * @return array
+     * @param  ?Collection  $existingFieldGroups  The field group collection that key by primary key.
      */
-    protected function getFieldGroupsItemStateFromFieldGroup(null|Model|int|string $fieldGroup, $existingFieldGroups = null): array
+    protected function getFieldGroupsItemStateFromFieldGroup(null | Model | int | string $fieldGroup, $existingFieldGroups = null): array
     {
         if ($fieldGroup === null) {
             return [];
@@ -155,7 +153,7 @@ class DocumentFieldGroup extends Forms\Components\Group
 
         if ($fieldGroup instanceof Model) {
             // skip
-        } else if (!$fieldGroup instanceof Model && $existingFieldGroups != null) {
+        } elseif (! $fieldGroup instanceof Model && $existingFieldGroups != null) {
             $fieldGroup = $existingFieldGroups->find($fieldGroup);
         } else {
             return [];

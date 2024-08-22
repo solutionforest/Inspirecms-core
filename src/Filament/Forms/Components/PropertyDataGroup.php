@@ -32,11 +32,11 @@ class PropertyDataGroup extends Group
         }
     }
 
-    public function getFieldGroupsFromDocumentType(int|string|Model|null $documentType)
+    public function getFieldGroupsFromDocumentType(int | string | Model | null $documentType)
     {
         if ($documentType instanceof Model) {
 
-        } else if (is_null($documentType)) {
+        } elseif (is_null($documentType)) {
             return collect();
         } else {
 

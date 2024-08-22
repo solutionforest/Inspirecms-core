@@ -2,10 +2,10 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use SolutionForest\InspireCms\Models\CmsDocumentType;
 use SolutionForest\InspireCms\Models\CmsContent;
-use SolutionForest\InspireCms\Models\CmsPropertyData;
 use SolutionForest\InspireCms\Models\CmsContentVersion;
+use SolutionForest\InspireCms\Models\CmsDocumentType;
+use SolutionForest\InspireCms\Models\CmsPropertyData;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentFieldGroup;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentTree;
 

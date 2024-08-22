@@ -7,7 +7,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
@@ -100,7 +99,7 @@ class DocumentTypeResource extends Resource
         return __('inspirecms::inspirecms.setting');
     }
 
-    #region Form field(s)/component(s)
+    //region Form field(s)/component(s)
 
     protected static function getTitleFormComponent(): Forms\Components\Component
     {
@@ -118,7 +117,7 @@ class DocumentTypeResource extends Resource
     {
         return BelongsToParentSelect::make('parent_id')
             ->label(__('inspirecms::inspirecms.parent_xxx', [
-                'name' => strtolower(__('inspirecms::inspirecms.document_type'))
+                'name' => strtolower(__('inspirecms::inspirecms.document_type')),
             ]))
             ->nestableParentRelationship('parent', 'title', ignoreRecord: true)
             ->searchable(['title'])
@@ -158,8 +157,8 @@ class DocumentTypeResource extends Resource
                 ->label(__('inspirecms::inspirecms.last_updated_at'))
                 ->inlineLabel(),
         ])->visible(fn ($operation) => $operation == 'edit')
-        ->columns(['default' => 1]);
+            ->columns(['default' => 1]);
     }
 
-    #endregion Form field(s)/component(s)
+    //endregion Form field(s)/component(s)
 }

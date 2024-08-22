@@ -1,7 +1,7 @@
 <?php
 
-use SolutionForest\InspireCms\Models;
 use SolutionForest\InspireCms\Filament\Resources;
+use SolutionForest\InspireCms\Models;
 
 // config for SolutionForest/InspireCms
 return [

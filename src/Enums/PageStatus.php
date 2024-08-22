@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum PageStatus: string implements HasLabel, HasColor
+enum PageStatus: string implements HasColor, HasLabel
 {
     case Pending = 'pending';
     case Publish = 'publish';

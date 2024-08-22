@@ -30,16 +30,16 @@ return [
 
     'page_status' => [
         'pending' => [
-            'label' => 'Pending'
+            'label' => 'Pending',
         ],
         'publish' => [
-            'label'=> 'Publish',
+            'label' => 'Publish',
         ],
         'schedule_publish' => [
-            'label'=> 'Schedule Publish',
+            'label' => 'Schedule Publish',
         ],
         'private' => [
-            'label'=> 'Private',
+            'label' => 'Private',
         ],
     ],
 
