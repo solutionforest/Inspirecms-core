@@ -33,11 +33,11 @@ class CmsPanelProvider extends PanelProvider
                 FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
                 new InspireCmsTheme,
             ])
-            ->resources([
+            ->resources(config('inspirecms.resources', [
                 Resources\Settings\DocumentTypeResource::class,
                 Resources\Settings\FieldGroupResource::class,
                 Resources\Contents\PageResource::class,
-            ])
+            ]))
             ->pages([
                 Pages\Dashboard::class,
             ])

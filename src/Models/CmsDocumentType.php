@@ -14,6 +14,10 @@ class CmsDocumentType extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'can_use_at_root' => 'boolean',
+    ];
+
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
@@ -33,9 +37,9 @@ class CmsDocumentType extends Model
             ->orderBy('order');
     }
 
-    public function pages(): HasMany
+    public function contents(): HasMany
     {
-        return $this->hasMany(InspireCmsConfig::getPageModelClass(), 'document_type_id');
+        return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
 
     public function scopeIsRoot($query, bool $condition = true)

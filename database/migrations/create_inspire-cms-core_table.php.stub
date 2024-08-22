@@ -11,33 +11,58 @@ return new class extends Migration
     {
         $tableNames = $this->getTableNames();
 
-        Schema::create($tableNames['page'], function (Blueprint $table) {
+        Schema::create($tableNames['content'], function (Blueprint $table) {
             $table->id();
 
             $table->integer('document_type_id');
-            $table->integer('parent_page_id')->nullable();
+            $table->integer('parent_id')->nullable();
             $table->string('title');
             $table->string('slug');
+            $table->timestamp('published_at')->nullable();
+            $table->string('status');
 
             $table->timestamps();
 
             $table->index('document_type_id');
             $table->index('title');
-            $table->unique(['slug', 'parent_page_id']);
+            $table->index('status');
+
+            $table->unique(['slug', 'parent_id']);
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
             $table->integer('parent_id')->nullable();
+            $table->boolean('can_use_at_root')->default(false);
+
             $table->timestamps();
 
             $table->index('parent_id');
         });
+        Schema::create($tableNames['content_version'], function (Blueprint $table) {
+            $table->id();
+            $table->timestamp('version_date');
+
+            $table->integer('content_id');
+            $table->integer('property_data_id');
+            $table->json('old_values')->nullable();
+            $table->json('new_values')->nullable();
+
+            $table->index('content_id');
+            $table->index('property_data_id');
+        });
+        Schema::create($tableNames['property_data'], function (Blueprint $table) {
+            $table->id();
+            $table->timestamp('published_at')->nullable()->comment('Inherited from parent component');
+            $table->json('property_value')->nullable();
+        });
         Schema::create($tableNames['component_field_group'], function (Blueprint $table) {
             $table->id();
-            $table->integer('field_group_id')->index();
+            $table->integer('field_group_id');
             $table->morphs('model');
             $table->integer('order')->default(0);
+
+            $table->index('field_group_id');
         });
         Schema::create($tableNames['component_tree'], function (Blueprint $table) {
             $table->id();
@@ -46,28 +71,20 @@ return new class extends Migration
             $table->morphs('nestable');
             $table->timestamps();
 
-            $table->index(['parent_id']);
-        });
-        Schema::create($tableNames['component_version'], function (Blueprint $table) {
-            $table->id();
-            $table->timestamp('version_date', 0)->nullable();
-            $table->boolean('is_current')->default(false);
-            $table->string('status');
-            $table->json('properties');
-
-            $table->index(['status']);
+            $table->index('parent_id');
         });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
-        
-        Schema::dropIfExists($tableNames['component_version']);
+
         Schema::dropIfExists($tableNames['component_tree']);
         Schema::dropIfExists($tableNames['component_field_group']);
+        Schema::dropIfExists($tableNames['property_data']);
+        Schema::dropIfExists($tableNames['content_version']);
         Schema::dropIfExists($tableNames['document_type']);
-        Schema::dropIfExists($tableNames['page']);
+        Schema::dropIfExists($tableNames['content']);
     }
 
     private function getTableNames()

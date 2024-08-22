@@ -14,23 +14,9 @@ class EditWithDetailInfoPage extends EditRecord
 
     public array $detailInfoData = [];
 
+    protected array $detailInfoDataAfterMutate = [];
+
     public static string | Alignment $formActionsAlignment = Alignment::End;
-
-    public function mount(int | string $record): void
-    {
-        parent::mount($record);
-
-        if ($this->hasDetailInfoForm()) {
-
-            $extraData = [];
-            $data = $this->mutateFormDataBeforeFill([
-                ...$this->getRecord()->attributesToArray(),
-                ...$extraData,
-            ]);
-
-            $this->detailInfoForm->fill($data);
-        }
-    }
 
     protected function getForms(): array
     {
@@ -72,7 +58,13 @@ class EditWithDetailInfoPage extends EditRecord
 
             $detailInfoData = $this->detailInfoForm->getState();
 
-            $data = array_merge($data, $detailInfoData);
+            if ($this->getDetailInfoFormStatePath() == $this->getFormStatePath()) {
+
+                $data = array_merge($data, $detailInfoData);
+
+            } else {
+                $this->detailInfoDataAfterMutate = $detailInfoData;
+            }
         }
 
         return $data;

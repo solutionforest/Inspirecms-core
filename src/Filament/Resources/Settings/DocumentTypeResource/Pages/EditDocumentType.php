@@ -26,4 +26,9 @@ class EditDocumentType extends EditWithDetailInfoPage
     {
         return config('inspirecms.resources.document_type', DocumentTypeResource::class);
     }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'data';
+    }
 }

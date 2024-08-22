@@ -27,13 +27,13 @@ class EditPage extends EditWithDetailInfoPage
         return config('inspirecms.resources.page', PageResource::class);
     }
 
-    protected function getDetailInfoFormStatePath(): string
-    {
-        return 'data';
-    }
-
     public function wrapDetailInfoFormBySection(): bool
     {
         return false;
+    }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'data';
     }
 }

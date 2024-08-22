@@ -3,47 +3,24 @@
 namespace SolutionForest\InspireCms\Support;
 
 use SolutionForest\InspireCms\Models\CmsDocumentType;
-use SolutionForest\InspireCms\Models\CmsPage;
+use SolutionForest\InspireCms\Models\CmsContent;
+use SolutionForest\InspireCms\Models\CmsPropertyData;
+use SolutionForest\InspireCms\Models\CmsContentVersion;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentFieldGroup;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentTree;
-use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentVersion;
 
 class InspireCmsConfig
 {
-    public static function getPageTableName(): string
+    public static function getContentTableName(): string
     {
-        return config('inspirecms.models.page.table_name', 'cms_pages');
+        return config('inspirecms.models.content.table_name', 'cms_contents');
     }
 
-    public static function getPageModelClass(): string
+    public static function getContentModelClass(): string
     {
-        $class = config('inspirecms.models.page.fqcn', CmsPage::class);
+        $class = config('inspirecms.models.content.fqcn', CmsContent::class);
 
-        return self::ensureClassExists($class, 'CmsPage model');
-    }
-
-    public static function getDocumentTypeTableName(): string
-    {
-        return config('inspirecms.models.document_type.table_name', 'cms_document_types');
-    }
-
-    public static function getDocumentTypeModelClass(): string
-    {
-        $class = config('inspirecms.models.document_type.fqcn', CmsDocumentType::class);
-
-        return self::ensureClassExists($class, 'CmsDocumentType model');
-    }
-
-    public static function getComponentVersionTableName(): string
-    {
-        return config('inspirecms.models.component_version.table_name', 'cms_component_versions');
-    }
-
-    public static function getComponentVersionModelClass(): string
-    {
-        $class = config('inspirecms.models.component_version.fqcn', CmsComponentVersion::class);
-
-        return self::ensureClassExists($class, 'CmsComponentVersion model');
+        return self::ensureClassExists($class, 'CmsContent model');
     }
 
     public static function getComponentFieldGroupTableName(): string
@@ -68,6 +45,42 @@ class InspireCmsConfig
         $class = config('inspirecms.models.component_tree.fqcn', CmsComponentTree::class);
 
         return self::ensureClassExists($class, 'CmsComponentTree model');
+    }
+
+    public static function getPropertyDataTableName(): string
+    {
+        return config('inspirecms.models.property_data.table_name', 'cms_property_datas');
+    }
+
+    public static function getPropertyDataModelClass(): string
+    {
+        $class = config('inspirecms.models.property_data.fqcn', CmsPropertyData::class);
+
+        return self::ensureClassExists($class, 'CmsPropertyData model');
+    }
+
+    public static function getContentVersionTableName(): string
+    {
+        return config('inspirecms.models.content_version.table_name', 'cms_content_versions');
+    }
+
+    public static function getContentVersionModelClass(): string
+    {
+        $class = config('inspirecms.models.content_version.fqcn', CmsContentVersion::class);
+
+        return self::ensureClassExists($class, 'CmsPropertyData model');
+    }
+
+    public static function getDocumentTypeTableName(): string
+    {
+        return config('inspirecms.models.document_type.table_name', 'cms_document_types');
+    }
+
+    public static function getDocumentTypeModelClass(): string
+    {
+        $class = config('inspirecms.models.document_type.fqcn', CmsDocumentType::class);
+
+        return self::ensureClassExists($class, 'CmsDocumentType model');
     }
 
     public static function getFieldGroupTableName(): string

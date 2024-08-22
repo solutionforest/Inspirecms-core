@@ -14,16 +14,9 @@ class CreateWithDetailInfoPage extends CreateRecord
 
     public array $detailInfoData = [];
 
+    protected array $detailInfoDataAfterMutate = [];
+
     public static string | Alignment $formActionsAlignment = Alignment::End;
-
-    public function mount(): void
-    {
-        parent::mount();
-
-        if ($this->hasDetailInfoForm()) {
-            $this->detailInfoForm->fill();
-        }
-    }
 
     protected function getForms(): array
     {
@@ -65,8 +58,15 @@ class CreateWithDetailInfoPage extends CreateRecord
 
             $detailInfoData = $this->detailInfoForm->getState();
 
-            $data = array_merge($data, $detailInfoData);
+            if ($this->getDetailInfoFormStatePath() == $this->getFormStatePath()) {
+
+                $data = array_merge($data, $detailInfoData);
+
+            } else {
+                $this->detailInfoDataAfterMutate = $detailInfoData;
+            }
         }
+
 
         return $data;
     }

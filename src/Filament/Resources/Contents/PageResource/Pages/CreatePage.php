@@ -21,13 +21,18 @@ class CreatePage extends CreateWithDetailInfoPage
         return config('inspirecms.resources.page', PageResource::class);
     }
 
+    public function wrapDetailInfoFormBySection(): bool
+    {
+        return false;
+    }
+
     protected function getDetailInfoFormStatePath(): string
     {
         return 'data';
     }
 
-    public function wrapDetailInfoFormBySection(): bool
+    public function afterFill()
     {
-        return false;
+        $this->detailInfoForm?->fill();
     }
 }

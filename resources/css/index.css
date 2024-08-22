@@ -3,8 +3,10 @@
 @tailwind utilities;
 
 @layer components {
-    .fi-fo-repeater.preview-fields-with-bg .fi-fo-repeater-item {
-        @apply !bg-gray-300/50 dark:!bg-gray-700;
+    .preview-fields-with-bg section {
+        @apply !bg-gray-100 dark:!bg-gray-700;
+        user-select: none;
+        pointer-events: none;
     }
 }
 

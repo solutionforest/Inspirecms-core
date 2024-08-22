@@ -20,4 +20,14 @@ class CreateDocumentType extends CreateWithDetailInfoPage
     {
         return config('inspirecms.resources.document_type', DocumentTypeResource::class);
     }
+
+    protected function getDetailInfoFormStatePath(): string
+    {
+        return 'data';
+    }
+
+    public function afterFill()
+    {
+        $this->detailInfoForm?->fill();
+    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Livewire\Features\SupportTesting\Testable;
-use SolutionForest\InspireCms\Commands\PublishPanel;
+use SolutionForest\InspireCms\Commands;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -119,7 +119,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            PublishPanel::class,
+            Commands\PublishPanel::class,
         ];
     }
 
