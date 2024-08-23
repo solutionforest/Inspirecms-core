@@ -122,7 +122,6 @@ class DocumentTypeResource extends Resource
             ->nestableParentRelationship('parent', 'title', ignoreRecord: true)
             ->searchable(['title'])
             ->preload()
-            ->placeholder('(' . strtolower(__('inspirecms::inspirecms.no_parent') . ')'))
             ->hintIcon(
                 'heroicon-o-information-circle',
                 __('inspirecms::inspirecms.hints.parent_document_type_field_groups')

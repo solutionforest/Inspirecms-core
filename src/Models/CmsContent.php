@@ -44,12 +44,28 @@ class CmsContent extends Model
     public function isPublished(bool $isPrivateUse = false): bool
     {
         $publishedAt = $this->published_at;
+        $status = $this->status;
 
+        // If there's no publish date, it's not published
         if (is_null($publishedAt)) {
             return false;
         }
 
-        $status = $this->status;
+        // Check if the publish date is in the past
+        if ($publishedAt->isPast()) {
+            // Special case: if status is 3 and it's for private use, consider it published
+            if ($status == 3 && $isPrivateUse) {
+                return true;
+            } else {
+                // For all other statuses or non-private use, it's not published
+                return false;
+            }
+            // Note: This 'return true' is unreachable due to the else clause above
+            // return true;
+        }
+
+        // If the publish date is in the future, it's not published
+        return false;
 
         $publishStatus = [
             PageStatus::SchedulePublish->value,
@@ -68,7 +84,7 @@ class CmsContent extends Model
 
     public function getVersioningStatus(): ?PageVersioningStatus
     {
-        $latestPropertyData = $this->latestPropertyData;
+        $latestPropertyData = $this->latestPropertyDatas->first();
 
         if (is_null($latestPropertyData)) {
             return null;
@@ -97,8 +113,6 @@ class CmsContent extends Model
         if ($status === PageStatus::Pending->value) {
             return [];
         }
-
-        ray($publishedAt, $status);
 
         return [
             'published_at' => $publishedAt,

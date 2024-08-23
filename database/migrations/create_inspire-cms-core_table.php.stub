@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
 
             $table->integer('document_type_id');
-            $table->integer('parent_id')->nullable();
+            $table->integer('parent_id')->comment('Parent\'s content, 0 = Root.');
             $table->string('title');
             $table->string('slug');
             $table->timestamp('published_at')->nullable();
-            $table->string('status');
+            $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
 
             $table->timestamps();
 
@@ -32,7 +32,7 @@ return new class extends Migration
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('parent_id')->nullable();
+            $table->integer('parent_id')->default(0)->comment('Parent\'s document type, 0 = Root.');
             $table->boolean('can_use_at_root')->default(false);
 
             $table->timestamps();
@@ -41,12 +41,10 @@ return new class extends Migration
         });
         Schema::create($tableNames['content_version'], function (Blueprint $table) {
             $table->id();
-            $table->timestamp('version_date');
+            $table->timestamp('created_at');
 
             $table->integer('content_id');
             $table->integer('property_data_id');
-            $table->json('old_values')->nullable();
-            $table->json('new_values')->nullable();
 
             $table->index('content_id');
             $table->index('property_data_id');

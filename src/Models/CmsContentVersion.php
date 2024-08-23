@@ -10,15 +10,7 @@ class CmsContentVersion extends Model
 {
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'version_date' => 'datetime',
-        'old_values' => 'json',
-        'new_values' => 'json',
-    ];
-
-    const CREATED_AT = 'version_date';
-
-    const UPDATED_AT = 'version_date';
+    public $timestamps = false;
 
     public function __construct(array $attributes = [])
     {
@@ -35,5 +27,14 @@ class CmsContentVersion extends Model
     public function propertyData(): BelongsTo
     {
         return $this->belongsTo(InspireCmsConfig::getPropertyDataModelClass(), 'property_data_id');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            $model->created_at = $model->freshTimestamp();
+        });
     }
 }

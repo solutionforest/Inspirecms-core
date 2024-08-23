@@ -29,6 +29,7 @@ class PageResource extends Resource
             ->schema([
 
                 Forms\Components\Tabs::make()
+                    ->columnSpanFull()
                     ->tabs([
                         Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.general'))
                             ->schema([
@@ -71,6 +72,9 @@ class PageResource extends Resource
         return $table
             ->recordTitleAttribute('title')
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with([
+                'latestPropertyDatas',  // To get latest version
+            ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -91,8 +95,7 @@ class PageResource extends Resource
 
                         Tables\Columns\TextColumn::make('current_version')
                             ->label(__('inspirecms::inspirecms.current_version'))
-                            ->getStateUsing(fn (Model | CmsContent $record) => 'TODO')
-                            // ->getStateUsing(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
+                            ->getStateUsing(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
                             ->color(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getColor() ?? 'gray')
                             ->badge(),
 
@@ -213,11 +216,10 @@ class PageResource extends Resource
     protected static function getParentPageFormComponent(): Forms\Components\Component
     {
         return BelongsToParentSelect::make('parent_id')
-            ->label(__('inspirecms::inspirecms.parent'))
+            ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))]))
             ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
             ->searchable(['title', 'slug'])
             ->preload()
-            ->placeholder('(' . strtolower(__('inspirecms::inspirecms.no_parent') . ')'))
             ->live()
             ->disabledOn('edit');
     }

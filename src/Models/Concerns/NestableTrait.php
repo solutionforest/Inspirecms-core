@@ -94,6 +94,6 @@ trait NestableTrait
 
     protected function getNestableRootValue()
     {
-        return null;
+        return 0;
     }
 }
