@@ -16,7 +16,10 @@ class CreateWithDetailInfoPage extends CreateRecord
 
     protected array $detailInfoDataAfterMutate = [];
 
-    public static string $formActionsAlignment = Alignment::End;
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
 
     protected function getForms(): array
     {
