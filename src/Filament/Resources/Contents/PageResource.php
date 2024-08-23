@@ -95,7 +95,7 @@ class PageResource extends Resource
 
                         Tables\Columns\TextColumn::make('current_version')
                             ->label(__('inspirecms::inspirecms.current_version'))
-                            ->getStateUsing(fn (Model|CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
+                            ->getStateUsing(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
                             ->color(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getColor() ?? 'gray')
                             ->badge(),
 

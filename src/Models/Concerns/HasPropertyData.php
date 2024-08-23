@@ -49,7 +49,7 @@ trait HasPropertyData
             return $query
                 ->from(InspireCmsConfig::getContentVersionTableName())
                 ->where('content_id', $this->getKey())
-                ->orderBy('created_at','desc')
+                ->orderBy('created_at', 'desc')
                 ->select('property_data_id')
                 ->limit(1);
         });

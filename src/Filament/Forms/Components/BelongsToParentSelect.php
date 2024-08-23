@@ -431,6 +431,7 @@ class BelongsToParentSelect extends Select
             if (empty($state)) {
                 return $component->getRootParentId();
             }
+
             return $state;
         });
 
