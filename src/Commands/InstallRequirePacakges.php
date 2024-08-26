@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\App;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:install-require-packages')]
