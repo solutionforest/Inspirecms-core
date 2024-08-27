@@ -30,6 +30,9 @@ class InspireCmsTheme implements Plugin
                 'primary' => Color::hex('#B5834A'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
+                
+                'zinc' => Color::Zinc,
+                'lime' => Color::Lime,
             ])
             ->theme('inspirecms')
             ->maxContentWidth('full');

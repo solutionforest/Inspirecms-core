@@ -7,9 +7,13 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
+use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
+use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
+use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
+use SolutionForest\InspireCms\Models\CmsDocumentType;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentTypeResource extends Resource
@@ -23,27 +27,32 @@ class DocumentTypeResource extends Resource
         return $form
             ->columns(1)
             ->schema([
-                Forms\Components\Section::make()
-                    ->columns(1)
-                    ->schema([
-                        static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
-                        static::getFieldGroupFormComponent(),
-                    ]),
+                RevertOrderGroup::make([
+
+                    Forms\Components\Section::make()
+                        ->columns(1)
+                        ->schema([
+                            static::getCanUseAtRootFormComponent(),
+                            static::getTimestampsGroupedFormComponent(),
+                        ])
+                        ->grow(false),
+                    Forms\Components\Section::make()
+                        ->columns(1)
+                        ->schema([
+                            static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
+                            static::getFieldGroupFormComponent(),
+                        ])
+                        ->grow(),
+                ]),
             ]);
     }
 
-    public static function detailInfoForm(Form $form): Form
+    public static function quickForm(Form $form): Form
     {
-
         return $form
-            ->columns(['default' => 1, 'sm' => '2'])
             ->schema([
-                Forms\Components\Group::make([
-                    static::getParentIdFormComponent(),
-                    static::getCanUseAtRootFormComponent(),
-                ])->columnSpan(['default' => 'full', 'lg' => 'full', 'sm' => 1]),
-                static::getTimestampsGroupedFormComponent()
-                    ->columnSpan(['default' => 1, 'lg' => 'full', 'md' => 1]),
+                static::getTitleFormComponent()->inlineLabel(),
+                static::getCanUseAtRootFormComponent(),
             ]);
     }
 
@@ -67,6 +76,22 @@ class DocumentTypeResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\ActionGroup::make([
+
+                    QuickEditAction::make(),
+                    
+                    CloneAction::make()
+                            ->recordTitleAttribute('title')
+                        ->saveRelationshipsUsing(function (Model|CmsDocumentType $originalRecord, Model|CmsDocumentType $record) {
+
+                            $fieldGroups = $originalRecord->morphFieldGroups->map(fn (Model $originalFieldGroup) => $originalFieldGroup->replicate([
+                                'model_type',
+                                'model_id'
+                            ])->toArray())->all();
+
+                            $record->morphFieldGroups()->createMany($fieldGroups);
+                        }),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -111,29 +136,6 @@ class DocumentTypeResource extends Resource
     protected static function getFieldGroupFormComponent(): Forms\Components\Component
     {
         return DocumentFieldGroup::make()->inlineLabel();
-    }
-
-    protected static function getParentIdFormComponent(): Forms\Components\Component
-    {
-        return BelongsToParentSelect::make('parent_id')
-            ->label(__('inspirecms::inspirecms.parent_xxx', [
-                'name' => strtolower(__('inspirecms::inspirecms.document_type')),
-            ]))
-            ->nestableParentRelationship('parent', 'title', ignoreRecord: true)
-            ->searchable(['title'])
-            ->preload()
-            ->hintIcon(
-                'heroicon-o-information-circle',
-                __('inspirecms::inspirecms.hints.parent_document_type_field_groups')
-            )
-            ->live()
-            ->afterStateUpdated(function ($livewire) {
-                $livewire->form
-                    ->getComponent('documentFieldGroup')
-                    ?->getChildComponentContainer()
-                    ?->getComponent('parentFieldGroupsPreview')
-                    ?->fill();
-            });
     }
 
     protected static function getCanUseAtRootFormComponent(): Forms\Components\Component

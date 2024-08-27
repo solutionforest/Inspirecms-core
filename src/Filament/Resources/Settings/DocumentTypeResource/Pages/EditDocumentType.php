@@ -4,11 +4,17 @@ namespace SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeReso
 
 use Filament\Actions;
 use Filament\Actions\Action;
-use SolutionForest\InspireCms\Filament\Resources\Pages\EditWithDetailInfoPage;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource;
 
-class EditDocumentType extends EditWithDetailInfoPage
+class EditDocumentType extends EditRecord
 {
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
+
     public function getActions(): array
     {
         return [
@@ -25,10 +31,5 @@ class EditDocumentType extends EditWithDetailInfoPage
     public static function getResource(): string
     {
         return config('inspirecms.resources.document_type', DocumentTypeResource::class);
-    }
-
-    protected function getDetailInfoFormStatePath(): string
-    {
-        return 'data';
     }
 }

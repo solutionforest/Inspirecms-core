@@ -32,12 +32,9 @@ return new class extends Migration
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->integer('parent_id')->default(0)->comment('Parent\'s document type, 0 = Root.');
             $table->boolean('can_use_at_root')->default(false);
 
             $table->timestamps();
-
-            $table->index('parent_id');
         });
         Schema::create($tableNames['content_version'], function (Blueprint $table) {
             $table->id();

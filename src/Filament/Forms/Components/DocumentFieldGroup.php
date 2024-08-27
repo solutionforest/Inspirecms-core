@@ -22,7 +22,6 @@ class DocumentFieldGroup extends Forms\Components\Group
 
             $this->schema(function () {
 
-                $components[] = $this->getDisplayParentFieldGroupComponent();
                 $components[] = $this->getFieldGroupRepeaterComponent();
 
                 return $components;
@@ -41,52 +40,10 @@ class DocumentFieldGroup extends Forms\Components\Group
         return 'sort';
     }
 
-    public function getDisplayParentFieldGroupComponent()
-    {
-        // Display parent field group used
-        return Forms\Components\Group::make()
-            ->key('parentFieldGroupsPreview')
-            ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(Str::plural(__('inspirecms::inspirecms.field_group')))]))
-            ->schema(function ($get) {
-
-                $parentId = $get('parent_id');
-                if (! $parentId) {
-                    return [];
-                }
-
-                // Query to find parent documentType
-                $parent = InspireCmsConfig::getDocumentTypeModelClass()::query()
-                    ->with('fieldGroups')
-                    ->find($parentId);
-
-                if (! $parent) {
-                    return [];
-                }
-                $parentAncestors = collect($parent->ancestors())->push($parent);
-
-                $fieldGroupState = $parentAncestors->pluck('fieldGroups')
-                    ->flatMap(fn ($fieldGroups) => collect($fieldGroups)->map(fn ($fieldGroup) => $this->getFieldGroupsItemStateFromFieldGroup($fieldGroup)))
-                    ->mapWithKeys(fn ($stateItem) => [(string) Str::uuid() => $stateItem])
-                    ->toArray();
-
-                $components = collect($fieldGroupState)
-                    ->map(
-                        fn ($itemState, $key) => Forms\Components\Section::make($itemState['field_group_title'])
-                            ->description(__('inspirecms::inspirecms.hints.inherited_from_parent_document_type'))
-                            ->schema([
-                                $this->getPreviewFieldsComponent($itemState['field_group_fields'] ?? [])->name($key),
-                            ])
-                    )
-                    ->all();
-
-                return $components;
-            })
-            ->extraAttributes(['class' => 'preview-fields-with-bg']);
-    }
-
     public function getFieldGroupRepeaterComponent()
     {
         return FieldGroupRepeater::make('morphFieldGroups')
+            ->live()
             ->columnSpanFull()
             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => Str::lower(__('inspirecms::inspirecms.field_group'))]))
             ->label(Str::plural(__('inspirecms::inspirecms.field_group')))

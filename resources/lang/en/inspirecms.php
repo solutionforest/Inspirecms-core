@@ -60,8 +60,66 @@ return [
     ],
 
     'actions' => [
+        
         'save' => [
             'label' => 'Save',
+        ],
+
+        'quick_create' => [
+
+            'label' => 'Quick create',
+
+            'modal' => [
+
+                'heading' => 'Quick create :label',
+
+                'actions' => [
+                    'create' => [
+                        'label' => 'Create',
+                    ],
+                ],
+            ],
+        ],
+
+        'quick_edit' => [
+
+            'label' => 'Quick edit',
+
+            'modal' => [
+
+                'heading' => 'Quick edit :label',
+
+                'actions' => [
+                    'save' => [
+                        'label' => 'Save',
+                    ],
+                ],
+            ],
+        ],
+
+        'clone' => [
+
+            'label' => 'Clone',
+
+            'modal' => [
+
+                'heading' => 'Cloning <i>:label</i>',
+
+                'description' => 'Are you sure you want to clone this item?',
+
+                'actions' => [
+                    'clone' => [
+                        'label'=> 'Clone',
+                    ],
+                ],
+            ],
+
+            'notifications' => [
+                'cloned' => [
+                    'title' => 'Clone Successful',
+                    'body' => 'The item has been cloned successfully.',
+                ],
+            ],
         ],
     ],
 

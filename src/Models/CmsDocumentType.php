@@ -10,8 +10,6 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsDocumentType extends Model
 {
-    use Concerns\NestableTrait;
-
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -40,14 +38,5 @@ class CmsDocumentType extends Model
     public function contents(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
-    }
-
-    public function scopeIsRoot($query, bool $condition = true)
-    {
-        if ($condition) {
-            $query->whereNull('parent_id');
-        } else {
-            $query->whereNotNull('parent_id');
-        }
     }
 }

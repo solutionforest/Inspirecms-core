@@ -3,12 +3,18 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
 
 use Filament\Actions\Action;
-use SolutionForest\InspireCms\Filament\Resources\Pages\CreateWithDetailInfoPage;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource;
 
-class CreateDocumentType extends CreateWithDetailInfoPage
+class CreateDocumentType extends CreateRecord
 {
     protected static bool $canCreateAnother = false;
+
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
 
     protected function getCreateFormAction(): Action
     {
@@ -19,15 +25,5 @@ class CreateDocumentType extends CreateWithDetailInfoPage
     public static function getResource(): string
     {
         return config('inspirecms.resources.document_type', DocumentTypeResource::class);
-    }
-
-    protected function getDetailInfoFormStatePath(): string
-    {
-        return 'data';
-    }
-
-    public function afterFill()
-    {
-        $this->detailInfoForm?->fill();
     }
 }
