@@ -28,6 +28,7 @@ class InspireCmsTheme implements Plugin
                 'gray' => Color::hex('#5e5e5e'),
                 'info' => Color::hex('#88B0BA'),
                 'primary' => Color::hex('#B5834A'),
+                'secondary' => Color::hex('#d2b492'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
                 

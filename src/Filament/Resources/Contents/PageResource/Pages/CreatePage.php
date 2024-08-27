@@ -3,36 +3,48 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
-use SolutionForest\InspireCms\Filament\Resources\Pages\CreateWithDetailInfoPage;
+use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Concerns\CanBePublish;
 
-class CreatePage extends CreateWithDetailInfoPage
+class CreatePage extends CreateRecord
 {
-    protected static bool $canCreateAnother = false;
+    use CanBePublish;
+
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getPublishFormAction('create'),
+            $this->getCreateFormAction(),
+            $this->getCancelFormAction(),
+        ];
+    }
+
+    // protected function getForms(): array
+    // {
+    //     return [
+    //         ...parent::getForms(),
+    //         'publishForm' => $this->publishForm(static::getResource()::publishForm(
+    //             $this->makeForm(),
+    //         )),
+    //     ];
+    // }
 
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label(__('inspirecms::inspirecms.actions.save.label'));
+            ->label(__('inspirecms::inspirecms.actions.save_draft.label'))
+            ->color('secondary');
     }
 
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
-    }
-
-    public function wrapDetailInfoFormBySection(): bool
-    {
-        return false;
-    }
-
-    protected function getDetailInfoFormStatePath(): string
-    {
-        return 'data';
-    }
-
-    public function afterFill()
-    {
-        $this->detailInfoForm?->fill();
     }
 }

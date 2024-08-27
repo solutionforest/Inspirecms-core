@@ -2,16 +2,17 @@
 
 return [
     'add_xxx' => 'Add :name',
+    'can_use_at_root' => 'Can use at root?',
     'content' => 'Content',
+    'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
     'document_type' => 'Document Type',
     'field_group' => 'Field Group',
     'general' => 'General',
     'id' => 'ID',
     'is_active' => 'Active?',
-    'can_use_at_root' => 'Can use at root?',
-    'created_at' => 'Created at',
     'last_updated_at' => 'Last updated at',
+    'n/a' => 'N/A',
     'name' => 'Name',
     'no_parent' => 'No parent',
     'page' => 'Page',
@@ -19,50 +20,61 @@ return [
     'parent' => 'Parent',
     'preview_fields' => 'Preview fields',
     'publish_at' => 'Publish at',
+    'last_published_at' => 'Last published at',
     'setting' => 'Setting',
     'slug' => 'Slug',
     'status' => 'Status',
     'template' => 'Template',
     'title' => 'Title',
     'visibility' => 'Visibility',
-    'current_version' => 'Current version',
-    'n/a' => 'N/A',
+    'is_published' => 'Published ?',
 
     'page_status' => [
-        'pending' => [
-            'label' => 'Pending',
+        'draft' => [
+            'label' => 'Draft',
         ],
         'publish' => [
             'label' => 'Publish',
-        ],
-        'schedule_publish' => [
-            'label' => 'Schedule Publish',
         ],
         'private' => [
             'label' => 'Private',
         ],
     ],
 
-    'page_versioning_status' => [
-        'draft' => [
-            'label' => 'Draft',
-        ],
-        'published' => [
-            'label' => 'Published',
-        ],
-    ],
-
     'hints' => [
         'future_published_at_description' => 'Content will be published automatically when the specified date and time arrives.',
-        'parent_document_type_field_groups' => 'If a parent is selected, this document type will include the parent\'s field groups.',
-        'inherited_from_parent_document_type' => 'Inherited from parent document type',
         'future_publish' => 'If set to a future date, this page will be published automatically when that time is reached.',
     ],
 
     'actions' => [
         
+        'save_draft' => [
+
+            'label' => 'Save draft',
+
+        ],
+        
         'save' => [
+
             'label' => 'Save',
+            
+        ],
+        
+        'publish' => [
+
+            'label' => 'Publish',
+
+            'actions' => [
+                'publish' => [
+                    'label' => 'Publish',
+                ],
+            ],
+
+            'notifications' => [
+                'published' => [
+                    'title' => 'Published Successful'
+                ],
+            ],
         ],
 
         'quick_create' => [
@@ -117,7 +129,6 @@ return [
             'notifications' => [
                 'cloned' => [
                     'title' => 'Clone Successful',
-                    'body' => 'The item has been cloned successfully.',
                 ],
             ],
         ],
@@ -127,6 +138,9 @@ return [
         'template_directory_not_found' => [
             'title' => 'Template Directory Not Found',
             'body' => 'The specified template directory does not exist. Please check your configuration.',
+        ],
+        'form_check_error' => [
+            'title' => 'There seems to be an issue with your form. Please review the fields and try again.',
         ],
     ],
 ];

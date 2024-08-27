@@ -16,7 +16,10 @@ trait HasPropertyData
 
     public function createPropertyData(array $data)
     {
-        $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge($data, $this->getPropertyDateToSave()));
+        $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge(
+            $data, 
+            $this->getPropertyDateToSave(),
+        ));
 
         $this->propertyDatas()->attach($propertyData->getKey(), [
             // Additional pivot data
@@ -38,20 +41,18 @@ trait HasPropertyData
         )->withPivot('created_at');
     }
 
-    public function latestPropertyDatas()
+    public function getLatestPropertyData()
     {
-        return $this->belongsToMany(
-            InspireCmsConfig::getPropertyDataModelClass(),
-            InspireCmsConfig::getContentVersionTableName(), // Pivot table name
-            'content_id', // Foreign key on the pivot table
-            'property_data_id' // Foreign key on the related model
-        )->wherePivot('property_data_id', function ($query) {
-            return $query
-                ->from(InspireCmsConfig::getContentVersionTableName())
-                ->where('content_id', $this->getKey())
-                ->orderBy('created_at', 'desc')
-                ->select('property_data_id')
-                ->limit(1);
-        });
+        return $this->propertyDatas()
+            ->orderByPivot('created_at','desc')
+            ->first();
+    }
+
+    public function getLatestPublishedPropertyData()
+    {
+        return $this->propertyDatas()
+            ->orderByPivot('created_at','desc')
+            ->whereNotNull('published_at')
+            ->first();
     }
 }

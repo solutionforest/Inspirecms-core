@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Enums\PageStatus;
-use SolutionForest\InspireCms\Enums\PageVersioningStatus;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsContent extends Model
@@ -53,55 +52,18 @@ class CmsContent extends Model
 
         // Check if the publish date is in the past
         if ($publishedAt->isPast()) {
-            // Special case: if status is 3 and it's for private use, consider it published
-            if ($status == 3 && $isPrivateUse) {
+            // Special case: if status is "Private" and it's for private use, consider it published
+            if ($status == PageStatus::Private->value && $isPrivateUse) {
+                return true;
+            } else if (! ($status == PageStatus::Private->value)) {
                 return true;
             } else {
-                // For all other statuses or non-private use, it's not published
                 return false;
             }
-            // Note: This 'return true' is unreachable due to the else clause above
-            // return true;
         }
 
         // If the publish date is in the future, it's not published
         return false;
-
-        $publishStatus = [
-            PageStatus::SchedulePublish->value,
-            PageStatus::Publish->value,
-        ];
-        if ($isPrivateUse) {
-            $publishStatus[] = PageStatus::Private->value;
-        }
-
-        if (! in_array($status, $publishStatus)) {
-            return false;
-        }
-
-        return $publishedAt->isPast();
-    }
-
-    public function getVersioningStatus(): ?PageVersioningStatus
-    {
-        $latestPropertyData = $this->latestPropertyDatas->first();
-
-        if (is_null($latestPropertyData)) {
-            return null;
-        }
-
-        $latestPropertyDataPublishedAt = $latestPropertyData->published_at;
-
-        $pagePublishedAt = $this->published_at;
-
-        if (is_null($pagePublishedAt) ||
-            is_null($latestPropertyDataPublishedAt) ||
-            $latestPropertyDataPublishedAt != $pagePublishedAt) {
-
-            return PageVersioningStatus::Draft;
-        }
-
-        return PageVersioningStatus::Published;
     }
 
     protected function getPropertyDateToSave()
@@ -110,7 +72,7 @@ class CmsContent extends Model
 
         $status = $this->status;
 
-        if ($status === PageStatus::Pending->value) {
+        if ($status === PageStatus::Draft->value) {
             return [];
         }
 

@@ -50,10 +50,7 @@ class PropertyDataGroup extends Group
             }
         }
 
-        // With parent document type
-        $documentTypes = collect($documentType->ancestors())->push($documentType);
-
-        return $documentTypes->pluck('fieldGroups')->flatten(1);
+        return $documentType->fieldGroups ?? collect();
 
     }
 }

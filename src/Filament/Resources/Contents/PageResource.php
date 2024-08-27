@@ -8,12 +8,15 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
+use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
+use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 use SolutionForest\InspireCms\Models\CmsContent;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -25,55 +28,90 @@ class PageResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(2)
-            ->schema([
-
-                Forms\Components\Tabs::make()
-                    ->columnSpanFull()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.general'))
-                            ->schema([
-                                static::getTitleFormComponent(),
-                                static::getParentPageFormComponent(),
-                                static::documentTypeSelectComponent(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.setting'))
-                            ->schema([
-                                static::getSlugFormComponent(),
-                            ]),
-                    ]),
-
-                // Field group grouped component
-                static::getPropertyDataValueComponent(),
-            ]);
-    }
-
-    public static function detailInfoForm(Form $form): Form
-    {
-        return $form
             ->columns(1)
             ->schema([
-                Forms\Components\Section::make()
-                    ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
-                    ->schema([
-                        static::getStatusFormComponent(),
-                        static::getPublishedAtComponent(),
-                        Forms\Components\Placeholder::make('last_updated_at')
-                            ->content(fn ($record) => $record->updated_at?->shortRelativeToNowDiffForHumans())
-                            ->visible(fn ($operation) => $operation == 'edit')
-                            ->label(__('inspirecms::inspirecms.last_updated_at')),
-                        Forms\Components\Placeholder::make('to_do:have_publisjed_version?'),
-                    ]),
+                RevertOrderGroup::make([
+
+                    Forms\Components\Group::make([
+
+                        Forms\Components\Section::make()
+                            ->columns(1)
+                            ->schema([
+                                static::getSlugFormComponent(),
+                                static::getParentPageFormComponent(),
+                            ]),
+                        Forms\Components\Section::make()
+                            ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
+                            ->schema([
+                                static::getStatusFormComponent()
+                                    // Always as "Draft" on `form`
+                                    ->dehydrateStateUsing(fn () => PageStatus::Draft->value),
+                                Forms\Components\Group::make([
+
+                                    Forms\Components\Placeholder::make('last_updated_at')
+                                        ->content(fn (Model|CmsContent $record) => $record->updated_at?->toFormattedDateString())
+                                        ->label(__('inspirecms::inspirecms.last_updated_at')),
+                                    Forms\Components\Placeholder::make('last_published_at')
+                                        ->content(fn (Model|CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
+                                        ->label(__('inspirecms::inspirecms.last_published_at')),
+                                    // Forms\Components\Placeholder::make('display_status')
+                                    //     ->content(fn (Model|CmsContent $record) => PageStatus::tryFrom($record->status)?->getLabel())
+                                    //     ->label(__('inspirecms::inspirecms.status')),
+                                    Forms\Components\Toggle::make('is_published')
+                                        ->afterStateHydrated(function ($component, Model|CmsContent $record) {
+                                            $component->state($record->isPublished());
+                                        })
+                                        ->dehydrated(false)
+                                        ->disabled()
+                                        ->inlineLabel()
+                                        ->label(__('inspirecms::inspirecms.is_published')),
+                                ])
+                                ->visible(fn ($operation) => $operation == 'edit'),
+                            ]),
+
+                    ])->grow(false),
+
+                    Forms\Components\Group::make()
+                        ->schema([
+
+                            Forms\Components\Section::make()
+                                ->columnSpanFull()
+                                ->schema([
+                                    Forms\Components\Grid::make(2)
+                                        ->columnSpanFull()
+                                        ->schema([
+                                            static::getTitleFormComponent(),
+                                        ]),
+                                    static::documentTypeSelectComponent(),
+                                ]),
+
+                            // Field group grouped component
+                            static::getPropertyDataValueComponent(),
+                        ])
+                        ->grow(),
+                ])->revertBreakPoint('lg'),
             ]);
     }
 
+    public static function publishForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                static::getPublishedAtComponent(),
+                Forms\Components\Group::make()
+                    ->statePath('formData')
+                    // Here can validate form data
+                    ->afterStateHydrated(fn (HasPublishForm $livewire, $component) => $component->state($livewire->getPublishableFormDataBeforePublish())),
+            ]); 
+    }
+    
     public static function table(Table $table): Table
     {
         return $table
             ->recordTitleAttribute('title')
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(fn ($query) => $query->with([
-                'latestPropertyDatas',  // To get latest version
+                'propertyDatas',  // To get latest version
             ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
@@ -92,12 +130,6 @@ class PageResource extends Resource
                             ->badge()
                             ->icon(fn (Model | CmsContent $record) => $record->isPublished() ? 'heroicon-m-eye' : null)
                             ->iconPosition(IconPosition::After),
-
-                        Tables\Columns\TextColumn::make('current_version')
-                            ->label(__('inspirecms::inspirecms.current_version'))
-                            ->getStateUsing(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getLabel() ?? __('inspirecms::inspirecms.n/a'))
-                            ->color(fn (Model | CmsContent $record) => $record->getVersioningStatus()?->getColor() ?? 'gray')
-                            ->badge(),
 
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::inspirecms.publish_at')),
@@ -127,34 +159,27 @@ class PageResource extends Resource
     //region Form field(s)/component(s)
     protected static function getTitleFormComponent(): Forms\Components\Component
     {
-        return Forms\Components\Grid::make(2)
-            ->columnSpanFull()
-            ->schema([
-                Forms\Components\TextInput::make('title')
-                    ->label(__('inspirecms::inspirecms.title'))
-                    ->validationAttribute(Str::lower(__('inspirecms::inspirecms.title')))
-                    ->live(debounce: 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
-                        // Fill slug if empty / operation is create
-                        if ($operation === 'create' || empty($get('slug'))) {
-                            $set('slug', Str::slug($state));
-                        }
-                    })
-                    ->required(),
-            ]);
+        return Forms\Components\TextInput::make('title')
+            ->label(__('inspirecms::inspirecms.title'))
+            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.title')))
+            ->live(debounce: 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
+                // Fill slug if empty / operation is create
+                if ($operation === 'create' || empty($get('slug'))) {
+                    $set('slug', Str::slug($state));
+                }
+            })
+            ->autofocus()
+            ->required();
     }
 
     protected static function getSlugFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::inspirecms.slug'))
+            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.slug')))
             ->live(debounce: 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
             ->unique(column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
-                $parentId = $get('parent_id');
-                if ($parentId) {
-                    return $rule->where('parent_id', $parentId);
-                } else {
-                    return $rule->whereNull('parent_id');
-                }
+                return $rule->where('parent_id', $get('parent_id') ?? 0);
             })
             ->required();
     }
@@ -164,64 +189,32 @@ class PageResource extends Resource
         return Forms\Components\DateTimePicker::make('published_at')
             ->label(__('inspirecms::inspirecms.publish_at'))
             ->native(false)
-            ->disabled(function ($get) {
-                if (
-                    // force as current time and cannot change if 'Publish'
-                    $get('status') === PageStatus::Publish->value
-                ) {
-                    return true;
-                }
-
-                return false;
-            })
-            // save data the field is disabled
-            ->dehydrated(true)->dehydratedWhenHidden(true)
-            // // guard before save
-            // ->dehydrateStateUsing(function ($state, $get) {
-            //     if ($get('status') === PageStatus::Pending->value) {
-            //         $state = null;
-            //     }
-            //     return $state;
-            // })
+            ->prefixIcon('heroicon-m-calendar-date-range')
             ->suffixAction(ResetAction::make())
             ->hintIcon(
                 'heroicon-o-information-circle',
                 __('inspirecms::inspirecms.hints.future_publish')
             )
-            // Required for Publish/SchedulePublish
-            ->required(fn ($get) => in_array($get('status'), [
-                PageStatus::Publish->value,
-                PageStatus::SchedulePublish->value,
-            ]));
+            ->default(now())
+            ->required();
     }
 
     protected static function getStatusFormComponent(): Forms\Components\Component
     {
-        return Forms\Components\Select::make('status')
-            ->label(__('inspirecms::inspirecms.status'))
-            ->options(PageStatus::class)
-            ->default(PageStatus::Pending->value)
-            ->live()->afterStateUpdated(function ($state, Forms\Set $set, $operation) {
-                // fill publish time as now is the status change to "Publish"
-                if ($state == PageStatus::Publish->value) {
-                    $set('published_at', now());
-                } elseif ($operation === 'create' && $state == PageStatus::Pending->value) {
-                    $set('published_at', null);
-                }
-            })
-            ->native(false)
-            ->required();
+        return Forms\Components\Hidden::make('status')
+            ->default(PageStatus::Draft->value)
+            ->dehydratedWhenHidden(true);
     }
 
     protected static function getParentPageFormComponent(): Forms\Components\Component
     {
         return BelongsToParentSelect::make('parent_id')
             ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))]))
+            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))])))
             ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
             ->searchable(['title', 'slug'])
             ->preload()
-            ->live()
-            ->disabledOn('edit');
+            ->live();
     }
 
     /**
@@ -231,6 +224,7 @@ class PageResource extends Resource
     {
         $select = Forms\Components\Select::make('document_type_id')
             ->label(__('inspirecms::inspirecms.document_type'))
+            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
             ->searchable(['id'])
             ->preload()
             ->relationship(name: 'documentType', titleAttribute: 'title')
@@ -258,11 +252,11 @@ class PageResource extends Resource
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->loadStateFromRelationshipsUsing(function ($record, $component) {
-                $state = $record->latestPropertyData?->property_value ?? [];
+            ->loadStateFromRelationshipsUsing(function (Model|CmsContent $record, $component) {
+                $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);
             })
-            ->saveRelationshipsUsing(function ($record, $state, $get) {
+            ->saveRelationshipsUsing(function (Model|CmsContent $record, $state) {
                 $record->createPropertyData([
                     'property_value' => $state,
                 ]);
@@ -284,5 +278,10 @@ class PageResource extends Resource
     public static function getNavigationGroup(): ?string
     {
         return __('inspirecms::inspirecms.content');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with(['propertyDatas']);
     }
 }

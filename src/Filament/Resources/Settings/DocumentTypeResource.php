@@ -43,7 +43,7 @@ class DocumentTypeResource extends Resource
                             static::getFieldGroupFormComponent(),
                         ])
                         ->grow(),
-                ]),
+                ])->revertBreakPoint('lg'),
             ]);
     }
 

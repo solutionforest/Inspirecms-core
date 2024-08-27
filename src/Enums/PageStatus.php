@@ -5,19 +5,17 @@ namespace SolutionForest\InspireCms\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum PageStatus: string implements HasColor, HasLabel
+enum PageStatus: int implements HasColor, HasLabel
 {
-    case Pending = 'pending';
-    case Publish = 'publish';
-    case SchedulePublish = 'schedule_publish';
-    case Private = 'private';
+    case Draft = 0;
+    case Publish = 1;
+    case Private = 3;
 
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::Pending => __('inspirecms::inspirecms.page_status.pending.label'),
+            self::Draft => __('inspirecms::inspirecms.page_status.draft.label'),
             self::Publish => __('inspirecms::inspirecms.page_status.publish.label'),
-            self::SchedulePublish => __('inspirecms::inspirecms.page_status.schedule_publish.label'),
             self::Private => __('inspirecms::inspirecms.page_status.private.label'),
         };
     }
@@ -25,9 +23,8 @@ enum PageStatus: string implements HasColor, HasLabel
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::Pending => 'warning',
+            self::Draft => 'warning',
             self::Publish => 'success',
-            self::SchedulePublish => 'info',
             self::Private => 'gray',
         };
     }
