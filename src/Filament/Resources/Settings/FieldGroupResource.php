@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource
@@ -58,6 +59,13 @@ class FieldGroupResource extends BaseResource
         return [
             'index' => Pages\ManageFieldGroup::route('/'),
             'edit' => Pages\EditFieldGroup::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\FieldsRelationManager::class,
         ];
     }
 
