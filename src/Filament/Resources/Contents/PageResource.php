@@ -49,16 +49,16 @@ class PageResource extends Resource
                                 Forms\Components\Group::make([
 
                                     Forms\Components\Placeholder::make('last_updated_at')
-                                        ->content(fn (Model|CmsContent $record) => $record->updated_at?->toFormattedDateString())
+                                        ->content(fn (Model | CmsContent $record) => $record->updated_at?->toFormattedDateString())
                                         ->label(__('inspirecms::inspirecms.last_updated_at')),
                                     Forms\Components\Placeholder::make('last_published_at')
-                                        ->content(fn (Model|CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
+                                        ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
                                         ->label(__('inspirecms::inspirecms.last_published_at')),
                                     // Forms\Components\Placeholder::make('display_status')
                                     //     ->content(fn (Model|CmsContent $record) => PageStatus::tryFrom($record->status)?->getLabel())
                                     //     ->label(__('inspirecms::inspirecms.status')),
                                     Forms\Components\Toggle::make('is_published')
-                                        ->afterStateHydrated(function ($component, Model|CmsContent $record) {
+                                        ->afterStateHydrated(function ($component, Model | CmsContent $record) {
                                             $component->state($record->isPublished());
                                         })
                                         ->dehydrated(false)
@@ -66,7 +66,7 @@ class PageResource extends Resource
                                         ->inlineLabel()
                                         ->label(__('inspirecms::inspirecms.is_published')),
                                 ])
-                                ->visible(fn ($operation) => $operation == 'edit'),
+                                    ->visible(fn ($operation) => $operation == 'edit'),
                             ]),
 
                     ])->grow(false),
@@ -102,9 +102,9 @@ class PageResource extends Resource
                     ->statePath('formData')
                     // Here can validate form data
                     ->afterStateHydrated(fn (HasPublishForm $livewire, $component) => $component->state($livewire->getPublishableFormDataBeforePublish())),
-            ]); 
+            ]);
     }
-    
+
     public static function table(Table $table): Table
     {
         return $table
@@ -252,11 +252,11 @@ class PageResource extends Resource
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->loadStateFromRelationshipsUsing(function (Model|CmsContent $record, $component) {
+            ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);
             })
-            ->saveRelationshipsUsing(function (Model|CmsContent $record, $state) {
+            ->saveRelationshipsUsing(function (Model | CmsContent $record, $state) {
                 $record->createPropertyData([
                     'property_value' => $state,
                 ]);

@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
 
 use Filament\Actions;
-use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Model;
@@ -49,7 +48,7 @@ class ListDocumentTypes extends ListRecords
         $resource = static::getResource();
 
         // Check 'quickForm' method exists
-        if (!method_exists($resource, 'quickForm')) {
+        if (! method_exists($resource, 'quickForm')) {
             throw new \Exception('quickForm method not found in ' . $resource);
         }
 
@@ -75,9 +74,9 @@ class ListDocumentTypes extends ListRecords
     protected function configureQuickEditAction(QuickEditAction $action): void
     {
         $resource = static::getResource();
-        
+
         // Check 'quickForm' method exists
-        if (!method_exists($resource, 'quickForm')) {
+        if (! method_exists($resource, 'quickForm')) {
             throw new \Exception('quickForm method not found in ' . $resource);
         }
 

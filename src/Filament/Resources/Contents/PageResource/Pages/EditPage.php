@@ -20,7 +20,7 @@ class EditPage extends EditRecord
     {
         return Alignment::End;
     }
-    
+
     protected function getHeaderActions(): array
     {
         return [
@@ -64,14 +64,14 @@ class EditPage extends EditRecord
             $this->callHook('afterValidate');
 
             $data = $this->mutateFormDataBeforeSave($data);
-            
+
             $this->callHook('beforeSave');
 
             $this->handleRecordUpdate($this->getRecord(), $data);
 
             // Handle save relationships on this line
             $this->form->model($this->getRecord())->saveRelationships();
-                
+
             $this->callHook('afterSave');
 
             $this->commitDatabaseTransaction();

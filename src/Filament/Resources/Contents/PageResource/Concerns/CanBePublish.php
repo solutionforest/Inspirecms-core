@@ -8,12 +8,11 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
-
-use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use Throwable;
+
+use function Filament\Support\is_app_url;
 
 trait CanBePublish
 {
@@ -49,7 +48,7 @@ trait CanBePublish
             ])->operation('publish'))
             ->beforeFormValidated(function (Action $action) {
                 try {
-                    
+
                     $this->validatePublishableData();
 
                 } catch (Throwable $e) {
@@ -58,6 +57,7 @@ trait CanBePublish
                         ->title(__('inspirecms::inspirecms.notification.form_check_error.title'))
                         ->danger()
                         ->send();
+
                     throw $e;
                 }
             })
@@ -85,7 +85,7 @@ trait CanBePublish
                 $this->record = $this->handleRecordCreation($data);
 
                 $this->form->model($this->getRecord())->saveRelationships();
-    
+
                 $this->callHook('afterCreate');
 
             } else {
@@ -97,7 +97,7 @@ trait CanBePublish
 
                 $this->callHook('afterSave');
             }
-            
+
             $this->commitDatabaseTransaction();
 
         } catch (Halt $exception) {
@@ -139,7 +139,7 @@ trait CanBePublish
     public function getPublishableFormDataBeforePublish(array $extraData): array
     {
         if ($this->isCreatingPublishableData()) {
-            
+
             $this->callHook('beforeValidate');
 
             $data = $this->form->getState();
@@ -151,12 +151,12 @@ trait CanBePublish
             $this->callHook('beforeCreate');
 
         } else {
-            
+
             $this->callHook('beforeValidate');
 
             // Avoid save relationships before update
             $data = $this->form->getState(shouldCallHooksBefore: false, afterValidate: null);
-                
+
             $this->callHook('afterValidate');
 
             $data = $this->mutateFormDataBeforeSave(array_merge($data, $extraData));

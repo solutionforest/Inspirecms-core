@@ -30,7 +30,7 @@ class CloneAction extends Action
         $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.clone.modal.actions.clone.label'));
 
         $this->successNotificationTitle(__('inspirecms::inspirecms.actions.clone.notifications.cloned.title'));
-        
+
         $this->requiresConfirmation();
 
         $this->color('zinc');

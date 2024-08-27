@@ -13,7 +13,7 @@ class EditFieldGroup extends EditRecord
     {
         return Alignment::End;
     }
-    
+
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()

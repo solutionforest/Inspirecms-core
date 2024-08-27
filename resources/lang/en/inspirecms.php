@@ -47,19 +47,19 @@ return [
     ],
 
     'actions' => [
-        
+
         'save_draft' => [
 
             'label' => 'Save draft',
 
         ],
-        
+
         'save' => [
 
             'label' => 'Save',
-            
+
         ],
-        
+
         'publish' => [
 
             'label' => 'Publish',
@@ -72,7 +72,7 @@ return [
 
             'notifications' => [
                 'published' => [
-                    'title' => 'Published Successful'
+                    'title' => 'Published Successful',
                 ],
             ],
         ],
@@ -121,7 +121,7 @@ return [
 
                 'actions' => [
                     'clone' => [
-                        'label'=> 'Clone',
+                        'label' => 'Clone',
                     ],
                 ],
             ],

@@ -10,7 +10,7 @@ class QuickEditAction extends EditAction
     {
         return 'quick_edit';
     }
-    
+
     protected function setUp(): void
     {
         parent::setUp();

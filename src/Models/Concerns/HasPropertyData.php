@@ -17,7 +17,7 @@ trait HasPropertyData
     public function createPropertyData(array $data)
     {
         $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge(
-            $data, 
+            $data,
             $this->getPropertyDateToSave(),
         ));
 
@@ -44,14 +44,14 @@ trait HasPropertyData
     public function getLatestPropertyData()
     {
         return $this->propertyDatas()
-            ->orderByPivot('created_at','desc')
+            ->orderByPivot('created_at', 'desc')
             ->first();
     }
 
     public function getLatestPublishedPropertyData()
     {
         return $this->propertyDatas()
-            ->orderByPivot('created_at','desc')
+            ->orderByPivot('created_at', 'desc')
             ->whereNotNull('published_at')
             ->first();
     }

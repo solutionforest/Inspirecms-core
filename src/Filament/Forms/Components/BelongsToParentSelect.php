@@ -45,6 +45,7 @@ class BelongsToParentSelect extends Select
                     // If no parent ID == "0" (root level)
                     $component->state(null);
                 }
+
                 return;
             }
 

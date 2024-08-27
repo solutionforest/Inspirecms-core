@@ -55,7 +55,7 @@ class CmsContent extends Model
             // Special case: if status is "Private" and it's for private use, consider it published
             if ($status == PageStatus::Private->value && $isPrivateUse) {
                 return true;
-            } else if (! ($status == PageStatus::Private->value)) {
+            } elseif (! ($status == PageStatus::Private->value)) {
                 return true;
             } else {
                 return false;

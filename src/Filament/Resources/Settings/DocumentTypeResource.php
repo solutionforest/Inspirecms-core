@@ -79,14 +79,14 @@ class DocumentTypeResource extends Resource
                 Tables\Actions\ActionGroup::make([
 
                     QuickEditAction::make(),
-                    
+
                     CloneAction::make()
-                            ->recordTitleAttribute('title')
-                        ->saveRelationshipsUsing(function (Model|CmsDocumentType $originalRecord, Model|CmsDocumentType $record) {
+                        ->recordTitleAttribute('title')
+                        ->saveRelationshipsUsing(function (Model | CmsDocumentType $originalRecord, Model | CmsDocumentType $record) {
 
                             $fieldGroups = $originalRecord->morphFieldGroups->map(fn (Model $originalFieldGroup) => $originalFieldGroup->replicate([
                                 'model_type',
-                                'model_id'
+                                'model_id',
                             ])->toArray())->all();
 
                             $record->morphFieldGroups()->createMany($fieldGroups);

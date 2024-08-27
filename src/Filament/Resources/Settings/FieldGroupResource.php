@@ -22,7 +22,7 @@ class FieldGroupResource extends BaseResource
         return $form
             ->columns(1)
             ->schema([
-                
+
                 RevertOrderGroup::make([
 
                     Forms\Components\Group::make([
@@ -41,28 +41,28 @@ class FieldGroupResource extends BaseResource
                         ->schema([
 
                             Forms\Components\Section::make()
-                            ->columns(1)
-                            ->schema([
-                                Forms\Components\TextInput::make('title')
-                                    ->label(__('inspirecms::inspirecms.title'))
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(debounce: 500)
-                                    ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
-                                        // Fill slug if empty / operation is create
-                                        if ($operation === 'create' || empty($get('name'))) {
-                                            $set('name', Str::slug($state, '_'));
-                                        }
-                                    })
-                                    ->autofocus(),
-                                Forms\Components\TextInput::make('name')
-                                    ->label(__('inspirecms::inspirecms.name'))
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->live(debounce: 500)
-                                    ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
-                                    ->unique(ignoreRecord: true),
-                            ]),
+                                ->columns(1)
+                                ->schema([
+                                    Forms\Components\TextInput::make('title')
+                                        ->label(__('inspirecms::inspirecms.title'))
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->live(debounce: 500)
+                                        ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
+                                            // Fill slug if empty / operation is create
+                                            if ($operation === 'create' || empty($get('name'))) {
+                                                $set('name', Str::slug($state, '_'));
+                                            }
+                                        })
+                                        ->autofocus(),
+                                    Forms\Components\TextInput::make('name')
+                                        ->label(__('inspirecms::inspirecms.name'))
+                                        ->required()
+                                        ->maxLength(255)
+                                        ->live(debounce: 500)
+                                        ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
+                                        ->unique(ignoreRecord: true),
+                                ]),
                         ])
                         ->grow(),
 

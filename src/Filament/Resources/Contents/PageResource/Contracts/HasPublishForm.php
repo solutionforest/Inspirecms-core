@@ -6,7 +6,6 @@ interface HasPublishForm
 {
     /**
      * Get/validate the form state.
-     * @return array
      */
     public function getPublishableFormDataBeforePublish(): array;
 }

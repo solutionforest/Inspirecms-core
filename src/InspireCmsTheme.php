@@ -31,7 +31,7 @@ class InspireCmsTheme implements Plugin
                 'secondary' => Color::hex('#d2b492'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
-                
+
                 'zinc' => Color::Zinc,
                 'lime' => Color::Lime,
             ])
