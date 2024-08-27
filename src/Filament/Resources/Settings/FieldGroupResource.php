@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
+use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -21,9 +22,26 @@ class FieldGroupResource extends BaseResource
         return $form
             ->columns(1)
             ->schema([
-                Forms\Components\Tabs::make()
-                    ->tabs([
-                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.general'))
+                
+                RevertOrderGroup::make([
+
+                    Forms\Components\Group::make([
+
+                        Forms\Components\Section::make()
+                            ->columns(1)
+                            ->schema([
+                                Forms\Components\Toggle::make('active')
+                                    ->label(__('inspirecms::inspirecms.is_active'))
+                                    ->default(true),
+                            ]),
+
+                    ])->grow(false),
+
+                    Forms\Components\Group::make()
+                        ->schema([
+
+                            Forms\Components\Section::make()
+                            ->columns(1)
                             ->schema([
                                 Forms\Components\TextInput::make('title')
                                     ->label(__('inspirecms::inspirecms.title'))
@@ -35,7 +53,8 @@ class FieldGroupResource extends BaseResource
                                         if ($operation === 'create' || empty($get('name'))) {
                                             $set('name', Str::slug($state, '_'));
                                         }
-                                    }),
+                                    })
+                                    ->autofocus(),
                                 Forms\Components\TextInput::make('name')
                                     ->label(__('inspirecms::inspirecms.name'))
                                     ->required()
@@ -44,13 +63,10 @@ class FieldGroupResource extends BaseResource
                                     ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
                                     ->unique(ignoreRecord: true),
                             ]),
-                        Forms\Components\Tabs\Tab::make(__('inspirecms::inspirecms.setting'))
-                            ->schema([
-                                Forms\Components\Toggle::make('active')
-                                    ->label(__('inspirecms::inspirecms.is_active'))
-                                    ->default(true),
-                            ]),
-                    ]),
+                        ])
+                        ->grow(),
+
+                ])->revertBreakPoint(fn (string $operation) => $operation == 'create' ? 'sm' : 'lg'),
             ]);
     }
 

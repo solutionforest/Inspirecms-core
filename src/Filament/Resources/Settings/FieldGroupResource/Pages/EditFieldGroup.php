@@ -3,11 +3,17 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
 
 use Filament\Actions\Action;
-use SolutionForest\InspireCms\Filament\Resources\Pages\EditWithDetailInfoPage;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource;
 
-class EditFieldGroup extends EditWithDetailInfoPage
+class EditFieldGroup extends EditRecord
 {
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
+    
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
@@ -17,11 +23,6 @@ class EditFieldGroup extends EditWithDetailInfoPage
     public static function getResource(): string
     {
         return config('inspirecms.resources.field_group', FieldGroupResource::class);
-    }
-
-    public function wrapMainFormBySection(): bool
-    {
-        return false;
     }
 
     public function hasCombinedRelationManagerTabsWithContent(): bool

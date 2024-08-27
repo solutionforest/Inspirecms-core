@@ -14,7 +14,7 @@
                     'lg' => 'flex-col lg:flex-row-reverse',
                     'md' => 'flex-col md:flex-row-reverse',
                     'sm' => 'flex-col sm:flex-row-reverse',
-                    default => 'flex-col',
+                    default => 'flex-col flex-row-reverse',
                 },
             ])
     }}

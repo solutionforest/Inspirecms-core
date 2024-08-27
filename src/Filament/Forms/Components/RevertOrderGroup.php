@@ -7,7 +7,7 @@ use Filament\Forms\Components\Component;
 
 class RevertOrderGroup extends Component
 {
-    protected ?string $revertBreakPoint = null;
+    protected null|Closure|string $revertBreakPoint = null;
 
     /**
      * @var view-string
@@ -33,15 +33,15 @@ class RevertOrderGroup extends Component
         return $static;
     }
 
-    public function revertBreakPoint(string $breakPoint): static
+    public function revertBreakPoint(Closure|string $breakPoint): static
     {
         $this->revertBreakPoint = $breakPoint;
 
         return $this;
     }
 
-    public function getRevertBreakPoint(): string
+    public function getRevertBreakPoint(): ?string
     {
-        return $this->revertBreakPoint ?? 'lg';
+        return $this->evaluate($this->revertBreakPoint);
     }
 }
