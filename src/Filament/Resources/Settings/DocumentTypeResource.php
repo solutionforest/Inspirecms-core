@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Resources\Settings;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
@@ -15,7 +14,6 @@ use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
-use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Models\CmsDocumentType;
@@ -76,7 +74,7 @@ class DocumentTypeResource extends Resource
                 Tables\Columns\IconColumn::make('can_use_at_root')
                     ->label(__('inspirecms::inspirecms.can_use_at_root'))
                     ->boolean(),
-                
+
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
@@ -154,17 +152,17 @@ class DocumentTypeResource extends Resource
             ->modifyFieldGroupSelectUsing(function (Forms\Components\Select $select) {
                 return $select
                     ->createOptionModalHeading(fn () => __('inspirecms::inspirecms.create_xxx', [
-                        'name' => strtolower(__('inspirecms::inspirecms.field_group'))
+                        'name' => strtolower(__('inspirecms::inspirecms.field_group')),
                     ]))
                     ->createOptionForm(function (Form $form) {
 
                         $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
 
-                        if (method_exists($fieldGroupResource,'quickForm')) {
+                        if (method_exists($fieldGroupResource, 'quickForm')) {
                             return $fieldGroupResource::quickForm($form);
                         }
 
-                        if (method_exists($fieldGroupResource,'form')) {
+                        if (method_exists($fieldGroupResource, 'form')) {
                             return $fieldGroupResource::form($form);
                         }
 
@@ -186,17 +184,18 @@ class DocumentTypeResource extends Resource
                 Forms\Components\Actions\Action::make('goToEdit')
                     ->icon(fn () => FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
                     ->url(function (array $arguments, Forms\Components\Repeater $component) {
-                        
+
                         $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
 
                         $itemData = $component->getItemState($arguments['item']);
 
                         if (! (
                             $fieldGroupResource::hasPage('edit') ||
-                            is_array($itemData) || 
-                            isset($itemData['field_group_id']))
+                            is_array($itemData) ||
+                            isset($itemData['field_group_id'])
+                        )
                         ) {
-                            
+
                             return null;
                         }
 
@@ -208,7 +207,7 @@ class DocumentTypeResource extends Resource
                             ]);
 
                         } catch (\Throwable $e) {
-                            
+
                             return null;
 
                         }

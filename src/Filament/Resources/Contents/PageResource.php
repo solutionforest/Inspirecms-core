@@ -119,7 +119,7 @@ class PageResource extends Resource
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::inspirecms.publish_at')),
                     ]),
-                
+
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
@@ -281,7 +281,6 @@ class PageResource extends Resource
             });
     }
 
-
     protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
     {
         return Forms\Components\Group::make()
@@ -291,7 +290,7 @@ class PageResource extends Resource
             ])
             ->columns(['default' => 1]);
     }
-    
+
     protected static function getLatestPublishedAtFormComponent(): Forms\Components\Component
     {
         return Forms\Components\Placeholder::make('last_published_at')
@@ -311,7 +310,6 @@ class PageResource extends Resource
             ->inlineLabel()
             ->label(__('inspirecms::inspirecms.is_published'));
     }
-
 
     //endregion Form field(s)/component(s)
 }

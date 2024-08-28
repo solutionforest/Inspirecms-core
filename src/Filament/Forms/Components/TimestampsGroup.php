@@ -16,7 +16,7 @@ class TimestampsGroup extends Group
             $this
                 ->visibleOn('edit')
                 ->schema([
-                    
+
                     Placeholder::make('created_at')
                         ->content(fn ($record) => $record?->created_at)
                         ->label(__('inspirecms::inspirecms.created_at'))
@@ -24,7 +24,7 @@ class TimestampsGroup extends Group
                     Placeholder::make('updated_at')
                         ->content(fn ($record) => $record?->updated_at)
                         ->label(__('inspirecms::inspirecms.last_updated_at'))
-                        ->inlineLabel()
+                        ->inlineLabel(),
                 ]);
         }
     }

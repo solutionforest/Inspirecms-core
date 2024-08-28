@@ -14,9 +14,9 @@ use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
 class ListDocumentTypes extends ListRecords
 {
+    use HasCloneAction;
     use HasQuickCreateAction;
     use HasQuickEditAction;
-    use HasCloneAction;
 
     public function getActions(): array
     {

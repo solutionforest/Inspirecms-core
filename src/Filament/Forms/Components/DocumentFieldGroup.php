@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Models\CmsDocumentType;
 class DocumentFieldGroup extends Forms\Components\Group
 {
     protected ?Closure $modifyFieldGroupSelectUsing = null;
+
     protected array $extraFieldGroupRepeaterItemActions = [];
 
     protected function setUp(): void
