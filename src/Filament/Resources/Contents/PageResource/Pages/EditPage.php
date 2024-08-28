@@ -31,8 +31,9 @@ class EditPage extends EditRecord
     protected function getFormActions(): array
     {
         return [
-            $this->getPublishFormAction('save'),
+            $this->getPublishFormAction('edit'),
             $this->getSaveFormAction(),
+            $this->getUnPublishFormAction('edit'),
             $this->getCancelFormAction(),
         ];
     }

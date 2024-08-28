@@ -13,7 +13,8 @@ return [
     'general' => 'General',
     'id' => 'ID',
     'is_active' => 'Active?',
-    'is_published' => 'Published ?',
+    'is_published' => 'Is Published',
+    'is_root_level' => 'Is Root?',
     'last_published_at' => 'Last published at',
     'last_updated_at' => 'Last updated at',
     'n/a' => 'N/A',
@@ -30,6 +31,7 @@ return [
     'template' => 'Template',
     'title' => 'Title',
     'total_xxx_have_used' => 'Total :name has been used',
+    'total' => 'Total',
     'visibility' => 'Visibility',
 
     'page_status' => [
@@ -41,6 +43,9 @@ return [
         ],
         'private' => [
             'label' => 'Private',
+        ],
+        'unpublish' => [
+            'label' => 'Unpublish',
         ],
     ],
 
@@ -76,6 +81,23 @@ return [
             'notifications' => [
                 'published' => [
                     'title' => 'Published Successful',
+                ],
+            ],
+        ],
+
+        'unpublish' => [
+
+            'label' => 'Unpublish',
+
+            'actions' => [
+                'unpublish' => [
+                    'label' => 'Unpublish',
+                ],
+            ],
+
+            'notifications' => [
+                'unpublished' => [
+                    'title' => 'Unpublished Successful',
                 ],
             ],
         ],

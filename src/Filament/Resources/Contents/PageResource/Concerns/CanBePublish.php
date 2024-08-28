@@ -6,21 +6,24 @@ use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
-use Throwable;
 
-use function Filament\Support\is_app_url;
+use SolutionForest\InspireCms\Models\CmsContent;
+use Throwable;
 
 trait CanBePublish
 {
     protected ?string $publishOperation = null;
 
-    protected function getPublishFormAction(?string $form): Action
+    protected function getPublishFormAction(string $operation): Action
     {
-        if ($form === 'create') {
+        if (is_null($operation) || $operation === 'create') {
             $this->publishOperation = 'create';
         } else {
             $this->publishOperation = 'edit';
@@ -31,6 +34,7 @@ trait CanBePublish
             ->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.publish.actions.publish.label'))
             ->keyBindings(['mod+p'])
             ->color('primary')
+            ->modalFooterActionsAlignment(Alignment::End)
             ->form(fn (Form $form) => $form->schema([
                 static::getPublishedAtComponent(),
             ])->operation('publish'))
@@ -50,6 +54,34 @@ trait CanBePublish
                 }
             })
             ->action(fn (array $data) => $this->publish($data));
+    }
+
+    protected function getUnPublishFormAction(string $operation): ?Action
+    {
+        // Display on edit page only
+        if (is_null($operation) || $operation === 'craete') {
+            return null;
+        }
+
+        return Action::make('unpublish')
+            ->label(__('inspirecms::inspirecms.actions.unpublish.label'))
+            ->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.unpublish.actions.unpublish.label'))
+            ->color('gray')
+            ->modalFooterActionsAlignment(Alignment::End)
+            // Would't update other data, only change status
+            ->action(function (Model|CmsContent|null $record, Action $action) {
+                if (is_null($record)) {
+                    $action->cancel();
+                    return;
+                }
+
+                $record->update([
+                    'status' => PageStatus::Unpublish->value
+                ]);
+
+                $action->success();
+            })
+            ->successNotification(fn () => $this->getUnpublishedNotification());
     }
 
     public function publish(array $publishData, bool $shouldRedirect = false): void
@@ -124,6 +156,7 @@ trait CanBePublish
 
     public function getPublishableFormDataBeforePublish(array $extraData): array
     {
+        ray([$this->isCreatingPublishableData(), $this->publishOperation]);
         if ($this->isCreatingPublishableData()) {
 
             $this->callHook('beforeValidate');
@@ -175,6 +208,24 @@ trait CanBePublish
     protected function getPublishedNotificationTitle(): ?string
     {
         return __('inspirecms::inspirecms.actions.publish.notifications.published.title');
+    }
+
+    protected function getUnpublishedNotification(): ?Notification
+    {
+        $title = $this->geUnpublishedNotificationTitle();
+
+        if (blank($title)) {
+            return null;
+        }
+
+        return Notification::make()
+            ->success()
+            ->title($title);
+    }
+
+    protected function geUnpublishedNotificationTitle(): ?string
+    {
+        return __('inspirecms::inspirecms.actions.unpublish.notifications.unpublished.title');
     }
 
     //region Form field(s)/component(s)

@@ -10,6 +10,8 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
@@ -38,23 +40,18 @@ class PageResource extends Resource
                         Forms\Components\Section::make()
                             ->columns(1)
                             ->schema([
-                                static::getSlugFormComponent(),
-                                static::getParentPageFormComponent(),
-                            ]),
-                        Forms\Components\Section::make()
-                            ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
-                            ->visible(fn ($operation) => $operation == 'edit')
-                            ->schema([
                                 static::getStatusFormComponent()
                                     // Always as "Draft" on `form`
                                     ->dehydrateStateUsing(fn () => PageStatus::Draft->value),
-                                Forms\Components\Group::make()
-                                    ->schema([
-
-                                        static::getTimestampsGroupedFormComponent(),
-
-                                        static::getDisplayIsPublishedFormComponent(),
-                                    ]),
+                                static::getSlugFormComponent(),
+                                static::getParentPageFormComponent(),
+                            ]),
+                        Forms\Components\Group::make()
+                            ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
+                            ->visible(fn ($operation) => $operation == 'edit')
+                            ->schema([
+                                static::getTimestampsGroupedFormComponent()->columnSpan(1),
+                                static::getPublishDetailGroupedFormComponent()->columnSpan(1),
                             ]),
 
                     ])->grow(false),
@@ -70,7 +67,13 @@ class PageResource extends Resource
                                         ->schema([
                                             static::getTitleFormComponent(),
                                         ]),
-                                    static::documentTypeSelectComponent(),
+                                    Forms\Components\Grid::make(['default' => 4])
+                                        ->columnSpanFull()
+                                        ->schema([
+
+                                            static::documentTypeSelectComponent()->columnSpan(3),
+                                            static::getDisplayIsRootLevelFormComponent()->columnSpan(1),
+                                        ])
                                 ]),
 
                             // Field group grouped component
@@ -104,7 +107,14 @@ class PageResource extends Resource
                     ->width('1%')->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title'))
-                    ->sortable(),
+                    ->sortable()
+                    ->grow(),
+                Tables\Columns\IconColumn::make('documentType.can_use_at_root')
+                    ->label(__('inspirecms::inspirecms.is_root_level'))
+                    ->width('1%')
+                    ->boolean()
+                    ->alignCenter()->verticallyAlignCenter(),
+
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
                     ->columns([
 
@@ -113,11 +123,24 @@ class PageResource extends Resource
                             ->formatStateUsing(fn ($state) => PageStatus::tryFrom($state)?->getLabel() ?? '')
                             ->color(fn ($state) => PageStatus::tryFrom($state)?->getColor() ?? 'gray')
                             ->badge()
-                            ->icon(fn (Model | CmsContent $record) => $record->isPublished() ? 'heroicon-m-eye' : null)
-                            ->iconPosition(IconPosition::After),
+                            ->icon(fn ($state) => PageStatus::tryFrom($state)?->getIcon() ?? null)
+                            ->iconPosition(IconPosition::Before)
+                            ->width('2%'),
+
+                        Tables\Columns\IconColumn::make('is_published')
+                            ->label(__('inspirecms::inspirecms.is_published'))
+                            ->getStateUsing(fn (Model | CmsContent $record) => $record->isPublished(true))
+                            ->boolean()
+                            ->width('2%')
+                            ->trueIcon('heroicon-m-eye')
+                            ->falseIcon('heroicon-o-eye-slash')
+                            ->falseColor('gray')
+                            ->alignCenter()->verticallyAlignCenter(),
 
                         Tables\Columns\TextColumn::make('published_at')
-                            ->label(__('inspirecms::inspirecms.publish_at')),
+                            ->label(__('inspirecms::inspirecms.publish_at'))
+                            ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                            ->width('5%'),
                     ]),
 
                 // timestamps
@@ -139,6 +162,15 @@ class PageResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
+            ])
+            ->filters([
+                Tables\Filters\TernaryFilter::make('is_published')
+                    ->label(__('inspirecms::inspirecms.is_published'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->isPublished(condition: true, isIncludePrivateUse: true),
+                        false: fn (Builder $query) => $query->isPublished(condition: false, isIncludePrivateUse: true),
+                        blank: fn (Builder $query) => $query, 
+                    )
             ]);
     }
 
@@ -170,6 +202,7 @@ class PageResource extends Resource
     {
         return parent::getEloquentQuery()->with([
             'propertyDatas', // To get latest version
+            'documentType', // Determine the page "Is Root Level"
         ]);
     }
 
@@ -283,9 +316,19 @@ class PageResource extends Resource
 
     protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
     {
-        return Forms\Components\Group::make()
+        return Forms\Components\Section::make()
             ->schema([
                 TimestampsGroup::make(),
+            ])
+            ->columns(['default' => 1]);
+    }
+
+    protected static function getPublishDetailGroupedFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Section::make()
+            ->schema([
+                static::getDisplayIsPublishedFormComponent(),
+                static::getDisplayPublishedAtFormComponent(),
                 static::getLatestPublishedAtFormComponent(),
             ])
             ->columns(['default' => 1]);
@@ -299,16 +342,58 @@ class PageResource extends Resource
             ->inlineLabel();
     }
 
+    protected static function getDisplayPublishedAtFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Placeholder::make('display_published_at')
+            ->content(fn (Model | CmsContent | null $record) => $record?->published_at)
+            ->label(__('inspirecms::inspirecms.publish_at'))
+            ->inlineLabel();
+    }
+
     protected static function getDisplayIsPublishedFormComponent(): Forms\Components\Component
     {
-        return Forms\Components\Toggle::make('is_published')
-            ->afterStateHydrated(function ($component, Model | CmsContent | null $record) {
-                $component->state($record?->isPublished());
-            })
-            ->dehydrated(false)
-            ->disabled()
+        return Forms\Components\Placeholder::make('display_is_published')
+            ->label(__('inspirecms::inspirecms.is_published'))
             ->inlineLabel()
-            ->label(__('inspirecms::inspirecms.is_published'));
+            ->extraAttributes(['class' => 'flex align-items-center h-full'])
+            ->content(function (Model | CmsContent | null $record) {
+                if (is_null($record)) {
+                    return null;
+                }
+                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon:'heroicon-m-eye', falseIcon:'heroicon-o-eye-slash');
+            });
+    }
+
+    protected static function getDisplayIsRootLevelFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Placeholder::make('display_is_root')
+            ->label(__('inspirecms::inspirecms.is_root_level'))
+            ->content(function (Forms\Get $get) {
+                $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($get('document_type_id'));
+                if (is_null($documentType)) {
+                    return null;
+                }
+                return static::getBooleanIconPlaceholderComponentContent($documentType->can_use_at_root);
+            });
+    }
+
+    protected static function getBooleanIconPlaceholderComponentContent(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <x-filament::icon
+                icon="{{$icon}}"
+                class="h-5 w-5 text-custom-500 dark:text-custom-400"
+                style="{{$iconStyle}}"
+            >
+            </x-filament::icon>
+        blade, [
+            'icon' => $condition ? $trueIcon : $falseIcon,
+            'iconStyle' => \Filament\Support\get_color_css_variables(
+                $condition ? $trueColor : $falseColor,
+                shades: [400, 500],
+                alias: 'infolists::components.icon-entry.item',
+            ),
+        ]));
     }
 
     //endregion Form field(s)/component(s)

@@ -40,8 +40,14 @@ class CmsContent extends Model
         return '';
     }
 
-    public function isPublished(bool $isPrivateUse = false): bool
+    /**
+    * Determine if this content is already published.
+    * @param bool $isIncludePrivateUse
+    * @return bool
+    */
+    public function isPublished(bool $isIncludePrivateUse = false): bool
     {
+        /** @var ?\Carbon\Carbon */
         $publishedAt = $this->published_at;
         $status = $this->status;
 
@@ -52,13 +58,20 @@ class CmsContent extends Model
 
         // Check if the publish date is in the past
         if ($publishedAt->isPast()) {
-            // Special case: if status is "Private" and it's for private use, consider it published
-            if ($status == PageStatus::Private->value && $isPrivateUse) {
-                return true;
-            } elseif (! ($status == PageStatus::Private->value)) {
-                return true;
-            } else {
-                return false;
+
+            switch ($status) {
+
+                case PageStatus::Unpublish->value:
+                    return false;
+
+                case PageStatus::Private->value:
+                    if ($isIncludePrivateUse) {
+                        return true;
+                    } 
+                    return false;
+                    
+                default:
+                    return true;
             }
         }
 
@@ -81,14 +94,41 @@ class CmsContent extends Model
         ];
     }
 
-    public function scopeIsRoot($query, bool $condition = true)
+    /**
+    * Determine if this content is already published, no matter public or private use.
+    * @param mixed $query
+    * @return void
+    */
+    public function scopeIsPublished($query, bool $condition = true, bool $isIncludePrivateUse = false)
     {
+        // - Status always "Draft" on "Save draft" button
+        // - Change to "Publish" only on "Publish" button (save with "published_at" data)
+
         if ($condition) {
-            $query->whereNull('parent_id');
+
+            return $query
+                ->where('published_at', '<', now())
+                ->whereNot('status', PageStatus::Unpublish->value)
+                ->when($isIncludePrivateUse, 
+                    fn ($query) => $query, 
+                    fn ($query) => $query->whereNot('status', PageStatus::Private->value)
+                );
+
         } else {
-            $query->whereNotNull('parent_id');
+
+            return $query
+                ->orWhereNull('published_at')
+                ->orWhereNot('published_at', '<', now())
+                ->orWhere('status', PageStatus::Unpublish->value)
+                ->when($isIncludePrivateUse, 
+                    fn ($query) => $query, 
+                    fn ($query) => $query->orWhere('status', PageStatus::Private->value)
+                );
         }
+
     }
+
+    //endregion Scope(s)
 
     protected function getParentId()
     {

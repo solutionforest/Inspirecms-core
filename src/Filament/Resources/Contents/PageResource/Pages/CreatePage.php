@@ -26,16 +26,6 @@ class CreatePage extends CreateRecord
         ];
     }
 
-    // protected function getForms(): array
-    // {
-    //     return [
-    //         ...parent::getForms(),
-    //         'publishForm' => $this->publishForm(static::getResource()::publishForm(
-    //             $this->makeForm(),
-    //         )),
-    //     ];
-    // }
-
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
@@ -46,5 +36,12 @@ class CreatePage extends CreateRecord
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        $resource = static::getResource();
+
+        return $resource::getUrl('index');
     }
 }
