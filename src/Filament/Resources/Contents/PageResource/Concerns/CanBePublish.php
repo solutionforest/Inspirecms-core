@@ -68,6 +68,7 @@ trait CanBePublish
             ->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.unpublish.actions.unpublish.label'))
             ->color('gray')
             ->modalFooterActionsAlignment(Alignment::End)
+            ->requiresConfirmation()
             // Would't update other data, only change status
             ->action(function (Model | CmsContent | null $record, Action $action) {
                 if (is_null($record)) {
