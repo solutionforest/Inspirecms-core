@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
+use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 use SolutionForest\InspireCms\Models\CmsContent;
@@ -46,26 +47,26 @@ class PageResource extends Resource
                                 static::getStatusFormComponent()
                                     // Always as "Draft" on `form`
                                     ->dehydrateStateUsing(fn () => PageStatus::Draft->value),
-                                Forms\Components\Group::make([
+                                Forms\Components\Group::make()
+                                    ->schema([
 
-                                    Forms\Components\Placeholder::make('last_updated_at')
-                                        ->content(fn (Model | CmsContent $record) => $record->updated_at?->toFormattedDateString())
-                                        ->label(__('inspirecms::inspirecms.last_updated_at')),
-                                    Forms\Components\Placeholder::make('last_published_at')
-                                        ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
-                                        ->label(__('inspirecms::inspirecms.last_published_at')),
-                                    // Forms\Components\Placeholder::make('display_status')
-                                    //     ->content(fn (Model|CmsContent $record) => PageStatus::tryFrom($record->status)?->getLabel())
-                                    //     ->label(__('inspirecms::inspirecms.status')),
-                                    Forms\Components\Toggle::make('is_published')
-                                        ->afterStateHydrated(function ($component, Model | CmsContent $record) {
-                                            $component->state($record->isPublished());
-                                        })
-                                        ->dehydrated(false)
-                                        ->disabled()
-                                        ->inlineLabel()
-                                        ->label(__('inspirecms::inspirecms.is_published')),
-                                ])
+                                        TimestampsGroup::make(),
+                                        
+                                        Forms\Components\Placeholder::make('last_published_at')
+                                            ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
+                                            ->label(__('inspirecms::inspirecms.last_published_at')),
+                                        // Forms\Components\Placeholder::make('display_status')
+                                        //     ->content(fn (Model|CmsContent $record) => PageStatus::tryFrom($record->status)?->getLabel())
+                                        //     ->label(__('inspirecms::inspirecms.status')),
+                                        Forms\Components\Toggle::make('is_published')
+                                            ->afterStateHydrated(function ($component, Model | CmsContent $record) {
+                                                $component->state($record->isPublished());
+                                            })
+                                            ->dehydrated(false)
+                                            ->disabled()
+                                            ->inlineLabel()
+                                            ->label(__('inspirecms::inspirecms.is_published')),
+                                    ])
                                     ->visible(fn ($operation) => $operation == 'edit'),
                             ]),
 
@@ -134,8 +135,18 @@ class PageResource extends Resource
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::inspirecms.publish_at')),
                     ]),
-                Tables\Columns\TextColumn::make('created_at')->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->sortable(),
+                
+                // timestamps
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('inspirecms::inspirecms.created_at'))
+                    ->sortable()
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->width('5%'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('inspirecms::inspirecms.last_updated_at'))
+                    ->sortable()
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->width('5%'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
@@ -214,7 +225,8 @@ class PageResource extends Resource
             ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
             ->searchable(['title', 'slug'])
             ->preload()
-            ->live();
+            ->live()
+            ->disabledOn('edit');
     }
 
     /**

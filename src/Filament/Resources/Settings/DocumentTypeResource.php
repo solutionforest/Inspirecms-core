@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
+use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
@@ -71,8 +72,18 @@ class DocumentTypeResource extends Resource
                 Tables\Columns\IconColumn::make('can_use_at_root')
                     ->label(__('inspirecms::inspirecms.can_use_at_root'))
                     ->boolean(),
-                Tables\Columns\TextColumn::make('created_at')->sortable(),
-                Tables\Columns\TextColumn::make('updated_at')->sortable(),
+                
+                // timestamps
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('inspirecms::inspirecms.created_at'))
+                    ->sortable()
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->width('5%'),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label(__('inspirecms::inspirecms.last_updated_at'))
+                    ->sortable()
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->width('5%'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
@@ -148,16 +159,7 @@ class DocumentTypeResource extends Resource
 
     protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
     {
-        return Forms\Components\Group::make([
-            Forms\Components\Placeholder::make('created_at')
-                ->content(fn ($record) => $record->created_at?->shortRelativeToNowDiffForHumans())
-                ->label(__('inspirecms::inspirecms.created_at'))
-                ->inlineLabel(),
-            Forms\Components\Placeholder::make('updated_at')
-                ->content(fn ($record) => $record->updated_at?->shortRelativeToNowDiffForHumans())
-                ->label(__('inspirecms::inspirecms.last_updated_at'))
-                ->inlineLabel(),
-        ])->visible(fn ($operation) => $operation == 'edit')
+        return TimestampsGroup::make()
             ->columns(['default' => 1]);
     }
 
