@@ -4,7 +4,10 @@ namespace SolutionForest\InspireCms\Filament\Resources\Settings;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +15,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Settings\DocumentTypeResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Models\CmsDocumentType;
@@ -146,7 +150,71 @@ class DocumentTypeResource extends Resource
 
     protected static function getFieldGroupFormComponent(): Forms\Components\Component
     {
-        return DocumentFieldGroup::make()->inlineLabel();
+        return DocumentFieldGroup::make()
+            ->modifyFieldGroupSelectUsing(function (Forms\Components\Select $select) {
+                return $select
+                    ->createOptionModalHeading(fn () => __('inspirecms::inspirecms.create_xxx', [
+                        'name' => strtolower(__('inspirecms::inspirecms.field_group'))
+                    ]))
+                    ->createOptionForm(function (Form $form) {
+
+                        $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
+
+                        if (method_exists($fieldGroupResource,'quickForm')) {
+                            return $fieldGroupResource::quickForm($form);
+                        }
+
+                        if (method_exists($fieldGroupResource,'form')) {
+                            return $fieldGroupResource::form($form);
+                        }
+
+                        return $form;
+                    })
+                    ->createOptionAction(function (Forms\Components\Actions\Action $action) {
+                        $action
+                            ->modalWidth('3xl')
+                            ->modalFooterActionsAlignment(Alignment::End);
+                    })
+                    ->createOptionUsing(function (array $data) {
+
+                        $createdFieldGroup = InspireCmsConfig::getFieldGroupModelClass()::create($data);
+
+                        return $createdFieldGroup->getKey();
+                    });
+            })
+            ->extraFieldGroupRepeaterItemActions([
+                Forms\Components\Actions\Action::make('goToEdit')
+                    ->icon(fn () => FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
+                    ->url(function (array $arguments, Forms\Components\Repeater $component) {
+                        
+                        $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
+
+                        $itemData = $component->getItemState($arguments['item']);
+
+                        if (! (
+                            $fieldGroupResource::hasPage('edit') ||
+                            is_array($itemData) || 
+                            isset($itemData['field_group_id']))
+                        ) {
+                            
+                            return null;
+                        }
+
+                        try {
+
+                            return $fieldGroupResource::getUrl('edit', [
+                                'record' => $itemData['field_group_id'],
+                                'activeRelationManager' => 0,   // fields relations
+                            ]);
+
+                        } catch (\Throwable $e) {
+                            
+                            return null;
+
+                        }
+                    }, true)->visible(fn ($action) => ! blank($action->getUrl())),
+            ])
+            ->inlineLabel();
     }
 
     protected static function getCanUseAtRootFormComponent(): Forms\Components\Component

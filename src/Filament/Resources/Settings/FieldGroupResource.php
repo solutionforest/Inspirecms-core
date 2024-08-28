@@ -232,7 +232,10 @@ class FieldGroupResource extends BaseResource
             ->maxLength(255)
             ->live(debounce: 500)
             ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
-            ->unique(ignoreRecord: true);
+            ->unique(
+                table: static::getModel(),
+                column: 'name',
+                ignoreRecord: true);
     }
 
     protected static function getActiveFormComponent(): Forms\Components\Component

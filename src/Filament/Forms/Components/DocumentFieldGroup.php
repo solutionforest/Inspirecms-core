@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
+use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -11,6 +12,9 @@ use SolutionForest\InspireCms\Models\CmsDocumentType;
 
 class DocumentFieldGroup extends Forms\Components\Group
 {
+    protected ?Closure $modifyFieldGroupSelectUsing = null;
+    protected array $extraFieldGroupRepeaterItemActions = [];
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -27,6 +31,20 @@ class DocumentFieldGroup extends Forms\Components\Group
 
             });
         }
+    }
+
+    public function modifyFieldGroupSelectUsing(?Closure $closure): static
+    {
+        $this->modifyFieldGroupSelectUsing = $closure;
+
+        return $this;
+    }
+
+    public function extraFieldGroupRepeaterItemActions(array $actions): static
+    {
+        $this->extraFieldGroupRepeaterItemActions = $actions;
+
+        return $this;
     }
 
     public function getMorphFieldGroupsSortColumn(): string
@@ -52,7 +70,7 @@ class DocumentFieldGroup extends Forms\Components\Group
             ->reorderableWithButtons()
             ->addAction(fn (Forms\Components\Actions\Action $action) => $action->extraAttributes(['class' => 'w-full'], true))
             ->fieldGroupRecordOrderAttribute($this->getFieldGroupSortColumn())
-            // ->modifyRecordSelectUsing(fn ($select) => $select)   // custom select field to add field group
+            ->modifyRecordSelectUsing($this->modifyFieldGroupSelectUsing)   // custom select field to add field group
             ->modifyRecordSelectOptionQueryUsing(function ($query, FieldGroupRepeater $component) {
 
                 $existingFieldGroupIds = array_values(
@@ -95,7 +113,8 @@ class DocumentFieldGroup extends Forms\Components\Group
 
                 return $formattedData;
             })
-            ->schema($this->getFieldGroupsRepeaterSchema());
+            ->schema($this->getFieldGroupsRepeaterSchema())
+            ->extraItemActions($this->extraFieldGroupRepeaterItemActions);
     }
 
     /**
