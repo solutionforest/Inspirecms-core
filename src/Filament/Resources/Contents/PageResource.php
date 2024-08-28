@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\Contents;
 
+use Filament\Actions\Contracts\HasRecord;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -156,6 +157,7 @@ class PageResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -170,7 +172,23 @@ class PageResource extends Resource
                         false: fn (Builder $query) => $query->isPublished(condition: false, isIncludePrivateUse: true),
                         blank: fn (Builder $query) => $query,
                     ),
-            ]);
+            ])
+            ->recordUrl(function (Model $record, Table $table): ?string {
+                // Revert action's order
+                foreach (['edit', 'view'] as $action) { // foreach (['view', 'edit'] as $action) {
+                    if (! static::hasPage($action)) {
+                        continue;
+                    }
+
+                    if (! static::{'can' . ucfirst($action)}($record)) {
+                        continue;
+                    }
+
+                    return static::getUrl($action, ['record' => $record]);
+                }
+
+                return null;
+            });
     }
 
     public static function getPages(): array
@@ -179,6 +197,7 @@ class PageResource extends Resource
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
+            'view' => Pages\ViewPage::route('/{record}'),
         ];
     }
 
