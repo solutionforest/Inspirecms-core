@@ -103,6 +103,8 @@ class CmsContent extends Model
     {
         // - Status always "Draft" on "Save draft" button
         // - Change to "Publish" only on "Publish" button (save with "published_at" data)
+        // - Change to "Unpublish" only on "Unpublish" button
+        // - TODO: private button
 
         if ($condition) {
 

@@ -134,6 +134,22 @@ return [
             ],
         ],
 
+        'quick_status_edit' => [
+
+            'label' => 'Quick edit status',
+
+            'modal' => [
+
+                'heading' => 'Quick edit status',
+
+                'actions' => [
+                    'save' => [
+                        'label' => 'Save',
+                    ],
+                ],
+            ],
+        ],
+
         'clone' => [
 
             'label' => 'Clone',

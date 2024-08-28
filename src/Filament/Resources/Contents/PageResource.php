@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\Contents;
 
-use Filament\Actions\Contracts\HasRecord;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -22,6 +21,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
+use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditStatusAction;
 use SolutionForest\InspireCms\Models\CmsContent;
 use SolutionForest\InspireCms\Models\CmsPropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -158,6 +158,28 @@ class PageResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ViewAction::make()->iconButton(),
+                Tables\Actions\ActionGroup::make([
+                    QuickEditStatusAction::make()
+                        ->fillForm(fn (Model|CmsContent $record) => [
+                            'status' => $record->status,
+                        ])
+                        ->form([
+                            static::getStatusSelectFormComponent()->live(),
+                            static::getPublishedAtComponent()
+                                ->required(fn ($get) => $get('status') == PageStatus::Publish->value)
+                                ->visible(fn ($get) => $get('status') == PageStatus::Publish->value || $get('status') == PageStatus::Private->value),
+                        ])
+                        ->action(function (Model|CmsContent $record, array $data) {
+                            
+                            $record->update($data);
+                            
+                            /** @var null|Model|CmsPropertyData */
+                            $latestPropertyData = $record->getLatestPropertyData();
+                            $record->createPropertyData([
+                                'property_value' => $latestPropertyData->property_value,
+                            ]);
+                        }),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -279,6 +301,16 @@ class PageResource extends Resource
         return Forms\Components\Hidden::make('status')
             ->default(PageStatus::Draft->value)
             ->dehydratedWhenHidden(true);
+    }
+
+    protected static function getStatusSelectFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Select::make('status')
+            ->label(__('inspirecms::inspirecms.status'))
+            ->options(PageStatus::class)
+            ->searchable()
+            ->native(false)
+            ->required();
     }
 
     protected static function getParentPageFormComponent(): Forms\Components\Component
