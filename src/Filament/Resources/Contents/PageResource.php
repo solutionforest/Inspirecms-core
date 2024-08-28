@@ -43,6 +43,7 @@ class PageResource extends Resource
                             ]),
                         Forms\Components\Section::make()
                             ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
+                            ->visible(fn ($operation) => $operation == 'edit')
                             ->schema([
                                 static::getStatusFormComponent()
                                     // Always as "Draft" on `form`
@@ -53,8 +54,7 @@ class PageResource extends Resource
                                         static::getTimestampsGroupedFormComponent(),
 
                                         static::getDisplayIsPublishedFormComponent(),
-                                    ])
-                                    ->visible(fn ($operation) => $operation == 'edit'),
+                                    ]),
                             ]),
 
                     ])->grow(false),
@@ -295,7 +295,7 @@ class PageResource extends Resource
     protected static function getLatestPublishedAtFormComponent(): Forms\Components\Component
     {
         return Forms\Components\Placeholder::make('last_published_at')
-            ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at)
+            ->content(fn (Model | CmsContent | null $record) => $record?->getLatestPublishedPropertyData()?->published_at)
             ->label(__('inspirecms::inspirecms.last_published_at'))
             ->inlineLabel();
     }
@@ -303,8 +303,8 @@ class PageResource extends Resource
     protected static function getDisplayIsPublishedFormComponent(): Forms\Components\Component
     {
         return Forms\Components\Toggle::make('is_published')
-            ->afterStateHydrated(function ($component, Model | CmsContent $record) {
-                $component->state($record->isPublished());
+            ->afterStateHydrated(function ($component, Model | CmsContent | null $record) {
+                $component->state($record?->isPublished());
             })
             ->dehydrated(false)
             ->disabled()
