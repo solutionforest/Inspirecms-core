@@ -88,7 +88,7 @@ class FieldGroupResource extends BaseResource
                 //     ->width('1%'),
                 Tables\Columns\TextColumn::make('document_types_count')
                     ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
-                        'name' => (string)str(__('inspirecms::inspirecms.document_type'))->pluralStudly()->lower(),
+                        'name' => (string) str(__('inspirecms::inspirecms.document_type'))->pluralStudly()->lower(),
                     ]))
                     ->alignEnd()
                     ->width('5%'),
@@ -187,7 +187,7 @@ class FieldGroupResource extends BaseResource
         return __('inspirecms::inspirecms.setting');
     }
 
-    public static function getRecordSubTitle(?Model $record): string|Htmlable|null
+    public static function getRecordSubTitle(?Model $record): string | Htmlable | null
     {
         return $record?->name ?? null;
     }
@@ -235,7 +235,8 @@ class FieldGroupResource extends BaseResource
             ->unique(
                 table: static::getModel(),
                 column: 'name',
-                ignoreRecord: true);
+                ignoreRecord: true
+            );
     }
 
     protected static function getActiveFormComponent(): Forms\Components\Component

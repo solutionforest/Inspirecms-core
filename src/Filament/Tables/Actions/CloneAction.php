@@ -48,11 +48,11 @@ class CloneAction extends Action
             $record = $this->process(function (array $data) use ($originalRecord) {
 
                 $record = $originalRecord->replicate($this->getReplicateExcepts());
-                
+
                 foreach ($data as $key => $value) {
                     $record->{$key} = $value;
                 }
-                
+
                 $record->save();
 
                 return $record;

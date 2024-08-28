@@ -14,9 +14,9 @@ use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
 class ManageFieldGroup extends BasePage
 {
+    use HasCloneAction;
     use HasQuickCreateAction;
     use HasQuickEditAction;
-    use HasCloneAction;
 
     protected function getHeaderActions(): array
     {
@@ -24,7 +24,7 @@ class ManageFieldGroup extends BasePage
             QuickCreateAction::make(),
         ];
     }
-    
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.field_group', FieldGroupResource::class);

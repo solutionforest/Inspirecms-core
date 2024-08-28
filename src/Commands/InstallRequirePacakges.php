@@ -22,7 +22,7 @@ class InstallRequirePacakges extends Command
 
         // Publish field group package - migration
         Artisan::call('vendor:publish', [
-            '--provider' => "SolutionForest\\FilamentFieldGroup\\FilamentFieldGroupServiceProvider",
+            '--provider' => 'SolutionForest\\FilamentFieldGroup\\FilamentFieldGroupServiceProvider',
             '--tag' => 'filament-field-group-migrations',
         ]);
 

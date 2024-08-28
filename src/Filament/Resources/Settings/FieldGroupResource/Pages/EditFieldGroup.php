@@ -40,7 +40,7 @@ class EditFieldGroup extends EditRecord
     {
         return __('inspirecms::inspirecms.general');
     }
-    
+
     public function getHeading(): string
     {
         return parent::getTitle();

@@ -29,7 +29,7 @@ return [
     'status' => 'Status',
     'template' => 'Template',
     'title' => 'Title',
-    'total_xxx_have_used' => 'Total :name has been used', 
+    'total_xxx_have_used' => 'Total :name has been used',
     'visibility' => 'Visibility',
 
     'page_status' => [
