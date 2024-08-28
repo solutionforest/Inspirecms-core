@@ -116,9 +116,11 @@ class FieldGroupResource extends BaseResource
                         ->recordTitleAttribute('title')
                         ->replicateExcepts(['fields_count', 'document_types_count'])
                         ->fillForm(fn (Model | FieldGroup $record) => [
+                            'title' => $record->title,
                             'name' => $record->name,
                         ])
                         ->form([
+                            static::getTitleFormComponent()->autofocus(false),
                             static::getNameFormComponent()->autofocus(),
                         ])
                         ->saveRelationshipsUsing(function (Model | FieldGroup $originalRecord, Model | FieldGroup $record) {
