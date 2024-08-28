@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Enums;
 
 use Filament\Support\Contracts\HasColor;
-use Filament\Support\Contracts\HasLabel;
 use Filament\Support\Contracts\HasIcon;
+use Filament\Support\Contracts\HasLabel;
 
-enum PageStatus: int implements HasColor, HasLabel, HasIcon
+enum PageStatus: int implements HasColor, HasIcon, HasLabel
 {
     case Draft = 0;
     case Publish = 1;
@@ -36,10 +36,10 @@ enum PageStatus: int implements HasColor, HasLabel, HasIcon
     public function getIcon(): ?string
     {
         return match ($this) {
-            self::Draft => 'heroicon-o-pencil', 
-            self::Publish => 'heroicon-o-check-circle', 
-            self::Private => 'heroicon-o-lock-closed', 
-            self::Unpublish => 'heroicon-o-x-circle', 
+            self::Draft => 'heroicon-o-pencil',
+            self::Publish => 'heroicon-o-check-circle',
+            self::Private => 'heroicon-o-lock-closed',
+            self::Unpublish => 'heroicon-o-x-circle',
             default => null,
         };
     }

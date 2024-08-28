@@ -22,7 +22,7 @@ class ListPages extends ListRecords
     {
         return config('inspirecms.resources.page', PageResource::class);
     }
-    
+
     public function getTabs(): array
     {
         return [

@@ -73,7 +73,7 @@ class PageResource extends Resource
 
                                             static::documentTypeSelectComponent()->columnSpan(3),
                                             static::getDisplayIsRootLevelFormComponent()->columnSpan(1),
-                                        ])
+                                        ]),
                                 ]),
 
                             // Field group grouped component
@@ -169,8 +169,8 @@ class PageResource extends Resource
                     ->queries(
                         true: fn (Builder $query) => $query->isPublished(condition: true, isIncludePrivateUse: true),
                         false: fn (Builder $query) => $query->isPublished(condition: false, isIncludePrivateUse: true),
-                        blank: fn (Builder $query) => $query, 
-                    )
+                        blank: fn (Builder $query) => $query,
+                    ),
             ]);
     }
 
@@ -360,7 +360,8 @@ class PageResource extends Resource
                 if (is_null($record)) {
                     return null;
                 }
-                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon:'heroicon-m-eye', falseIcon:'heroicon-o-eye-slash');
+
+                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash');
             });
     }
 
@@ -373,6 +374,7 @@ class PageResource extends Resource
                 if (is_null($documentType)) {
                     return null;
                 }
+
                 return static::getBooleanIconPlaceholderComponentContent($documentType->can_use_at_root);
             });
     }

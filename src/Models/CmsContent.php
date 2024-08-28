@@ -41,10 +41,8 @@ class CmsContent extends Model
     }
 
     /**
-    * Determine if this content is already published.
-    * @param bool $isIncludePrivateUse
-    * @return bool
-    */
+     * Determine if this content is already published.
+     */
     public function isPublished(bool $isIncludePrivateUse = false): bool
     {
         /** @var ?\Carbon\Carbon */
@@ -67,9 +65,10 @@ class CmsContent extends Model
                 case PageStatus::Private->value:
                     if ($isIncludePrivateUse) {
                         return true;
-                    } 
+                    }
+
                     return false;
-                    
+
                 default:
                     return true;
             }
@@ -95,10 +94,11 @@ class CmsContent extends Model
     }
 
     /**
-    * Determine if this content is already published, no matter public or private use.
-    * @param mixed $query
-    * @return void
-    */
+     * Determine if this content is already published, no matter public or private use.
+     *
+     * @param  mixed  $query
+     * @return void
+     */
     public function scopeIsPublished($query, bool $condition = true, bool $isIncludePrivateUse = false)
     {
         // - Status always "Draft" on "Save draft" button
@@ -109,8 +109,9 @@ class CmsContent extends Model
             return $query
                 ->where('published_at', '<', now())
                 ->whereNot('status', PageStatus::Unpublish->value)
-                ->when($isIncludePrivateUse, 
-                    fn ($query) => $query, 
+                ->when(
+                    $isIncludePrivateUse,
+                    fn ($query) => $query,
                     fn ($query) => $query->whereNot('status', PageStatus::Private->value)
                 );
 
@@ -120,8 +121,9 @@ class CmsContent extends Model
                 ->orWhereNull('published_at')
                 ->orWhereNot('published_at', '<', now())
                 ->orWhere('status', PageStatus::Unpublish->value)
-                ->when($isIncludePrivateUse, 
-                    fn ($query) => $query, 
+                ->when(
+                    $isIncludePrivateUse,
+                    fn ($query) => $query,
                     fn ($query) => $query->orWhere('status', PageStatus::Private->value)
                 );
         }

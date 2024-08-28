@@ -9,13 +9,13 @@ use Filament\Notifications\Notification;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
-
 use SolutionForest\InspireCms\Models\CmsContent;
 use Throwable;
+
+use function Filament\Support\is_app_url;
 
 trait CanBePublish
 {
@@ -69,14 +69,15 @@ trait CanBePublish
             ->color('gray')
             ->modalFooterActionsAlignment(Alignment::End)
             // Would't update other data, only change status
-            ->action(function (Model|CmsContent|null $record, Action $action) {
+            ->action(function (Model | CmsContent | null $record, Action $action) {
                 if (is_null($record)) {
                     $action->cancel();
+
                     return;
                 }
 
                 $record->update([
-                    'status' => PageStatus::Unpublish->value
+                    'status' => PageStatus::Unpublish->value,
                 ]);
 
                 $action->success();
