@@ -14,6 +14,8 @@ class CloneAction extends Action
 
     protected ?Closure $saveRelationshipsUsing = null;
 
+    protected array $replicateExcepts = [];
+
     public static function getDefaultName(): ?string
     {
         return 'clone';
@@ -45,7 +47,12 @@ class CloneAction extends Action
 
             $record = $this->process(function (array $data) use ($originalRecord) {
 
-                $record = $originalRecord->replicate();
+                $record = $originalRecord->replicate($this->getReplicateExcepts());
+                
+                foreach ($data as $key => $value) {
+                    $record->{$key} = $value;
+                }
+                
                 $record->save();
 
                 return $record;
@@ -73,5 +80,17 @@ class CloneAction extends Action
     public function processSaveRelations(array $parameters = []): mixed
     {
         return $this->evaluate($this->saveRelationshipsUsing, $parameters);
+    }
+
+    public function replicateExcepts(array $excepts = []): static
+    {
+        $this->replicateExcepts = $excepts;
+
+        return $this;
+    }
+
+    public function getReplicateExcepts(): array
+    {
+        return $this->replicateExcepts;
     }
 }

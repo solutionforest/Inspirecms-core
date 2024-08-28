@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResour
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource;
 
 class EditFieldGroup extends EditRecord
@@ -32,11 +33,32 @@ class EditFieldGroup extends EditRecord
 
     public function getContentTabIcon(): ?string
     {
-        return 'heroicon-m-cog';
+        return null;
     }
 
     public function getContentTabLabel(): ?string
     {
-        return $this->getTitle();
+        return __('inspirecms::inspirecms.general');
+    }
+    
+    public function getHeading(): string
+    {
+        return parent::getTitle();
+    }
+
+    public function getSubheading(): ?string
+    {
+        return $this->getRecordSubTitle();
+    }
+
+    public function getRecordSubTitle(): null | string | Htmlable
+    {
+        $resource = static::getResource();
+
+        if (! method_exists($resource, 'getRecordSubTitle')) {
+            return null;
+        }
+
+        return $resource::getRecordSubTitle($this->getRecord());
     }
 }

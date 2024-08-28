@@ -28,6 +28,7 @@ return [
     'title' => 'Title',
     'visibility' => 'Visibility',
     'is_published' => 'Published ?',
+    'total_xxx_have_used' => 'Total :name has been used', 
 
     'page_status' => [
         'draft' => [

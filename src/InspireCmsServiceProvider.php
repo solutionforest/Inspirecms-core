@@ -69,6 +69,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerPolymorphism();
     }
 
+    public function bootingPackage(): void
+    {
+        config([
+            // override field group model on config
+            'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
+        ]);
+    }
+
     public function packageBooted(): void
     {
         // Asset Registration
