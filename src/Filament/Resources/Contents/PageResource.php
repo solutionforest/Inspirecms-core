@@ -172,6 +172,13 @@ class PageResource extends Resource
                         false: fn (Builder $query) => $query->isPublished(condition: false, isIncludePrivateUse: true),
                         blank: fn (Builder $query) => $query,
                     ),
+                Tables\Filters\TernaryFilter::make('is_root_level')
+                    ->label(__('inspirecms::inspirecms.is_root_level'))
+                    ->queries(
+                        true: fn (Builder $query) => $query->isRootLevel(condition: true),
+                        false: fn (Builder $query) => $query->isRootLevel(condition: false),
+                        blank: fn (Builder $query) => $query,
+                    ),
             ])
             ->recordUrl(function (Model $record, Table $table): ?string {
                 // Revert action's order

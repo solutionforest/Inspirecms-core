@@ -130,6 +130,12 @@ class CmsContent extends Model
 
     }
 
+    public function scopeIsRootLevel($query, bool $condition = true)
+    {
+        return $query
+            ->whereHas('documentType', fn ($query) => $query->where('can_use_at_root', $condition));
+    } 
+
     //endregion Scope(s)
 
     protected function getParentId()
