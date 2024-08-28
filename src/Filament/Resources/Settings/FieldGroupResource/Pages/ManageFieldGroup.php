@@ -2,21 +2,40 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource\Pages;
 
-use Filament\Actions\CreateAction;
-use Filament\Forms\Form;
-use Filament\Support\Enums\Alignment;
-use Filament\Tables\Actions\CreateAction as ActionsCreateAction;
-use Illuminate\Database\Eloquent\Model;
+use Filament\Actions;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource\Pages\ManageFieldGroup as BasePage;
+use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
+use SolutionForest\InspireCms\Filament\Resources\Concerns\HasCloneAction;
+use SolutionForest\InspireCms\Filament\Resources\Concerns\HasQuickCreateAction;
+use SolutionForest\InspireCms\Filament\Resources\Concerns\HasQuickEditAction;
 use SolutionForest\InspireCms\Filament\Resources\Settings\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
 class ManageFieldGroup extends BasePage
 {
+    use HasQuickCreateAction;
+    use HasQuickEditAction;
+    use HasCloneAction;
+
+    protected function getHeaderActions(): array
+    {
+        return [
+            QuickCreateAction::make(),
+        ];
+    }
+    
     public static function getResource(): string
     {
         return config('inspirecms.resources.field_group', FieldGroupResource::class);
+    }
+
+    protected function configureAction(Actions\Action $action): void
+    {
+        match (true) {
+            $action instanceof QuickCreateAction => $this->configureQuickCreateAction($action),
+            default => parent::configureAction($action),
+        };
     }
 
     protected function configureTableAction(\Filament\Tables\Actions\Action $action): void
@@ -26,36 +45,5 @@ class ManageFieldGroup extends BasePage
             $action instanceof QuickEditAction => $this->configureQuickEditAction($action),
             default => parent::configureTableAction($action),
         };
-    }
-
-    protected function configureCreateAction(CreateAction|ActionsCreateAction $action): void
-    {
-        parent::configureCreateAction($action);
-
-        $action->modalFooterActionsAlignment(Alignment::End);
-    }
-
-    protected function configureCloneAction(CloneAction $action): void
-    {
-        $resource = static::getResource();
-
-        $action
-            ->authorize($resource::canCreate())
-            ->model($this->getModel())
-            ->modelLabel($this->getModelLabel() ?? static::getResource()::getModelLabel());
-    }
-
-    protected function configureQuickEditAction(QuickEditAction $action): void
-    {
-        $resource = static::getResource();
-
-        // Check 'quickForm' method exists
-        if (! method_exists($resource, 'quickForm')) {
-            throw new \Exception('quickForm method not found in ' . $resource);
-        }
-
-        $action
-            ->authorize(fn (Model $record): bool => $resource::canEdit($record))
-            ->form(fn (Form $form): Form => $resource::quickForm($form->columns(1)));
     }
 }
