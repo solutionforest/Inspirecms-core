@@ -22,6 +22,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 use SolutionForest\InspireCms\Models\CmsContent;
+use SolutionForest\InspireCms\Models\CmsPropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class PageResource extends Resource
@@ -306,9 +307,28 @@ class PageResource extends Resource
                 $component->state($state);
             })
             ->saveRelationshipsUsing(function (Model | CmsContent $record, $state) {
-                $record->createPropertyData([
-                    'property_value' => $state,
-                ]);
+                
+                /** @var null|Model|CmsPropertyData */
+                $latestPropertyData = $record->getLatestPropertyData();
+
+                $latestPropertyDataIsDirty = true;
+
+                // Check is dirty on "PropertyData" before save new version
+                if ($latestPropertyData) {
+
+                    $latestPropertyData->property_value = $state;
+
+                    // Always "IsDirty", except checking specify attributes checking
+                    if (! $latestPropertyData->isDirty(['property_value'])) {
+                        $latestPropertyDataIsDirty = false;
+                    }
+                }
+
+                if ($latestPropertyDataIsDirty) {
+                    $record->createPropertyData([
+                        'property_value' => $state,
+                    ]);
+                }
             });
     }
 
