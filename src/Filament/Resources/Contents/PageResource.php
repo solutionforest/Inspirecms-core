@@ -50,22 +50,9 @@ class PageResource extends Resource
                                 Forms\Components\Group::make()
                                     ->schema([
 
-                                        TimestampsGroup::make(),
-                                        
-                                        Forms\Components\Placeholder::make('last_published_at')
-                                            ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at?->toFormattedDateString())
-                                            ->label(__('inspirecms::inspirecms.last_published_at')),
-                                        // Forms\Components\Placeholder::make('display_status')
-                                        //     ->content(fn (Model|CmsContent $record) => PageStatus::tryFrom($record->status)?->getLabel())
-                                        //     ->label(__('inspirecms::inspirecms.status')),
-                                        Forms\Components\Toggle::make('is_published')
-                                            ->afterStateHydrated(function ($component, Model | CmsContent $record) {
-                                                $component->state($record->isPublished());
-                                            })
-                                            ->dehydrated(false)
-                                            ->disabled()
-                                            ->inlineLabel()
-                                            ->label(__('inspirecms::inspirecms.is_published')),
+                                        static::getTimestampsGroupedFormComponent(),
+
+                                        static::getDisplayIsPublishedFormComponent(),
                                     ])
                                     ->visible(fn ($operation) => $operation == 'edit'),
                             ]),
@@ -111,9 +98,6 @@ class PageResource extends Resource
         return $table
             ->recordTitleAttribute('title')
             ->defaultSort('created_at', 'desc')
-            ->modifyQueryUsing(fn ($query) => $query->with([
-                'propertyDatas',  // To get latest version
-            ]))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -165,6 +149,28 @@ class PageResource extends Resource
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
         ];
+    }
+
+    public static function getModel(): string
+    {
+        return InspireCmsConfig::getContentModelClass();
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.page');
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return __('inspirecms::inspirecms.content');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->with([
+            'propertyDatas', // To get latest version
+        ]);
     }
 
     //region Form field(s)/component(s)
@@ -275,25 +281,37 @@ class PageResource extends Resource
             });
     }
 
+
+    protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Group::make()
+            ->schema([
+                TimestampsGroup::make(),
+                static::getLatestPublishedAtFormComponent(),
+            ])
+            ->columns(['default' => 1]);
+    }
+    
+    protected static function getLatestPublishedAtFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Placeholder::make('last_published_at')
+            ->content(fn (Model | CmsContent $record) => $record->getLatestPublishedPropertyData()?->published_at)
+            ->label(__('inspirecms::inspirecms.last_published_at'))
+            ->inlineLabel();
+    }
+
+    protected static function getDisplayIsPublishedFormComponent(): Forms\Components\Component
+    {
+        return Forms\Components\Toggle::make('is_published')
+            ->afterStateHydrated(function ($component, Model | CmsContent $record) {
+                $component->state($record->isPublished());
+            })
+            ->dehydrated(false)
+            ->disabled()
+            ->inlineLabel()
+            ->label(__('inspirecms::inspirecms.is_published'));
+    }
+
+
     //endregion Form field(s)/component(s)
-
-    public static function getModel(): string
-    {
-        return InspireCmsConfig::getContentModelClass();
-    }
-
-    public static function getModelLabel(): string
-    {
-        return __('inspirecms::inspirecms.page');
-    }
-
-    public static function getNavigationGroup(): ?string
-    {
-        return __('inspirecms::inspirecms.content');
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->with(['propertyDatas']);
-    }
 }
