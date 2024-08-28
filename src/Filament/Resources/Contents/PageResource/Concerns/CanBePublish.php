@@ -18,18 +18,6 @@ trait CanBePublish
 {
     protected ?string $publishOperation = null;
 
-    // // public array $publishFormData = [];
-
-    // public function mountCanBePublish()
-    // {
-    //     // $this->publishForm->fill();
-    // }
-
-    // public function publishForm(Form $form): Form
-    // {
-    //     return $form;
-    // }
-
     protected function getPublishFormAction(?string $form): Action
     {
         if ($form === 'create') {
@@ -77,8 +65,6 @@ trait CanBePublish
                 $publishData,
                 ['status' => PageStatus::Publish->value],
             ));
-
-            ray($data)->label('publishable data before save/create')->green();
 
             if ($isCreating) {
 
