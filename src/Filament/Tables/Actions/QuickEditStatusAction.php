@@ -24,7 +24,7 @@ class QuickEditStatusAction extends Action
         $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.quick_status_edit.modal.actions.save.label'));
 
         $this->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square');
-        
+
         $this->color('primary');
 
         $this->modalFooterActionsAlignment(Alignment::End);

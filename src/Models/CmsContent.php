@@ -136,7 +136,7 @@ class CmsContent extends Model
     {
         return $query
             ->whereHas('documentType', fn ($query) => $query->where('can_use_at_root', $condition));
-    } 
+    }
 
     //endregion Scope(s)
 

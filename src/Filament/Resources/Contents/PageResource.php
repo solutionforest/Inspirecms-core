@@ -160,7 +160,7 @@ class PageResource extends Resource
                 Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
                     QuickEditStatusAction::make()
-                        ->fillForm(fn (Model|CmsContent $record) => [
+                        ->fillForm(fn (Model | CmsContent $record) => [
                             'status' => $record->status,
                         ])
                         ->form([
@@ -169,10 +169,10 @@ class PageResource extends Resource
                                 ->required(fn ($get) => $get('status') == PageStatus::Publish->value)
                                 ->visible(fn ($get) => $get('status') == PageStatus::Publish->value || $get('status') == PageStatus::Private->value),
                         ])
-                        ->action(function (Model|CmsContent $record, array $data) {
-                            
+                        ->action(function (Model | CmsContent $record, array $data) {
+
                             $record->update($data);
-                            
+
                             /** @var null|Model|CmsPropertyData */
                             $latestPropertyData = $record->getLatestPropertyData();
                             $record->createPropertyData([
@@ -365,7 +365,7 @@ class PageResource extends Resource
                 $component->state($state);
             })
             ->saveRelationshipsUsing(function (Model | CmsContent $record, $state) {
-                
+
                 /** @var null|Model|CmsPropertyData */
                 $latestPropertyData = $record->getLatestPropertyData();
 
