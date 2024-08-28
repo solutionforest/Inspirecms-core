@@ -207,7 +207,6 @@ class FieldGroupResource extends BaseResource
     }
 
     //region Form field(s)/component(s)
-
     protected static function getTitleFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('title')
