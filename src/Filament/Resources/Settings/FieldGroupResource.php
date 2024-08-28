@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
@@ -69,7 +70,7 @@ class FieldGroupResource extends BaseResource
     public static function table(Table $table): Table
     {
         return parent::table($table)
-            ->modifyQueryUsing(fn ($query) => $query->withCount('fields')->withCount('documentTypes'))
+            ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('filament-field-group::filament-field-group.name'))
@@ -155,9 +156,18 @@ class FieldGroupResource extends BaseResource
             RelationGroup::make(fn () => __('inspirecms::inspirecms.details'), [
 
                 RelationManagers\FieldsRelationManager::class,
-                
+
             ])->icon('heroicon-m-adjustments-horizontal'),
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with([
+                // Delete event checking
+                'documentTypes',
+            ]);
     }
 
     public static function getModel(): string
@@ -182,7 +192,16 @@ class FieldGroupResource extends BaseResource
 
     public static function canDelete(Model $record): bool
     {
-        return parent::canCreate($record) && ! $record->documentTypes()->exists();
+        if (! parent::canCreate($record)) {
+            return false;
+        }
+
+        // Load docuemnt types if haven't loaded
+        if (! $record->relationLoaded('documentTypes')) {
+            $record->loadMissing('documentTypes');
+        }
+
+        return $record->documentTypes->count() <= 0;
     }
 
     //region Form field(s)/component(s)

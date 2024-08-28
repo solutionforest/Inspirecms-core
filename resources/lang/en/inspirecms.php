@@ -7,6 +7,7 @@ return [
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
     'document_type' => 'Document Type',
+    'details' => 'Details',
     'field_group' => 'Field Group',
     'general' => 'General',
     'id' => 'ID',
