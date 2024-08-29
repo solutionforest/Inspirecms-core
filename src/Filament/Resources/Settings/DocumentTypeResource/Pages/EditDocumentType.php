@@ -12,7 +12,7 @@ class EditDocumentType extends EditRecord
 {
     public function getFormActionsAlignment(): string | Alignment
     {
-        return Alignment::End;
+        return 'end';
     }
 
     public function getActions(): array

@@ -14,7 +14,7 @@ class CreatePage extends CreateRecord
 
     public function getFormActionsAlignment(): string | Alignment
     {
-        return Alignment::End;
+        return 'end';
     }
 
     protected function getFormActions(): array

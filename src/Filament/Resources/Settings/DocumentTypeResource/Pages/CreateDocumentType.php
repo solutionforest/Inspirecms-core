@@ -13,7 +13,7 @@ class CreateDocumentType extends CreateRecord
 
     public function getFormActionsAlignment(): string | Alignment
     {
-        return Alignment::End;
+        return 'end';
     }
 
     protected function getCreateFormAction(): Action

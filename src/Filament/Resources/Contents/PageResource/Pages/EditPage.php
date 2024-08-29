@@ -18,7 +18,7 @@ class EditPage extends EditRecord
 
     public function getFormActionsAlignment(): string | Alignment
     {
-        return Alignment::End;
+        return 'end';
     }
 
     protected function getHeaderActions(): array

@@ -158,7 +158,6 @@ trait CanBePublish
 
     public function getPublishableFormDataBeforePublish(array $extraData): array
     {
-        ray([$this->isCreatingPublishableData(), $this->publishOperation]);
         if ($this->isCreatingPublishableData()) {
 
             $this->callHook('beforeValidate');
