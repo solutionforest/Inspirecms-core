@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Pages;
 
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use SolutionForest\InspireCms\Filament\Widgets\PageActivity;
 
 class Dashboard extends Page
 {
@@ -28,5 +29,12 @@ class Dashboard extends Page
     public function getTitle(): string | Htmlable
     {
         return __('inspirecms::inspirecms.dashboard');
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            PageActivity::class
+        ];
     }
 }

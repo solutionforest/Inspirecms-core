@@ -16,6 +16,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
+use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources;
 
@@ -40,6 +41,9 @@ class CmsPanelProvider extends PanelProvider
             ]))
             ->pages([
                 Pages\Dashboard::class,
+            ])
+            ->widgets([
+                Widgets\PageActivity::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')

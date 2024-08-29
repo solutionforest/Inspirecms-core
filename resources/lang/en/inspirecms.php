@@ -184,4 +184,10 @@ return [
             'title' => 'There seems to be an issue with your form. Please review the fields and try again.',
         ],
     ],
+
+    'widgets' => [
+        'page_activity' => [
+            'title' => 'Activity',
+        ],
+    ],
 ];
