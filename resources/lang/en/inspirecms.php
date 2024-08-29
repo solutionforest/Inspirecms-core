@@ -33,7 +33,10 @@ return [
     'total_xxx_have_used' => 'Total :name has been used',
     'total' => 'Total',
     'visibility' => 'Visibility',
+    'users' => 'Users',
+    'user' => 'User',
     'settings' => 'Settings',
+    'email' => 'Email',
 
     'page_status' => [
         'draft' => [

@@ -22,6 +22,7 @@ return [
         'page' => Resources\Contents\PageResource::class,
         'document_type' => Resources\Settings\DocumentTypeResource::class,
         'field_group' => Resources\Settings\FieldGroupResource::class,
+        'user' => Resources\Users\UserResource::class,
     ],
 
     'models' => [
