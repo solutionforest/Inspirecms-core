@@ -12,7 +12,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Models\CmsUser;
-use SolutionForest\InspireCms\Listeners;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;

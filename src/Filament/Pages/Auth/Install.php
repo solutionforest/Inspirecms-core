@@ -34,7 +34,7 @@ class Install extends BasePage
 
             // Check database table exists
             $tableName = InspireCmsConfig::getUserTableName();
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 throw new \Exception("Table {$tableName} does not exist, please run migration.");
             }
 
@@ -46,7 +46,7 @@ class Install extends BasePage
 
     public function mount(): void
     {
-        if (!inspirecms()->needInstall()) {
+        if (! inspirecms()->needInstall()) {
             redirect()->intended(filament()->getUrl());
         }
 
@@ -95,7 +95,7 @@ class Install extends BasePage
 
         return app(RegistrationResponse::class);
     }
-    
+
     protected function handleRegistration(array $data): Model
     {
         $user = $this->getUserModel()::create($data);
@@ -110,11 +110,13 @@ class Install extends BasePage
                     $user->assignRole($role);
                 } catch (\Throwable $th) {
                     $this->getAssignRoleFailedNotification()?->send();
+
                     throw new \Exception('Please ensure you have already run the migration and imported the default data.', previous: $th);
                 }
 
             }
         }
+
         return $user;
     }
 
@@ -174,7 +176,7 @@ class Install extends BasePage
             ->dehydrated(false);
     }
     //endregion Form field(s)/component(s)
-    
+
     public function getRegisterFormAction(): Action
     {
         return Action::make('register')

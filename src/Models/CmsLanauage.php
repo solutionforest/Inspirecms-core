@@ -35,7 +35,7 @@ class CmsLanauage extends Model
         parent::boot();
 
         static::saving(function (self $model) {
-           // Set "is_default" of other languages as false if this model is changing to "default"
+            // Set "is_default" of other languages as false if this model is changing to "default"
             if ($model->isDirty(['is_default']) && $model->is_default) {
                 \DB::transaction(function () use ($model) {
                     static::query()

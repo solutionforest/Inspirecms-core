@@ -15,14 +15,14 @@ class Login extends BasePage
     {
         $installUrl = inspirecms()->getInstallUrl();
 
-        if (inspirecms()->needInstall() && !blank($installUrl)) {
+        if (inspirecms()->needInstall() && ! blank($installUrl)) {
             redirect()->intended($installUrl);
         }
 
         if (Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }
-        
+
         parent::mount();
     }
 

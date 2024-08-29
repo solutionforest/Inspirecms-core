@@ -56,7 +56,7 @@ class PageActivity extends BaseWidget
         $resource = config('inspirecms.resources.page', PageResource::class);
 
         if (is_subclass_of($resource, Resource::class)) {
-            
+
             foreach (['view', 'edit', 'index'] as $page) {
 
                 if (! $resource::hasPage($page)) {
@@ -91,11 +91,11 @@ class PageActivity extends BaseWidget
             ->paginated(false);
     }
 
-    protected function getTableHeading(): string|\Illuminate\Contracts\Support\Htmlable|null
+    protected function getTableHeading(): string | \Illuminate\Contracts\Support\Htmlable | null
     {
         $icon = 'heroicon-o-document-text';
         $color = 'info';
-        
+
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex gap-2">
                 <x-filament::icon

@@ -13,9 +13,9 @@ enum DefaultRoleEnums: string implements HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
-            static::Admininistrator => 'Admininistrators',
-            static::Editor => 'Editors',
-            static::Writer => 'Writers',
+            self::Admininistrator => 'Admininistrators',
+            self::Editor => 'Editors',
+            self::Writer => 'Writers',
         };
     }
 }

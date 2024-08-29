@@ -34,7 +34,7 @@ class Dashboard extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            PageActivity::class
+            PageActivity::class,
         ];
     }
 }

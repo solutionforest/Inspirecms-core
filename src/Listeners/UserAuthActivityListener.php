@@ -68,7 +68,6 @@ class UserAuthActivityListener
             /** @var Model|CmsUser */
             $user = $event->user;
 
-
             $user->userActivity()->updateOrCreate([
                 'ip_address' => request()->ip(),
             ], [
@@ -92,7 +91,7 @@ class UserAuthActivityListener
         $user = null;
 
         if (is_null($event->user)) {
-            
+
             /** @var SessionGuard $authGuard */
             $authGuard = Auth::guard($event->guard);
 
@@ -108,7 +107,7 @@ class UserAuthActivityListener
             $user = $event->user;
         }
 
-        $this->wrapInDatabaseTransaction(function () use ($event, $user) {
+        $this->wrapInDatabaseTransaction(function () use ($user) {
 
             if (is_null($user) || ! is_inspirecms_user($user)) {
                 return;

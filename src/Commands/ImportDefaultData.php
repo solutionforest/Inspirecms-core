@@ -27,8 +27,8 @@ class ImportDefaultData extends Command
 
         // Get the table name from the model
         $tableName = (new $model)->getTable();
-        
-        if (!$this->isTableExists($tableName)) {
+
+        if (! $this->isTableExists($tableName)) {
             return;
         }
 
@@ -38,11 +38,11 @@ class ImportDefaultData extends Command
     protected function importLaravelPermissionData(): void
     {
         $this->info('Importing user role and permission data ...');
-        
+
         $tableNames = config('permission.table_names');
-        
+
         foreach ($tableNames as $key => $tableName) {
-            if (!$this->isTableExists($tableName)) {
+            if (! $this->isTableExists($tableName)) {
                 return;
             }
         }
@@ -60,9 +60,10 @@ class ImportDefaultData extends Command
     protected function isTableExists(string $tableName): bool
     {
         $exist = Schema::hasTable($tableName);
-        if (!$exist) {
+        if (! $exist) {
             $this->error("Table $tableName does not exist, please run migration first.");
         }
+
         return $exist;
     }
 }

@@ -6,7 +6,7 @@ use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 
-class InspireCmsManager 
+class InspireCmsManager
 {
     /**
      * Determine if there is a need to go to the install page
@@ -19,10 +19,10 @@ class InspireCmsManager
         /** @var ?EloquentUserProvider $provider */
         $provider = auth($guard)?->getProvider();
 
-        if (!$provider) {
+        if (! $provider) {
             throw new \Exception('Authentication provider not found for guard: ' . $guard);
         }
-        if ($provider->getModel()::count() <= 0 ) {
+        if ($provider->getModel()::count() <= 0) {
             return true;
         }
         //endregion Check user table not empty

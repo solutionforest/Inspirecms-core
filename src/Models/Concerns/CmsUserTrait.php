@@ -8,9 +8,8 @@ use Spatie\Permission\Traits\HasRoles;
 
 trait CmsUserTrait
 {
-    use Notifiable;
     use HasRoles;
-
+    use Notifiable;
 
     public function canAccessPanel(Panel $panel): bool
     {

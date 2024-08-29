@@ -17,9 +17,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
-use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources;
+use SolutionForest\InspireCms\Filament\Widgets;
 
 class CmsPanelProvider extends PanelProvider
 {
