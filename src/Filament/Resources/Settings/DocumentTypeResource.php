@@ -134,7 +134,7 @@ class DocumentTypeResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('inspirecms::inspirecms.setting');
+        return __('inspirecms::inspirecms.settings');
     }
 
     //region Form field(s)/component(s)

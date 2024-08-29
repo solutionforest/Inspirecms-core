@@ -184,7 +184,7 @@ class FieldGroupResource extends BaseResource
 
     public static function getNavigationGroup(): ?string
     {
-        return __('inspirecms::inspirecms.setting');
+        return __('inspirecms::inspirecms.settings');
     }
 
     public static function getRecordSubTitle(?Model $record): string | Htmlable | null
