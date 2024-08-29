@@ -25,6 +25,8 @@ class PageActivity extends BaseWidget
             ->recordUrl(fn (Model $record) => $this->getRecordUrl($record))
             ->poll('60s')
             ->striped()
+            ->emptyStateIcon('heroicon-o-information-circle')
+            ->emptyStateHeading(__('inspirecms::inspirecms.widgets.page_activity.empty_state.heading'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title'))
