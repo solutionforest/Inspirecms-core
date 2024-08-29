@@ -28,6 +28,7 @@ class CmsPanelProvider extends PanelProvider
             ->id('cms')
             ->path('cms')
             ->default()
+            ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->login()
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([
