@@ -48,7 +48,7 @@ class PageResource extends Resource
                             ]),
                         Forms\Components\Group::make()
                             ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
-                            ->visible(fn ($operation) => $operation == 'edit')
+                            ->visibleOn(['edit', 'view'])
                             ->schema([
                                 static::getTimestampsGroupedFormComponent()->columnSpan(1),
                                 static::getPublishDetailGroupedFormComponent()->columnSpan(1),

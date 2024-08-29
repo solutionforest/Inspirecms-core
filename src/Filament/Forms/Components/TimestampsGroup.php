@@ -14,7 +14,7 @@ class TimestampsGroup extends Group
         if (blank($this->childComponents)) {
 
             $this
-                ->visibleOn('edit')
+                ->visibleOn(['edit', 'view'])
                 ->schema([
 
                     Placeholder::make('created_at')
