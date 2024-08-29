@@ -47,7 +47,7 @@ class CmsContent extends Model
 
     /**
      * Determine if this content is already published.
-     * 
+     *
      * @return bool|Builder|static
      */
     public function isPublished(bool $isIncludePrivateUse = false)
