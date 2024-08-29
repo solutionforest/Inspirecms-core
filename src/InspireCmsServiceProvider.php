@@ -71,10 +71,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        config([
-            // override field group model on config
-            'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
-        ]);
+        if (config('inspirecms.override_plugins.field_group_models', false)) {
+
+            config([
+                // override field group model on config
+                'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
+                'filament-field-group.models.field' => \SolutionForest\InspireCms\Models\Field::class,
+            ]);
+        }
     }
 
     public function packageBooted(): void
