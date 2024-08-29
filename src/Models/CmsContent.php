@@ -2,11 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
+/**
+ * @method static Builder|static query()
+ * @method Builder|static isRootLevel()
+ */
 class CmsContent extends Model
 {
     use Concerns\BelongToCmsComponentTree;
@@ -42,8 +47,10 @@ class CmsContent extends Model
 
     /**
      * Determine if this content is already published.
+     * 
+     * @return bool|Builder|static
      */
-    public function isPublished(bool $isIncludePrivateUse = false): bool
+    public function isPublished(bool $isIncludePrivateUse = false)
     {
         /** @var ?\Carbon\Carbon */
         $publishedAt = $this->published_at;
@@ -95,11 +102,8 @@ class CmsContent extends Model
 
     /**
      * Determine if this content is already published, no matter public or private use.
-     *
-     * @param  mixed  $query
-     * @return void
      */
-    public function scopeIsPublished($query, bool $condition = true, bool $isIncludePrivateUse = false)
+    public function scopeIsPublished(Builder $query, bool $condition = true, bool $isIncludePrivateUse = false): void
     {
         // - Status always "Draft" on "Save draft" button
         // - Change to "Publish" only on "Publish" button (save with "published_at" data)
@@ -108,7 +112,7 @@ class CmsContent extends Model
 
         if ($condition) {
 
-            return $query
+            $query
                 ->where('published_at', '<', now())
                 ->whereNot('status', PageStatus::Unpublish->value)
                 ->when(
@@ -119,7 +123,7 @@ class CmsContent extends Model
 
         } else {
 
-            return $query
+            $query
                 ->orWhereNull('published_at')
                 ->orWhereNot('published_at', '<', now())
                 ->orWhere('status', PageStatus::Unpublish->value)
@@ -132,10 +136,9 @@ class CmsContent extends Model
 
     }
 
-    public function scopeIsRootLevel($query, bool $condition = true)
+    public function scopeIsRootLevel(Builder $query, bool $condition = true): void
     {
-        return $query
-            ->whereHas('documentType', fn ($query) => $query->where('can_use_at_root', $condition));
+        $query->whereHas('documentType', fn ($query) => $query->where('can_use_at_root', $condition));
     }
 
     //endregion Scope(s)

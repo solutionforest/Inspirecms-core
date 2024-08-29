@@ -11,6 +11,8 @@ abstract class BaseDto
 {
     /**
      * @param  Model  $model
+     * 
+     * @return BaseDto
      */
     abstract public static function fromModel($model): static;
 
@@ -32,12 +34,12 @@ abstract class BaseDto
         return new static($data);
     }
 
-    public function __get($name)
+    public function __get($name): mixed
     {
         return $this->{$name} ?? null;
     }
 
-    public function __set($name, $value)
+    public function __set($name, $value): static
     {
         $this->{$name} = $value;
 

@@ -207,7 +207,10 @@ class FieldGroupResource extends BaseResource
     }
 
     //region Form field(s)/component(s)
-    protected static function getTitleFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
@@ -223,7 +226,10 @@ class FieldGroupResource extends BaseResource
             ->autofocus();
     }
 
-    protected static function getNameFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::inspirecms.name'))
@@ -238,18 +244,23 @@ class FieldGroupResource extends BaseResource
             );
     }
 
-    protected static function getActiveFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getActiveFormComponent()
     {
         return Forms\Components\Hidden::make('active')
             ->dehydratedWhenHidden(true)
             ->dehydrateStateUsing(fn () => true);
     }
 
-    protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTimestampsGroupedFormComponent()
     {
         return TimestampsGroup::make()
             ->columns(['default' => 1]);
     }
-
     //endregion Form field(s)/component(s)
 }

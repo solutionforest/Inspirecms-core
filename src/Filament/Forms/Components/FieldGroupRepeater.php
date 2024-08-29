@@ -222,14 +222,6 @@ class FieldGroupRepeater extends Repeater
                 search: $search,
                 searchColumns: $component->getSearchColumns()
             ))
-            ->getOptionLabelUsing(function ($value) use ($relationshipQuery): string {
-                return $this->getRecordTitle($relationshipQuery->find($value));
-            })
-            ->getOptionLabelsUsing(function (array $values) use ($relationshipQuery): array {
-                return $relationshipQuery->find($values)
-                    ->mapWithKeys(fn (Model $record): array => [$record->getKey() => $this->getRecordTitle($record)])
-                    ->all();
-            })
             ->options(fn (Select $component): array => $getOptions(optionsLimit: $component->getOptionsLimit()));
 
         if ($this->modifyRecordSelectUsing) {

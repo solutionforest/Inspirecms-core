@@ -138,15 +138,20 @@ class DocumentTypeResource extends Resource
     }
 
     //region Form field(s)/component(s)
-
-    protected static function getTitleFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
             ->required();
     }
 
-    protected static function getFieldGroupFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getFieldGroupFormComponent()
     {
         return DocumentFieldGroup::make()
             ->modifyFieldGroupSelectUsing(function (Forms\Components\Select $select) {
@@ -216,7 +221,10 @@ class DocumentTypeResource extends Resource
             ->inlineLabel();
     }
 
-    protected static function getCanUseAtRootFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getCanUseAtRootFormComponent()
     {
         return Forms\Components\Toggle::make('can_use_at_root')
             ->label(__('inspirecms::inspirecms.can_use_at_root'))
@@ -224,11 +232,13 @@ class DocumentTypeResource extends Resource
             ->default(false);
     }
 
-    protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTimestampsGroupedFormComponent()
     {
         return TimestampsGroup::make()
             ->columns(['default' => 1]);
     }
-
     //endregion Form field(s)/component(s)
 }

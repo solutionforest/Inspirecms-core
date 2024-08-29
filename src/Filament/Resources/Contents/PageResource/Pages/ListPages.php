@@ -30,17 +30,17 @@ class ListPages extends ListRecords
             'draft' => Tab::make()
                 ->icon(PageStatus::Draft->getIcon())
                 ->label(PageStatus::Draft->getLabel())
-                ->badge($this->getTableQuery()->where('status', PageStatus::Draft->value)->isPublished(isIncludePrivateUse: false)->count())
+                ->badge(static::getResource()::getEloquentQuery()->where('status', PageStatus::Draft->value)->isPublished(isIncludePrivateUse: false)->count())
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PageStatus::Draft->value)),
             'private' => Tab::make()
                 ->icon(PageStatus::Private->getIcon())
                 ->label(PageStatus::Private->getLabel())
-                ->badge($this->getTableQuery()->where('status', PageStatus::Private->value)->isPublished(isIncludePrivateUse: true)->count())
+                ->badge(static::getResource()::getEloquentQuery()->where('status', PageStatus::Private->value)->isPublished(isIncludePrivateUse: true)->count())
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PageStatus::Private->value)),
             'public' => Tab::make()
                 ->icon(PageStatus::Publish->getIcon())
                 ->label(PageStatus::Publish->getLabel())
-                ->badge($this->getTableQuery()->where('status', PageStatus::Publish->value)->isPublished(isIncludePrivateUse: false)->count())
+                ->badge(static::getResource()::getEloquentQuery()->where('status', PageStatus::Publish->value)->isPublished(isIncludePrivateUse: false)->count())
                 ->modifyQueryUsing(fn (Builder $query) => $query->where('status', PageStatus::Publish->value)),
             'unpublish' => Tab::make()
                 ->icon(PageStatus::Unpublish->getIcon())

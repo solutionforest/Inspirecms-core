@@ -254,7 +254,10 @@ class PageResource extends Resource
     }
 
     //region Form field(s)/component(s)
-    protected static function getTitleFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
@@ -269,7 +272,10 @@ class PageResource extends Resource
             ->required();
     }
 
-    protected static function getSlugFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getSlugFormComponent()
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::inspirecms.slug'))
@@ -281,7 +287,10 @@ class PageResource extends Resource
             ->required();
     }
 
-    protected static function getPublishedAtComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getPublishedAtComponent()
     {
         return Forms\Components\DateTimePicker::make('published_at')
             ->label(__('inspirecms::inspirecms.publish_at'))
@@ -296,14 +305,20 @@ class PageResource extends Resource
             ->required();
     }
 
-    protected static function getStatusFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getStatusFormComponent()
     {
         return Forms\Components\Hidden::make('status')
             ->default(PageStatus::Draft->value)
             ->dehydratedWhenHidden(true);
     }
 
-    protected static function getStatusSelectFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getStatusSelectFormComponent()
     {
         return Forms\Components\Select::make('status')
             ->label(__('inspirecms::inspirecms.status'))
@@ -313,7 +328,10 @@ class PageResource extends Resource
             ->required();
     }
 
-    protected static function getParentPageFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getParentPageFormComponent()
     {
         return BelongsToParentSelect::make('parent_id')
             ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))]))
@@ -355,7 +373,10 @@ class PageResource extends Resource
         return $select;
     }
 
-    protected static function getPropertyDataValueComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getPropertyDataValueComponent()
     {
         return PropertyDataGroup::make()
             ->statePath('propertyData')
@@ -390,7 +411,10 @@ class PageResource extends Resource
             });
     }
 
-    protected static function getTimestampsGroupedFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTimestampsGroupedFormComponent()
     {
         return Forms\Components\Section::make()
             ->schema([
@@ -399,7 +423,10 @@ class PageResource extends Resource
             ->columns(['default' => 1]);
     }
 
-    protected static function getPublishDetailGroupedFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getPublishDetailGroupedFormComponent()
     {
         return Forms\Components\Section::make()
             ->schema([
@@ -410,7 +437,10 @@ class PageResource extends Resource
             ->columns(['default' => 1]);
     }
 
-    protected static function getLatestPublishedAtFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getLatestPublishedAtFormComponent()
     {
         return Forms\Components\Placeholder::make('last_published_at')
             ->content(fn (Model | CmsContent | null $record) => $record?->getLatestPublishedPropertyData()?->published_at)
@@ -418,7 +448,10 @@ class PageResource extends Resource
             ->inlineLabel();
     }
 
-    protected static function getDisplayPublishedAtFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayPublishedAtFormComponent()
     {
         return Forms\Components\Placeholder::make('display_published_at')
             ->content(fn (Model | CmsContent | null $record) => $record?->published_at)
@@ -426,7 +459,10 @@ class PageResource extends Resource
             ->inlineLabel();
     }
 
-    protected static function getDisplayIsPublishedFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayIsPublishedFormComponent()
     {
         return Forms\Components\Placeholder::make('display_is_published')
             ->label(__('inspirecms::inspirecms.is_published'))
@@ -441,7 +477,10 @@ class PageResource extends Resource
             });
     }
 
-    protected static function getDisplayIsRootLevelFormComponent(): Forms\Components\Component
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayIsRootLevelFormComponent()
     {
         return Forms\Components\Placeholder::make('display_is_root')
             ->label(__('inspirecms::inspirecms.is_root_level'))
