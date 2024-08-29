@@ -38,10 +38,8 @@ abstract class BaseDto
         return $this->{$name} ?? null;
     }
 
-    public function __set($name, $value): static
+    public function __set($name, $value): void
     {
         $this->{$name} = $value;
-
-        return $this;
     }
 }
