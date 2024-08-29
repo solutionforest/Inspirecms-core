@@ -71,14 +71,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        if (config('inspirecms.override_plugins.field_group_models', false)) {
-
-            config([
-                // override field group model on config
-                'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
-                'filament-field-group.models.field' => \SolutionForest\InspireCms\Models\Field::class,
-            ]);
-        }
+        $this->overridePluginsConfig();
     }
 
     public function packageBooted(): void
@@ -175,12 +168,24 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     /**
      * Register Polymorphic Types
      */
-    protected function registerPolymorphism()
+    protected function registerPolymorphism(): void
     {
         $map = Arr::pluck(config('inspirecms.models'), 'fqcn', 'polymorphic_type');
 
         if (! empty($map)) {
             Relation::enforceMorphMap($map);
+        }
+    }
+
+    protected function overridePluginsConfig(): void
+    {
+        if (config('inspirecms.override_plugins.field_group_models', false)) {
+
+            config([
+                // override field group model on config
+                'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
+                'filament-field-group.models.field' => \SolutionForest\InspireCms\Models\Field::class,
+            ]);
         }
     }
 }
