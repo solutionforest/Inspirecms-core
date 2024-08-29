@@ -5,10 +5,14 @@ namespace SolutionForest\InspireCms;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\InspireCms\Models\CmsUser;
+use SolutionForest\InspireCms\Listeners;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -40,7 +44,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     })
                     ->endWith(function (InstallCommand $command) {
                         $command->call(Commands\PublishPanel::class);
-                        $command->call(\Filament\Support\Commands\AssetsCommand::class);
+                        $command->call(Commands\ImportDefaultData::class);
                     });
 
             });
@@ -72,6 +76,24 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         $this->overridePluginsConfig();
+        $this->registerAuthGuard();
+
+        Event::listen(
+            AuthEvents\Login::class,
+            [Listeners\UserAuthActivityListener::class, 'login']
+        );
+        Event::listen(
+            AuthEvents\Logout::class,
+            [Listeners\UserAuthActivityListener::class, 'logout']
+        );
+        Event::listen(
+            AuthEvents\Failed::class,
+            [Listeners\UserAuthActivityListener::class, 'loginFailed']
+        );
+        Event::listen(
+            AuthEvents\PasswordReset::class,
+            [Listeners\UserAuthActivityListener::class, 'passwordReset']
+        );
     }
 
     public function packageBooted(): void
@@ -128,6 +150,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
+            Commands\ImportDefaultData::class,
         ];
     }
 
@@ -187,5 +210,17 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 'filament-field-group.models.field' => \SolutionForest\InspireCms\Models\Field::class,
             ]);
         }
+    }
+
+    protected function registerAuthGuard(): void
+    {
+        config()->set('auth.providers.inspirecms', [
+            'driver' => 'eloquent',
+            'model' => CmsUser::class,
+        ]);
+        config()->set('auth.guards.inspirecms', [
+            'driver' => 'session',
+            'provider' => config('inspirecms.auth.guard', 'inspirecms'),
+        ]);
     }
 }

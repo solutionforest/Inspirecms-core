@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Closure;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -29,7 +30,9 @@ class CmsPanelProvider extends PanelProvider
             ->path('cms')
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
-            ->login()
+            ->authGuard(config('inspirecms.auth.guard', 'inspirecms'))
+            ->login(Pages\Auth\Login::class)
+            ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([
                 FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
@@ -66,6 +69,7 @@ class CmsPanelProvider extends PanelProvider
             ]);
 
         $this->configureNavigation($panel);
+        $this->registerLivewireComponents($panel);
 
         return $panel;
     }
@@ -84,5 +88,21 @@ class CmsPanelProvider extends PanelProvider
                     // Child navigation must haven't navigationIcon
                     ->icon('heroicon-o-cog-6-tooth'),
             ]);
+    }
+
+    protected function registerLivewireComponents(Panel $panel): Panel
+    {
+        return $panel->livewireComponents([
+            Pages\Auth\Install::class,
+        ]);
+    }
+
+    protected function getExtraRoutes(): ?Closure
+    {
+        return function (Panel $panel) {
+
+            \Illuminate\Support\Facades\Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)
+                ->name('install');
+        };
     }
 }

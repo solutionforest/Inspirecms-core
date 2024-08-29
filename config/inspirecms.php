@@ -6,6 +6,10 @@ use SolutionForest\InspireCms\Models;
 // config for SolutionForest/InspireCms
 return [
 
+    'auth' => [
+        'guard' => 'inspirecms',
+    ],
+
     'override_plugins' => [
         'field_group_models' => true,
     ],
@@ -50,6 +54,21 @@ return [
             'fqcn' => Models\CmsDocumentType::class,
             'table_name' => 'cms_document_types',
             'polymorphic_type' => 'cms_document_type',
+        ],
+        'user' => [
+            'fqcn' => Models\CmsUser::class,
+            'table_name' => 'cms_users',
+            'polymorphic_type' => 'cms_user',
+        ],
+        'user_login_activity' => [
+            'fqcn' => Models\Users\CmsUserLoginActivity::class,
+            'table_name' => 'cms_user_login_activities',
+            'polymorphic_type' => 'cms_user_login_activity',
+        ],
+        'language' => [
+            'fqcn' => Models\CmsLanauage::class,
+            'table_name' => 'cms_languages',
+            'polymorphic_type' => 'cms_language',
         ],
     ],
 ];

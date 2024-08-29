@@ -12,13 +12,14 @@ class InstallRequirePacakges extends Command
     public function handle(): int
     {
         $this->installFieldGroupPackage();
+        $this->installSpatieLaravelPermissionPackage();
 
         return static::SUCCESS;
     }
 
     protected function installFieldGroupPackage()
     {
-        $this->components->info('Installing field group package...');
+        $this->components->info('Installing SolutionForest\\FilamentFieldGroup package...');
 
         // Publish field group package - migration
         Artisan::call('vendor:publish', [
@@ -26,6 +27,17 @@ class InstallRequirePacakges extends Command
             '--tag' => 'filament-field-group-migrations',
         ]);
 
-        $this->components->info('Field group package installed successfully.');
+        $this->components->info('SolutionForest\\FilamentFieldGroup package installed successfully.');
+    }
+
+    protected function installSpatieLaravelPermissionPackage()
+    {
+        $this->components->info('Installing Spatie\\LaravelPermission package...');
+
+        Artisan::call('vendor:publish', [
+            '--provider' => 'Spatie\\Permission\\PermissionServiceProvider',
+        ]);
+
+        $this->components->info('Spatie\\LaravelPermission package installed successfully.');
     }
 }

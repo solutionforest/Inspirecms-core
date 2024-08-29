@@ -5,9 +5,12 @@ namespace SolutionForest\InspireCms\Support;
 use SolutionForest\InspireCms\Models\CmsContent;
 use SolutionForest\InspireCms\Models\CmsContentVersion;
 use SolutionForest\InspireCms\Models\CmsDocumentType;
+use SolutionForest\InspireCms\Models\CmsLanauage;
 use SolutionForest\InspireCms\Models\CmsPropertyData;
+use SolutionForest\InspireCms\Models\CmsUser;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentFieldGroup;
 use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentTree;
+use SolutionForest\InspireCms\Models\Users\CmsUserLoginActivity;
 
 class InspireCmsConfig
 {
@@ -101,6 +104,42 @@ class InspireCmsConfig
     public static function getFieldModelClass(): string
     {
         return \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldModelClass();
+    }
+
+    public static function getUserTableName(): string
+    {
+        return config('inspirecms.models.user.table_name', 'cms_users');
+    }
+
+    public static function getUserModelClass(): string
+    {
+        $class = config('inspirecms.models.user.fqcn', CmsUser::class);
+
+        return self::ensureClassExists($class, 'CmsUser model');
+    }
+
+    public static function getUserLoginActivityTableName(): string
+    {
+        return config('inspirecms.models.user_login_activity.table_name', 'cms_user_login_activities');
+    }
+
+    public static function getUserLoginActivityModelClass(): string
+    {
+        $class = config('inspirecms.models.user_login_activity.fqcn', CmsUserLoginActivity::class);
+
+        return self::ensureClassExists($class, 'CmsUserLoginActivity model');
+    }
+
+    public static function getLanguageTableName(): string
+    {
+        return config('inspirecms.models.language.table_name', 'cms_languages');
+    }
+
+    public static function getLanguageModelClass(): string
+    {
+        $class = config('inspirecms.models.language.fqcn', CmsLanauage::class);
+
+        return self::ensureClassExists($class, 'CmsLanauage model');
     }
 
     /**
