@@ -12,7 +12,7 @@ enum DefaultRoleEnums: string implements HasLabel
 
     public function getLabel(): ?string
     {
-        return match ($this) {
+        return match (true) {
             self::Admininistrator => 'Admininistrators',
             self::Editor => 'Editors',
             self::Writer => 'Writers',
