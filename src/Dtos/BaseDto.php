@@ -11,7 +11,6 @@ abstract class BaseDto
 {
     /**
      * @param  Model  $model
-     * @return static
      */
     abstract public static function fromModel($model): static;
 
