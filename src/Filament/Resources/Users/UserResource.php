@@ -5,8 +5,8 @@ namespace SolutionForest\InspireCms\Filament\Resources\Users;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Filament\Resources\Users\UserResource\Pages;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class UserResource extends Resource
 {
