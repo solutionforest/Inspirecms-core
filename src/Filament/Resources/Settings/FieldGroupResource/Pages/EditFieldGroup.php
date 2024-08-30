@@ -18,7 +18,7 @@ class EditFieldGroup extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label(__('inspirecms::inspirecms.actions.save.label'));
+            ->label(__('inspirecms::actions.save.label'));
     }
 
     public static function getResource(): string

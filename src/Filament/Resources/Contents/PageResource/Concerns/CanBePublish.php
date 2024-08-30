@@ -30,8 +30,8 @@ trait CanBePublish
         }
 
         return Action::make('publish')
-            ->label(__('inspirecms::inspirecms.actions.publish.label'))
-            ->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.publish.actions.publish.label'))
+            ->label(__('inspirecms::actions.publish.label'))
+            ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
             ->keyBindings(['mod+p'])
             ->color('primary')
             ->modalFooterActionsAlignment(Alignment::End)
@@ -46,7 +46,7 @@ trait CanBePublish
                 } catch (Throwable $e) {
                     Notification::make()
                         ->title('Please check your form')
-                        ->title(__('inspirecms::inspirecms.notification.form_check_error.title'))
+                        ->title(__('inspirecms::notification.form_check_error.title'))
                         ->danger()
                         ->send();
 
@@ -64,8 +64,8 @@ trait CanBePublish
         }
 
         return Action::make('unpublish')
-            ->label(__('inspirecms::inspirecms.actions.unpublish.label'))
-            ->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.unpublish.actions.unpublish.label'))
+            ->label(__('inspirecms::actions.unpublish.label'))
+            ->modalSubmitActionLabel(__('inspirecms::actions.unpublish.actions.unpublish.label'))
             ->color('gray')
             ->modalFooterActionsAlignment(Alignment::End)
             ->requiresConfirmation()
@@ -208,7 +208,7 @@ trait CanBePublish
 
     protected function getPublishedNotificationTitle(): ?string
     {
-        return __('inspirecms::inspirecms.actions.publish.notifications.published.title');
+        return __('inspirecms::actions.publish.notifications.published.title');
     }
 
     protected function getUnpublishedNotification(): ?Notification
@@ -226,7 +226,7 @@ trait CanBePublish
 
     protected function geUnpublishedNotificationTitle(): ?string
     {
-        return __('inspirecms::inspirecms.actions.unpublish.notifications.unpublished.title');
+        return __('inspirecms::actions.unpublish.notifications.unpublished.title');
     }
 
     //region Form field(s)/component(s)

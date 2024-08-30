@@ -29,7 +29,7 @@ class CreatePage extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label(__('inspirecms::inspirecms.actions.save_draft.label'))
+            ->label(__('inspirecms::actions.save_draft.label'))
             ->color('secondary');
     }
 

@@ -30,11 +30,11 @@ class QuickCreateAction extends Action
     {
         parent::setUp();
 
-        $this->label(fn (): string => __('inspirecms::inspirecms.actions.quick_create.label'));
+        $this->label(fn (): string => __('inspirecms::actions.quick_create.label'));
 
-        $this->modalHeading(fn (): string => __('inspirecms::inspirecms.actions.quick_create.modal.heading', ['label' => $this->getModelLabel()]));
+        $this->modalHeading(fn (): string => __('inspirecms::actions.quick_create.modal.heading', ['label' => $this->getModelLabel()]));
 
-        $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.quick_create.modal.actions.create.label'));
+        $this->modalSubmitActionLabel(__('inspirecms::actions.quick_create.modal.actions.create.label'));
 
         $this->extraModalFooterActions(function (): array {
             return $this->canCreateAnother() ? [

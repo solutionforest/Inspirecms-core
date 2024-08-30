@@ -17,11 +17,11 @@ class QuickEditStatusAction extends Action
     {
         parent::setUp();
 
-        $this->label(__('inspirecms::inspirecms.actions.quick_status_edit.label'));
+        $this->label(__('inspirecms::actions.quick_status_edit.label'));
 
-        $this->modalHeading(fn (): string => __('inspirecms::inspirecms.actions.quick_status_edit.modal.heading'));
+        $this->modalHeading(fn (): string => __('inspirecms::actions.quick_status_edit.modal.heading'));
 
-        $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.quick_status_edit.modal.actions.save.label'));
+        $this->modalSubmitActionLabel(__('inspirecms::actions.quick_status_edit.modal.actions.save.label'));
 
         $this->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square');
 

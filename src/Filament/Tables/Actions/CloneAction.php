@@ -25,13 +25,13 @@ class CloneAction extends Action
     {
         parent::setUp();
 
-        $this->label(fn (): string => __('inspirecms::inspirecms.actions.clone.label'));
+        $this->label(fn (): string => __('inspirecms::actions.clone.label'));
 
-        $this->modalHeading(fn () => new HtmlString(__('inspirecms::inspirecms.actions.clone.modal.heading', ['label' => $this->getRecordTitle()])));
+        $this->modalHeading(fn () => new HtmlString(__('inspirecms::actions.clone.modal.heading', ['label' => $this->getRecordTitle()])));
 
-        $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.clone.modal.actions.clone.label'));
+        $this->modalSubmitActionLabel(__('inspirecms::actions.clone.modal.actions.clone.label'));
 
-        $this->successNotificationTitle(__('inspirecms::inspirecms.actions.clone.notifications.cloned.title'));
+        $this->successNotificationTitle(__('inspirecms::actions.clone.notifications.cloned.title'));
 
         $this->requiresConfirmation();
 

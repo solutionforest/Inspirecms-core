@@ -15,11 +15,11 @@ class QuickEditAction extends EditAction
     {
         parent::setUp();
 
-        $this->label(__('inspirecms::inspirecms.actions.quick_edit.label'));
+        $this->label(__('inspirecms::actions.quick_edit.label'));
 
-        $this->modalHeading(fn (): string => __('inspirecms::inspirecms.actions.quick_edit.modal.heading', ['label' => $this->getRecordTitle()]));
+        $this->modalHeading(fn (): string => __('inspirecms::actions.quick_edit.modal.heading', ['label' => $this->getRecordTitle()]));
 
-        $this->modalSubmitActionLabel(__('inspirecms::inspirecms.actions.quick_edit.modal.actions.save.label'));
+        $this->modalSubmitActionLabel(__('inspirecms::actions.quick_edit.modal.actions.save.label'));
 
         $this->color('lime');
     }

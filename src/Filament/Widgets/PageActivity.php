@@ -26,7 +26,7 @@ class PageActivity extends BaseWidget
             ->poll('60s')
             ->striped()
             ->emptyStateIcon('heroicon-o-information-circle')
-            ->emptyStateHeading(__('inspirecms::inspirecms.widgets.page_activity.empty_state.heading'))
+            ->emptyStateHeading(__('inspirecms::widgets.page_activity.empty_state.heading'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title'))
@@ -108,7 +108,7 @@ class PageActivity extends BaseWidget
                 </span>
             </div>
         blade, [
-            'title' => __('inspirecms::inspirecms.widgets.page_activity.title'),
+            'title' => __('inspirecms::widgets.page_activity.title'),
             'icon' => $icon,
             'iconStyle' => \Filament\Support\get_color_css_variables(
                 $color,

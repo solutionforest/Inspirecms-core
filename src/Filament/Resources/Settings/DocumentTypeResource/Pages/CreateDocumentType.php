@@ -19,7 +19,7 @@ class CreateDocumentType extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label(__('inspirecms::inspirecms.actions.save.label'));
+            ->label(__('inspirecms::actions.save.label'));
     }
 
     public static function getResource(): string

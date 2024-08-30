@@ -41,7 +41,7 @@ class EditPage extends EditRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label(__('inspirecms::inspirecms.actions.save_draft.label'))
+            ->label(__('inspirecms::actions.save_draft.label'))
             ->color('secondary');
     }
 
