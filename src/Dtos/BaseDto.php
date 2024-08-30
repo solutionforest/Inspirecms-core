@@ -15,22 +15,16 @@ abstract class BaseDto
      */
     abstract public static function fromModel($model): static;
 
-    abstract public function toArray(): array;
-
-    public function __construct(array $parameters = [])
+    public static function fromArray(array $parameters): static
     {
-        if (count($parameters) == 0) {
-            return;
+        $class = new \ReflectionClass(static::class);
+        $object = $class->newInstanceWithoutConstructor();
+
+        foreach ($parameters as $key => $value) {
+            $object->$key = $value;
         }
 
-        foreach ($parameters as $property => $value) {
-            $this->{$property} = $value;
-        }
-    }
-
-    public static function fromArray($data): static
-    {
-        return new static($data);
+        return $object;
     }
 
     public function __get($name): mixed
@@ -41,5 +35,15 @@ abstract class BaseDto
     public function __set($name, $value): void
     {
         $this->{$name} = $value;
+    }
+
+    public function __toArray(): array
+    {
+        return get_object_vars($this);
+    }
+
+    public function toArray(): array
+    {
+        return (array) $this;
     }
 }

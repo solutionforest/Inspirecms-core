@@ -15,7 +15,7 @@ enum PageStatus: int implements HasColor, HasIcon, HasLabel
 
     public function getLabel(): ?string
     {
-        return match (true) {
+        return match ($this) {
             self::Draft => __('inspirecms::inspirecms.page_status.draft.label'),
             self::Publish => __('inspirecms::inspirecms.page_status.publish.label'),
             self::Private => __('inspirecms::inspirecms.page_status.private.label'),
@@ -25,7 +25,7 @@ enum PageStatus: int implements HasColor, HasIcon, HasLabel
 
     public function getColor(): string | array | null
     {
-        return match (true) {
+        return match ($this) {
             self::Draft => 'warning',
             self::Publish => 'success',
             self::Private => 'secondary',
@@ -35,7 +35,7 @@ enum PageStatus: int implements HasColor, HasIcon, HasLabel
 
     public function getIcon(): ?string
     {
-        return match (true) {
+        return match ($this) {
             self::Draft => 'heroicon-o-pencil',
             self::Publish => 'heroicon-o-check-circle',
             self::Private => 'heroicon-o-lock-closed',

@@ -9,23 +9,21 @@ use SolutionForest\InspireCms\Models\CmsDocumentType;
  */
 class DocumentTypeDto extends BaseDto
 {
-    public int $id;
+    /**
+     * @var int|string
+     */
+    public $id;
 
-    public string $title;
+    /**
+     * @var string
+     */
+    public $title;
 
-    public static function fromModel($documentType): static
+    public static function fromModel($model): static
     {
         return new self([
-            'id' => $documentType->id,
-            'title' => $documentType->title,
+            'id' => $model->id,
+            'title' => $model->title,
         ]);
-    }
-
-    public function toArray(): array
-    {
-        return [
-            'id' => $this->id,
-            'title' => $this->title,
-        ];
     }
 }
