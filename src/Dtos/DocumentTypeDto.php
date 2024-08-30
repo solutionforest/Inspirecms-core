@@ -19,9 +19,9 @@ class DocumentTypeDto extends BaseDto
      */
     public $title;
 
-    public static function fromModel($model): static
+    public static function fromModel($model)
     {
-        return new self([
+        return static::fromArray([
             'id' => $model->id,
             'title' => $model->title,
         ]);

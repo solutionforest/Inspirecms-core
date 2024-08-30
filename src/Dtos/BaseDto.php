@@ -11,19 +11,29 @@ abstract class BaseDto
 {
     /**
      * @param  Model  $model
+     * @return BaseDto<TModel>
      */
-    abstract public static function fromModel($model): static;
+    abstract public static function fromModel($model);
 
-    public static function fromArray(array $parameters): static
+    public function __construct() { }
+
+    /**
+     * @param array $parameters
+     * @return BaseDto<TModel>
+     */
+    public static function fromArray(array $parameters)
     {
-        $class = new \ReflectionClass(static::class);
-        $object = $class->newInstanceWithoutConstructor();
+        $class = new \ReflectionClass(static::class); 
+        /**
+         * @var BaseDto<TModel>
+         */
+        $dto = $class->newInstanceWithoutConstructor();
 
         foreach ($parameters as $key => $value) {
-            $object->$key = $value;
+            $dto->$key = $value;
         }
 
-        return $object;
+        return $dto;
     }
 
     public function __get($name): mixed
