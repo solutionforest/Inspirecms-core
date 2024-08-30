@@ -15,15 +15,14 @@ abstract class BaseDto
      */
     abstract public static function fromModel($model);
 
-    public function __construct() { }
+    public function __construct() {}
 
     /**
-     * @param array $parameters
      * @return BaseDto<TModel>
      */
     public static function fromArray(array $parameters)
     {
-        $class = new \ReflectionClass(static::class); 
+        $class = new \ReflectionClass(static::class);
         /**
          * @var BaseDto<TModel>
          */
