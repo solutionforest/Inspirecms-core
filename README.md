@@ -11,43 +11,28 @@ This is where your description should go. Limit it to a paragraph or two. Consid
 
 ## Installation
 
-You can install the package via composer:
+1. You can install the package via composer:
 
 ```bash
 composer require solution-forest/inspirecms-core
 ```
 
-You can publish and run the migrations with:
+2. Run install command:
 
 ```bash
-php artisan vendor:publish --tag="inspirecms-migrations"
-php artisan migrate
+php artisan solutionforest/inspirecms:install
 ```
 
-You can publish the config file with:
+## Configuration
 
-```bash
-php artisan vendor:publish --tag="inspirecms-config"
-```
+## Extending
 
-Optionally, you can publish the views using
-
-```bash
-php artisan vendor:publish --tag="inspirecms-views"
-```
-
-This is the contents of the published config file:
-
+### Override model
 ```php
-return [
-];
-```
-
-## Usage
-
-```php
-$inspireCms = new SolutionForest\InspireCms();
-echo $inspireCms->echoPhrase('Hello, SolutionForest!');
+\SolutionForest\InspireCms\Facades\ModelManifest::replace(
+    \SolutionForest\InspireCms\Models\Content::class,
+    Your\Model\Class::class,
+);
 ```
 
 ## Testing
