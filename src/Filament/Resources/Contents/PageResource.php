@@ -21,7 +21,6 @@ use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
-use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditStatusAction;
 use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
 use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -158,28 +157,6 @@ class PageResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ViewAction::make()->iconButton(),
-                Tables\Actions\ActionGroup::make([
-                    QuickEditStatusAction::make()
-                        ->fillForm(fn (Model | CmsContent $record) => [
-                            'status' => $record->status,
-                        ])
-                        ->form([
-                            static::getStatusSelectFormComponent()->live(),
-                            static::getPublishedAtComponent()
-                                ->required(fn ($get) => $get('status') == PageStatus::Publish->value)
-                                ->visible(fn ($get) => $get('status') == PageStatus::Publish->value || $get('status') == PageStatus::Private->value),
-                        ])
-                        ->action(function (Model | CmsContent $record, array $data) {
-
-                            $record->update($data);
-
-                            /** @var null|Model|CmsPropertyData */
-                            $latestPropertyData = $record->getLatestPropertyData();
-                            $record->createPropertyData([
-                                'property_value' => $latestPropertyData->property_value,
-                            ]);
-                        }),
-                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
