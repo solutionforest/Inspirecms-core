@@ -2,10 +2,10 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
-use SolutionForest\InspireCms\Models\CmsDocumentType;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 /**
- * @extends BaseDto<CmsDocumentType>
+ * @extends BaseDto<DocumentType>
  */
 class DocumentTypeDto extends BaseDto
 {

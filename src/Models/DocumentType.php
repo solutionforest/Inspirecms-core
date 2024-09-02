@@ -2,26 +2,20 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType as CmsDocumentTypeContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class CmsDocumentType extends Model
+class DocumentType extends BaseModel implements CmsDocumentTypeContract
 {
     protected $guarded = ['id'];
 
     protected $casts = [
         'can_use_at_root' => 'boolean',
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getDocumentTypeTableName());
-    }
 
     public function fieldGroups(): MorphToMany
     {

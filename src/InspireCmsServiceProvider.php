@@ -11,7 +11,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
-use SolutionForest\InspireCms\Models\CmsUser;
+use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
+use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -70,11 +71,16 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerPolymorphism();
+
+        $this->app->singleton(ModelManifestInterface::class, fn () => $this->app->make(ModelManifest::class));
+
+        \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }
 
     public function bootingPackage(): void
     {
-        $this->overridePluginsConfig();
+        \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
+        $this->customPlugins();
         $this->registerAuthGuard();
 
         Event::listen(
@@ -199,15 +205,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
-    protected function overridePluginsConfig(): void
+    protected function customPlugins(): void
     {
         if (config('inspirecms.override_plugins.field_group_models', false)) {
 
-            config([
-                // override field group model on config
-                'filament-field-group.models.field_group' => \SolutionForest\InspireCms\Models\FieldGroup::class,
-                'filament-field-group.models.field' => \SolutionForest\InspireCms\Models\Field::class,
-            ]);
+            // override field group models
+            \SolutionForest\FilamentFieldGroup\Facades\ModelManifest::replace(
+                \SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup::class,
+                \SolutionForest\InspireCms\Models\FieldGroup::class
+            );
+            \SolutionForest\FilamentFieldGroup\Facades\ModelManifest::replace(
+                \SolutionForest\FilamentFieldGroup\Models\Contracts\Field::class,
+                \SolutionForest\InspireCms\Models\Field::class
+            );
         }
     }
 
@@ -215,7 +225,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         config()->set('auth.providers.inspirecms', [
             'driver' => 'eloquent',
-            'model' => CmsUser::class,
+            'model' => \SolutionForest\InspireCms\Facades\ModelManifest::get(
+                \SolutionForest\InspireCms\Models\Contracts\User::class,
+                \SolutionForest\InspireCms\Models\User::class,
+            ),
         ]);
         config()->set('auth.guards.inspirecms', [
             'driver' => 'session',

@@ -2,14 +2,14 @@
 
 namespace SolutionForest\InspireCms\Models\Polymorphic;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use Spatie\EloquentSortable\Sortable;
 use Spatie\EloquentSortable\SortableTrait;
+use SolutionForest\InspireCms\Models\Contracts\ComponentFieldGroup as CmsComponentFieldGroupContract;
 
-class CmsComponentFieldGroup extends Model implements Sortable
+class ComponentFieldGroup extends BaseModel implements CmsComponentFieldGroupContract
 {
     use SortableTrait;
 
@@ -21,13 +21,6 @@ class CmsComponentFieldGroup extends Model implements Sortable
         'order_column_name' => 'order',
         'sort_when_creating' => true,
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getComponentFieldGroupTableName());
-    }
 
     public function fieldGroup(): BelongsTo
     {

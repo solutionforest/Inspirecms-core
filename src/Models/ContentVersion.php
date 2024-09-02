@@ -2,22 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\ContentVersion as CmsContentVersionContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class CmsContentVersion extends Model
+class ContentVersion extends BaseModel implements CmsContentVersionContract
 {
     protected $guarded = ['id'];
 
     public $timestamps = false;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getContentVersionTableName());
-    }
 
     public function content(): BelongsTo
     {

@@ -2,19 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\Lanauage as CmsLanauageContract;
 
-class CmsLanauage extends Model
+class Lanauage extends BaseModel implements CmsLanauageContract
 {
     protected $guarded = ['id'];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getLanguageTableName());
-    }
 
     public static function findOrCreateDefaultLanguage()
     {

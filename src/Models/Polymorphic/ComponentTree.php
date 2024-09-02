@@ -3,18 +3,17 @@
 namespace SolutionForest\InspireCms\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Concerns\NestableTrait;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use Spatie\EloquentSortable\Sortable;
+use SolutionForest\InspireCms\Models\Contracts\ComponentTree as CmsComponentTreeContract;
 use Spatie\EloquentSortable\SortableTrait;
 
 /**
  * This class represents a component in the CMS system. It uses the BelongToCmsComponentTree trait
  * to manage its hierarchical order and structure through a relationship with CmsComponentTree.
  */
-class CmsComponentTree extends Model implements Sortable
+class ComponentTree extends BaseModel implements CmsComponentTreeContract
 {
     use NestableTrait;
     use SortableTrait;
@@ -25,13 +24,6 @@ class CmsComponentTree extends Model implements Sortable
         'order_column_name' => 'order',
         'sort_when_creating' => true,
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getComponentTreeTableName());
-    }
 
     public function nestable(): MorphTo
     {

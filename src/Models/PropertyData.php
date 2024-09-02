@@ -2,11 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyDataContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class CmsPropertyData extends Model
+class PropertyData extends BaseModel implements CmsPropertyDataContract
 {
     protected $guarded = ['id'];
 
@@ -16,13 +17,6 @@ class CmsPropertyData extends Model
     ];
 
     public $timestamps = false;
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getPropertyDataTableName());
-    }
 
     public function contentVersion(): HasMany
     {

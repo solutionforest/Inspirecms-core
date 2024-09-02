@@ -12,7 +12,7 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
-use SolutionForest\InspireCms\Models\CmsContent;
+use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
 use Throwable;
 
 use function Filament\Support\is_app_url;

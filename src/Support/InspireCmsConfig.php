@@ -2,93 +2,86 @@
 
 namespace SolutionForest\InspireCms\Support;
 
-use SolutionForest\InspireCms\Models\CmsContent;
-use SolutionForest\InspireCms\Models\CmsContentVersion;
-use SolutionForest\InspireCms\Models\CmsDocumentType;
-use SolutionForest\InspireCms\Models\CmsLanauage;
-use SolutionForest\InspireCms\Models\CmsPropertyData;
-use SolutionForest\InspireCms\Models\CmsUser;
-use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentFieldGroup;
-use SolutionForest\InspireCms\Models\Polymorphic\CmsComponentTree;
-use SolutionForest\InspireCms\Models\Users\CmsUserLoginActivity;
+use SolutionForest\InspireCms\Facades\ModelManifest;
+use SolutionForest\InspireCms\Models;
 
 class InspireCmsConfig
 {
     public static function getContentTableName(): string
     {
-        return config('inspirecms.models.content.table_name', 'cms_contents');
+        return app(static::getContentModelClass())->getTable();
     }
 
     public static function getContentModelClass(): string
     {
-        $class = config('inspirecms.models.content.fqcn', CmsContent::class);
+        $class = ModelManifest::get(Models\Contracts\Content::class, Models\Content::class);
 
-        return self::ensureClassExists($class, 'CmsContent model');
+        return self::ensureClassExists($class, 'Content model');
     }
 
     public static function getComponentFieldGroupTableName(): string
     {
-        return config('inspirecms.models.component_field_group.table_name', 'cms_component_field_groups');
+        return app(static::getComponentFieldGroupModelClass())->getTable();
     }
 
     public static function getComponentFieldGroupModelClass(): string
     {
-        $class = config('inspirecms.models.component_field_group.fqcn', CmsComponentFieldGroup::class);
+        $class = ModelManifest::get(Models\Contracts\ComponentFieldGroup::class, Models\Polymorphic\ComponentFieldGroup::class);
 
-        return self::ensureClassExists($class, 'CmsComponentFieldGroup model');
+        return self::ensureClassExists($class, 'ComponentFieldGroup model');
     }
 
     public static function getComponentTreeTableName(): string
     {
-        return config('inspirecms.models.component_tree.table_name', 'cms_component_field_groups');
+        return app(static::getComponentTreeModelClass())->getTable();
     }
 
     public static function getComponentTreeModelClass(): string
     {
-        $class = config('inspirecms.models.component_tree.fqcn', CmsComponentTree::class);
+        $class = ModelManifest::get(Models\Contracts\ComponentTree::class, Models\Polymorphic\ComponentTree::class);
 
-        return self::ensureClassExists($class, 'CmsComponentTree model');
+        return self::ensureClassExists($class, 'ComponentTree model');
     }
 
     public static function getPropertyDataTableName(): string
     {
-        return config('inspirecms.models.property_data.table_name', 'cms_property_datas');
+        return app(static::getPropertyDataModelClass())->getTable();
     }
 
     public static function getPropertyDataModelClass(): string
     {
-        $class = config('inspirecms.models.property_data.fqcn', CmsPropertyData::class);
+        $class = ModelManifest::get(Models\Contracts\PropertyData::class, Models\PropertyData::class);
 
-        return self::ensureClassExists($class, 'CmsPropertyData model');
+        return self::ensureClassExists($class, 'PropertyData model');
     }
 
     public static function getContentVersionTableName(): string
     {
-        return config('inspirecms.models.content_version.table_name', 'cms_content_versions');
+        return app(static::getContentVersionModelClass())->getTable();
     }
 
     public static function getContentVersionModelClass(): string
     {
-        $class = config('inspirecms.models.content_version.fqcn', CmsContentVersion::class);
+        $class = ModelManifest::get(Models\Contracts\ContentVersion::class, Models\ContentVersion::class);
 
-        return self::ensureClassExists($class, 'CmsPropertyData model');
+        return self::ensureClassExists($class, 'ContentVersion model');
     }
 
     public static function getDocumentTypeTableName(): string
     {
-        return config('inspirecms.models.document_type.table_name', 'cms_document_types');
+        return app(static::getDocumentTypeModelClass())->getTable();
     }
 
     public static function getDocumentTypeModelClass(): string
     {
-        $class = config('inspirecms.models.document_type.fqcn', CmsDocumentType::class);
+        $class = ModelManifest::get(Models\Contracts\DocumentType::class, Models\DocumentType::class);
 
-        return self::ensureClassExists($class, 'CmsDocumentType model');
+        return self::ensureClassExists($class, 'DocumentType model');
     }
 
     public static function getFieldGroupTableName(): string
     {
-        return \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldGroupTableName();
+        return app(static::getFieldGroupModelClass())->getTable();
     }
 
     public static function getFieldGroupModelClass(): string
@@ -98,7 +91,7 @@ class InspireCmsConfig
 
     public static function getFieldTableName(): string
     {
-        return \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldTableName();
+        return app(static::getFieldModelClass())->getTable();
     }
 
     public static function getFieldModelClass(): string
@@ -108,38 +101,38 @@ class InspireCmsConfig
 
     public static function getUserTableName(): string
     {
-        return config('inspirecms.models.user.table_name', 'cms_users');
+        return app(static::getUserModelClass())->getTable();
     }
 
     public static function getUserModelClass(): string
     {
-        $class = config('inspirecms.models.user.fqcn', CmsUser::class);
+        $class = ModelManifest::get(Models\Contracts\User::class, Models\User::class);
 
-        return self::ensureClassExists($class, 'CmsUser model');
+        return self::ensureClassExists($class, 'User model');
     }
 
     public static function getUserLoginActivityTableName(): string
     {
-        return config('inspirecms.models.user_login_activity.table_name', 'cms_user_login_activities');
+        return app(static::getUserModelClass())->getTable();
     }
 
     public static function getUserLoginActivityModelClass(): string
     {
-        $class = config('inspirecms.models.user_login_activity.fqcn', CmsUserLoginActivity::class);
+        $class = ModelManifest::get(Models\Contracts\UserLoginActivity::class, Models\Users\UserLoginActivity::class);
 
-        return self::ensureClassExists($class, 'CmsUserLoginActivity model');
+        return self::ensureClassExists($class, 'UserLoginActivity model');
     }
 
     public static function getLanguageTableName(): string
     {
-        return config('inspirecms.models.language.table_name', 'cms_languages');
+        return app(static::getLanguageModelClass())->getTable();
     }
 
     public static function getLanguageModelClass(): string
     {
-        $class = config('inspirecms.models.language.fqcn', CmsLanauage::class);
+        $class = ModelManifest::get(Models\Contracts\Lanauage::class, Models\Lanauage::class);
 
-        return self::ensureClassExists($class, 'CmsLanauage model');
+        return self::ensureClassExists($class, 'Lanauage model');
     }
 
     /**

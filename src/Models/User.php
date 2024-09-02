@@ -3,11 +3,12 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Filament\Models\Contracts\FilamentUser;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use SolutionForest\InspireCms\Base\BaseAuthenticatableModel;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
+use SolutionForest\InspireCms\Models\Contracts\User as CmsUserContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class CmsUser extends Authenticatable implements FilamentUser
+class User extends BaseAuthenticatableModel implements FilamentUser, CmsUserContract
 {
     use CmsUserTrait;
 
@@ -24,13 +25,6 @@ class CmsUser extends Authenticatable implements FilamentUser
         'last_logged_in_at' => 'datetime',
         'email_confirmed_at' => 'datetime',
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getUserTableName());
-    }
 
     public function userActivity()
     {

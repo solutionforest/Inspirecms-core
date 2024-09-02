@@ -3,16 +3,17 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Enums\PageStatus;
+use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 /**
  * @method static Builder|static query()
  * @method Builder|static isRootLevel()
  */
-class CmsContent extends Model
+class Content extends BaseModel implements ContentContract
 {
     use Concerns\BelongToCmsComponentTree;
     use Concerns\HasPropertyData;
@@ -23,13 +24,6 @@ class CmsContent extends Model
     protected $casts = [
         'published_at' => 'datetime',
     ];
-
-    public function __construct(array $attributes = [])
-    {
-        parent::__construct($attributes);
-
-        $this->setTable(InspireCmsConfig::getContentTableName());
-    }
 
     public function documentType(): BelongsTo
     {

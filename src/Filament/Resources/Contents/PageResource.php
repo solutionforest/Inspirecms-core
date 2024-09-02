@@ -22,8 +22,8 @@ use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditStatusAction;
-use SolutionForest\InspireCms\Models\CmsContent;
-use SolutionForest\InspireCms\Models\CmsPropertyData;
+use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
+use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class PageResource extends Resource
