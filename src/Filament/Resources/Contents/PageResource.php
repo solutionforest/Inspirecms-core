@@ -381,6 +381,7 @@ class PageResource extends Resource
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
+            ->dehydrated(false)  
             ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);
