@@ -1,11 +1,10 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Schema;
+use SolutionForest\InspireCms\Base\BaseMigration;
 
-return new class extends Migration
+return new class extends BaseMigration
 {
     public function up()
     {
@@ -131,8 +130,16 @@ return new class extends Migration
 
     private function getTableNames()
     {
-        return Arr::whereNotNull(
-            Arr::map(config('inspirecms.models', []), fn ($arr) => $arr['table_name'] ?? null)
-        );
+        return [
+            'component_field_group' => $this->prefix . 'component_field_groups',
+            'component_tree' => $this->prefix . 'component_trees',
+            'content_version' => $this->prefix . 'content_versions',
+            'content' => $this->prefix . 'contents',
+            'document_type' => $this->prefix . 'document_types',
+            'language' => $this->prefix . 'languages',
+            'property_data' => $this->prefix . 'property_data',
+            'user_login_activity' => $this->prefix . 'user_login_activities',
+            'user' => $this->prefix . 'users',
+        ];
     }
 };
