@@ -10,10 +10,9 @@ class UserPermission
 
     public function __construct(
         public string $name,
-        protected null|string|\Closure $displayName = null,
-        protected null|string|\Closure $helperText = null,
-    ) 
-    { 
+        protected null | string | \Closure $displayName = null,
+        protected null | string | \Closure $helperText = null,
+    ) {
         $this->guardName = config('inspirecms.auth.guard', 'inspirecms');
     }
 
