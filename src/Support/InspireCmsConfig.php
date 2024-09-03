@@ -130,9 +130,9 @@ class InspireCmsConfig
 
     public static function getLanguageModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Lanauage::class, Models\Lanauage::class);
+        $class = ModelManifest::get(Models\Contracts\Language::class, Models\Language::class);
 
-        return self::ensureClassExists($class, 'Lanauage model');
+        return self::ensureClassExists($class, 'Language model');
     }
 
     /**

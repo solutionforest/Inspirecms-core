@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface Lanauage 
+interface Language 
 {
     /**
      * Find or create the default language.
@@ -10,7 +10,7 @@ interface Lanauage
      * This method attempts to retrieve the default language. If it does not exist,
      * a new default language instance will be created and returned.
      *
-     * @return Lanauage The found or newly created default language instance.
+     * @return Language The found or newly created default language instance.
      */
-    public static function findOrCreateDefaultLanguage(): Lanauage;
+    public static function findOrCreateDefaultLanguage(): Language;
 }

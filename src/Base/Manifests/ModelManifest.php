@@ -91,7 +91,7 @@ class ModelManifest implements ModelManifestInterface
             Models\Content::class,
             Models\ContentVersion::class,
             Models\DocumentType::class,
-            Models\Lanauage::class,
+            Models\Language::class,
             Models\PropertyData::class,
             Models\User::class,
             Models\Polymorphic\ComponentFieldGroup::class,
