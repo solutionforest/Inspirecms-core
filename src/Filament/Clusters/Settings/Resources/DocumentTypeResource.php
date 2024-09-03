@@ -24,7 +24,7 @@ class DocumentTypeResource extends Resource
 {
     protected static ?int $navigationSort = -10;
 
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
     
     protected static ?string $cluster = Settings::class;
 

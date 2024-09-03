@@ -6,7 +6,7 @@ use Filament\Clusters\Cluster;
  
 class Contents extends Cluster
 {
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     protected static ?int $navigationSort = 1;
 

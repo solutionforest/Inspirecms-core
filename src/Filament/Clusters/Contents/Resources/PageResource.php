@@ -30,7 +30,7 @@ class PageResource extends Resource
 {
     protected static ?int $navigationSort = -9;
 
-    protected static ?string $navigationIcon = null;
+    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'title';
     
