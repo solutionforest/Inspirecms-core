@@ -64,6 +64,7 @@ class Content extends BaseModel implements ContentContract
                     if ($callback) {
                         return $callback($this, inspirecms_content_statuses()->getOption($status));
                     }
+
                     return true;
             }
         }

@@ -25,7 +25,7 @@ return [
         'notifications' => [
 
             'cloned' => [
-                
+
                 'title' => 'Clone Successful',
 
             ],
@@ -137,7 +137,7 @@ return [
             'unpublished' => [
 
                 'title' => 'Unpublished Successful',
-                
+
             ],
         ],
     ],

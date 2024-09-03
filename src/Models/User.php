@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Models\Contracts\User as CmsUserContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class User extends BaseAuthenticatableModel implements FilamentUser, CmsUserContract
+class User extends BaseAuthenticatableModel implements CmsUserContract, FilamentUser
 {
     use CmsUserTrait;
 

@@ -15,7 +15,7 @@ trait HasPropertyData
         //
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function propertyDatas(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -26,7 +26,7 @@ trait HasPropertyData
         )->withPivot('created_at');
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function createPropertyData(array $data)
     {
         $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge(
@@ -55,7 +55,7 @@ trait HasPropertyData
         return [];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getLatestPropertyData(): ?PropertyData
     {
         return $this->propertyDatas()
@@ -63,7 +63,7 @@ trait HasPropertyData
             ->first();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getLatestPublishedPropertyData(): ?PropertyData
     {
         return $this->propertyDatas()

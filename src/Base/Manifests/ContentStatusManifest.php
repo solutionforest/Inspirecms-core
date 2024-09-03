@@ -3,21 +3,21 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
 
 class ContentStatusManifest implements ContentStatusManifestInterface
 {
     /** @var Collection<ContentStatusOption> */
     protected Collection $options;
+
     protected int $defaultValue = 0;
 
     public function __construct()
     {
         $this->options = collect(static::getDefaultOptions());
     }
-    
-    /** @inheritDoc */
+
+    /** {@inheritDoc} */
     public function addOption(ContentStatusOption $option, bool $replace = false): void
     {
         $existing = $this->options->where('value', $option->value)->where('name', $option->name)->first();
@@ -26,14 +26,14 @@ class ContentStatusManifest implements ContentStatusManifestInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function replaceOption(ContentStatusOption $option): void
     {
         $this->addOption($option, true);
     }
 
-    /** @inheritDoc */
-    public function getOption(int|string $valueOrName): ?ContentStatusOption
+    /** {@inheritDoc} */
+    public function getOption(int | string $valueOrName): ?ContentStatusOption
     {
         if (is_int($valueOrName)) {
             return $this->options->firstWhere('value', $valueOrName);
@@ -42,13 +42,13 @@ class ContentStatusManifest implements ContentStatusManifestInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function selectOptions(): Collection
     {
         return $this->options->keyBy('value');
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function all(): Collection
     {
         return $this->options;
@@ -59,7 +59,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
         $this->defaultValue = $value;
     }
 
-    public function getDefaultValue(): int|null
+    public function getDefaultValue(): ?int
     {
         return $this->defaultValue;
     }
@@ -79,19 +79,22 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                 'publish',
                 __('inspirecms::inspirecms.page_status.publish.label'),
                 'success',
-                'heroicon-o-check-circle'),
+                'heroicon-o-check-circle'
+            ),
             new ContentStatusOption(
                 2,
                 'unpublish',
                 __('inspirecms::inspirecms.page_status.unpublish.label'),
                 'gray',
-                'heroicon-o-x-circle'),
+                'heroicon-o-x-circle'
+            ),
             new ContentStatusOption(
                 3,
                 'private',
                 __('inspirecms::inspirecms.page_status.private.label'),
                 'secondary',
-                'heroicon-o-lock-closed'),
+                'heroicon-o-lock-closed'
+            ),
         ];
     }
 }

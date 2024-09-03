@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Base\Manifests;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Models;
 
 class ModelManifest implements ModelManifestInterface
@@ -17,7 +16,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Bind initial models to the container and establish explicit model bindings.
-     * @return void
      */
     public function register(): void
     {
@@ -32,7 +30,6 @@ class ModelManifest implements ModelManifestInterface
 
     /**
      * Register the morph map for polymorphic relations.
-     * @return void
      */
     public function registerMorphMap(): void
     {
@@ -48,9 +45,8 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Register models.
      *
-     * @param string $interfaceClass The interface class to register.
-     * @param string $modelClass The model class to register.
-     * @return void
+     * @param  string  $interfaceClass  The interface class to register.
+     * @param  string  $modelClass  The model class to register.
      */
     public function add(string $interfaceClass, string $modelClass): void
     {
@@ -64,9 +60,8 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Replace a model with a different implementation.
      *
-     * @param string $interfaceClass The interface class to replace.
-     * @param string $modelClass The new model class to use.
-     * @return void
+     * @param  string  $interfaceClass  The interface class to replace.
+     * @param  string  $modelClass  The new model class to use.
      */
     public function replace(string $interfaceClass, string $modelClass): void
     {
@@ -76,8 +71,8 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Gets the registered class for the interface.
      *
-     * @param string $interfaceClass The interface class to retrieve.
-     * @param string|null $fallback Optional fallback class if not found.
+     * @param  string  $interfaceClass  The interface class to retrieve.
+     * @param  string|null  $fallback  Optional fallback class if not found.
      * @return string|null The registered model class or fallback.
      */
     public function get(string $interfaceClass, ?string $fallback = null): ?string
@@ -109,9 +104,8 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Bind a model to the interface in the container.
      *
-     * @param string $interfaceClass The interface class to bind.
-     * @param string $modelClass The model class to bind.
-     * @return void
+     * @param  string  $interfaceClass  The interface class to bind.
+     * @param  string  $modelClass  The model class to bind.
      */
     protected function bindModel(string $interfaceClass, string $modelClass): void
     {
@@ -121,7 +115,7 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Guess the contract class for a given model class.
      *
-     * @param string $modelClass The model class to guess the contract for.
+     * @param  string  $modelClass  The model class to guess the contract for.
      * @return string The guessed contract class name.
      */
     protected function guessContractClass(string $modelClass): string
@@ -137,7 +131,7 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Guess the model class for a given contract.
      *
-     * @param string $modelContract The model contract to guess the class for.
+     * @param  string  $modelContract  The model contract to guess the class for.
      * @return string The guessed model class name.
      */
     protected function guessModelClass(string $modelContract): string
@@ -151,7 +145,7 @@ class ModelManifest implements ModelManifestInterface
 
         $shortName = (new \ReflectionClass($modelContract))->getShortName();
 
-        return 'SolutionForest\\InspireCms\\Models\\'.$shortName;
+        return 'SolutionForest\\InspireCms\\Models\\' . $shortName;
     }
 
     /**
@@ -160,7 +154,7 @@ class ModelManifest implements ModelManifestInterface
      * This method generates a unique morph map key by combining a prefix (if defined in the configuration)
      * with the snake_case version of the class name's basename.
      *
-     * @param string $className The class name to generate the morph map key for.
+     * @param  string  $className  The class name to generate the morph map key for.
      * @return string The generated morph map key.
      */
     protected function getMorphMapKey(string $className): string
@@ -175,9 +169,9 @@ class ModelManifest implements ModelManifestInterface
     /**
      * Validate that a class is an Eloquent model.
      *
-     * @param string $class The class to validate.
+     * @param  string  $class  The class to validate.
+     *
      * @throws \InvalidArgumentException If the class is not a subclass of Model.
-     * @return void
      */
     private function validateClassIsEloquentModel(string $class): void
     {

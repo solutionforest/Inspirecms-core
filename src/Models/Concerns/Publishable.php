@@ -8,24 +8,22 @@ trait Publishable
 {
     /**
      * The state representing the publishable state.
-     *
-     * @var string
      */
     protected string $publishableState = 'draft';
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function setPublishableState(string $state): void
     {
         $this->publishableState = $state;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getPublishableState(): string
     {
         return $this->publishableState;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function resetPublishableState(): void
     {
         $this->publishableState = 'draft';
@@ -54,21 +52,21 @@ trait Publishable
     public function publish(array $data)
     {
         $this->setPublishableState('publish');
-        
+
         return $this->save($data);
     }
 
     public function unpublish()
     {
         $this->setPublishableState('unpublish');
-        
+
         return $this->save([]);
     }
 
     public function setPrivateUse(array $data)
     {
         $this->setPublishableState('private');
-        
+
         return $this->save($data);
     }
 
@@ -79,7 +77,7 @@ trait Publishable
         } else {
             $this->status = inspirecms_content_statuses()->getDefaultValue();
         }
-        
+
         return parent::save($data);
     }
 }

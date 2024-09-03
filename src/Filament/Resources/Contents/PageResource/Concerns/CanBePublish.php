@@ -109,7 +109,7 @@ trait CanBePublish
     public function publish(): \Closure
     {
         return function (array $data, Action $action) {
-         
+
             $isCreating = $this->isCreatingPublishableData();
 
             $shouldRedirect = true;
@@ -123,7 +123,7 @@ trait CanBePublish
                 $this->handlePublishableRecordCreateOrUpdate($data, $isCreating, 'publish');
             });
 
-            if (!$isSuccess) {
+            if (! $isSuccess) {
                 return;
             }
 
@@ -152,9 +152,10 @@ trait CanBePublish
         return function (null | Model | CmsContent $record, Action $action) {
             if (is_null($record)) {
                 $action->cancel();
+
                 return;
             }
-            
+
             $this->authorizeAccess();
 
             $this->handlePublishableRecordCreateOrUpdate([], false, 'unpublish');
@@ -169,6 +170,7 @@ trait CanBePublish
         return function (Model | CmsContent $record, array $data, Action $action) {
             if (is_null($record)) {
                 $action->cancel();
+
                 return;
             }
 
@@ -181,7 +183,7 @@ trait CanBePublish
                 $this->handlePublishableRecordCreateOrUpdate($data, false, 'private');
             });
 
-            if (!$isSuccess) {
+            if (! $isSuccess) {
                 return;
             }
 
@@ -204,14 +206,14 @@ trait CanBePublish
             $record = new ($this->getModel())($data);
 
             $record->setPublishableState($publishableAction);
-    
+
             if (
                 static::getResource()::isScopedToTenant() &&
                 ($tenant = Filament::getTenant())
             ) {
                 return $this->associateRecordWithTenant($record, $tenant);
             }
-    
+
             $this->record->save();
             //endregion Handle Record Creating
 
@@ -224,7 +226,7 @@ trait CanBePublish
             //region Handle Record Updating
             /** @var Model|CmsContent */
             $record = $this->getRecord();
-            
+
             $record->setPublishableState($publishableAction);
 
             $this->record = $this->handleRecordUpdate($record, $data);
@@ -358,7 +360,7 @@ trait CanBePublish
     //region Help functions
     protected function wrapPublisableSavingEventIntoDbTransaction(\Closure $callback)
     {
-        
+
         try {
             $this->beginDatabaseTransaction();
 

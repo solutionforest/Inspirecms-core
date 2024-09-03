@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
  * @method static void add(string $interfaceClass, string $modelClass) Register models.
  * @method static void replace(string $interfaceClass, string $modelClass) Replace a model with a different implementation.
  * @method static ?string get(string $interfaceClass, ?string $fallback = null) Gets the registered class for the interface.
- * 
+ *
  * @see \SolutionForest\InspireCms\Base\Manifests\ModelManifest
  */
 class ModelManifest extends Facade
