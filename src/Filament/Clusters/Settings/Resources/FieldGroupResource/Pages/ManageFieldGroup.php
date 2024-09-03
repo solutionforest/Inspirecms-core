@@ -25,7 +25,7 @@ class ManageFieldGroup extends BasePage
         ];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getBreadcrumbs(): array
     {
         $resource = static::getResource();

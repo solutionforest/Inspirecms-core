@@ -15,7 +15,7 @@ class Lanauage extends BaseModel implements CmsLanauageContract
         $locale = config('app.locale', 'en');
 
         // Create if not exists
-        /** 
+        /**
          * @var CmsLanauageContract
          */
         $result = static::query()->firstOrCreate(

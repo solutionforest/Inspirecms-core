@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class UserResource extends Resource
 {
     protected static ?string $cluster = Users::class;
-    
+
     public static function table(Table $table): Table
     {
         return $table

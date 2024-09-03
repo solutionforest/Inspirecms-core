@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-interface User 
+interface User
 {
     /**
      * Get the user activity associated with the user.

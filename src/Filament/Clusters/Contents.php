@@ -1,9 +1,9 @@
 <?php
- 
+
 namespace SolutionForest\InspireCms\Filament\Clusters;
- 
+
 use Filament\Clusters\Cluster;
- 
+
 class Contents extends Cluster
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';

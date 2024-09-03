@@ -29,7 +29,7 @@ class FieldGroupResource extends BaseResource
     protected static ?string $navigationIcon = null;
 
     protected static ?string $recordTitleAttribute = 'title';
-    
+
     protected static ?string $cluster = Settings::class;
 
     public static function form(Form $form): Form

@@ -27,7 +27,7 @@ interface DocumentType
      * @return MorphMany The morph field groups associated with the document type.
      */
     public function morphFieldGroups(): MorphMany;
-    
+
     /**
      * Get the contents associated with the document type.
      *

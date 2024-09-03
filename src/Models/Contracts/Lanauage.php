@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface Lanauage 
+interface Lanauage
 {
     /**
      * Find or create the default language.

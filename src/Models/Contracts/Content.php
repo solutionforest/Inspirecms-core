@@ -76,7 +76,7 @@ interface Content extends NestableInterface
      * This method checks if the content has been published,
      * optionally allowing a callback for additional checks.
      *
-     * @param \Closure|null $callback Optional callback for additional checks.
+     * @param  \Closure|null  $callback  Optional callback for additional checks.
      * @return bool True if published, false otherwise.
      */
     public function isPublished(?\Closure $callback = null): bool;
@@ -86,7 +86,7 @@ interface Content extends NestableInterface
      *
      * This method creates a new property data instance for versioning.
      *
-     * @param array $data The data to create the property data with.
+     * @param  array  $data  The data to create the property data with.
      * @return \SolutionForest\InspireCms\Models\Contracts\PropertyData The created property data.
      */
     public function createPropertyData(array $data);

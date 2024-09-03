@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-interface UserLoginActivity 
+interface UserLoginActivity
 {
     /**
      * Get the users associated with the login activity.
