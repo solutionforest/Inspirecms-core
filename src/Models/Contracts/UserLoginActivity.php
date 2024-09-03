@@ -2,4 +2,17 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface UserLoginActivity {}
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
+interface UserLoginActivity 
+{
+    /**
+     * Get the users associated with the login activity.
+     *
+     * This method should return a HasMany relationship
+     * representing the users linked to the login activity.
+     *
+     * @return HasMany The associated users.
+     */
+    public function users(): HasMany;
+}

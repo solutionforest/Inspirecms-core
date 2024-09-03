@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\Lanauage as CmsLanauageContract;
 
@@ -9,18 +10,23 @@ class Lanauage extends BaseModel implements CmsLanauageContract
 {
     protected $guarded = ['id'];
 
-    public static function findOrCreateDefaultLanguage()
+    public static function findOrCreateDefaultLanguage(): CmsLanauageContract
     {
         $locale = config('app.locale', 'en');
 
         // Create if not exists
-        return static::query()->firstOrCreate(
+        /** 
+         * @var CmsLanauageContract
+         */
+        $result = static::query()->firstOrCreate(
             ['code' => $locale],
             [
                 'name' => locale_get_display_name($locale) ?? $locale,
                 'is_default' => true,
             ]
         );
+
+        return $result;
     }
 
     public static function boot()
@@ -30,7 +36,7 @@ class Lanauage extends BaseModel implements CmsLanauageContract
         static::saving(function (self $model) {
             // Set "is_default" of other languages as false if this model is changing to "default"
             if ($model->isDirty(['is_default']) && $model->is_default) {
-                \DB::transaction(function () use ($model) {
+                DB::transaction(function () use ($model) {
                     static::query()
                         ->where('is_default', true)
                         ->whereKeyNot($model->getKey())

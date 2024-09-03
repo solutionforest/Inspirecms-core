@@ -12,53 +12,100 @@ interface Content extends NestableInterface
 {
     /**
      * Return the document type relation.
+     *
+     * This method should return a BelongsTo relationship
+     * representing the document type associated with the content.
+     *
+     * @return BelongsTo The document type relation.
      */
     public function documentType(): BelongsTo;
 
     /**
      * Return the multiple property data relation.
+     *
+     * This method should return a BelongsToMany relationship
+     * representing the multiple property data associated with the content.
+     *
+     * @return BelongsToMany The property data relation.
      */
     public function propertyDatas(): BelongsToMany;
 
     /**
      * Return the content versions relation.
+     *
+     * This method should return a HasMany relationship
+     * representing the versions of the content.
+     *
+     * @return HasMany The content versions relation.
      */
     public function contentVersions(): HasMany;
 
     /**
      * Return the content tree relation.
+     *
+     * This method should return a MorphOne relationship
+     * representing the component tree associated with the content.
+     *
+     * @return MorphOne The content tree relation.
      */
     public function componentTree(): MorphOne;
 
     /**
      * Return the parent content relation.
+     *
+     * This method should return a BelongsTo relationship
+     * representing the parent content of the current content.
+     *
+     * @return BelongsTo The parent content relation.
      */
     public function parent(): BelongsTo;
 
     /**
      * Return the children contents relation.
+     *
+     * This method should return a HasMany relationship
+     * representing the children contents associated with the current content.
+     *
+     * @return HasMany The children contents relation.
      */
     public function children(): HasMany;
 
     /**
      * Determine if this content is already published.
+     *
+     * This method checks if the content has been published,
+     * optionally allowing a callback for additional checks.
+     *
+     * @param \Closure|null $callback Optional callback for additional checks.
+     * @return bool True if published, false otherwise.
      */
     public function isPublished(?\Closure $callback = null): bool;
 
     /**
      * Create versioning property data.
      *
-     * @return \SolutionForest\InspireCms\Models\Contracts\PropertyData
+     * This method creates a new property data instance for versioning.
+     *
+     * @param array $data The data to create the property data with.
+     * @return \SolutionForest\InspireCms\Models\Contracts\PropertyData The created property data.
      */
     public function createPropertyData(array $data);
 
     /**
      * Retrieves the latest version of property data.
+     *
+     * This method returns the most recent property data associated with the content.
+     *
+     * @return PropertyData|null The latest property data or null if none exists.
      */
     public function getLatestPropertyData(): ?PropertyData;
 
     /**
      * Retrieves the latest published version of property data.
+     *
+     * This method returns the most recent published property data associated with the content.
+     *
+     * @return PropertyData|null The latest published property data or null if none exists.
      */
     public function getLatestPublishedPropertyData(): ?PropertyData;
 
