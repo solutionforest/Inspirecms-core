@@ -69,7 +69,11 @@ class PageActivity extends BaseWidget
                     continue;
                 }
 
-                return $resource::getUrl($page, ['record' => $record]);
+                try {
+                    return $resource::getUrl($page, ['record' => $record]);
+                } catch (\Throwable $th) {
+                    //
+                }
             }
         }
 
