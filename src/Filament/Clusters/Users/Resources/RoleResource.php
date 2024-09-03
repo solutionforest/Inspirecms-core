@@ -18,7 +18,7 @@ class RoleResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group';
 
     protected static ?string $cluster = Users::class;
-    
+
     public static function form(Form $form): Form
     {
         return $form
