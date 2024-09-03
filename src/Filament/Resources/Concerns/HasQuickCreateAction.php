@@ -23,7 +23,6 @@ trait HasQuickCreateAction
             ->modelLabel(strtolower($this->getModelLabel() ?? $resource::getModelLabel()))
             ->form(fn (Form $form) => $resource::quickForm($form->columns(1)))
             ->color('info')
-            ->createAnother(false)
-            ->modalFooterActionsAlignment(Alignment::End);
+            ->createAnother(false);
     }
 }

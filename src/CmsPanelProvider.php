@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -68,6 +69,7 @@ class CmsPanelProvider extends PanelProvider
             ]);
 
         $this->configureNavigation($panel);
+        $this->configureFilamentActions($panel);
         $this->registerLivewireComponents($panel);
 
         return $panel;
@@ -77,6 +79,18 @@ class CmsPanelProvider extends PanelProvider
     {
         return $panel
             ->topNavigation();
+    }
+
+    protected function configureFilamentActions(Panel $panel): Panel
+    {
+        return $panel->bootUsing(function () {
+            \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
+                $action->modalFooterActionsAlignment(Alignment::End);
+            });
+            \Filament\Tables\Actions\Action::configureUsing(function (\Filament\Tables\Actions\Action $action) {
+                $action->modalFooterActionsAlignment(Alignment::End);
+            });
+        });
     }
 
     protected function registerLivewireComponents(Panel $panel): Panel

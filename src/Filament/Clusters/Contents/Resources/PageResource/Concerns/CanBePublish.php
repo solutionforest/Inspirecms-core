@@ -34,7 +34,6 @@ trait CanBePublish
             ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
             ->keyBindings(['mod+p'])
             ->color('primary')
-            ->modalFooterActionsAlignment(Alignment::End)
             ->form(fn (Form $form) => $form->schema([
                 static::getPublishedAtComponent(),
             ])->operation('publish'))
@@ -67,7 +66,6 @@ trait CanBePublish
             ->label(__('inspirecms::actions.unpublish.label'))
             ->modalSubmitActionLabel(__('inspirecms::actions.unpublish.actions.unpublish.label'))
             ->color('gray')
-            ->modalFooterActionsAlignment(Alignment::End)
             ->requiresConfirmation()
             ->action($this->unpublish())
             ->successNotification(fn () => $this->getUnpublishedNotification());
@@ -84,7 +82,6 @@ trait CanBePublish
             ->label(__('inspirecms::actions.private.label'))
             ->modalSubmitActionLabel(__('inspirecms::actions.private.actions.private.label'))
             ->color('gray')
-            ->modalFooterActionsAlignment(Alignment::End)
             ->form(fn (Form $form) => $form->schema([
                 static::getPublishedAtComponent(),
             ])->operation('publish'))

@@ -20,7 +20,6 @@ trait HasQuickEditAction
 
         $action
             ->authorize(fn (Model $record): bool => $resource::canEdit($record))
-            ->form(fn (Form $form): Form => $resource::quickForm($form->columns(1)))
-            ->modalFooterActionsAlignment(Alignment::End);
+            ->form(fn (Form $form): Form => $resource::quickForm($form->columns(1)));
     }
 }

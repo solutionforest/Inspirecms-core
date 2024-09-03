@@ -173,8 +173,7 @@ class DocumentTypeResource extends Resource
                     })
                     ->createOptionAction(function (Forms\Components\Actions\Action $action) {
                         $action
-                            ->modalWidth('3xl')
-                            ->modalFooterActionsAlignment(Alignment::End);
+                            ->modalWidth('3xl');
                     })
                     ->createOptionUsing(function (array $data) {
 

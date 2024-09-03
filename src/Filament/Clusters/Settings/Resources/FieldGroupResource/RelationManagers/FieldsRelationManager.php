@@ -15,8 +15,7 @@ class FieldsRelationManager extends BaseRelationManager
 
         $action
             ->slideOver()
-            ->stickyModalHeader()
-            ->modalFooterActionsAlignment(Alignment::End);
+            ->stickyModalHeader();
     }
 
     protected function configureCreateAction(Tables\Actions\CreateAction $action): void
@@ -26,7 +25,6 @@ class FieldsRelationManager extends BaseRelationManager
         $action
             ->slideOver()
             ->stickyModalHeader()
-            ->modalFooterActionsAlignment(Alignment::End)
             // Since may have bugs on filament v3.2.108
             ->createAnother(false);
     }
