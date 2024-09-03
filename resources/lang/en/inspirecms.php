@@ -4,6 +4,7 @@ return [
     'add_xxx' => 'Add :name',
     'can_use_at_root' => 'Can use at root?',
     'content' => 'Content',
+    'contents' => 'Contents',
     'create_xxx' => 'Create :name',
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',

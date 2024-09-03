@@ -1,6 +1,9 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Resources;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
+use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 
 // config for SolutionForest/InspireCms
 return [
@@ -18,10 +21,10 @@ return [
     ],
 
     'resources' => [
-        'page' => Resources\Contents\PageResource::class,
-        'document_type' => Resources\Settings\DocumentTypeResource::class,
-        'field_group' => Resources\Settings\FieldGroupResource::class,
-        'user' => Resources\Users\UserResource::class,
+        'page' => PageResource::class,
+        'document_type' => DocumentTypeResource::class,
+        'field_group' => FieldGroupResource::class,
+        'user' => UserResource::class,
     ],
 
     'models' => [

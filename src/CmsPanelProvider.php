@@ -17,8 +17,8 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
+use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Pages;
-use SolutionForest\InspireCms\Filament\Resources;
 use SolutionForest\InspireCms\Filament\Widgets;
 
 class CmsPanelProvider extends PanelProvider
@@ -38,13 +38,12 @@ class CmsPanelProvider extends PanelProvider
                 FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
                 new InspireCmsTheme,
             ])
-            ->resources(config('inspirecms.resources', [
-                Resources\Settings\DocumentTypeResource::class,
-                Resources\Settings\FieldGroupResource::class,
-                Resources\Contents\PageResource::class,
-            ]))
+            ->resources(config('inspirecms.resources'))
             ->pages([
                 Pages\Dashboard::class,
+                Clusters\Contents::class,
+                Clusters\Settings::class,
+                Clusters\Users::class,
             ])
             ->widgets([
                 Widgets\PageActivity::class,
@@ -77,21 +76,7 @@ class CmsPanelProvider extends PanelProvider
     protected function configureNavigation(Panel $panel): Panel
     {
         return $panel
-            ->topNavigation()
-            ->navigationGroups([
-                NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.content'))
-                    // Child navigation must haven't navigationIcon
-                    ->icon('heroicon-o-document-text'),
-                NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.settings'))
-                    // Child navigation must haven't navigationIcon
-                    ->icon('heroicon-o-cog-6-tooth'),
-                NavigationGroup::make()
-                    ->label(fn () => __('inspirecms::inspirecms.users'))
-                    // Child navigation must haven't navigationIcon
-                    ->icon('heroicon-o-shield-check'),
-            ]);
+            ->topNavigation();
     }
 
     protected function registerLivewireComponents(Panel $panel): Panel
