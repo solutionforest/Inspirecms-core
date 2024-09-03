@@ -3,12 +3,14 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 
-class CreatePage extends CreateRecord
+class CreatePage extends CreateRecord implements HasPublishForm
 {
     use CanBePublish;
 

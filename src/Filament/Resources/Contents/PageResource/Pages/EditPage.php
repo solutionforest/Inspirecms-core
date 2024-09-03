@@ -6,13 +6,14 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
-use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Concerns\CanBePublish;
-use Throwable;
+use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Contracts\HasPublishForm;
 
-class EditPage extends EditRecord
+use function Filament\Support\is_app_url;
+
+class EditPage extends EditRecord implements HasPublishForm
 {
     use CanBePublish;
 
@@ -33,7 +34,14 @@ class EditPage extends EditRecord
         return [
             $this->getPublishFormAction('edit'),
             $this->getSaveFormAction(),
-            $this->getUnPublishFormAction('edit'),
+            \Filament\Actions\ActionGroup::make([])
+                ->label(__('inspirecms::actions.more_actions.label'))
+                ->button()
+                ->color('gray')
+                ->actions([
+                    $this->getUnPublishFormAction('edit'),
+                    $this->getSetPrivateFormAction('edit'),
+                ]),
             $this->getCancelFormAction(),
         ];
     }
@@ -45,12 +53,16 @@ class EditPage extends EditRecord
             ->color('secondary');
     }
 
+    public static function getResource(): string
+    {
+        return config('inspirecms.resources.page', PageResource::class);
+    }
+
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
     {
         $this->authorizeAccess();
 
-        try {
-            $this->beginDatabaseTransaction();
+        $this->wrapPublisableSavingEventIntoDbTransaction(function () {
 
             $this->callHook('beforeValidate');
 
@@ -74,19 +86,7 @@ class EditPage extends EditRecord
             $this->form->model($this->getRecord())->saveRelationships();
 
             $this->callHook('afterSave');
-
-            $this->commitDatabaseTransaction();
-        } catch (Halt $exception) {
-            $exception->shouldRollbackDatabaseTransaction() ?
-                $this->rollBackDatabaseTransaction() :
-                $this->commitDatabaseTransaction();
-
-            return;
-        } catch (Throwable $exception) {
-            $this->rollBackDatabaseTransaction();
-
-            throw $exception;
-        }
+        });
 
         $this->rememberData();
 
@@ -97,10 +97,5 @@ class EditPage extends EditRecord
         if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
             $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
         }
-    }
-
-    public static function getResource(): string
-    {
-        return config('inspirecms.resources.page', PageResource::class);
     }
 }

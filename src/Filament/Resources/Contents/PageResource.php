@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Enums\PageStatus;
+use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
@@ -39,9 +39,6 @@ class PageResource extends Resource
                         Forms\Components\Section::make()
                             ->columns(1)
                             ->schema([
-                                static::getStatusFormComponent()
-                                    // Always as "Draft" on `form`
-                                    ->dehydrateStateUsing(fn () => PageStatus::Draft->value),
                                 static::getSlugFormComponent(),
                                 static::getParentPageFormComponent(),
                             ]),
@@ -117,18 +114,18 @@ class PageResource extends Resource
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
                     ->columns([
 
-                        Tables\Columns\TextColumn::make('status')
+                        Tables\Columns\TextColumn::make('displayStatus')
                             ->label(__('inspirecms::inspirecms.status'))
-                            ->formatStateUsing(fn ($state) => PageStatus::tryFrom($state)?->getLabel() ?? '')
-                            ->color(fn ($state) => PageStatus::tryFrom($state)?->getColor() ?? 'gray')
+                            ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
+                            ->color(fn (?ContentStatusOption $state) => $state->getColor())
+                            ->icon(fn (?ContentStatusOption $state) => $state->getIcon())
                             ->badge()
-                            ->icon(fn ($state) => PageStatus::tryFrom($state)?->getIcon() ?? null)
                             ->iconPosition(IconPosition::Before)
                             ->width('2%'),
 
                         Tables\Columns\IconColumn::make('is_published')
                             ->label(__('inspirecms::inspirecms.is_published'))
-                            ->getStateUsing(fn (Model | CmsContent $record) => $record->isPublished(true))
+                            ->getStateUsing(fn (Model | CmsContent $record) => $record->isPublished())  // Already include private
                             ->boolean()
                             ->width('2%')
                             ->trueIcon('heroicon-m-eye')
@@ -167,8 +164,8 @@ class PageResource extends Resource
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label(__('inspirecms::inspirecms.is_published'))
                     ->queries(
-                        true: fn (Builder $query) => $query->isPublished(condition: true, isIncludePrivateUse: true),
-                        false: fn (Builder $query) => $query->isPublished(condition: false, isIncludePrivateUse: true),
+                        true: fn (Builder $query) => $query->isPublished(condition: true),
+                        false: fn (Builder $query) => $query->isPublished(condition: false),
                         blank: fn (Builder $query) => $query,
                     ),
                 Tables\Filters\TernaryFilter::make('is_root_level')
@@ -285,29 +282,6 @@ class PageResource extends Resource
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getStatusFormComponent()
-    {
-        return Forms\Components\Hidden::make('status')
-            ->default(PageStatus::Draft->value)
-            ->dehydratedWhenHidden(true);
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getStatusSelectFormComponent()
-    {
-        return Forms\Components\Select::make('status')
-            ->label(__('inspirecms::inspirecms.status'))
-            ->options(PageStatus::class)
-            ->searchable()
-            ->native(false)
-            ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
     protected static function getParentPageFormComponent()
     {
         return BelongsToParentSelect::make('parent_id')
@@ -358,7 +332,7 @@ class PageResource extends Resource
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->dehydrated(false)  
+            ->dehydrated(false) // avoid fill into the model of content
             ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);

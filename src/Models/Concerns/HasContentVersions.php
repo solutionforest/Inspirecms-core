@@ -12,6 +12,7 @@ trait HasContentVersions
         //
     }
 
+    /** @inheritDoc */
     public function contentVersions(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getContentVersionModelClass(), 'content_id');

@@ -11,6 +11,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest;
+use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -73,6 +75,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerPolymorphism();
 
         $this->app->singleton(ModelManifestInterface::class, fn () => $this->app->make(ModelManifest::class));
+        $this->app->singleton(ContentStatusManifestInterface::class, fn () => $this->app->make(ContentStatusManifest::class));
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }

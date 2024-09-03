@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use SolutionForest\InspireCms\Models\Contracts\PropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasPropertyData
@@ -14,23 +15,7 @@ trait HasPropertyData
         //
     }
 
-    public function createPropertyData(array $data)
-    {
-        $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge(
-            $data,
-            $this->getPropertyDateToSave(),
-        ));
-
-        $this->propertyDatas()->attach($propertyData->getKey(), [
-            // Additional pivot data
-        ]);
-    }
-
-    protected function getPropertyDateToSave()
-    {
-        return [];
-    }
-
+    /** @inheritDoc */
     public function propertyDatas(): BelongsToMany
     {
         return $this->belongsToMany(
@@ -41,14 +26,45 @@ trait HasPropertyData
         )->withPivot('created_at');
     }
 
-    public function getLatestPropertyData()
+    /** @inheritDoc */
+    public function createPropertyData(array $data)
+    {
+        $propertyData = InspireCmsConfig::getPropertyDataModelClass()::create(array_merge(
+            $data,
+            $this->getPropertyDateToSave(),
+        ));
+
+        $this->propertyDatas()->attach($propertyData->getKey(), [
+            // Additional pivot data
+        ]);
+
+        return $propertyData;
+    }
+
+    /**
+     * Get the property data to save.
+     *
+     * This method can be overridden in a subclass to provide specific
+     * property data that needs to be saved along with the property data
+     * creation process.
+     *
+     * @return array An associative array of property data to be saved.
+     */
+    protected function getPropertyDateToSave()
+    {
+        return [];
+    }
+
+    /** @inheritDoc */
+    public function getLatestPropertyData(): ?PropertyData
     {
         return $this->propertyDatas()
             ->orderByPivot('created_at', 'desc')
             ->first();
     }
 
-    public function getLatestPublishedPropertyData()
+    /** @inheritDoc */
+    public function getLatestPublishedPropertyData(): ?PropertyData
     {
         return $this->propertyDatas()
             ->orderByPivot('created_at', 'desc')

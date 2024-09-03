@@ -59,7 +59,7 @@ trait NestableTrait
         return $this->getLevel();
     }
 
-    protected function getLevel(): int
+    public function getLevel(): int
     {
         $level = 0;
         $parent = $this->parent;

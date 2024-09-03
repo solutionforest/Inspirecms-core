@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Contents\PageResource\Concerns;
 
 use Filament\Actions\Action;
+use Filament\Facades\Filament;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -10,7 +11,6 @@ use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
 use Throwable;
@@ -45,7 +45,6 @@ trait CanBePublish
 
                 } catch (Throwable $e) {
                     Notification::make()
-                        ->title('Please check your form')
                         ->title(__('inspirecms::notification.form_check_error.title'))
                         ->danger()
                         ->send();
@@ -53,13 +52,14 @@ trait CanBePublish
                     throw $e;
                 }
             })
-            ->action(fn (array $data) => $this->publish($data));
+            ->action($this->publish())
+            ->successNotification($this->getPublishedNotification());
     }
 
     protected function getUnPublishFormAction(string $operation): ?Action
     {
         // Display on edit page only
-        if (is_null($operation) || $operation === 'craete') {
+        if (is_null($operation) || $operation === 'create') {
             return null;
         }
 
@@ -69,86 +69,174 @@ trait CanBePublish
             ->color('gray')
             ->modalFooterActionsAlignment(Alignment::End)
             ->requiresConfirmation()
-            // Would't update other data, only change status
-            ->action(function (Model | CmsContent | null $record, Action $action) {
-                if (is_null($record)) {
-                    $action->cancel();
-
-                    return;
-                }
-
-                $record->update([
-                    'status' => PageStatus::Unpublish->value,
-                ]);
-
-                $action->success();
-            })
+            ->action($this->unpublish())
             ->successNotification(fn () => $this->getUnpublishedNotification());
     }
 
-    public function publish(array $publishData, bool $shouldRedirect = false): void
+    protected function getSetPrivateFormAction(string $operation): ?Action
     {
-        $isCreating = $this->isCreatingPublishableData();
+        // Display on edit page only
+        if (is_null($operation) || $operation === 'create') {
+            return null;
+        }
 
-        $this->authorizeAccess();
+        return Action::make('private')
+            ->label(__('inspirecms::actions.private.label'))
+            ->modalSubmitActionLabel(__('inspirecms::actions.private.actions.private.label'))
+            ->color('gray')
+            ->modalFooterActionsAlignment(Alignment::End)
+            ->form(fn (Form $form) => $form->schema([
+                static::getPublishedAtComponent(),
+            ])->operation('publish'))
+            ->beforeFormValidated(function (Action $action) {
+                try {
 
-        try {
-            $this->beginDatabaseTransaction();
+                    $this->validatePublishableData();
 
-            $data = $this->getPublishableFormDataBeforePublish(array_merge(
-                $publishData,
-                ['status' => PageStatus::Publish->value],
-            ));
+                } catch (Throwable $e) {
+                    Notification::make()
+                        ->title(__('inspirecms::notification.form_check_error.title'))
+                        ->danger()
+                        ->send();
+
+                    throw $e;
+                }
+            })
+            ->action($this->setPrivateUse())
+            ->successNotification(fn () => $this->getSetPrivatelyUsedNotification());
+    }
+
+    public function publish(): \Closure
+    {
+        return function (array $data, Action $action) {
+         
+            $isCreating = $this->isCreatingPublishableData();
+
+            $shouldRedirect = true;
+
+            $this->authorizeAccess();
+
+            $isSuccess = $this->wrapPublisableSavingEventIntoDbTransaction(function () use ($data, $isCreating) {
+
+                $data = $this->getPublishableFormDataBeforePublish($data);
+
+                $this->handlePublishableRecordCreateOrUpdate($data, $isCreating, 'publish');
+            });
+
+            if (!$isSuccess) {
+                return;
+            }
+
+            $this->rememberData();
+
+            $action->success();
 
             if ($isCreating) {
 
-                $this->record = $this->handleRecordCreation($data);
+                $redirectUrl = $this->getRedirectUrl();
 
-                $this->form->model($this->getRecord())->saveRelationships();
-
-                $this->callHook('afterCreate');
+                $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
 
             } else {
 
-                $this->handleRecordUpdate($this->getRecord(), $data);
+                if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
+                    $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+                }
 
-                // Skip save relationships on `getPublishableFormDataBeforePublish`, and handle on this line
-                $this->form->model($this->getRecord())->saveRelationships();
+            }
+        };
+    }
 
-                $this->callHook('afterSave');
+    public function unpublish(): \Closure
+    {
+        return function (null | Model | CmsContent $record, Action $action) {
+            if (is_null($record)) {
+                $action->cancel();
+                return;
+            }
+            
+            $this->authorizeAccess();
+
+            $this->handlePublishableRecordCreateOrUpdate([], false, 'unpublish');
+
+            $action->success();
+
+        };
+    }
+
+    public function setPrivateUse(): \Closure
+    {
+        return function (Model | CmsContent $record, array $data, Action $action) {
+            if (is_null($record)) {
+                $action->cancel();
+                return;
             }
 
-            $this->commitDatabaseTransaction();
+            $this->authorizeAccess();
 
-        } catch (Halt $exception) {
-            $exception->shouldRollbackDatabaseTransaction() ?
-                $this->rollBackDatabaseTransaction() :
-                $this->commitDatabaseTransaction();
+            $isSuccess = $this->wrapPublisableSavingEventIntoDbTransaction(function () use ($data) {
 
-            return;
-        } catch (Throwable $exception) {
-            $this->rollBackDatabaseTransaction();
+                $data = $this->getPublishableFormDataBeforePublish($data);
 
-            throw $exception;
-        }
+                $this->handlePublishableRecordCreateOrUpdate($data, false, 'private');
+            });
 
-        $this->rememberData();
+            if (!$isSuccess) {
+                return;
+            }
 
-        $this->getPublishedNotification()?->send();
+            $this->rememberData();
 
+            $action->success();
+
+            if (($redirectUrl = $this->getRedirectUrl())) {
+                $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+            }
+        };
+    }
+
+    public function handlePublishableRecordCreateOrUpdate(array $data, bool $isCreating, string $publishableAction = 'draft'): Model
+    {
         if ($isCreating) {
 
-            $redirectUrl = $this->getRedirectUrl();
+            //region Handle Record Creating
+            /** @var Model|CmsContent */
+            $record = new ($this->getModel())($data);
 
-            $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+            $record->setPublishableState($publishableAction);
+    
+            if (
+                static::getResource()::isScopedToTenant() &&
+                ($tenant = Filament::getTenant())
+            ) {
+                return $this->associateRecordWithTenant($record, $tenant);
+            }
+    
+            $this->record->save();
+            //endregion Handle Record Creating
+
+            $this->form->model($this->getRecord())->saveRelationships();
+
+            $this->callHook('afterCreate');
 
         } else {
 
-            if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
-                $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
-            }
+            //region Handle Record Updating
+            /** @var Model|CmsContent */
+            $record = $this->getRecord();
+            
+            $record->setPublishableState($publishableAction);
 
+            $this->record = $this->handleRecordUpdate($record, $data);
+            //endregion Handle Record Updating
+
+            // Skip save relationships on `getPublishableFormDataBeforePublish`, and handle on this line
+            $this->form->model($this->getRecord())->saveRelationships();
+
+            $this->callHook('afterSave');
         }
+
+        return $this->getRecord();
     }
 
     protected function isCreatingPublishableData(): bool
@@ -193,6 +281,7 @@ trait CanBePublish
         $this->form->validate();
     }
 
+    //region Notification
     protected function getPublishedNotification(): ?Notification
     {
         $title = $this->getPublishedNotificationTitle();
@@ -229,8 +318,26 @@ trait CanBePublish
         return __('inspirecms::actions.unpublish.notifications.unpublished.title');
     }
 
-    //region Form field(s)/component(s)
+    protected function getSetPrivatelyUsedNotification(): ?Notification
+    {
+        $title = $this->getSetPrivatelyUsedNotificationTitle();
 
+        if (blank($title)) {
+            return null;
+        }
+
+        return Notification::make()
+            ->success()
+            ->title($title);
+    }
+
+    protected function getSetPrivatelyUsedNotificationTitle(): ?string
+    {
+        return __('inspirecms::actions.private.notifications.updated.title');
+    }
+    //endregion Notification
+
+    //region Form field(s)/component(s)
     protected static function getPublishedAtComponent(): Forms\Components\Component
     {
         return Forms\Components\DateTimePicker::make('published_at')
@@ -247,4 +354,31 @@ trait CanBePublish
     }
 
     //endregion Form field(s)/component(s)
+
+    //region Help functions
+    protected function wrapPublisableSavingEventIntoDbTransaction(\Closure $callback)
+    {
+        
+        try {
+            $this->beginDatabaseTransaction();
+
+            $callback();
+
+            $this->commitDatabaseTransaction();
+
+        } catch (Halt $exception) {
+            $exception->shouldRollbackDatabaseTransaction() ?
+                $this->rollBackDatabaseTransaction() :
+                $this->commitDatabaseTransaction();
+
+            return false;
+        } catch (Throwable $exception) {
+            $this->rollBackDatabaseTransaction();
+
+            throw $exception;
+        }
+
+        return true;
+    }
+    //endregion Help functions
 }

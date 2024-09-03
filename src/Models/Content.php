@@ -3,21 +3,18 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Enums\PageStatus;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-/**
- * @method static Builder|static query()
- * @method Builder|static isRootLevel()
- */
 class Content extends BaseModel implements ContentContract
 {
     use Concerns\BelongToCmsComponentTree;
     use Concerns\HasPropertyData;
     use Concerns\NestableTrait;
+    use Concerns\Publishable;
 
     protected $guarded = ['id'];
 
@@ -39,12 +36,7 @@ class Content extends BaseModel implements ContentContract
         return '';
     }
 
-    /**
-     * Determine if this content is already published.
-     *
-     * @return bool|Builder|static
-     */
-    public function isPublished(bool $isIncludePrivateUse = false)
+    public function isPublished(?\Closure $callback = null): bool
     {
         /** @var ?\Carbon\Carbon */
         $publishedAt = $this->published_at;
@@ -58,19 +50,20 @@ class Content extends BaseModel implements ContentContract
         // Check if the publish date is in the past
         if ($publishedAt->isPast()) {
 
+            $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+            if (is_null($unpublishOption)) {
+                throw new \Exception('At least one "unpublish" option is required in the manifest.');
+            }
+
             switch ($status) {
 
-                case PageStatus::Unpublish->value:
-                    return false;
-
-                case PageStatus::Private->value:
-                    if ($isIncludePrivateUse) {
-                        return true;
-                    }
-
+                case $unpublishOption->value:
                     return false;
 
                 default:
+                    if ($callback) {
+                        return $callback($this, inspirecms_content_statuses()->getOption($status));
+                    }
                     return true;
             }
         }
@@ -79,53 +72,46 @@ class Content extends BaseModel implements ContentContract
         return false;
     }
 
-    protected function getPropertyDateToSave()
+    protected function getPropertyDateToSave(): array
     {
         $publishedAt = $this->published_at;
 
         $status = $this->status;
 
-        if ($status === PageStatus::Draft->value) {
+        $defaultStatusValue = inspirecms_content_statuses()->getDefaultValue();
+
+        if ($status === $defaultStatusValue || is_null($defaultStatusValue)) {
             return [];
         }
 
+        // fill publish time to property data to determine is "published" version
         return [
             'published_at' => $publishedAt,
         ];
     }
 
     /**
-     * Determine if this content is already published, no matter public or private use.
+     * Determine if this content is already published.
      */
-    public function scopeIsPublished(Builder $query, bool $condition = true, bool $isIncludePrivateUse = false): void
+    public function scopeIsPublished(Builder $query, bool $condition = true): void
     {
-        // - Status always "Draft" on "Save draft" button
-        // - Change to "Publish" only on "Publish" button (save with "published_at" data)
-        // - Change to "Unpublish" only on "Unpublish" button
-        // - TODO: private button
+        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        if (is_null($unpublishOption)) {
+            throw new \Exception('At least one "unpublish" option is required in the manifest.');
+        }
 
         if ($condition) {
 
             $query
                 ->where('published_at', '<', now())
-                ->whereNot('status', PageStatus::Unpublish->value)
-                ->when(
-                    $isIncludePrivateUse,
-                    fn ($query) => $query,
-                    fn ($query) => $query->whereNot('status', PageStatus::Private->value)
-                );
+                ->whereNot('status', $unpublishOption->value);
 
         } else {
 
             $query
                 ->orWhereNull('published_at')
                 ->orWhereNot('published_at', '<', now())
-                ->orWhere('status', PageStatus::Unpublish->value)
-                ->when(
-                    $isIncludePrivateUse,
-                    fn ($query) => $query,
-                    fn ($query) => $query->orWhere('status', PageStatus::Private->value)
-                );
+                ->orWhere('status', $unpublishOption->value);
         }
 
     }
@@ -136,6 +122,15 @@ class Content extends BaseModel implements ContentContract
     }
 
     //endregion Scope(s)
+
+    //region Attribute(s)
+    public function displayStatus(): Attribute
+    {
+        return Attribute::make(
+            get: fn ($value) => inspirecms_content_statuses()->getOption($this->status),
+        );
+    }
+    //endregion Attribute(s)
 
     protected function getParentId()
     {

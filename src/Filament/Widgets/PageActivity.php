@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use SolutionForest\InspireCms\Enums\PageStatus;
+use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Resources\Contents\PageResource;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -31,12 +31,12 @@ class PageActivity extends BaseWidget
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title'))
                     ->grow(),
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('displayStatus')
                     ->label(__('inspirecms::inspirecms.status'))
-                    ->formatStateUsing(fn ($state) => PageStatus::tryFrom($state)?->getLabel() ?? '')
-                    ->color(fn ($state) => PageStatus::tryFrom($state)?->getColor() ?? 'gray')
+                    ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
+                    ->color(fn (?ContentStatusOption $state) => $state->getColor())
+                    ->icon(fn (?ContentStatusOption $state) => $state->getIcon())
                     ->badge()
-                    ->icon(fn ($state) => PageStatus::tryFrom($state)?->getIcon() ?? null)
                     ->iconPosition(IconPosition::Before)
                     ->width('2%'),
 

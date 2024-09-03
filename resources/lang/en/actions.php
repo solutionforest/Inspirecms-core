@@ -49,6 +49,29 @@ return [
         ],
     ],
 
+    'private' => [
+
+        'label' => 'Set privately used',
+
+        'actions' => [
+            'private' => [
+                'label' => 'Set privately used',
+            ],
+        ],
+
+        'notifications' => [
+            'updated' => [
+                'title' => 'Private Setting Updated Successfully',
+            ],
+        ],
+    ],
+
+    'more_actions' => [
+
+        'label' => 'More actions',
+
+    ],
+
     'quick_create' => [
 
         'label' => 'Quick create',
