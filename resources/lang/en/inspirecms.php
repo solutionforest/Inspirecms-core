@@ -29,6 +29,7 @@ return [
     'parent' => 'Parent',
     'preview_fields' => 'Preview fields',
     'publish_at' => 'Publish at',
+    'role' => 'role',
     'setting' => 'Setting',
     'settings' => 'Settings',
     'slug' => 'Slug',
