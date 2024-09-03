@@ -15,6 +15,8 @@ use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
+use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
+use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -76,6 +78,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(ModelManifestInterface::class, fn () => $this->app->make(ModelManifest::class));
         $this->app->singleton(ContentStatusManifestInterface::class, fn () => $this->app->make(ContentStatusManifest::class));
+        $this->app->singleton(PermissionManifestInterface::class, fn () => $this->app->make(PermissionManifest::class));
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }
