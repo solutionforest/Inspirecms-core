@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Concerns;
 
 use Filament\Forms\Form;
-use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 

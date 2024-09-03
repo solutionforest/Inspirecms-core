@@ -18,7 +18,7 @@ class LanguageResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-language';
 
     protected static ?string $recordTitleAttribute = 'name';
-    
+
     protected static ?string $cluster = Settings::class;
 
     public static function form(Form $form): Form
@@ -93,7 +93,7 @@ class LanguageResource extends Resource
             ->label(__('inspirecms::inspirecms.name'))
             ->required();
     }
-    
+
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */

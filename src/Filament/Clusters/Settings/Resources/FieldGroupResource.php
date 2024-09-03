@@ -27,7 +27,7 @@ class FieldGroupResource extends BaseResource
     protected static ?int $navigationSort = -9;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-    
+
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;

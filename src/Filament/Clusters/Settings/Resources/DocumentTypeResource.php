@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -25,7 +24,7 @@ class DocumentTypeResource extends Resource
     protected static ?int $navigationSort = -10;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-    
+
     protected static ?string $cluster = Settings::class;
 
     public static function form(Form $form): Form

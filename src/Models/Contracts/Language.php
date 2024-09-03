@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface Language 
+interface Language
 {
     /**
      * Find or create the default language.

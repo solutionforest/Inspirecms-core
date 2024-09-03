@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Concerns;
 
 use Filament\Forms\Form;
-use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 
 trait HasQuickCreateAction

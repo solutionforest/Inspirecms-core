@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
 
-use Filament\Support\Enums\Alignment;
 use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource\RelationManagers\FieldsRelationManager as BaseRelationManager;
