@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-interface ContentVersion 
+interface ContentVersion
 {
     /**
      * Get the content associated with the content version.

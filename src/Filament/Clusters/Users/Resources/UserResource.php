@@ -14,7 +14,7 @@ class UserResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $cluster = Users::class;
-    
+
     public static function table(Table $table): Table
     {
         return $table

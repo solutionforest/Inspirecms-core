@@ -15,8 +15,8 @@ class Language extends BaseModel implements CmsLanguageContract
         $locale = config('app.locale', 'en');
 
         // Create if not exists
-        /** 
-         * @var CmsLanguageContract
+        /**
+         * @var CmsLanauageContract
          */
         $result = static::query()->firstOrCreate(
             ['code' => $locale],

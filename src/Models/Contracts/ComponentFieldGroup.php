@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\EloquentSortable\Sortable;
 
-interface ComponentFieldGroup extends Sortable 
+interface ComponentFieldGroup extends Sortable
 {
     /**
      * Get the field group associated with the component field group.

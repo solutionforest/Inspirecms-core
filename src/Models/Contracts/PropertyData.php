@@ -4,9 +4,8 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-interface PropertyData 
+interface PropertyData
 {
-
     /**
      * Get the content versions associated with the property data.
      *
