@@ -23,7 +23,7 @@ interface ContentStatusManifestInterface
     public function replaceOption(ContentStatusOption $option): void;
 
     /**
-     * Retrieves an option by its value.
+     * Retrieves an option by its value or name.
      *
      * @param  int|string  $valueOrName  The value/name of the option to retrieve.
      * @return ContentStatusOption|null The option if found, null otherwise.

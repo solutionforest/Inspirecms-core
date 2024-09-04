@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
@@ -19,8 +21,22 @@ use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as CmsDocumentType;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class DocumentTypeResource extends Resource
+class DocumentTypeResource extends Resource implements ClusterSectionResource
 {
+    use ClusterSectionResourceTrait;
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'replicate',
+        ];
+    }
     protected static ?int $navigationSort = -10;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';

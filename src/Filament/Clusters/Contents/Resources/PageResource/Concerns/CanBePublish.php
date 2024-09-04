@@ -51,6 +51,7 @@ trait CanBePublish
                 }
             })
             ->action($this->publish())
+            ->authorize('publish', $this->getModel())
             ->successNotification($this->getPublishedNotification());
     }
 
@@ -67,6 +68,7 @@ trait CanBePublish
             ->color('gray')
             ->requiresConfirmation()
             ->action($this->unpublish())
+            ->authorize('unpublish', $this->getModel())
             ->successNotification(fn () => $this->getUnpublishedNotification());
     }
 
@@ -99,6 +101,7 @@ trait CanBePublish
                 }
             })
             ->action($this->setPrivateUse())
+            ->authorize('set_private', $this->getModel())
             ->successNotification(fn () => $this->getSetPrivatelyUsedNotification());
     }
 

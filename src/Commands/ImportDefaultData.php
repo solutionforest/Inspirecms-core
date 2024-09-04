@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:import-default-data')]
@@ -47,9 +49,24 @@ class ImportDefaultData extends Command
             }
         }
 
-        inspirecms_permissions()->roles()->each(function (UserRole $role) {
-            $roleModel = app(config('permission.models.role', \Spatie\Permission\Models\Role::class));
-            $role = $roleModel->findOrCreate($role->getName(), $role->getGuardName());
+        // Reset cached roles and permissions
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        $permissionClass = InspireCmsConfig::getPermissionModelClass();
+        $rolClass = InspireCmsConfig::getRoleModelClass();
+
+        $permissions = PermissionManifest::permissions()->map(fn (string $permissionName) => 
+            $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
+        );
+        PermissionManifest::roles()->each(function (UserRole $userRole) use ($rolClass, $permissions) {
+
+            // create roles and assign created permissions
+            $role = $rolClass::findOrCreate($userRole->getName(), $userRole->getGuardName());
+
+            // assign all permissions for "admin" role.
+            if ($userRole->getName() == 'admin') {
+                $role->syncPermissions($permissions);
+            }
         });
     }
 

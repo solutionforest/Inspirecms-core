@@ -9,10 +9,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource\Pages;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class LanguageResource extends Resource
+class LanguageResource extends Resource implements ClusterSectionResource
 {
+    use ClusterSectionResourceTrait;
+
     protected static ?int $navigationSort = -8;
 
     protected static ?string $navigationIcon = 'heroicon-o-language';

@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
+use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-interface User
+interface User extends AuthorizableContract, AuthenticatableContract, CanResetPasswordContract
 {
     /**
      * Get the user activity associated with the user.

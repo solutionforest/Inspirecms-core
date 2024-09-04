@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -238,7 +239,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         ]);
         config()->set('auth.guards.inspirecms', [
             'driver' => 'session',
-            'provider' => config('inspirecms.auth.guard', 'inspirecms'),
+            'provider' => InspireCmsConfig::getGuardName(),
         ]);
     }
 }

@@ -105,7 +105,7 @@ class Install extends BasePage
 
                 try {
                     // Assign "Admininistrator" role
-                    $guardName = config('inspirecms.auth.guard', 'inspirecms');
+                    $guardName = InspireCmsConfig::getGuardName();
                     $role = app(config('permission.models.role', \Spatie\Permission\Models\Role::class))::findByName(DefaultRoleEnums::Admininistrator->value, $guardName);
                     $user->assignRole($role);
                 } catch (\Throwable $th) {

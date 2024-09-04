@@ -4,9 +4,15 @@ namespace SolutionForest\InspireCms\Support;
 
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models;
+use Spatie\Permission\PermissionRegistrar;
 
 class InspireCmsConfig
 {
+    public static function getGuardName(): string
+    {
+        return config('inspirecms.auth.guard', 'inspirecms');
+    }
+    
     public static function getContentTableName(): string
     {
         return app(static::getContentModelClass())->getTable();
@@ -121,6 +127,30 @@ class InspireCmsConfig
         $class = ModelManifest::get(Models\Contracts\UserLoginActivity::class, Models\Users\UserLoginActivity::class);
 
         return self::ensureClassExists($class, 'UserLoginActivity model');
+    }
+
+    public static function getRoleTableName(): string
+    {
+        return app(static::getRoleModelClass())->getTable();
+    }
+
+    public static function getRoleModelClass(): string
+    {
+        $class = app(PermissionRegistrar::class)->getRoleClass();
+
+        return self::ensureClassExists($class, 'Role model');
+    }
+
+    public static function getPermissionTableName(): string
+    {
+        return app(static::getRoleModelClass())->getTable();
+    }
+
+    public static function getPermissionModelClass(): string
+    {
+        $class = app(PermissionRegistrar::class)->getPermissionClass();
+
+        return self::ensureClassExists($class, 'Permission model');
     }
 
     public static function getLanguageTableName(): string

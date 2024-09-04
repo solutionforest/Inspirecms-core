@@ -17,6 +17,8 @@ use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
@@ -26,8 +28,10 @@ use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
 use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class PageResource extends Resource
+class PageResource extends Resource implements ClusterSectionResource
 {
+    use ClusterSectionResourceTrait;
+
     protected static ?int $navigationSort = -9;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
@@ -35,6 +39,21 @@ class PageResource extends Resource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Contents::class;
+    
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'public',
+            'unpublic',
+            'set_private',
+        ];
+    }
 
     public static function form(Form $form): Form
     {

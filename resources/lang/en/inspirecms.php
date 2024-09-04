@@ -10,6 +10,7 @@ return [
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
     'details' => 'Details',
+    'display_name' => 'Display Name',
     'document_type' => 'Document Type',
     'email' => 'Email',
     'field_group' => 'Field Group',

@@ -17,9 +17,9 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
-use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -30,7 +30,7 @@ class CmsPanelProvider extends PanelProvider
             ->path('cms')
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
-            ->authGuard(config('inspirecms.auth.guard', 'inspirecms'))
+            ->authGuard(InspireCmsConfig::getGuardName())
             ->login(Pages\Auth\Login::class)
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
@@ -41,9 +41,9 @@ class CmsPanelProvider extends PanelProvider
             ->resources(config('inspirecms.resources'))
             ->pages([
                 Pages\Dashboard::class,
-                Clusters\Contents::class,
-                Clusters\Settings::class,
-                Clusters\Users::class,
+                ... \SolutionForest\InspireCms\Facades\InspireCms::getSections()
+                    ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
+                    ->all(),
             ])
             ->widgets([
                 Widgets\PageActivity::class,

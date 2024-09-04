@@ -7,10 +7,15 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Models\Contracts\User;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class UserResource extends Resource
+class UserResource extends Resource implements ClusterSectionResource
 {
+    use ClusterSectionResourceTrait;
+
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $cluster = Users::class;
@@ -19,7 +24,11 @@ class UserResource extends Resource
     {
         return $table
             ->defaultSort('name')
+            ->contentGrid(['default' => 3, 'md' => 2, 'sm' => 1])
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar')
+                    ->circular()
+                    ->getStateUsing(fn (User $record) => $record->avatar),
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->sortable()->width('1%'),
