@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
-use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 trait Publishable
 {
@@ -73,7 +73,7 @@ trait Publishable
     protected function performPublishableAction(array $data, ?ContentStatusOption $option)
     {
         if ($option) {
-            $this->status = $option->value;
+            $this->status = $option->getValue();
         } else {
             $this->status = inspirecms_content_statuses()->getDefaultValue();
         }

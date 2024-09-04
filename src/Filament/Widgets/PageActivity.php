@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 

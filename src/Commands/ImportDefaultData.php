@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
-use SolutionForest\InspireCms\DataTypes\UserRole;
+use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -49,7 +49,7 @@ class ImportDefaultData extends Command
 
         inspirecms_permissions()->roles()->each(function (UserRole $role) {
             $roleModel = app(config('permission.models.role', \Spatie\Permission\Models\Role::class));
-            $role = $roleModel->findOrCreate($role->name, $role->guardName);
+            $role = $roleModel->findOrCreate($role->getName(), $role->getGuardName());
         });
     }
 

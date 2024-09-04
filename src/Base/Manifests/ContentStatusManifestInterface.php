@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 interface ContentStatusManifestInterface
 {

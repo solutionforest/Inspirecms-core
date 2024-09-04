@@ -1,30 +1,38 @@
 <?php
 
-namespace SolutionForest\InspireCms\DataTypes;
+namespace SolutionForest\InspireCms\DataTypes\Manifest;
 
 use Closure;
 
-class ContentStatusOption
+class ContentStatusOption extends BaseManifestOption
 {
-    use \Filament\Support\Concerns\EvaluatesClosures;
-
     public function __construct(
         /**
          * Unique value.
          *
          * @var int
          */
-        public int $value,
+        protected int $value,
         /**
          * Unique name for retrieve used.
          *
          * @var string
          */
-        public string $name,
+        protected string $name,
         protected null | string | Closure $label = null,
         protected null | string | Closure $color = null,
         protected null | string | Closure $icon = null,
     ) {}
+
+    public function getValue(): int
+    {
+        return $this->value;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
 
     public function getLabel(): string
     {

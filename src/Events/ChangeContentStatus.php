@@ -14,7 +14,7 @@ class ChangeContentStatus
     public $content;
 
     /**
-     * @var ?\SolutionForest\InspireCms\DataTypes\ContentStatusOption
+     * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
      */
     public $status;
 
@@ -22,7 +22,7 @@ class ChangeContentStatus
      * Create a new event instance.
      *
      * @param  \SolutionForest\InspireCms\Models\Contracts\Content  $content
-     * @param  ?\SolutionForest\InspireCms\DataTypes\ContentStatusOption  $status
+     * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $status
      * @return void
      */
     public function __construct($content, $status)

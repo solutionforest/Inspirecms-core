@@ -57,7 +57,7 @@ class Content extends BaseModel implements ContentContract
 
             switch ($status) {
 
-                case $unpublishOption->value:
+                case $unpublishOption->getValue():
                     return false;
 
                 default:
@@ -105,14 +105,14 @@ class Content extends BaseModel implements ContentContract
 
             $query
                 ->where('published_at', '<', now())
-                ->whereNot('status', $unpublishOption->value);
+                ->whereNot('status', $unpublishOption->getValue());
 
         } else {
 
             $query
                 ->orWhereNull('published_at')
                 ->orWhereNot('published_at', '<', now())
-                ->orWhere('status', $unpublishOption->value);
+                ->orWhere('status', $unpublishOption->getValue());
         }
 
     }

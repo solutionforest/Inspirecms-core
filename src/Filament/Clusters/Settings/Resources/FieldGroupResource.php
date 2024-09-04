@@ -19,7 +19,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
-use SolutionForest\InspireCms\Models\FieldGroup;
+use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource

@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\DataTypes\ContentStatusOption;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 class ContentStatusManifest implements ContentStatusManifestInterface
 {
@@ -20,7 +20,10 @@ class ContentStatusManifest implements ContentStatusManifestInterface
     /** {@inheritDoc} */
     public function addOption(ContentStatusOption $option, bool $replace = false): void
     {
-        $existing = $this->options->where('value', $option->value)->where('name', $option->name)->first();
+        $existing = $this->options
+            ->where(fn (ContentStatusOption $optionToCheck) => $optionToCheck->getValue(), $option->getValue())
+            ->where(fn (ContentStatusOption $optionToCheck) => $optionToCheck->getName(), $option->getName())
+            ->first();
         if (! $existing || ($existing && $replace)) {
             $this->options->push($option);
         }
@@ -36,9 +39,9 @@ class ContentStatusManifest implements ContentStatusManifestInterface
     public function getOption(int | string $valueOrName): ?ContentStatusOption
     {
         if (is_int($valueOrName)) {
-            return $this->options->firstWhere('value', $valueOrName);
+            return $this->options->firstWhere(fn (ContentStatusOption $option) => $option->getValue(), $valueOrName);
         } else {
-            return $this->options->firstWhere('name', $valueOrName);
+            return $this->options->firstWhere(fn (ContentStatusOption $option) => $option->getName(), $valueOrName);
         }
     }
 
