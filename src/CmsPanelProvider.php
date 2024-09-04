@@ -41,7 +41,7 @@ class CmsPanelProvider extends PanelProvider
             ->resources(config('inspirecms.resources'))
             ->pages([
                 Pages\Dashboard::class,
-                ... \SolutionForest\InspireCms\Facades\InspireCms::getSections()
+                ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
                     ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
                     ->all(),
             ])

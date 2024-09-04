@@ -14,7 +14,7 @@ trait CanAuthorizeResource
             $cluster = static::getClusterSection();
             $permissionName = ! blank($cluster) && in_array(ClusterSection::class, class_implements($cluster)) ? $cluster::getAccessRightPermissionName() : null;
 
-            if (!blank($permissionName)) {
+            if (! blank($permissionName)) {
 
                 $user = Filament::auth()->user();
 
@@ -22,7 +22,7 @@ trait CanAuthorizeResource
 
             }
         }
-        
+
         return static::canAccess();
     }
 }

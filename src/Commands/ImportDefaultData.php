@@ -55,8 +55,8 @@ class ImportDefaultData extends Command
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
         $rolClass = InspireCmsConfig::getRoleModelClass();
 
-        $permissions = PermissionManifest::permissions()->map(fn (string $permissionName) => 
-            $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
+        $permissions = PermissionManifest::permissions()->map(
+            fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
         );
         PermissionManifest::roles()->each(function (UserRole $userRole) use ($rolClass, $permissions) {
 

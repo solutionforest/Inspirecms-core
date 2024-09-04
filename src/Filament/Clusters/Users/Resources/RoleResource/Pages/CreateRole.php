@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
@@ -13,7 +12,7 @@ class CreateRole extends CreateRecord
     {
         return [];
     }
-    
+
     public function getFormActionsAlignment(): string | Alignment
     {
         return 'end';

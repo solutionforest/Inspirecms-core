@@ -37,6 +37,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'replicate',
         ];
     }
+
     protected static ?int $navigationSort = -10;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';

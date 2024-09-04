@@ -7,7 +7,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
-interface User extends AuthorizableContract, AuthenticatableContract, CanResetPasswordContract
+interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract
 {
     /**
      * Get the user activity associated with the user.

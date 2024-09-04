@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
  * @method static ?\SolutionForest\InspireCms\DataTypes\Manifest\UserRole getRole(string $name) Retrieves an role option by its name.
  * @method static array getClusterSectionPermissions()
  * @method static array getClusterSectionResourcePermissions()
- * 
+ *
  * @see \SolutionForest\InspireCms\Base\Manifests\PermissionManifest
  */
 class PermissionManifest extends Facade

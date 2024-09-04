@@ -55,28 +55,30 @@ class RoleResource extends Resource implements ClusterSectionResource
                                 static::getFormComponentForDefaultPermissionsSection(),
                             ]),
                     ])
-                    ->afterStateHydrated(function (Role|RoleContract $record, Forms\Components\Group $component) {
+                    ->afterStateHydrated(function (Role | RoleContract $record, Forms\Components\Group $component) {
                         $permissionNames = $record->permissions->pluck('name');
                         $state = [];
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
                         $resourcePermissions = collect(PermissionManifest::getClusterSectionResourcePermissions())->collapse()->all();
 
                         foreach ($permissionNames as $permissionName) {
-                            
+
                             if (array_key_exists($permissionName, $clusterSectionPermissions)) {
                                 $state['cluster_section_access'][$permissionName] = true;
+
                                 continue;
                             }
-                            
+
                             if (array_key_exists($permissionName, $resourcePermissions)) {
                                 $state['default_permissions'][$permissionName] = true;
+
                                 continue;
                             }
                         }
 
                         $component->state($state);
                     })
-                    ->saveRelationshipsUsing(function (Role|RoleContract $record, array $state) {
+                    ->saveRelationshipsUsing(function (Role | RoleContract $record, array $state) {
                         $permissionNames = collect($state)->collapse()->filter()->keys()->all();
                         $record->syncPermissions($permissionNames);
                     }),
@@ -176,9 +178,10 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->heading(__('inspirecms::permissions.cluster_section_access.label'))
             ->description(__('inspirecms::permissions.cluster_section_access.helper_text'))
             ->statePath('cluster_section_access')
-            ->schema(collect(PermissionManifest::getClusterSectionPermissions())
-                ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                ->all()
+            ->schema(
+                collect(PermissionManifest::getClusterSectionPermissions())
+                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+                    ->all()
             )
             ->compact()
             ->aside()
@@ -198,9 +201,10 @@ class RoleResource extends Resource implements ClusterSectionResource
 
             $components[] = Forms\Components\Section::make()
                 ->heading($resourceFQCN::getNavigationLabel())
-                ->schema(collect($resourcePermissionOptions)
-                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                    ->all()
+                ->schema(
+                    collect($resourcePermissionOptions)
+                        ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+                        ->all()
                 )
                 ->compact()
                 ->aside()

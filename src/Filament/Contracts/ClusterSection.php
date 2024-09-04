@@ -4,5 +4,5 @@ namespace SolutionForest\InspireCms\Filament\Contracts;
 
 interface ClusterSection
 {
-    public static function getAccessRightPermissionName() : string;
+    public static function getAccessRightPermissionName(): string;
 }

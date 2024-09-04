@@ -12,7 +12,7 @@ class InspireCmsConfig
     {
         return config('inspirecms.auth.guard', 'inspirecms');
     }
-    
+
     public static function getContentTableName(): string
     {
         return app(static::getContentModelClass())->getTable();

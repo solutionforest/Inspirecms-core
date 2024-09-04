@@ -12,7 +12,7 @@ class ClusterSection extends BaseManifestOption
          */
         protected string $name,
         protected string $fqcn,
-    ) { }
+    ) {}
 
     public function getName(): string
     {

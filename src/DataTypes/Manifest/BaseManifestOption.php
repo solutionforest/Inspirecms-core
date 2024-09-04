@@ -12,7 +12,7 @@ abstract class BaseManifestOption
         resolveDefaultClosureDependencyForEvaluationByType as private resolveBaseDefaultClosureDependencyForEvaluationByType;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
     {
         return match ($parameterName) {
@@ -20,8 +20,8 @@ abstract class BaseManifestOption
             default => $this->resolveBaseDefaultClosureDependencyForEvaluationByName($parameterName),
         };
     }
-    
-    /** @inheritDoc */
+
+    /** {@inheritDoc} */
     protected function resolveDefaultClosureDependencyForEvaluationByType(string $parameterType): array
     {
         return $this->resolveBaseDefaultClosureDependencyForEvaluationByType($parameterType);

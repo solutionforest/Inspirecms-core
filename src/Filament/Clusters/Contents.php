@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 class Contents extends Cluster implements ClusterSection
 {
     use ClusterSectionTrait;
-    
+
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
     protected static ?int $navigationSort = 1;

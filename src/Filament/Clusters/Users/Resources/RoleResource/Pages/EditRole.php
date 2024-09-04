@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pages;
 
-use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;

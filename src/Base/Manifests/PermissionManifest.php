@@ -30,7 +30,7 @@ class PermissionManifest implements PermissionManifestInterface
     {
         return $this->roles;
     }
-    
+
     public function addRole(UserRole $role): void
     {
         $exist = $this->getRole($role->getName());
@@ -80,7 +80,7 @@ class PermissionManifest implements PermissionManifestInterface
                     ->all();
 
                 return [
-                    $fqcn => $permissionNames
+                    $fqcn => $permissionNames,
                 ];
             })
             ->sortKeys()

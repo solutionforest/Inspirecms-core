@@ -39,7 +39,7 @@ class PageResource extends Resource implements ClusterSectionResource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Contents::class;
-    
+
     public static function getPermissionPrefixes(): array
     {
         return [

@@ -53,7 +53,7 @@ class InspireCmsManager
     /**
      * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection>
      */
-    public function getSections(... $names): Collection
+    public function getSections(...$names): Collection
     {
         $sections = $this->sections;
 

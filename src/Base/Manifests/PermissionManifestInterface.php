@@ -21,8 +21,6 @@ interface PermissionManifestInterface
 
     /**
      * Retrieves an role option by its name.
-     * @param string $name
-     * @return ?\SolutionForest\InspireCms\DataTypes\Manifest\UserRole
      */
     public function getRole(string $name): ?UserRole;
 
