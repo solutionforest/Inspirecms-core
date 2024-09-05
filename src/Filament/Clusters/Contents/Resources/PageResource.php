@@ -49,8 +49,8 @@ class PageResource extends Resource implements ClusterSectionResource
             'update',
             'delete',
             'delete_any',
-            'public',
-            'unpublic',
+            'publish',
+            'unpublish',
             'set_private',
         ];
     }
