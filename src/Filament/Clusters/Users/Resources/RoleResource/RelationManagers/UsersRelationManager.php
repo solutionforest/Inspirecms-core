@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResour
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UsersRelationManager extends RelationManager
 {
@@ -15,7 +16,15 @@ class UsersRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name'),
+                Tables\Columns\ImageColumn::make('avatar')
+                    ->label(' ')
+                    ->circular()
+                    ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record)),
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('inspirecms::inspirecms.name')),
+            ])
+            ->headerActions([
+                Tables\Actions\AssociateAction::make(),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make(),

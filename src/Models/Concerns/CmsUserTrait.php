@@ -34,6 +34,11 @@ trait CmsUserTrait
         return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
     }
 
+    public function getDefaultGuardName(): string
+    {
+        return InspireCmsConfig::getGuardName();
+    }
+
     public static function boot()
     {
         parent::boot();

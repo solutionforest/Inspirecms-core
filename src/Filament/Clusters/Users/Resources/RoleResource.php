@@ -7,9 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\Unique;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters;
@@ -55,7 +53,12 @@ class RoleResource extends Resource implements ClusterSectionResource
                                 static::getFormComponentForDefaultPermissionsSection(),
                             ]),
                     ])
-                    ->afterStateHydrated(function (Role | RoleContract $record, Forms\Components\Group $component) {
+                    ->afterStateHydrated(function (null| Role | RoleContract $record, Forms\Components\Group $component) {
+                        if (is_null($record)) {
+                            $component->state([]);
+                            return;
+                        }
+
                         $permissionNames = $record->permissions->pluck('name');
                         $state = [];
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
@@ -78,6 +81,7 @@ class RoleResource extends Resource implements ClusterSectionResource
 
                         $component->state($state);
                     })
+                    ->dehydrated(false) // handle on `saveRelationshipsUsing`
                     ->saveRelationshipsUsing(function (Role | RoleContract $record, array $state) {
                         $permissionNames = collect($state)->collapse()->filter()->keys()->all();
                         $record->syncPermissions($permissionNames);
@@ -92,9 +96,16 @@ class RoleResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name'))
                     ->badge(),
-                Tables\Columns\TextColumn::make('display_name')
-                    ->label(__('inspirecms::inspirecms.display_name'))
-                    ->getStateUsing(fn (Model $record) => static::getRecordTitle($record)),
+                Tables\Columns\TextColumn::make('allow_sections')
+                    ->label(__('inspirecms::inspirecms.allow_sections'))
+                    ->getStateUsing(function (Role $record) {
+                        $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
+                        $allowSections = $record->getPermissionNames()
+                            ->intersect(array_keys($clusterSectionPermissions))
+                            ->map(fn ($permissionName) => $clusterSectionPermissions[$permissionName]);
+                        return $allowSections->implode(', ');
+                    })
+                    ->limit(50),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
@@ -132,17 +143,6 @@ class RoleResource extends Resource implements ClusterSectionResource
         return parent::getEloquentQuery()
             ->with('permissions')
             ->where('guard_name', InspireCmsConfig::getGuardName());
-    }
-
-    public static function getRecordTitle(?Model $record): string | Htmlable | null
-    {
-        $name = $record?->getAttribute(static::getRecordTitleAttribute());
-        $roleOption = inspirecms_permissions()->getRole($name);
-        if ($roleOption) {
-            return $roleOption->getDisplayName();
-        }
-
-        return parent::getRecordTitle($record);
     }
 
     //region Form field(s)/component(s)
