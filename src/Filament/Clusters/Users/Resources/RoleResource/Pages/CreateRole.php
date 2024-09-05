@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 class CreateRole extends CreateRecord
 {
     protected static bool $canCreateAnother = false;
-    
+
     public function getActions(): array
     {
         return [];
