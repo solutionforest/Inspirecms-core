@@ -7,22 +7,14 @@ use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
 
 interface PermissionManifestInterface
 {
+    public function getSuperAdminRoleName(): string;
+
+    public function setSuperAdminRoleName(string $name): void;
+
     /**
      * @return \Illuminate\Support\Collection<string>
      */
     public function permissions(): Collection;
-
-    /**
-     * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\UserRole>
-     */
-    public function roles(): Collection;
-
-    public function addRole(UserRole $role): void;
-
-    /**
-     * Retrieves an role option by its name.
-     */
-    public function getRole(string $name): ?UserRole;
 
     public function getClusterSectionPermissions(): array;
 

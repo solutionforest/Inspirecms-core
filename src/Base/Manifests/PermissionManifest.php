@@ -12,36 +12,26 @@ class PermissionManifest implements PermissionManifestInterface
     /** @var Collection<string> */
     protected Collection $permissions;
 
-    /** @var Collection<UserRole> */
-    protected Collection $roles;
+    protected string $superAdminRoleName = 'Admininistrator';
 
     public function __construct()
     {
         $this->permissions = collect($this->getDefaultPermissions());
-        $this->roles = collect($this->getDefaultRoles());
+    }
+
+    public function getSuperAdminRoleName(): string
+    {
+        return $this->superAdminRoleName;
+    }
+
+    public function setSuperAdminRoleName(string $name): void
+    {
+        $this->superAdminRoleName = $name;
     }
 
     public function permissions(): Collection
     {
         return $this->permissions;
-    }
-
-    public function roles(): Collection
-    {
-        return $this->roles;
-    }
-
-    public function addRole(UserRole $role): void
-    {
-        $exist = $this->getRole($role->getName());
-        if (! $exist) {
-            $this->roles->push($role);
-        }
-    }
-
-    public function getRole(string $name): ?UserRole
-    {
-        return $this->roles->first(fn (UserRole $role) => $role->getName() === $name);
     }
 
     public function getClusterSectionPermissions(): array

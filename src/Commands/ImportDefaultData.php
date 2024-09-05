@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
-use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
@@ -58,16 +57,12 @@ class ImportDefaultData extends Command
         $permissions = PermissionManifest::permissions()->map(
             fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
         );
-        PermissionManifest::roles()->each(function (UserRole $userRole) use ($rolClass, $permissions) {
 
-            // create roles and assign created permissions
-            $role = $rolClass::findOrCreate($userRole->getName(), $userRole->getGuardName());
+        // create roles and assign created permissions
+        $role = $rolClass::findOrCreate(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
 
-            // assign all permissions for "admin" role.
-            if ($userRole->getName() == 'admin') {
-                $role->syncPermissions($permissions);
-            }
-        });
+        // assign all permissions for "admin" role.
+        $role->syncPermissions($permissions);
     }
 
     /**

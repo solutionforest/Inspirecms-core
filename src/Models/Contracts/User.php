@@ -21,4 +21,6 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
      * @return HasOne The associated user activity.
      */
     public function userActivity(): HasOne;
+
+    public function isSuperAdmin(): bool;
 }

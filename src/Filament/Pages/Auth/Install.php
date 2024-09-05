@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Enums\DefaultRoleEnums;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -106,7 +107,7 @@ class Install extends BasePage
                 try {
                     // Assign "Admininistrator" role
                     $guardName = InspireCmsConfig::getGuardName();
-                    $role = app(config('permission.models.role', \Spatie\Permission\Models\Role::class))::findByName(DefaultRoleEnums::Admininistrator->value, $guardName);
+                    $role = app(config('permission.models.role', \Spatie\Permission\Models\Role::class))::findByName(PermissionManifest::getSuperAdminRoleName(), $guardName);
                     $user->assignRole($role);
                 } catch (\Throwable $th) {
                     $this->getAssignRoleFailedNotification()?->send();
