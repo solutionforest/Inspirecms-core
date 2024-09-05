@@ -61,7 +61,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
+                            static::getNameFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getFieldGroupFormComponent(),
                         ])
                         ->grow(),
@@ -73,7 +73,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return $form
             ->schema([
-                static::getTitleFormComponent()->inlineLabel(),
+                static::getNameFormComponent()->inlineLabel(),
                 static::getCanUseAtRootFormComponent(),
             ]);
     }
@@ -81,14 +81,17 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('title')
+            ->recordTitleAttribute('name')
             ->defaultSort('created_at', 'desc')
+            ->emptyStateActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
-                Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title'))
+                Tables\Columns\TextColumn::make('name')
+                    ->label(__('inspirecms::inspirecms.name'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('can_use_at_root')
                     ->label(__('inspirecms::inspirecms.can_use_at_root'))
@@ -155,10 +158,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getTitleFormComponent()
+    protected static function getNameFormComponent()
     {
-        return Forms\Components\TextInput::make('title')
-            ->label(__('inspirecms::inspirecms.title'))
+        return Forms\Components\TextInput::make('name')
+            ->label(__('inspirecms::inspirecms.name'))
             ->required();
     }
 

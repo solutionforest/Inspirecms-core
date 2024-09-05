@@ -326,7 +326,7 @@ class PageResource extends Resource implements ClusterSectionResource
             ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
             ->searchable(['id'])
             ->preload()
-            ->relationship(name: 'documentType', titleAttribute: 'title')
+            ->relationship(name: 'documentType', titleAttribute: 'name')
             ->required();
 
         // Load field group from document type

@@ -30,10 +30,15 @@ return new class extends BaseMigration
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
-            $table->string('title');
+            $table->string('name');
             $table->boolean('can_use_at_root')->default(false);
 
+            $table->unsignedBigInteger('template_id')->nullable();
+
             $table->timestamps();
+
+            $table->index('name');
+            $table->index('template_id');
         });
         Schema::create($tableNames['content_version'], function (Blueprint $table) {
             $table->id();
