@@ -9,6 +9,7 @@ use Filament\Tables\Table;
 class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
+    protected static ?string $icon = 'heroicon-o-users';
 
     public function table(Table $table): Table
     {
