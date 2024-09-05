@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
+use SolutionForest\InspireCms\Base\Manifests\LocaleManifest;
+use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
@@ -80,6 +82,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(ModelManifestInterface::class, fn () => $this->app->make(ModelManifest::class));
         $this->app->singleton(ContentStatusManifestInterface::class, fn () => $this->app->make(ContentStatusManifest::class));
         $this->app->singleton(PermissionManifestInterface::class, fn () => $this->app->make(PermissionManifest::class));
+        $this->app->singleton(LocaleManifestInterface::class, fn () => $this->app->make(LocaleManifest::class));
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }

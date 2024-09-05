@@ -1,6 +1,7 @@
 <?php
 
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
+use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
 use SolutionForest\InspireCms\InspireCmsManager;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
@@ -32,5 +33,12 @@ if (! function_exists('inspirecms_permissions')) {
     function inspirecms_permissions(): PermissionManifestInterface
     {
         return app(PermissionManifestInterface::class);
+    }
+}
+
+if (! function_exists('inspirecms_locales')) {
+    function inspirecms_locales(): LocaleManifestInterface
+    {
+        return app(LocaleManifestInterface::class);
     }
 }

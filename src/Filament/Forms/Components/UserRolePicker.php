@@ -28,6 +28,12 @@ class UserRolePicker extends Repeater
             'roles',
         );
 
+        $this->addAction(
+            fn (Action $action) => $action
+                ->extraAttributes(['class' => 'w-full'], true)
+                ->label(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
+        );
+
         $this->simple(TextInput::make('name')->disabled());
 
         $this->dehydrated(false);

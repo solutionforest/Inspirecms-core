@@ -32,6 +32,7 @@ class CmsPanelProvider extends PanelProvider
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->authGuard(InspireCmsConfig::getGuardName())
             ->login(Pages\Auth\Login::class)
+            ->profile(Pages\Auth\EditProfile::class)
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([

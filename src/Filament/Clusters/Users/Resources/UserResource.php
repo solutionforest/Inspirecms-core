@@ -15,7 +15,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -26,28 +25,28 @@ class UserResource extends Resource implements ClusterSectionResource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $cluster = Users::class;
 
     public static function createForm(Form $form): Form
     {
         return $form
-            ->columns(1)
+            ->columns(3)
             ->schema([
-                RevertOrderGroup::make([
-                    Forms\Components\Section::make()
-                        ->schema([
-                            static::getRolesFormComponent(),
-                        ])
-                        ->grow(false),
-                    Forms\Components\Section::make()
-                        ->schema([
-                            static::getNameFormComponent(),
-                            static::getEmailFormComponent(),
-                            static::getPasswordFormComponent(),
-                            static::getPasswordConfirmationFormComponent(),
-                        ])
-                        ->grow(),
-                ])->revertBreakPoint('lg'),
+                Forms\Components\Section::make()
+                    ->schema([
+                        static::getNameFormComponent(),
+                        static::getEmailFormComponent(),
+                        static::getPasswordFormComponent(),
+                        static::getPasswordConfirmationFormComponent(),
+                    ])
+                    ->columnSpan(2),
+                Forms\Components\Section::make()
+                    ->schema([
+                        static::getRolesFormComponent(),
+                    ])
+                    ->columnSpan(1),
             ]);
     }
 
@@ -71,6 +70,9 @@ class UserResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('last_logged_in_at')
                     ->label(__('inspirecms::inspirecms.last_logged_in_at')),
             ])
+            ->actions([
+                Tables\Actions\EditAction::make()->iconButton(),
+            ])
             ->filters([
 
                 // Keywords search
@@ -83,6 +85,7 @@ class UserResource extends Resource implements ClusterSectionResource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/edit/{record}'),
         ];
     }
 
@@ -164,12 +167,7 @@ class UserResource extends Resource implements ClusterSectionResource
         return UserRolePicker::make('roles')
             ->label(__('inspirecms::inspirecms.role'))
             ->required()
-            ->columnSpanFull()
-            ->addAction(
-                fn (Forms\Components\Actions\Action $action) => $action
-                    ->extraAttributes(['class' => 'w-full'], true)
-                    ->label(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
-            );
+            ->columnSpanFull();
     }
     //endregion Form field(s)/component(s)
 }

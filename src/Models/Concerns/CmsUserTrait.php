@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;
@@ -26,7 +27,10 @@ trait CmsUserTrait
 
     public function getFilamentAvatarUrl(): ?string
     {
-        return $this->avatar;
+        if (filled($this->avatar)) {
+            return Storage::disk(config('inspirecms.avatar.driver'))->url($this->avatar);
+        }
+        return null;
     }
 
     public function isSuperAdmin(): bool
