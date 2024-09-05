@@ -217,12 +217,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (config('inspirecms.override_plugins.field_group_models', false)) {
 
             // override field group models
-            \SolutionForest\FilamentFieldGroup\Facades\ModelManifest::replace(
-                \SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup::class,
+            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldGroupModelClass(
                 \SolutionForest\InspireCms\Models\FieldGroup::class
             );
-            \SolutionForest\FilamentFieldGroup\Facades\ModelManifest::replace(
-                \SolutionForest\FilamentFieldGroup\Models\Contracts\Field::class,
+            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
