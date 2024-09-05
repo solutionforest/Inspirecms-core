@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
+use Filament\Facades\Filament;
 use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Permission\Traits\HasRoles;
@@ -15,6 +16,16 @@ trait CmsUserTrait
     {
         // Implement the logic to determine if the user can access the panel
         return true; // Placeholder logic
+    }
+
+    public function getFilamentName(): string
+    {
+        return $this->name;
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar;
     }
 
     public static function boot()

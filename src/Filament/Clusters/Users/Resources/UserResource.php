@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources;
 
 use Filament\Resources\Resource;
+use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
@@ -24,31 +25,20 @@ class UserResource extends Resource implements ClusterSectionResource
     {
         return $table
             ->defaultSort('name')
-            ->contentGrid(['default' => 3, 'md' => 2, 'sm' => 1])
+            ->contentGrid(['md' => 2, 'xl' => 3])
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
-                    ->circular()
-                    ->getStateUsing(fn (User $record) => $record->avatar),
-                Tables\Columns\TextColumn::make('id')
-                    ->label(__('inspirecms::inspirecms.id'))
-                    ->sortable()->width('1%'),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
-                    ->sortable()->width('1%'),
-                Tables\Columns\TextColumn::make('email')
-                    ->label(__('inspirecms::inspirecms.email')),
+                Tables\Columns\Layout\Stack::make([
 
-                // timestamps
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('inspirecms::inspirecms.created_at'))
-                    ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
-                    ->width('5%'),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('inspirecms::inspirecms.last_updated_at'))
-                    ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
-                    ->width('5%'),
+                    Tables\Columns\ImageColumn::make('avatar_url')
+                        ->circular()
+                        ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record)),
+                    Tables\Columns\TextColumn::make('name')
+                        ->label(__('inspirecms::inspirecms.name'))
+                        ->weight(FontWeight::Bold)
+                        ->sortable()->width('1%'),
+                    Tables\Columns\TextColumn::make('email')
+                        ->label(__('inspirecms::inspirecms.email')),
+                ]),
             ])
             ->filters([
 

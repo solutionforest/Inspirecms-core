@@ -2,14 +2,13 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Filament\Models\Contracts\FilamentUser;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Base\BaseAuthenticatableModel;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Models\Contracts\User as CmsUserContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class User extends BaseAuthenticatableModel implements CmsUserContract, FilamentUser
+class User extends BaseAuthenticatableModel implements CmsUserContract
 {
     use CmsUserTrait;
 
