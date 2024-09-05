@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
-use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
 use SolutionForest\InspireCms\Facades\InspireCms;
 
 class PermissionManifest implements PermissionManifestInterface
@@ -81,15 +80,6 @@ class PermissionManifest implements PermissionManifestInterface
     protected function getDefaultPermissions(): array
     {
         return $this->getEntitiesPermissions();
-    }
-
-    protected function getDefaultRoles(): array
-    {
-        return [
-            new UserRole('admin', __('inspirecms::permissions.roles.admin.label')),
-            new UserRole('editor', __('inspirecms::permissions.roles.editor.label')),
-            new UserRole('writer', __('inspirecms::permissions.roles.writer.label')),
-        ];
     }
 
     protected function getEntitiesPermissions(): array
