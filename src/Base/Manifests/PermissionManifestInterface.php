@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\DataTypes\Manifest\UserRole;
 
 interface PermissionManifestInterface
 {

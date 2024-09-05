@@ -53,9 +53,10 @@ class RoleResource extends Resource implements ClusterSectionResource
                                 static::getFormComponentForDefaultPermissionsSection(),
                             ]),
                     ])
-                    ->afterStateHydrated(function (null| Role | RoleContract $record, Forms\Components\Group $component) {
+                    ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
                         if (is_null($record)) {
                             $component->state([]);
+
                             return;
                         }
 
@@ -103,6 +104,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                         $allowSections = $record->getPermissionNames()
                             ->intersect(array_keys($clusterSectionPermissions))
                             ->map(fn ($permissionName) => $clusterSectionPermissions[$permissionName]);
+
                         return $allowSections->implode(', ');
                     })
                     ->limit(50),

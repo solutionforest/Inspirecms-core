@@ -25,7 +25,7 @@ class UserRolePicker extends Repeater
         $this->defaultItems(0);
 
         $this->relationship(
-            'roles', 
+            'roles',
         );
 
         $this->simple(TextInput::make('name')->disabled());
@@ -33,11 +33,11 @@ class UserRolePicker extends Repeater
         $this->dehydrated(false);
 
         $this->saveRelationshipsUsing(function (Model $record, array $state) {
-            
+
             $roles = collect($state)
                 ->pluck('name')
                 ->toArray();
-                
+
             $record->syncRoles($roles);
         });
     }
@@ -53,7 +53,6 @@ class UserRolePicker extends Repeater
 
         return $this;
     }
-
 
     public function getRelationshipQuery()
     {
@@ -116,23 +115,23 @@ class UserRolePicker extends Repeater
                     $itemState = [
                         'name' => $role->name,
                     ];
-    
+
                     $newUuid = $component->generateUuid();
-    
+
                     $items = $component->getState();
-    
+
                     if ($newUuid) {
                         $items[$newUuid] = $itemState;
                     } else {
                         $items[] = $itemState;
                     }
-    
+
                     $component->state($items);
-    
+
                     $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($itemState);
-    
+
                     $component->collapsed(false, shouldMakeComponentCollapsible: false);
-    
+
                     $component->callAfterStateUpdated();
 
                 }

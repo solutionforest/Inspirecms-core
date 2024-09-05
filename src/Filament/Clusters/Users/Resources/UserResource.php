@@ -165,9 +165,10 @@ class UserResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.role'))
             ->required()
             ->columnSpanFull()
-            ->addAction(fn (Forms\Components\Actions\Action $action) => $action
-                ->extraAttributes(['class' => 'w-full'], true)
-                ->label(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
+            ->addAction(
+                fn (Forms\Components\Actions\Action $action) => $action
+                    ->extraAttributes(['class' => 'w-full'], true)
+                    ->label(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
             );
     }
     //endregion Form field(s)/component(s)

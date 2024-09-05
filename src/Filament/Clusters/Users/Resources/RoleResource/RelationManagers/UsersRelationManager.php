@@ -10,7 +10,9 @@ use SolutionForest\InspireCms\Models\Contracts\User;
 class UsersRelationManager extends RelationManager
 {
     protected static string $relationship = 'users';
+
     protected static ?string $recordTitleAttribute = 'name';
+
     protected static ?string $icon = 'heroicon-o-users';
 
     public function table(Table $table): Table

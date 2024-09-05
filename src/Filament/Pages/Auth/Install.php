@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
-use SolutionForest\InspireCms\Enums\DefaultRoleEnums;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;

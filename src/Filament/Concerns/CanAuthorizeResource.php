@@ -35,7 +35,7 @@ trait CanAuthorizeResource
 
     public static function can(string $action, ?Model $record = null): bool
     {
-        if (!static::skipAccessRightPermissionChecking()) {
+        if (! static::skipAccessRightPermissionChecking()) {
 
             $user = Filament::auth()->user();
 
