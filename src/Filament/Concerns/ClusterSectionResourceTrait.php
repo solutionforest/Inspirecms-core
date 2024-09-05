@@ -20,7 +20,6 @@ trait ClusterSectionResourceTrait
     public static function getPermissionPrefixes(): array
     {
         return [
-            'view',
             'view_any',
             'create',
             'update',

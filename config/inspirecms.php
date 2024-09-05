@@ -14,6 +14,10 @@ return [
         'guard' => 'inspirecms',
     ],
 
+    'permissions' => [
+        'skip_access_right_permission_on_resource' => false,
+    ],
+
     'override_plugins' => [
         'field_group_models' => true,
     ],

@@ -3,11 +3,18 @@
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
 use Filament\Facades\Filament;
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 
 trait CanAuthorizeResource
 {
+    public static function skipAccessRightPermissionChecking(): bool
+    {
+        return config('inspirecms.skip_access_right_permission_on_resource', false);
+    }
+
     public static function canAccess(): bool
     {
         if (in_array(ClusterSectionResource::class, class_implements(static::class))) {
@@ -24,5 +31,25 @@ trait CanAuthorizeResource
         }
 
         return static::canAccess();
+    }
+
+    public static function can(string $action, ?Model $record = null): bool
+    {
+        if (!static::skipAccessRightPermissionChecking()) {
+
+            $user = Filament::auth()->user();
+
+            $permissionNames = data_get(PermissionManifest::getClusterSectionResourcePermissions(), static::class);
+
+            $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $action)->keys()->first();
+
+            if ($permissionNameToCheck) {
+
+                return $user->can($permissionNameToCheck);
+
+            }
+        }
+
+        return parent::can($action, $record);
     }
 }
