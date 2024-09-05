@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use SolutionForest\InspireCms\Facades\LocaleManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -44,14 +45,10 @@ class LanguageResource extends Resource implements ClusterSectionResource
                     ->width('1%')->sortable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name')),
-                Tables\Columns\IconColumn::make('is_default')
+                Tables\Columns\CheckboxColumn::make('is_default')
                     ->label(__('inspirecms::inspirecms.is_default'))
                     ->width('1%')
-                    ->boolean()
                     ->alignCenter()->verticallyAlignCenter(),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make()->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -85,6 +82,8 @@ class LanguageResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('code')
             ->label(__('inspirecms::inspirecms.code'))
             ->unique(table: static::getModel(), column: 'code', ignoreRecord: true)
+            ->datalist(LocaleManifest::getLocales())
+            ->live()->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('name', locale_get_display_name($state)))
             ->required();
     }
 

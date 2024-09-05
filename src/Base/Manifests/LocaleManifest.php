@@ -16,6 +16,11 @@ class LocaleManifest implements LocaleManifestInterface
         $this->locales[$locale] = $locale;
     }
 
+    public function getLocales(): array
+    {
+        return $this->locales;
+    }
+
     public function selectOptions(?string $displayLocale = null): array
     {
         return collect($this->locales)->mapWithKeys(fn ($locale) => [

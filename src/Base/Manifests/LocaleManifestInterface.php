@@ -6,5 +6,7 @@ interface LocaleManifestInterface
 {
     public function addLocale(string $locale): void;
 
+    public function getLocales(): array;
+
     public function selectOptions(?string $displayLocale = null): array;
 }
