@@ -27,11 +27,11 @@ return [
         ],
 
         'preferred_language' => [
-            'label'=> 'Preferred language',
+            'label' => 'Preferred language',
         ],
 
         'roles' => [
-            'label'=> 'Roles',
+            'label' => 'Roles',
         ],
 
         'actions' => [

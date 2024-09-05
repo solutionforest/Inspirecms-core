@@ -16,7 +16,7 @@ trait ProfilePageTrait
 {
     use Concerns\HasMaxWidth;
     use Concerns\HasTopbar;
-    
+
     public function form(Form $form): Form
     {
         return $form

@@ -30,6 +30,7 @@ trait CmsUserTrait
         if (filled($this->avatar)) {
             return Storage::disk(config('inspirecms.avatar.driver'))->url($this->avatar);
         }
+
         return null;
     }
 
