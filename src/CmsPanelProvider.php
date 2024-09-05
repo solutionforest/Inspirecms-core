@@ -89,6 +89,9 @@ class CmsPanelProvider extends PanelProvider
             \Filament\Tables\Actions\Action::configureUsing(function (\Filament\Tables\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
+            \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
+                $action->modalFooterActionsAlignment(Alignment::End);
+            });
         });
     }
 
