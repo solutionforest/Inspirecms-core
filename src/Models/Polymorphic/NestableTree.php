@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Concerns\NestableTrait;
-use SolutionForest\InspireCms\Models\Contracts\ComponentTree as ComponentTreeContract;
+use SolutionForest\InspireCms\Models\Contracts\NestableTree as NestableTreeContract;
 use Spatie\EloquentSortable\SortableTrait;
 
 /**
  * This class represents a component in the CMS system. It uses the BelongToCmsComponentTree trait
  * to manage its hierarchical order and structure through a relationship with CmsComponentTree.
  */
-class ComponentTree extends BaseModel implements ComponentTreeContract
+class NestableTree extends BaseModel implements NestableTreeContract
 {
     use NestableTrait;
     use SortableTrait;

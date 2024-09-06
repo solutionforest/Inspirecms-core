@@ -6,11 +6,14 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
+    use HasTemplates;
+    
     protected $guarded = ['id'];
 
     protected $casts = [
@@ -19,13 +22,13 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function fieldGroups(): MorphToMany
     {
-        return $this->morphToMany(InspireCmsConfig::getFieldGroupModelClass(), 'model', InspireCmsConfig::getComponentFieldGroupTableName())
+        return $this->morphToMany(InspireCmsConfig::getFieldGroupModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName())
             ->orderBy('sort');
     }
 
-    public function morphFieldGroups(): MorphMany
+    public function fieldGroupables(): MorphMany
     {
-        return $this->morphMany(InspireCmsConfig::getComponentFieldGroupModelClass(), 'model')
+        return $this->morphMany(InspireCmsConfig::getFieldGroupableModelClass(), 'groupabled')
             ->orderBy('order');
     }
 

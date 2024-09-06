@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -13,7 +14,12 @@ class FieldGroup extends BaseModel
      */
     public function documentTypes(): MorphToMany
     {
-        return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'model', InspireCmsConfig::getComponentFieldGroupTableName());
+        return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName());
+    }
+
+    public function groupabled(): HasMany
+    {
+        return $this->hasMany(InspireCmsConfig::getFieldGroupableModelClass(), 'field_group_id');
     }
 
     public static function booting()

@@ -42,7 +42,7 @@ class FieldGroupRepeater extends Repeater
 
         $this->defaultItems(0);
 
-        $this->relationship('morphFieldGroups');
+        $this->relationship('fieldGroupables');
         $this->fieldGroupRelationName('fieldGroups', 'title', 'order');
         $this->live();
         $this->addable(true);

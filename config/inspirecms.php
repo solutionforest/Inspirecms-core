@@ -4,6 +4,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 
@@ -35,6 +36,7 @@ return [
         'document_type' => DocumentTypeResource::class,
         'field_group' => FieldGroupResource::class,
         'language' => LanguageResource::class,
+        'template' => TemplateResource::class,
         'user' => UserResource::class,
         'role' => RoleResource::class,
     ],

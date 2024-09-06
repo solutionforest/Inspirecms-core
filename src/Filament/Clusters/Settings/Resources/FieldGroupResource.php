@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;

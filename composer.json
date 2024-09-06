@@ -24,6 +24,7 @@
     "require": {
         "php": "^8.1",
         "filament/filament": "^3.0",
+        "riodwanto/filament-ace-editor": "^1.0",
         "solution-forest/filament-field-group": "^1.0.0",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0"

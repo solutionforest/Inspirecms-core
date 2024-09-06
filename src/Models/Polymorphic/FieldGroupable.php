@@ -5,11 +5,11 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Models\Contracts\ComponentFieldGroup as ComponentFieldGroupContract;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\EloquentSortable\SortableTrait;
 
-class ComponentFieldGroup extends BaseModel implements ComponentFieldGroupContract
+class FieldGroupable extends BaseModel implements FieldGroupableContract
 {
     use SortableTrait;
 
@@ -27,7 +27,7 @@ class ComponentFieldGroup extends BaseModel implements ComponentFieldGroupContra
         return $this->belongsTo(InspireCmsConfig::getFieldGroupModelClass());
     }
 
-    public function model(): MorphTo
+    public function groupabled(): MorphTo
     {
         return $this->morphTo();
     }

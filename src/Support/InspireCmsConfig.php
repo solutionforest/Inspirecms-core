@@ -25,28 +25,28 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Content model');
     }
 
-    public static function getComponentFieldGroupTableName(): string
+    public static function getFieldGroupableTableName(): string
     {
-        return app(static::getComponentFieldGroupModelClass())->getTable();
+        return app(static::getFieldGroupableModelClass())->getTable();
     }
 
-    public static function getComponentFieldGroupModelClass(): string
+    public static function getFieldGroupableModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ComponentFieldGroup::class, Models\Polymorphic\ComponentFieldGroup::class);
+        $class = ModelManifest::get(Models\Contracts\FieldGroupable::class, Models\Polymorphic\FieldGroupable::class);
 
-        return self::ensureClassExists($class, 'ComponentFieldGroup model');
+        return self::ensureClassExists($class, 'FieldGroupable model');
     }
 
-    public static function getComponentTreeTableName(): string
+    public static function getNestableTreeTableName(): string
     {
-        return app(static::getComponentTreeModelClass())->getTable();
+        return app(static::getNestableTreeModelClass())->getTable();
     }
 
-    public static function getComponentTreeModelClass(): string
+    public static function getNestableTreeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ComponentTree::class, Models\Polymorphic\ComponentTree::class);
+        $class = ModelManifest::get(Models\Contracts\NestableTree::class, Models\Polymorphic\NestableTree::class);
 
-        return self::ensureClassExists($class, 'ComponentTree model');
+        return self::ensureClassExists($class, 'NestableTree model');
     }
 
     public static function getPropertyDataTableName(): string
@@ -163,6 +163,30 @@ class InspireCmsConfig
         $class = ModelManifest::get(Models\Contracts\Language::class, Models\Language::class);
 
         return self::ensureClassExists($class, 'Language model');
+    }
+
+    public static function getTemplateTableName(): string
+    {
+        return app(static::getTemplateModelClass())->getTable();
+    }
+
+    public static function getTemplateModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\Template::class, Models\Template::class);
+
+        return self::ensureClassExists($class, 'Template model');
+    }
+
+    public static function getTemplateableTableName(): string
+    {
+        return app(static::getTemplateableModelClass())->getTable();
+    }
+
+    public static function getTemplateableModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\Templateable::class, Models\Polymorphic\Templateable::class);
+
+        return self::ensureClassExists($class, 'Templateable model');
     }
 
     /**

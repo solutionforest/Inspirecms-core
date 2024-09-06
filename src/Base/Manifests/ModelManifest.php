@@ -94,9 +94,11 @@ class ModelManifest implements ModelManifestInterface
             Models\Language::class,
             Models\PropertyData::class,
             Models\User::class,
-            Models\Polymorphic\ComponentFieldGroup::class,
-            Models\Polymorphic\ComponentTree::class,
+            Models\Polymorphic\FieldGroupable::class,
+            Models\Polymorphic\NestableTree::class,
             Models\Users\UserLoginActivity::class,
+            Models\Template::class,
+            Models\Polymorphic\Templateable::class,
         ];
     }
 

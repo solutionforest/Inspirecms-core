@@ -11,6 +11,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
@@ -117,12 +118,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->recordTitleAttribute('title')
                         ->saveRelationshipsUsing(function (Model | CmsDocumentType $originalRecord, Model | CmsDocumentType $record) {
 
-                            $fieldGroups = $originalRecord->morphFieldGroups->map(fn (Model $originalFieldGroup) => $originalFieldGroup->replicate([
+                            $fieldGroups = $originalRecord->fieldGroupables->map(fn (Model $originalFieldGroup) => $originalFieldGroup->replicate([
                                 'model_type',
                                 'model_id',
                             ])->toArray())->all();
 
-                            $record->morphFieldGroups()->createMany($fieldGroups);
+                            $record->fieldGroupables()->createMany($fieldGroups);
                         }),
                 ]),
             ])
@@ -139,6 +140,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'index' => Pages\ListDocumentTypes::route('/'),
             'create' => Pages\CreateDocumentType::route('/create'),
             'edit' => Pages\EditDocumentType::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\TemplatesRelationManager::class,
         ];
     }
 

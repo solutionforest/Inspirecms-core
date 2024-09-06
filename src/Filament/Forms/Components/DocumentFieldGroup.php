@@ -48,7 +48,7 @@ class DocumentFieldGroup extends Forms\Components\Group
         return $this;
     }
 
-    public function getMorphFieldGroupsSortColumn(): string
+    public function getFieldGroupablesSortColumn(): string
     {
         return 'order';
     }
@@ -60,14 +60,14 @@ class DocumentFieldGroup extends Forms\Components\Group
 
     public function getFieldGroupRepeaterComponent()
     {
-        return FieldGroupRepeater::make('morphFieldGroups')
+        return FieldGroupRepeater::make('fieldGroupables')
             ->live()
             ->columnSpanFull()
             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => Str::lower(__('inspirecms::inspirecms.field_group'))]))
             ->label(Str::plural(__('inspirecms::inspirecms.field_group')))
             ->validationAttribute(Str::lower(Str::plural(__('inspirecms::inspirecms.field_group'))))
             ->collapsible()
-            ->reorderable()->orderColumn($this->getMorphFieldGroupsSortColumn())
+            ->reorderable()->orderColumn($this->getFieldGroupablesSortColumn())
             ->reorderableWithButtons()
             ->addAction(fn (Forms\Components\Actions\Action $action) => $action->extraAttributes(['class' => 'w-full'], true))
             ->fieldGroupRecordOrderAttribute($this->getFieldGroupSortColumn())
@@ -107,7 +107,7 @@ class DocumentFieldGroup extends Forms\Components\Group
             ->mutateRelationshipDataBeforeFillUsing(function (array $data, Model | CmsDocumentType $record) {
 
                 $records = $record->fieldGroups
-                    ->sortBy($this->getMorphFieldGroupsSortColumn())
+                    ->sortBy($this->getFieldGroupablesSortColumn())
                     ->mapWithKeys(fn ($fieldGroup) => [$fieldGroup->getKey() => $fieldGroup]);
 
                 $formattedData = $this->getFieldGroupsItemStateFromFieldGroup($data['field_group_id'] ?? null, $records);
