@@ -4,10 +4,10 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyDataContract;
+use SolutionForest\InspireCms\Models\Contracts\PropertyData as PropertyDataContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class PropertyData extends BaseModel implements CmsPropertyDataContract
+class PropertyData extends BaseModel implements PropertyDataContract
 {
     protected $guarded = ['id'];
 

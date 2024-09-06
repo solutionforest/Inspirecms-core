@@ -4,19 +4,19 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Models\Contracts\Language as CmsLanguageContract;
+use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
 
-class Language extends BaseModel implements CmsLanguageContract
+class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
 
-    public static function findOrCreateDefaultLanguage(): CmsLanguageContract
+    public static function findOrCreateDefaultLanguage(): LanguageContract
     {
         $locale = config('app.locale', 'en');
 
         // Create if not exists
         /**
-         * @var CmsLanauageContract
+         * @var LanguageContract
          */
         $result = static::query()->firstOrCreate(
             ['code' => $locale],
