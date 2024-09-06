@@ -224,7 +224,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                             return $fieldGroupResource::getUrl('edit', [
                                 'record' => $itemData['field_group_id'],
-                                'activeRelationManager' => 0,   // fields relations
                             ]);
 
                         } catch (\Throwable $e) {

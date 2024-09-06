@@ -26,21 +26,6 @@ class EditFieldGroup extends EditRecord
         return config('inspirecms.resources.field_group', FieldGroupResource::class);
     }
 
-    public function hasCombinedRelationManagerTabsWithContent(): bool
-    {
-        return true;
-    }
-
-    public function getContentTabIcon(): ?string
-    {
-        return null;
-    }
-
-    public function getContentTabLabel(): ?string
-    {
-        return __('inspirecms::inspirecms.general');
-    }
-
     public function getHeading(): string
     {
         return parent::getTitle();

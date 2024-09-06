@@ -15,6 +15,7 @@ return [
     'email_confirmed_at' => 'Email confirmed at',
     'email' => 'Email',
     'failed_login_attempt' => 'Failed login attempt',
+    'fields' => 'Fields',
     'field_group' => 'Field Group',
     'general' => 'General',
     'id' => 'ID',
