@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use HasTemplates;
-    
+
     protected $guarded = ['id'];
 
     protected $casts = [

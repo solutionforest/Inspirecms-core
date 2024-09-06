@@ -33,6 +33,6 @@ interface DocumentType
     public function templates(): MorphToMany;
 
     public function defaultTemplate(): MorphOne;
-    
+
     public function templatable(): MorphMany;
 }

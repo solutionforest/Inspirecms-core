@@ -22,7 +22,7 @@ class Template extends BaseModel implements TemplateContract
         $fullpath = $this->getFileFullPath();
 
         // Create file if not exists
-        if (!file_exists($fullpath)) {
+        if (! file_exists($fullpath)) {
             file_put_contents($fullpath, '');
         }
     }
@@ -71,7 +71,7 @@ class Template extends BaseModel implements TemplateContract
     protected function ensureDirectoryExists(string $dir): string
     {
         // Create dir if not exists
-        if (!is_dir($dir)) {
+        if (! is_dir($dir)) {
             mkdir($dir, 0777, true);
         }
 

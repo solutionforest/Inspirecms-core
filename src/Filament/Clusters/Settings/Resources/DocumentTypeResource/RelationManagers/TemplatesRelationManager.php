@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 
-use Filament\Actions\EditAction;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -57,7 +56,7 @@ class TemplatesRelationManager extends RelationManager
                     Tables\Columns\IconColumn::make('is_default')
                         ->tooltip(__('inspirecms::inspirecms.is_default'))
                         ->boolean(),
-                ])
+                ]),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
@@ -75,7 +74,6 @@ class TemplatesRelationManager extends RelationManager
                         $this->getRelationship()->whereKeyNot($record->getKey())->update([
                             'is_default' => false,
                         ]);
-                        
 
                         $action->success();
                     }),
@@ -103,7 +101,7 @@ class TemplatesRelationManager extends RelationManager
             ->slideOver()
             ->beforeFormFilled(function (Template $record, Tables\Actions\Action $action) {
                 try {
-                    if (!$record->isFileCreated()) {
+                    if (! $record->isFileCreated()) {
                         $record->createTemplateFile();
                     }
                 } catch (\Throwable $th) {

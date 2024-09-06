@@ -282,31 +282,32 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->collapsible()->collapsed()
             ->orderColumn('sort')
             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.fields'))]))
-            ->addAction(fn (Forms\Components\Actions\Action $action) => $action
-                ->size(ActionSize::ExtraLarge)
-                ->extraAttributes(['class' => 'w-full'])
-                ->slideOver()
-                ->modalWidth('5xl')
-                ->form(static::getFieldsEditFormSchema())
-                ->action(function (array $data, Forms\Components\Repeater $component) {
-                    $newUuid = $component->generateUuid();
-    
-                    $items = $component->getState();
-    
-                    if ($newUuid) {
-                        $items[$newUuid] = $data;
-                    } else {
-                        $items[] = $data;
-                    }
+            ->addAction(
+                fn (Forms\Components\Actions\Action $action) => $action
+                    ->size(ActionSize::ExtraLarge)
+                    ->extraAttributes(['class' => 'w-full'])
+                    ->slideOver()
+                    ->modalWidth('5xl')
+                    ->form(static::getFieldsEditFormSchema())
+                    ->action(function (array $data, Forms\Components\Repeater $component) {
+                        $newUuid = $component->generateUuid();
 
-                    $component->state($items);
-    
-                    $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
-    
-                    $component->collapsed(false, shouldMakeComponentCollapsible: false);
-    
-                    $component->callAfterStateUpdated();
-                })
+                        $items = $component->getState();
+
+                        if ($newUuid) {
+                            $items[$newUuid] = $data;
+                        } else {
+                            $items[] = $data;
+                        }
+
+                        $component->state($items);
+
+                        $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
+
+                        $component->collapsed(false, shouldMakeComponentCollapsible: false);
+
+                        $component->callAfterStateUpdated();
+                    })
             )
             ->extraItemActions([
                 Forms\Components\Actions\Action::make('edit')
@@ -316,7 +317,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->slideOver()
                     ->modalWidth('5xl')
                     ->fillForm(function (array $arguments, Forms\Components\Repeater $component) {
-                        
+
                         $itemData = $component->getRawItemState($arguments['item']);
 
                         $relationship = $component->getRelationship();
@@ -339,21 +340,21 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     })
                     ->action(function (array $data, array $arguments, Forms\Components\Repeater $component) {
                         $uuid = $arguments['item'] ?? null;
-    
+
                         $items = $component->getState();
 
                         if (filled($uuid) && isset($items[$uuid])) {
                             $items[$uuid] = $data;
 
                             $component->state($items);
-            
+
                             $component->getChildComponentContainer($uuid)->fill($data);
-            
+
                             $component->collapsed(false, shouldMakeComponentCollapsible: false);
-            
+
                             $component->callAfterStateUpdated();
                         }
-                    })
+                    }),
             ])
             ->schema(static::getFieldsRepeaterSchema());
     }
@@ -403,7 +404,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     static::getFieldsInstructionsFormComponent(),
                     static::getFieldsTypeFormComponent(),
                 ]),
-                
+
             Forms\Components\Section::make()
                 ->schema([
                     static::getFieldsStatePathFormComponent(),
@@ -435,8 +436,9 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->maxLength(255)
             ->live(debounce: 500)
             ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
-            ->unique(table: InspireCmsConfig::getFieldModelClass(), column:'name', ignorable: function ($component ,Forms\Get $get) {
+            ->unique(table: InspireCmsConfig::getFieldModelClass(), column: 'name', ignorable: function ($component, Forms\Get $get) {
                 $id = $get('id');
+
                 return InspireCmsConfig::getFieldModelClass()::find($id);
             }, modifyRuleUsing: function (Unique $rule, ?Model $record) {
                 return $rule
