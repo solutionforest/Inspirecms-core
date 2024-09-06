@@ -10,6 +10,21 @@ class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
 
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function getLabel(): string
+    {
+        return $this->name;
+    }
+
+    public function isDefault(): bool
+    {
+        return $this->is_default;
+    }
+
     public static function findOrCreateDefaultLanguage(): LanguageContract
     {
         $locale = config('app.locale', 'en');

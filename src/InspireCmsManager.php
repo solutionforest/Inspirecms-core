@@ -8,6 +8,7 @@ use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
+use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class InspireCmsManager
@@ -80,5 +81,36 @@ class InspireCmsManager
     public function addSection(ClusterSection $section): void
     {
         $this->sections->put($section->getName(), $section);
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\Models\Contracts\Language
+     */
+    public function getAllAvailableLanguages(): Collection
+    {
+        // TODO: cahcing
+        $languages = InspireCmsConfig::getLanguageModelClass()::all()->keyBy('code');
+
+        /** @var ?Language */
+        $defaultLanguage = $languages->firstWhere(fn (Language $lang) => $lang->isDefault());
+
+        if ($defaultLanguage) {
+            $languages = collect($languages)
+                ->reduce(function ($array, Language $lang) use ($defaultLanguage) {
+                    $collect = collect($array);
+
+                    if ($lang->getCode() === $defaultLanguage->getCode()) {
+                        $collect->put(-1, $lang);
+                    }
+
+                    $collect->push($lang);
+
+                    return $collect;
+                })
+                ->sortKeys()
+                ->keyBy(fn (Language $lang) => $lang->getCode());
+        }
+
+        return $languages;
     }
 }

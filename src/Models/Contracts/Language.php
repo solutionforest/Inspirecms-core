@@ -4,6 +4,12 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 interface Language
 {
+    public function getCode(): string;
+
+    public function getLabel(): string;
+
+    public function isDefault(): bool;
+
     /**
      * Find or create the default language.
      *
