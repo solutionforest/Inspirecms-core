@@ -89,6 +89,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     {
         return parent::table($table)
             ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
+            ->emptyStateActions([])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('filament-field-group::filament-field-group.name'))

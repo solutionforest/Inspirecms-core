@@ -83,9 +83,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $table
             ->recordTitleAttribute('name')
             ->defaultSort('created_at', 'desc')
-            ->emptyStateActions([
-                Tables\Actions\CreateAction::make(),
-            ])
+            ->emptyStateActions([])
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
