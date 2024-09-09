@@ -2,13 +2,20 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Events\CreateTemplate;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
+
+    public function templatable(): HasMany
+    {
+        return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
+    }
 
     public function isFileCreated(): bool
     {

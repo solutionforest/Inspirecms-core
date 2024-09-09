@@ -38,19 +38,12 @@ interface DocumentType
     public function templates(): MorphToMany;
 
     /**
-     * Get the default template associated with the document type.
-     *
-     * @return MorphOne The default template associated with the document type.
-     */
-    public function defaultTemplate(): MorphOne;
-
-    /**
      * Get the morph field templates associated with the document type.
      *
      * @return MorphMany The morph field templates associated with the document type.
      */
     public function templatable(): MorphMany;
-    
+
     /**
      * Set the specified template as the default for the document type.
      *

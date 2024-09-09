@@ -62,13 +62,6 @@ interface Content extends NestableInterface
     public function templates(): MorphToMany;
 
     /**
-     * Get the default template associated with the document type.
-     *
-     * @return MorphOne The default template associated with the document type.
-     */
-    public function defaultTemplate(): MorphOne;
-
-    /**
      * Get the morph field templates associated with the document type.
      *
      * @return MorphMany The morph field templates associated with the document type.
