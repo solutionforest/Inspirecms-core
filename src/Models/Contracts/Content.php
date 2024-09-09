@@ -13,18 +13,12 @@ interface Content extends NestableInterface
     /**
      * Return the document type relation.
      *
-     * This method should return a BelongsTo relationship
-     * representing the document type associated with the content.
-     *
      * @return BelongsTo The document type relation.
      */
     public function documentType(): BelongsTo;
 
     /**
      * Return the multiple property data relation.
-     *
-     * This method should return a BelongsToMany relationship
-     * representing the multiple property data associated with the content.
      *
      * @return BelongsToMany The property data relation.
      */
@@ -33,18 +27,12 @@ interface Content extends NestableInterface
     /**
      * Return the content versions relation.
      *
-     * This method should return a HasMany relationship
-     * representing the versions of the content.
-     *
      * @return HasMany The content versions relation.
      */
     public function contentVersions(): HasMany;
 
     /**
      * Return the content tree relation.
-     *
-     * This method should return a MorphOne relationship
-     * representing the component tree associated with the content.
      *
      * @return MorphOne The content tree relation.
      */
@@ -53,18 +41,12 @@ interface Content extends NestableInterface
     /**
      * Return the parent content relation.
      *
-     * This method should return a BelongsTo relationship
-     * representing the parent content of the current content.
-     *
      * @return BelongsTo The parent content relation.
      */
     public function parent(): BelongsTo;
 
     /**
      * Return the children contents relation.
-     *
-     * This method should return a HasMany relationship
-     * representing the children contents associated with the current content.
      *
      * @return HasMany The children contents relation.
      */

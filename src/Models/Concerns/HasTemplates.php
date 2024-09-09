@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasTemplates
@@ -25,5 +26,15 @@ trait HasTemplates
     public function templatable(): MorphMany
     {
         return $this->morphMany(InspireCmsConfig::getTemplateableModelClass(), 'templateable');
+    }
+
+    public function setAsDefaultTemplate(Template $template): void
+    {
+        $this->templates()
+            ->updateExistingPivot($template, ['is_default' => true], false);
+
+        $this->templates()->whereKeyNot($template->getKey())->update([
+            'is_default' => false,
+        ]);
     }
 }

@@ -15,12 +15,14 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     /**
      * Get the user activity associated with the user.
      *
-     * This method should return a HasOne relationship
-     * representing the user activity linked to the user.
-     *
      * @return HasOne The associated user activity.
      */
     public function userActivity(): HasOne;
-
+    
+    /**
+     * Determine if the user is a super admin.
+     *
+     * @return bool True if the user is a super admin, false otherwise.
+     */
     public function isSuperAdmin(): bool;
 }
