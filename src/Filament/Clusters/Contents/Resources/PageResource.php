@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
@@ -373,7 +374,32 @@ class PageResource extends Resource implements ClusterSectionResource
                 ->getComponent('propertyData')          // find component by unique key in same level with section's container
                 ->getChildComponentContainer()          // a container of "dynamicFieldGroups" fi-component
                 ->fill())
-            ->disabledOn('edit');
+            ->disabledOn('edit')
+            ->suffixAction(function ($state) {
+                if (! $state) {
+                    return null;
+                }
+
+                try {
+
+                    $url = null;
+
+                    foreach (['view', 'edit'] as $action) {
+
+                        if (filled($url)) {
+                            continue;
+                        }
+
+                        $url = config('inspirecms.resources.document_type', DocumentTypeResource::class)::getUrl('edit', ['record' => $state]);
+                    }
+                } catch (\Throwable $th) {
+                    return null;
+                }
+
+                return Forms\Components\Actions\Action::make('goTo')
+                    ->icon('heroicon-o-link')
+                    ->url($url);
+            });
 
         return $select;
     }
