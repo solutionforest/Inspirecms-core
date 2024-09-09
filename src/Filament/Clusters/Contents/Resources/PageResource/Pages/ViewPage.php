@@ -14,6 +14,7 @@ class ViewPage extends ViewRecord
         return [
             EditAction::make(),
             DeleteAction::make(),
+            \SolutionForest\InspireCms\Filament\Actions\PreviewContentAction::make(),
         ];
     }
 

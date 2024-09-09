@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 /**
@@ -19,11 +20,27 @@ class DocumentTypeDto extends BaseDto
      */
     public $title;
 
+    /**
+     * @var bool
+     */
+    public $asRoot;
+
+    /**
+     * @var Collection<TemplateDto>
+     */
+    public $templates;
+
     public static function fromModel($model)
     {
+        $model->loadMissing([
+            'templates',
+        ]);
+        
         return static::fromArray([
-            'id' => $model->id,
+            'id' => $model->getKey(),
             'title' => $model->title,
+            'asRoot' => $model->can_use_at_root,
+            'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
         ]);
     }
 }
