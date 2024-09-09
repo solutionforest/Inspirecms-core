@@ -36,24 +36,15 @@ class ListTemplates extends ListRecords implements HasFileExplorer
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
     {
         return $fileExplorer
-            ->directory(config('inspirecms.template.path'));
-    }
-
-    protected function getForms(): array
-    {
-        return array_merge(parent::getForms(), [
-            'selectedFileItemForm' => $this->makeForm()
-                ->columns(1)
-                ->statePath('fileExplorerSelectedItemData')
-                ->schema([
-                    TextInput::make('path')->disabled()->inlineLabel(),
-                    Hidden::make('full_path')->dehydratedWhenHidden(true),
-                    AceEditor::make('content')
-                        ->mode('php')
-                        ->theme('github')
-                        ->darkTheme('dracula'),
-                ]),
-        ]);
+            ->directory(config('inspirecms.template.path'))
+            ->selectedFileItemFormSchema([
+                TextInput::make('path')->disabled()->inlineLabel(),
+                Hidden::make('full_path')->dehydratedWhenHidden(true),
+                AceEditor::make('content')
+                    ->mode('php')
+                    ->theme('github')
+                    ->darkTheme('dracula'),
+            ]);
     }
 
     public function getSelectedFileItemFormActions(): array
