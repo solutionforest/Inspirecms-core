@@ -13,9 +13,9 @@ class Content extends BaseModel implements ContentContract
 {
     use Concerns\BelongToCmsNestableTree;
     use Concerns\HasPropertyData;
+    use Concerns\HasTemplates;
     use Concerns\NestableTrait;
     use Concerns\Publishable;
-    use Concerns\HasTemplates;
 
     protected $guarded = ['id'];
 

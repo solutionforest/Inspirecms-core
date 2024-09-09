@@ -27,7 +27,7 @@ class ListTemplates extends ListRecords implements HasFileExplorer
     {
         return 'end';
     }
-    
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.template', TemplateResource::class);
@@ -36,7 +36,7 @@ class ListTemplates extends ListRecords implements HasFileExplorer
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
     {
         return $fileExplorer
-        ->directory(config('inspirecms.template.path'));
+            ->directory(config('inspirecms.template.path'));
     }
 
     protected function getForms(): array
@@ -62,7 +62,7 @@ class ListTemplates extends ListRecords implements HasFileExplorer
             Action::make('save')
                 ->label(__('inspirecms::actions.save.label'))
                 ->submit('saveSelectedItem')
-                ->keyBindings(['mod+s'])
+                ->keyBindings(['mod+s']),
         ];
     }
 
@@ -76,7 +76,7 @@ class ListTemplates extends ListRecords implements HasFileExplorer
     public function saveSelectedItem()
     {
         $data = $this->selectedFileItemForm->getState();
-        
+
         file_put_contents($data['full_path'], $data['content']);
 
         $this->getSavedNotification()?->send();

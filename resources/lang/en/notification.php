@@ -19,7 +19,7 @@ return [
     'saved' => [
 
         'title' => 'Saved',
-        
+
     ],
 
 ];

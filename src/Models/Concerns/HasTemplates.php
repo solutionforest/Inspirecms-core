@@ -20,7 +20,7 @@ trait HasTemplates
         return $this->morphMany(InspireCmsConfig::getTemplateableModelClass(), 'templateable');
     }
 
-    public function setAsDefaultTemplate(Template|string|int $template): void
+    public function setAsDefaultTemplate(Template | string | int $template): void
     {
         $templateId = $template instanceof Template ? $template->getId() : $template;
 

@@ -29,7 +29,6 @@ class TemplateDto extends BaseDto
      */
     public $isDefault;
 
-
     public static function fromModel($model)
     {
         return static::fromArray([

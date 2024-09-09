@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 interface Template
 {
     public function templatable(): HasMany;
-    
+
     /**
      * Check if the template file has been created.
      *

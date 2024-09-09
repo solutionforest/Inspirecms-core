@@ -135,12 +135,11 @@ interface Content extends NestableInterface
      * value, e.g. 'draft'.
      */
     public function resetPublishableState(): void;
-    
+
     /**
      * Set the specified template as the default for the document type.
      *
-     * @param Template|string|int $template The template to set as default, which can be a Template object, a string, or an integer.
-     * @return void
+     * @param  Template|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
      */
-    public function setAsDefaultTemplate(Template|string|int $template): void;
+    public function setAsDefaultTemplate(Template | string | int $template): void;
 }

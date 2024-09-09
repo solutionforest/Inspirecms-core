@@ -10,11 +10,9 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class PreviewContent extends Component
 {
     #[Locked]
-    public string|int $content;
+    public string | int $content;
 
-    public function mount(string|int $content)
-    {
-    }
+    public function mount(string | int $content) {}
 
     public function getDto(): ?ContentDto
     {
@@ -23,7 +21,7 @@ class PreviewContent extends Component
             'templates' => fn ($query) => $query->wherePivot('is_default', true),
         ])->find($this->content);
 
-        if (!$record) {
+        if (! $record) {
             return null;
         }
 

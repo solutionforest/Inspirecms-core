@@ -35,7 +35,7 @@ class DocumentTypeDto extends BaseDto
         $model->loadMissing([
             'templates',
         ]);
-        
+
         return static::fromArray([
             'id' => $model->getKey(),
             'title' => $model->title,

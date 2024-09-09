@@ -57,8 +57,7 @@ class ContentDto extends BaseDto
             return $templateDto->isDefault;
         });
 
-        $currTemplate = $this->templates->first(function (TemplateDto $templateDto)
-        {
+        $currTemplate = $this->templates->first(function (TemplateDto $templateDto) {
             return $templateDto->isDefault;
         });
 
