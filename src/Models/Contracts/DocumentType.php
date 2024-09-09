@@ -50,11 +50,12 @@ interface DocumentType
      * @return MorphMany The morph field templates associated with the document type.
      */
     public function templatable(): MorphMany;
-
+    
     /**
      * Set the specified template as the default for the document type.
      *
-     * @param  Template  $template  The template to set as default.
+     * @param Template|string|int $template The template to set as default, which can be a Template object, a string, or an integer.
+     * @return void
      */
-    public function setAsDefaultTemplate(Template $template): void;
+    public function setAsDefaultTemplate(Template|string|int $template): void;
 }

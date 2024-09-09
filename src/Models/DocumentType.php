@@ -6,13 +6,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
+use SolutionForest\InspireCms\Models\Concerns;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
-    use HasTemplates;
+    use Concerns\HasTemplates;
 
     protected $guarded = ['id'];
 

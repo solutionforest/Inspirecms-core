@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 
 interface Content extends NestableInterface
@@ -51,6 +53,27 @@ interface Content extends NestableInterface
      * @return HasMany The children contents relation.
      */
     public function children(): HasMany;
+
+    /**
+     * Get the templates associated with the document type.
+     *
+     * @return MorphToMany The templates associated with the document type.
+     */
+    public function templates(): MorphToMany;
+
+    /**
+     * Get the default template associated with the document type.
+     *
+     * @return MorphOne The default template associated with the document type.
+     */
+    public function defaultTemplate(): MorphOne;
+
+    /**
+     * Get the morph field templates associated with the document type.
+     *
+     * @return MorphMany The morph field templates associated with the document type.
+     */
+    public function templatable(): MorphMany;
 
     /**
      * Determine if this content is already published.
@@ -119,4 +142,12 @@ interface Content extends NestableInterface
      * value, e.g. 'draft'.
      */
     public function resetPublishableState(): void;
+    
+    /**
+     * Set the specified template as the default for the document type.
+     *
+     * @param Template|string|int $template The template to set as default, which can be a Template object, a string, or an integer.
+     * @return void
+     */
+    public function setAsDefaultTemplate(Template|string|int $template): void;
 }

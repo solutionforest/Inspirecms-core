@@ -69,6 +69,7 @@ class PageResource extends Resource implements ClusterSectionResource
                             ->schema([
                                 static::getSlugFormComponent(),
                                 static::getParentPageFormComponent(),
+                                static::getTemplateFormComponent(),
                             ]),
                         Forms\Components\Group::make()
                             ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
@@ -314,6 +315,37 @@ class PageResource extends Resource implements ClusterSectionResource
             ->preload()
             ->live()
             ->disabledOn('edit');
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getTemplateFormComponent()
+    {
+        return Forms\Components\Select::make('template_id')
+            ->label(__('inspirecms::inspirecms.template'))
+            ->options(function (Forms\Get $get) {
+                $documentType = InspireCmsConfig::getDocumentTypeModelClass()::with(['templates'])->find($get('document_type_id'));
+                if (! $documentType) {
+                    return [];
+                }
+
+                return collect($documentType->templates)
+                    ->mapWithKeys(function ($template) {
+                        return [$template->getKey() => $template->name];
+                    })
+                    ->all();
+            })
+            ->searchable()
+            ->dehydrated(false)
+            ->saveRelationshipsUsing(function (CmsContent $record, $state) {
+                if ($state) {
+                    $record->templates()->sync($state);
+                    $record->setAsDefaultTemplate($state);
+                } else {
+                    $record->templates()->sync([]);
+                }
+            });
     }
 
     /**

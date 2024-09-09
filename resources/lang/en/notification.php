@@ -16,4 +16,10 @@ return [
 
     ],
 
+    'saved' => [
+
+        'title' => 'Saved',
+        
+    ],
+
 ];

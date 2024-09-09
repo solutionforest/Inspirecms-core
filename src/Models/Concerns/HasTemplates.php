@@ -28,12 +28,14 @@ trait HasTemplates
         return $this->morphMany(InspireCmsConfig::getTemplateableModelClass(), 'templateable');
     }
 
-    public function setAsDefaultTemplate(Template $template): void
+    public function setAsDefaultTemplate(Template|string|int $template): void
     {
-        $this->templates()
-            ->updateExistingPivot($template, ['is_default' => true], false);
+        $templateId = $template instanceof Template ? $template->getId() : $template;
 
-        $this->templates()->whereKeyNot($template->getKey())->update([
+        $this->templates()
+            ->updateExistingPivot($templateId, ['is_default' => true], false);
+
+        $this->templates()->whereKeyNot($templateId)->update([
             'is_default' => false,
         ]);
     }
