@@ -68,12 +68,7 @@ class TemplatesRelationManager extends RelationManager
                     ->successNotificationTitle(__('filament-actions::edit.single.notifications.saved.title'))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
 
-                        $this->getRelationship()
-                            ->updateExistingPivot($record, ['is_default' => true], false);
-
-                        $this->getRelationship()->whereKeyNot($record->getKey())->update([
-                            'is_default' => false,
-                        ]);
+                        $this->getOwnerRecord()->setAsDefaultTemplate($record);
 
                         $action->success();
                     }),
