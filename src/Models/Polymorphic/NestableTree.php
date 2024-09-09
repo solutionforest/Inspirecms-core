@@ -9,10 +9,6 @@ use SolutionForest\InspireCms\Models\Concerns\NestableTrait;
 use SolutionForest\InspireCms\Models\Contracts\NestableTree as NestableTreeContract;
 use Spatie\EloquentSortable\SortableTrait;
 
-/**
- * This class represents a component in the CMS system. It uses the BelongToCmsComponentTree trait
- * to manage its hierarchical order and structure through a relationship with CmsComponentTree.
- */
 class NestableTree extends BaseModel implements NestableTreeContract
 {
     use NestableTrait;

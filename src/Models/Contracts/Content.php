@@ -32,11 +32,11 @@ interface Content extends NestableInterface
     public function contentVersions(): HasMany;
 
     /**
-     * Return the content tree relation.
+     * Return the nestable tree relation.
      *
      * @return MorphOne The content tree relation.
      */
-    public function componentTree(): MorphOne;
+    public function nestableTree(): MorphOne;
 
     /**
      * Return the parent content relation.

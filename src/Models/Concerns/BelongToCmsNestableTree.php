@@ -6,17 +6,17 @@ use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 /**
- * This trait provides functionality for models to belong to a CmsComponentTree,
+ * This trait provides functionality for models to belong to a NestableTree,
  * allowing them to be organized in a hierarchical structure.
  *
- * It manages the relationship with the CmsComponentTree model and provides methods
+ * It manages the relationship with the NestableTree model and provides methods
  * for creating, updating, and managing the hierarchical structure.
  */
-trait BelongToCmsComponentTree
+trait BelongToCmsNestableTree
 {
     protected bool $updateTreeOrder = false;
 
-    public static function bootBelongToCmsComponentTree()
+    public static function bootBelongToCmsNestableTree()
     {
         static::created(function ($model) {
             $model->createOrUpdateNode();
@@ -27,22 +27,22 @@ trait BelongToCmsComponentTree
         });
     }
 
-    public function componentTree(): MorphOne
+    public function nestableTree(): MorphOne
     {
-        return $this->morphOne(InspireCmsConfig::getComponentTreeModelClass(), 'nestable');
+        return $this->morphOne(InspireCmsConfig::getNestableTreeModelClass(), 'nestable');
     }
 
     protected function createOrUpdateNode()
     {
         $nodeData = $this->getTreeData();
 
-        if ($this->componentTree) {
-            $this->componentTree->update($nodeData);
+        if ($this->nestableTree) {
+            $this->nestableTree->update($nodeData);
         } else {
-            $this->componentTree()->create($nodeData);
+            $this->nestableTree()->create($nodeData);
         }
 
-        $this->load('componentTree');
+        $this->load('nestableTree');
 
         $this->updateSiblingsSort();
     }
@@ -72,13 +72,13 @@ trait BelongToCmsComponentTree
     {
         try {
 
-            $componentTreeClass = InspireCmsConfig::getComponentTreeModelClass();
+            $nestableTreeClass = InspireCmsConfig::getNestableTreeModelClass();
 
             $parentId = $this->getParentId() ?? $this->fallbackParentId();
 
-            $maxOrder = $componentTreeClass::query()
+            $maxOrder = $nestableTreeClass::query()
                 ->where('parent_id', $parentId)
-                ->when($this->componentTree, fn ($q) => $q->where('id', '!=', $this->componentTree->id))
+                ->when($this->nestableTree, fn ($q) => $q->where('id', '!=', $this->nestableTree->id))
                 ->max('order');
 
             return $maxOrder !== null ? $maxOrder + 1 : $this->fallbackSort();
@@ -90,24 +90,24 @@ trait BelongToCmsComponentTree
 
     protected function updateSiblingsSort()
     {
-        // Check `componentTree` relationship is loaded
-        if (! $this->relationLoaded('componentTree')) {
-            $this->load('componentTree');
+        // Check `nestableTree` relationship is loaded
+        if (! $this->relationLoaded('nestableTree')) {
+            $this->load('nestableTree');
         }
 
-        if (is_null($this->componentTree)) {
+        if (is_null($this->nestableTree)) {
             return;
         }
 
         try {
 
-            $componentTreeClass = InspireCmsConfig::getComponentTreeModelClass();
+            $nestableTreeClass = InspireCmsConfig::getNestableTreeModelClass();
 
             $parentId = $this->getParentId() ?? $this->fallbackParentId();
 
-            $siblings = $componentTreeClass::query()
+            $siblings = $nestableTreeClass::query()
                 ->where('parent_id', $parentId)
-                ->when($this->componentTree, fn ($q) => $q->where('id', '!=', $this->componentTree->id ?? null))
+                ->when($this->nestableTree, fn ($q) => $q->where('id', '!=', $this->nestableTree->id ?? null))
                 ->orderBy('order')
                 ->get();
 
@@ -118,8 +118,8 @@ trait BelongToCmsComponentTree
         }
 
         foreach ($siblings as $index => $sibling) {
-            if ($sibling->order >= $this->componentTree->order && $sibling->id != $this->componentTree->id) {
-                $sibling->update(['order' => $index + $this->componentTree->order + 1]);
+            if ($sibling->order >= $this->nestableTree->order && $sibling->id != $this->nestableTree->id) {
+                $sibling->update(['order' => $index + $this->nestableTree->order + 1]);
             } else {
                 $sibling->update(['order' => $index]);
             }

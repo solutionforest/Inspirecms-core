@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class Content extends BaseModel implements ContentContract
 {
-    use Concerns\BelongToCmsComponentTree;
+    use Concerns\BelongToCmsNestableTree;
     use Concerns\HasPropertyData;
     use Concerns\NestableTrait;
     use Concerns\Publishable;
