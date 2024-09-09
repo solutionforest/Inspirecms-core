@@ -13,8 +13,6 @@ interface Template
 
     /**
      * Create the template file.
-     *
-     * @return void
      */
     public function createTemplateFile(): void;
 

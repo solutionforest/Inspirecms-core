@@ -18,7 +18,7 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
      * @return HasOne The associated user activity.
      */
     public function userActivity(): HasOne;
-    
+
     /**
      * Determine if the user is a super admin.
      *

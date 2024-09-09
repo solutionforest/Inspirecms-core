@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use SolutionForest\InspireCms\Models\Contracts\Template;
 
 interface DocumentType
 {
@@ -55,8 +54,7 @@ interface DocumentType
     /**
      * Set the specified template as the default for the document type.
      *
-     * @param Template $template The template to set as default.
-     * @return void
+     * @param  Template  $template  The template to set as default.
      */
     public function setAsDefaultTemplate(Template $template): void;
 }
