@@ -163,7 +163,7 @@ return new class extends BaseMigration
             'user_login_activity' => $this->prefix . 'user_login_activities',
             'user' => $this->prefix . 'users',
             'template' => $this->prefix . 'templates',
-            'templatable' => $this->prefix . 'templatable',
+            'templatable' => $this->prefix . 'templateable',
         ];
     }
 };
