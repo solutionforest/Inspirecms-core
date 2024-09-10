@@ -26,7 +26,8 @@ class EditPage extends EditRecord implements HasPublishForm
     {
         return [
             Actions\DeleteAction::make(),
-            \SolutionForest\InspireCms\Filament\Actions\PreviewContentAction::make(),
+            \SolutionForest\InspireCms\Filament\Actions\PreviewContentAction::make()
+                ->record($this->getRecord()),
         ];
     }
 

@@ -32,7 +32,7 @@ class PreviewContent extends Component
     {
         $dto = $this->getDto();
 
-        $view = $dto->getDefaultTemplate()?->viewName ?? 'inspirecms::livewire.preview-content-placeholder';
+        $view = $dto?->getDefaultTemplate()?->viewName ?? 'inspirecms::livewire.preview-content-placeholder';
 
         return view($view)
             ->layout('inspirecms::livewire.layout.base');
