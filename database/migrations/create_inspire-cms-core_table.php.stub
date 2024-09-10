@@ -32,6 +32,7 @@ return new class extends BaseMigration
             $table->id();
             $table->string('name');
             $table->boolean('can_use_at_root')->default(false);
+            $table->boolean('is_element_type')->default(false);
 
             $table->timestamps();
 

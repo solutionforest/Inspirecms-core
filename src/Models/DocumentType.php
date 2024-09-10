@@ -17,6 +17,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     protected $casts = [
         'can_use_at_root' => 'boolean',
+        'is_element_type' => 'boolean',
     ];
 
     public function fieldGroups(): MorphToMany

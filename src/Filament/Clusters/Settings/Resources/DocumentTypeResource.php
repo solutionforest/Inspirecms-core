@@ -56,6 +56,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->columns(1)
                         ->schema([
                             static::getCanUseAtRootFormComponent(),
+                            static::getIsElementTypeFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -76,6 +77,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->schema([
                 static::getNameFormComponent()->inlineLabel(),
                 static::getCanUseAtRootFormComponent(),
+                static::getIsElementTypeFormComponent(),
             ]);
     }
 
@@ -250,7 +252,30 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\Toggle::make('can_use_at_root')
             ->label(__('inspirecms::inspirecms.can_use_at_root'))
             ->inlineLabel()
-            ->default(false);
+            ->default(false)
+            ->hidden(function (Forms\Get $get) {
+                return $get('is_element_type') === true;
+            })
+            ->dehydratedWhenHidden(true)
+            ->dehydrateStateUsing(function (Forms\Get $get, $state) {
+                if ($get('is_element_type')) {
+                    return false;
+                } else {
+                    return $state;
+                }
+            });
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getIsElementTypeFormComponent()
+    {
+        return Forms\Components\Toggle::make('is_element_type')
+            ->label(__('inspirecms::inspirecms.is_element_type'))
+            ->inlineLabel()
+            ->default(false)
+            ->live();
     }
 
     /**
