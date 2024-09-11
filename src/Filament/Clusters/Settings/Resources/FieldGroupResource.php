@@ -18,6 +18,7 @@ use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as B
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
@@ -172,7 +173,9 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            RelationManagers\DocumentTypesRelationManager::class,
+        ];
     }
 
     public static function getEloquentQuery(): Builder

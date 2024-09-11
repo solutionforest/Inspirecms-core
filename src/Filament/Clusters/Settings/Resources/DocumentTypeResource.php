@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
@@ -149,6 +150,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return [
             RelationManagers\TemplatesRelationManager::class,
+            RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
+                RelationManagers\ContentsTypesRelationManager::class,
+            ]),
         ];
     }
 

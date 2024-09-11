@@ -20,7 +20,7 @@ class PreviewContentAction extends Action
         parent::setUp();
 
         $this->alpineClickHandler(function () {
-
+            
             $recordKey = $this->getRecord()?->getKey();
 
             return 'window.open(' . Js::from('/api/preview-content/' . $recordKey) . ",'winname','directories=no,titlebar=no,toolbar=no,location=no,status=no,menubar=no,scrollbars=no,resizable=no,width=400,height=350');";

@@ -32,6 +32,12 @@ return [
         ],
     ],
 
+    'open' => [
+
+        'label' => 'Open',
+
+    ],
+
     'publish' => [
 
         'label' => 'Publish',

@@ -41,6 +41,8 @@ return [
     'publish_at' => 'Publish at',
     'role' => 'Role',
     'roles' => 'Roles',
+    'referenced_by' => 'Referenced by',
+    'referenced_by_xxx' => 'Referenced by :name',
     'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',
