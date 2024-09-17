@@ -31,7 +31,7 @@ class ContentsTypesRelationManager extends RelationManager
     protected function getRecordUrl($record): ?string
     {
         try {
-        
+
             $url = null;
 
             foreach (['view', 'edit'] as $action) {
