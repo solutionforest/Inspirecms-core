@@ -22,13 +22,14 @@ trait HasTemplates
 
     public function setAsDefaultTemplate(Template | string | int $template): void
     {
-        $templateId = $template instanceof Template ? $template->getId() : $template;
+        $templateId = $template instanceof Template ? $template->getKey() : $template;
 
-        $this->templates()
-            ->updateExistingPivot($templateId, ['is_default' => true], false);
+        $this->templatable()
+            ->where('template_id', $templateId)
+            ->update(['is_default' => true]);
 
-        $this->templates()->whereKeyNot($templateId)->update([
-            'is_default' => false,
-        ]);
+        $this->templatable()
+            ->where('template_id', '!=', $templateId)
+            ->update(['is_default' => false]);
     }
 }

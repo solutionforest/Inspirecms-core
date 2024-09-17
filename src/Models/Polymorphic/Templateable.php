@@ -11,6 +11,8 @@ class Templateable extends BaseMorphPivotModel implements TemplateableContract
 {
     protected $guarded = [];
 
+    public $timestamps = false;
+
     protected $casts = [
         'is_default' => 'boolean',
     ];

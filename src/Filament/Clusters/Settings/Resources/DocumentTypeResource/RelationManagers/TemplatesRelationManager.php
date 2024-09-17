@@ -53,9 +53,10 @@ class TemplatesRelationManager extends RelationManager
                     Tables\Columns\TextColumn::make('name')
                         ->weight('bold')
                         ->description(fn (Template $record) => $record->path),
-                    Tables\Columns\IconColumn::make('is_default')
-                        ->tooltip(__('inspirecms::inspirecms.is_default'))
-                        ->boolean(),
+                    Tables\Columns\TextColumn::make('is_default')
+                        ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
+                        ->iconColor(fn ($state) => $state ? 'success' : 'danger')
+                        ->formatStateUsing(fn () => __('inspirecms::inspirecms.is_default')),
                 ]),
             ])
             ->headerActions([
