@@ -128,7 +128,7 @@ trait BelongToCmsNestableTree
 
     protected function fallbackParentId()
     {
-        return -1;
+        return 0;
     }
 
     protected function fallbackSort()

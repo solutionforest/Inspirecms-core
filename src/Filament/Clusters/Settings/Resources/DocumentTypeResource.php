@@ -72,6 +72,33 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ]);
     }
 
+    public static function childrenForm(Form $form): Form
+    {
+        return $form
+            ->columns(1)
+            ->schema([
+                RevertOrderGroup::make([
+
+                    static::getCanUseAtRootFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
+                    static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
+
+                    Forms\Components\Section::make()
+                        ->columns(1)
+                        ->schema([
+                            static::getTimestampsGroupedFormComponent(),
+                        ])
+                        ->grow(false)->hiddenOn('create'),
+                    Forms\Components\Section::make()
+                        ->columns(1)
+                        ->schema([
+                            static::getNameFormComponent()->inlineLabel()->columnSpanFull(),
+                            static::getFieldGroupFormComponent(),
+                        ])
+                        ->grow(),
+                ])->revertBreakPoint('lg'),
+            ]);
+    }
+
     public static function quickForm(Form $form): Form
     {
         return $form
@@ -97,6 +124,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->sortable(),
                 Tables\Columns\IconColumn::make('can_use_at_root')
                     ->label(__('inspirecms::inspirecms.can_use_at_root'))
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('is_element_type')
+                    ->label(__('inspirecms::inspirecms.is_element_type'))
                     ->boolean(),
 
                 // timestamps
@@ -149,6 +179,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
+            RelationManagers\ChildrenRelationManager::class,
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
                 RelationManagers\ContentsTypesRelationManager::class,

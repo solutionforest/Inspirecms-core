@@ -11,7 +11,9 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
+    use Concerns\BelongToCmsNestableTree;
     use Concerns\HasTemplates;
+    use Concerns\NestableTrait;
 
     protected $guarded = ['id'];
 

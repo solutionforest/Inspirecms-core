@@ -228,6 +228,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
+        if (config('inspirecms.override_plugins.filament_peek', false)) {
+
+        }
     }
 
     protected function registerAuthGuard(): void

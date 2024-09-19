@@ -1,21 +1,19 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource\Pages;
 
 use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentView;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Concerns\CanBePublish;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts\HasPublishForm;
 
-use function Filament\Support\is_app_url;
-
-class EditPage extends EditRecord implements HasPublishForm
+class EditElement extends EditRecord
 {
     use CanBePublish;
     use HasPreviewModal;
@@ -82,7 +80,7 @@ class EditPage extends EditRecord implements HasPublishForm
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.resources.element', ElementResource::class);
     }
 
     public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void

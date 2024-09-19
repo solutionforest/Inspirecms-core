@@ -14,7 +14,7 @@ return new class extends BaseMigration
             $table->id();
 
             $table->integer('document_type_id');
-            $table->integer('parent_id')->comment('Parent\'s content, 0 = Root.');
+            $table->integer('parent_id')->default(0)->comment('Parent\'s content, 0 = Root.');
             $table->string('title');
             $table->string('slug');
             $table->timestamp('published_at')->nullable();
@@ -31,12 +31,14 @@ return new class extends BaseMigration
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->integer('parent_id')->default(0)->comment('Parent\'s document_type, 0 = Root.');
             $table->boolean('can_use_at_root')->default(false);
             $table->boolean('is_element_type')->default(false);
 
             $table->timestamps();
 
             $table->index('name');
+            $table->index('parent_id');
         });
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();

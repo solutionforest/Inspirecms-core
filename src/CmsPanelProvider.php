@@ -16,6 +16,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
@@ -37,6 +38,7 @@ class CmsPanelProvider extends PanelProvider
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([
                 FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
+                FilamentPeekPlugin::make(),
                 new InspireCmsTheme,
             ])
             ->resources(config('inspirecms.resources'))

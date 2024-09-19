@@ -1,5 +1,6 @@
 <?php
 
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
@@ -25,6 +26,7 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
+        'filament_peek' => true,
     ],
 
     'template' => [
@@ -33,6 +35,7 @@ return [
 
     'resources' => [
         'page' => PageResource::class,
+        'element' => ElementResource::class,
         'document_type' => DocumentTypeResource::class,
         'field_group' => FieldGroupResource::class,
         'language' => LanguageResource::class,

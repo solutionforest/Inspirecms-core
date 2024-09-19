@@ -3,13 +3,22 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Concerns;
 
 use Filament\Forms\Form;
+use Filament\Resources\RelationManagers\RelationManager;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 
 trait HasQuickCreateAction
 {
     protected function configureQuickCreateAction(QuickCreateAction $action): void
     {
-        $resource = static::getResource();
+        if ($this instanceof RelationManager) {
+            
+            $resource = $this->getPageClass()::getResource();
+
+        } else {
+
+            $resource = static::getResource();
+            
+        }
 
         // Check 'quickForm' method exists
         if (! method_exists($resource, 'quickForm')) {
