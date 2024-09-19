@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\DataTypes\Manifest;
 
 use Closure;
+use Filament\Actions\Action;
 
 class ContentStatusOption extends BaseManifestOption
 {
@@ -22,6 +23,7 @@ class ContentStatusOption extends BaseManifestOption
         protected null | string | Closure $label = null,
         protected null | string | Closure $color = null,
         protected null | string | Closure $icon = null,
+        protected null | Closure $formAction = null,
     ) {}
 
     public function getValue(): int
@@ -47,5 +49,17 @@ class ContentStatusOption extends BaseManifestOption
     public function getIcon(): ?string
     {
         return $this->evaluate($this->icon);
+    }
+
+    public function formAction(Closure $callback): static
+    {
+        $this->formAction = $callback;
+
+        return $this;
+    }
+
+    public function getFormAction(): ?Action
+    {
+        return $this->evaluate($this->formAction);
     }
 }

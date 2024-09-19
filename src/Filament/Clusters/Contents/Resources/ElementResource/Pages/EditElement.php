@@ -41,10 +41,10 @@ class EditElement extends EditRecord
                 ->label(__('inspirecms::actions.more_actions.label'))
                 ->button()
                 ->color('gray')
-                ->actions([
-                    $this->getUnPublishFormAction('edit'),
-                    $this->getSetPrivateFormAction('edit'),
-                ]),
+                ->actions(array_filter([
+                    inspirecms_content_statuses()->getOption('unpublish')->getFormAction(),
+                    inspirecms_content_statuses()->getOption('private')->getFormAction(),
+                ])),
             $this->getCancelFormAction(),
         ];
     }

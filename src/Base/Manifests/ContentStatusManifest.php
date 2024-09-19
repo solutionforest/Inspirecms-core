@@ -2,8 +2,21 @@
 
 namespace SolutionForest\InspireCms\Base\Manifests;
 
+use Filament\Actions\Action;
+use Filament\Forms\Form;
+use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Support\Facades\FilamentView;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\BaseContentResource;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages\EditPage;
+use SolutionForest\InspireCms\Models\Concerns\Publishable;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+
+use function Filament\Support\is_app_url;
 
 class ContentStatusManifest implements ContentStatusManifestInterface
 {
@@ -93,15 +106,126 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                 'unpublish',
                 __('inspirecms::inspirecms.page_status.unpublish.label'),
                 'gray',
-                'heroicon-o-x-circle'
+                'heroicon-o-x-circle',
+                // Must have record injected
+                fn () => Action::make('unpublish')
+                    ->label(__('inspirecms::actions.unpublish.label'))
+                    ->modalSubmitActionLabel(__('inspirecms::actions.unpublish.actions.unpublish.label'))
+                    ->color('gray')
+                    ->requiresConfirmation()
+                    ->action(function (null | Model | Content $record, Action $action, $livewire) {
+                        if (is_null($record)) {
+                            $action->cancel();
+            
+                            return;
+                        }
+
+                        if (!static::handlePublishableRecord($record, 'unpublish', $livewire, [])) {
+                            return;
+                        }
+            
+                        $action->success();
+            
+                    })
+                    ->authorize('unpublish')
+                    ->successNotification(fn () => Notification::make()
+                        ->success()
+                        ->title(__('inspirecms::actions.unpublish.notifications.unpublished.title'))
+                    )
             ),
             new ContentStatusOption(
                 3,
                 'private',
                 __('inspirecms::inspirecms.page_status.private.label'),
                 'secondary',
-                'heroicon-o-lock-closed'
+                'heroicon-o-lock-closed',
+                fn () => Action::make('private')
+                    ->label(__('inspirecms::actions.private.label'))
+                    ->modalSubmitActionLabel(__('inspirecms::actions.private.actions.private.label'))
+                    ->color('gray')
+                    ->form(fn (Form $form) => $form->schema([
+                        BaseContentResource::getPublishedAtComponent(),
+                    ])->operation('publish'))
+                    ->beforeFormValidated(function (Action $action, $livewire) {
+                        try {
+        
+                            if ($livewire instanceof EditPage &&
+                                in_array(CanBePublish::class, class_uses_recursive($livewire))) {
+                            
+                                $livewire->validatePublishableData();
+
+                            } 
+        
+                        } catch (\Throwable $e) {
+                            Notification::make()
+                                ->title(__('inspirecms::notification.form_check_error.title'))
+                                ->danger()
+                                ->send();
+        
+                            throw $e;
+                        }
+                    })
+                    ->action(function (Model | Content $record, array $data, Action $action, $livewire) {
+                        if (is_null($record)) {
+                            $action->cancel();
+            
+                            return;
+                        }
+
+                        if (!static::handlePublishableRecord($record, 'private', $livewire, $data)) {
+                            return;
+                        }
+            
+                        $action->success();
+            
+                        if ($livewire instanceof EditPage) {
+
+                            $redirectUrl = $livewire->getUrl(['record' => $record->getKey()]);
+
+                            $livewire->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+                        }
+                    })
+                    ->authorize('setPrivate')
+                    ->successNotification(fn () => Notification::make()
+                        ->success()
+                        ->title(__('inspirecms::actions.private.notifications.updated.title'))
+                    )
             ),
         ];
     }
+
+    //region Helpers
+    protected static function handlePublishableRecord($record, $publishableState, $livewire, array $data)
+    {
+
+        if ($livewire instanceof EditRecord &&
+            in_array(CanBePublish::class, class_uses_recursive($livewire))) {
+
+            $isSuccess = $livewire->handlePublishableRecord(function () use ($data, $livewire, $publishableState) {
+
+                $data = $livewire->getPublishableFormDataBeforePublish($data);
+
+                $livewire->handlePublishableRecordCreateOrUpdate($data, false, $publishableState);
+            });
+
+            if (! $isSuccess) {
+                return false;
+            }
+
+        } else if (in_array(Publishable::class, class_uses_recursive($record))) {
+            
+            $record->setPrivateUse($data);
+
+        } else {
+
+            $record->setPublishableState($publishableState);
+
+            $record->save();
+
+        }
+
+        return true;
+    }
+
+    //endregion Helpers
 }

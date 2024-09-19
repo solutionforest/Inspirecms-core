@@ -264,7 +264,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getPublishedAtComponent()
+    public static function getPublishedAtComponent()
     {
         return Forms\Components\DateTimePicker::make('published_at')
             ->label(__('inspirecms::inspirecms.publish_at'))
