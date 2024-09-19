@@ -17,5 +17,5 @@ interface PermissionManifestInterface
 
     public function getClusterSectionPermissions(): array;
 
-    public function getClusterSectionResourcePermissions(): array;
+    public function getClusterSectionResourceModelPermissions(): array;
 }

@@ -125,7 +125,11 @@ class ModelManifest implements ModelManifestInterface
         $class = new \ReflectionClass($modelClass);
 
         $shortName = $class->getShortName();
-        $namespace = $class->getNamespaceName();
+        $namespace = str($class->getNamespaceName());
+
+        if (str($namespace)->startsWith('SolutionForest\\InspireCms\\Models')) {
+            $namespace = 'SolutionForest\\InspireCms\\Models';
+        }
 
         return "{$namespace}\\Contracts\\$shortName";
     }

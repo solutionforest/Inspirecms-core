@@ -44,16 +44,20 @@ class PermissionManifest implements PermissionManifestInterface
             ->toArray();
     }
 
-    public function getClusterSectionResourcePermissions(): array
+    public function getClusterSectionResourceModelPermissions(): array
     {
         return collect(config('inspirecms.resources'))
             ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Resources\Resource::class))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn)))
             ->mapWithKeys(function ($fqcn) {
-                $permissionNames = collect($fqcn::getPermissionPrefixes())
-                    ->mapWithKeys(function (string $prefix) use ($fqcn) {
 
-                        $permissionName = str($fqcn::getModelLabel())
+                $model = $fqcn::getModel();
+                $modelShortName = class_basename($model);
+
+                $permissionNames = collect($fqcn::getPermissionPrefixes())
+                    ->mapWithKeys(function (string $prefix) use ($modelShortName) {
+
+                        $permissionName = str($modelShortName)
                             ->lower()
                             ->snake('_')
                             ->prepend('_')
@@ -69,7 +73,7 @@ class PermissionManifest implements PermissionManifestInterface
                     ->all();
 
                 return [
-                    $fqcn => $permissionNames,
+                    $modelShortName => $permissionNames,
                 ];
             })
             ->sortKeys()
@@ -85,7 +89,7 @@ class PermissionManifest implements PermissionManifestInterface
     protected function getEntitiesPermissions(): array
     {
         return collect($this->getClusterSectionPermissions())->keys()
-            ->merge(collect($this->getClusterSectionResourcePermissions())->collapse()->keys())
+            ->merge(collect($this->getClusterSectionResourceModelPermissions())->collapse()->keys())
             ->map(fn ($permission) => str($permission)->lower()->toString())
             ->values()
             ->unique()

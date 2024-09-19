@@ -63,7 +63,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                         $permissionNames = $record->permissions->pluck('name');
                         $state = [];
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
-                        $resourcePermissions = collect(PermissionManifest::getClusterSectionResourcePermissions())->collapse()->all();
+                        $resourcePermissions = collect(PermissionManifest::getClusterSectionResourceModelPermissions())->collapse()->all();
 
                         foreach ($permissionNames as $permissionName) {
 
@@ -195,14 +195,14 @@ class RoleResource extends Resource implements ClusterSectionResource
      */
     protected static function getFormComponentForDefaultPermissionsSection()
     {
-        $resourcePermissions = PermissionManifest::getClusterSectionResourcePermissions();
+        $modelPermissions = PermissionManifest::getClusterSectionResourceModelPermissions();
 
         $components = [];
 
-        foreach ($resourcePermissions as $resourceFQCN => $resourcePermissionOptions) {
+        foreach ($modelPermissions as $model => $resourcePermissionOptions) {
 
             $components[] = Forms\Components\Section::make()
-                ->heading($resourceFQCN::getNavigationLabel())
+                ->heading($model)
                 ->schema(
                     collect($resourcePermissionOptions)
                         ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))

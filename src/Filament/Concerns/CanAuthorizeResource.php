@@ -39,7 +39,7 @@ trait CanAuthorizeResource
 
             $user = Filament::auth()->user();
 
-            $permissionNames = data_get(PermissionManifest::getClusterSectionResourcePermissions(), static::class);
+            $permissionNames = data_get(PermissionManifest::getClusterSectionResourceModelPermissions(), static::class);
 
             $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $action)->keys()->first();
 
