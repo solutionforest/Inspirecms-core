@@ -39,9 +39,13 @@ class ContentStatusManifest implements ContentStatusManifestInterface
     public function getOption(int | string $valueOrName): ?ContentStatusOption
     {
         if (is_int($valueOrName)) {
-            return $this->options->firstWhere(fn (ContentStatusOption $option) => $option->getValue(), $valueOrName);
+            return $this->options
+                ->where(fn (ContentStatusOption $option) => $option->getValue() == $valueOrName)
+                ->first();
         } else {
-            return $this->options->firstWhere(fn (ContentStatusOption $option) => $option->getName(), $valueOrName);
+            return $this->options
+                ->where(fn (ContentStatusOption $option) => $option->getName() == $valueOrName)
+                ->first();
         }
     }
 
