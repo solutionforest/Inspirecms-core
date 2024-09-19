@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use Termwind\Components\Element;
 
 class ContentsRelationManager extends RelationManager
 {
