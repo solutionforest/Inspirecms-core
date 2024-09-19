@@ -175,7 +175,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getIcons(): array
     {
-        return [];
+        return [
+            'inspirecms::preview' => 'heroicon-o-eye',
+            'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
+            'inspirecms::reset' => 'heroicon-o-arrow-path',
+            'inspirecms::clone' => 'heroicon-o-document-duplicate',
+        ];
     }
 
     /**

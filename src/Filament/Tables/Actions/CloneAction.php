@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
 use Closure;
 use Filament\Actions\Concerns\CanCustomizeProcess;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Contracts\HasTable;
 use Illuminate\Support\HtmlString;
@@ -37,7 +38,7 @@ class CloneAction extends Action
 
         $this->color('zinc');
 
-        $this->icon('heroicon-o-document-duplicate');
+        $this->icon(FilamentIcon::resolve('inspirecms::clone'));
 
         $this->modalIcon('heroicon-o-document-duplicate');
 

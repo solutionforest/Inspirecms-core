@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -358,7 +359,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return Forms\Components\Actions\Action::make('goTo')
-                    ->icon('heroicon-o-arrow-right-end-on-rectangle')
+                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
                     ->url($url);
             });
 

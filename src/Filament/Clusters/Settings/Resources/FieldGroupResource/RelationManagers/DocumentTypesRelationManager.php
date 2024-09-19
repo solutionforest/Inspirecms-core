@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Enums\IconPosition;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +25,8 @@ class DocumentTypesRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\Action::make('open')
                     ->label(__('inspirecms::actions.open.label'))
+                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
+                    ->iconPosition(IconPosition::After)
                     ->url(fn ($record) => $this->getRecordUrl($record))
                     ->visible(fn (Tables\Actions\Action $action) => filled($action->getUrl())),
             ]);

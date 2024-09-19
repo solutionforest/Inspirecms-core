@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Actions;
 
 use Filament\Forms\Components\Actions\Action;
+use Filament\Support\Facades\FilamentIcon;
 
 class ResetAction extends Action
 {
@@ -15,7 +16,7 @@ class ResetAction extends Action
     {
         parent::setup();
 
-        $this->icon('heroicon-o-arrow-path')
+        $this->icon(FilamentIcon::resolve('inspirecms::reset'))
             ->action(fn ($component) => $component->state(''))
             ->disabled(fn ($component) => $component->isDisabled());
     }

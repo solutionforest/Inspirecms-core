@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Dtos\ContentDto;
@@ -26,7 +27,7 @@ class EditElement extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon('heroicon-o-eye'),
+            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon(FilamentIcon::resolve('inspirecms::preview')),
             Actions\DeleteAction::make(),
         ];
     }
