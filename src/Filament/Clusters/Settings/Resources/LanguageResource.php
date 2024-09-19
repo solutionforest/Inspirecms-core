@@ -83,7 +83,11 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.code'))
             ->unique(table: static::getModel(), column: 'code', ignoreRecord: true)
             ->datalist(LocaleManifest::getLocales())
-            ->live()->afterStateUpdated(fn (string $state, Forms\Set $set) => $set('name', locale_get_display_name($state)))
+            ->live()->afterStateUpdated(function (?string $state, Forms\Set $set) {
+                if (filled($state)) {
+                    $set('name', locale_get_display_name($state));
+                }
+            })
             ->required();
     }
 
