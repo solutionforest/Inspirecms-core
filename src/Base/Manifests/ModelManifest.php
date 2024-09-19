@@ -15,7 +15,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected array $models = [];
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function register(): void
     {
         $modelClasses = static::getDefaultModels();
@@ -27,7 +27,7 @@ class ModelManifest implements ModelManifestInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function registerMorphMap(): void
     {
         $modelClasses = collect(static::getDefaultModels())->mapWithKeys(
@@ -39,17 +39,17 @@ class ModelManifest implements ModelManifestInterface
         Relation::morphMap($modelClasses->toArray());
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function registerPolices(): void
     {
         $modelClasses = static::getDefaultModels();
 
         foreach ($modelClasses as $modelClass) {
             $interfaceClass = $this->guessContractClass($modelClass);
-            
+
             $policyClass = $this->guessPolicyClass($interfaceClass);
 
-            if (!class_exists($policyClass)) {
+            if (! class_exists($policyClass)) {
                 continue;
             }
 
@@ -57,7 +57,7 @@ class ModelManifest implements ModelManifestInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function add(string $interfaceClass, string $modelClass): void
     {
         $this->validateClassIsEloquentModel($modelClass);
@@ -67,13 +67,13 @@ class ModelManifest implements ModelManifestInterface
         $this->bindModel($interfaceClass, $modelClass);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function replace(string $interfaceClass, string $modelClass): void
     {
         $this->add($interfaceClass, $modelClass);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function get(string $interfaceClass, ?string $fallback = null): ?string
     {
         return $this->models[$interfaceClass] ?? $fallback;

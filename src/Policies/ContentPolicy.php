@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Models\Contracts\User;
 class ContentPolicy extends BasePolicy
 {
     /**
-     * @param Authenticatable|User|Model $user
+     * @param  Authenticatable|User|Model  $user
      * @return bool
      */
     public function create($user)
@@ -20,8 +20,8 @@ class ContentPolicy extends BasePolicy
     }
 
     /**
-     * @param Authenticatable|User|Model $user
-     * @param Content|Model $content
+     * @param  Authenticatable|User|Model  $user
+     * @param  Content|Model  $content
      * @return bool
      */
     public function update($user, Content $content)
@@ -30,8 +30,8 @@ class ContentPolicy extends BasePolicy
     }
 
     /**
-     * @param Authenticatable|User|Model $user
-     * @param Content|Model $content
+     * @param  Authenticatable|User|Model  $user
+     * @param  Content|Model  $content
      * @return bool
      */
     public function delete($user, Content $content)
@@ -40,8 +40,8 @@ class ContentPolicy extends BasePolicy
     }
 
     /**
-     * @param Authenticatable|User|Model $user
-     * @param null|Content|Model $content
+     * @param  Authenticatable|User|Model  $user
+     * @param  null|Content|Model  $content
      * @return bool
      */
     public function publish($user, $content)
@@ -50,8 +50,8 @@ class ContentPolicy extends BasePolicy
     }
 
     /**
-     * @param Authenticatable|User|Model $user
-     * @param null|Content|Model $content
+     * @param  Authenticatable|User|Model  $user
+     * @param  null|Content|Model  $content
      * @return bool
      */
     public function unpublish($user, $content)
@@ -60,8 +60,8 @@ class ContentPolicy extends BasePolicy
     }
 
     /**
-     * @param Authenticatable|User|Model $user
-     * @param null|Content|Model $content
+     * @param  Authenticatable|User|Model  $user
+     * @param  null|Content|Model  $content
      * @return bool
      */
     public function setPrivate($user, $content)

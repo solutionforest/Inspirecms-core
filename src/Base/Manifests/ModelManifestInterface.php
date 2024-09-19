@@ -16,8 +16,6 @@ interface ModelManifestInterface
 
     /**
      * Registers the policies for the application.
-     *
-     * @return void
      */
     public function registerPolices(): void;
 

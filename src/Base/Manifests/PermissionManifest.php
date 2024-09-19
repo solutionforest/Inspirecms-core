@@ -78,8 +78,8 @@ class PermissionManifest implements PermissionManifestInterface
     /**
      * Get the permission name for a given model and ability.
      *
-     * @param string $ability The ability for which the permission name is required.
-     * @param string $model The fqcn of the model.
+     * @param  string  $ability  The ability for which the permission name is required.
+     * @param  string  $model  The fqcn of the model.
      * @return string The permission name for the specified model and ability.
      */
     public function getPermissionNameForModel(string $ability, string $model): string
