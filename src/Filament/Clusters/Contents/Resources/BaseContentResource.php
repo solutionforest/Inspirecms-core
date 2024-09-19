@@ -32,6 +32,20 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 {
     use ClusterSectionResourceTrait;
 
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'publish',
+            'unpublish',
+            'set_private',
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

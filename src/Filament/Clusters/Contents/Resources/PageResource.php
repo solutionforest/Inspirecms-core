@@ -23,21 +23,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
 
     protected static ?string $cluster = Contents::class;
 
-    public static function getPermissionPrefixes(): array
-    {
-        return [
-            'view',
-            'view_any',
-            'create',
-            'update',
-            'delete',
-            'delete_any',
-            'publish',
-            'unpublish',
-            'set_private',
-        ];
-    }
-
     public static function form(Form $form): Form
     {
         return $form

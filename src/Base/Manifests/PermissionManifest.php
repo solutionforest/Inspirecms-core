@@ -55,14 +55,9 @@ class PermissionManifest implements PermissionManifestInterface
                 $modelShortName = class_basename($model);
 
                 $permissionNames = collect($fqcn::getPermissionPrefixes())
-                    ->mapWithKeys(function (string $prefix) use ($modelShortName) {
+                    ->mapWithKeys(function (string $prefix) use ($model) {
 
-                        $permissionName = str($modelShortName)
-                            ->lower()
-                            ->snake('_')
-                            ->prepend('_')
-                            ->prepend($prefix)
-                            ->toString();
+                        $permissionName = $this->getPermissionNameForModel($prefix, $model);
 
                         $permissionLabel = str($prefix)
                             ->studly()
@@ -78,6 +73,25 @@ class PermissionManifest implements PermissionManifestInterface
             })
             ->sortKeys()
             ->toArray();
+    }
+
+    /**
+     * Get the permission name for a given model and ability.
+     *
+     * @param string $ability The ability for which the permission name is required.
+     * @param string $model The fqcn of the model.
+     * @return string The permission name for the specified model and ability.
+     */
+    public function getPermissionNameForModel(string $ability, string $model): string
+    {
+        $modelShortName = class_basename($model);
+
+        return str($modelShortName)
+            ->lower()
+            ->snake('_')
+            ->prepend('_')
+            ->prepend($ability)
+            ->toString();
     }
 
     //region Helper methods

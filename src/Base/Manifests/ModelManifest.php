@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Models;
 
@@ -14,9 +15,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected array $models = [];
 
-    /**
-     * Bind initial models to the container and establish explicit model bindings.
-     */
+    /** @inheritDoc */
     public function register(): void
     {
         $modelClasses = static::getDefaultModels();
@@ -28,9 +27,7 @@ class ModelManifest implements ModelManifestInterface
         }
     }
 
-    /**
-     * Register the morph map for polymorphic relations.
-     */
+    /** @inheritDoc */
     public function registerMorphMap(): void
     {
         $modelClasses = collect(static::getDefaultModels())->mapWithKeys(
@@ -42,12 +39,25 @@ class ModelManifest implements ModelManifestInterface
         Relation::morphMap($modelClasses->toArray());
     }
 
-    /**
-     * Register models.
-     *
-     * @param  string  $interfaceClass  The interface class to register.
-     * @param  string  $modelClass  The model class to register.
-     */
+    /** @inheritDoc */
+    public function registerPolices(): void
+    {
+        $modelClasses = static::getDefaultModels();
+
+        foreach ($modelClasses as $modelClass) {
+            $interfaceClass = $this->guessContractClass($modelClass);
+            
+            $policyClass = $this->guessPolicyClass($interfaceClass);
+
+            if (!class_exists($policyClass)) {
+                continue;
+            }
+
+            Gate::policy($modelClass, $policyClass);
+        }
+    }
+
+    /** @inheritDoc */
     public function add(string $interfaceClass, string $modelClass): void
     {
         $this->validateClassIsEloquentModel($modelClass);
@@ -57,24 +67,13 @@ class ModelManifest implements ModelManifestInterface
         $this->bindModel($interfaceClass, $modelClass);
     }
 
-    /**
-     * Replace a model with a different implementation.
-     *
-     * @param  string  $interfaceClass  The interface class to replace.
-     * @param  string  $modelClass  The new model class to use.
-     */
+    /** @inheritDoc */
     public function replace(string $interfaceClass, string $modelClass): void
     {
         $this->add($interfaceClass, $modelClass);
     }
 
-    /**
-     * Gets the registered class for the interface.
-     *
-     * @param  string  $interfaceClass  The interface class to retrieve.
-     * @param  string|null  $fallback  Optional fallback class if not found.
-     * @return string|null The registered model class or fallback.
-     */
+    /** @inheritDoc */
     public function get(string $interfaceClass, ?string $fallback = null): ?string
     {
         return $this->models[$interfaceClass] ?? $fallback;
@@ -152,6 +151,19 @@ class ModelManifest implements ModelManifestInterface
         $shortName = (new \ReflectionClass($modelContract))->getShortName();
 
         return 'SolutionForest\\InspireCms\\Models\\' . $shortName;
+    }
+
+    /**
+     * Guess the policy class for a given contract.
+     *
+     * @param  string  $modelContract  The model contract to guess the class for.
+     * @return string The guessed model class name.
+     */
+    protected function guessPolicyClass(string $modelContract): string
+    {
+        $shortName = (new \ReflectionClass($modelContract))->getShortName();
+
+        return 'SolutionForest\\InspireCms\\Policies\\' . $shortName . 'Policy';
     }
 
     /**

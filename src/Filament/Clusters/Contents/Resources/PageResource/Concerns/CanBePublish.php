@@ -51,7 +51,7 @@ trait CanBePublish
                 }
             })
             ->action($this->publish())
-            ->authorize(filament()->auth()->user()?->can('publish_page'))
+            ->authorize('publish')
             ->successNotification($this->getPublishedNotification());
     }
 
@@ -68,7 +68,7 @@ trait CanBePublish
             ->color('gray')
             ->requiresConfirmation()
             ->action($this->unpublish())
-            ->authorize(filament()->auth()->user()?->can('unpublish_page'))
+            ->authorize('unpublish')
             ->successNotification(fn () => $this->getUnpublishedNotification());
     }
 
@@ -101,7 +101,7 @@ trait CanBePublish
                 }
             })
             ->action($this->setPrivateUse())
-            ->authorize(filament()->auth()->user()?->can('set_private_page'))
+            ->authorize('setPrivate')
             ->successNotification(fn () => $this->getSetPrivatelyUsedNotification());
     }
 

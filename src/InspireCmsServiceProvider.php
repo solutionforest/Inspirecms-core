@@ -91,6 +91,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function bootingPackage(): void
     {
         \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
+        \SolutionForest\InspireCms\Facades\ModelManifest::registerPolices();
         $this->customPlugins();
         $this->registerAuthGuard();
 

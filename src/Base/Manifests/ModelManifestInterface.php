@@ -15,6 +15,13 @@ interface ModelManifestInterface
     public function registerMorphMap(): void;
 
     /**
+     * Registers the policies for the application.
+     *
+     * @return void
+     */
+    public function registerPolices(): void;
+
+    /**
      * Register models.
      *
      * @param  string  $interfaceClass  The interface class to register.
