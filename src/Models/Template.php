@@ -69,7 +69,6 @@ class Template extends BaseModel implements TemplateContract
 
         });
         static::saving(function (self $model) {
-            ray($model);
 
             $model->path = $model->performTemplatePath();
 
