@@ -64,7 +64,8 @@ class EditPage extends EditRecord implements HasPublishForm
                 ->body(__('inspirecms::notification.template_file_not_found.body'))
                 ->danger()
                 ->send();
-            throw new Halt();
+
+            throw new Halt;
         }
 
         return $templateName;
