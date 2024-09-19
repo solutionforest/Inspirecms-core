@@ -32,7 +32,7 @@ class CreateElement extends CreateRecord
             ->label(__('inspirecms::actions.save_draft.label'))
             ->color('secondary');
     }
-    
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.element', ElementResource::class);

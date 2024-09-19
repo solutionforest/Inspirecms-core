@@ -197,13 +197,12 @@ class ElementResource extends BaseContentResource implements ClusterSectionResou
             ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
                 $query->where('is_element_type', true);
                 if ($livewire instanceof ChildrenRelationManager) {
-                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ??0);
-                } else if ($operation === 'create') {
+                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
+                } elseif ($operation === 'create') {
                     $query->where('parent_id', 0);
                 }
             });
     }
-
 
     /**
      * @return Forms\Components\Field | Forms\Components\Component
@@ -221,6 +220,7 @@ class ElementResource extends BaseContentResource implements ClusterSectionResou
                 if ($operation === 'create') {
                     return 0;
                 }
+
                 return $record->parent_id;
             });
     }

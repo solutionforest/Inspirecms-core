@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ChildrenRelationManager extends RelationManager
 {
-    
     protected static string $relationship = 'children';
 
     // public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
@@ -24,14 +23,14 @@ class ChildrenRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        $resource  = $this->getPageClass()::getResource();
+        $resource = $this->getPageClass()::getResource();
 
         return $resource::form($form);
     }
 
     public function table(Table $table): Table
     {
-        $resource  = $this->getPageClass()::getResource();
+        $resource = $this->getPageClass()::getResource();
 
         return $resource::table($table)
             ->modelLabel(__('inspirecms::inspirecms.children'))
@@ -65,7 +64,7 @@ class ChildrenRelationManager extends RelationManager
             ->slideOver()
             ->modalWidth('7xl');
     }
-    
+
     protected function configureEditAction(Tables\Actions\EditAction $action): void
     {
         parent::configureEditAction($action);

@@ -11,13 +11,13 @@ trait HasQuickCreateAction
     protected function configureQuickCreateAction(QuickCreateAction $action): void
     {
         if ($this instanceof RelationManager) {
-            
+
             $resource = $this->getPageClass()::getResource();
 
         } else {
 
             $resource = static::getResource();
-            
+
         }
 
         // Check 'quickForm' method exists

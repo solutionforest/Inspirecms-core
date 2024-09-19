@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Collection;
-use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Models\Content;
 
 /**
@@ -90,7 +89,7 @@ class ContentDto extends BaseDto
     public function getPropertyData(string $name, ?string $locale = null)
     {
         $latestPropertyData = $this->getLatestPropertyData();
-        
+
         return data_get($latestPropertyData?->propertyValue, $name);
     }
 }

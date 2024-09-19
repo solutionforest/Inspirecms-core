@@ -12,13 +12,13 @@ trait HasQuickEditAction
     protected function configureQuickEditAction(QuickEditAction $action): void
     {
         if ($this instanceof RelationManager) {
-            
+
             $resource = $this->getPageClass()::getResource();
 
         } else {
 
             $resource = static::getResource();
-            
+
         }
 
         // Check 'quickForm' method exists

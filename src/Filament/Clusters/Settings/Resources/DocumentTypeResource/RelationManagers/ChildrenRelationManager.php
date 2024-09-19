@@ -16,7 +16,7 @@ class ChildrenRelationManager extends RelationManager
 {
     use HasCloneAction;
     use HasQuickEditAction;
-    
+
     protected static string $relationship = 'children';
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
@@ -30,14 +30,14 @@ class ChildrenRelationManager extends RelationManager
 
     public function form(Form $form): Form
     {
-        $resource  = $this->getPageClass()::getResource();
+        $resource = $this->getPageClass()::getResource();
 
         return $resource::childrenForm($form);
     }
 
     public function table(Table $table): Table
     {
-        $resource  = $this->getPageClass()::getResource();
+        $resource = $this->getPageClass()::getResource();
 
         return $resource::table($table)
             ->modelLabel(__('inspirecms::inspirecms.children'))
@@ -46,7 +46,7 @@ class ChildrenRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
             ])
             ->columns([
-                
+
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
@@ -92,7 +92,7 @@ class ChildrenRelationManager extends RelationManager
             ->slideOver()
             ->modalWidth('7xl');
     }
-    
+
     protected function configureEditAction(Tables\Actions\EditAction $action): void
     {
         parent::configureEditAction($action);

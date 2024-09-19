@@ -62,6 +62,7 @@ class EditPage extends EditRecord implements HasPublishForm
                 ->danger()
                 ->send();
         }
+
         return $templateName;
     }
 
@@ -72,7 +73,7 @@ class EditPage extends EditRecord implements HasPublishForm
 
         return $data;
     }
-    
+
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
@@ -126,7 +127,6 @@ class EditPage extends EditRecord implements HasPublishForm
         }
     }
 
-    
     //region Computed Property
     public function getDtoProperty()
     {

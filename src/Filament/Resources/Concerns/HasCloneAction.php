@@ -11,7 +11,7 @@ trait HasCloneAction
     protected function configureCloneAction(CloneAction $action): void
     {
         if ($this instanceof RelationManager) {
-            
+
             $resource = $this->getPageClass()::getResource();
             $model = $this->getRelationship()->getModel();
             $modelLabel = $this->getTableModelLabel();

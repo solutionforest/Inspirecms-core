@@ -60,6 +60,7 @@ class EditElement extends EditRecord
                 ->danger()
                 ->send();
         }
+
         return $templateName;
     }
 
@@ -70,7 +71,7 @@ class EditElement extends EditRecord
 
         return $data;
     }
-    
+
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
@@ -124,7 +125,6 @@ class EditElement extends EditRecord
         }
     }
 
-    
     //region Computed Property
     public function getDtoProperty()
     {
