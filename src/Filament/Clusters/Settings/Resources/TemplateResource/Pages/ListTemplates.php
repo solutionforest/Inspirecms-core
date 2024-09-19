@@ -36,7 +36,8 @@ class ListTemplates extends ListRecords implements HasFileExplorer
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
     {
         return $fileExplorer
-            ->directory(config('inspirecms.template.path'))
+            // ->directory(config('inspirecms.template.path'))
+            ->directory(resource_path('views'))
             ->selectedFileItemFormSchema([
                 TextInput::make('path')->disabled()->inlineLabel(),
                 Hidden::make('full_path')->dehydratedWhenHidden(true),
