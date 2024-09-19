@@ -23,7 +23,7 @@ class ContentStatusOption extends BaseManifestOption
         protected null | string | Closure $label = null,
         protected null | string | Closure $color = null,
         protected null | string | Closure $icon = null,
-        protected null | Closure $formAction = null,
+        protected ?Closure $formAction = null,
     ) {}
 
     public function getValue(): int

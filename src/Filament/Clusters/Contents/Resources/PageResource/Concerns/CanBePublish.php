@@ -97,7 +97,7 @@ trait CanBePublish
     /**
      * Handles the publishable record by executing the provided callback.
      *
-     * @param \Closure $callback The callback function to handle the publishable record.
+     * @param  \Closure  $callback  The callback function to handle the publishable record.
      */
     public function handlePublishableRecord(\Closure $callback)
     {

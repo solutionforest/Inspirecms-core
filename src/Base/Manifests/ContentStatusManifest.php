@@ -116,21 +116,22 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ->action(function (null | Model | Content $record, Action $action, $livewire) {
                         if (is_null($record)) {
                             $action->cancel();
-            
+
                             return;
                         }
 
-                        if (!static::handlePublishableRecord($record, 'unpublish', $livewire, [])) {
+                        if (! static::handlePublishableRecord($record, 'unpublish', $livewire, [])) {
                             return;
                         }
-            
+
                         $action->success();
-            
+
                     })
                     ->authorize('unpublish')
-                    ->successNotification(fn () => Notification::make()
-                        ->success()
-                        ->title(__('inspirecms::actions.unpublish.notifications.unpublished.title'))
+                    ->successNotification(
+                        fn () => Notification::make()
+                            ->success()
+                            ->title(__('inspirecms::actions.unpublish.notifications.unpublished.title'))
                     )
             ),
             new ContentStatusOption(
@@ -148,36 +149,36 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ])->operation('publish'))
                     ->beforeFormValidated(function (Action $action, $livewire) {
                         try {
-        
+
                             if ($livewire instanceof EditPage &&
                                 in_array(CanBePublish::class, class_uses_recursive($livewire))) {
-                            
+
                                 $livewire->validatePublishableData();
 
-                            } 
-        
+                            }
+
                         } catch (\Throwable $e) {
                             Notification::make()
                                 ->title(__('inspirecms::notification.form_check_error.title'))
                                 ->danger()
                                 ->send();
-        
+
                             throw $e;
                         }
                     })
                     ->action(function (Model | Content $record, array $data, Action $action, $livewire) {
                         if (is_null($record)) {
                             $action->cancel();
-            
+
                             return;
                         }
 
-                        if (!static::handlePublishableRecord($record, 'private', $livewire, $data)) {
+                        if (! static::handlePublishableRecord($record, 'private', $livewire, $data)) {
                             return;
                         }
-            
+
                         $action->success();
-            
+
                         if ($livewire instanceof EditPage) {
 
                             $redirectUrl = $livewire->getUrl(['record' => $record->getKey()]);
@@ -186,9 +187,10 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                         }
                     })
                     ->authorize('setPrivate')
-                    ->successNotification(fn () => Notification::make()
-                        ->success()
-                        ->title(__('inspirecms::actions.private.notifications.updated.title'))
+                    ->successNotification(
+                        fn () => Notification::make()
+                            ->success()
+                            ->title(__('inspirecms::actions.private.notifications.updated.title'))
                     )
             ),
         ];
@@ -212,8 +214,8 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                 return false;
             }
 
-        } else if (in_array(Publishable::class, class_uses_recursive($record))) {
-            
+        } elseif (in_array(Publishable::class, class_uses_recursive($record))) {
+
             $record->setPrivateUse($data);
 
         } else {
