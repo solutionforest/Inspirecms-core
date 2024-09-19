@@ -6,9 +6,12 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use Termwind\Components\Element;
 
-class ContentsTypesRelationManager extends RelationManager
+class ContentsRelationManager extends RelationManager
 {
     protected static string $relationship = 'contents';
 
@@ -28,11 +31,15 @@ class ContentsTypesRelationManager extends RelationManager
             ]);
     }
 
-    protected function getRecordUrl($record): ?string
+    protected function getRecordUrl(Content $record): ?string
     {
         try {
 
             $url = null;
+
+            $resource = $this->getOwnerRecord()->is_element_type
+                ? config('inspirecms.resources.element', ElementResource::class)
+                : config('inspirecms.resources.page', PageResource::class);
 
             foreach (['view', 'edit'] as $action) {
 
@@ -40,7 +47,7 @@ class ContentsTypesRelationManager extends RelationManager
                     continue;
                 }
 
-                $url = config('inspirecms.resources.page', PageResource::class)::getUrl('edit', ['record' => $record]);
+                $url = $resource::getUrl('edit', ['record' => $record]);
             }
         } catch (\Throwable $th) {
             return null;

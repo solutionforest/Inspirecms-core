@@ -182,7 +182,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             RelationManagers\ChildrenRelationManager::class,
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
-                RelationManagers\ContentsTypesRelationManager::class,
+                RelationManagers\ContentsRelationManager::class,
             ]),
         ];
     }
