@@ -4,8 +4,10 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageRes
 
 use Filament\Actions;
 use Filament\Actions\Action;
+use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Dtos\ContentDto;
@@ -58,9 +60,11 @@ class EditPage extends EditRecord implements HasPublishForm
         $templateName = $template?->viewName;
         if (blank($templateName)) {
             Notification::make()
-                ->title('Template not found (todo: add to lang)')
+                ->title(__('inspirecms::notification.template_file_not_found.title'))
+                ->body(__('inspirecms::notification.template_file_not_found.body'))
                 ->danger()
                 ->send();
+            throw new Halt();
         }
 
         return $templateName;

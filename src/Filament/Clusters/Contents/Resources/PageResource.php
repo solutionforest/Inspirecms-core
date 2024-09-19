@@ -99,7 +99,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
-            'view' => Pages\ViewPage::route('/{record}'),
         ];
     }
 
