@@ -10,6 +10,11 @@ use Illuminate\Database\Eloquent\Model;
 abstract class BaseDto
 {
     /**
+     * @var ?Model
+     */
+    protected $model = null;
+
+    /**
      * @param  Model  $model
      * @return BaseDto<TModel>
      */
@@ -53,5 +58,24 @@ abstract class BaseDto
     public function toArray(): array
     {
         return (array) $this;
+    }
+
+    /**
+     * @param  Model  $model
+     * @return BaseDto<TModel>
+     */
+    public function setModel($model)
+    {
+        $this->model = $model;
+
+        return $this;
+    }
+
+    /**
+     * @return Model|null
+     */
+    public function getModel()
+    {
+        return $this->model;
     }
 }

@@ -26,4 +26,6 @@ interface Template
      * @return string The full path of the template file.
      */
     public function getFileFullPath(): string;
+
+    public function getViewFullName(): string;
 }

@@ -32,4 +32,9 @@ trait HasTemplates
             ->where('template_id', '!=', $templateId)
             ->update(['is_default' => false]);
     }
+
+    public function getDefaultTemplate(): ?Template
+    {
+        return $this->templates()->wherePivot('is_default', true)->first();
+    }
 }

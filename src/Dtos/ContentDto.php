@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Models\Content;
 
 /**
@@ -35,11 +36,17 @@ class ContentDto extends BaseDto
      */
     public $templates;
 
+    /**
+     * @var Collection<PropertyDataDto>
+     */
+    public $propertyDataVersions;
+
     public static function fromModel($model)
     {
         $model->loadMissing([
             'documentType.templates',
             'templates',
+            'propertyDatas',
         ]);
 
         return static::fromArray([
@@ -48,7 +55,8 @@ class ContentDto extends BaseDto
             'slug' => $model->slug,
             'documentType' => DocumentTypeDto::fromModel($model->documentType),
             'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
-        ]);
+            'propertyDataVersions' => collect($model->propertyDatas)->map(fn ($propertyData) => PropertyDataDto::fromModel($propertyData)),
+        ])->setModel($model);
     }
 
     public function getDefaultTemplate(): ?TemplateDto
@@ -62,5 +70,27 @@ class ContentDto extends BaseDto
         });
 
         return $currTemplate ?? $fallbackTemplate;
+    }
+
+    public function getLatestPropertyData(): ?PropertyDataDto
+    {
+        return $this->propertyDataVersions
+            ->sortByDesc('versionDate')
+            ->first();
+    }
+
+    public function getLatestPublishedPropertyData(): ?PropertyDataDto
+    {
+        return $this->propertyDataVersions
+            ->sortByDesc('versionDate')
+            ->whereNotNull('publishedAt')
+            ->first();
+    }
+
+    public function getPropertyData(string $name, ?string $locale = null)
+    {
+        $latestPropertyData = $this->getLatestPropertyData();
+        
+        return data_get($latestPropertyData?->propertyValue, $name);
     }
 }

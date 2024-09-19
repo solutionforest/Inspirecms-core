@@ -43,6 +43,18 @@ class Template extends BaseModel implements TemplateContract
             ->toString();
     }
 
+    public function getViewFullName(): string
+    {
+        return str($this->getTemplateDirectory())
+            ->rtrim('/')
+            ->finish('/')
+            ->finish($this->name)
+            ->after(resource_path('views'))
+            ->ltrim('/')
+            ->replace('/', '.')
+            ->toString();
+    }
+
     public static function boot()
     {
         parent::boot();

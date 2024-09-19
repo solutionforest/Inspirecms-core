@@ -41,6 +41,6 @@ class DocumentTypeDto extends BaseDto
             'title' => $model->title,
             'asRoot' => $model->can_use_at_root,
             'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
-        ]);
+        ])->setModel($model);
     }
 }

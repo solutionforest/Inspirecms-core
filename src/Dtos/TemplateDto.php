@@ -34,18 +34,8 @@ class TemplateDto extends BaseDto
         return static::fromArray([
             'name' => $model->name,
             'path' => $model->path,
-            'viewName' => static::formatAsViewName($model->getFileFullPath()),
+            'viewName' => $model->getViewFullName(),
             'isDefault' => $model->pivot->is_default,
-        ]);
-    }
-
-    protected static function formatAsViewName(string $path): string
-    {
-        return str($path)
-            ->after(resource_path('views'))
-            ->rtrim('.blade.php')
-            ->ltrim('/')
-            ->replace('/', '.')
-            ->toString();
+        ])->setModel($model);
     }
 }
