@@ -388,12 +388,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->dehydrated(false) // avoid fill into the model of content
+            ->dehydrated(true) // for loading state from File component
             ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);
             })
-            ->saveRelationshipsUsing(function (Model | CmsContent $record, $state) {
+            ->saveRelationshipsUsing(function (Model | CmsContent $record, PropertyDataGroup $component) {
+
+                $state = $component->getState();
 
                 /** @var null|Model|CmsPropertyData */
                 $latestPropertyData = $record->getLatestPropertyData();

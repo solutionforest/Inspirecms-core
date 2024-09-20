@@ -5,6 +5,8 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Get;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class PropertyDataGroup extends Group
@@ -29,9 +31,15 @@ class PropertyDataGroup extends Group
 
                 return $groupComponents;
             });
+
+            $this->dehydrateStateUsing(fn (PropertyDataGroup $component) => $component->getState());
         }
     }
 
+    /**
+     * @param int|string|\Illuminate\Database\Eloquent\Model|null $documentType
+     * @return Collection<FieldGroup>
+     */
     public function getFieldGroupsFromDocumentType(int | string | Model | null $documentType)
     {
         if ($documentType instanceof Model) {

@@ -11,6 +11,8 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
@@ -484,8 +486,10 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->inlineLabel()
             ->placeholder(__('filament-field-group::filament-field-group.forms.fields.type.label'))
             ->helperText(__('filament-field-group::filament-field-group.forms.fields.type.helper'))
-            ->options(FilamentFieldGroup::getFieldTypeGroupedKeyValueOptions())
+            ->columns(4)
+            ->options(FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions())
             ->searchable()
+            ->allowHtml()
             ->required()
             ->columnSpan('full')
             ->live(debounce: 500)
