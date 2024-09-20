@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
@@ -117,6 +118,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with('parent'))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -130,6 +132,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->width('1%')
                     ->boolean()
                     ->alignCenter()->verticallyAlignCenter(),
+                Tables\Columns\TextColumn::make('parent.title')
+                    ->label(__('inspirecms::inspirecms.parent'))
+                    ->grow(),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
                     ->columns([
@@ -214,6 +219,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             });
     }
 
+    public static function getRelations(): array
+    {
+        return [
+            BaseContentChildrenRelationManager::class,
+        ];
+    }
+
     public static function getModel(): string
     {
         return InspireCmsConfig::getContentModelClass();
@@ -291,7 +303,19 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->searchable(['title', 'slug'])
             ->preload()
             ->live()
-            ->disabledOn('edit');
+            ->disabled()
+            ->dehydrated(true)
+            ->hidden(function ($operation) {
+                return $operation === 'create';
+            })
+            ->dehydratedWhenHidden(true)
+            ->dehydrateStateUsing(function ($livewire, $operation, $record) {
+                if ($operation === 'create') {
+                    return 0;
+                }
+
+                return $record->parent_id;
+            });
     }
 
     /**
@@ -335,7 +359,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
             ->searchable(['id'])
             ->preload()
-            ->relationship(name: 'documentType', titleAttribute: 'name')
+            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
+                if ($livewire instanceof BaseContentChildrenRelationManager) {
+                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
+                } elseif ($operation === 'create') {
+                    $query->where('parent_id', 0);
+                }
+            })
             ->required();
 
         // Load field group from document type

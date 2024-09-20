@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource\RelationManagers;
+namespace SolutionForest\InspireCms\Base\Filament\RelationManagers;
 
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -8,18 +8,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 
-class ChildrenRelationManager extends RelationManager
+class BaseContentChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
-
-    // public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    // {
-    //     if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
-    //         return false;
-    //     }
-
-    //     return $ownerRecord->is_element_type == true;
-    // }
 
     public function form(Form $form): Form
     {
@@ -44,17 +35,6 @@ class ChildrenRelationManager extends RelationManager
     {
         return __('inspirecms::inspirecms.children');
     }
-
-    // protected function configureTableAction(\Filament\Tables\Actions\Action $action): void
-    // {
-    //     match (true) {
-    //         $action instanceof CloneAction => $this->configureCloneAction($action),
-    //         $action instanceof QuickEditAction => $this->configureQuickEditAction($action
-    //             ->slideOver()
-    //             ->modalWidth('7xl')),
-    //         default => parent::configureTableAction($action),
-    //     };
-    // }
 
     protected function configureCreateAction(Tables\Actions\CreateAction $action): void
     {

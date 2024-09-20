@@ -3,13 +3,12 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
 
 use Filament\Forms;
-use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Builder;
+use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Clusters\Contents;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 
 class PageResource extends BaseContentResource implements ClusterSectionResource
 {
@@ -22,61 +21,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Contents::class;
-
-    public static function form(Form $form): Form
-    {
-        return $form
-            ->columns(1)
-            ->schema([
-                RevertOrderGroup::make([
-
-                    Forms\Components\Group::make([
-
-                        Forms\Components\Section::make()
-                            ->columns(1)
-                            ->schema([
-                                static::getSlugFormComponent(),
-                                static::getParentPageFormComponent(),
-                                static::getTemplateFormComponent(),
-                            ]),
-                        Forms\Components\Group::make()
-                            ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
-                            ->visibleOn(['edit', 'view'])
-                            ->schema([
-                                static::getTimestampsGroupedFormComponent()->columnSpan(1),
-                                static::getPublishDetailGroupedFormComponent()->columnSpan(1),
-                            ]),
-
-                    ])->grow(false),
-
-                    Forms\Components\Group::make()
-                        ->schema([
-
-                            Forms\Components\Section::make()
-                                ->columnSpanFull()
-                                ->schema([
-                                    Forms\Components\Grid::make(2)
-                                        ->columnSpanFull()
-                                        ->schema([
-                                            static::getTitleFormComponent(),
-                                        ]),
-                                    Forms\Components\Grid::make(['default' => 4])
-                                        ->columnSpanFull()
-                                        ->schema([
-
-                                            static::documentTypeSelectComponent()->columnSpan(3),
-                                            static::getDisplayIsRootLevelFormComponent()->columnSpan(1),
-                                        ]),
-                                ]),
-
-                            // Field group grouped component
-                            static::getPropertyDataValueComponent(),
-
-                        ])
-                        ->grow(),
-                ])->revertBreakPoint('lg'),
-            ]);
-    }
 
     public static function getPages(): array
     {
@@ -105,8 +49,13 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     protected static function documentTypeSelectComponent()
     {
         return parent::documentTypeSelectComponent()
-            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query) {
-                return $query->where('is_element_type', false);
+            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
+                $query->where('is_element_type', false);
+                if ($livewire instanceof BaseContentChildrenRelationManager) {
+                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
+                } elseif ($operation === 'create') {
+                    $query->where('parent_id', 0);
+                }
             });
     }
     //endregion Form field(s)/component(s)
