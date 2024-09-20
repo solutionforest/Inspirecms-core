@@ -22,6 +22,11 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
 
     protected static ?string $cluster = Contents::class;
 
+    public static function getPermissionPrefixes(): array
+    {
+        return parent::getBasePermissionPrefixes();
+    }
+
     public static function getPages(): array
     {
         return [

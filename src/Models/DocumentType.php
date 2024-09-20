@@ -49,4 +49,14 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             }
         });
     }
+
+    protected function getParentId()
+    {
+        return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
+    }
+
+    protected function getNestableParentIdColumn()
+    {
+        return 'parent_id';
+    }
 }

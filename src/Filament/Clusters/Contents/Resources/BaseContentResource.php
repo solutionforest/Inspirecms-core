@@ -16,7 +16,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -33,7 +33,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 {
     use ClusterSectionResourceTrait;
 
-    public static function getPermissionPrefixes(): array
+    public static function getBasePermissionPrefixes(): array
     {
         return [
             'view_any',
@@ -418,7 +418,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return PropertyDataGroup::make()
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->dehydrated(true) // for loading state from File component
+            ->dehydrated(false) 
             ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);

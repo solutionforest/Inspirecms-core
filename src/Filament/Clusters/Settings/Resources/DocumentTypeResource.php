@@ -58,8 +58,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getCanUseAtRootFormComponent(),
                             static::getParentFormComponent(),
+                            static::getCanUseAtRootFormComponent(),
                             static::getIsElementTypeFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])

@@ -1,0 +1,35 @@
+<?php
+
+namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
+
+use Filament\Actions\CreateAction;
+use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ListRecords\Tab;
+use Illuminate\Database\Eloquent\Builder;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+
+abstract class BaseContentListPage extends ListRecords
+{
+    public function getActions(): array
+    {
+        return [
+            CreateAction::make(),
+        ];
+    }
+
+    public function getTabs(): array
+    {
+        return inspirecms_content_statuses()->all()
+            ->mapWithKeys(
+                fn (ContentStatusOption $option) => [
+                    $option->getName() => Tab::make()
+                        ->icon($option->getIcon())
+                        ->label($option->getLabel())
+                        ->badge($option->getName() != 'unpublish' ? static::getResource()::getEloquentQuery()->where('status', $option->getValue())->isPublished()->count() : null)
+                        ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $option->getValue())),
+                ]
+            )
+            ->prepend(Tab::make(), 'all')
+            ->toArray();
+    }
+}

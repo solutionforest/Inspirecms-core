@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Contracts;
+namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 
