@@ -19,15 +19,6 @@ class ChildrenRelationManager extends RelationManager
 
     protected static string $relationship = 'children';
 
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
-            return false;
-        }
-
-        return $ownerRecord->is_element_type == true;
-    }
-
     public function form(Form $form): Form
     {
         $resource = $this->getPageClass()::getResource();

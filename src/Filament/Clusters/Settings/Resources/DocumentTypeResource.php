@@ -10,11 +10,14 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers\ChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
@@ -57,6 +60,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->columns(1)
                         ->schema([
                             static::getCanUseAtRootFormComponent(),
+                            static::getParentFormComponent(),
                             static::getIsElementTypeFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
@@ -80,7 +84,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 RevertOrderGroup::make([
 
                     static::getCanUseAtRootFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
-                    static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
+                    static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(function ($livewire) {
+                        if ($livewire instanceof ChildrenRelationManager) {
+                            return $livewire->getOwnerRecord()->is_element_type;
+                        }
+
+                        return true;
+                    }),
 
                     Forms\Components\Section::make()
                         ->columns(1)
@@ -206,6 +216,29 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::inspirecms.name'))
             ->required();
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getParentFormComponent()
+    {
+        return BelongsToParentSelect::make('parent_id')
+            ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.document_type'))]))
+            ->nestableParentRelationship(name: 'parent', titleAttribute: 'name', ignoreRecord: true)
+            ->disabled()
+            ->dehydrated(true)
+            ->hidden(function ($operation) {
+                return $operation === 'create';
+            })
+            ->dehydratedWhenHidden(true)
+            ->dehydrateStateUsing(function ($livewire, $operation, $record) {
+                if ($operation === 'create') {
+                    return 0;
+                }
+
+                return $record->parent_id;
+            });
     }
 
     /**

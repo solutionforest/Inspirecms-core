@@ -38,4 +38,15 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::saving(function (self $model) {
+            if ($model->isDirty('is_element_type')) {
+                $model->children()->update(['is_element_type' => $model->is_element_type]);
+            }
+        });
+    }
 }
