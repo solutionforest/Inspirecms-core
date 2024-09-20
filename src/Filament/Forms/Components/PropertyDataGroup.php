@@ -37,7 +37,6 @@ class PropertyDataGroup extends Group
     }
 
     /**
-     * @param int|string|\Illuminate\Database\Eloquent\Model|null $documentType
      * @return Collection<FieldGroup>
      */
     public function getFieldGroupsFromDocumentType(int | string | Model | null $documentType)
