@@ -72,8 +72,16 @@ class TemplatesRelationManager extends RelationManager
                         $this->getOwnerRecord()->setAsDefaultTemplate($record);
 
                         $action->success();
+
+                        $this->dispatch('$refresh');
                     }),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DetachAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ])->iconButton(),
             ]);
     }
 
