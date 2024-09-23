@@ -80,7 +80,7 @@ class PermissionManifest implements PermissionManifestInterface
 
                 if ($carry->has($modelName)) {
                     $permissions = collect($carry->get($modelName))->merge($permissions)->unique()->all();
-                } 
+                }
 
                 return $carry->put($modelName, $permissions)
                     ->sortKeys()
