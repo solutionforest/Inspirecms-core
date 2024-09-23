@@ -80,7 +80,7 @@ class Template extends BaseModel implements TemplateContract
         return str($this->name)
             ->trim()
             ->snake()
-            ->replace(['-', ' '], '_')
+            ->replace(['-', ' '], '-')
             ->trim('.')
             ->finish('.blade.php')
             ->toString();
