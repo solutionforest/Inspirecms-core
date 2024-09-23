@@ -37,7 +37,12 @@ class CmsPanelProvider extends PanelProvider
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->plugins([
-                FilamentFieldGroupPlugin::make()->enablePlugin()->overrideResources([]),
+                FilamentFieldGroupPlugin::make()
+                    ->enablePlugin()
+                    ->overrideResources([])
+                    ->fieldTypeConfigs([
+                        \SolutionForest\InspireCms\FieldTypes\Configs\ContentPicker::class,
+                    ], false),
                 FilamentPeekPlugin::make(),
                 new InspireCmsTheme,
             ])

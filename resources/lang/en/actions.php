@@ -128,6 +128,12 @@ return [
 
     ],
 
+    'select' => [
+
+        'label' => 'Select',
+
+    ],
+
     'unpublish' => [
 
         'label' => 'Unpublish',
