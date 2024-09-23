@@ -9,7 +9,7 @@ use Illuminate\Pagination\Paginator;
 
 trait HasPaginationOptions
 {
-    protected null | Builder $paginationOptions = null;
+    protected ?Builder $paginationOptions = null;
 
     protected int | string $perPage = 10;
 
@@ -20,21 +20,21 @@ trait HasPaginationOptions
         return $this;
     }
 
-    public function perPage(int |string $perPage): static
+    public function perPage(int | string $perPage): static
     {
         $this->perPage = $perPage;
 
         return $this;
     }
 
-    public function getPaginationOptions(): LengthAwarePaginator|ContractsPaginator
+    public function getPaginationOptions(): LengthAwarePaginator | ContractsPaginator
     {
         $pageName = $this->getPaginationName();
 
         if (! $this->paginationOptions) {
             return new Paginator([], $this->perPage, options: ['pageName' => $pageName]);
         }
-        
+
         return $this->paginationOptions->paginate($this->perPage, pageName: $pageName);
     }
 
@@ -45,6 +45,6 @@ trait HasPaginationOptions
 
     public function getPaginationName(): string
     {
-        return "mountFormComponentPagination_" . $this->getName();
+        return 'mountFormComponentPagination_' . $this->getName();
     }
 }

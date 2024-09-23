@@ -21,7 +21,7 @@ class CreateField extends CreateRecord
         return parent::getCreateFormAction()
             ->label(__('inspirecms::actions.save.label'));
     }
-    
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.field', FieldResource::class);

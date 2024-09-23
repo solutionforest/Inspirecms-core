@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldRe
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables\Actions\CreateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 
 class ListFields extends ListRecords

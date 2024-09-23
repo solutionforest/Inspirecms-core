@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'fields' => [
         'instructions' => [
             'label' => 'Helper Text',

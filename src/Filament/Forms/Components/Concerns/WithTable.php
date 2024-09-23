@@ -25,7 +25,7 @@ trait WithTable
 
     protected bool $hasTableColumnsLayout = false;
 
-    protected Closure|array $recordClasses = [];
+    protected Closure | array $recordClasses = [];
 
     public function contentGrid(array $grid): static
     {
@@ -90,7 +90,7 @@ trait WithTable
         return $this;
     }
 
-    public function recordClasses(Closure|array $class): static
+    public function recordClasses(Closure | array $class): static
     {
         $this->recordClasses = $class;
 

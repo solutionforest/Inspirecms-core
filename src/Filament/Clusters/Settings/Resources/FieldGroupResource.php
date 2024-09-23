@@ -17,7 +17,6 @@ use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
@@ -363,7 +362,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsRepeaterSchema(): array
     {
-        $fieldResource  = config('inspirecms.resources.field', FieldResource::class);
+        $fieldResource = config('inspirecms.resources.field', FieldResource::class);
+
         return [
             Forms\Components\Grid::make(3)
                 ->schema([
@@ -396,7 +396,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsEditFormSchema(): array
     {
-        $fieldResource  = config('inspirecms.resources.field', FieldResource::class);
+        $fieldResource = config('inspirecms.resources.field', FieldResource::class);
+
         return [
             Forms\Components\Section::make()
                 ->schema([

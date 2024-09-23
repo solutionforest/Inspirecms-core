@@ -14,10 +14,10 @@ class PaginationPicker extends Field
 {
     use Concerns\HasPaginationOptions;
     use Concerns\WithTable;
-    use HasPlaceholder;
     use HasExtraAlpineAttributes;
-    use HasReorderAnimationDuration;
     use HasExtraInputAttributes;
+    use HasPlaceholder;
+    use HasReorderAnimationDuration;
 
     /**
      * @var view-string
