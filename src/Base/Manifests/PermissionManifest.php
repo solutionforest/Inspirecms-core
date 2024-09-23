@@ -49,7 +49,7 @@ class PermissionManifest implements PermissionManifestInterface
         return collect(config('inspirecms.resources'))
             ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Resources\Resource::class))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn)))
-            ->mapWithKeys(function ($fqcn) {
+            ->map(function ($fqcn) {
 
                 $model = $fqcn::getModel();
                 $modelShortName = class_basename($model);
@@ -68,11 +68,24 @@ class PermissionManifest implements PermissionManifestInterface
                     ->all();
 
                 return [
-                    $modelShortName => $permissionNames,
+                    'modelName' => $modelShortName,
+                    'permissions' => $permissionNames,
                 ];
             })
-            ->sortKeys()
-            ->toArray();
+            ->reduce(function ($carry, array $value, $key) {
+                $carry = collect($carry);
+
+                $permissions = $value['permissions'];
+                $modelName = $value['modelName'];
+
+                if ($carry->has($modelName)) {
+                    $permissions = collect($carry->get($modelName))->merge($permissions)->unique()->all();
+                } 
+
+                return $carry->put($modelName, $permissions)
+                    ->sortKeys()
+                    ->toArray();
+            });
     }
 
     /**
