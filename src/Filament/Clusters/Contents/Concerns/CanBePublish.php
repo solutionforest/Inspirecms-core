@@ -32,11 +32,12 @@ trait CanBePublish
             ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
             ->keyBindings(['mod+p'])
             ->color('primary')
-            ->form(fn (Form $form) => $form
-                ->schema([
-                    BaseContentResource::getPublishedAtComponent(),
-                ])
-                ->operation('publish')
+            ->form(
+                fn (Form $form) => $form
+                    ->schema([
+                        BaseContentResource::getPublishedAtComponent(),
+                    ])
+                    ->operation('publish')
             )
             ->beforeFormValidated(function (Action $action) {
                 try {
