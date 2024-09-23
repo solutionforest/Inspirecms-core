@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Select;
+use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 
 class BelongsToParentSelect extends Select
 {
@@ -14,7 +15,7 @@ class BelongsToParentSelect extends Select
         $modifyQueryUsing = function ($query, $record) {
 
             // Skip its children
-            if ($record) {
+            if ($record && $record instanceof NestableInterface) {
                 // Exclude the current record and all its descendants
                 $descendantIds = $record->descendants()->pluck('id')->toArray();
                 $query->whereNotIn('id', $descendantIds);
