@@ -12,13 +12,12 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rules\Unique;
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
@@ -92,18 +91,18 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->emptyStateActions([])
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('filament-field-group::filament-field-group.name'))
+                    ->label(__('inspirecms::inspirecms.name'))
                     ->sortable()->width('1%')
                     ->badge(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('filament-field-group::filament-field-group.title')),
+                    ->label(__('inspirecms::inspirecms.title')),
                 Tables\Columns\TextColumn::make('fields_count')
-                    ->label(__('filament-field-group::filament-field-group.fields'))
+                    ->label(__('inspirecms::inspirecms.fields'))
                     ->alignEnd()
                     ->width('5%'),
                 // Always true
                 // Tables\Columns\BooleanColumn::make('active')
-                //     ->label(__('filament-field-group::filament-field-group.active'))
+                //     ->label(__('inspirecms::inspirecms.active'))
                 //     ->width('1%'),
                 Tables\Columns\TextColumn::make('document_types_count')
                     ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
@@ -364,30 +363,31 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsRepeaterSchema(): array
     {
+        $fieldResource  = config('inspirecms.resources.field', FieldResource::class);
         return [
             Forms\Components\Grid::make(3)
                 ->schema([
                     Forms\Components\Hidden::make('id'),
                     Forms\Components\Hidden::make('group_id'),
                     Forms\Components\Hidden::make('sort'),
-                    static::getFieldsTypeFormComponent()->helperText('')
+                    $fieldResource::getTypeFormComponent()->helperText('')
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
                     Forms\Components\Section::make(__('inspirecms::inspirecms.details'))
                         ->columnSpanFull()
                         ->aside()
                         ->schema([
-                            static::getFieldsLabelFormComponent()->helperText('')
+                            $fieldResource::getLabelFormComponent()->helperText('')
                                 ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
-                            static::getFieldsNameFormComponent()->helperText('')
+                            $fieldResource::getNameFormComponent()->helperText('')
                                 ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
-                            static::getFieldsStatePathFormComponent()->helperText('')
+                            $fieldResource::getStatePathFormComponent()->helperText('')
                                 ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
                         ]),
-                    static::getFieldsInstructionsFormComponent()->helperText('')
+                    $fieldResource::getInstructionsFormComponent()->helperText('')
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
-                    static::getFieldsMandatoryFormComponent()->hidden()
+                    $fieldResource::getMandatoryFormComponent()->hidden()
                         ->saveRelationshipsWhenHidden()->dehydratedWhenHidden(),
                     Forms\Components\Hidden::make('config'),
                 ]),
@@ -396,129 +396,26 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsEditFormSchema(): array
     {
+        $fieldResource  = config('inspirecms.resources.field', FieldResource::class);
         return [
             Forms\Components\Section::make()
                 ->schema([
                     Forms\Components\Hidden::make('id'),
                     Forms\Components\Hidden::make('group_id'),
                     Forms\Components\Hidden::make('sort'),
-                    static::getFieldsLabelFormComponent(),
-                    static::getFieldsNameFormComponent(),
-                    static::getFieldsInstructionsFormComponent(),
-                    static::getFieldsTypeFormComponent(),
+                    $fieldResource::getLabelFormComponent(),
+                    $fieldResource::getNameFormComponent(),
+                    $fieldResource::getInstructionsFormComponent(),
+                    $fieldResource::getTypeFormComponent(),
                 ]),
 
             Forms\Components\Section::make()
                 ->schema([
-                    static::getFieldsStatePathFormComponent(),
-                    static::getFieldsMandatoryFormComponent(),
+                    $fieldResource::getStatePathFormComponent(),
+                    $fieldResource::getMandatoryFormComponent()->columnSpanFull(),
                 ]),
-            Forms\Components\Group::make()
-                ->key('configFields')
-                ->statePath('config')
-                ->schema(function (Forms\Get $get) {
-
-                    if ($get('type')) {
-                        return FilamentFieldGroup::getFieldTypeConfigFormSchema($get('type'));
-                    }
-
-                    return [];
-                }),
+            $fieldResource::getConfigFormComponent(),
         ];
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsNameFormComponent()
-    {
-        return Forms\Components\TextInput::make('name')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.name.label'))
-            ->inlineLabel()
-            ->placeholder(__('filament-field-group::filament-field-group.forms.fields.name.label'))
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.name.helper'))
-            ->required()
-            ->maxLength(255)
-            ->live(debounce: 500)
-            ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
-            ->unique(table: InspireCmsConfig::getFieldModelClass(), column: 'name', ignorable: function ($component, Forms\Get $get) {
-                $id = $get('id');
-
-                return InspireCmsConfig::getFieldModelClass()::find($id);
-            }, modifyRuleUsing: function (Unique $rule, ?Model $record) {
-                return $rule
-                    ->where('group_id', $record?->getKey() ?? 0);
-            });
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsLabelFormComponent()
-    {
-        return Forms\Components\TextInput::make('label')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.label.label'))
-            ->inlineLabel()
-            ->placeholder(__('filament-field-group::filament-field-group.forms.fields.label.label'))
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.label.helper'))
-            ->required()
-            ->columnSpan('full')
-            ->maxLength(255)
-            ->live(debounce: 500)
-            ->afterStateUpdated(fn (Forms\Set $set, ?string $state) => $set('name', Str::slug($state, '_')));
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsInstructionsFormComponent()
-    {
-        return Forms\Components\TextInput::make('instructions')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.instructions.label'))
-            ->inlineLabel()
-            ->placeholder(__('filament-field-group::filament-field-group.forms.fields.instructions.label'))
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.instructions.helper'))
-            ->maxLength(255)
-            ->columnSpan('full');
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsTypeFormComponent()
-    {
-        return Forms\Components\Select::make('type')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.type.label'))
-            ->inlineLabel()
-            ->placeholder(__('filament-field-group::filament-field-group.forms.fields.type.label'))
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.type.helper'))
-            ->columns(4)
-            ->options(FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions())
-            ->searchable()
-            ->allowHtml()
-            ->required()
-            ->columnSpan('full')
-            ->live(debounce: 500)
-            ->afterStateUpdated(fn (Forms\Components\Select $component) => $component
-                ->getContainer()
-                ->getParentComponent()->getContainer() // section
-                ->getComponent('configFields')
-                ?->getChildComponentContainer()
-                ?->fill());
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsStatePathFormComponent()
-    {
-        return Forms\Components\TextInput::make('state_path')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.state_path.label'))
-            ->inlineLabel()
-            ->placeholder(__('filament-field-group::filament-field-group.forms.fields.state_path.label'))
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.state_path.helper'))
-            ->maxLength(255);
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected static function getFieldsMandatoryFormComponent()
-    {
-        return Forms\Components\Toggle::make('mandatory')
-            ->label(__('filament-field-group::filament-field-group.forms.fields.mandatory.label'))
-            ->inlineLabel()
-            ->helperText(__('filament-field-group::filament-field-group.forms.fields.mandatory.helper'))
-            ->columnSpan('full')
-            ->inlineLabel();
     }
     //endregion Form field(s)/component(s)
 }
