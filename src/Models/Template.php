@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Events\CreateTemplate;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
@@ -12,9 +13,19 @@ class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
 
-    public function templatable(): HasMany
+    public function templateable(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
+    }
+
+    public function documentTypes(): MorphToMany
+    {
+        return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
+    }
+
+    public function contents(): MorphToMany
+    {
+        return $this->morphedByMany(InspireCmsConfig::getContentModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
     }
 
     public function isFileCreated(): bool

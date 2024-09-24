@@ -66,7 +66,7 @@ interface Content extends NestableInterface
      *
      * @return MorphMany The morph field templates associated with the document type.
      */
-    public function templatable(): MorphMany;
+    public function templateable(): MorphMany;
 
     /**
      * Determine if this content is already published.

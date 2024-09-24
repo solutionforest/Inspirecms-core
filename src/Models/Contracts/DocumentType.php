@@ -41,7 +41,7 @@ interface DocumentType
      *
      * @return MorphMany The morph field templates associated with the document type.
      */
-    public function templatable(): MorphMany;
+    public function templateable(): MorphMany;
 
     /**
      * Set the specified template as the default for the document type.

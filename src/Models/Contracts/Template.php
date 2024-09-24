@@ -3,11 +3,16 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 interface Template
 {
-    public function templatable(): HasMany;
+    public function templateable(): HasMany;
 
+    public function documentTypes(): MorphToMany;
+
+    public function contents(): MorphToMany;
+    
     /**
      * Check if the template file has been created.
      *

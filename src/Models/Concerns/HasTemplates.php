@@ -15,7 +15,7 @@ trait HasTemplates
             ->withPivot(['is_default']);
     }
 
-    public function templatable(): MorphMany
+    public function templateable(): MorphMany
     {
         return $this->morphMany(InspireCmsConfig::getTemplateableModelClass(), 'templateable');
     }
