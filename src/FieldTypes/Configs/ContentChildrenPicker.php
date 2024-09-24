@@ -12,11 +12,11 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-#[ConfigName('contentPicker', 'Content Picker', 'Picker', 'heroicon-o-pencil')]
+#[ConfigName('contentChildrenPicker', 'Content Children Picker', 'Picker', 'heroicon-o-pencil')]
 #[FormComponent(PaginationPicker::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
-class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
+class ContentChildrenPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public ?string $perPage = null;
 
@@ -24,7 +24,9 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public ?int $min = null;
 
-    public ?string $documentType = null;
+    public ?string $parentDocumentType = null;
+
+    public ?string $parentContent = null;
 
     public ?string $template = null;
 
@@ -41,6 +43,22 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->get()
                 ->mapWithKeys(fn ($model) => [
                     $model->getKey() => $model->name,
+                ]);
+        };
+        $contentOptions = function ($documentTypeId, Forms\Components\Select $component, $search) {
+            $model = InspireCmsConfig::getContentModelClass();
+
+            return $model::query()
+                ->limit($component->getOptionsLimit())
+                ->where('document_type_id', $documentTypeId)
+                ->when(filled($search), function ($query) use ($search) {
+                    $query
+                        ->where('title', 'like', "%$search%")
+                        ->orWhere('slug', 'like', "%$search%");
+                })
+                ->get()
+                ->mapWithKeys(fn ($model) => [
+                    $model->getKey() => $model->title,
                 ]);
         };
         $templateOptions = function ($documentTypeId) {
@@ -73,17 +91,23 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->schema([
                             Forms\Components\TextInput::make('perPage')
                                 ->inlineLabel(),
-                            Forms\Components\Select::make('documentType')
+                            Forms\Components\Select::make('parentDocumentType')
                                 ->inlineLabel()
                                 ->searchable()
-                                ->optionsLimit(10)
+                                ->optionsLimit(20)
                                 ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
                                 ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search))
                                 ->live(),
+                            Forms\Components\Select::make('parentContent')
+                                ->inlineLabel()
+                                ->searchable()
+                                ->optionsLimit(20)
+                                ->options(fn (Forms\Components\Select $component, Forms\Get $get) => $contentOptions($get('parentDocumentType'), $component, null))
+                                ->getSearchResultsUsing(fn (Forms\Components\Select $component, Forms\Get $get, $search) => $contentOptions($get('parentDocumentType'), $component, $search)),
                             Forms\Components\Select::make('template')
                                 ->inlineLabel()
                                 ->searchable()
-                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType')))
+                                ->options(fn (Forms\Get $get) => $templateOptions($get('parentDocumentType')))
                         ]),
                 ]),
         ];
@@ -97,8 +121,13 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
             $query = $model::query();
 
-            if ($this->documentType) {
-                $query->where('document_type_id', $this->documentType);
+            if ($this->parentContent) {
+                $query->whereHas(
+                    'parent',
+                    fn ($q) => $q
+                        ->where('id', $this->parentContent)
+                        ->when($this->parentDocumentType, fn ($q) => $q->where('document_type_id', $this->parentDocumentType))
+                );
             }
 
             $component->paginationOptions($query);
@@ -121,6 +150,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             if ($this->min) {
                 $component->minItems($this->min);
             }
+
         }
     }
 }

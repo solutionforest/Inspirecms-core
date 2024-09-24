@@ -42,6 +42,7 @@ class CmsPanelProvider extends PanelProvider
                     ->overrideResources([])
                     ->fieldTypeConfigs([
                         \SolutionForest\InspireCms\FieldTypes\Configs\ContentPicker::class,
+                        \SolutionForest\InspireCms\FieldTypes\Configs\ContentChildrenPicker::class,
                     ], false),
                 FilamentPeekPlugin::make(),
                 new InspireCmsTheme,
