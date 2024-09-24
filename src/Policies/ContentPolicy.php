@@ -53,7 +53,7 @@ class ContentPolicy extends BasePolicy
      * @param  null|Content|Model  $content
      * @return bool
      */
-    public function publish($user, $content)
+    public function publish($user, $content = null)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
     }
