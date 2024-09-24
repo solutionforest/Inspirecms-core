@@ -281,7 +281,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->extraFieldGroupRepeaterItemActions([
                 Forms\Components\Actions\Action::make('goToEdit')
                     ->icon(fn () => FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
-                    ->hidden(fn ($component) => PermissionManifest::authorizeModel('update', $component->getRelationship()->getRelated()) != true)
+                    ->hidden(fn ($action): bool => PermissionManifest::authorizeModel('update', InspireCmsConfig::getFieldGroupModelClass()) != true || blank($action->getUrl()))
                     ->url(function (array $arguments, Forms\Components\Repeater $component) {
 
                         $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
@@ -309,7 +309,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                             return null;
 
                         }
-                    }, true)->visible(fn ($action) => ! blank($action->getUrl())),
+                    }, true),
             ])
             ->inlineLabel();
     }
