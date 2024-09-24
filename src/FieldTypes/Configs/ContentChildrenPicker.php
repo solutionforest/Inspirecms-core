@@ -134,7 +134,7 @@ class ContentChildrenPicker extends FieldTypeBaseConfig implements FieldTypeConf
             $component->paginationOptions($query);
 
             $component->recordTitleUsing(fn ($record) => $record->title);
-            
+
             if ($this->perPage) {
                 $component->perPage($this->perPage);
             }

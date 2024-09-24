@@ -176,7 +176,7 @@ class PaginationPicker extends Field
             ->icon(FilamentIcon::resolve('forms::components.repeater.actions.move-up') ?? 'heroicon-m-arrow-up')
             ->color('gray')
             ->action(function (array $arguments, PaginationPicker $component): void {
-                
+
                 $formattedState = Arr::mapWithKeys($component->getState(), fn ($key) => [$key => $key]);
 
                 $items = array_move_before($formattedState, $arguments['item']);
@@ -221,7 +221,7 @@ class PaginationPicker extends Field
             ->color('danger')
             ->action(function (array $arguments, PaginationPicker $component): void {
                 $items = $component->getState();
-                
+
                 $items = Arr::where($items, fn ($key) => $key != $arguments['item']);
 
                 $component->state(array_values($items));
@@ -245,7 +245,7 @@ class PaginationPicker extends Field
 
         $formattedState = $records
             ->mapWithKeys(fn ($record) => [
-                $record->getKey() => $this->getRecordTitle($record) ?? $record->getKey()
+                $record->getKey() => $this->getRecordTitle($record) ?? $record->getKey(),
             ])
             ->toArray() ?? [];
 
