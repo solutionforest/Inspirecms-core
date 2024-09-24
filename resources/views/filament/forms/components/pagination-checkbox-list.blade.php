@@ -22,7 +22,9 @@
     <div 
         x-data="{ 
             selectedRecords: $wire.$entangle('{{ $statePath }}'),
-            init() { }
+            isRecordSelected(key) {
+                return this.selectedRecords.includes(key);
+            },
         }"
     >
         <x-filament-tables::container>
@@ -32,8 +34,9 @@
                     @if (! $hasTableColumnsLayout())
                         <x-filament-tables::row>
 
-                            {{-- Checkbox --}}
+                            {{-- Checkbox cell --}}
                             <x-filament-tables::header-cell></x-filament-tables::header-cell>
+
                             @foreach ($columns as $column)
                                 @php
                                     $columnWidth = $column->getWidth();
@@ -73,14 +76,8 @@
 
                         @endphp
                         <x-filament-tables::row
-                            {{-- :alpine-hidden="($group?->isCollapsible() ? 'true' : 'false') . ' && isGroupCollapsed(' . \Illuminate\Support\Js::from($recordGroupTitle) . ')'" --}}
                             :alpine-selected="'isRecordSelected(\'' . $recordKey . '\')'"
-                            {{-- :striped="$isStriped && $isRecordRowStriped" --}}
                             :wire:key="$this->getId() . '.table.records.' . $recordKey"
-                            @class([
-                                // 'group cursor-move' => $isReordering,
-                                // ...$getRecordClasses($record),
-                            ])
                         >
                             <x-filament-tables::selection.cell>
                                 <x-filament-tables::selection.checkbox
@@ -116,10 +113,6 @@
                                         :column="$column"
                                         :is-click-disabled="$column->isClickDisabled()"
                                         :record="$record"
-                                        {{-- :record-action="$recordAction" --}}
-                                        {{-- :record-key="$recordKey" --}}
-                                        {{-- :record-url="$recordUrl" --}}
-                                        {{-- :should-open-record-url-in-new-tab="$openRecordUrlInNewTab" --}}
                                     />
                                 </x-filament-tables::cell>
                             @endforeach
