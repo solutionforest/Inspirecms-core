@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
-use Filament\Facades\Filament;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 

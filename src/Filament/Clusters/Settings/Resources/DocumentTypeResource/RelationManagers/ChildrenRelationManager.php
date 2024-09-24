@@ -15,9 +15,9 @@ use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
 class ChildrenRelationManager extends RelationManager
 {
+    use CanAuthorizeRelationManager;
     use HasCloneAction;
     use HasQuickEditAction;
-    use CanAuthorizeRelationManager;
 
     protected static string $relationship = 'children';
 

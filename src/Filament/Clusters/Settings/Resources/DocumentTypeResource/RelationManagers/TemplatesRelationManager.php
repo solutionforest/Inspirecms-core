@@ -18,7 +18,7 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 class TemplatesRelationManager extends RelationManager
 {
     use CanAuthorizeRelationManager;
-    
+
     protected static string $relationship = 'templates';
 
     public function createForm(Form $form): Form

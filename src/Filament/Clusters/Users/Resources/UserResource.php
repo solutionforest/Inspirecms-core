@@ -28,6 +28,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $cluster = Users::class;
+
     public static function createForm(Form $form): Form
     {
         return $form

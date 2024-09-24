@@ -31,9 +31,9 @@ interface PermissionManifestInterface
     /**
      * Authorizes a specific ability for a given model.
      *
-     * @param string $ability The ability to be checked (e.g., 'view', 'edit').
-     * @param string $model The model for which the ability is being checked.
-     * @param bool $checkExist Optional. Whether to check if the model exists. Default is true.
+     * @param  string  $ability  The ability to be checked (e.g., 'view', 'edit').
+     * @param  string  $model  The model for which the ability is being checked.
+     * @param  bool  $checkExist  Optional. Whether to check if the model exists. Default is true.
      * @return bool|null Returns true if the ability is authorized, false if not authorized, or null if the permission does not exist and $checkExist is true.
      */
     public function authorizeModel(string $ability, string $model, bool $checkExist = true): ?bool;

@@ -11,7 +11,6 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
