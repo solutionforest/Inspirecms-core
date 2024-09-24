@@ -519,7 +519,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     return null;
                 }
 
-                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash');
+                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
             });
     }
 
