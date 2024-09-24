@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
@@ -19,7 +20,7 @@ trait CanBePublish
 {
     protected ?string $publishOperation = null;
 
-    protected function getPublishFormAction(string $operation): Action
+    protected function getPublishFormAction(string $operation, string $model): Action
     {
         if (is_null($operation) || $operation === 'create') {
             $this->publishOperation = 'create';
@@ -54,6 +55,7 @@ trait CanBePublish
                 }
             })
             ->action($this->publish())
+            ->model($model)
             ->authorize('publish')
             ->successNotification($this->getPublishedNotification());
     }

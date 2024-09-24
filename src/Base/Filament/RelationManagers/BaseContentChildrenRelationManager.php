@@ -40,6 +40,16 @@ class BaseContentChildrenRelationManager extends RelationManager
     {
         parent::configureCreateAction($action);
 
+        $resource = $this->getPageClass()::getResource();
+
+        if ($resource::hasPage('create-children')) {
+            try {
+                $action->url($resource::getUrl('create-children', ['parent' => $this->getOwnerRecord()->getKey()]));
+            } catch (\Exception $e) {
+                // Do nothing
+            }
+        }
+
         $action
             ->slideOver()
             ->modalWidth('7xl');

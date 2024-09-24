@@ -1,0 +1,21 @@
+<?php
+
+namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
+
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreateChildrentPage;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
+
+abstract class BaseContentCreateChildrentPage extends BaseCreateChildrentPage implements HasPublishForm
+{
+    use CanBePublish;
+
+    protected function getFormActions(): array
+    {
+        return [
+            $this->getPublishFormAction('create', $this->getModel()),
+            $this->getCreateFormAction(),
+            $this->getCancelFormAction(),
+        ];
+    }
+}

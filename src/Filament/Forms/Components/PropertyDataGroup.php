@@ -20,7 +20,10 @@ class PropertyDataGroup extends Group
         if (blank($this->childComponents)) {
             $this->schema(function (Get $get, ?Model $record, string $operation) {
 
-                $fieldGroups = $this->getFieldGroupsFromDocumentType($operation == 'create' ? $get('document_type_id') : $record->documentType);
+                $fieldGroups = $this->getFieldGroupsFromDocumentType(match ($operation) {
+                    'edit' => $record->documentType,
+                    default => $get('document_type_id'),
+                });
 
                 $groupComponents = [];
 

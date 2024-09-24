@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -17,6 +18,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentCreateChildrentPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -312,9 +314,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->dehydrateStateUsing(function ($livewire, $operation, $record) {
                 if ($operation === 'create') {
                     return 0;
+                } else if ($livewire instanceof BaseContentCreateChildrentPage) {
+                    return $livewire->getParentRecord()?->getKey() ?? 0;
                 }
 
-                return $record->parent_id;
+                return $record?->parent_id ?? 0;
             });
     }
 
@@ -362,6 +366,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
                 if ($livewire instanceof BaseContentChildrenRelationManager) {
                     $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
+                } elseif ($livewire instanceof BaseContentCreateChildrentPage) {
+                    $query->where('parent_id', $livewire->getParentRecord()?->document_type_id ?? 0);
                 } elseif ($operation === 'create') {
                     $query->where('parent_id', 0);
                 }
