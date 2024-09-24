@@ -8,7 +8,6 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -40,9 +39,7 @@ class ContentsRelationManager extends RelationManager
 
             $url = null;
 
-            $resource = $this->getOwnerRecord()->is_element_type
-                ? config('inspirecms.resources.element', ElementResource::class)
-                : config('inspirecms.resources.page', PageResource::class);
+            $resource = config('inspirecms.resources.page', PageResource::class);
 
             foreach (['view', 'edit'] as $action) {
 

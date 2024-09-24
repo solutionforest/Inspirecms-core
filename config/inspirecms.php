@@ -1,6 +1,5 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\ElementResource;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
@@ -36,7 +35,6 @@ return [
 
     'resources' => [
         'page' => PageResource::class,
-        'element' => ElementResource::class,
         'document_type' => DocumentTypeResource::class,
         'field_group' => FieldGroupResource::class,
         'field' => FieldResource::class,

@@ -2,9 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
 
-use Filament\Forms;
 use Illuminate\Database\Eloquent\Builder;
-use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Clusters\Contents;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -47,22 +45,4 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     {
         return __('inspirecms::inspirecms.page');
     }
-
-    //region Form field(s)/component(s)
-    /**
-     * @return Forms\Components\Field | Forms\Components\Select
-     */
-    protected static function documentTypeSelectComponent()
-    {
-        return parent::documentTypeSelectComponent()
-            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
-                $query->where('is_element_type', false);
-                if ($livewire instanceof BaseContentChildrenRelationManager) {
-                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
-                } elseif ($operation === 'create') {
-                    $query->where('parent_id', 0);
-                }
-            });
-    }
-    //endregion Form field(s)/component(s)
 }
