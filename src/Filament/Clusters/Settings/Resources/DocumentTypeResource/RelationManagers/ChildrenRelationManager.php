@@ -83,6 +83,7 @@ class ChildrenRelationManager extends RelationManager
 
         $action
             ->slideOver()
+            ->createAnother(false)
             ->modalWidth('7xl');
     }
 
