@@ -52,7 +52,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
             return $model::query()
                 ->whereHas(
-                    'documentTypes', 
+                    'documentTypes',
                     fn ($q) => $q->where('templateable_id', $documentTypeId)
                 )
                 ->get()
@@ -61,6 +61,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 ]);
 
         };
+
         return [
             Forms\Components\Tabs::make('tabs')
                 ->tabs([
@@ -83,7 +84,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                             Forms\Components\Select::make('template')
                                 ->inlineLabel()
                                 ->searchable()
-                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType')))
+                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType'))),
                         ]),
                 ]),
         ];
@@ -113,7 +114,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                     Tables\Columns\TextColumn::make('title'),
                     Tables\Columns\TextColumn::make('slug'),
                 ]);
-            
+
             if ($this->max) {
                 $component->maxItems($this->max);
             }

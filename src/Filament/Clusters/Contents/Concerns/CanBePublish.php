@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns;
 
-use Closure;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;

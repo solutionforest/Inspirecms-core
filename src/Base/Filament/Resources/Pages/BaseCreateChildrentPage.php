@@ -13,15 +13,15 @@ use Filament\Resources\Pages\Page;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Js;
-
 use Livewire\Attributes\Locked;
 use Throwable;
+
+use function Filament\Support\is_app_url;
 
 /**
  * @property Form $form
@@ -61,7 +61,7 @@ class BaseCreateChildrentPage extends Page
         $resource = static::getResource();
 
         $breadcrumbs[$resource::getUrl()] = $resource::getBreadcrumb();
-           
+
         try {
 
             $parentUrl = null;
@@ -78,7 +78,7 @@ class BaseCreateChildrentPage extends Page
             }
 
         } catch (\Throwable $th) {
-            
+
         } finally {
 
             if (filled($parentUrl)) {

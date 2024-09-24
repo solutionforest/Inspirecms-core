@@ -13,13 +13,13 @@ use Filament\Support\Concerns\HasReorderAnimationDuration;
 
 class PaginationPicker extends Field
 {
+    use CanLimitItemsLength;
     use Concerns\HasPaginationOptions;
     use Concerns\WithTable;
     use HasExtraAlpineAttributes;
     use HasExtraInputAttributes;
     use HasPlaceholder;
     use HasReorderAnimationDuration;
-    use CanLimitItemsLength;
 
     /**
      * @var view-string

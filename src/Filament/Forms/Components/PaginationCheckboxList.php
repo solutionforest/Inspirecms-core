@@ -7,9 +7,9 @@ use Filament\Forms\Components\Field;
 
 class PaginationCheckboxList extends Field
 {
+    use CanLimitItemsLength;
     use Concerns\HasPaginationOptions;
     use Concerns\WithTable;
-    use CanLimitItemsLength;
 
     /**
      * @var view-string
