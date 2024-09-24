@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
+use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\CanUseDatabaseTransactions;
 use Filament\Pages\Concerns\HasUnsavedDataChangesAlert;
 use Filament\Pages\Concerns\InteractsWithFormActions;
@@ -12,16 +13,15 @@ use Filament\Resources\Pages\Page;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Js;
+
 use Livewire\Attributes\Locked;
 use Throwable;
-
-use function Filament\Support\is_app_url;
 
 /**
  * @property Form $form
