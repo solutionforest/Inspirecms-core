@@ -5,26 +5,20 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Enums\Alignment;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
 
 use function Filament\Support\is_app_url;
 
-abstract class BaseContentEditPage extends EditRecord implements HasPublishForm
+abstract class BaseContentEditPage extends BaseEditPage implements HasPublishForm
 {
     use CanBePublish;
     use HasPreviewModal;
-
-    public function getFormActionsAlignment(): string | Alignment
-    {
-        return 'end';
-    }
 
     protected function getHeaderActions(): array
     {
@@ -37,7 +31,7 @@ abstract class BaseContentEditPage extends EditRecord implements HasPublishForm
     protected function getFormActions(): array
     {
         return [
-            $this->getPublishFormAction('edit'),
+            $this->getPublishFormAction('edit', $this->getRecord()),
             $this->getSaveFormAction(),
             \Filament\Actions\ActionGroup::make([])
                 ->label(__('inspirecms::actions.more_actions.label'))
