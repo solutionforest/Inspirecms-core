@@ -24,11 +24,11 @@ trait HasTemplates
     {
         $templateId = $template instanceof Template ? $template->getKey() : $template;
 
-        $this->templatable()
+        $this->templateable()
             ->where('template_id', $templateId)
             ->update(['is_default' => true]);
 
-        $this->templatable()
+        $this->templateable()
             ->where('template_id', '!=', $templateId)
             ->update(['is_default' => false]);
     }
