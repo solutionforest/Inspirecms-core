@@ -70,9 +70,7 @@ class ChildrenRelationManager extends RelationManager
     {
         match (true) {
             $action instanceof CloneAction => $this->configureCloneAction($action),
-            $action instanceof QuickEditAction => $this->configureQuickEditAction($action
-                ->slideOver()
-                ->modalWidth('7xl')),
+            $action instanceof QuickEditAction => $this->configureQuickEditAction($action),
             default => parent::configureTableAction($action),
         };
     }
@@ -90,6 +88,28 @@ class ChildrenRelationManager extends RelationManager
     protected function configureEditAction(Tables\Actions\EditAction $action): void
     {
         parent::configureEditAction($action);
+
+        $resource = $this->getPageClass()::getResource();
+
+        if ($resource::hasPage('edit')) {
+
+            $action->url(function ($record) use ($resource) {
+
+                try {
+
+                    if ($resource::canEdit($record)) {
+
+                        return $resource::getUrl('edit', ['record' => $record]);
+                    }
+
+                } catch (\Throwable $th) {
+                    //throw $th;
+                }
+
+                return null;
+                
+            });
+        }
 
         $action
             ->slideOver()
