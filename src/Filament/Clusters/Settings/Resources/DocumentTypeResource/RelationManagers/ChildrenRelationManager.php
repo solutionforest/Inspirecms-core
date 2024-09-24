@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Filament\Resources\Concerns\HasCloneAction;
 use SolutionForest\InspireCms\Filament\Resources\Concerns\HasQuickEditAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
@@ -16,6 +17,7 @@ class ChildrenRelationManager extends RelationManager
 {
     use HasCloneAction;
     use HasQuickEditAction;
+    use CanAuthorizeRelationManager;
 
     protected static string $relationship = 'children';
 

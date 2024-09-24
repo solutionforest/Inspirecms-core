@@ -113,7 +113,8 @@ class FieldResource extends Resource implements ClusterSectionResource
         return [
             'index' => Pages\ListFields::route('/'),
             'create' => Pages\CreateField::route('/create'),
-            'edit' => Pages\EditField::route('/edit/{record}'),
+            'edit' => Pages\EditField::route('/{record}/edit'),
+            'view' => Pages\ViewField::route('/{record}'),
         ];
     }
 

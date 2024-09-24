@@ -44,7 +44,12 @@ class DocumentTypesRelationManager extends RelationManager
                     continue;
                 }
 
-                $url = config('inspirecms.resources.document_type', DocumentTypeResource::class)::getUrl('edit', ['record' => $record]);
+                $resource = config('inspirecms.resources.document_type', DocumentTypeResource::class);
+
+                if ($resource::can($action, $record)) {
+                    $url = $resource::getUrl($action, ['record' => $record]);
+                }
+
             }
         } catch (\Throwable $th) {
             return null;

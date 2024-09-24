@@ -14,6 +14,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 
 use function Filament\Support\generate_search_column_expression;
 use function Filament\Support\generate_search_term_expression;
@@ -45,8 +46,9 @@ class FieldGroupRepeater extends Repeater
         $this->relationship('fieldGroupables');
         $this->fieldGroupRelationName('fieldGroups', 'title', 'order');
         $this->live();
-        $this->addable(true);
+        $this->addable(fn (FieldGroupRepeater $component) => PermissionManifest::authorizeModel('create', get_class($component->getFieldGroupRelationship()->getRelated())) === true);
 
+        $this->deletable(fn (FieldGroupRepeater $component) => PermissionManifest::authorizeModel('delete', get_class($component->getFieldGroupRelationship()->getRelated())) === true);
         // Avoid duplicate fieldGroup
         $this->cloneable(false);
     }

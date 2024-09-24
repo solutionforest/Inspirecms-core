@@ -10,6 +10,8 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
@@ -182,6 +184,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'index' => Pages\ListDocumentTypes::route('/'),
             'create' => Pages\CreateDocumentType::route('/create'),
             'edit' => Pages\EditDocumentType::route('/{record}/edit'),
+            'view' => Pages\ViewDocumentType::route('/{record}'),
         ];
     }
 
@@ -279,6 +282,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->extraFieldGroupRepeaterItemActions([
                 Forms\Components\Actions\Action::make('goToEdit')
                     ->icon(fn () => FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
+                    ->hidden(fn ($component) => PermissionManifest::authorizeModel('update', $component->getRelationship()->getRelated()) != true)
                     ->url(function (array $arguments, Forms\Components\Repeater $component) {
 
                         $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);

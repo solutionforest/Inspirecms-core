@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Facades\InspireCms;
 
@@ -105,6 +106,30 @@ class PermissionManifest implements PermissionManifestInterface
             ->prepend('_')
             ->prepend($ability)
             ->toString();
+    }
+
+    public function authorizeModel(string $ability, string $model, bool $checkExist = true): ?bool
+    {
+        $modelShortName = class_basename($model);
+
+        if ($checkExist) {
+
+            if (! class_exists($model)) {
+                return null;
+            }
+
+            $permissionNames = data_get(PermissionManifest::getClusterSectionResourceModelPermissions(), $modelShortName);
+
+            $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $ability)->keys()->first();
+
+            if (! $permissionNameToCheck) {
+                return null;
+            }
+        }
+
+        $permissionName = $this->getPermissionNameForModel(Str::snake($ability), $model);
+
+        return auth()->user()->can($permissionName);
     }
 
     //region Helper methods

@@ -48,7 +48,8 @@ class LanguageResource extends Resource implements ClusterSectionResource
                 Tables\Columns\CheckboxColumn::make('is_default')
                     ->label(__('inspirecms::inspirecms.is_default'))
                     ->width('1%')
-                    ->alignCenter()->verticallyAlignCenter(),
+                    ->alignCenter()->verticallyAlignCenter()
+                    ->disabled(fn ($record) => ! static::canEdit($record)),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

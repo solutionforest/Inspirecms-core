@@ -11,9 +11,11 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
@@ -166,6 +168,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return [
             'index' => Pages\ManageFieldGroup::route('/'),
             'edit' => Pages\EditFieldGroup::route('/{record}/edit'),
+            'view' => Pages\ViewFieldGroup::route('/{record}'),
         ];
     }
 
@@ -282,6 +285,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->itemLabel(fn (array $state): ?string => $state['label'] ?? $state['name'] ?? null)
             ->collapsible()->collapsed()
             ->orderColumn('sort')
+            ->addable(fn (?FieldGroup $record) => PermissionManifest::authorizeModel('create', get_class(($record ?? new (static::getModel()))->fields()->getModel())) === true)
+            ->deletable(fn (Forms\Components\Repeater $component) => PermissionManifest::authorizeModel('delete', get_class($component->getRelationship()->getRelated())) === true)
             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.fields'))]))
             ->addAction(
                 fn (Forms\Components\Actions\Action $action) => $action
@@ -317,6 +322,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->color('gray')
                     ->slideOver()
                     ->modalWidth('5xl')
+                    ->authorize(fn (Forms\Components\Repeater $component) => PermissionManifest::authorizeModel('update', get_class($component->getRelationship()->getRelated())) === true)
                     ->fillForm(function (array $arguments, Forms\Components\Repeater $component) {
 
                         $itemData = $component->getRawItemState($arguments['item']);

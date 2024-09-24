@@ -22,6 +22,19 @@ class TemplateResource extends Resource implements ClusterSectionResource
 
     protected static ?string $cluster = Settings::class;
 
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'view',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'detach',
+        ];
+    }
+
     public static function table(Table $table): Table
     {
         return $table

@@ -21,6 +21,7 @@ trait ClusterSectionResourceTrait
     {
         return [
             'view_any',
+            'view',
             'create',
             'update',
             'delete',

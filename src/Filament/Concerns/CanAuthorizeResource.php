@@ -37,16 +37,12 @@ trait CanAuthorizeResource
     {
         if (! static::skipAccessRightPermissionChecking()) {
 
-            $user = Filament::auth()->user();
+            $model = $record ? get_class($record) : static::getModel();
 
-            $permissionNames = data_get(PermissionManifest::getClusterSectionResourceModelPermissions(), static::class);
+            $result = PermissionManifest::authorizeModel($action, $model);
 
-            $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $action)->keys()->first();
-
-            if ($permissionNameToCheck) {
-
-                return $user->can($permissionNameToCheck);
-
+            if ($result !== null) {
+                return $result;
             }
         }
 

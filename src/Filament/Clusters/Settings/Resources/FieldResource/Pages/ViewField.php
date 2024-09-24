@@ -2,10 +2,10 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource\Pages;
 
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 
-class CreateField extends BaseCreatePage
+class ViewField extends BaseViewPage
 {
     public static function getResource(): string
     {

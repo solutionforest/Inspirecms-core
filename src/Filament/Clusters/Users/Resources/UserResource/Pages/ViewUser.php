@@ -2,11 +2,11 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
 
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\ProfilePageTrait;
 
-class EditUser extends BaseEditPage
+class ViewUser extends BaseViewPage
 {
     use ProfilePageTrait;
 

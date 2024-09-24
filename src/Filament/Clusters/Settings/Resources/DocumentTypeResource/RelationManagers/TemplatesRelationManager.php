@@ -9,12 +9,16 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Riodwanto\FilamentAceEditor\AceEditor;
+use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplatesRelationManager extends RelationManager
 {
+    use CanAuthorizeRelationManager;
+    
     protected static string $relationship = 'templates';
 
     public function createForm(Form $form): Form
@@ -30,7 +34,7 @@ class TemplatesRelationManager extends RelationManager
             ]);
     }
 
-    public function editForm(Form $form): Form
+    public function form(Form $form): Form
     {
         return $form
             ->columns(1)
@@ -48,6 +52,7 @@ class TemplatesRelationManager extends RelationManager
     {
         return $table
             ->contentGrid(['lg' => 3, 'md' => 2])
+            ->recordTitle(fn ($record) => $record->path)
             ->columns([
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\TextColumn::make('name')
@@ -67,6 +72,7 @@ class TemplatesRelationManager extends RelationManager
                     ->label(__('inspirecms::inspirecms.set_as_default'))
                     ->color('secondary')
                     ->successNotificationTitle(__('filament-actions::edit.single.notifications.saved.title'))
+                    ->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
 
                         $this->getOwnerRecord()->setAsDefaultTemplate($record);
@@ -75,7 +81,8 @@ class TemplatesRelationManager extends RelationManager
 
                         $this->dispatch('$refresh');
                     }),
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\DetachAction::make(),
             ])
             ->bulkActions([
@@ -99,24 +106,38 @@ class TemplatesRelationManager extends RelationManager
         parent::configureEditAction($action);
 
         $action
-            ->form(fn (Form $form): Form => $this->editForm($form->columns(2)))
             ->recordTitle(fn (Template $record) => $record->path)
             ->modalWidth('7xl')
             ->slideOver()
-            ->beforeFormFilled(function (Template $record, Tables\Actions\Action $action) {
-                try {
-                    if (! $record->isFileCreated()) {
-                        $record->createTemplateFile();
-                    }
-                } catch (\Throwable $th) {
-                    Notification::make()
-                        ->title(__('inspirecms::inspirecms.something_went_wrong'))
-                        ->body($th->getMessage())
-                        ->danger()
-                        ->send();
+            ->beforeFormFilled(fn (Template $record, Tables\Actions\Action $action) => $this->configureTemplateForm($record, $action));
+    }
 
-                    $action->cancel();
-                }
-            });
+    protected function configureViewAction(Tables\Actions\ViewAction $action): void
+    {
+        parent::configureViewAction($action);
+
+        $action
+            ->recordTitle(fn (Template $record) => $record->path)
+            ->modalWidth('7xl')
+            ->slideOver()
+            ->hidden(fn ($record) => $this->canEdit($record))
+            ->beforeFormFilled(fn (Template $record, Tables\Actions\Action $action) => $this->configureTemplateForm($record, $action));
+    }
+
+    protected function configureTemplateForm(Template $record, Tables\Actions\Action $action)
+    {
+        try {
+            if (! $record->isFileCreated()) {
+                $record->createTemplateFile();
+            }
+        } catch (\Throwable $th) {
+            Notification::make()
+                ->title(__('inspirecms::inspirecms.something_went_wrong'))
+                ->body($th->getMessage())
+                ->danger()
+                ->send();
+
+            $action->cancel();
+        }
     }
 }

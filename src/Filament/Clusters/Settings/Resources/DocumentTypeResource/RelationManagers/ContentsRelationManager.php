@@ -50,7 +50,9 @@ class ContentsRelationManager extends RelationManager
                     continue;
                 }
 
-                $url = $resource::getUrl('edit', ['record' => $record]);
+                if ($resource::can($action, $record)) {
+                    $url = $resource::getUrl($action, ['record' => $record]);
+                }
             }
         } catch (\Throwable $th) {
             return null;

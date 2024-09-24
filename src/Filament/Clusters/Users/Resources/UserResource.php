@@ -28,7 +28,6 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $cluster = Users::class;
-
     public static function createForm(Form $form): Form
     {
         return $form
@@ -85,7 +84,8 @@ class UserResource extends Resource implements ClusterSectionResource
         return [
             'index' => Pages\ListUsers::route('/'),
             'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/edit/{record}'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
+            'view' => Pages\ViewUser::route('{record}'),
         ];
     }
 
