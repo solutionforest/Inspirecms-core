@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -313,7 +314,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->dehydrateStateUsing(function ($livewire, $operation, $record) {
                 if ($operation === 'create') {
                     return 0;
-                } elseif ($livewire instanceof BaseContentCreateChildrentPage) {
+                } else if ($livewire instanceof BaseContentCreateChildrentPage) {
                     return $livewire->getParentRecord()?->getKey() ?? 0;
                 }
 

@@ -1,80 +1,54 @@
 @php
-    use Filament\Support\Facades\FilamentView;
-
     $statePath = $getStatePath();
     $id = $getId();
     $isDisabled = $isDisabled();
+
+    $stateForDisplay = $getFormattedStateForDisplay();
+
+    $selectAction = $getAction('select');
+    $moveUpAction = $getAction('moveUp');
+    $moveDownAction = $getAction('moveDown');
+    $deleteAction = $getAction('delete');
+
 @endphp
 
 <x-dynamic-component
     :component="$getFieldWrapperView()"
     :field="$field"
 >
-    <x-filament::input.wrapper
-        :disabled="$isDisabled"
-        :valid="! $errors->has($statePath)"
-        :attributes="
-            \Filament\Support\prepare_inherited_attributes($attributes)
+    <div
+        {{
+            $attributes
                 ->merge($getExtraAttributes(), escape: false)
                 ->class(['fi-fo-pagination-picker'])
-        "
+        }}
     >
-    
-        <div
-            @if (FilamentView::hasSpaMode())
-                {{-- format-ignore-start --}}ax-load="visible || event (ax-modal-opened)"{{-- format-ignore-end --}}
-            @else
-                ax-load
-            @endif
-            x-data="{
-                state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
-            }"
-            x-ignore
-        >
-            <x-filament::input
-                autocomplete="off"
-                :autofocus="$isAutofocused()"
-                :disabled="$isDisabled"
-                :id="$id"
-                :placeholder="$getPlaceholder()"
-                type="text"
-                x-bind="input"
-                :attributes="\Filament\Support\prepare_inherited_attributes($getExtraInputAttributeBag())"
-            />
-            <div wire:ignore>
-                <template x-cloak x-if="state?.length">
-                    <div
-                        x-on:end.stop="reorderTags($event)"
-                        x-sortable
-                        data-sortable-animation-duration="{{ $getReorderAnimationDuration() }}"
-                        @class([
-                            'flex w-full flex-wrap gap-1.5 p-2',
-                            'border-t border-t-gray-200 dark:border-t-white/10',
-                        ])
+        <ul>
+            <div
+            >
+                @foreach ($stateForDisplay as $key => $label)
+                    <li
+                        wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $key }}.item"
+                        class="fi-fo-pagination-picker-item flex"
                     >
-                        <template
-                            x-for="(key, index) in state"
-                            x-bind:key="`${key}-${index}`"
-                            class="hidden"
-                        >
-                            <x-filament::badge
-                                x-bind:x-sortable-item="index"
-                                :x-sortable-handle
-                            >
-                                <span
-                                    x-text="key"
-                                    class="select-none text-start"
-                                ></span>
-
-                            </x-filament::badge>
-                        </template>
-                    </div>
-                </template>
+                        <div class="flex-1 mb-2 inline-flex items-center justify-start gap-x-3">
+                            <ul class="flex gap-x-1">
+                                <li>{{ $moveUpAction(['item' => $key, 'disabled' => $loop->first]) }}</li>
+                                <li>{{ $moveDownAction(['item' => $key, 'disabled' => $loop->last]) }}</li>
+                            </ul>
+                            <div class="flex-1 ring-1 rounded-md px-2 py-3 shadow-sm ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                                {{ $label }}
+                            </div>
+                            <ul class="flex gap-x-1">
+                                <li>{{ $deleteAction(['item' => $key]) }}</li>
+                            </ul>
+                        </div>
+                    </li>
+                @endforeach
             </div>
-        </div>
+        </ul>
+    </div>
 
-    </x-filament::input.wrapper>
-
-    {{ $getAction('select') }}
+    {{ $selectAction }}
     
 </x-dynamic-component>

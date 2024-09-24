@@ -23,6 +23,7 @@
         x-data="{ 
             selectedRecords: $wire.$entangle('{{ $statePath }}'),
             isRecordSelected(key) {
+            console.log(key, this.selectedRecords);
                 return this.selectedRecords.includes(key);
             },
         }"
