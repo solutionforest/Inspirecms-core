@@ -309,7 +309,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
                         $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
 
-                        $component->collapsed(false, shouldMakeComponentCollapsible: false);
+                        $component->collapsed(true, shouldMakeComponentCollapsible: true);
 
                         $component->callAfterStateUpdated();
                     })
