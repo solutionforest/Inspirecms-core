@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
@@ -19,6 +20,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements HasPublishFor
 {
     use CanBePublish;
     use HasPreviewModal;
+    use WithPagination;
 
     protected function getHeaderActions(): array
     {

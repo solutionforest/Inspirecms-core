@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
 
+use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
@@ -9,6 +10,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishFor
 abstract class BaseContentCreatePage extends BaseCreatePage implements HasPublishForm
 {
     use CanBePublish;
+    use WithPagination;
 
     protected function getFormActions(): array
     {
