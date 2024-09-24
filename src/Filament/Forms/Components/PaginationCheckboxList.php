@@ -2,12 +2,14 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
+use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Field;
 
 class PaginationCheckboxList extends Field
 {
     use Concerns\HasPaginationOptions;
     use Concerns\WithTable;
+    use CanLimitItemsLength;
 
     /**
      * @var view-string

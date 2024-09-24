@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Concerns\HasExtraInputAttributes;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
@@ -18,6 +19,7 @@ class PaginationPicker extends Field
     use HasExtraInputAttributes;
     use HasPlaceholder;
     use HasReorderAnimationDuration;
+    use CanLimitItemsLength;
 
     /**
      * @var view-string
