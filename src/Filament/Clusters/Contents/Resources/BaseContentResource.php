@@ -90,7 +90,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                         ->schema([
 
                                             static::documentTypeSelectComponent()->columnSpan(3),
-                                            static::getDisplayIsRootLevelFormComponent()->columnSpan(1),
                                         ]),
                                 ]),
 
@@ -128,11 +127,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->label(__('inspirecms::inspirecms.title'))
                     ->sortable()
                     ->grow(),
-                Tables\Columns\IconColumn::make('documentType.can_use_at_root')
-                    ->label(__('inspirecms::inspirecms.is_root_level'))
-                    ->width('1%')
-                    ->boolean()
-                    ->alignCenter()->verticallyAlignCenter(),
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label(__('inspirecms::inspirecms.parent'))
                     ->grow(),
@@ -362,14 +356,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
             ->searchable(['id'])
             ->preload()
-            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query, $livewire, $operation) {
-                if ($livewire instanceof BaseContentChildrenRelationManager) {
-                    $query->where('parent_id', $livewire->getOwnerRecord()?->document_type_id ?? 0);
-                } elseif ($livewire instanceof BaseContentCreateChildrentPage) {
-                    $query->where('parent_id', $livewire->getParentRecord()?->document_type_id ?? 0);
-                } elseif ($operation === 'create') {
-                    $query->where('parent_id', 0);
-                }
+            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query) {
+                $query->where('is_element_type', false);
             })
             ->required();
 
@@ -519,23 +507,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
-            });
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getDisplayIsRootLevelFormComponent()
-    {
-        return Forms\Components\Placeholder::make('display_is_root')
-            ->label(__('inspirecms::inspirecms.is_root_level'))
-            ->content(function (Forms\Get $get) {
-                $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($get('document_type_id'));
-                if (is_null($documentType)) {
-                    return null;
-                }
-
-                return static::getBooleanIconPlaceholderComponentContent($documentType->can_use_at_root);
             });
     }
 

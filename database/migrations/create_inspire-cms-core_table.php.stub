@@ -31,8 +31,6 @@ return new class extends BaseMigration
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('parent_id')->default(0)->comment('Parent\'s document_type, 0 = Root.');
-            $table->boolean('can_use_at_root')->default(false);
             $table->boolean('is_element_type')->default(false);
 
             $table->timestamps();

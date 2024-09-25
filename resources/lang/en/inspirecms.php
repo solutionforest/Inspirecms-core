@@ -3,7 +3,6 @@
 return [
     'add_xxx' => 'Add :name',
     'allow_sections' => 'Allow Sections',
-    'can_use_at_root' => 'Can use at root',
     'code' => 'Code',
     'children' => 'Children',
     'content' => 'Content',

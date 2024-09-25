@@ -21,11 +21,6 @@ class DocumentTypeDto extends BaseDto
     public $title;
 
     /**
-     * @var bool
-     */
-    public $asRoot;
-
-    /**
      * @var Collection<TemplateDto>
      */
     public $templates;
@@ -39,7 +34,6 @@ class DocumentTypeDto extends BaseDto
         return static::fromArray([
             'id' => $model->getKey(),
             'title' => $model->title,
-            'asRoot' => $model->can_use_at_root,
             'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
         ])->setModel($model);
     }

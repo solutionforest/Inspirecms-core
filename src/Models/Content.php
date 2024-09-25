@@ -120,7 +120,8 @@ class Content extends BaseModel implements ContentContract
 
     public function scopeIsRootLevel(Builder $query, bool $condition = true): void
     {
-        $query->whereHas('documentType', fn ($query) => $query->where('can_use_at_root', $condition));
+        $rootValue = $this->getNestableRootValue();
+        $query->where('parent_id', $condition ? $rootValue : '!=', $rootValue);
     }
 
     //endregion Scope(s)

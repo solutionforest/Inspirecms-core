@@ -14,10 +14,8 @@ use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers\ChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\DocumentFieldGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
@@ -59,45 +57,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getParentFormComponent(),
-                            static::getCanUseAtRootFormComponent(),
                             static::getIsElementTypeFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
-                    Forms\Components\Section::make()
-                        ->columns(1)
-                        ->schema([
-                            static::getNameFormComponent()->inlineLabel()->columnSpanFull(),
-                            static::getFieldGroupFormComponent(),
-                        ])
-                        ->grow(),
-                ])->revertBreakPoint('lg'),
-            ]);
-    }
-
-    public static function childrenForm(Form $form): Form
-    {
-        return $form
-            ->columns(1)
-            ->schema([
-                RevertOrderGroup::make([
-
-                    static::getCanUseAtRootFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
-                    static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(function ($livewire) {
-                        if ($livewire instanceof ChildrenRelationManager) {
-                            return $livewire->getOwnerRecord()->is_element_type;
-                        }
-
-                        return true;
-                    }),
-
-                    Forms\Components\Section::make()
-                        ->columns(1)
-                        ->schema([
-                            static::getTimestampsGroupedFormComponent(),
-                        ])
-                        ->grow(false)->hiddenOn('create'),
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
@@ -114,7 +77,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $form
             ->schema([
                 static::getNameFormComponent()->inlineLabel(),
-                static::getCanUseAtRootFormComponent(),
                 static::getIsElementTypeFormComponent(),
             ]);
     }
@@ -132,9 +94,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name'))
                     ->sortable(),
-                Tables\Columns\IconColumn::make('can_use_at_root')
-                    ->label(__('inspirecms::inspirecms.can_use_at_root'))
-                    ->boolean(),
                 Tables\Columns\IconColumn::make('is_element_type')
                     ->label(__('inspirecms::inspirecms.is_element_type'))
                     ->boolean(),
@@ -190,7 +149,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\ChildrenRelationManager::class,
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
                 RelationManagers\ContentsRelationManager::class,
@@ -217,29 +175,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::inspirecms.name'))
             ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getParentFormComponent()
-    {
-        return BelongsToParentSelect::make('parent_id')
-            ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.document_type'))]))
-            ->nestableParentRelationship(name: 'parent', titleAttribute: 'name', ignoreRecord: true)
-            ->disabled()
-            ->dehydrated(true)
-            ->hidden(function ($operation) {
-                return $operation === 'create';
-            })
-            ->dehydratedWhenHidden(true)
-            ->dehydrateStateUsing(function ($livewire, $operation, $record) {
-                if ($operation === 'create') {
-                    return 0;
-                }
-
-                return $record->parent_id;
-            });
     }
 
     /**
@@ -312,28 +247,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     }, true),
             ])
             ->inlineLabel();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getCanUseAtRootFormComponent()
-    {
-        return Forms\Components\Toggle::make('can_use_at_root')
-            ->label(__('inspirecms::inspirecms.can_use_at_root'))
-            ->inlineLabel()
-            ->default(false)
-            ->hidden(function (Forms\Get $get) {
-                return $get('is_element_type') === true;
-            })
-            ->dehydratedWhenHidden(true)
-            ->dehydrateStateUsing(function (Forms\Get $get, $state) {
-                if ($get('is_element_type')) {
-                    return false;
-                } else {
-                    return $state;
-                }
-            });
     }
 
     /**
