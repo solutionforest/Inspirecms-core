@@ -17,7 +17,6 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentCreateChildrentPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -38,6 +37,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return [
             'view_any',
+            'view',
             'create',
             'update',
             'delete',
@@ -217,7 +217,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getRelations(): array
     {
         return [
-            BaseContentChildrenRelationManager::class,
+            // BaseContentChildrenRelationManager::class,
         ];
     }
 
@@ -231,6 +231,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return parent::getEloquentQuery()->with([
             'propertyDatas', // To get latest version
             'documentType', // Determine the page "Is Root Level"
+            'parent', // To get parent title
         ]);
     }
 
@@ -306,10 +307,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->dehydratedWhenHidden(true)
             ->dehydrateStateUsing(function ($livewire, $operation, $record) {
                 if ($operation === 'create') {
-                    return 0;
-                } elseif ($livewire instanceof BaseContentCreateChildrentPage) {
-                    return $livewire->getParentRecord()?->getKey() ?? 0;
-                }
+                    return $livewire->parent ?? 0;
+                } 
 
                 return $record?->parent_id ?? 0;
             });

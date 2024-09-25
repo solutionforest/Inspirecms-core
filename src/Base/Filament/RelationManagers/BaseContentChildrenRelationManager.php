@@ -44,7 +44,7 @@ class BaseContentChildrenRelationManager extends RelationManager
 
         if ($resource::hasPage('create-children')) {
             try {
-                $action->url($resource::getUrl('create-children', ['parent' => $this->getOwnerRecord()->getKey()]));
+                $action->url($resource::getUrl('create', ['parent' => $this->getOwnerRecord()->getKey()]));
             } catch (\Exception $e) {
                 // Do nothing
             }

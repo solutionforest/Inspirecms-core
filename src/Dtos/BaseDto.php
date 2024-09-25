@@ -2,34 +2,18 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
-use Illuminate\Database\Eloquent\Model;
-
-/**
- * @template TModel of Model
- */
 abstract class BaseDto
 {
-    /**
-     * @var ?Model
-     */
-    protected $model = null;
-
-    /**
-     * @param  Model  $model
-     * @return BaseDto<TModel>
-     */
-    abstract public static function fromModel($model);
-
     public function __construct() {}
 
     /**
-     * @return BaseDto<TModel>
+     * @return BaseDto
      */
     public static function fromArray(array $parameters)
     {
         $class = new \ReflectionClass(static::class);
         /**
-         * @var BaseDto<TModel>
+         * @var BaseDto
          */
         $dto = $class->newInstanceWithoutConstructor();
 
@@ -58,24 +42,5 @@ abstract class BaseDto
     public function toArray(): array
     {
         return (array) $this;
-    }
-
-    /**
-     * @param  Model  $model
-     * @return BaseDto<TModel>
-     */
-    public function setModel($model)
-    {
-        $this->model = $model;
-
-        return $this;
-    }
-
-    /**
-     * @return Model|null
-     */
-    public function getModel()
-    {
-        return $this->model;
     }
 }

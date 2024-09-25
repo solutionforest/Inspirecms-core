@@ -44,6 +44,10 @@ return [
         'role' => RoleResource::class,
     ],
 
+    'pages' => [
+        'create_root_content' => \SolutionForest\InspireCms\Filament\Clusters\Contents\Pages\CreateRootContent::class,
+    ],
+
     'models' => [
         'table_name_prefix' => 'cms_',
         'morph_map_prefix' => 'cms_',

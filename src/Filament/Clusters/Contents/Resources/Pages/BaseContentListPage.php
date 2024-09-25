@@ -7,9 +7,12 @@ use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ContentPageTrait;
 
 abstract class BaseContentListPage extends ListRecords
 {
+    use ContentPageTrait;
+    
     public function getActions(): array
     {
         return [

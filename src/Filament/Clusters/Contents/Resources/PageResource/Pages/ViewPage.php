@@ -6,12 +6,12 @@ use Filament\Actions;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ConfigureContentResourcePageSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentEditPage;
+use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentViewPage;
 
-class EditPage extends BaseContentEditPage implements HasPublishForm
+class ViewPage extends BaseContentViewPage implements HasPublishForm
 {
     use ConfigureContentResourcePageSubNavigation;
-
+    
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
@@ -53,7 +53,7 @@ class EditPage extends BaseContentEditPage implements HasPublishForm
 
         return $breadcrumbs;
     }
-
+    
     protected function configureDeleteAction(Actions\DeleteAction $action): void
     {
         parent::configureDeleteAction($action);

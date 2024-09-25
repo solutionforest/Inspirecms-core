@@ -53,6 +53,7 @@ class CmsPanelProvider extends PanelProvider
                 ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
                     ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
                     ->all(),
+                ...config('inspirecms.pages'),
             ])
             ->widgets([
                 Widgets\PageActivity::class,

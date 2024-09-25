@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
 
+use Filament\Navigation\NavigationItem;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Contents;
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -13,8 +15,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     use ClusterSectionResourceTrait;
 
     protected static ?int $navigationSort = -9;
-
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -31,7 +31,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
-            'create-children' => Pages\CreateChildrenPage::route('/{parent}/create-children'),
+            'view' => Pages\ViewPage::route('/{record}'),
         ];
     }
 
@@ -39,6 +39,54 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     {
         return parent::getEloquentQuery()
             ->whereHas('documentType', fn ($q) => $q->where('is_element_type', false));
+    }
+
+    /**
+     * @return array<NavigationItem>
+     */
+    public static function getCustomNavigationItems(array $parameters = []): array
+    {
+        $navigationLabel = static::getNavigationLabel();
+        if (isset($parameters['parent'])) {
+            if ($parameters['parent'] instanceof Model && $parameters['parent']->exists) {
+                $navigationLabel = static::getRecordTitle($parameters['parent']);
+            } else if (!empty($parameters['parentTitle'])) {
+                $navigationLabel = $parameters['parentTitle'];
+                unset($parameters['parentTitle']);
+            } else if (is_int($parameters['parent']) || is_string($parameters['parent'])) {
+                $record = static::getModel()::find($parameters['parent']);
+                if ($record) {
+                    $navigationLabel = static::getRecordTitle($record);
+                }
+            }
+        }
+        $isActive = function () use ($parameters) {
+            if (! request()->routeIs(static::getRouteBaseName() . '.*')) {
+                return false;
+            }
+            if (isset($parameters['parent'])) {
+                $parentKey = $parameters['parent'] instanceof Model ? $parameters['parent']->getKey() : $parameters['parent'];
+                return request()->query('parent') == $parentKey;
+            }
+            return false;
+        };
+        return [
+            NavigationItem::make($navigationLabel)
+                ->group(static::getNavigationGroup())
+                ->parentItem(static::getNavigationParentItem())
+                ->icon(static::getNavigationIcon())
+                ->activeIcon(static::getActiveNavigationIcon())
+                ->isActiveWhen($isActive)
+                ->badge(static::getNavigationBadge(), color: static::getNavigationBadgeColor())
+                ->badgeTooltip(static::getNavigationBadgeTooltip())
+                ->sort(static::getNavigationSort())
+                ->url(static::getCustomNavigationUrl($parameters)),
+        ];
+    }
+
+    public static function getCustomNavigationUrl(array $parameters = []): string
+    {
+        return static::getUrl('index', $parameters);
     }
 
     public static function getModelLabel(): string

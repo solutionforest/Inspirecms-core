@@ -127,11 +127,13 @@ trait CanBePublish
 
             $record->setPublishableState($publishableAction);
 
-            if (
-                static::getResource()::isScopedToTenant() &&
-                ($tenant = Filament::getTenant())
-            ) {
-                return $this->associateRecordWithTenant($record, $tenant);
+            if ($this instanceof \Filament\Resources\Pages\Page) {
+                if (
+                    static::getResource()::isScopedToTenant() &&
+                    ($tenant = Filament::getTenant())
+                ) {
+                    return $this->associateRecordWithTenant($record, $tenant);
+                }
             }
 
             $record->save();
