@@ -57,7 +57,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getIsElementTypeFormComponent(),
+                            static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -77,7 +77,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $form
             ->schema([
                 static::getNameFormComponent()->inlineLabel(),
-                static::getIsElementTypeFormComponent(),
+                static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
             ]);
     }
 
@@ -94,9 +94,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name'))
                     ->sortable(),
-                Tables\Columns\IconColumn::make('is_element_type')
-                    ->label(__('inspirecms::inspirecms.is_element_type'))
-                    ->boolean(),
+                // Temp hide for current version
+                // Tables\Columns\IconColumn::make('is_element_type')
+                //     ->label(__('inspirecms::inspirecms.is_element_type'))
+                //     ->boolean(),
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
