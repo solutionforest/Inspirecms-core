@@ -33,6 +33,16 @@ class ContentPolicy extends BasePolicy
      * @param  Content|Model  $content
      * @return bool
      */
+    public function view($user, Content $content)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @param  Content|Model  $content
+     * @return bool
+     */
     public function update($user, Content $content)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
