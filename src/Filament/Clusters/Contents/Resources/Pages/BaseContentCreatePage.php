@@ -11,8 +11,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishFor
 abstract class BaseContentCreatePage extends BaseCreatePage implements HasPublishForm
 {
     use CanBePublish;
-    use WithPagination;
     use ContentPageTrait;
+    use WithPagination;
 
     protected function getFormActions(): array
     {

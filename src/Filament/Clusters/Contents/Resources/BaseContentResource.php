@@ -308,7 +308,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->dehydrateStateUsing(function ($livewire, $operation, $record) {
                 if ($operation === 'create') {
                     return $livewire->parent ?? 0;
-                } 
+                }
 
                 return $record?->parent_id ?? 0;
             });

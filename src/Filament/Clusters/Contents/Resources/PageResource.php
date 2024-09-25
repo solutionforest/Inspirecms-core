@@ -50,10 +50,10 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
         if (isset($parameters['parent'])) {
             if ($parameters['parent'] instanceof Model && $parameters['parent']->exists) {
                 $navigationLabel = static::getRecordTitle($parameters['parent']);
-            } else if (!empty($parameters['parentTitle'])) {
+            } elseif (! empty($parameters['parentTitle'])) {
                 $navigationLabel = $parameters['parentTitle'];
                 unset($parameters['parentTitle']);
-            } else if (is_int($parameters['parent']) || is_string($parameters['parent'])) {
+            } elseif (is_int($parameters['parent']) || is_string($parameters['parent'])) {
                 $record = static::getModel()::find($parameters['parent']);
                 if ($record) {
                     $navigationLabel = static::getRecordTitle($record);
@@ -66,10 +66,13 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             }
             if (isset($parameters['parent'])) {
                 $parentKey = $parameters['parent'] instanceof Model ? $parameters['parent']->getKey() : $parameters['parent'];
+
                 return request()->query('parent') == $parentKey;
             }
+
             return false;
         };
+
         return [
             NavigationItem::make($navigationLabel)
                 ->group(static::getNavigationGroup())

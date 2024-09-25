@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseCon
 class ViewPage extends BaseContentViewPage implements HasPublishForm
 {
     use ConfigureContentResourcePageSubNavigation;
-    
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
@@ -53,7 +53,7 @@ class ViewPage extends BaseContentViewPage implements HasPublishForm
 
         return $breadcrumbs;
     }
-    
+
     protected function configureDeleteAction(Actions\DeleteAction $action): void
     {
         parent::configureDeleteAction($action);

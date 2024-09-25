@@ -9,7 +9,6 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Js;
@@ -20,13 +19,15 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CreateContentP
 use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
 use Throwable;
 
+use function Filament\Support\is_app_url;
+
 /**
  * @property Form $form
  */
 class CreateRootContent extends Page implements HasPublishForm
 {
-    use CreateContentPageTrait;
     use CanBePublish;
+    use CreateContentPageTrait;
     use WithPagination;
 
     /**
@@ -51,7 +52,7 @@ class CreateRootContent extends Page implements HasPublishForm
 
     protected function authorizeAccess(): void
     {
-        if ($cluster = $this->getCluster()){
+        if ($cluster = $this->getCluster()) {
             abort_unless($cluster::canAccess(), 403);
         }
     }

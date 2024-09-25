@@ -21,7 +21,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseCon
 class ListPages extends BaseContentListPage
 {
     use ConfigureContentResourcePageSubNavigation;
-    
+
     public function getActions(): array
     {
         return [
@@ -29,7 +29,7 @@ class ListPages extends BaseContentListPage
         ];
     }
 
-    public function getHeading(): string|Htmlable
+    public function getHeading(): string | Htmlable
     {
         $action = collect([
             EditAction::make(),
@@ -39,6 +39,7 @@ class ListPages extends BaseContentListPage
                 $action instanceof EditAction => $this->configureHeadingEditAction($action),
                 $action instanceof ViewAction => $this->configureHeadingViewAction($action),
             };
+
             return $action;
         })->first(fn ($action) => $action->isVisible());
 
@@ -57,7 +58,7 @@ class ListPages extends BaseContentListPage
     public function booted(): void
     {
         $parent = $this->getParentRecord();
-        if (!$parent || $parent->getLevel() != 0) {
+        if (! $parent || $parent->getLevel() != 0) {
             $cluster = static::getCluster();
             redirect($cluster::getUrl());
         }
@@ -96,10 +97,11 @@ class ListPages extends BaseContentListPage
         if ($parent = $this->getParentRecord()) {
             $title = static::getResource()::getRecordTitle($parent);
         }
+
         return $title ?? parent::getTitle();
     }
 
-    protected function configureCreateAction(CreateAction|ActionsCreateAction $action): void
+    protected function configureCreateAction(CreateAction | ActionsCreateAction $action): void
     {
         parent::configureCreateAction($action);
 
@@ -125,7 +127,7 @@ class ListPages extends BaseContentListPage
             if ($resource::hasPage('edit')) {
                 $action->url(fn (): string => $resource::getUrl('edit', ['record' => $parent]));
             }
-        } else if (! $resource::hasPage('edit')) {
+        } elseif (! $resource::hasPage('edit')) {
             $action->hidden();
         }
 
@@ -153,7 +155,7 @@ class ListPages extends BaseContentListPage
             if ($resource::hasPage('view')) {
                 $action->url(fn (): string => $resource::getUrl('view', ['record' => $parent]));
             }
-        } else if (! $resource::hasPage('view')) {
+        } elseif (! $resource::hasPage('view')) {
             $action->hidden();
         }
 

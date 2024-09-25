@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ContentPageTra
 abstract class BaseContentListPage extends ListRecords
 {
     use ContentPageTrait;
-    
+
     public function getActions(): array
     {
         return [

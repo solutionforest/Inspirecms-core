@@ -10,7 +10,7 @@ trait ConfigureContentsSubNavigation
     {
         //todo: cache this
         $rootLevelContents = InspireCmsConfig::getContentModelClass()::isRootLevel()->get();
-        
+
         $items = [];
 
         foreach ($rootLevelContents as $rootLevelContent) {

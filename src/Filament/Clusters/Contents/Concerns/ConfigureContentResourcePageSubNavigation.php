@@ -12,7 +12,7 @@ trait ConfigureContentResourcePageSubNavigation
     {
         $subNavigation = parent::getSubNavigation();
 
-        if (!$this instanceof ListRecords) {
+        if (! $this instanceof ListRecords) {
             $subNavigation = $this->getSubNavigationForNonListPage();
         }
 

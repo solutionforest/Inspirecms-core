@@ -26,8 +26,8 @@ class Contents extends Cluster implements ClusterSection, HasTable
 {
     use ClusterSectionTrait;
     use ConfigureContentsSubNavigation;
-    use InteractsWithTable;
     use HasTabs;
+    use InteractsWithTable;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
@@ -63,6 +63,7 @@ class Contents extends Cluster implements ClusterSection, HasTable
             CreateAction::make()
                 ->url(function () {
                     $page = config('inspirecms.pages.create_root_content', CreateRootContent::class);
+
                     return $page::getUrl();
                 })
                 ->authorize('create')
@@ -97,7 +98,7 @@ class Contents extends Cluster implements ClusterSection, HasTable
                 Tables\Actions\ViewAction::make()->iconButton(),
             ]);
     }
-    
+
     protected function getTableQuery(): ?Builder
     {
         return static::getContentResource()::getEloquentQuery()
@@ -133,7 +134,7 @@ class Contents extends Cluster implements ClusterSection, HasTable
 
     protected static function getContentResource(): string
     {
-        return  config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.resources.page', PageResource::class);
     }
 
     protected function configureTableAction(Action $action): void

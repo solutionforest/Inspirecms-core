@@ -17,7 +17,7 @@ trait CreateContentPageTrait
     use CanUseDatabaseTransactions;
     use HasUnsavedDataChangesAlert;
     use InteractsWithFormActions;
-    
+
     public ?Model $record = null;
 
     /**

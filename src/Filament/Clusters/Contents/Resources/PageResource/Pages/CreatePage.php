@@ -9,8 +9,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseCon
 
 class CreatePage extends BaseContentCreatePage
 {
-    use ContentPageTrait;
     use ConfigureContentResourcePageSubNavigation;
+    use ContentPageTrait;
 
     public static function getResource(): string
     {
@@ -23,7 +23,7 @@ class CreatePage extends BaseContentCreatePage
 
         $record = $this->getRecord();
 
-        if (!$record) {
+        if (! $record) {
             return $resource::getUrl('index');
         }
 
@@ -50,7 +50,7 @@ class CreatePage extends BaseContentCreatePage
                 $url = $resource::getUrl('view', ['record' => $ancestor]);
             } elseif ($resource::hasPage('edit') && $resource::canEdit($ancestor)) {
                 $url = $resource::getUrl('edit', ['record' => $ancestor]);
-            } 
+            }
 
             $parentTitle = $resource::getRecordTitle($ancestor) ?? $ancestor->getKey();
 
@@ -76,6 +76,7 @@ class CreatePage extends BaseContentCreatePage
         if ($parent = $this->getRecord()?->parent) {
             $title = static::getResource()::getRecordTitle($parent);
         }
+
         return $title;
     }
 }
