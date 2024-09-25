@@ -98,7 +98,7 @@ class TemplatesRelationManager extends RelationManager
 
         $action
             ->form(fn (Form $form): Form => $this->createForm($form->columns(2)))
-            ->slideOver();
+            ->createAnother(false);
     }
 
     protected function configureEditAction(Tables\Actions\EditAction $action): void
