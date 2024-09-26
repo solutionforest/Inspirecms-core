@@ -10,9 +10,9 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\BaseContentResource;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages\EditPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\BaseContentResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\EditPage;
 use SolutionForest\InspireCms\Models\Concerns\Publishable;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 

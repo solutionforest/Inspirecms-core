@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Pages;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -13,10 +13,10 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Js;
 use Livewire\WithPagination;
-use SolutionForest\InspireCms\Filament\Clusters\Contents;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CreateContentPageTrait;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CreateContentPageTrait;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use Throwable;
 
 use function Filament\Support\is_app_url;
@@ -39,7 +39,7 @@ class CreateRootContent extends Page implements HasPublishForm
 
     protected static bool $shouldRegisterNavigation = false;
 
-    protected static ?string $cluster = Contents::class;
+    protected static ?string $cluster = Content::class;
 
     public function mount(): void
     {

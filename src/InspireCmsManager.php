@@ -18,7 +18,7 @@ class InspireCmsManager
     public function __construct()
     {
         $this->sections = collect([
-            new ClusterSection('content', Clusters\Contents::class),
+            new ClusterSection('content', Clusters\Content::class),
             new ClusterSection('setting', Clusters\Settings::class),
             new ClusterSection('user', Clusters\Users::class),
         ]);

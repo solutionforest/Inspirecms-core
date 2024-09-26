@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Actions\EditAction;
@@ -14,9 +14,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ConfigureContentResourcePageSubNavigation;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentListPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentResourcePageSubNavigation;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
 
 class ListPages extends BaseContentListPage
 {

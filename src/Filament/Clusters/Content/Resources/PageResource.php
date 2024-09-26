@@ -1,12 +1,12 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
 use Filament\Navigation\NavigationItem;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Contents;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Content;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 
@@ -18,7 +18,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
 
     protected static ?string $recordTitleAttribute = 'title';
 
-    protected static ?string $cluster = Contents::class;
+    protected static ?string $cluster = Content::class;
 
     public static function getPermissionPrefixes(): array
     {

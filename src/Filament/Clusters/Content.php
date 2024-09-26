@@ -16,13 +16,13 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ConfigureContentsSubNavigation;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Pages\CreateRootContent;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentsSubNavigation;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Pages\CreateRootContent;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 
-class Contents extends Cluster implements ClusterSection, HasTable
+class Content extends Cluster implements ClusterSection, HasTable
 {
     use ClusterSectionTrait;
     use ConfigureContentsSubNavigation;
@@ -112,17 +112,17 @@ class Contents extends Cluster implements ClusterSection, HasTable
 
     public function getTitle(): string | Htmlable
     {
-        return __('inspirecms::inspirecms.contents');
+        return __('inspirecms::inspirecms.content');
     }
 
     public static function getNavigationLabel(): string
     {
-        return __('inspirecms::inspirecms.contents');
+        return __('inspirecms::inspirecms.content');
     }
 
     public static function getClusterBreadcrumb(): ?string
     {
-        return __('inspirecms::inspirecms.contents');
+        return __('inspirecms::inspirecms.content');
     }
 
     public static function getClusteredComponents(): array

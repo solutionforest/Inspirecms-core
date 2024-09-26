@@ -1,14 +1,14 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
 use Filament\Actions;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ConfigureContentResourcePageSubNavigation;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages\BaseContentViewPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentResourcePageSubNavigation;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
 
-class ViewPage extends BaseContentViewPage implements HasPublishForm
+class EditPage extends BaseContentEditPage implements HasPublishForm
 {
     use ConfigureContentResourcePageSubNavigation;
 

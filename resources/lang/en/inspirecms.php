@@ -6,7 +6,6 @@ return [
     'code' => 'Code',
     'children' => 'Children',
     'content' => 'Content',
-    'contents' => 'Contents',
     'create_xxx' => 'Create :name',
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',

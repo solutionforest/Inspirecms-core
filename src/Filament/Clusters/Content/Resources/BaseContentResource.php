@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -16,7 +16,7 @@ use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -351,9 +351,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         $select = Forms\Components\Select::make('document_type_id')
             ->label(__('inspirecms::inspirecms.document_type'))
             ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
-            ->searchable(['id'])
             ->preload()
-            ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query) {
+            ->searchable(['slug'])
+            ->relationship(name: 'documentType', titleAttribute: 'title', modifyQueryUsing: function ($query) {
                 $query->where('is_web_page', true);
             })
             ->required();

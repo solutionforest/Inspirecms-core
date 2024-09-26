@@ -8,7 +8,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentsRelationManager extends RelationManager

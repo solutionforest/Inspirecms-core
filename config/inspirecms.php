@@ -1,6 +1,6 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
@@ -45,7 +45,7 @@ return [
     ],
 
     'pages' => [
-        'create_root_content' => \SolutionForest\InspireCms\Filament\Clusters\Contents\Pages\CreateRootContent::class,
+        'create_root_content' => \SolutionForest\InspireCms\Filament\Clusters\Content\Pages\CreateRootContent::class,
     ],
 
     'models' => [

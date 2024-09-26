@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
 use Filament\Notifications\Notification;
@@ -9,8 +9,8 @@ use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\CanBePublish;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
 abstract class BaseContentViewPage extends BaseViewPage implements HasPublishForm
 {

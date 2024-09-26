@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 

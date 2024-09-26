@@ -1,13 +1,13 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\Pages;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns\ContentPageTrait;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 
 abstract class BaseContentListPage extends ListRecords
 {

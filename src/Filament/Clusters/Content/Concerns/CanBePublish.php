@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
@@ -9,7 +9,7 @@ use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\BaseContentResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\BaseContentResource;
 use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
 use Throwable;
 

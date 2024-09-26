@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Clusters\Contents\Concerns;
+namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
@@ -10,7 +10,7 @@ use Filament\Pages\Concerns\HasUnsavedDataChangesAlert;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Contents\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 
 trait CreateContentPageTrait
 {
