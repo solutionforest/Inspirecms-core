@@ -57,7 +57,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
+                            static::getIsWebPageFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -77,7 +77,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $form
             ->schema([
                 static::getNameFormComponent()->inlineLabel(),
-                static::getIsElementTypeFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
+                static::getIsWebPageFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
             ]);
     }
 
@@ -94,10 +94,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name'))
                     ->sortable(),
-                // Temp hide for current version
-                // Tables\Columns\IconColumn::make('is_element_type')
-                //     ->label(__('inspirecms::inspirecms.is_element_type'))
-                //     ->boolean(),
+                Tables\Columns\IconColumn::make('is_web_page')
+                    ->label(__('inspirecms::inspirecms.is_web_page'))
+                    ->boolean(),
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
@@ -253,12 +252,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getIsElementTypeFormComponent()
+    protected static function getIsWebPageFormComponent()
     {
-        return Forms\Components\Toggle::make('is_element_type')
-            ->label(__('inspirecms::inspirecms.is_element_type'))
+        return Forms\Components\Toggle::make('is_web_page')
+            ->label(__('inspirecms::inspirecms.is_web_page'))
             ->inlineLabel()
-            ->default(false)
+            ->default(true)
             ->live();
     }
 

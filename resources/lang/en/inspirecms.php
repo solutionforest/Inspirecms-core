@@ -26,7 +26,7 @@ return [
     'is_default' => 'Default',
     'is_published' => 'Is published',
     'is_root_level' => 'Is root',
-    'is_element_type' => 'Is element type',
+    'is_web_page' => 'Is web page',
     'last_lockouted_at' => 'Last lockouted at',
     'last_logged_in_at' => 'Last logged in at',
     'last_published_at' => 'Last published at',

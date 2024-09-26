@@ -356,7 +356,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->searchable(['id'])
             ->preload()
             ->relationship(name: 'documentType', titleAttribute: 'name', modifyQueryUsing: function ($query) {
-                $query->where('is_element_type', false);
+                $query->where('is_web_page', true);
             })
             ->required();
 

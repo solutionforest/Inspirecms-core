@@ -38,7 +38,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->whereHas('documentType', fn ($q) => $q->where('is_element_type', false));
+            ->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
     }
 
     /**

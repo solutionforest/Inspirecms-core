@@ -31,7 +31,7 @@ return new class extends BaseMigration
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->boolean('is_element_type')->default(false);
+            $table->boolean('is_web_page')->default(true);
 
             $table->timestamps();
 

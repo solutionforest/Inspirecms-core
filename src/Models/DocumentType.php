@@ -16,7 +16,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     protected $guarded = ['id'];
 
     protected $casts = [
-        'is_element_type' => 'boolean',
+        'is_web_page' => 'boolean',
     ];
 
     public function fieldGroups(): MorphToMany
