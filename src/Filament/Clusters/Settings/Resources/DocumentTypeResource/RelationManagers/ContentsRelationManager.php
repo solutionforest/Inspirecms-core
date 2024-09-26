@@ -18,9 +18,15 @@ class ContentsRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn ($query) => $query->with('parent'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title')),
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::inspirecms.slug'))
+                    ->badge(),
+                Tables\Columns\TextColumn::make('parent.title')
+                    ->label(__('inspirecms::inspirecms.parent')),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->actions([
