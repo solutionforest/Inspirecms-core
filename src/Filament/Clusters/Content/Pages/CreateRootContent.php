@@ -33,7 +33,7 @@ class CreateRootContent extends Page implements HasPublishForm
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.clusters.contents.create';
+    protected static string $view = 'inspirecms::filament.clusters.content.create';
 
     protected static ?string $slug = 'create';
 

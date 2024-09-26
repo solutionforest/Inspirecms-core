@@ -35,7 +35,7 @@ class Content extends Cluster implements ClusterSection, HasTable
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.clusters.contents.index';
+    protected static string $view = 'inspirecms::filament.clusters.content.index';
 
     public function mount(): void
     {
