@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
-abstract class BaseContentViewPage extends BaseViewPage implements HasPublishForm, ContentForm
+abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasPublishForm
 {
     use CanBePublish;
     use HasPreviewModal;

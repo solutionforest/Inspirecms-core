@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 
 class BelongsToParentSelect extends Select
 {
-    protected int|string $rootParentId = 0;
+    protected int | string $rootParentId = 0;
 
     public function nestableParentRelationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, bool $ignoreRecord = false, ?string $emptyStateLabel = null): static
     {
@@ -60,7 +60,7 @@ class BelongsToParentSelect extends Select
         return $this;
     }
 
-    public function rootParentId(int|string $rootParentId): static
+    public function rootParentId(int | string $rootParentId): static
     {
         $this->rootParentId = $rootParentId;
 

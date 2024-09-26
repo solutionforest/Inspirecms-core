@@ -69,7 +69,7 @@ class ViewPage extends BaseContentViewPage implements HasPublishForm
             ->successRedirectUrl($url);
     }
 
-    public function getDocumentType(): int|string|Model
+    public function getDocumentType(): int | string | Model
     {
         return $this->getRecord()->documentType;
     }

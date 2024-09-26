@@ -7,17 +7,17 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
-
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
-abstract class BaseContentEditPage extends BaseEditPage implements HasPublishForm, ContentForm
+use function Filament\Support\is_app_url;
+
+abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasPublishForm
 {
     use CanBePublish;
     use HasPreviewModal;

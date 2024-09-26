@@ -20,7 +20,6 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
-use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
@@ -356,6 +355,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $documentType = $livewire->getDocumentType();
                     $documentTypeId = $documentType instanceof Model ? $documentType->getKey() : $documentType;
                 }
+
                 return $documentTypeId;
             });
     }
@@ -375,7 +375,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getPropertyDataValueComponent()
     {
         $getFieldGroupsFromDocumentType = function (int | string | Model | null $documentType) {
-            
+
             if ($documentType instanceof Model) {
 
             } elseif (is_null($documentType)) {
@@ -394,13 +394,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
             return $documentType->fieldGroups ?? collect();
         };
+
         return Forms\Components\Group::make()
             ->key('propertyData')
             ->statePath('propertyData')
             ->columnSpanFull()
             ->dehydrated(false)
             ->schema(function (ContentForm $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
-                $fieldGroups = $record 
+                $fieldGroups = $record
                     ? $record->documentType->fieldGroups
                     : $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
                 $groupComponents = [];

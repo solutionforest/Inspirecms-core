@@ -28,8 +28,8 @@ class CreateContentAction extends BaseCreateContentAction
         $contentResource = config('inspirecms.resources.page', PageResource::class);
         $contentModel = $contentResource::getModel();
 
-        $documentTypeActions = $documentTypes->map(fn ($documentType) =>
-            Action::make('create_content_' . $documentType->slug)
+        $documentTypeActions = $documentTypes->map(
+            fn ($documentType) => Action::make('create_content_' . $documentType->slug)
                 ->label($documentType->title)
                 ->url(function () use ($documentType, $contentResource) {
                     try {
@@ -48,10 +48,11 @@ class CreateContentAction extends BaseCreateContentAction
                     } catch (\Throwable $th) {
                         //
                     }
+
                     return null;
                 })
                 ->model($contentModel)
-                ->hidden(fn (Action $action) => !$contentResource::can('create') && !blank($action->getUrl()))
+                ->hidden(fn (Action $action) => ! $contentResource::can('create') && ! blank($action->getUrl()))
         )->toArray();
 
         $this->actions($documentTypeActions);

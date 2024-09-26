@@ -18,7 +18,7 @@ class CreatePage extends BaseContentCreatePage
 {
     use ConfigureContentResourcePageSubNavigation;
     use ContentPageTrait;
-    
+
     #[Url]
     public $documentType = null;
 
@@ -114,7 +114,7 @@ class CreatePage extends BaseContentCreatePage
         return $title;
     }
 
-    public function getDocumentType(): int|Model|string
+    public function getDocumentType(): int | Model | string
     {
         return $this->documentTypeRecord ?? $this->documentType;
     }

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters;
 
-use Filament\Actions\CreateAction;
 use Filament\Clusters\Cluster;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Concerns\HasTabs;
@@ -18,11 +17,9 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentsSubNavigation;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Pages\CreateRootContent;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class Content extends Cluster implements ClusterSection, HasTable
 {

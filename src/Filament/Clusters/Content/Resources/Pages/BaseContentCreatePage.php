@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
-abstract class BaseContentCreatePage extends BaseCreatePage implements HasPublishForm, ContentForm
+abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasPublishForm
 {
     use CanBePublish;
     use ContentPageTrait;

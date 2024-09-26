@@ -32,18 +32,18 @@ class BaseCreateContentAction extends Action implements HasLivewire
     }
     use CanBeLabeledFrom;
     use CanBeOutlined;
-    use HasDropdown;
-    use HasGroupedIcon;
-    use HasLabel;
-    use HasSize;
-    use HasTooltip;
     use HasBadge;
     use HasColor;
+    use HasDropdown;
     use HasExtraAttributes;
+    use HasGroupedIcon;
     use HasIcon {
         getIcon as getBaseIcon;
     }
+    use HasLabel;
     use HasName;
+    use HasSize;
+    use HasTooltip;
 
     // protected ?BaseCreateContentAction $group = null;
 
