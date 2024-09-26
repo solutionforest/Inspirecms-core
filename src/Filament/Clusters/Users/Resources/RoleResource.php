@@ -146,7 +146,7 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->with('permissions')
             ->where('guard_name', InspireCmsConfig::getGuardName());
     }
-    
+
     //region Global search
     public static function canGloballySearch(): bool
     {

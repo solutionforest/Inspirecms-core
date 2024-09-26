@@ -49,7 +49,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     {
         return ['id', 'slug'];
     }
-    
+
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return new HtmlString(Blade::render(<<<'blade'

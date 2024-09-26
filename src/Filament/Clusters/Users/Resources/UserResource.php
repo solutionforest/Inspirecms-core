@@ -11,7 +11,6 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
@@ -114,7 +113,7 @@ class UserResource extends Resource implements ClusterSectionResource
     {
         return ['id', 'email'];
     }
-    
+
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return new HtmlString(<<<Html
