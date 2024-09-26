@@ -85,7 +85,7 @@ class ContentPolicy extends BasePolicy
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
     }
-    
+
     /**
      * @param  Authenticatable|User|Model  $user
      * @param  Content|Model  $content
@@ -95,7 +95,7 @@ class ContentPolicy extends BasePolicy
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
     }
-    
+
     /**
      * @param  Authenticatable|User|Model  $user
      * @return bool

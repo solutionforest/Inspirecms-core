@@ -288,7 +288,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         }
 
                         return $url;
-                        
+
                     }, true),
             ])
             ->inlineLabel();

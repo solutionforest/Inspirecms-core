@@ -33,7 +33,7 @@ class CreateContentAction extends BaseCreateContentAction
             fn ($documentType) => Action::make('create_content_' . $documentType->slug)
                 ->label($documentType->title)
                 ->url(function () use ($documentType, $contentResource) {
-                    
+
                     $parameters = ['documentType' => $documentType];
 
                     if ($this->modifyUrlParameterUsing) {

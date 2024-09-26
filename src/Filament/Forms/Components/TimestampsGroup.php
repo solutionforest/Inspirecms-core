@@ -30,7 +30,7 @@ class TimestampsGroup extends Group
                         ->content(fn (?Model $record) => $record?->updated_at)
                         ->label(__('inspirecms::inspirecms.last_updated_at'))
                         ->inlineLabel(),
-                        
+
                     Placeholder::make('deleted_at')
                         ->content(function (?Model $record) {
                             if (! $record) {
@@ -46,6 +46,7 @@ class TimestampsGroup extends Group
                                 trueIcon: 'heroicon-o-trash',
                                 trueColor: 'danger',
                             );
+
                             return new HtmlString(Blade::render(<<<'blade'
                                 <span 
                                     class="text-custom-500 dark:text-custom-400"
@@ -55,7 +56,7 @@ class TimestampsGroup extends Group
                                 </span>
                                 <span>{{ $iconHtml }}</span>
                             blade, [
-                                'dt' => $dt, 
+                                'dt' => $dt,
                                 'iconHtml' => $iconHtml,
                                 'textStyle' => \Filament\Support\get_color_css_variables(
                                     'danger',
@@ -66,9 +67,9 @@ class TimestampsGroup extends Group
                         ->visible(function (?Model $record) {
 
                             if (! $record) {
-                                 return null;
+                                return null;
                             }
-                            
+
                             $traits = class_uses_recursive($record);
 
                             if (! in_array(SoftDeletes::class, $traits)) {

@@ -42,7 +42,7 @@ class BaseContentChildrenRelationManager extends RelationManager
         parent::configureCreateAction($action);
 
         $resource = $this->getPageClass()::getResource();
-        
+
         $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
 
         $url = FilamentResourceHelper::attemptToGetUrl($resource, ['create'], $parameters, false);

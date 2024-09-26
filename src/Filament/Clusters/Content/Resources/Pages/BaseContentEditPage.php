@@ -50,6 +50,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         if ($this->getRecord()->trashed()) {
             return [];
         }
+
         return [
             $this->getPublishFormAction('edit', $this->getRecord()),
             $this->getSaveFormAction(),

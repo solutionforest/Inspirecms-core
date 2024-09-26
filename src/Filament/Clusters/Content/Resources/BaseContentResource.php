@@ -11,8 +11,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
@@ -221,9 +219,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'documentType', // For template use
             'parent', // To get parent title
         ])
-        ->withoutGlobalScopes([
-            SoftDeletingScope::class,
-        ]);;
+            ->withoutGlobalScopes([
+                SoftDeletingScope::class,
+            ]);
     }
 
     //region Form field(s)/component(s)

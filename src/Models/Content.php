@@ -44,6 +44,7 @@ class Content extends BaseModel implements ContentContract
             $slugs[] = $ancestor->slug;
         }
         $slugs[] = $this->slug;
+
         return implode('/', $slugs);
     }
 
