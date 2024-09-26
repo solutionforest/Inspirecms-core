@@ -87,6 +87,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return parent::table($table)
+            ->reorderable(false)
             ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
             ->emptyStateActions([])
             ->columns([
