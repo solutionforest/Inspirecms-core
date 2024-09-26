@@ -16,11 +16,13 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentsSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Pages\CreateRootContent;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class Content extends Cluster implements ClusterSection, HasTable
 {
@@ -60,14 +62,7 @@ class Content extends Cluster implements ClusterSection, HasTable
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()
-                ->url(function () {
-                    $page = config('inspirecms.pages.create_root_content', CreateRootContent::class);
-
-                    return $page::getUrl();
-                })
-                ->authorize('create')
-                ->model($this->getModel()),
+            CreateContentAction::make(),
         ];
     }
 

@@ -11,10 +11,10 @@ return new class extends BaseMigration
         $tableNames = $this->getTableNames();
 
         Schema::create($tableNames['content'], function (Blueprint $table) {
-            $table->string('id')->primary();
+            $table->uuid('id')->primary();
 
             $table->integer('document_type_id');
-            $table->integer('parent_id')->default(0)->comment('Parent\'s content, 0 = Root.');
+            $table->uuid('parent_id')->comment('Parent\'s content.');
             $table->string('title');
             $table->string('slug');
             $table->timestamp('published_at')->nullable();

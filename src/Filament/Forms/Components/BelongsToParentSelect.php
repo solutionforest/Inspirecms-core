@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 
 class BelongsToParentSelect extends Select
 {
-    protected $rootParentId = 0;
+    protected int|string $rootParentId = 0;
 
     public function nestableParentRelationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, bool $ignoreRecord = false, ?string $emptyStateLabel = null): static
     {
@@ -37,7 +37,7 @@ class BelongsToParentSelect extends Select
 
         $this->loadStateFromRelationshipsUsing(static function (BelongsToParentSelect $component, $state) use ($baseLoadStateFromRelationshipsUsing): void {
             if (filled($state)) {
-                if ($state == 0 && $state == $component->getRootParentId()) {
+                if ($state == 0 || $state == $component->getRootParentId()) {
                     // If no parent ID == "0" (root level)
                     $component->state(null);
                 }
@@ -56,6 +56,13 @@ class BelongsToParentSelect extends Select
 
             return $state;
         });
+
+        return $this;
+    }
+
+    public function rootParentId(int|string $rootParentId): static
+    {
+        $this->rootParentId = $rootParentId;
 
         return $this;
     }

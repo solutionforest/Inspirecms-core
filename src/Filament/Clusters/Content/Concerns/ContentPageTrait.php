@@ -37,4 +37,14 @@ trait ContentPageTrait
 
         return $record;
     }
+
+    public function getParent(): string | int | Model | null
+    {
+        return $this->parentRecord ?? $this->parent;
+    }
+
+    public function getParentKey(): string | int | null
+    {
+        return $this->parentRecord?->getKey() ?? $this->parent;
+    }
 }

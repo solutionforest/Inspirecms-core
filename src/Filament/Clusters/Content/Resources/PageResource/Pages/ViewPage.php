@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
 use Filament\Actions;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentResourcePageSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
@@ -66,5 +67,20 @@ class ViewPage extends BaseContentViewPage implements HasPublishForm
 
         $action
             ->successRedirectUrl($url);
+    }
+
+    public function getDocumentType(): int|string|Model
+    {
+        return $this->getRecord()->documentType;
+    }
+
+    public function getParent(): string | int | Model | null
+    {
+        return $this->getRecord()->parent;
+    }
+
+    public function getParentKey(): string | int | null
+    {
+        return $this->getRecord()->parent_id;
     }
 }

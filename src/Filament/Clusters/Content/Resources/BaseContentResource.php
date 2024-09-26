@@ -6,7 +6,6 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,10 +13,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
@@ -25,8 +23,9 @@ use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\PropertyDataGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
-use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
-use SolutionForest\InspireCms\Models\Contracts\PropertyData as CmsPropertyData;
+use SolutionForest\InspireCms\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
+use SolutionForest\InspireCms\Models\Contracts\PropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 abstract class BaseContentResource extends Resource implements ClusterSectionResource
@@ -61,8 +60,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->columns(1)
                             ->schema([
                                 static::getSlugFormComponent(),
-                                static::getParentPageFormComponent(),
                                 static::getTemplateFormComponent(),
+                                static::getParentPageFormComponent(),
+                                static::getDocumentTypeFormComponent(),
                             ]),
                         Forms\Components\Group::make()
                             ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
@@ -79,18 +79,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                             Forms\Components\Section::make()
                                 ->columnSpanFull()
+                                ->columns(1)
                                 ->schema([
-                                    Forms\Components\Grid::make(2)
-                                        ->columnSpanFull()
-                                        ->schema([
-                                            static::getTitleFormComponent(),
-                                        ]),
-                                    Forms\Components\Grid::make(['default' => 4])
-                                        ->columnSpanFull()
-                                        ->schema([
-
-                                            static::documentTypeSelectComponent()->columnSpan(3),
-                                        ]),
+                                    static::getTitleFormComponent(),
                                 ]),
 
                             // Field group grouped component
@@ -145,7 +136,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                         Tables\Columns\IconColumn::make('is_published')
                             ->label(__('inspirecms::inspirecms.is_published'))
-                            ->getStateUsing(fn (Model | CmsContent $record) => $record->isPublished())  // Already include private
+                            ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())  // Already include private
                             ->boolean()
                             ->width('2%')
                             ->trueIcon('heroicon-m-eye')
@@ -230,7 +221,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return parent::getEloquentQuery()->with([
             'propertyDatas', // To get latest version
-            'documentType', // Determine the page "Is Root Level"
+            'documentType', // For template use
             'parent', // To get parent title
         ]);
     }
@@ -290,9 +281,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
      */
     protected static function getParentPageFormComponent()
     {
+        $fallbackParentId = KeyHelper::generateMinUuid();
+
         return BelongsToParentSelect::make('parent_id')
             ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))]))
-            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))])))
             ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
             ->searchable(['title', 'slug'])
             ->preload()
@@ -303,12 +295,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 return $operation === 'create';
             })
             ->dehydratedWhenHidden(true)
-            ->dehydrateStateUsing(function ($livewire, $operation, $record) {
+            ->rootParentId($fallbackParentId)
+            ->dehydrateStateUsing(function (ContentForm $livewire, $operation, $record) use ($fallbackParentId) {
                 if ($operation === 'create') {
-                    return $livewire->parent ?? 0;
+                    return $livewire->getParentKey() ?? $fallbackParentId;
                 }
 
-                return $record?->parent_id ?? 0;
+                return $record?->parent_id ?? $fallbackParentId;
             });
     }
 
@@ -319,21 +312,28 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\Select::make('template_id')
             ->label(__('inspirecms::inspirecms.template'))
-            ->options(function (Forms\Get $get) {
-                $documentType = InspireCmsConfig::getDocumentTypeModelClass()::with(['templates'])->find($get('document_type_id'));
+            ->options(function (ContentForm $livewire) {
+                $documentType = $livewire->getDocumentType();
+                if (! $documentType instanceof Model) {
+                    $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
+                        ->with(['templates'])
+                        ->find($documentType);
+                } else {
+                    $documentType->loadMissing('templates');
+                }
                 if (! $documentType) {
                     return [];
                 }
 
                 return collect($documentType->templates)
                     ->mapWithKeys(function ($template) {
-                        return [$template->getKey() => $template->name];
+                        return [$template->getKey() => $template->slug];
                     })
                     ->all();
             })
             ->searchable()
             ->dehydrated(false)
-            ->saveRelationshipsUsing(function (CmsContent $record, $state) {
+            ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
                 if ($state) {
                     $record->templates()->sync($state);
                     $record->setAsDefaultTemplate($state);
@@ -346,58 +346,27 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     /**
      * @return Forms\Components\Field | Forms\Components\Select
      */
+    protected static function getDocumentTypeFormComponent()
+    {
+        return Forms\Components\Hidden::make('document_type_id')
+            ->dehydratedWhenHidden()
+            ->dehydrateStateUsing(function (ContentForm $livewire, $record) {
+                $documentTypeId = $record?->document_type_id ?? null;
+                if (! $documentTypeId) {
+                    $documentType = $livewire->getDocumentType();
+                    $documentTypeId = $documentType instanceof Model ? $documentType->getKey() : $documentType;
+                }
+                return $documentTypeId;
+            });
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Select
+     */
     protected static function documentTypeSelectComponent()
     {
-        $select = Forms\Components\Select::make('document_type_id')
-            ->label(__('inspirecms::inspirecms.document_type'))
-            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.document_type')))
-            ->preload()
-            ->searchable(['slug'])
-            ->relationship(name: 'documentType', titleAttribute: 'title', modifyQueryUsing: function ($query) {
-                $query->where('is_web_page', true);
-            })
-            ->required();
-
-        // Load field group from document type
-        $select
-            ->live(debounce: 300)
-            ->afterStateUpdated(fn ($component) => $component
-                ->getContainer()                        // this field container
-                ->getParentComponent()                  // tab
-                ->getContainer()                        // tab's container
-                ->getParentComponent()                  // tabs
-                ->getContainer()                        // tabs's container
-                ->getComponent('propertyData')          // find component by unique key in same level with section's container
-                ->getChildComponentContainer()          // a container of "dynamicFieldGroups" fi-component
-                ->fill())
-            ->disabledOn('edit')
-            ->suffixAction(function ($state) {
-                if (! $state) {
-                    return null;
-                }
-
-                try {
-
-                    $url = null;
-
-                    foreach (['view', 'edit'] as $action) {
-
-                        if (filled($url)) {
-                            continue;
-                        }
-
-                        $url = config('inspirecms.resources.document_type', DocumentTypeResource::class)::getUrl('edit', ['record' => $state]);
-                    }
-                } catch (\Throwable $th) {
-                    return null;
-                }
-
-                return Forms\Components\Actions\Action::make('goTo')
-                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
-                    ->url($url);
-            });
-
-        return $select;
+        return Forms\Components\Hidden::make('document_type_id')
+            ->dehydratedWhenHidden();
     }
 
     /**
@@ -405,19 +374,54 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
      */
     protected static function getPropertyDataValueComponent()
     {
-        return PropertyDataGroup::make()
+        $getFieldGroupsFromDocumentType = function (int | string | Model | null $documentType) {
+            
+            if ($documentType instanceof Model) {
+
+            } elseif (is_null($documentType)) {
+                return collect();
+            } else {
+
+                $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
+                    ->with(['fieldGroups'])
+                    ->whereHas('fieldGroups')
+                    ->find($documentType);
+
+                if (! $documentType) {
+                    return collect();
+                }
+            }
+
+            return $documentType->fieldGroups ?? collect();
+        };
+        return Forms\Components\Group::make()
+            ->key('propertyData')
             ->statePath('propertyData')
             ->columnSpanFull()
             ->dehydrated(false)
-            ->loadStateFromRelationshipsUsing(function (Model | CmsContent $record, $component) {
+            ->schema(function (ContentForm $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
+                $fieldGroups = $record 
+                    ? $record->documentType->fieldGroups
+                    : $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
+                $groupComponents = [];
+
+                foreach ($fieldGroups as $fieldGroupModel) {
+
+                    $groupComponents[] = $fieldGroupModel->toFilamentComponent();
+                }
+
+                return $groupComponents;
+            })
+            ->dehydrateStateUsing(fn ($component) => $component->getState())
+            ->loadStateFromRelationshipsUsing(function (Model | ModelsContent $record, $component) {
                 $state = $record->getLatestPropertyData()?->property_value ?? [];
                 $component->state($state);
             })
-            ->saveRelationshipsUsing(function (Model | CmsContent $record, PropertyDataGroup $component) {
+            ->saveRelationshipsUsing(function (Model | ModelsContent $record, Forms\Components\Group $component) {
 
                 $state = $component->getState();
 
-                /** @var null|Model|CmsPropertyData */
+                /** @var null|Model|PropertyData */
                 $latestPropertyData = $record->getLatestPropertyData();
 
                 $latestPropertyDataIsDirty = true;
@@ -473,7 +477,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getLatestPublishedAtFormComponent()
     {
         return Forms\Components\Placeholder::make('last_published_at')
-            ->content(fn (Model | CmsContent | null $record) => $record?->getLatestPublishedPropertyData()?->published_at)
+            ->content(fn (Model | ModelsContent | null $record) => $record?->getLatestPublishedPropertyData()?->published_at)
             ->label(__('inspirecms::inspirecms.last_published_at'))
             ->inlineLabel();
     }
@@ -484,7 +488,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayPublishedAtFormComponent()
     {
         return Forms\Components\Placeholder::make('display_published_at')
-            ->content(fn (Model | CmsContent | null $record) => $record?->published_at)
+            ->content(fn (Model | ModelsContent | null $record) => $record?->published_at)
             ->label(__('inspirecms::inspirecms.publish_at'))
             ->inlineLabel();
     }
@@ -498,7 +502,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->label(__('inspirecms::inspirecms.is_published'))
             ->inlineLabel()
             ->extraAttributes(['class' => 'flex align-items-center h-full'])
-            ->content(function (Model | CmsContent | null $record) {
+            ->content(function (Model | ModelsContent | null $record) {
                 if (is_null($record)) {
                     return null;
                 }

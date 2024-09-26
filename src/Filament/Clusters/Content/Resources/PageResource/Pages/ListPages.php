@@ -14,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
+use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentResourcePageSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
@@ -25,7 +26,10 @@ class ListPages extends BaseContentListPage
     public function getActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateContentAction::make()
+                ->modifyUrlParameterUsing(function (array $parameters) {
+                    return array_merge($parameters, ['parent' => $this->getParentKey()]);
+                }),
         ];
     }
 

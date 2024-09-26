@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -94,6 +95,18 @@ class Content extends BaseModel implements ContentContract
         ];
     }
 
+    public static function boot()
+    {
+        parent::boot();
+
+        static::creating(function (self $model) {
+            if (blank($model->{$model->getNestableParentIdColumn()})) {
+                $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
+            }
+        });
+    }
+
+    //region Scope(s)
     /**
      * Determine if this content is already published.
      */
@@ -137,6 +150,7 @@ class Content extends BaseModel implements ContentContract
     }
     //endregion Attribute(s)
 
+    //region Nestable
     protected function getParentId()
     {
         return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
@@ -146,4 +160,15 @@ class Content extends BaseModel implements ContentContract
     {
         return 'parent_id';
     }
+
+    protected function fallbackParentId()
+    {
+        return KeyHelper::generateMinUuid();
+    }
+
+    protected function getNestableRootValue()
+    {
+        return $this->fallbackParentId();
+    }
+    //endregion Nestable
 }

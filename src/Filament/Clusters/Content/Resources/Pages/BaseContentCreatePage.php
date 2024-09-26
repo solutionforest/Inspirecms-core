@@ -6,9 +6,10 @@ use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
-abstract class BaseContentCreatePage extends BaseCreatePage implements HasPublishForm
+abstract class BaseContentCreatePage extends BaseCreatePage implements HasPublishForm, ContentForm
 {
     use CanBePublish;
     use ContentPageTrait;

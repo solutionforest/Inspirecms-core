@@ -10,9 +10,10 @@ use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 
-abstract class BaseContentViewPage extends BaseViewPage implements HasPublishForm
+abstract class BaseContentViewPage extends BaseViewPage implements HasPublishForm, ContentForm
 {
     use CanBePublish;
     use HasPreviewModal;

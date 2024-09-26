@@ -32,6 +32,12 @@ return [
         ],
     ],
 
+    'create_content' => [
+
+        'label' => 'Create content',
+
+    ],
+
     'open' => [
 
         'label' => 'Open',
