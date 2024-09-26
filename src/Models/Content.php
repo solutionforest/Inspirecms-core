@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
@@ -19,6 +20,7 @@ class Content extends BaseModel implements ContentContract
     use Concerns\NestableTrait;
     use Concerns\Publishable;
     use HasUuids;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -36,8 +38,13 @@ class Content extends BaseModel implements ContentContract
      */
     public function generateFullSlug(): string
     {
-        // todo
-        return '';
+        $ancestors = $this->ancestors();
+        $slugs = [];
+        foreach ($ancestors as $ancestor) {
+            $slugs[] = $ancestor->slug;
+        }
+        $slugs[] = $this->slug;
+        return implode('/', $slugs);
     }
 
     public function isPublished(?\Closure $callback = null): bool

@@ -9,6 +9,7 @@ return [
     'create_xxx' => 'Create :name',
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
+    'deleted_at' => 'Deleted at',
     'details' => 'Details',
     'document_type' => 'Document Type',
     'email_confirmed_at' => 'Email confirmed at',

@@ -24,6 +24,8 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         return [
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon('heroicon-o-eye'),
             Actions\DeleteAction::make(),
+            Actions\RestoreAction::make(),
+            Actions\ForceDeleteAction::make(),
         ];
     }
 

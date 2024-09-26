@@ -8,6 +8,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureConten
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 class EditPage extends BaseContentEditPage implements HasPublishForm
 {
@@ -33,14 +34,9 @@ class EditPage extends BaseContentEditPage implements HasPublishForm
         }
 
         if ($record->exists && $resource::hasRecordTitle()) {
-            if ($resource::hasPage('view') && $resource::canView($record)) {
-                $breadcrumbs[
-                    $resource::getUrl('view', ['record' => $record])
-                ] = $this->getRecordTitle();
-            } elseif ($resource::hasPage('edit') && $resource::canEdit($record)) {
-                $breadcrumbs[
-                    $resource::getUrl('edit', ['record' => $record])
-                ] = $this->getRecordTitle();
+            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], ['record' => $record], true);
+            if ($url) {
+                $breadcrumbs[$url] = $this->getRecordTitle();
             } else {
                 $breadcrumbs[] = $this->getRecordTitle();
             }

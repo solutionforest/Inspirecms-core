@@ -25,6 +25,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as CmsDocumentType;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -273,8 +274,11 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                         $itemData = $component->getItemState($arguments['item']);
 
+                        $url = FilamentResourceHelper::attemptToGetUrl($fieldGroupResource, ['edit'], [
+                            'record' => $itemData['field_group_id'],
+                        ], false);
                         if (! (
-                            $fieldGroupResource::hasPage('edit') ||
+                            filled($url) ||
                             is_array($itemData) ||
                             isset($itemData['field_group_id'])
                         )
@@ -283,17 +287,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                             return null;
                         }
 
-                        try {
-
-                            return $fieldGroupResource::getUrl('edit', [
-                                'record' => $itemData['field_group_id'],
-                            ]);
-
-                        } catch (\Throwable $e) {
-
-                            return null;
-
-                        }
+                        return $url;
+                        
                     }, true),
             ])
             ->inlineLabel();

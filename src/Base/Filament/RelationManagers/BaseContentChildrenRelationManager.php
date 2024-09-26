@@ -7,6 +7,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 class BaseContentChildrenRelationManager extends RelationManager
 {
@@ -41,13 +42,13 @@ class BaseContentChildrenRelationManager extends RelationManager
         parent::configureCreateAction($action);
 
         $resource = $this->getPageClass()::getResource();
+        
+        $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
 
-        if ($resource::hasPage('create-children')) {
-            try {
-                $action->url($resource::getUrl('create', ['parent' => $this->getOwnerRecord()->getKey()]));
-            } catch (\Exception $e) {
-                // Do nothing
-            }
+        $url = FilamentResourceHelper::attemptToGetUrl($resource, ['create'], $parameters, false);
+
+        if ($url) {
+            $action->url($url);
         }
 
         $action

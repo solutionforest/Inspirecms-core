@@ -21,6 +21,7 @@ return new class extends BaseMigration
             $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
 
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index('document_type_id');
             $table->index('title');

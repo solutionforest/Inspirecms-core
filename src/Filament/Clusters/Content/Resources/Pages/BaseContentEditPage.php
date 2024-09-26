@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 use function Filament\Support\is_app_url;
 
@@ -23,16 +24,32 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     use HasPreviewModal;
     use WithPagination;
 
+    public function booted(): void
+    {
+        // Guard 1 for trashed record, If the record is trashed, redirect to the view/index page
+        if ($this->getRecord()->trashed()) {
+            $redirectUrl = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['view'], ['record' => $this->getRecord()], true)
+                ?? static::getResource()::getUrl('index');
+            $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon('heroicon-o-eye'),
             Actions\DeleteAction::make(),
+            Actions\RestoreAction::make(),
+            Actions\ForceDeleteAction::make(),
         ];
     }
 
     protected function getFormActions(): array
     {
+        // Guard 2 for trashed record, If the record is trashed, don't show the form actions
+        if ($this->getRecord()->trashed()) {
+            return [];
+        }
         return [
             $this->getPublishFormAction('edit', $this->getRecord()),
             $this->getSaveFormAction(),

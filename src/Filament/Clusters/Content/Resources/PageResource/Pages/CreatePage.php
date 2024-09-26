@@ -10,6 +10,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureConten
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 use function Filament\Support\is_app_url;
@@ -79,12 +80,8 @@ class CreatePage extends BaseContentCreatePage
         $breadcrumbs = [];
 
         foreach ($parent?->ancestors() ?? [] as $ancestor) {
-            $url = null;
-            if ($resource::hasPage('view') && $resource::canView($ancestor)) {
-                $url = $resource::getUrl('view', ['record' => $ancestor]);
-            } elseif ($resource::hasPage('edit') && $resource::canEdit($ancestor)) {
-                $url = $resource::getUrl('edit', ['record' => $ancestor]);
-            }
+            $parameters = ['record' => $ancestor];
+            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], $parameters, true);
 
             $parentTitle = $resource::getRecordTitle($ancestor) ?? $ancestor->getKey();
 

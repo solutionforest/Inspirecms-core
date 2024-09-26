@@ -60,6 +60,53 @@ class ContentPolicy extends BasePolicy
 
     /**
      * @param  Authenticatable|User|Model  $user
+     * @return bool
+     */
+    public function deleteAny($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @param  Content|Model  $content
+     * @return bool
+     */
+    public function forceDelete($user, Content $content)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @return bool
+     */
+    public function forceDeleteAny($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+    
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @param  Content|Model  $content
+     * @return bool
+     */
+    public function restore($user, Content $content)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+    
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @return bool
+     */
+    public function restoreAny($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $user
      * @param  null|Content|Model  $content
      * @return bool
      */

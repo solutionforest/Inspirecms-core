@@ -6,6 +6,7 @@ use Closure;
 use Filament\Actions\Action;
 use SolutionForest\InspireCms\Base\Filament\Actions\BaseCreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CreateContentAction extends BaseCreateContentAction
@@ -32,24 +33,17 @@ class CreateContentAction extends BaseCreateContentAction
             fn ($documentType) => Action::make('create_content_' . $documentType->slug)
                 ->label($documentType->title)
                 ->url(function () use ($documentType, $contentResource) {
-                    try {
-                        if ($contentResource::hasPage('create')) {
-                            $parameters = ['documentType' => $documentType];
+                    
+                    $parameters = ['documentType' => $documentType];
 
-                            if ($this->modifyUrlParameterUsing) {
-                                $parameters = $this->evaluate($this->modifyUrlParameterUsing, [
-                                    'parameters' => $parameters,
-                                    'documentType' => $documentType,
-                                ]);
-                            }
-
-                            return $contentResource::getUrl('create', $parameters);
-                        }
-                    } catch (\Throwable $th) {
-                        //
+                    if ($this->modifyUrlParameterUsing) {
+                        $parameters = $this->evaluate($this->modifyUrlParameterUsing, [
+                            'parameters' => $parameters,
+                            'documentType' => $documentType,
+                        ]);
                     }
 
-                    return null;
+                    return FilamentResourceHelper::attemptToGetUrl($contentResource, ['create'], $parameters, false);
                 })
                 ->model($contentModel)
                 ->hidden(fn (Action $action) => ! $contentResource::can('create') && ! blank($action->getUrl()))

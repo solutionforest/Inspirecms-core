@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
 use SolutionForest\InspireCms\Models\Contracts\PropertyData;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -40,6 +42,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'update',
             'delete',
             'delete_any',
+            'restore',
+            'restore_any',
+            'force_delete',
+            'force_delete_any',
             'publish',
             'unpublish',
             'set_private',
@@ -164,13 +170,21 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ViewAction::make()->iconButton(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\DeleteAction::make(),
+                    Tables\Actions\ForceDeleteAction::make(),
+                    Tables\Actions\RestoreAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\ForceDeleteBulkAction::make(),
+                    Tables\Actions\RestoreBulkAction::make(),
                 ])->iconButton(),
             ])
             ->filters([
+                Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label(__('inspirecms::inspirecms.is_published'))
                     ->queries(
@@ -185,23 +199,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         false: fn (Builder $query) => $query->isRootLevel(condition: false),
                         blank: fn (Builder $query) => $query,
                     ),
-            ])
-            ->recordUrl(function (Model $record, Table $table): ?string {
-                // Revert action's order
-                foreach (['edit', 'view'] as $action) { // foreach (['view', 'edit'] as $action) {
-                    if (! static::hasPage($action)) {
-                        continue;
-                    }
-
-                    if (! static::{'can' . ucfirst($action)}($record)) {
-                        continue;
-                    }
-
-                    return static::getUrl($action, ['record' => $record]);
-                }
-
-                return null;
-            });
+            ]);
     }
 
     public static function getRelations(): array
@@ -222,7 +220,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'propertyDatas', // To get latest version
             'documentType', // For template use
             'parent', // To get parent title
-        ]);
+        ])
+        ->withoutGlobalScopes([
+            SoftDeletingScope::class,
+        ]);;
     }
 
     //region Form field(s)/component(s)
@@ -468,6 +469,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 static::getDisplayIsPublishedFormComponent(),
                 static::getDisplayPublishedAtFormComponent(),
                 static::getLatestPublishedAtFormComponent(),
+                Forms\Components\Placeholder::make('path')
+                    ->content(fn (ModelsContent $record) => $record->generateFullSlug())
+                    ->extraAttributes(['class' => 'text-sm font-mono'])
+                    ->inlineLabel(),
             ])
             ->columns(['default' => 1]);
     }
@@ -508,27 +513,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     return null;
                 }
 
-                return static::getBooleanIconPlaceholderComponentContent($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+                return UIHelper::getBooleanIconPlaceholder($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
             });
-    }
-
-    protected static function getBooleanIconPlaceholderComponentContent(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
-    {
-        return new HtmlString(Blade::render(<<<'blade'
-            <x-filament::icon
-                icon="{{$icon}}"
-                class="h-5 w-5 text-custom-500 dark:text-custom-400"
-                style="{{$iconStyle}}"
-            >
-            </x-filament::icon>
-        blade, [
-            'icon' => $condition ? $trueIcon : $falseIcon,
-            'iconStyle' => \Filament\Support\get_color_css_variables(
-                $condition ? $trueColor : $falseColor,
-                shades: [400, 500],
-                alias: 'infolists::components.icon-entry.item',
-            ),
-        ]));
     }
 
     //endregion Form field(s)/component(s)

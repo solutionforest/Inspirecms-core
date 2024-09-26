@@ -85,10 +85,7 @@ class Content extends Cluster implements ClusterSection, HasTable
 
         return $resource::table($table)
             ->query($this->getTableQuery())
-            ->recordUrl(fn (Model $record) => $resource::getUrl('index', ['parent' => $record]))
-            ->actions([
-                Tables\Actions\ViewAction::make()->iconButton(),
-            ]);
+            ->recordUrl(fn (Model $record) => $resource::getUrl('index', ['parent' => $record]));
     }
 
     protected function getTableQuery(): ?Builder
@@ -151,7 +148,7 @@ class Content extends Cluster implements ClusterSection, HasTable
 
         $action
             ->authorize(fn (Model $record): bool => $resource::canView($record))
-            ->url(fn (Model $record) => $resource::getUrl('index', ['parent' => $record]));
+            ->url(fn (Model $record) => $resource::getUrl('view', ['record' => $record]));
     }
 
     protected function configureDeleteBulkAction(Tables\Actions\DeleteBulkAction $action): void

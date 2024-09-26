@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ConfigureContentResourcePageSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 class ListPages extends BaseContentListPage
 {
@@ -128,8 +129,8 @@ class ListPages extends BaseContentListPage
                 ->authorize($resource::canEdit($parent))
                 ->record($parent);
 
-            if ($resource::hasPage('edit')) {
-                $action->url(fn (): string => $resource::getUrl('edit', ['record' => $parent]));
+            if ($url = FilamentResourceHelper::attemptToGetUrl($resource, ['edit'], ['record' => $parent], false)) {
+                $action->url(fn (): string => $url);
             }
         } elseif (! $resource::hasPage('edit')) {
             $action->hidden();
@@ -156,8 +157,8 @@ class ListPages extends BaseContentListPage
                 ->hidden($resource::canEdit($parent))
                 ->record($parent);
 
-            if ($resource::hasPage('view')) {
-                $action->url(fn (): string => $resource::getUrl('view', ['record' => $parent]));
+            if ($url = FilamentResourceHelper::attemptToGetUrl($resource, ['view'], ['record' => $parent], false)) {
+                $action->url(fn (): string => $url);
             }
         } elseif (! $resource::hasPage('view')) {
             $action->hidden();
