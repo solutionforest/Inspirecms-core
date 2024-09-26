@@ -243,8 +243,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
-            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.title')))
-            ->live(debounce: 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
+            ->live()->afterStateUpdated(function ($state, $get, $set, $operation) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', Str::slug($state));
@@ -261,9 +260,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::inspirecms.slug'))
-            ->validationAttribute(Str::lower(__('inspirecms::inspirecms.slug')))
-            ->live(debounce: 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
-            ->unique(column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
+            ->live()->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
                 return $rule->where('parent_id', $get('parent_id') ?? 0);
             })
             ->required();

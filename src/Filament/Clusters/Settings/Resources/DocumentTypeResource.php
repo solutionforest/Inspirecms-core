@@ -10,6 +10,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
@@ -57,6 +58,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
+                            static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getIsWebPageFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
@@ -64,7 +66,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Forms\Components\Section::make()
                         ->columns(1)
                         ->schema([
-                            static::getNameFormComponent()->inlineLabel()->columnSpanFull(),
+                            static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getFieldGroupFormComponent(),
                         ])
                         ->grow(),
@@ -76,7 +78,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return $form
             ->schema([
-                static::getNameFormComponent()->inlineLabel(),
+                static::getTitleFormComponent()->inlineLabel(),
+                static::getSlugFormComponent()->inlineLabel(),
                 static::getIsWebPageFormComponent(),
             ]);
     }
@@ -84,15 +87,15 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
+            ->recordTitleAttribute('slug')
             ->defaultSort('created_at', 'desc')
             ->emptyStateActions([])
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::inspirecms.slug'))
                     ->sortable(),
                 Tables\Columns\IconColumn::make('is_web_page')
                     ->label(__('inspirecms::inspirecms.is_web_page'))
@@ -170,10 +173,28 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getNameFormComponent()
+    protected static function getTitleFormComponent()
     {
-        return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::inspirecms.name'))
+        return Forms\Components\TextInput::make('title')
+            ->label(__('inspirecms::inspirecms.title'))
+            ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
+                // Fill slug if empty / operation is create
+                if ($operation === 'create' || $operation === 'quick_create' || empty($get('slug'))) {
+                    $set('slug', Str::slug($state));
+                }
+            })
+            ->autofocus()
+            ->required();
+    }
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getSlugFormComponent()
+    {
+        return Forms\Components\TextInput::make('slug')
+            ->label(__('inspirecms::inspirecms.slug'))
+            ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true)
             ->required();
     }
 

@@ -30,22 +30,23 @@ return new class extends BaseMigration
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
+            $table->string('slug');
             $table->boolean('is_web_page')->default(true);
 
             $table->timestamps();
 
-            $table->index('name');
-            $table->index('parent_id');
+            $table->unique('slug');
         });
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('title');
+            $table->string('slug');
             $table->text('path');
 
             $table->timestamps();
 
-            $table->index('name');
+            $table->index('slug');
         });
         Schema::create($tableNames['templatable'], function (Blueprint $table) {
             $table->morphs('templateable');
