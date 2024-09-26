@@ -40,13 +40,12 @@ return new class extends BaseMigration
         });
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();
-            $table->string('title');
             $table->string('slug');
             $table->text('path');
 
             $table->timestamps();
 
-            $table->index('slug');
+            $table->unique('slug');
         });
         Schema::create($tableNames['templatable'], function (Blueprint $table) {
             $table->morphs('templateable');

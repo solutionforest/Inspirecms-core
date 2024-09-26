@@ -59,7 +59,7 @@ class Template extends BaseModel implements TemplateContract
         return str($this->getTemplateDirectory())
             ->rtrim('/')
             ->finish('/')
-            ->finish($this->name)
+            ->finish($this->slug)
             ->after(resource_path('views'))
             ->ltrim('/')
             ->replace('/', '.')
@@ -88,7 +88,7 @@ class Template extends BaseModel implements TemplateContract
 
     protected function performTemplatePath(): string
     {
-        return str($this->name)
+        return str($this->slug)
             ->trim()
             ->snake()
             ->replace(['-', ' '], '-')

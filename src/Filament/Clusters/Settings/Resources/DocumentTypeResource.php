@@ -45,6 +45,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static ?int $navigationSort = -10;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
+    
+    protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;
 
@@ -87,7 +89,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('slug')
             ->defaultSort('created_at', 'desc')
             ->emptyStateActions([])
             ->columns([

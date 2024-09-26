@@ -226,7 +226,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.title'))
             ->required()
             ->maxLength(255)
-            ->live(debounce: 500)
+            ->live(true, 500)
             ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('name'))) {
@@ -245,7 +245,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.name'))
             ->required()
             ->maxLength(255)
-            ->live(debounce: 500)
+            ->live(true, 500)
             ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
             ->unique(
                 table: static::getModel(),

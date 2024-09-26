@@ -18,8 +18,11 @@ class DocumentTypesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name')),
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('inspirecms::inspirecms.title')),
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::inspirecms.slug'))
+                    ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->actions([

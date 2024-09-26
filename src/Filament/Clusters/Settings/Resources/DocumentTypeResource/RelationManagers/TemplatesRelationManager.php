@@ -26,11 +26,18 @@ class TemplatesRelationManager extends RelationManager
         return $form
             ->columns(1)
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                Forms\Components\TextInput::make('slug')
+                    ->label(__('inspirecms::inspirecms.slug'))
                     ->inlineLabel()
                     ->required()
-                    ->afterStateUpdated(fn ($state) => Str::slug($state, '_')),
+                    ->maxLength(255)
+                    ->live(true, 500)
+                    ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state)))
+                    ->unique(
+                        table: $this->getRelationship()->getRelated()->getTable(),
+                        column: 'slug',
+                        ignoreRecord: true
+                    ),
             ]);
     }
 
@@ -55,7 +62,7 @@ class TemplatesRelationManager extends RelationManager
             ->recordTitle(fn ($record) => $record->path)
             ->columns([
                 Tables\Columns\Layout\Split::make([
-                    Tables\Columns\TextColumn::make('name')
+                    Tables\Columns\TextColumn::make('slug')
                         ->weight('bold')
                         ->description(fn (Template $record) => $record->path),
                     Tables\Columns\TextColumn::make('is_default')
