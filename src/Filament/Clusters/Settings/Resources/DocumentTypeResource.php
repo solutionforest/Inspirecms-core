@@ -77,7 +77,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $form
             ->schema([
                 static::getNameFormComponent()->inlineLabel(),
-                static::getIsWebPageFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => false),
+                static::getIsWebPageFormComponent(),
             ]);
     }
 
