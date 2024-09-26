@@ -3,8 +3,11 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
 use Filament\Navigation\NavigationItem;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Clusters\Content;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -40,6 +43,27 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
         return parent::getEloquentQuery()
             ->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
     }
+
+    //region Global search
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'slug'];
+    }
+    
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex gap-x-2 items-center">
+                <span class="flex-1 font-semibold">
+                    {{ $title }}
+                </span>
+                <x-filament::badge class="font-mono">
+                    {{ $badge }}
+                </x-filament::badge>
+            </div>
+        blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
+    }
+    //endregion Global search
 
     /**
      * @return array<NavigationItem>

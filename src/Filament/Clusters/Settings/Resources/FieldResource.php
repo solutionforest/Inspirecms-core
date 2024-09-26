@@ -53,6 +53,7 @@ class FieldResource extends Resource implements ClusterSectionResource
                         static::getGroupFormComponent()->inlineLabel(),
                         static::getStatePathFormComponent(),
                         static::getMandatoryFormComponent()->columnSpanFull(),
+                        static::getIsVaryByCultureFormComponent()->columnSpanFull(),
                     ])
                     ->columnSpan(1),
                 static::getConfigFormComponent(),
@@ -127,6 +128,13 @@ class FieldResource extends Resource implements ClusterSectionResource
     {
         return InspireCmsConfig::getFieldModelClass();
     }
+
+    //region Global search
+    public static function canGloballySearch(): bool
+    {
+        return false;
+    }
+    //endregion Global search
 
     //region Form field(s)/component(s)
     /** @return Forms\Components\Field|Forms\Components\Component */
@@ -219,6 +227,16 @@ class FieldResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::forms.fields.mandatory.label'))
             ->inlineLabel()
             ->helperText(__('inspirecms::forms.fields.mandatory.helper'))
+            ->inlineLabel();
+    }
+
+    /** @return Forms\Components\Field|Forms\Components\Component */
+    public static function getIsVaryByCultureFormComponent()
+    {
+        return Forms\Components\Toggle::make('is_vary_by_culture')
+            ->label(__('inspirecms::forms.fields.is_vary_by_culture.label'))
+            ->inlineLabel()
+            ->helperText(__('inspirecms::forms.fields.is_vary_by_culture.helper'))
             ->inlineLabel();
     }
 

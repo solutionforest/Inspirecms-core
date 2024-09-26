@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up()
+    {
+        $tableNames = $this->getTableNames();
+
+        if (!Schema::hasColumn($tableNames['fields'], 'is_vary_by_culture')) {
+            Schema::table($tableNames['fields'], function (Blueprint $table) {
+                $table->boolean('is_vary_by_culture')->default(false)->after('config');
+            });
+        }
+    }
+
+    public function down()
+    {
+        $tableNames = $this->getTableNames();
+        
+        if (Schema::hasColumn($tableNames['fields'], 'is_vary_by_culture')) {
+            Schema::table($tableNames['fields'], function (Blueprint $table) {
+                $table->dropColumn('is_vary_by_culture');
+            });
+        }
+    }
+
+    private function getTableNames()
+    {
+        return config('filament-field-group.table_names');
+    }
+};

@@ -64,4 +64,11 @@ class TemplateResource extends Resource implements ClusterSectionResource
     {
         return __('inspirecms::inspirecms.template');
     }
+    
+    //region Global search
+    public static function canGloballySearch(): bool
+    {
+        return false;
+    }
+    //endregion Global search
 }

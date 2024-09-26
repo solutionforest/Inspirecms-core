@@ -207,6 +207,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return [
             'create_inspire-cms-core_table',
+            'add_custom_fields_on_advanced-fields_table',
         ];
     }
 

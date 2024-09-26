@@ -9,7 +9,10 @@ use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -62,6 +65,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->schema([
                             static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getIsWebPageFormComponent(),
+                            static::getIsVaryByCultureFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -83,6 +87,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 static::getTitleFormComponent()->inlineLabel(),
                 static::getSlugFormComponent()->inlineLabel(),
                 static::getIsWebPageFormComponent(),
+                static::getIsVaryByCultureFormComponent(),
             ]);
     }
 
@@ -95,9 +100,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
+                Tables\Columns\TextColumn::make('title')
+                    ->label(__('inspirecms::inspirecms.title')),
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('inspirecms::inspirecms.slug'))
-                    ->sortable(),
+                    ->sortable()
+                    ->badge()   ,
                 Tables\Columns\IconColumn::make('is_web_page')
                     ->label(__('inspirecms::inspirecms.is_web_page'))
                     ->boolean(),
@@ -169,6 +177,25 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return __('inspirecms::inspirecms.document_type');
     }
+
+    //region Global search
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['slug'];
+    }
+    
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex gap-x-2 items-center">
+                <span>{{ $title }}</span>
+                <x-filament::badge>
+                    {{ $badge }}
+                </x-filament::badge>
+            </div>
+        blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
+    }
+    //endregion Global search
 
     //region Form field(s)/component(s)
     /**
@@ -280,6 +307,18 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.is_web_page'))
             ->inlineLabel()
             ->default(true)
+            ->live();
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getIsVaryByCultureFormComponent()
+    {
+        return Forms\Components\Toggle::make('is_vary_by_culture')
+            ->label(__('inspirecms::inspirecms.is_vary_by_culture'))
+            ->inlineLabel()
+            ->default(false)
             ->live();
     }
 

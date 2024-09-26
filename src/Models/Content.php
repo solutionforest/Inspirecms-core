@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
@@ -16,6 +17,7 @@ class Content extends BaseModel implements ContentContract
     use Concerns\HasTemplates;
     use Concerns\NestableTrait;
     use Concerns\Publishable;
+    use HasUuids;
 
     protected $guarded = ['id'];
 

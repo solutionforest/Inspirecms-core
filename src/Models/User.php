@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Base\BaseAuthenticatableModel;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
@@ -11,8 +12,9 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class User extends BaseAuthenticatableModel implements UserContract
 {
     use CmsUserTrait;
+    use HasUuids;
 
-    protected $guarded = [];
+    protected $guarded = ['id'];
 
     protected $hidden = [
         'password',

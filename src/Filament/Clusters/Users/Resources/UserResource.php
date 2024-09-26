@@ -8,8 +8,12 @@ use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
@@ -104,6 +108,21 @@ class UserResource extends Resource implements ClusterSectionResource
     {
         return parent::getEloquentQuery()->with(['roles']);
     }
+
+    //region Global search
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'email'];
+    }
+    
+    public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
+    {
+        return new HtmlString(<<<Html
+            <p>{$record->email}</p>
+            <p>{$record->name}</p>
+        Html);
+    }
+    //endregion Global search
 
     //region Form field(s)/component(s)
     /**

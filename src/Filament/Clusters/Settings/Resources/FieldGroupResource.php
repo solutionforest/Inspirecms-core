@@ -217,6 +217,13 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return $record->documentTypes->count() <= 0;
     }
 
+    //region Global search
+    public static function canGloballySearch(): bool
+    {
+        return false;
+    }
+    //endregion Global search
+
     //region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
@@ -395,6 +402,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                         ->columnSpanFull(),
                     $fieldResource::getMandatoryFormComponent()->hidden()
                         ->saveRelationshipsWhenHidden()->dehydratedWhenHidden(),
+                    $fieldResource::getIsVaryByCultureFormComponent()->hidden()
+                        ->saveRelationshipsWhenHidden()->dehydratedWhenHidden(),
                     Forms\Components\Hidden::make('config'),
                 ]),
         ];
@@ -420,6 +429,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                 ->schema([
                     $fieldResource::getStatePathFormComponent(),
                     $fieldResource::getMandatoryFormComponent()->columnSpanFull(),
+                    $fieldResource::getIsVaryByCultureFormComponent()->columnSpanFull(),
                 ]),
             $fieldResource::getConfigFormComponent(),
         ];

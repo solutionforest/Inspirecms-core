@@ -11,7 +11,7 @@ return new class extends BaseMigration
         $tableNames = $this->getTableNames();
 
         Schema::create($tableNames['content'], function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
 
             $table->integer('document_type_id');
             $table->integer('parent_id')->default(0)->comment('Parent\'s content, 0 = Root.');
@@ -33,6 +33,7 @@ return new class extends BaseMigration
             $table->string('title');
             $table->string('slug');
             $table->boolean('is_web_page')->default(true);
+            $table->boolean('is_vary_by_culture')->default(false);
 
             $table->timestamps();
 
@@ -88,7 +89,7 @@ return new class extends BaseMigration
         });
         
         Schema::create($tableNames['user'], function (Blueprint $table) {
-            $table->id();
+            $table->string('id')->primary();
             $table->string('name');
             $table->string('email');
             $table->string('preferred_language');
