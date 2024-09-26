@@ -73,7 +73,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
     {
         return InspireCmsConfig::getLanguageModelClass();
     }
-    
+
     //region Global search
     public static function canGloballySearch(): bool
     {

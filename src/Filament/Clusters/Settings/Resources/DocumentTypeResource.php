@@ -48,7 +48,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static ?int $navigationSort = -10;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-    
+
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;
@@ -105,7 +105,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('inspirecms::inspirecms.slug'))
                     ->sortable()
-                    ->badge()   ,
+                    ->badge(),
                 Tables\Columns\IconColumn::make('is_web_page')
                     ->label(__('inspirecms::inspirecms.is_web_page'))
                     ->boolean(),
@@ -183,7 +183,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return ['slug'];
     }
-    
+
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return new HtmlString(Blade::render(<<<'blade'
@@ -214,6 +214,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->autofocus()
             ->required();
     }
+
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
