@@ -27,15 +27,16 @@ trait ClusterSectionTrait
                     ->flatMap(function ($fqcn) {
                         if (is_subclass_of($fqcn, \Filament\Resources\Resource::class)) {
                             return $fqcn::getNavigationItems();
-                        } else if (is_subclass_of($fqcn, \Filament\Pages\Page::class)) {
+                        } elseif (is_subclass_of($fqcn, \Filament\Pages\Page::class)) {
                             return $fqcn::getNavigationItems();
                         } else {
                             return null;
                         }
                     })
                     ->filter()
-                    ->map(fn (NavigationItem $navItem) => $navItem
-                        ->group($item->getLabel())
+                    ->map(
+                        fn (NavigationItem $navItem) => $navItem
+                            ->group($item->getLabel())
                     )
                     ->toArray();
 

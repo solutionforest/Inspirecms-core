@@ -92,7 +92,7 @@ trait NestableTrait
         return 'parent_id';
     }
 
-    public function getNestableRootValue(): int|string
+    public function getNestableRootValue(): int | string
     {
         return 0;
     }

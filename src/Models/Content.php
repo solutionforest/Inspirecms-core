@@ -174,7 +174,7 @@ class Content extends BaseModel implements ContentContract
         return $this->getNestableRootValue();
     }
 
-    public function getNestableRootValue(): int|string
+    public function getNestableRootValue(): int | string
     {
         return KeyHelper::generateMinUuid();
     }
