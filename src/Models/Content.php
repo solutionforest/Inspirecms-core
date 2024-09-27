@@ -171,12 +171,12 @@ class Content extends BaseModel implements ContentContract
 
     protected function fallbackParentId()
     {
-        return KeyHelper::generateMinUuid();
+        return $this->getNestableRootValue();
     }
 
-    protected function getNestableRootValue()
+    public function getNestableRootValue(): int|string
     {
-        return $this->fallbackParentId();
+        return KeyHelper::generateMinUuid();
     }
     //endregion Nestable
 }
