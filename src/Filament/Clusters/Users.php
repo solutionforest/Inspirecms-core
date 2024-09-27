@@ -12,8 +12,6 @@ class Users extends Cluster implements ClusterSection
 
     protected static ?string $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?int $navigationSort = 3;
-
     public static function getNavigationLabel(): string
     {
         return __('inspirecms::inspirecms.users');

@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
+use Filament\Navigation\NavigationItem;
+
 trait ClusterSectionTrait
 {
     public static function getAccessRightPermissionName(): string
@@ -12,5 +14,36 @@ trait ClusterSectionTrait
     public static function canAccess(): bool
     {
         return filament()->auth()->user()->can(static::getAccessRightPermissionName());
+    }
+
+    public static function getNavigationItems(): array
+    {
+        $items = parent::getNavigationItems();
+        if (count($items) == 1) {
+            $item = $items[0];
+            if ($item instanceof NavigationItem && ! $item->getGroup()) {
+                $childComponents = static::getClusteredComponents();
+                $newItems = collect($childComponents)
+                    ->flatMap(function ($fqcn) {
+                        if (is_subclass_of($fqcn, \Filament\Resources\Resource::class)) {
+                            return $fqcn::getNavigationItems();
+                        } else if (is_subclass_of($fqcn, \Filament\Pages\Page::class)) {
+                            return $fqcn::getNavigationItems();
+                        } else {
+                            return null;
+                        }
+                    })
+                    ->filter()
+                    ->map(fn (NavigationItem $navItem) => $navItem
+                        ->group($item->getLabel())
+                    )
+                    ->toArray();
+
+                return $newItems;
+
+            }
+        }
+
+        return $items;
     }
 }

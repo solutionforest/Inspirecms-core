@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
+use Filament\Navigation\NavigationItem;
 use Filament\Resources\Pages\ListRecords;
 
 trait ConfigureContentResourcePageSubNavigation
@@ -19,16 +20,14 @@ trait ConfigureContentResourcePageSubNavigation
         $cluster = static::getCluster();
         if ($cluster) {
 
-            $clusterNav = clone $cluster::getNavigationItems()[0] ?? null;
-
-            if ($clusterNav) {
-                $clusterNav
-                    ->sort(-999)
+            $subNavigation = array_merge([
+                NavigationItem::make($cluster::getNavigationLabel())
+                    ->url($cluster::getUrl())
                     ->icon('heroicon-s-chevron-left')
                     ->activeIcon(null)
-                    ->isActiveWhen(fn () => false);
-                $subNavigation = array_merge([$clusterNav], $subNavigation);
-            }
+                    ->isActiveWhen(fn () => false)
+                    ->sort(-999),
+            ], $subNavigation);
         }
 
         return $subNavigation;

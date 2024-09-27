@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
 
 use Filament\Actions;
-use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource\Pages\ManageFieldGroup as BasePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Resources\Concerns\HasCloneAction;
@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Filament\Resources\Concerns\HasQuickEditAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
-class ManageFieldGroup extends BasePage
+class ManageFieldGroup extends BaseManagePage
 {
     use HasCloneAction;
     use HasQuickCreateAction;

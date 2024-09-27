@@ -30,8 +30,6 @@ class Content extends Cluster implements ClusterSection, HasTable
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
 
-    protected static ?int $navigationSort = 1;
-
     /**
      * @var view-string
      */

@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Resources\Concerns\HasCloneAction;
@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Filament\Resources\Concerns\HasQuickEditAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 
-class ListDocumentTypes extends ListRecords
+class ListDocumentTypes extends BaseListPage
 {
     use HasCloneAction;
     use HasQuickCreateAction;

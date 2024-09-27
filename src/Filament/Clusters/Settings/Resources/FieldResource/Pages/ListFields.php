@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 
-class ListFields extends ListRecords
+class ListFields extends BaseListPage
 {
     public function getActions(): array
     {

@@ -6,6 +6,7 @@ use Closure;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
@@ -86,7 +87,12 @@ class CmsPanelProvider extends PanelProvider
     protected function configureNavigation(Panel $panel): Panel
     {
         return $panel
-            ->topNavigation();
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
+                NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
+                NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
+            ]);
     }
 
     protected function configureFilamentActions(Panel $panel): Panel

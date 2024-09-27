@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 
-class ListUsers extends ListRecords
+class ListUsers extends BaseListPage
 {
     public function getActions(): array
     {

@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 
-class ListLanguages extends ListRecords
+class ListLanguages extends BaseListPage
 {
     public function getActions(): array
     {

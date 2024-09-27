@@ -12,8 +12,6 @@ class Settings extends Cluster implements ClusterSection
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
 
-    protected static ?int $navigationSort = 2;
-
     public static function getNavigationLabel(): string
     {
         return __('inspirecms::inspirecms.settings');
