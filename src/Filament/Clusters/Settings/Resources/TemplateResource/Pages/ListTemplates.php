@@ -6,15 +6,15 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Enums\Alignment;
 use Riodwanto\FilamentAceEditor\AceEditor;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
 
-class ListTemplates extends ListRecords implements HasFileExplorer
+class ListTemplates extends BaseListPage implements HasFileExplorer
 {
     use InteractsWithFileExplorer;
 
