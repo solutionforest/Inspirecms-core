@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
@@ -60,6 +59,7 @@ trait ContentPageTrait
                 'icon' => 'heroicon-o-home',
             ],
         ], $nodes);
+
         return $nodes;
     }
 
@@ -70,9 +70,11 @@ trait ContentPageTrait
             switch ($key) {
                 case 'root':
                     $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false);
+
                     break;
                 default:
                     $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit'], ['record' => $key], false);
+
                     break;
             }
 
@@ -87,6 +89,7 @@ trait ContentPageTrait
         if (in_array($key, ['root'])) {
             return null;
         }
+
         return $this->getModelExplorer()->findRecord($key);
     }
 
@@ -101,6 +104,7 @@ trait ContentPageTrait
                     if (in_array($parent, ['root'])) {
                         $parent = null;
                     }
+
                     return array_merge($parameters, [
                         'parent' => $parent,
                     ]);

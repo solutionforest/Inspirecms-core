@@ -21,9 +21,9 @@ class Content extends BaseModel implements ContentContract
     use Concerns\HasTemplates;
     use Concerns\NestableTrait;
     use Concerns\Publishable;
+    use HasFactory;
     use HasUuids;
     use SoftDeletes;
-    use HasFactory;
 
     protected $guarded = ['id'];
 
