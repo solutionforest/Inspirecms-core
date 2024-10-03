@@ -15,14 +15,14 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasPublishForm, HasModelExplorer
+abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer, HasPublishForm
 {
     use CanBePublish;
+    use ContentPageTrait;
     use HasPreviewModal;
     use WithPagination;
-    use ContentPageTrait;
 
-    protected static string $view = "inspirecms::filament.pages.content.view";
+    protected static string $view = 'inspirecms::filament.pages.content.view';
 
     protected function getHeaderActions(): array
     {

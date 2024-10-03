@@ -14,8 +14,8 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
 {
     use ContentPageTrait;
 
-    protected static string $view = "inspirecms::filament.pages.content.list";
-    
+    protected static string $view = 'inspirecms::filament.pages.content.list';
+
     public function getActions(): array
     {
         return [
@@ -45,6 +45,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
     public function getParentKey(): string | int | null
     {
         $model = new ($this->getModel())();
+
         return $model->getNestableRootValue();
     }
 

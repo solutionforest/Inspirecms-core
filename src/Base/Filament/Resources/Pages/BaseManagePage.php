@@ -11,6 +11,7 @@ class BaseManagePage extends ManageRecords
         if (config('inspirecms.filament.enable_cluster_navigation')) {
             return parent::getSubNavigation();
         }
+
         return [];
     }
 }

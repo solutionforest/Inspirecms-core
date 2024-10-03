@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
 use Filament\Tables;
-use Filament\Tables\Actions\BulkAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 

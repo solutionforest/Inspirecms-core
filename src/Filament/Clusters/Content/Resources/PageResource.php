@@ -44,20 +44,21 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
         return parent::getEloquentQuery()
             ->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
     }
-    
+
     public static function getNavigationItems(): array
     {
         $hasTrashPage = static::hasPage('trash');
-        if (!$hasTrashPage) {
+        if (! $hasTrashPage) {
             return parent::getNavigationItems();
         }
+
         return [
             NavigationItem::make(static::getNavigationLabel())
                 ->group(static::getNavigationGroup())
                 ->parentItem(static::getNavigationParentItem())
                 ->icon(static::getNavigationIcon())
                 ->activeIcon(static::getActiveNavigationIcon())
-                ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.*') && !request()->routeIs(static::getRouteBaseName() . '.trash'))
+                ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.*') && ! request()->routeIs(static::getRouteBaseName() . '.trash'))
                 ->sort(static::getNavigationSort())
                 ->badge(static::getNavigationBadge(), color: static::getNavigationBadgeColor())
                 ->badgeTooltip(static::getNavigationBadgeTooltip())

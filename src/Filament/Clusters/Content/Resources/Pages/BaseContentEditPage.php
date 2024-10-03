@@ -21,14 +21,14 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 use function Filament\Support\is_app_url;
 
-abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasPublishForm, HasModelExplorer
+abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer, HasPublishForm
 {
     use CanBePublish;
+    use ContentPageTrait;
     use HasPreviewModal;
     use WithPagination;
-    use ContentPageTrait;
 
-    protected static string $view = "inspirecms::filament.pages.content.edit";
+    protected static string $view = 'inspirecms::filament.pages.content.edit';
 
     public function booted(): void
     {

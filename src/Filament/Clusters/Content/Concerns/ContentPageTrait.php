@@ -3,12 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
-use Filament\Navigation\NavigationItem;
 use Filament\Resources\Pages\ListRecords;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
@@ -24,17 +22,18 @@ trait ContentPageTrait
 
     public function mountContentPageTrait()
     {
-        if (!$this instanceof ListRecords) {
+        if (! $this instanceof ListRecords) {
             $this->refreshModelExplorerSidebar();
         }
     }
-    
+
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {
         $modelClass = $this->getModel();
-        $model = new $modelClass();
+        $model = new $modelClass;
         $parentIdColumn = $model->getNestableParentIdColumn();
         $rootLevelKey = $model->getNestableRootValue();
+
         return $modelExplorer
             ->model($modelClass)
             ->parentColumnName($parentIdColumn)
@@ -60,7 +59,7 @@ trait ContentPageTrait
                 ->color('gray')
                 ->extraAttributes(['class' => 'flex-1'])
                 ->modifyUrlParameterUsing(fn (array $arguments, array $parameters) => array_merge($parameters, [
-                    'parent' => $arguments['key'] ?? null
+                    'parent' => $arguments['key'] ?? null,
                 ])),
             default => null,
         };
@@ -68,16 +67,17 @@ trait ContentPageTrait
 
     protected function refreshModelExplorerSidebar(): void
     {
-        $record = $this instanceof BaseContentCreatePage ? 
-            $this->getParentRecord() : 
+        $record = $this instanceof BaseContentCreatePage ?
+            $this->getParentRecord() :
             $this->getRecord();
 
-        if (!$record) {
+        if (! $record) {
             return;
         }
 
         if ($record->trashed()) {
             $this->expandedModelExplorerItems = [];
+
             return;
         }
 
@@ -103,13 +103,13 @@ trait ContentPageTrait
 
             $breadcrumbs = array_slice($originalBreadcrumbs, 0, -1);
             $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -1);
-    
-        } else if ($this instanceof BaseContentEditPage || $this instanceof BaseContentViewPage) {
+
+        } elseif ($this instanceof BaseContentEditPage || $this instanceof BaseContentViewPage) {
             $parent = $this->getParent();
-            
+
             $breadcrumbs = array_slice($originalBreadcrumbs, 0, -2);
             $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -2);
-    
+
         } else {
             $parent = null;
 

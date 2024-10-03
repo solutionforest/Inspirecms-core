@@ -28,12 +28,13 @@ trait ClusterSectionResourceTrait
             'delete_any',
         ];
     }
-    
+
     public static function getRecordSubNavigation(\Filament\Resources\Pages\Page $page): array
     {
         if (config('inspirecms.filament.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
             return $page->generateNavigationItems($cluster::getClusteredComponents());
         }
+
         return [];
     }
 }

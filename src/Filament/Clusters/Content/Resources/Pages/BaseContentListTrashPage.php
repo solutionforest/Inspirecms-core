@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Tables\Table;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
 
 abstract class BaseContentListTrashPage extends BaseContentListPage
 {
@@ -20,8 +19,9 @@ abstract class BaseContentListTrashPage extends BaseContentListPage
     public function table(Table $table): Table
     {
         return parent::table($table)
-            ->query(fn () => $this->getTableQuery()
-                ->onlyTrashed()
+            ->query(
+                fn () => $this->getTableQuery()
+                    ->onlyTrashed()
             );
     }
 

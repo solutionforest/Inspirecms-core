@@ -144,5 +144,6 @@ interface Content extends NestableInterface
     public function setAsDefaultTemplate(Template | string | int $template): void;
 
     public function getNestableParentIdColumn(): string;
+
     public function getNestableRootValue(): int | string;
 }

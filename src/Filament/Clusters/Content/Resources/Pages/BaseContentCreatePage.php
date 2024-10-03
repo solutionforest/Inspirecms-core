@@ -11,14 +11,14 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasPublishForm, HasModelExplorer
+abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasModelExplorer, HasPublishForm
 {
     use CanBePublish;
-    use WithPagination;
-    use CreateContentPageTrait;
     use ContentPageTrait;
+    use CreateContentPageTrait;
+    use WithPagination;
 
-    protected static string $view = "inspirecms::filament.pages.content.create";
+    protected static string $view = 'inspirecms::filament.pages.content.create';
 
     protected function getFormActions(): array
     {

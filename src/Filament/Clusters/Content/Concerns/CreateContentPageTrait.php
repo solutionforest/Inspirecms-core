@@ -36,6 +36,7 @@ trait CreateContentPageTrait
             if (method_exists($model, 'getNestableRootValue') && $model->getNestableRootValue() == $key) {
                 return null;
             }
+
             throw (new ModelNotFoundException)->setModel($this->getModel(), [$key]);
         }
 

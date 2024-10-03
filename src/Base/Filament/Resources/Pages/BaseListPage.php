@@ -11,6 +11,7 @@ class BaseListPage extends ListRecords
         if (config('inspirecms.filament.enable_cluster_navigation')) {
             return parent::getSubNavigation();
         }
+
         return [];
     }
 }

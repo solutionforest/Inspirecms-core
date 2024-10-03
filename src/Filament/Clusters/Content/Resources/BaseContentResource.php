@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
@@ -119,7 +118,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('inspirecms::inspirecms.deleted_at'))
                     ->sortable()
@@ -137,6 +136,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         if ($record->isRoot()) {
                             return null;
                         }
+
                         return $record->parent?->title ?? $record->parent_id;
                     })
                     ->grow(),
@@ -273,6 +273,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
                 $model = new (static::getModel());
+
                 return $rule->where('parent_id', $get('parent_id') ?? $model->getNestableRootValue());
             })
             ->required();

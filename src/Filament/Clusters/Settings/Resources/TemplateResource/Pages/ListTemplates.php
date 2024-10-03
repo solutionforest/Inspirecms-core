@@ -52,7 +52,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
                     ->dehydratedWhenHidden(),
                 TextArea::make('content')
                     ->rows(20)
-                    ->helperText('TODO: ace editor have debugs, using textarea for temp solution')
+                    ->helperText('TODO: ace editor have debugs, using textarea for temp solution'),
             ]);
     }
 
