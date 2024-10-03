@@ -29,6 +29,11 @@ trait NestableTrait
         return $this->belongsTo(static::class, $this->getNestableParentIdColumn());
     }
 
+    public function withTrashedParent(): BelongsTo
+    {
+        return $this->parent()->withTrashed();
+    }
+
     public function children(): HasMany
     {
         return $this->hasMany(static::class, $this->getNestableParentIdColumn());

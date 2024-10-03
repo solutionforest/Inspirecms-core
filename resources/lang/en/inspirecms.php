@@ -61,6 +61,7 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'visibility' => 'Visibility',
+    'trash' => 'Trash',
 
     'page_status' => [
         'draft' => [

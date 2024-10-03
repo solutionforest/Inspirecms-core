@@ -7,22 +7,28 @@ use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 use function Filament\Support\is_app_url;
 
-abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasPublishForm
+abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasPublishForm, HasModelExplorer
 {
     use CanBePublish;
     use HasPreviewModal;
     use WithPagination;
+    use ContentPageTrait;
+
+    protected static string $view = "inspirecms::filament.pages.content.edit";
 
     public function booted(): void
     {
@@ -147,4 +153,24 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         return ContentDto::fromModel($this->getRecord());
     }
     //endregion Computed Property
+
+    public function getDocumentType(): int | string | Model
+    {
+        return $this->getRecord()->documentType;
+    }
+
+    public function getParent(): string | int | Model | null
+    {
+        return $this->getRecord()->parent;
+    }
+
+    public function getParentKey(): string | int | null
+    {
+        return $this->getRecord()->parent_id;
+    }
+
+    public function getRedirectUrl(): ?string
+    {
+        return $this->getUrl(['record' => $this->getRecord()]);
+    }
 }

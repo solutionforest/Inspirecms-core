@@ -19,6 +19,11 @@ trait CanBePublish
 {
     protected ?string $publishOperation = null;
 
+    protected function getPublishableFormName(): string
+    {
+        return 'form';
+    }
+
     protected function getPublishFormAction(string $operation, string $model): Action
     {
         if (is_null($operation) || $operation === 'create') {
@@ -53,50 +58,47 @@ trait CanBePublish
                     throw $e;
                 }
             })
-            ->action($this->publish())
+            ->action(fn ($data, $action) => $this->publish($data, $action))
             ->model($model)
             ->authorize('publish')
             ->successNotification($this->getPublishedNotification());
     }
 
-    public function publish(): \Closure
+    public function publish(array $data, Action $action)
     {
-        return function (array $data, Action $action) {
+        $isCreating = $this->isCreatingPublishableData();
 
-            $isCreating = $this->isCreatingPublishableData();
+        $shouldRedirect = true;
 
-            $shouldRedirect = true;
+        $this->authorizeAccess();
 
-            $this->authorizeAccess();
+        $isSuccess = $this->handlePublishableRecord(function () use ($data, $isCreating) {
 
-            $isSuccess = $this->handlePublishableRecord(function () use ($data, $isCreating) {
+            $data = $this->getPublishableFormDataBeforePublish($data);
 
-                $data = $this->getPublishableFormDataBeforePublish($data);
+            $this->handlePublishableRecordCreateOrUpdate($data, $isCreating, 'publish');
 
-                $this->handlePublishableRecordCreateOrUpdate($data, $isCreating, 'publish');
+        });
 
-            });
+        if (! $isSuccess) {
+            return;
+        }
 
-            if (! $isSuccess) {
-                return;
-            }
+        $action->success();
 
-            $action->success();
+        if ($isCreating) {
 
-            if ($isCreating) {
+            $redirectUrl = $this->getRedirectUrl();
 
-                $redirectUrl = $this->getRedirectUrl();
+            $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
 
+        } else {
+
+            if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
                 $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
-
-            } else {
-
-                if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
-                    $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
-                }
-
             }
-        };
+
+        }
     }
 
     /**
@@ -119,6 +121,8 @@ trait CanBePublish
 
     public function handlePublishableRecordCreateOrUpdate(array $data, bool $isCreating, string $publishableAction = 'draft'): Model
     {
+        $formName = $this->getPublishableFormName();
+
         if ($isCreating) {
 
             //region Handle Record Creating
@@ -141,7 +145,7 @@ trait CanBePublish
             $this->record = $record;
             //endregion Handle Record Creating
 
-            $this->form->model($this->getRecord())->saveRelationships();
+            $this->{$formName}->model($this->getRecord())->saveRelationships();
 
             $this->callHook('afterCreate');
 
@@ -157,7 +161,7 @@ trait CanBePublish
             //endregion Handle Record Updating
 
             // Skip save relationships on `getPublishableFormDataBeforePublish`, and handle on this line
-            $this->form->model($this->getRecord())->saveRelationships();
+            $this->{$formName}->model($this->getRecord())->saveRelationships();
 
             $this->callHook('afterSave');
         }
@@ -172,11 +176,13 @@ trait CanBePublish
 
     public function getPublishableFormDataBeforePublish(array $extraData): array
     {
+        $formName = $this->getPublishableFormName();
+
         if ($this->isCreatingPublishableData()) {
 
             $this->callHook('beforeValidate');
 
-            $data = $this->form->getState();
+            $data = $this->{$formName}->getState();
 
             $this->callHook('afterValidate');
 
@@ -189,7 +195,7 @@ trait CanBePublish
             $this->callHook('beforeValidate');
 
             // Avoid save relationships before update
-            $data = $this->form->getState(shouldCallHooksBefore: false, afterValidate: null);
+            $data = $this->{$formName}->getState(shouldCallHooksBefore: false, afterValidate: null);
 
             $this->callHook('afterValidate');
 
@@ -204,7 +210,7 @@ trait CanBePublish
 
     public function validatePublishableData(): void
     {
-        $this->form->validate();
+        $this->{$this->getPublishableFormName()}->validate();
     }
 
     //region Notification

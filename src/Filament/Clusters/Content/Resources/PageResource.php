@@ -34,7 +34,8 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             'index' => Pages\ListPages::route('/'),
             'create' => Pages\CreatePage::route('/create'),
             'edit' => Pages\EditPage::route('/{record}/edit'),
-            'view' => Pages\ViewPage::route('/{record}'),
+            'view' => Pages\ViewPage::route('/{record}/view'),
+            'trash' => Pages\Trashes::route('/trashes'),
         ];
     }
 
@@ -42,6 +43,33 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     {
         return parent::getEloquentQuery()
             ->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
+    }
+    
+    public static function getNavigationItems(): array
+    {
+        $hasTrashPage = static::hasPage('trash');
+        if (!$hasTrashPage) {
+            return parent::getNavigationItems();
+        }
+        return [
+            NavigationItem::make(static::getNavigationLabel())
+                ->group(static::getNavigationGroup())
+                ->parentItem(static::getNavigationParentItem())
+                ->icon(static::getNavigationIcon())
+                ->activeIcon(static::getActiveNavigationIcon())
+                ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.*') && !request()->routeIs(static::getRouteBaseName() . '.trash'))
+                ->sort(static::getNavigationSort())
+                ->badge(static::getNavigationBadge(), color: static::getNavigationBadgeColor())
+                ->badgeTooltip(static::getNavigationBadgeTooltip())
+                ->url(static::getNavigationUrl()),
+            NavigationItem::make(fn () => __('inspirecms::inspirecms.trash'))
+                ->group(static::getNavigationGroup())
+                ->parentItem(static::getNavigationParentItem())
+                ->icon('heroicon-o-trash')
+                ->isActiveWhen(fn (): bool => request()->routeIs(static::getRouteBaseName() . '.trash'))
+                ->sort(9999)
+                ->url(static::getUrl('trash')),
+        ];
     }
 
     //region Global search
@@ -64,57 +92,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
         blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
     }
     //endregion Global search
-
-    /**
-     * @return array<NavigationItem>
-     */
-    public static function getCustomNavigationItems(array $parameters = []): array
-    {
-        $navigationLabel = static::getNavigationLabel();
-        if (isset($parameters['parent'])) {
-            if ($parameters['parent'] instanceof Model && $parameters['parent']->exists) {
-                $navigationLabel = static::getRecordTitle($parameters['parent']);
-            } elseif (! empty($parameters['parentTitle'])) {
-                $navigationLabel = $parameters['parentTitle'];
-                unset($parameters['parentTitle']);
-            } elseif (is_int($parameters['parent']) || is_string($parameters['parent'])) {
-                $record = static::getModel()::find($parameters['parent']);
-                if ($record) {
-                    $navigationLabel = static::getRecordTitle($record);
-                }
-            }
-        }
-        $isActive = function () use ($parameters) {
-            if (! request()->routeIs(static::getRouteBaseName() . '.*')) {
-                return false;
-            }
-            if (isset($parameters['parent'])) {
-                $parentKey = $parameters['parent'] instanceof Model ? $parameters['parent']->getKey() : $parameters['parent'];
-
-                return request()->query('parent') == $parentKey;
-            }
-
-            return false;
-        };
-
-        return [
-            NavigationItem::make($navigationLabel)
-                ->group(static::getNavigationGroup())
-                ->parentItem(static::getNavigationParentItem())
-                ->icon(static::getNavigationIcon())
-                ->activeIcon(static::getActiveNavigationIcon())
-                ->isActiveWhen($isActive)
-                ->badge(static::getNavigationBadge(), color: static::getNavigationBadgeColor())
-                ->badgeTooltip(static::getNavigationBadgeTooltip())
-                ->sort(static::getNavigationSort())
-                ->url(static::getCustomNavigationUrl($parameters)),
-        ];
-    }
-
-    public static function getCustomNavigationUrl(array $parameters = []): string
-    {
-        return static::getUrl('index', $parameters);
-    }
 
     public static function getModelLabel(): string
     {

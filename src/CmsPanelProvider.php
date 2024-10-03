@@ -87,7 +87,7 @@ class CmsPanelProvider extends PanelProvider
     protected function configureNavigation(Panel $panel): Panel
     {
         return $panel
-            ->sidebarCollapsibleOnDesktop()
+            ->topNavigation()
             ->navigationGroups([
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),

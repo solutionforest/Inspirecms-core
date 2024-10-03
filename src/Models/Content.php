@@ -112,6 +112,12 @@ class Content extends BaseModel implements ContentContract
                 $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
             }
         });
+        static::deleting(function (self $model) {
+            $model->children()->delete();
+        });
+        static::forceDeleting(function (self $model) {
+            $model->children()->forceDelete();
+        });
     }
 
     //region Scope(s)
@@ -164,7 +170,7 @@ class Content extends BaseModel implements ContentContract
         return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
     }
 
-    protected function getNestableParentIdColumn()
+    public function getNestableParentIdColumn(): string
     {
         return 'parent_id';
     }

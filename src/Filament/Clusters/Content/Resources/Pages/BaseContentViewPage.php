@@ -10,19 +10,28 @@ use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasPublishForm
+abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasPublishForm, HasModelExplorer
 {
     use CanBePublish;
     use HasPreviewModal;
     use WithPagination;
+    use ContentPageTrait;
+
+    protected static string $view = "inspirecms::filament.pages.content.view";
 
     protected function getHeaderActions(): array
     {
         return [
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon('heroicon-o-eye'),
+            Actions\EditAction::make()
+                ->hidden(fn ($record) => $record->trashed()),
+            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
+                ->icon('heroicon-o-eye')
+                ->hidden(fn ($record) => $record->trashed()),
             Actions\DeleteAction::make(),
             Actions\RestoreAction::make(),
             Actions\ForceDeleteAction::make(),

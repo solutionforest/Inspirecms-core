@@ -2,49 +2,138 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Livewire\Attributes\Locked;
-use Livewire\Attributes\Url;
+use Filament\Actions;
+use Filament\Navigation\NavigationItem;
+use Filament\Resources\Pages\ListRecords;
+use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
 trait ContentPageTrait
 {
-    #[Url]
-    public $parent = '';
+    use InteractsWithModelExplorer {
+        modelExplorer as protected traitModelExplorer;
+    }
 
-    #[Locked]
-    public ?Model $parentRecord = null;
+    public array $expandedModelExplorerItems = [];
 
     public function mountContentPageTrait()
     {
-        if ($this->parent) {
-            $this->parentRecord = $this->resolveParentRecord($this->parent);
+        if (!$this instanceof ListRecords) {
+            $this->refreshModelExplorerSidebar();
+        }
+    }
+    
+    public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
+    {
+        $modelClass = $this->getModel();
+        $model = new $modelClass();
+        $parentIdColumn = $model->getNestableParentIdColumn();
+        $rootLevelKey = $model->getNestableRootValue();
+        return $modelExplorer
+            ->model($modelClass)
+            ->parentColumnName($parentIdColumn)
+            ->rootLevelKey($rootLevelKey)
+            ->modifyQueryUsing(fn ($query) => $query->withCount('children'))
+            ->determineRecordLabelUsing(fn ($record) => $record->title)
+            ->determineRecordHasChildrenUsing(fn ($record) => $record->children_count > 0)
+            ->actions([
+                CreateContentAction::make(),
+            ]);
+    }
+
+    protected function refreshSelectedModelItem(string | int $key): void
+    {
+        $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit'], ['record' => $key], false);
+        $this->redirect($url);
+    }
+
+    protected function configureSelectedModelItemFormAction(Actions\Action $action): void
+    {
+        match (true) {
+            $action instanceof CreateContentAction => $action
+                ->color('gray')
+                ->extraAttributes(['class' => 'flex-1'])
+                ->modifyUrlParameterUsing(fn (array $arguments, array $parameters) => array_merge($parameters, [
+                    'parent' => $arguments['key'] ?? null
+                ])),
+            default => null,
+        };
+    }
+
+    protected function refreshModelExplorerSidebar(): void
+    {
+        $record = $this instanceof BaseContentCreatePage ? 
+            $this->getParentRecord() : 
+            $this->getRecord();
+
+        if (!$record) {
+            return;
+        }
+
+        if ($record->trashed()) {
+            $this->expandedModelExplorerItems = [];
+            return;
+        }
+
+        $this->selectedModelItem($record);
+
+        $ancestors = collect($record->ancestors())->push($record);
+        foreach ($ancestors as $index => $ancestor) {
+            $this->getModelExplorerNodes($ancestor->parent_id, $index);
+            if ($ancestor->getKey() !== $record->getKey()) {
+                $this->expandedModelExplorerItems[] = $ancestor->getKey();
+            }
         }
     }
 
-    public function getParentRecord(): ?Model
+    public function getBreadcrumbs(): array
     {
-        return $this->parentRecord;
-    }
+        $resource = static::getResource();
 
-    protected function resolveParentRecord(int | string $key): Model
-    {
-        $record = static::getResource()::resolveRecordRouteBinding($key);
+        $originalBreadcrumbs = parent::getBreadcrumbs();
 
-        if ($record === null) {
-            throw (new ModelNotFoundException)->setModel($this->getModel(), [$key]);
+        if ($this instanceof BaseContentCreatePage) {
+            $parent = $this->getParentRecord();
+
+            $breadcrumbs = array_slice($originalBreadcrumbs, 0, -1);
+            $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -1);
+    
+        } else if ($this instanceof BaseContentEditPage || $this instanceof BaseContentViewPage) {
+            $parent = $this->getParent();
+            
+            $breadcrumbs = array_slice($originalBreadcrumbs, 0, -2);
+            $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -2);
+    
+        } else {
+            $parent = null;
+
+            $breadcrumbs = $originalBreadcrumbs;
+            $slicedBreadcrumbs = [];
         }
 
-        return $record;
-    }
+        $ancestors = $parent ? collect($parent->ancestors())->push($parent)->filter() : collect();
 
-    public function getParent(): string | int | Model | null
-    {
-        return $this->parentRecord ?? $this->parent;
-    }
+        foreach ($ancestors as $ancestor) {
+            $parameters = ['record' => $ancestor];
+            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], $parameters, true);
 
-    public function getParentKey(): string | int | null
-    {
-        return $this->parentRecord?->getKey() ?? $this->parent;
+            $parentTitle = $resource::getRecordTitle($ancestor) ?? $ancestor->getKey();
+
+            if ($url) {
+                $breadcrumbs[$url] = $parentTitle;
+            } else {
+                $breadcrumbs[] = $parentTitle;
+            }
+        }
+
+        $breadcrumbs = array_merge($breadcrumbs, $slicedBreadcrumbs);
+
+        return $breadcrumbs;
     }
 }

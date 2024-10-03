@@ -8,6 +8,9 @@ class BaseManagePage extends ManageRecords
 {
     public function getSubNavigation(): array
     {
+        if (config('inspirecms.filament.enable_cluster_navigation')) {
+            return parent::getSubNavigation();
+        }
         return [];
     }
 }

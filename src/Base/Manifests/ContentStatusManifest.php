@@ -114,6 +114,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ->color('gray')
                     ->requiresConfirmation()
                     ->action(function (null | Model | Content $record, Action $action, $livewire) {
+                        dd($record, $action, $livewire);
                         if (is_null($record)) {
                             $action->cancel();
 

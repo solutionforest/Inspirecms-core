@@ -33,4 +33,9 @@ class BaseCreatePage extends CreateRecord
 
         return $resource::getUrl('index');
     }
+
+    public function getSubNavigation(): array
+    {
+        return static::getResource()::getRecordSubNavigation($this);
+    }
 }

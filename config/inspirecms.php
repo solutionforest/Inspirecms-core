@@ -20,6 +20,10 @@ return [
         'driver' => 'public',
     ],
 
+    'filament' => [
+        'enable_cluster_navigation' => true,
+    ],
+
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
     ],

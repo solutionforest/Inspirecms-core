@@ -13,12 +13,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
-use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
@@ -69,7 +70,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ]),
                         Forms\Components\Group::make()
                             ->columns(['default' => 1, 'lg' => 1, 'md' => 2])
-                            ->visibleOn(['edit', 'view'])
+                            ->visible(fn ($record) => $record != null)
                             ->schema([
                                 static::getTimestampsGroupedFormComponent()->columnSpan(1),
                                 static::getPublishDetailGroupedFormComponent()->columnSpan(1),
@@ -114,15 +115,30 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(fn ($query) => $query->with('parent'))
             ->columns([
+
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
+                
+                Tables\Columns\TextColumn::make('deleted_at')
+                    ->label(__('inspirecms::inspirecms.deleted_at'))
+                    ->sortable()
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->visibleOn([BaseContentListTrashPage::class])
+                    ->width('5%'),
+
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title'))
                     ->sortable()
                     ->grow(),
-                Tables\Columns\TextColumn::make('parent.title')
+                Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::inspirecms.parent'))
+                    ->getStateUsing(function ($record) {
+                        if ($record->isRoot()) {
+                            return null;
+                        }
+                        return $record->parent?->title ?? $record->parent_id;
+                    })
                     ->grow(),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
@@ -145,12 +161,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->trueIcon('heroicon-m-eye')
                             ->falseIcon('heroicon-o-eye-slash')
                             ->falseColor('gray')
-                            ->alignCenter()->verticallyAlignCenter(),
+                            ->alignCenter()->verticallyAlignCenter()
+                            ->hiddenOn([BaseContentListTrashPage::class]),
 
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::inspirecms.publish_at'))
                             ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
-                            ->width('5%'),
+                            ->width('5%')
+                            ->hiddenOn([BaseContentListTrashPage::class]),
                     ]),
 
                 // timestamps
@@ -166,7 +184,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->width('5%'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\EditAction::make()->iconButton()->visible(fn ($record) => ! $record->trashed()),
                 Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\DeleteAction::make(),
@@ -182,7 +200,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 ])->iconButton(),
             ])
             ->filters([
-                Tables\Filters\TrashedFilter::make(),
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label(__('inspirecms::inspirecms.is_published'))
                     ->queries(
@@ -202,9 +219,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
     public static function getRelations(): array
     {
-        return [
-            // BaseContentChildrenRelationManager::class,
-        ];
+        return [];
     }
 
     public static function getModel(): string
@@ -218,10 +233,16 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'propertyDatas', // To get latest version
             'documentType', // For template use
             'parent', // To get parent title
-        ])
-            ->withoutGlobalScopes([
+        ]);
+    }
+
+    public static function resolveRecordRouteBinding(int | string $key): ?Model
+    {
+        return app(static::getModel())
+            ->resolveRouteBindingQuery(static::getEloquentQuery()->withoutGlobalScopes([
                 SoftDeletingScope::class,
-            ]);
+            ]), $key, static::getRecordRouteKeyName())
+            ->first();
     }
 
     //region Form field(s)/component(s)
@@ -249,9 +270,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::inspirecms.slug'))
-            ->live()->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
-                return $rule->where('parent_id', $get('parent_id') ?? 0);
+                $model = new (static::getModel());
+                return $rule->where('parent_id', $get('parent_id') ?? $model->getNestableRootValue());
             })
             ->required();
     }
@@ -281,19 +303,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         $fallbackParentId = KeyHelper::generateMinUuid();
 
-        return BelongsToParentSelect::make('parent_id')
-            ->label(__('inspirecms::inspirecms.parent_xxx', ['name' => strtolower(__('inspirecms::inspirecms.page'))]))
-            ->nestableParentRelationship(name: 'parent', titleAttribute: 'title', ignoreRecord: true)
-            ->searchable(['title', 'slug'])
-            ->preload()
-            ->live()
-            ->disabled()
-            ->dehydrated(true)
-            ->hidden(function ($operation) {
-                return $operation === 'create';
-            })
-            ->dehydratedWhenHidden(true)
-            ->rootParentId($fallbackParentId)
+        return Forms\Components\Hidden::make('parent_id')
+            ->dehydratedWhenHidden()
             ->dehydrateStateUsing(function (ContentForm $livewire, $operation, $record) use ($fallbackParentId) {
                 if ($operation === 'create') {
                     return $livewire->getParentKey() ?? $fallbackParentId;

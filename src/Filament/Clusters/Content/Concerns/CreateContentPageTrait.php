@@ -2,105 +2,53 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
-use Filament\Actions\Action;
-use Filament\Actions\ActionGroup;
-use Filament\Forms\Form;
-use Filament\Pages\Concerns\CanUseDatabaseTransactions;
-use Filament\Pages\Concerns\HasUnsavedDataChangesAlert;
-use Filament\Pages\Concerns\InteractsWithFormActions;
-use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Url;
 
 trait CreateContentPageTrait
 {
-    use CanUseDatabaseTransactions;
-    use HasUnsavedDataChangesAlert;
-    use InteractsWithFormActions;
+    #[Url]
+    public $parent = '';
 
-    public ?Model $record = null;
+    #[Locked]
+    public ?Model $parentRecord = null;
 
-    /**
-     * @var array<string, mixed> | null
-     */
-    public ?array $data = [];
-
-    public ?string $previousUrl = null;
-
-    public function getFormActionsAlignment(): string | Alignment
+    public function mountCreateContentPageTrait()
     {
-        return 'end';
+        if ($this->parent) {
+            $this->parentRecord = $this->resolveParentRecord($this->parent);
+        }
     }
 
-    protected function fillForm(): void
+    public function getParentRecord(): ?Model
     {
-        $this->callHook('beforeFill');
-
-        $this->form->fill();
-
-        $this->callHook('afterFill');
+        return $this->parentRecord;
     }
 
-    /**
-     * @return array<int | string, string | Form>
-     */
-    protected function getForms(): array
+    protected function resolveParentRecord(int | string $key): ?Model
     {
-        return [
-            'form' => $this->form(static::getContentResource()::form(
-                $this->makeForm()
-                    ->operation($this->getOperation())
-                    ->model($this->getModel())
-                    ->statePath($this->getFormStatePath())
-                    ->columns($this->hasInlineLabels() ? 1 : 2)
-                    ->inlineLabel($this->hasInlineLabels()),
-            )),
-        ];
+        $record = static::getResource()::resolveRecordRouteBinding($key);
+
+        if ($record === null) {
+            $model = new ($this->getModel());
+            if (method_exists($model, 'getNestableRootValue') && $model->getNestableRootValue() == $key) {
+                return null;
+            }
+            throw (new ModelNotFoundException)->setModel($this->getModel(), [$key]);
+        }
+
+        return $record;
     }
 
-    public function getFormStatePath(): ?string
+    public function getParent(): string | int | Model | null
     {
-        return 'data';
+        return $this->parentRecord ?? $this->parent;
     }
 
-    /**
-     * @return array<Action | ActionGroup>
-     */
-    protected function getFormActions(): array
+    public function getParentKey(): string | int | null
     {
-        return [];
-    }
-
-    /**
-     * @return array<string, mixed>
-     */
-    protected function getRedirectUrlParameters(): array
-    {
-        return [];
-    }
-
-    protected function getMountedActionFormModel(): Model | string | null
-    {
-        return $this->getModel();
-    }
-
-    public function getModel(): string
-    {
-        return static::getContentResource()::getModel();
-    }
-
-    protected function getOperation(): string
-    {
-        return 'create';
-    }
-
-    protected static function getContentResource(): string
-    {
-        return config('inspirecms.resources.page', PageResource::class);
-    }
-
-    public function getRecord(): ?Model
-    {
-        return $this->record;
+        return $this->parentRecord?->getKey() ?? $this->parent;
     }
 }

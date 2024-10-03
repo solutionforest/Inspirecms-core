@@ -2,21 +2,27 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
-use Filament\Actions\CreateAction;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentListPage extends BaseListPage
+abstract class BaseContentListPage extends BaseListPage implements HasModelExplorer
 {
     use ContentPageTrait;
 
+    protected static string $view = "inspirecms::filament.pages.content.list";
+    
     public function getActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateContentAction::make()
+                ->modifyUrlParameterUsing(function (array $parameters) {
+                    return array_merge($parameters, ['parent' => $this->getParentKey()]);
+                }),
         ];
     }
 
@@ -34,5 +40,16 @@ abstract class BaseContentListPage extends BaseListPage
             )
             ->prepend(Tab::make(), 'all')
             ->toArray();
+    }
+
+    public function getParentKey(): string | int | null
+    {
+        $model = new ($this->getModel())();
+        return $model->getNestableRootValue();
+    }
+
+    public function isDisplayTable(): bool
+    {
+        return false;
     }
 }

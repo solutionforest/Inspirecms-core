@@ -115,6 +115,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        \Livewire\Livewire::component('inspirecms::test', \SolutionForest\InspireCms\Filament\Pages\Test2::class);
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
