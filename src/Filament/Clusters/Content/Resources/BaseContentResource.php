@@ -271,10 +271,20 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::inspirecms.slug'))
             ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
-            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get) {
+            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get, ContentForm $livewire, string $operation) {
                 $model = new (static::getModel());
 
-                return $rule->where('parent_id', $get('parent_id') ?? $model->getNestableRootValue());
+                $parentId = $get('parent_id') ?? null;
+
+                if ($operation === 'create') {
+                    $parentId = $livewire->getParentKey() ?? $parentId;
+                }
+
+                if (!filled($parentId)) {
+                    $parentId = $model->getNestableRootValue();
+                }
+
+                return $rule->where('parent_id', $parentId);
             })
             ->required();
     }

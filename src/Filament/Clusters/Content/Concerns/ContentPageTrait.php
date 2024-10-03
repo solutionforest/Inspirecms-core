@@ -4,6 +4,8 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
@@ -46,10 +48,46 @@ trait ContentPageTrait
             ]);
     }
 
-    protected function refreshSelectedModelItem(string | int $key): void
+    protected function mutuateRootNode(array $nodes): array
     {
-        $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit'], ['record' => $key], false);
-        $this->redirect($url);
+        $nodes = array_merge([
+            [
+                'key' => 'root',
+                'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
+                'label' => __('inspirecms::inspirecms.root'),
+                'hasChildren' => false,
+                'depth' => 0,
+                'icon' => 'heroicon-o-home',
+            ],
+        ], $nodes);
+        return $nodes;
+    }
+
+    protected function refreshSelectedModelItem(string | int | null $key): void
+    {
+        if ($key) {
+
+            switch ($key) {
+                case 'root':
+                    $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false);
+                    break;
+                default:
+                    $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit'], ['record' => $key], false);
+                    break;
+            }
+
+            if ($url) {
+                $this->redirect($url);
+            }
+        }
+    }
+
+    protected function resolveSelectedModelItem(string | int $key): ?Model
+    {
+        if (in_array($key, ['root'])) {
+            return null;
+        }
+        return $this->getModelExplorer()->findRecord($key);
     }
 
     protected function configureSelectedModelItemFormAction(Actions\Action $action): void
@@ -58,9 +96,15 @@ trait ContentPageTrait
             $action instanceof CreateContentAction => $action
                 ->color('gray')
                 ->extraAttributes(['class' => 'flex-1'])
-                ->modifyUrlParameterUsing(fn (array $arguments, array $parameters) => array_merge($parameters, [
-                    'parent' => $arguments['key'] ?? null,
-                ])),
+                ->modifyUrlParameterUsing(function (array $arguments, array $parameters) {
+                    $parent = $arguments['key'] ?? null;
+                    if (in_array($parent, ['root'])) {
+                        $parent = null;
+                    }
+                    return array_merge($parameters, [
+                        'parent' => $parent,
+                    ]);
+                }),
             default => null,
         };
     }

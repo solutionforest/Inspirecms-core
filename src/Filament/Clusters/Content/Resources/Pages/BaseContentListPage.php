@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
+use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
@@ -51,6 +52,11 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
 
     public function isDisplayTable(): bool
     {
-        return false;
+        return true;
+    }
+
+    public function getSubNavigationPosition(): SubNavigationPosition
+    {
+        return SubNavigationPosition::Start;
     }
 }

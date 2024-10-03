@@ -5,9 +5,11 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -21,6 +23,7 @@ class Content extends BaseModel implements ContentContract
     use Concerns\Publishable;
     use HasUuids;
     use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -185,4 +188,11 @@ class Content extends BaseModel implements ContentContract
         return KeyHelper::generateMinUuid();
     }
     //endregion Nestable
+
+    //region Factory
+    protected static function newFactory()
+    {
+        return ContentFactory::new();
+    }
+    //endregion Factory
 }
