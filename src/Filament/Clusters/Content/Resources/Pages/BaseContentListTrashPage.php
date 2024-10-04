@@ -24,4 +24,9 @@ abstract class BaseContentListTrashPage extends BaseContentListPage
                     ->onlyTrashed()
             );
     }
+
+    public function isDisplayTable(): bool
+    {
+        return true;
+    }
 }

@@ -52,7 +52,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
 
     public function isDisplayTable(): bool
     {
-        return true;
+        return false;
     }
 
     public function getSubNavigationPosition(): SubNavigationPosition
