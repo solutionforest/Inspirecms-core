@@ -156,6 +156,7 @@ class FieldResource extends Resource implements ClusterSectionResource
                 return InspireCmsConfig::getFieldModelClass()::find($id);
             }, modifyRuleUsing: function (Unique $rule, ?Model $record, $get) {
                 $groupId = $record?->group_id ?? $get('group_id') ?? 0;
+
                 return $rule
                     ->where('group_id', $groupId);
             });

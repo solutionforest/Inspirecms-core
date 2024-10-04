@@ -23,7 +23,7 @@ class FieldGroup extends BaseModel
     {
         return $this->hasMany(InspireCmsConfig::getFieldGroupableModelClass(), 'field_group_id');
     }
-    
+
     /**
      * @return \Filament\Forms\Components\Component
      */
