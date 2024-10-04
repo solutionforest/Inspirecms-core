@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
@@ -71,6 +71,7 @@ trait ContentPageTrait
                                 ->whereKeyNot($record->getKey())
                                 ->whereKeyNot($record->parent_id);
                         }
+
                         return [
                             Forms\Components\Toggle::make('asRoot')
                                 ->live(),
@@ -93,7 +94,7 @@ trait ContentPageTrait
 
                                 $record->parent_id = $rootLevelKey;
 
-                            } else if (isset($data['parent'])) {
+                            } elseif (isset($data['parent'])) {
 
                                 $record->parent_id = $data['parent'][0];
                             }

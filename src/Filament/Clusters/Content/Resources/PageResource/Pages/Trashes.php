@@ -44,5 +44,4 @@ class Trashes extends BaseContentListTrashPage
     {
         return __('inspirecms::inspirecms.trash');
     }
-
 }
