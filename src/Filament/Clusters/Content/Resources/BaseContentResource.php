@@ -293,7 +293,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $parentId = $model->getNestableRootValue();
                 }
 
-                return $rule->where('parent_id', $parentId);
+                return $rule
+                    ->where('parent_id', $parentId);
             })
             ->required();
     }

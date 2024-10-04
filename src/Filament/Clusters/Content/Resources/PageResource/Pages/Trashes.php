@@ -39,4 +39,10 @@ class Trashes extends BaseContentListTrashPage
 
         $action->successRedirectUrl($this->getUrl());
     }
+
+    public function getBreadcrumb(): ?string
+    {
+        return __('inspirecms::inspirecms.trash');
+    }
+
 }

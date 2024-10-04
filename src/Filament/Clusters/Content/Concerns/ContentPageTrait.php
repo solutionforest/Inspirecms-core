@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
+use Filament\Forms;
+use Filament\Tables;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
@@ -61,12 +63,47 @@ trait ContentPageTrait
             ->actions([
                 CreateContentAction::make(),
                 Actions\Action::make('linkToParent')
-                    // ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->form([
-                        PaginationPicker::make('parent')
-                            ->paginationOptions($modelClass::query()),
-                    ])
-                    ->successNotificationTitle('not implemented')
+                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                    ->form(function ($record) use ($modelClass) {
+                        $parentQuery = $modelClass::query();
+                        if ($record) {
+                            $parentQuery = $parentQuery
+                                ->whereKeyNot($record->getKey())
+                                ->whereKeyNot($record->parent_id);
+                        }
+                        return [
+                            Forms\Components\Toggle::make('asRoot')
+                                ->live(),
+                            PaginationPicker::make('parent')
+                                ->paginationOptions($parentQuery)
+                                ->recordTitleUsing(fn ($record) => $record->title)
+                                ->tableColumns([
+                                    Tables\Columns\TextColumn::make('id'),
+                                    Tables\Columns\TextColumn::make('title'),
+                                    Tables\Columns\TextColumn::make('slug'),
+                                ])
+                                ->maxItems(1)
+                                ->minItems(1)
+                                ->visible(fn ($get) => $get('asRoot') === false),
+                        ];
+                    })
+                    ->action(function (?Model $record, array $data, $action) use ($rootLevelKey) {
+                        if ($record) {
+                            if (isset($data['asRoot']) && $data['asRoot'] === true) {
+
+                                $record->parent_id = $rootLevelKey;
+
+                            } else if (isset($data['parent'])) {
+
+                                $record->parent_id = $data['parent'][0];
+                            }
+
+                            $record->save();
+
+                            $action->success();
+                        }
+                    })
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
                 Actions\Action::make('reorder')
                     ->modalContent(new HtmlString('not implemented'))

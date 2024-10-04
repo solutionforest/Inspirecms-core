@@ -42,7 +42,7 @@ class PageActivity extends BaseWidget
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('inspirecms::inspirecms.publish_at'))
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->getStateUsing(fn ($record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::inspirecms.last_updated_at'))
@@ -84,7 +84,7 @@ class PageActivity extends BaseWidget
     {
         $query = InspireCmsConfig::getContentModelClass()::query();
 
-        return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
+        return $query->with(['publishedVersions'])->orderByDesc('updated_at')->take(static::$totalTakeLatest);
     }
 
     //region Table Configuration
