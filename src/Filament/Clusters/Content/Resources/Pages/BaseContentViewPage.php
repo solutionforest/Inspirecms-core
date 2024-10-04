@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer, HasPublishForm
@@ -27,6 +28,11 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     protected function getHeaderActions(): array
     {
         return [
+            Actions\Action::make('back')
+                ->label(__('inspirecms::inspirecms.back'))
+                ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['trash', 'index'], [], false))
+                ->color('gray')
+                ->visible(fn ($record) => $record->trashed()),
             Actions\EditAction::make()
                 ->hidden(fn ($record) => $record->trashed())
                 ->iconButton(),
@@ -36,7 +42,8 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
             Actions\DeleteAction::make()
                 ->iconButton(),
             Actions\RestoreAction::make()
-                ->iconButton(),
+                ->iconButton()
+                ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false)),
             Actions\ForceDeleteAction::make()
                 ->iconButton(),
         ];

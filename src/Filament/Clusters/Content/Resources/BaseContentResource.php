@@ -94,6 +94,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->schema([
                                         Forms\Components\Section::make([
                                             static::getDocumentTypeDisplayComponent(),
+                                            Forms\Components\Placeholder::make('id')
+                                                ->label(__('inspirecms::inspirecms.id'))
+                                                ->inlineLabel()
+                                                ->content(fn (Model | ModelsContent | null $record) => $record->getKey()),
                                         ]),
                                         static::getTimestampsGroupedFormComponent()->columnSpan(1),
                                         static::getPublishDetailGroupedFormComponent()->columnSpan(1),
@@ -191,7 +195,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton()->visible(fn ($record) => ! $record->trashed()),
-                Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\ForceDeleteAction::make(),
@@ -259,7 +262,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
-            ->live()->afterStateUpdated(function ($state, $get, $set, $operation) {
+            ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', Str::slug($state));
@@ -481,6 +484,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->schema([
                 static::getDisplayIsPublishedFormComponent(),
                 static::getPublishedAtFormComponent(),
+                static::getDisplayStatusFormComponent(),
             ])
             ->columns(['default' => 1]);
     }
@@ -511,6 +515,27 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return UIHelper::getBooleanIconPlaceholder($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+            });
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getDisplayStatusFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_status')
+            ->label(__('inspirecms::inspirecms.status'))
+            ->inlineLabel()
+            ->content(function (Model | ModelsContent | null $record) {
+                if (is_null($record)) {
+                    return null;
+                }
+
+                $status = inspirecms_content_statuses()->getOption($record->status);
+
+                if (! $status) {
+                    return null;
+                }
+
+                return UIHelper::getBadgePlaceholder($status->getLabel(), $status->getColor(), $status->getIcon());
             });
     }
 

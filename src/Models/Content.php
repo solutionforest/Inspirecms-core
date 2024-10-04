@@ -30,7 +30,7 @@ class Content extends BaseModel implements ContentContract
 
     protected $guarded = ['id'];
 
-    protected array $propertyDataState = [];
+    protected ?array $propertyDataState = [];
 
     public function documentType(): BelongsTo
     {
@@ -183,7 +183,7 @@ class Content extends BaseModel implements ContentContract
     //region Audit
     public function setPropertyDataAttribute($value): void
     {
-        $this->propertyDataState = $value;
+        $this->propertyDataState = $value ?? [];
     }
 
     protected function prepareAuditData(): array

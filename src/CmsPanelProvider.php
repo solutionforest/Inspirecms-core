@@ -136,6 +136,13 @@ class CmsPanelProvider extends PanelProvider
                     }
                 });
             });
+            \Filament\Actions\RestoreAction::configureUsing(function (\Filament\Actions\RestoreAction $action) {
+                $action->icon(function (\Filament\Actions\RestoreAction $action) {
+                    if ($action->isIconButton()) {
+                        return FilamentIcon::resolve('actions::restore-action.grouped') ?? 'heroicon-m-arrow-uturn-left';
+                    }
+                });
+            });
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
                 $action->icon('heroicon-o-eye');
             });

@@ -301,6 +301,9 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->extraAttributes(['class' => 'w-full'])
                     ->slideOver()
                     ->modalWidth('5xl')
+                    ->fillForm(fn ($record) => [
+                        'group_id' => $record?->getKey(),
+                    ])
                     ->form(static::getFieldsEditFormSchema())
                     ->action(function (array $data, Forms\Components\Repeater $component) {
                         $newUuid = $component->generateUuid();
@@ -395,7 +398,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                             $fieldResource::getNameFormComponent()->helperText('')
                                 ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
                             $fieldResource::getStatePathFormComponent()->helperText('')
-                                ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
+                                ->hidden()->saveRelationshipsWhenHidden()->dehydrated(),
                         ]),
                     $fieldResource::getInstructionsFormComponent()->helperText('')
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
@@ -419,6 +422,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     Forms\Components\Hidden::make('id'),
                     Forms\Components\Hidden::make('group_id'),
                     Forms\Components\Hidden::make('sort'),
+                    $fieldResource::getStatePathFormComponent()->hidden(),
                     $fieldResource::getLabelFormComponent(),
                     $fieldResource::getNameFormComponent(),
                     $fieldResource::getInstructionsFormComponent(),
@@ -427,7 +431,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
             Forms\Components\Section::make()
                 ->schema([
-                    $fieldResource::getStatePathFormComponent(),
                     $fieldResource::getMandatoryFormComponent()->columnSpanFull(),
                     $fieldResource::getIsVaryByCultureFormComponent()->columnSpanFull(),
                 ]),

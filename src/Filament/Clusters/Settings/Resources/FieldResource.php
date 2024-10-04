@@ -51,7 +51,8 @@ class FieldResource extends Resource implements ClusterSectionResource
                 Forms\Components\Section::make()
                     ->schema([
                         static::getGroupFormComponent()->inlineLabel(),
-                        static::getStatePathFormComponent(),
+                        static::getStatePathFormComponent()
+                            ->hidden()->dehydrated(),
                         static::getMandatoryFormComponent()->columnSpanFull(),
                         static::getIsVaryByCultureFormComponent()->columnSpanFull(),
                     ])
@@ -153,9 +154,10 @@ class FieldResource extends Resource implements ClusterSectionResource
                 $id = $get('id');
 
                 return InspireCmsConfig::getFieldModelClass()::find($id);
-            }, modifyRuleUsing: function (Unique $rule, ?Model $record) {
+            }, modifyRuleUsing: function (Unique $rule, ?Model $record, $get) {
+                $groupId = $record?->group_id ?? $get('group_id') ?? 0;
                 return $rule
-                    ->where('group_id', $record?->getKey() ?? 0);
+                    ->where('group_id', $groupId);
             });
     }
 

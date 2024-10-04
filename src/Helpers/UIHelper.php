@@ -80,4 +80,20 @@ class UIHelper
             'url' => $url,
         ]));
     }
+
+    public static function getBadgePlaceholder(string $text, string $color = 'primary', ?string $icon = null): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <x-filament::badge
+                color="{{$color}}"
+                icon="{{$icon}}"
+            >
+                {{$text}}
+            </x-filament::badge>
+        blade, [
+            'text' => $text,
+            'color' => $color,
+            'icon' => $icon,
+        ]));
+    }
 }
