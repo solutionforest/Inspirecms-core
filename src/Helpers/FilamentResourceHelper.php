@@ -13,7 +13,7 @@ class FilamentResourceHelper
      * @param  bool  $autorizeAction  A flag indicating whether the action should be authorized.
      * @return ?string The generated URL if successful, or null if the URL could not be generated.
      */
-    public static function attemptToGetUrl(string $resource, array|string $actions, array $parameters, bool $autorizeAction): ?string
+    public static function attemptToGetUrl(string $resource, array | string $actions, array $parameters, bool $autorizeAction): ?string
     {
         $url = null;
 

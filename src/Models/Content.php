@@ -17,13 +17,13 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class Content extends BaseModel implements ContentContract
 {
     use Concerns\BelongToCmsNestableTree;
-    use Concerns\NestableTrait;
-    use Concerns\HasTemplates;
+    use Concerns\HasAuthor;
     use Concerns\HasContentVersions {
         prepareAuditData as protected traitPrepareAuditData;
         resetAuditData as protected traitResetAuditData;
     }
-    use Concerns\HasAuthor;
+    use Concerns\HasTemplates;
+    use Concerns\NestableTrait;
     use HasFactory;
     use HasUuids;
     use SoftDeletes;
@@ -191,6 +191,7 @@ class Content extends BaseModel implements ContentContract
         $data = $this->traitPrepareAuditData();
         $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
         $data['to']['propertyData'] = $this->propertyDataState;
+
         return $data;
     }
 

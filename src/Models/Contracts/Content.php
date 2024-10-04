@@ -28,15 +28,11 @@ interface Content extends NestableInterface
 
     /**
      * Get the logs of the published versions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function publishVersionLogs(): HasMany;
 
     /**
      * Get the published versions.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function publishedVersions(): BelongsToMany;
 
@@ -131,9 +127,7 @@ interface Content extends NestableInterface
     /**
      * Sets the publishable data for the content.
      *
-     * @param array $data An associative array containing the publishable data.
-     *
-     * @return void
+     * @param  array  $data  An associative array containing the publishable data.
      */
     public function setPublishableData(array $data): void;
 

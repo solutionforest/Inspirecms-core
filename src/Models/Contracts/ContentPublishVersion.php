@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface ContentPublishVersion
-{
-}
+interface ContentPublishVersion {}

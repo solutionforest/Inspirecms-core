@@ -64,7 +64,7 @@ trait ContentPageTrait
                     // ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
                     ->form([
                         PaginationPicker::make('parent')
-                            ->paginationOptions($modelClass::query())
+                            ->paginationOptions($modelClass::query()),
                     ])
                     ->successNotificationTitle('not implemented')
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
@@ -73,7 +73,7 @@ trait ContentPageTrait
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
             ]);
     }
-            
+
     protected function resolveSelectedModelItem(string | int $key): ?Model
     {
         if (in_array($key, ['root'])) {

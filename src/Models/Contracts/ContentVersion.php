@@ -16,8 +16,6 @@ interface ContentVersion
 
     /**
      * Get the associated publish log for the content version.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function publishLog(): HasOne;
 }

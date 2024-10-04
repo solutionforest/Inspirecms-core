@@ -29,6 +29,7 @@ class CreatePage extends BaseContentCreatePage
         if (! $this->documentTypeRecord || blank($this->documentType)) {
             $redirectUrl = static::getResource()::getUrl('index');
             $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+
             return;
         }
 

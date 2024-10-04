@@ -12,7 +12,7 @@ trait HasAuthor
 
                 $model->author_id = $author->getKey();
                 $model->author_type = $author->getMorphClass();
-                
+
             }
         });
     }

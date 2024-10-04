@@ -20,7 +20,7 @@ class UserResolver
             return null;
         }
 
-        if (true === $authenticated) {
+        if ($authenticated === true) {
             return Auth::guard($guard)->user();
         }
 

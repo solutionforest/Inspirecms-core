@@ -65,12 +65,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                                 Forms\Components\Grid::make(1)
                                     ->schema([
-            
+
                                         static::getTitleFormComponent(),
-            
+
                                         // Field group grouped component
                                         static::getPropertyDataValueComponent(),
-            
+
                                     ]),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
@@ -99,7 +99,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                         static::getPublishDetailGroupedFormComponent()->columnSpan(1),
                                     ]),
                             ]),
-                        ]),
+                    ]),
             ]);
     }
 
@@ -400,9 +400,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 $documentTypeKey = $record?->document_type_id ?? null;
                 $resource = config('inspirecms.resources.document_type', DocumentTypeResource::class);
                 $url = $documentTypeKey ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentTypeKey], false) : null;
-                if (!$url) {
+                if (! $url) {
                     return $text;
                 }
+
                 return UIHelper::getInlineTextWithIconButtonPlaceholder($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
             });
     }

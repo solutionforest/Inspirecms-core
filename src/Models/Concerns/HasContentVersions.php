@@ -40,7 +40,7 @@ trait HasContentVersions
                 $model->publishVersionLogs()->create($data);
 
             }
-            
+
             $model->resetPublishableData();
             $model->resetPublishableState();
             $model->resetAuditData();
@@ -78,12 +78,14 @@ trait HasContentVersions
     public function getLatestContentVersion(): ?ContentVersion
     {
         $this->loadMissing('contentVersions');
+
         return $this->contentVersions->sortByDesc('created_at')->first();
     }
 
     public function getLatestPublishedContentVersion(): ?ContentVersion
     {
         $this->loadMissing('publishedVersions');
+
         return $this->publishedVersions->first();
     }
 
@@ -141,7 +143,7 @@ trait HasContentVersions
 
         return parent::save($data);
     }
-    
+
     protected function mutateLatestVersionPropertyData(?ContentVersion $contentVersion): array
     {
         if (! $contentVersion) {
@@ -150,10 +152,11 @@ trait HasContentVersions
 
         $data = data_get($contentVersion->to_data ?? [], 'propertyData');
 
-        if (!empty($data)) {
+        if (! empty($data)) {
             if (is_string($data)) {
                 return json_decode($data, true);
             }
+
             return $data;
         }
 
@@ -168,7 +171,7 @@ trait HasContentVersions
     protected function prepareAuditData(): array
     {
         return collect($this->getAuditAttributes())
-            ->map(fn ($attribute): array  => [
+            ->map(fn ($attribute): array => [
                 'attribute' => $attribute,
                 'old' => $this->getOriginal($attribute),
                 'new' => $this->getAttribute($attribute),
@@ -177,6 +180,7 @@ trait HasContentVersions
                 $carry ??= [];
                 $carry['from'][$item['attribute']] = $item['old'];
                 $carry['to'][$item['attribute']] = $item['new'];
+
                 return $carry;
             });
     }
