@@ -2,19 +2,32 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
-use Filament\Actions\CreateAction;
-use Filament\Tables\Actions\CreateAction as ActionsCreateAction;
+use Filament\Actions;
+use Filament\Tables;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 class ListPages extends BaseContentListPage
 {
+    public function getActions(): array
+    {
+        return [
+            Actions\Action::make('trash')
+                ->label(__('inspirecms::inspirecms.trash'))
+                ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'trash', [], false))
+                ->color('gray')
+                ->icon('heroicon-o-trash'),
+            ...parent::getActions(),
+        ];
+    }
+
     public static function getResource(): string
     {
         return config('inspirecms.resources.page', PageResource::class);
     }
 
-    protected function configureCreateAction(CreateAction | ActionsCreateAction $action): void
+    protected function configureCreateAction(Actions\CreateAction | Tables\Actions\CreateAction $action): void
     {
         parent::configureCreateAction($action);
 
@@ -23,7 +36,42 @@ class ListPages extends BaseContentListPage
         $action->url(function () {
             $resource = static::getResource();
 
-            return $resource::getUrl('create', ['parent' => $this->parent]);
+            return FilamentResourceHelper::attemptToGetUrl($resource, ['create'], ['parent' => $this->parent], false);
         });
+    }
+
+    protected function configureDeleteAction(Tables\Actions\DeleteAction $action): void
+    {
+        parent::configureDeleteAction($action);
+
+        $action->successRedirectUrl($this->getUrl());
+    }
+
+    protected function configureForceDeleteAction(Tables\Actions\ForceDeleteAction $action): void
+    {
+        parent::configureForceDeleteAction($action);
+
+        $action->successRedirectUrl($this->getUrl());
+    }
+
+    protected function configureDeleteBulkAction(Tables\Actions\DeleteBulkAction $action): void
+    {
+        parent::configureDeleteBulkAction($action);
+
+        $action->successRedirectUrl($this->getUrl());
+    }
+
+    protected function configureForceDeleteBulkAction(Tables\Actions\ForceDeleteBulkAction $action): void
+    {
+        parent::configureForceDeleteBulkAction($action);
+
+        $action->successRedirectUrl($this->getUrl());
+    }
+
+    protected function configureRestoreBulkAction(Tables\Actions\RestoreBulkAction $action): void
+    {
+        parent::configureRestoreBulkAction($action);
+
+        $action->successRedirectUrl($this->getUrl());
     }
 }

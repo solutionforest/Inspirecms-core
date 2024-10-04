@@ -90,6 +90,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             new ContentStatusOption(
                 0,
                 'draft',
+                false,
                 __('inspirecms::inspirecms.page_status.draft.label'),
                 'warning',
                 'heroicon-o-pencil',
@@ -97,6 +98,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             new ContentStatusOption(
                 1,
                 'publish',
+                true,
                 __('inspirecms::inspirecms.page_status.publish.label'),
                 'success',
                 'heroicon-o-check-circle'
@@ -104,6 +106,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             new ContentStatusOption(
                 2,
                 'unpublish',
+                false,
                 __('inspirecms::inspirecms.page_status.unpublish.label'),
                 'gray',
                 'heroicon-o-x-circle',
@@ -114,7 +117,6 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ->color('gray')
                     ->requiresConfirmation()
                     ->action(function (null | Model | Content $record, Action $action, $livewire) {
-                        dd($record, $action, $livewire);
                         if (is_null($record)) {
                             $action->cancel();
 
@@ -138,6 +140,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             new ContentStatusOption(
                 3,
                 'private',
+                false,
                 __('inspirecms::inspirecms.page_status.private.label'),
                 'secondary',
                 'heroicon-o-lock-closed',
@@ -198,17 +201,17 @@ class ContentStatusManifest implements ContentStatusManifestInterface
     }
 
     //region Helpers
-    protected static function handlePublishableRecord($record, $publishableState, $livewire, array $data)
+    protected static function handlePublishableRecord($record, $publishableState, $livewire, array $publishableData)
     {
 
         if ($livewire instanceof EditRecord &&
             in_array(CanBePublish::class, class_uses_recursive($livewire))) {
 
-            $isSuccess = $livewire->handlePublishableRecord(function () use ($data, $livewire, $publishableState) {
+            $isSuccess = $livewire->handlePublishableRecord(function () use ($publishableData, $livewire, $publishableState) {
 
-                $data = $livewire->getPublishableFormDataBeforePublish($data);
+                $data = $livewire->getPublishableFormDataBeforePublish();
 
-                $livewire->handlePublishableRecordCreateOrUpdate($data, false, $publishableState);
+                $livewire->handlePublishableRecordCreateOrUpdate($data, $publishableData, false, $publishableState);
             });
 
             if (! $isSuccess) {
@@ -217,7 +220,9 @@ class ContentStatusManifest implements ContentStatusManifestInterface
 
         } elseif (in_array(Publishable::class, class_uses_recursive($record))) {
 
-            $record->setPrivateUse($data);
+            $record->setPublishableState('private');
+
+            $record->save();
 
         } else {
 

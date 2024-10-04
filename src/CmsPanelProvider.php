@@ -10,6 +10,7 @@ use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -106,6 +107,37 @@ class CmsPanelProvider extends PanelProvider
             });
             \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
+            });
+            \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
+                $action->icon(function (\Filament\Actions\EditAction $action) {
+                    if ($action->isIconButton()) {
+                        return FilamentIcon::resolve('actions::edit-action.grouped') ?? 'heroicon-m-pencil-square';
+                    }
+                });
+            });
+            \Filament\Actions\ViewAction::configureUsing(function (\Filament\Actions\ViewAction $action) {
+                $action->icon(function (\Filament\Actions\ViewAction $action) {
+                    if ($action->isIconButton()) {
+                        return FilamentIcon::resolve('actions::view-action.grouped') ?? 'heroicon-m-eye';
+                    }
+                });
+            });
+            \Filament\Actions\DeleteAction::configureUsing(function (\Filament\Actions\DeleteAction $action) {
+                $action->icon(function (\Filament\Actions\DeleteAction $action) {
+                    if ($action->isIconButton()) {
+                        return FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash';
+                    }
+                });
+            });
+            \Filament\Actions\ForceDeleteAction::configureUsing(function (\Filament\Actions\ForceDeleteAction $action) {
+                $action->icon(function (\Filament\Actions\ForceDeleteAction $action) {
+                    if ($action->isIconButton()) {
+                        return FilamentIcon::resolve('actions::force-delete-action.modal') ?? 'heroicon-o-trash';
+                    }
+                });
+            });
+            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
+                $action->icon('heroicon-o-eye');
             });
         });
     }

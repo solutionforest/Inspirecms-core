@@ -17,19 +17,20 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class Content extends BaseModel implements ContentContract
 {
     use Concerns\BelongToCmsNestableTree;
-    use Concerns\HasPropertyData;
-    use Concerns\HasTemplates;
     use Concerns\NestableTrait;
-    use Concerns\Publishable;
+    use Concerns\HasTemplates;
+    use Concerns\HasContentVersions {
+        prepareAuditData as protected traitPrepareAuditData;
+        resetAuditData as protected traitResetAuditData;
+    }
+    use Concerns\HasAuthor;
     use HasUuids;
     use SoftDeletes;
     use HasFactory;
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'published_at' => 'datetime',
-    ];
+    protected array $propertyDataState = [];
 
     public function documentType(): BelongsTo
     {
@@ -53,8 +54,9 @@ class Content extends BaseModel implements ContentContract
 
     public function isPublished(?\Closure $callback = null): bool
     {
+        $latestContentVersion = $this->getLatestPublishedContentVersion();
         /** @var ?\Carbon\Carbon */
-        $publishedAt = $this->published_at;
+        $publishedAt = $latestContentVersion?->pivot?->published_at;
         $status = $this->status;
 
         // If there's no publish date, it's not published
@@ -86,24 +88,6 @@ class Content extends BaseModel implements ContentContract
 
         // If the publish date is in the future, it's not published
         return false;
-    }
-
-    protected function getPropertyDateToSave(): array
-    {
-        $publishedAt = $this->published_at;
-
-        $status = $this->status;
-
-        $defaultStatusValue = inspirecms_content_statuses()->getDefaultValue();
-
-        if ($status === $defaultStatusValue || is_null($defaultStatusValue)) {
-            return [];
-        }
-
-        // fill publish time to property data to determine is "published" version
-        return [
-            'published_at' => $publishedAt,
-        ];
     }
 
     public static function boot()
@@ -195,4 +179,36 @@ class Content extends BaseModel implements ContentContract
         return ContentFactory::new();
     }
     //endregion Factory
+
+    //region Audit
+    public function setPropertyDataAttribute($value): void
+    {
+        $this->propertyDataState = $value;
+    }
+
+    protected function prepareAuditData(): array
+    {
+        $data = $this->traitPrepareAuditData();
+        $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
+        $data['to']['propertyData'] = $this->propertyDataState;
+        return $data;
+    }
+
+    protected function resetAuditData(): void
+    {
+        $this->traitResetAuditData();
+        $this->propertyDataState = [];
+    }
+
+    protected function getAuditAttributes(): array
+    {
+        return [
+            'title',
+            'slug',
+            'status',
+            'document_type_id',
+            'parent_id',
+        ];
+    }
+    //endregion Audit
 }

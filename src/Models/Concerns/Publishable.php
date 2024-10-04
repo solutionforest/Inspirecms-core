@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Concerns;
 
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait Publishable
 {
@@ -10,6 +11,54 @@ trait Publishable
      * The state representing the publishable state.
      */
     protected string $publishableState = 'draft';
+
+    protected array $publishableData = [];
+
+    public static function bootPublishable()
+    {
+        static::saved(function (self $model) {
+            $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
+            if ($statusOption && $statusOption->isPublishable()) {
+
+                $data = $model->getPublishableData();
+                $data['version_id'] = $model->getLatestContentVersion()?->getKey();
+                $model->publishVersionLogs()->create($data);
+
+                $model->resetPublishableData();
+            }
+            $model->resetPublishableState();
+            ray($model)->purple();
+        });
+    }
+
+    public function publishVersionLogs()
+    {
+        return $this->hasMany(InspireCmsConfig::getContentPublishVersionModelClass(), 'content_id');
+    }
+
+    public function publishedVersions()
+    {
+        return $this->hasManyThrough(
+            InspireCmsConfig::getContentVersionModelClass(),
+            InspireCmsConfig::getContentPublishVersionModelClass(),
+            'content_id',
+            'id',
+            'id',
+            'version_id'
+        );
+    }
+
+    public function latestPublishVersion()
+    {
+        return $this->hasOneThrough(
+            InspireCmsConfig::getContentVersionModelClass(),
+            InspireCmsConfig::getContentPublishVersionModelClass(),
+            'content_id',
+            'id',
+            'id',
+            'version_id'
+        )->latest();
+    }
 
     /** {@inheritDoc} */
     public function setPublishableState(string $state): void
@@ -29,6 +78,24 @@ trait Publishable
         $this->publishableState = 'draft';
     }
 
+    /** {@inheritDoc} */
+    public function setPublishableData(array $data): void
+    {
+        $this->publishableData = $data;
+    }
+
+    /** {@inheritDoc} */
+    public function getPublishableData(): array
+    {
+        return $this->publishableData;
+    }
+
+    /** {@inheritDoc} */
+    public function resetPublishableData(): void
+    {
+        $this->publishableData = [];
+    }
+
     public function save(array $options = [])
     {
         $status = inspirecms_content_statuses()->getOption($this->getPublishableState());
@@ -37,37 +104,7 @@ trait Publishable
 
         event(new \SolutionForest\InspireCms\Events\ChangeContentStatus($result, $status));
 
-        $this->resetPublishableState();
-
         return $result;
-    }
-
-    public function draft(array $data)
-    {
-        $this->setPublishableState('draft');
-
-        return $this->save($data);
-    }
-
-    public function publish(array $data)
-    {
-        $this->setPublishableState('publish');
-
-        return $this->save($data);
-    }
-
-    public function unpublish()
-    {
-        $this->setPublishableState('unpublish');
-
-        return $this->save([]);
-    }
-
-    public function setPrivateUse(array $data)
-    {
-        $this->setPublishableState('private');
-
-        return $this->save($data);
     }
 
     protected function performPublishableAction(array $data, ?ContentStatusOption $option)

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 interface ContentVersion
 {
@@ -14,9 +15,9 @@ interface ContentVersion
     public function content(): BelongsTo;
 
     /**
-     * Get the property data associated with the content version.
+     * Get the associated publish log for the content version.
      *
-     * @return BelongsTo The associated property data.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function propertyData(): BelongsTo;
+    public function publishLog(): HasOne;
 }

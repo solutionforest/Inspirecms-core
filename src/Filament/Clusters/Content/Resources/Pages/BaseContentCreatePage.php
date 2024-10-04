@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
+use Filament\Actions\Action;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
@@ -27,6 +28,13 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
             $this->getCreateFormAction(),
             $this->getCancelFormAction(),
         ];
+    }
+
+    protected function getCreateFormAction(): Action
+    {
+        return parent::getCreateFormAction()
+            ->label(__('inspirecms::actions.save_draft.label'))
+            ->color('secondary');
     }
 
     protected function getRedirectUrl(): string

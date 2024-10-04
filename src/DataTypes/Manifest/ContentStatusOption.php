@@ -20,6 +20,12 @@ class ContentStatusOption extends BaseManifestOption
          * @var string
          */
         protected string $name,
+        /**
+         * Indicates whether the content is publishable.
+         *
+         * @var bool $isPublishable
+         */
+        protected bool $isPublishable = false,
         protected null | string | Closure $label = null,
         protected null | string | Closure $color = null,
         protected null | string | Closure $icon = null,
@@ -36,6 +42,11 @@ class ContentStatusOption extends BaseManifestOption
         return $this->name;
     }
 
+    public function isPublishable(): bool
+    {
+        return $this->isPublishable;
+    }
+
     public function getLabel(): string
     {
         return $this->evaluate($this->label) ?? $this->name;
@@ -49,13 +60,6 @@ class ContentStatusOption extends BaseManifestOption
     public function getIcon(): ?string
     {
         return $this->evaluate($this->icon);
-    }
-
-    public function formAction(Closure $callback): static
-    {
-        $this->formAction = $callback;
-
-        return $this;
     }
 
     public function getFormAction(): ?Action

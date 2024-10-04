@@ -17,8 +17,9 @@ return new class extends BaseMigration
             $table->uuid('parent_id')->comment('Parent\'s content.');
             $table->string('title');
             $table->string('slug');
-            $table->timestamp('published_at')->nullable();
             $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
+
+            $table->author();
 
             $table->timestamps();
             $table->softDeletes();
@@ -59,16 +60,16 @@ return new class extends BaseMigration
             $table->id();
             $table->timestamp('created_at');
 
-            $table->integer('content_id');
-            $table->integer('property_data_id');
+            $table->uuid('content_id')->index();
+            $table->json('from_data');
+            $table->json('to_data');
 
-            $table->index('content_id');
-            $table->index('property_data_id');
+            $table->author();
         });
-        Schema::create($tableNames['property_data'], function (Blueprint $table) {
-            $table->id();
-            $table->timestamp('published_at')->nullable()->comment('Inherited from parent component');
-            $table->json('property_value')->nullable();
+        Schema::create($tableNames['content_publish_version'], function (Blueprint $table) {
+            $table->integer('content_id')->index();
+            $table->integer('version_id')->index();
+            $table->timestamp('published_at');
         });
         Schema::create($tableNames['field_groupable'], function (Blueprint $table) {
             $table->id();
@@ -142,7 +143,7 @@ return new class extends BaseMigration
 
         Schema::dropIfExists($tableNames['nestable_tree']);
         Schema::dropIfExists($tableNames['field_groupable']);
-        Schema::dropIfExists($tableNames['property_data']);
+        Schema::dropIfExists($tableNames['content_publish_version']);
         Schema::dropIfExists($tableNames['content_version']);
 
         Schema::dropIfExists($tableNames['templatable']);
@@ -158,10 +159,10 @@ return new class extends BaseMigration
             'field_groupable' => $this->prefix . 'field_groupables',
             'nestable_tree' => $this->prefix . 'nestable_trees',
             'content_version' => $this->prefix . 'content_versions',
+            'content_publish_version' => $this->prefix . 'content_publish_version',
             'content' => $this->prefix . 'contents',
             'document_type' => $this->prefix . 'document_types',
             'language' => $this->prefix . 'languages',
-            'property_data' => $this->prefix . 'property_data',
             'user_login_activity' => $this->prefix . 'user_login_activities',
             'user' => $this->prefix . 'users',
             'template' => $this->prefix . 'templates',

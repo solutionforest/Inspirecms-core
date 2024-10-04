@@ -43,10 +43,14 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     protected function getHeaderActions(): array
     {
         return [
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()->icon('heroicon-o-eye'),
-            Actions\DeleteAction::make(),
-            Actions\RestoreAction::make(),
-            Actions\ForceDeleteAction::make(),
+            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
+                ->iconButton(),
+            Actions\DeleteAction::make()
+                ->iconButton(),
+            Actions\RestoreAction::make()
+                ->iconButton(),
+            Actions\ForceDeleteAction::make()
+                ->iconButton(),
         ];
     }
 
@@ -106,46 +110,53 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
             ->color('secondary');
     }
 
-    public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
-    {
-        $this->authorizeAccess();
+    // public function save(bool $shouldRedirect = true, bool $shouldSendSavedNotification = true): void
+    // {
+    //     $this->authorizeAccess();
 
-        $this->wrapPublisableSavingEventIntoDbTransaction(function () {
+    //     $this->wrapPublisableSavingEventIntoDbTransaction(function () {
 
-            $this->callHook('beforeValidate');
+    //         $this->callHook('beforeValidate');
 
-            // Avoid save relationships before update
-            $data = $this->form->getState(shouldCallHooksBefore: false, afterValidate: null);
-            // $data = $this->form->getState(afterValidate: function () {
-            //     $this->callHook('afterValidate');
+    //         // Avoid save relationships before update
+    //         $data = $this->form->getState(shouldCallHooksBefore: false, afterValidate: null);
+    //         // $data = $this->form->getState(afterValidate: function () {
+    //         //     $this->callHook('afterValidate');
 
-            //     $this->callHook('beforeSave');
-            // });
+    //         //     $this->callHook('beforeSave');
+    //         // });
 
-            $this->callHook('afterValidate');
+    //         $this->callHook('afterValidate');
 
-            $data = $this->mutateFormDataBeforeSave($data);
+    //         $data = $this->mutateFormDataBeforeSave($data);
 
-            $this->callHook('beforeSave');
+    //         $this->callHook('beforeSave');
 
-            $this->handleRecordUpdate($this->getRecord(), $data);
+    //         $this->handleRecordUpdate($this->getRecord(), $data);
 
-            // Handle save relationships on this line
-            $this->form->model($this->getRecord())->saveRelationships();
+    //         // Handle save relationships on this line
+    //         $this->form->model($this->getRecord())->saveRelationships();
 
-            $this->callHook('afterSave');
-        });
+    //         $this->callHook('afterSave');
+    //     });
 
-        $this->rememberData();
+    //     $this->rememberData();
 
-        if ($shouldSendSavedNotification) {
-            $this->getSavedNotification()?->send();
-        }
+    //     if ($shouldSendSavedNotification) {
+    //         $this->getSavedNotification()?->send();
+    //     }
 
-        if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
-            $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
-        }
-    }
+    //     if ($shouldRedirect && ($redirectUrl = $this->getRedirectUrl())) {
+    //         $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+    //     }
+    // }
+
+    // protected function handleRecordUpdate(Model $record, array $data): Model
+    // {
+    //     ray([$record, $data])->red();
+    //     $result = parent::handleRecordUpdate($record, $data);
+    //     return $result;
+    // }
 
     //region Computed Property
     public function getDtoProperty()

@@ -28,13 +28,17 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     {
         return [
             Actions\EditAction::make()
-                ->hidden(fn ($record) => $record->trashed()),
+                ->hidden(fn ($record) => $record->trashed())
+                ->iconButton(),
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
-                ->icon('heroicon-o-eye')
-                ->hidden(fn ($record) => $record->trashed()),
-            Actions\DeleteAction::make(),
-            Actions\RestoreAction::make(),
-            Actions\ForceDeleteAction::make(),
+                ->hidden(fn ($record) => $record->trashed())
+                ->iconButton(),
+            Actions\DeleteAction::make()
+                ->iconButton(),
+            Actions\RestoreAction::make()
+                ->iconButton(),
+            Actions\ForceDeleteAction::make()
+                ->iconButton(),
         ];
     }
 

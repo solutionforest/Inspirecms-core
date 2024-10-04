@@ -3,13 +3,21 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class ContentVersion extends BaseModel implements ContentVersionContract
 {
+    use Concerns\HasAuthor;
+
     protected $guarded = ['id'];
+
+    protected $casts = [
+        'from_data' => 'array',
+        'to_data' => 'array',
+    ];
 
     public $timestamps = false;
 
@@ -18,9 +26,9 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function propertyData(): BelongsTo
+    public function publishLog(): HasOne
     {
-        return $this->belongsTo(InspireCmsConfig::getPropertyDataModelClass(), 'property_data_id');
+        return $this->hasOne(InspireCmsConfig::getContentPublishVersionModelClass(), 'version_id');
     }
 
     public static function boot()

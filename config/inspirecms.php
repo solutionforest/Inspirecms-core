@@ -48,6 +48,10 @@ return [
         'role' => RoleResource::class,
     ],
 
+    'resolvers' => [
+        'user' => \SolutionForest\InspireCms\Resolver\UserResolver::class,
+    ],
+
     'models' => [
         'table_name_prefix' => 'cms_',
         'morph_map_prefix' => 'cms_',

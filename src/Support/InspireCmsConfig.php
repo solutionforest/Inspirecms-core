@@ -49,18 +49,6 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'NestableTree model');
     }
 
-    public static function getPropertyDataTableName(): string
-    {
-        return app(static::getPropertyDataModelClass())->getTable();
-    }
-
-    public static function getPropertyDataModelClass(): string
-    {
-        $class = ModelManifest::get(Models\Contracts\PropertyData::class, Models\PropertyData::class);
-
-        return self::ensureClassExists($class, 'PropertyData model');
-    }
-
     public static function getContentVersionTableName(): string
     {
         return app(static::getContentVersionModelClass())->getTable();
@@ -71,6 +59,18 @@ class InspireCmsConfig
         $class = ModelManifest::get(Models\Contracts\ContentVersion::class, Models\ContentVersion::class);
 
         return self::ensureClassExists($class, 'ContentVersion model');
+    }
+
+    public static function getContentPublishVersionTableName(): string
+    {
+        return app(static::getContentPublishVersionModelClass())->getTable();
+    }
+
+    public static function getContentPublishVersionModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\ContentPublishVersion::class, Models\ContentPublishVersion::class);
+
+        return self::ensureClassExists($class, 'ContentPublishVersion model');
     }
 
     public static function getDocumentTypeTableName(): string

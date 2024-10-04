@@ -20,18 +20,25 @@ interface Content extends NestableInterface
     public function documentType(): BelongsTo;
 
     /**
-     * Return the multiple property data relation.
-     *
-     * @return BelongsToMany The property data relation.
-     */
-    public function propertyDatas(): BelongsToMany;
-
-    /**
      * Return the content versions relation.
      *
      * @return HasMany The content versions relation.
      */
     public function contentVersions(): HasMany;
+
+    /**
+     * Get the logs of the published versions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function publishVersionLogs(): HasMany;
+
+    /**
+     * Get the published versions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function publishedVersions(): BelongsToMany;
 
     /**
      * Return the nestable tree relation.
@@ -69,6 +76,27 @@ interface Content extends NestableInterface
     public function templateable(): MorphMany;
 
     /**
+     * Retrieve the latest version of the content.
+     *
+     * @return ContentVersion|null The latest content version or null if none exists.
+     */
+    public function getLatestContentVersion(): ?ContentVersion;
+
+    /**
+     * Retrieve the latest published content version.
+     *
+     * @return ContentVersion|null The latest published content version, or null if none exists.
+     */
+    public function getLatestPublishedContentVersion(): ?ContentVersion;
+
+    /**
+     * Retrieve the data of the latest version property.
+     *
+     * @return array The data of the latest version property.
+     */
+    public function getLatestVersionPropertyData(): array;
+
+    /**
      * Determine if this content is already published.
      *
      * This method checks if the content has been published,
@@ -78,34 +106,6 @@ interface Content extends NestableInterface
      * @return bool True if published, false otherwise.
      */
     public function isPublished(?\Closure $callback = null): bool;
-
-    /**
-     * Create versioning property data.
-     *
-     * This method creates a new property data instance for versioning.
-     *
-     * @param  array  $data  The data to create the property data with.
-     * @return \SolutionForest\InspireCms\Models\Contracts\PropertyData The created property data.
-     */
-    public function createPropertyData(array $data);
-
-    /**
-     * Retrieves the latest version of property data.
-     *
-     * This method returns the most recent property data associated with the content.
-     *
-     * @return PropertyData|null The latest property data or null if none exists.
-     */
-    public function getLatestPropertyData(): ?PropertyData;
-
-    /**
-     * Retrieves the latest published version of property data.
-     *
-     * This method returns the most recent published property data associated with the content.
-     *
-     * @return PropertyData|null The latest published property data or null if none exists.
-     */
-    public function getLatestPublishedPropertyData(): ?PropertyData;
 
     /**
      * Set the publishable state.
@@ -129,12 +129,22 @@ interface Content extends NestableInterface
     public function getPublishableState(): string;
 
     /**
-     * Reset the publishable state to the default state.
+     * Sets the publishable data for the content.
      *
-     * This method sets the publishable state back to its default
-     * value, e.g. 'draft'.
+     * @param array $data An associative array containing the publishable data.
+     *
+     * @return void
      */
-    public function resetPublishableState(): void;
+    public function setPublishableData(array $data): void;
+
+    /**
+     * Retrieve the data that can be published.
+     *
+     * This method should return an array of data that is ready to be published.
+     *
+     * @return array The data that can be published.
+     */
+    public function getPublishableData(): array;
 
     /**
      * Set the specified template as the default for the document type.

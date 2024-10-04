@@ -6,10 +6,12 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
+use SolutionForest\InspireCms\FieldTypes\Configs\ContentPicker;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
+use SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
@@ -43,43 +45,34 @@ trait ContentPageTrait
             ->modifyQueryUsing(fn ($query) => $query->withCount('children'))
             ->determineRecordLabelUsing(fn ($record) => $record->title)
             ->determineRecordHasChildrenUsing(fn ($record) => $record->children_count > 0)
+            ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
+                [
+                    'key' => 'root',
+                    'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
+                    'label' => __('inspirecms::inspirecms.root'),
+                    'hasChildren' => false,
+                    'depth' => 0,
+                    'icon' => 'heroicon-o-home',
+                    'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false),
+                ],
+            ], $items))
+            ->mutuateNodeItemsUsing(fn (array $item, Model $record) => array_merge($item, [
+                'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], ['record' => $record->getKey()], false),
+            ]))
             ->actions([
                 CreateContentAction::make(),
+                Actions\Action::make('linkToParent')
+                    // ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                    ->form([
+                        PaginationPicker::make('parent')
+                            ->paginationOptions($modelClass::query())
+                    ])
+                    ->successNotificationTitle('not implemented')
+                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
+                Actions\Action::make('reorder')
+                    ->modalContent(new HtmlString('not implemented'))
+                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
             ]);
-    }
-
-    protected function mutuateRootNode(array $nodes): array
-    {
-        $nodes = array_merge([
-            [
-                'key' => 'root',
-                'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
-                'label' => __('inspirecms::inspirecms.root'),
-                'hasChildren' => false,
-                'depth' => 0,
-                'icon' => 'heroicon-o-home',
-            ],
-        ], $nodes);
-        return $nodes;
-    }
-
-    protected function refreshSelectedModelItem(string | int | null $key): void
-    {
-        if ($key) {
-
-            switch ($key) {
-                case 'root':
-                    $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false);
-                    break;
-                default:
-                    $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit'], ['record' => $key], false);
-                    break;
-            }
-
-            if ($url) {
-                $this->redirect($url);
-            }
-        }
     }
 
     protected function resolveSelectedModelItem(string | int $key): ?Model
@@ -107,6 +100,8 @@ trait ContentPageTrait
                 }),
             default => null,
         };
+
+        $this->cacheAction($action);
     }
 
     protected function refreshModelExplorerSidebar(): void
@@ -179,5 +174,10 @@ trait ContentPageTrait
         $breadcrumbs = array_merge($breadcrumbs, $slicedBreadcrumbs);
 
         return $breadcrumbs;
+    }
+
+    public function getSubNavigation(): array
+    {
+        return [];
     }
 }

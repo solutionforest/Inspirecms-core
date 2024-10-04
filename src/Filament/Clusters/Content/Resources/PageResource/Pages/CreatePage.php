@@ -20,7 +20,7 @@ class CreatePage extends BaseContentCreatePage
     #[Locked]
     public ?Model $documentTypeRecord = null;
 
-    public function booted(): void
+    public function mount(): void
     {
         if (! $this->documentTypeRecord) {
             $this->documentTypeRecord = InspireCmsConfig::getDocumentTypeModelClass()::find($this->documentType);
@@ -29,7 +29,10 @@ class CreatePage extends BaseContentCreatePage
         if (! $this->documentTypeRecord || blank($this->documentType)) {
             $redirectUrl = static::getResource()::getUrl('index');
             $this->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
+            return;
         }
+
+        parent::mount();
     }
 
     protected function fillForm(): void

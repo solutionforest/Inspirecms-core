@@ -64,7 +64,7 @@ trait CanBePublish
             ->successNotification($this->getPublishedNotification());
     }
 
-    public function publish(array $data, Action $action)
+    public function publish(array $publishableData, Action $action)
     {
         $isCreating = $this->isCreatingPublishableData();
 
@@ -72,11 +72,11 @@ trait CanBePublish
 
         $this->authorizeAccess();
 
-        $isSuccess = $this->handlePublishableRecord(function () use ($data, $isCreating) {
+        $isSuccess = $this->handlePublishableRecord(function () use ($publishableData, $isCreating) {
 
-            $data = $this->getPublishableFormDataBeforePublish($data);
+            $data = $this->getPublishableFormDataBeforePublish();
 
-            $this->handlePublishableRecordCreateOrUpdate($data, $isCreating, 'publish');
+            $this->handlePublishableRecordCreateOrUpdate($data, $publishableData, $isCreating, 'publish');
 
         });
 
@@ -119,7 +119,7 @@ trait CanBePublish
         return true;
     }
 
-    public function handlePublishableRecordCreateOrUpdate(array $data, bool $isCreating, string $publishableAction = 'draft'): Model
+    public function handlePublishableRecordCreateOrUpdate(array $data, array $publishableData, bool $isCreating, string $publishableAction = 'draft'): Model
     {
         $formName = $this->getPublishableFormName();
 
@@ -128,6 +128,8 @@ trait CanBePublish
             //region Handle Record Creating
             /** @var Model|CmsContent */
             $record = new ($this->getModel())($data);
+
+            $record->setPublishableData($publishableData);
 
             $record->setPublishableState($publishableAction);
 
@@ -155,6 +157,8 @@ trait CanBePublish
             /** @var Model|CmsContent */
             $record = $this->getRecord();
 
+            $record->setPublishableData($publishableData);
+
             $record->setPublishableState($publishableAction);
 
             $this->record = $this->handleRecordUpdate($record, $data);
@@ -174,7 +178,7 @@ trait CanBePublish
         return $this->publishOperation !== 'edit';
     }
 
-    public function getPublishableFormDataBeforePublish(array $extraData): array
+    public function getPublishableFormDataBeforePublish(): array
     {
         $formName = $this->getPublishableFormName();
 
@@ -186,7 +190,7 @@ trait CanBePublish
 
             $this->callHook('afterValidate');
 
-            $data = $this->mutateFormDataBeforeCreate(array_merge($data, $extraData));
+            $data = $this->mutateFormDataBeforeCreate($data);
 
             $this->callHook('beforeCreate');
 
@@ -199,7 +203,7 @@ trait CanBePublish
 
             $this->callHook('afterValidate');
 
-            $data = $this->mutateFormDataBeforeSave(array_merge($data, $extraData));
+            $data = $this->mutateFormDataBeforeSave($data);
 
             $this->callHook('beforeSave');
 

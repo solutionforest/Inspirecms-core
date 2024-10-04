@@ -45,34 +45,6 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             ->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
     }
 
-    public static function getNavigationItems(): array
-    {
-        $hasTrashPage = static::hasPage('trash');
-        if (! $hasTrashPage) {
-            return parent::getNavigationItems();
-        }
-
-        return [
-            NavigationItem::make(static::getNavigationLabel())
-                ->group(static::getNavigationGroup())
-                ->parentItem(static::getNavigationParentItem())
-                ->icon(static::getNavigationIcon())
-                ->activeIcon(static::getActiveNavigationIcon())
-                ->isActiveWhen(fn () => request()->routeIs(static::getRouteBaseName() . '.*') && ! request()->routeIs(static::getRouteBaseName() . '.trash'))
-                ->sort(static::getNavigationSort())
-                ->badge(static::getNavigationBadge(), color: static::getNavigationBadgeColor())
-                ->badgeTooltip(static::getNavigationBadgeTooltip())
-                ->url(static::getNavigationUrl()),
-            NavigationItem::make(fn () => __('inspirecms::inspirecms.trash'))
-                ->group(static::getNavigationGroup())
-                ->parentItem(static::getNavigationParentItem())
-                ->icon('heroicon-o-trash')
-                ->isActiveWhen(fn (): bool => request()->routeIs(static::getRouteBaseName() . '.trash'))
-                ->sort(9999)
-                ->url(static::getUrl('trash')),
-        ];
-    }
-
     //region Global search
     public static function getGloballySearchableAttributes(): array
     {

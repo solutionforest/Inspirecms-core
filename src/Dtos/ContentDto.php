@@ -45,7 +45,7 @@ class ContentDto extends BaseDto
         $model->loadMissing([
             'documentType.templates',
             'templates',
-            'propertyDatas',
+            'contentVersions',
         ]);
 
         return static::fromArray([

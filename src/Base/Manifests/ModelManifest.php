@@ -91,7 +91,6 @@ class ModelManifest implements ModelManifestInterface
             Models\ContentVersion::class,
             Models\DocumentType::class,
             Models\Language::class,
-            Models\PropertyData::class,
             Models\User::class,
             Models\Polymorphic\FieldGroupable::class,
             Models\Polymorphic\NestableTree::class,
