@@ -24,9 +24,9 @@ class Content extends BaseModel implements ContentContract
         resetAuditData as protected traitResetAuditData;
     }
     use Concerns\HasAuthor;
+    use HasFactory;
     use HasUuids;
     use SoftDeletes;
-    use HasFactory;
 
     protected $guarded = ['id'];
 

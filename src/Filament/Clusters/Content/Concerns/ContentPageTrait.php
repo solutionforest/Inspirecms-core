@@ -6,7 +6,6 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
-use SolutionForest\InspireCms\FieldTypes\Configs\ContentPicker;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
@@ -74,12 +73,13 @@ trait ContentPageTrait
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
             ]);
     }
-
+            
     protected function resolveSelectedModelItem(string | int $key): ?Model
     {
         if (in_array($key, ['root'])) {
             return null;
         }
+
         return $this->getModelExplorer()->findRecord($key);
     }
 
@@ -94,6 +94,7 @@ trait ContentPageTrait
                     if (in_array($parent, ['root'])) {
                         $parent = null;
                     }
+
                     return array_merge($parameters, [
                         'parent' => $parent,
                     ]);

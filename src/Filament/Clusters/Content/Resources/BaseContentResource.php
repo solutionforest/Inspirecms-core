@@ -286,7 +286,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $parentId = $livewire->getParentKey() ?? $parentId;
                 }
 
-                if (!filled($parentId)) {
+                if (! filled($parentId)) {
                     $parentId = $model->getNestableRootValue();
                 }
 
