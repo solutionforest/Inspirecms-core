@@ -126,6 +126,9 @@ trait ContentFormTrait
             if (in_array(\Filament\Resources\Pages\CreateRecord\Concerns\Translatable::class, class_uses_recursive($this))) {
                 $translatableAttributes = static::getResource()::getTranslatableAttributes();
                 $record->fill(Arr::except($data, $translatableAttributes));
+                foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
+                    $record->setTranslation($key, $this->activeLocale, $value);
+                }
             } else {
                 $record->fill($data);
             }

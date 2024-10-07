@@ -17,6 +17,8 @@ class ImportDefaultData extends Command
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
+        $this->importDocumentType();
+
         return static::SUCCESS;
     }
 
@@ -26,10 +28,7 @@ class ImportDefaultData extends Command
 
         $model = InspireCmsConfig::getLanguageModelClass();
 
-        // Get the table name from the model
-        $tableName = (new $model)->getTable();
-
-        if (! $this->isTableExists($tableName)) {
+        if (! $this->isTableExists($model)) {
             return;
         }
 
@@ -65,11 +64,34 @@ class ImportDefaultData extends Command
         $role->syncPermissions($permissions);
     }
 
+    protected function importDocumentType(): void
+    {
+        $this->info('Importing document type data ...');
+
+        $model = InspireCmsConfig::getDocumentTypeModelClass();
+
+        if (! $this->isTableExists($model)) {
+            return;
+        }
+
+        $model::firstOrCreate([
+            'slug' => 'landing',
+        ], [
+            'title' => 'Landing',
+            'is_web_page' => true,
+        ]);
+    }
+
     /**
      * Check if the table exists, if not, display error message.
      */
     protected function isTableExists(string $tableName): bool
     {
+        // is class name
+        if (class_exists($tableName)) {
+            $tableName = (new $tableName)->getTable();
+        }
+
         $exist = Schema::hasTable($tableName);
         if (! $exist) {
             $this->error("Table $tableName does not exist, please run migration first.");

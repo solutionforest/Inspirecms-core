@@ -15,7 +15,7 @@ return new class extends BaseMigration
 
             $table->integer('document_type_id');
             $table->uuid('parent_id')->comment('Parent\'s content.');
-            $table->string('title');
+            $table->json('title');
             $table->string('slug');
             $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
 
@@ -25,7 +25,6 @@ return new class extends BaseMigration
             $table->softDeletes();
 
             $table->index('document_type_id');
-            $table->index('title');
             $table->index('status');
             $table->index(['slug', 'parent_id']);
         });
@@ -59,16 +58,21 @@ return new class extends BaseMigration
             $table->id();
             $table->timestamp('created_at');
 
-            $table->uuid('content_id')->index();
+            $table->uuid('content_id');
             $table->json('from_data');
             $table->json('to_data');
 
             $table->author();
+
+            $table->index('content_id');
         });
         Schema::create($tableNames['content_publish_version'], function (Blueprint $table) {
-            $table->integer('content_id')->index();
-            $table->integer('version_id')->index();
+            $table->uuid('content_id');
+            $table->integer('version_id');
             $table->timestamp('published_at');
+
+            $table->index('content_id');
+            $table->index('version_id');
         });
         Schema::create($tableNames['field_groupable'], function (Blueprint $table) {
             $table->id();
