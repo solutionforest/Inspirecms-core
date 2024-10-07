@@ -67,29 +67,28 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->schema([
                 Forms\Components\Tabs::make()
                     ->persistTabInQueryString()
+                    ->contained(false)
                     ->tabs([
                         Forms\Components\Tabs\Tab::make('content')
                             ->label(__('inspirecms::inspirecms.content'))
                             ->schema([
 
-                                Forms\Components\Grid::make(1)
+                                Forms\Components\Section::make()
+                                    ->columns(1)
                                     ->schema([
-
                                         static::getTitleFormComponent(),
-
-                                        // Field group grouped component
-                                        static::getPropertyDataValueComponent(),
-
                                     ]),
+                                    // Field group grouped component
+                                    static::getPropertyDataValueComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
                             ->label(__('inspirecms::inspirecms.details'))
                             ->columns(3)
                             ->schema([
 
-                                Forms\Components\Group::make()
+                                Forms\Components\Section::make()
                                     ->columns(1)
-                                    ->columnSpan(1)
+                                    ->columnSpan(fn ($record) => $record != null ? 1 : 3)
                                     ->schema([
                                         static::getSlugFormComponent(),
                                         static::getTemplateFormComponent(),

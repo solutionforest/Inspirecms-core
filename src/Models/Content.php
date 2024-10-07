@@ -106,7 +106,6 @@ class Content extends BaseModel implements ContentContract
         parent::boot();
 
         static::creating(function (self $model) {
-            ray($model)->red();
             if (blank($model->{$model->getNestableParentIdColumn()})) {
                 $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
             }
