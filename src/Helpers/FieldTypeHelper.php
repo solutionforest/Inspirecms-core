@@ -9,7 +9,7 @@ class FieldTypeHelper
 {
     public static function performFormFieldFromConfig(string $typeName, \Closure $createFieldUsing, array $config = [])
     {
-        
+
         $fiFormConfig = FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
 
         if (! $fiFormConfig) {

@@ -17,10 +17,10 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     use ContentFormTrait;
     use ContentPageTrait;
     use CreateContentPageTrait;
-    use WithPagination;
     use CreateRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
+    use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.create';
 
@@ -31,6 +31,7 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
             ...parent::getHeaderActions(),
         ];
     }
+
     protected function getFormActions(): array
     {
         return [

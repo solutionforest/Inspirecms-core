@@ -22,15 +22,15 @@ class Content extends BaseModel implements ContentContract
         prepareAuditData as protected traitPrepareAuditData;
     }
     use Concerns\HasTemplates;
-    use Concerns\NestableTrait;
     use Concerns\HasTranslations {
         setTranslation as protected traitSetTranslation;
         getTranslation as protected traitGetTranslation;
         getTranslations as protected traitGetTranslations;
     }
+    use Concerns\NestableTrait;
+    use HasFactory;
     use HasUuids;
     use SoftDeletes;
-    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -204,6 +204,7 @@ class Content extends BaseModel implements ContentContract
     {
         if ($key === 'propertyData') {
             $this->tempPropertyData = $value;
+
             return $this;
         }
 
@@ -215,14 +216,16 @@ class Content extends BaseModel implements ContentContract
         if ($key == 'propertyData') {
             return $this->getLatestVersionPropertyData();
         }
+
         return $this->traitGetTranslation($key, $locale, $useFallbackLocale);
     }
 
-    public function getTranslations(string $key = null, array $allowedLocales = null): array
+    public function getTranslations(?string $key = null, ?array $allowedLocales = null): array
     {
         if ($key == 'propertyData') {
             return $this->getLatestVersionPropertyData();
         }
+
         return $this->traitGetTranslations($key, $allowedLocales);
     }
 

@@ -40,7 +40,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         $diff = [];
 
         foreach ($to as $key => $value) {
-            if (!array_key_exists($key, $from)) {
+            if (! array_key_exists($key, $from)) {
                 $diff[$key] = [
                     'from' => null,
                     'to' => $value,

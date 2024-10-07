@@ -13,7 +13,6 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -53,7 +52,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'set_private',
         ];
     }
- 
+
     public static function getTranslatableLocales(): array
     {
         $langs = InspireCms::getAllAvailableLanguages();

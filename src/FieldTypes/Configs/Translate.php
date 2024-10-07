@@ -3,12 +3,12 @@
 namespace SolutionForest\InspireCms\FieldTypes\Configs;
 
 use Filament\Forms;
+use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
@@ -20,7 +20,7 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public ?string $field = null;
-    
+
     public array $fieldConfig = [];
 
     protected array $fieldVariable = [];
@@ -34,6 +34,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                     // filter out the current field type
                     $configNames = $this->getConfigNames()[0];
                     unset($options[$configNames['group']]);
+
                     return $options;
                 })
                 ->searchable()->allowHtml()
@@ -43,8 +44,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                     ->getContainer()
                     ->getComponent('fieldConfig')
                     ?->getChildComponentContainer()
-                    ?->fill())
-                ,
+                    ?->fill()),
             Forms\Components\Group::make()
                 ->key('fieldConfig')
                 ->statePath('fieldConfig')
@@ -70,23 +70,23 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 
                 $langCode = $lang->getCode();
                 $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($this->field, function ($fiFormConfig, $fiFormComponentFQCN) use ($langCode) {
-    
+
                     if (! isset($this->fieldVariable['name']) || blank($this->fieldVariable['name'])) {
                         throw new \Exception('The field variable name is required.');
                     }
-                    
+
                     $fiFormComponent = $fiFormComponentFQCN::make($this->fieldVariable['name']);
-        
+
                     $fiFormComponent->label($this->fieldVariable['label']);
                     $fiFormComponent->helperText($this->fieldVariable['helperText']);
                     $fiFormComponent->required($this->fieldVariable['required']);
-        
+
                     $fiFormComponent->statePath($this->fieldVariable['name'] . '.' . $langCode);
 
                     return $fiFormComponent;
-        
+
                 }, $this->fieldConfig);
-    
+
                 if (! $fiFormComponent) {
                     continue;
                 }
@@ -98,7 +98,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->hidden($langCode != $livewire->getActiveActionsLocale())
                         ->dehydratedWhenHidden();
                 }
-                
+
                 $components[] = $fiFormComponent;
             }
 

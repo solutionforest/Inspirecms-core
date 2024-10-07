@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\ListRecords\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;

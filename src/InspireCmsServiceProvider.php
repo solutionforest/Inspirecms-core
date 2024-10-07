@@ -21,7 +21,6 @@ use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;

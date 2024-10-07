@@ -26,16 +26,16 @@ use function Filament\Support\is_app_url;
 
 abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer
 {
-    use ContentPageTrait;
     use ContentFormTrait;
-    use HasPreviewModal;
-    use WithPagination;
+    use ContentPageTrait;
     use EditRecord\Concerns\Translatable{
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
+    use HasPreviewModal;
+    use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.edit';
-    
+
     public function booted(): void
     {
         // Guard 1 for trashed record, If the record is trashed, redirect to the view/index page

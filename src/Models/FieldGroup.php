@@ -4,8 +4,6 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Support\Arr;
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -54,10 +52,11 @@ class FieldGroup extends BaseModel
                             'required' => $field->mandatory,
                         ]);
                     }
-                    
+
                     switch ($fiFormComponentFQCN) {
                         default:
                             $fiFormComponent = $fiFormComponentFQCN::make();
+
                             break;
                     }
                 }

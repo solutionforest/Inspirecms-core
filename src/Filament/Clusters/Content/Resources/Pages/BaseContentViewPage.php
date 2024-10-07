@@ -19,13 +19,13 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer
 {
-    use ContentPageTrait;
     use ContentFormTrait;
+    use ContentPageTrait;
     use HasPreviewModal;
-    use WithPagination;
     use ViewRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
+    use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.view';
 

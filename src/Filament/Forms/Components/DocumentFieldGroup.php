@@ -6,7 +6,6 @@ use Closure;
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
@@ -149,6 +148,7 @@ class DocumentFieldGroup extends Forms\Components\Group
                         'type',
                     ]);
                     $data['icon'] = FilamentFieldGroup::getFieldTypeIcon($field->type);
+
                     return $data;
                 })
                 ->toArray(),
@@ -170,6 +170,6 @@ class DocumentFieldGroup extends Forms\Components\Group
         return Forms\Components\ViewField::make('preview_fields')
             ->label(__('inspirecms::inspirecms.preview_fields'))
             ->view('inspirecms::filament.forms.components.field-group-preview')
-            ->afterStateHydrated(fn ($component, $get) => $component->state($get('field_group_fields'))) ;
+            ->afterStateHydrated(fn ($component, $get) => $component->state($get('field_group_fields')));
     }
 }

@@ -8,7 +8,7 @@ trait HasTranslations
 {
     use \Spatie\Translatable\HasTranslations;
 
-    public function getFallbackLocale() : string
+    public function getFallbackLocale(): string
     {
         return InspireCms::getFallbackLanguage()?->getCode() ?? 'en';
     }

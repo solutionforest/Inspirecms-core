@@ -17,7 +17,7 @@ interface ContentForm
     public function getActiveActionsLocale(): ?string;
 
     public function validatePublishableData(): void;
-    
+
     /**
      * Handles the publishable record by executing the provided callback.
      *

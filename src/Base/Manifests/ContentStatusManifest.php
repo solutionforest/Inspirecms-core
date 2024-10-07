@@ -152,7 +152,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                         BaseContentResource::getPublishedAtComponent(),
                     ])->operation('publish'))
                     ->beforeFormValidated(function (Action $action, $livewire) {
-                        
+
                         if (! $livewire instanceof ContentForm) {
                             throw new \RuntimeException('The Livewire component must implement ContentForm.');
                         }

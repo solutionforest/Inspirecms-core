@@ -8,12 +8,12 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use Throwable;
+
+use function Filament\Support\is_app_url;
 
 trait ContentFormTrait
 {
@@ -25,14 +25,14 @@ trait ContentFormTrait
     {
         if ($merge) {
             foreach ($fields as $field) {
-                if (!in_array($field, $this->propertyDataTranslationFields)) {
+                if (! in_array($field, $this->propertyDataTranslationFields)) {
                     $this->propertyDataTranslationFields[] = $field;
                 }
             }
         } else {
             $this->propertyDataTranslationFields = $fields;
         }
-        
+
         return $this;
     }
 
@@ -63,6 +63,7 @@ trait ContentFormTrait
     {
         $this->{$this->getPublishableFormName()}->validate();
     }
+
     public function publish(array $publishableData, Action $action)
     {
         $isCreating = $this->isCreatingPublishableData();
@@ -118,7 +119,7 @@ trait ContentFormTrait
         $formName = $this->getPublishableFormName();
 
         if ($isCreating) {
-            
+
             /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
             $record = app(static::getModel());
 
@@ -242,6 +243,7 @@ trait ContentFormTrait
                 if (! method_exists($resource, 'getPublishedAtComponent')) {
                     throw new \RuntimeException('The resource must have a getPublishedAtComponent method.');
                 }
+
                 return $form
                     ->schema([
                         $resource::getPublishedAtComponent(),
@@ -267,7 +269,7 @@ trait ContentFormTrait
             ->authorize('publish')
             ->successNotification($this->getPublishedNotification());
     }
-    
+
     protected function getPublishableFormName(): string
     {
         return 'form';
