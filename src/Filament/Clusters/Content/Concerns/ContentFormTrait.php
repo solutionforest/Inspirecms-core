@@ -8,62 +8,61 @@ use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\BaseContentResource;
-use SolutionForest\InspireCms\Models\Contracts\Content as CmsContent;
+use Illuminate\Support\Arr;
+
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use Throwable;
 
-use function Filament\Support\is_app_url;
-
-trait CanBePublish
+trait ContentFormTrait
 {
+    public array $propertyDataTranslationFields = [];
+
     protected ?string $publishOperation = null;
 
-    protected function getPublishableFormName(): string
+    public function setPropertyDataTranslationFields(array $fields, bool $merge = false): static
     {
-        return 'form';
+        if ($merge) {
+            foreach ($fields as $field) {
+                if (!in_array($field, $this->propertyDataTranslationFields)) {
+                    $this->propertyDataTranslationFields[] = $field;
+                }
+            }
+        } else {
+            $this->propertyDataTranslationFields = $fields;
+        }
+        
+        return $this;
     }
 
-    protected function getPublishFormAction(string $operation, string $model): Action
+    public function updatedActiveLocaleForContent(string $newActiveLocale): void
     {
-        if (is_null($operation) || $operation === 'create') {
-            $this->publishOperation = 'create';
-        } else {
-            $this->publishOperation = 'edit';
+        if (blank($this->oldActiveLocale)) {
+            return;
         }
 
-        return Action::make('publish')
-            ->label(__('inspirecms::actions.publish.label'))
-            ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
-            ->keyBindings(['mod+p'])
-            ->color('primary')
-            ->form(
-                fn (Form $form) => $form
-                    ->schema([
-                        BaseContentResource::getPublishedAtComponent(),
-                    ])
-                    ->operation('publish')
-            )
-            ->beforeFormValidated(function (Action $action) {
-                try {
+        $this->resetValidation();
 
-                    $this->validatePublishableData();
+        $translatableAttributes = static::getResource()::getTranslatableAttributes();
 
-                } catch (Throwable $e) {
-                    Notification::make()
-                        ->title(__('inspirecms::notification.form_check_error.title'))
-                        ->danger()
-                        ->send();
+        // Filter out the propertyDataTranslation
+        $translatableAttributes = Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
 
-                    throw $e;
-                }
-            })
-            ->action(fn ($data, $action) => $this->publish($data, $action))
-            ->model($model)
-            ->authorize('publish')
-            ->successNotification($this->getPublishedNotification());
+        $this->otherLocaleData[$this->oldActiveLocale] = Arr::only($this->data, $translatableAttributes);
+
+        $this->data = [
+            ...Arr::except($this->data, $translatableAttributes),
+            ...$this->otherLocaleData[$this->activeLocale] ?? [],
+        ];
+
+        unset($this->otherLocaleData[$this->activeLocale]);
     }
 
+    public function validatePublishableData(): void
+    {
+        $this->{$this->getPublishableFormName()}->validate();
+    }
     public function publish(array $publishableData, Action $action)
     {
         $isCreating = $this->isCreatingPublishableData();
@@ -101,11 +100,6 @@ trait CanBePublish
         }
     }
 
-    /**
-     * Handles the publishable record by executing the provided callback.
-     *
-     * @param  \Closure  $callback  The callback function to handle the publishable record.
-     */
     public function handlePublishableRecord(\Closure $callback)
     {
         $isSuccess = $this->wrapPublisableSavingEventIntoDbTransaction($callback);
@@ -124,10 +118,17 @@ trait CanBePublish
         $formName = $this->getPublishableFormName();
 
         if ($isCreating) {
+            
+            /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
+            $record = app(static::getModel());
 
+            if (in_array(\Filament\Resources\Pages\CreateRecord\Concerns\Translatable::class, class_uses_recursive($this))) {
+                $translatableAttributes = static::getResource()::getTranslatableAttributes();
+                $record->fill(Arr::except($data, $translatableAttributes));
+            } else {
+                $record->fill($data);
+            }
             //region Handle Record Creating
-            /** @var Model|CmsContent */
-            $record = new ($this->getModel())($data);
 
             $record->setPublishableData($publishableData);
 
@@ -154,7 +155,7 @@ trait CanBePublish
         } else {
 
             //region Handle Record Updating
-            /** @var Model|CmsContent */
+            /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
             $record = $this->getRecord();
 
             $record->setPublishableData($publishableData);
@@ -171,11 +172,6 @@ trait CanBePublish
         }
 
         return $this->getRecord();
-    }
-
-    protected function isCreatingPublishableData(): bool
-    {
-        return $this->publishOperation !== 'edit';
     }
 
     public function getPublishableFormDataBeforePublish(): array
@@ -212,15 +208,10 @@ trait CanBePublish
         return $data;
     }
 
-    public function validatePublishableData(): void
-    {
-        $this->{$this->getPublishableFormName()}->validate();
-    }
-
     //region Notification
     protected function getPublishedNotification(): ?Notification
     {
-        $title = $this->getPublishedNotificationTitle();
+        $title = __('inspirecms::actions.publish.notifications.published.title');
 
         if (blank($title)) {
             return null;
@@ -230,14 +221,63 @@ trait CanBePublish
             ->success()
             ->title($title);
     }
-
-    protected function getPublishedNotificationTitle(): ?string
-    {
-        return __('inspirecms::actions.publish.notifications.published.title');
-    }
     //endregion Notification
 
     //region Help functions
+    protected function getPublishFormAction(string $operation, string $model): Action
+    {
+        if (is_null($operation) || $operation === 'create') {
+            $this->publishOperation = 'create';
+        } else {
+            $this->publishOperation = 'edit';
+        }
+
+        return Action::make('publish')
+            ->label(__('inspirecms::actions.publish.label'))
+            ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
+            ->keyBindings(['mod+p'])
+            ->color('primary')
+            ->form(function (Form $form) {
+                $resource = config('inspirecms::resources.page', PageResource::class);
+                if (! method_exists($resource, 'getPublishedAtComponent')) {
+                    throw new \RuntimeException('The resource must have a getPublishedAtComponent method.');
+                }
+                return $form
+                    ->schema([
+                        $resource::getPublishedAtComponent(),
+                    ])
+                    ->operation('publish');
+            })
+            ->beforeFormValidated(function (Action $action) {
+                try {
+
+                    $this->validatePublishableData();
+
+                } catch (Throwable $e) {
+                    Notification::make()
+                        ->title(__('inspirecms::notification.form_check_error.title'))
+                        ->danger()
+                        ->send();
+
+                    throw $e;
+                }
+            })
+            ->action(fn ($data, $action) => $this->publish($data, $action))
+            ->model($model)
+            ->authorize('publish')
+            ->successNotification($this->getPublishedNotification());
+    }
+    
+    protected function getPublishableFormName(): string
+    {
+        return 'form';
+    }
+
+    protected function isCreatingPublishableData(): bool
+    {
+        return $this->publishOperation !== 'edit';
+    }
+
     protected function wrapPublisableSavingEventIntoDbTransaction(\Closure $callback)
     {
 

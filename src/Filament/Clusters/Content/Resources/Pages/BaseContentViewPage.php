@@ -4,24 +4,28 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer, HasPublishForm
+abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer
 {
-    use CanBePublish;
     use ContentPageTrait;
+    use ContentFormTrait;
     use HasPreviewModal;
     use WithPagination;
+    use ViewRecord\Concerns\Translatable {
+        updatedActiveLocale as protected traitUpdatedActiveLocale;
+    }
 
     protected static string $view = 'inspirecms::filament.pages.content.view';
 
@@ -33,6 +37,9 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['trash', 'index'], [], false))
                 ->color('gray')
                 ->visible(fn ($record) => $record->trashed()),
+            Actions\LocaleSwitcher::make(),
+            ContentHistoryAction::make()
+                ->record(fn () => $this->getRecord()),
             Actions\EditAction::make()
                 ->hidden(fn ($record) => $record->trashed())
                 ->iconButton(),
@@ -82,4 +89,9 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         return ContentDto::fromModel($this->getRecord());
     }
     //endregion Computed Property
+
+    public function updatedActiveLocale(string $newActiveLocale): void
+    {
+        $this->updatedActiveLocaleForContent($newActiveLocale);
+    }
 }

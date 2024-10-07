@@ -7,10 +7,6 @@ return [
             'label' => 'Helper Text',
             'helper' => '',
         ],
-        'is_vary_by_culture' => [
-            'label' => 'Is vary by culture',
-            'helper' => '',
-        ],
         'label' => [
             'label' => 'Field Label',
             'helper' => 'The label for the field.',

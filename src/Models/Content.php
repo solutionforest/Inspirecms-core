@@ -20,17 +20,25 @@ class Content extends BaseModel implements ContentContract
     use Concerns\HasAuthor;
     use Concerns\HasContentVersions {
         prepareAuditData as protected traitPrepareAuditData;
-        resetAuditData as protected traitResetAuditData;
     }
     use Concerns\HasTemplates;
     use Concerns\NestableTrait;
-    use HasFactory;
+    use Concerns\HasTranslations {
+        setTranslation as protected traitSetTranslation;
+        getTranslation as protected traitGetTranslation;
+        getTranslations as protected traitGetTranslations;
+    }
     use HasUuids;
     use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
-    protected ?array $propertyDataState = [];
+    public ?array $translatable = ['propertyData'];
+
+    protected ?array $tempPropertyData = [];
+
+    protected $casts = [];
 
     public function documentType(): BelongsTo
     {
@@ -181,24 +189,41 @@ class Content extends BaseModel implements ContentContract
     //endregion Factory
 
     //region Audit
-    public function setPropertyDataAttribute($value): void
-    {
-        $this->propertyDataState = $value ?? [];
-    }
-
     protected function prepareAuditData(): array
     {
         $data = $this->traitPrepareAuditData();
         $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
-        $data['to']['propertyData'] = $this->propertyDataState;
+        $data['to']['propertyData'] = $this->tempPropertyData ?? [];
+
+        $this->tempPropertyData = [];
 
         return $data;
     }
 
-    protected function resetAuditData(): void
+    public function setTranslation(string $key, string $locale, $value): Content
     {
-        $this->traitResetAuditData();
-        $this->propertyDataState = [];
+        if ($key === 'propertyData') {
+            $this->tempPropertyData = $value;
+            return $this;
+        }
+
+        return $this->traitSetTranslation($key, $locale, $value);
+    }
+
+    public function getTranslation(string $key, string $locale, bool $useFallbackLocale = true): mixed
+    {
+        if ($key == 'propertyData') {
+            return $this->getLatestVersionPropertyData();
+        }
+        return $this->traitGetTranslation($key, $locale, $useFallbackLocale);
+    }
+
+    public function getTranslations(string $key = null, array $allowedLocales = null): array
+    {
+        if ($key == 'propertyData') {
+            return $this->getLatestVersionPropertyData();
+        }
+        return $this->traitGetTranslations($key, $allowedLocales);
     }
 
     protected function getAuditAttributes(): array

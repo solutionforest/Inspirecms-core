@@ -26,7 +26,6 @@ trait HasContentVersions
         });
 
         static::saved(function (self $model) {
-            ray($model, $model->auditData);
             $contentVersion = $model->contentVersions()->create([
                 'from_data' => $model->auditData['from'] ?? [],
                 'to_data' => $model->auditData['to'] ?? [],

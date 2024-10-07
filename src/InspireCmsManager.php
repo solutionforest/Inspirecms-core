@@ -113,4 +113,9 @@ class InspireCmsManager
 
         return $languages;
     }
+
+    public function getFallbackLanguage(): ?Language
+    {
+        return $this->getAllAvailableLanguages()->first(fn (Language $lang) => $lang->isDefault());
+    }
 }

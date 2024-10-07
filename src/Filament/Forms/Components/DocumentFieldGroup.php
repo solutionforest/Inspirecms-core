@@ -8,7 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Models\CmsDocumentType;
+use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 class DocumentFieldGroup extends Forms\Components\Group
 {
@@ -104,7 +105,7 @@ class DocumentFieldGroup extends Forms\Components\Group
                 return $itemState;
             })
             ->itemLabel(fn (array $state): ?string => data_get($state, 'field_group_title'))
-            ->mutateRelationshipDataBeforeFillUsing(function (array $data, Model | CmsDocumentType $record) {
+            ->mutateRelationshipDataBeforeFillUsing(function (array $data, Model | DocumentType $record) {
 
                 $records = $record->fieldGroups
                     ->sortBy($this->getFieldGroupablesSortColumn())
@@ -142,10 +143,14 @@ class DocumentFieldGroup extends Forms\Components\Group
             'field_group_title' => $fieldGroup->title,
             'field_group_fields' => $fieldGroup->fields
                 ?->sortBy($fieldGroupSortColumn)
-                ->map(fn ($field) => $field->only([
-                    'label',
-                    'type',
-                ]))
+                ->map(function ($field) {
+                    $data = $field->only([
+                        'label',
+                        'type',
+                    ]);
+                    $data['icon'] = FilamentFieldGroup::getFieldTypeIcon($field->type);
+                    return $data;
+                })
                 ->toArray(),
         ];
     }
@@ -160,32 +165,11 @@ class DocumentFieldGroup extends Forms\Components\Group
         ];
     }
 
-    protected static function getPreviewFieldsComponent($fieldGroupFields = null): Forms\Components\Component
+    protected static function getPreviewFieldsComponent(): Forms\Components\Component
     {
-        return Forms\Components\Placeholder::make('preview_fields')
+        return Forms\Components\ViewField::make('preview_fields')
             ->label(__('inspirecms::inspirecms.preview_fields'))
-            ->content(function ($get) use ($fieldGroupFields) {
-
-                $fieldsData = $fieldGroupFields ?? $get('field_group_fields');
-
-                if (! $fieldsData) {
-                    return null;
-                }
-
-                $previewHtmlString = collect($fieldsData)
-                    ->map(fn ($arr) => <<<Html
-                        <div class="dark:ring-white/20 gap-1.5 grid grid-cols-3 lg:grid-cols-4 items-center mb-4 ring-1 ring-gray-900/10 rounded-md shadow-sm">
-                            <span class="p-4 bg-gray-200 dark:!bg-gray-700 rounded-l-md">
-                                {$arr['type']}
-                            </span>
-                            <span class="p-4 col-span-2 lg:col-span-3 truncate">
-                                {$arr['label']}
-                            </span>
-                        </div>
-                    Html)
-                    ->implode('');
-
-                return new HtmlString($previewHtmlString);
-            });
+            ->view('inspirecms::filament.forms.components.field-group-preview')
+            ->afterStateHydrated(fn ($component, $get) => $component->state($get('field_group_fields'))) ;
     }
 }

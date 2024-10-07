@@ -17,6 +17,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
     protected $casts = [
         'from_data' => 'array',
         'to_data' => 'array',
+        'created_at' => 'datetime',
     ];
 
     public $timestamps = false;
@@ -29,6 +30,30 @@ class ContentVersion extends BaseModel implements ContentVersionContract
     public function publishLog(): HasOne
     {
         return $this->hasOne(InspireCmsConfig::getContentPublishVersionModelClass(), 'version_id');
+    }
+
+    public function getDifferences(): array
+    {
+        $from = $this->from_data;
+        $to = $this->to_data;
+
+        $diff = [];
+
+        foreach ($to as $key => $value) {
+            if (!array_key_exists($key, $from)) {
+                $diff[$key] = [
+                    'from' => null,
+                    'to' => $value,
+                ];
+            } elseif ($from[$key] !== $value) {
+                $diff[$key] = [
+                    'from' => $from[$key],
+                    'to' => $value,
+                ];
+            }
+        }
+
+        return $diff;
     }
 
     public static function boot()

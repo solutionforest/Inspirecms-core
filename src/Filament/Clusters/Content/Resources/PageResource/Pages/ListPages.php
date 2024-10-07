@@ -13,12 +13,12 @@ class ListPages extends BaseContentListPage
     public function getActions(): array
     {
         return [
+            ...parent::getActions(),
             Actions\Action::make('trash')
                 ->label(__('inspirecms::inspirecms.trash'))
                 ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'trash', [], false))
                 ->color('gray')
                 ->icon('heroicon-o-trash'),
-            ...parent::getActions(),
         ];
     }
 

@@ -34,7 +34,6 @@ return new class extends BaseMigration
             $table->string('title');
             $table->string('slug');
             $table->boolean('is_web_page')->default(true);
-            $table->boolean('is_vary_by_culture')->default(false);
 
             $table->timestamps();
 

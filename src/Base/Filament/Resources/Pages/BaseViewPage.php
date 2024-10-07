@@ -18,8 +18,8 @@ class BaseViewPage extends ViewRecord
     public function getActions(): array
     {
         return [
-            EditAction::make(),
-            DeleteAction::make(),
+            EditAction::make()->iconButton(),
+            DeleteAction::make()->iconButton(),
         ];
     }
 

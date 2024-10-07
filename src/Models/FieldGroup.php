@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
+use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroup extends BaseModel
@@ -33,28 +34,41 @@ class FieldGroup extends BaseModel
 
         foreach ($this->fields as $field) {
 
-            $fiFormConfig = FilamentFieldGroup::getFieldTypeConfig($field->type, $field->config);
+            $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($field->type, function ($fiFormConfig, $fiFormComponentFQCN) use ($field) {
 
-            if (! $fiFormConfig) {
+                $statePath = $field->getStatePathWithGroup();
+
+                if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+                    $fiFormComponent = $fiFormComponentFQCN::make($statePath);
+
+                    $fiFormComponent->label($field->label);
+                    $fiFormComponent->helperText($field->instructions);
+                    $fiFormComponent->required($field->mandatory);
+
+                } else {
+                    if ($fiFormConfig instanceof \SolutionForest\InspireCms\FieldTypes\Configs\Translate) {
+                        $fiFormConfig->setFieldVariable([
+                            'name' => $statePath,
+                            'label' => $field->label,
+                            'helperText' => $field->instructions,
+                            'required' => $field->mandatory,
+                        ]);
+                    }
+                    
+                    switch ($fiFormComponentFQCN) {
+                        default:
+                            $fiFormComponent = $fiFormComponentFQCN::make();
+                            break;
+                    }
+                }
+
+                return $fiFormComponent;
+
+            }, $field->config);
+
+            if (! $fiFormComponent) {
                 continue;
             }
-
-            $fiFormComponentFQCN = Arr::first(Arr::pluck($fiFormConfig->getFormComponents(), 'component'));
-            if (! $fiFormComponentFQCN) {
-                throw new \Exception("The field type config class {$fiFormConfig} does not have a FormComponent attribute.");
-            }
-
-            $fiFormComponent = $fiFormComponentFQCN::make($field->name);
-
-            // @todo - some components may not have these methods
-            $fiFormComponent->label($field->label);
-            $fiFormComponent->helperText($field->instructions);
-            $fiFormComponent->required($field->mandatory);
-            $fiFormComponent->statePath(
-                implode('.', [$this->name, $field->name])
-            );
-
-            $fiFormConfig->applyConfig($fiFormComponent);
 
             $schema[] = $fiFormComponent;
         }

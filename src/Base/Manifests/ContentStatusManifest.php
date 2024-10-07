@@ -10,7 +10,7 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\BaseContentResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\EditPage;
 use SolutionForest\InspireCms\Models\Concerns\Publishable;
@@ -152,13 +152,15 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                         BaseContentResource::getPublishedAtComponent(),
                     ])->operation('publish'))
                     ->beforeFormValidated(function (Action $action, $livewire) {
+                        
+                        if (! $livewire instanceof ContentForm) {
+                            throw new \RuntimeException('The Livewire component must implement ContentForm.');
+                        }
+
                         try {
 
-                            if ($livewire instanceof EditPage &&
-                                in_array(CanBePublish::class, class_uses_recursive($livewire))) {
-
+                            if ($livewire instanceof EditPage) {
                                 $livewire->validatePublishableData();
-
                             }
 
                         } catch (\Throwable $e) {
@@ -203,9 +205,11 @@ class ContentStatusManifest implements ContentStatusManifestInterface
     //region Helpers
     protected static function handlePublishableRecord($record, $publishableState, $livewire, array $publishableData)
     {
+        if (! $livewire instanceof ContentForm) {
+            throw new \RuntimeException('The Livewire component must implement ContentForm.');
+        }
 
-        if ($livewire instanceof EditRecord &&
-            in_array(CanBePublish::class, class_uses_recursive($livewire))) {
+        if ($livewire instanceof EditRecord) {
 
             $isSuccess = $livewire->handlePublishableRecord(function () use ($publishableData, $livewire, $publishableState) {
 

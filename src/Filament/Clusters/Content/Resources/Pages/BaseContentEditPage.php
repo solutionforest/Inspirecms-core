@@ -5,31 +5,37 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 use function Filament\Support\is_app_url;
 
-abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer, HasPublishForm
+abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer
 {
-    use CanBePublish;
     use ContentPageTrait;
+    use ContentFormTrait;
     use HasPreviewModal;
     use WithPagination;
+    use EditRecord\Concerns\Translatable{
+        updatedActiveLocale as protected traitUpdatedActiveLocale;
+    }
 
     protected static string $view = 'inspirecms::filament.pages.content.edit';
-
+    
     public function booted(): void
     {
         // Guard 1 for trashed record, If the record is trashed, redirect to the view/index page
@@ -43,6 +49,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     protected function getHeaderActions(): array
     {
         return [
+            Actions\LocaleSwitcher::make(),
+            ContentHistoryAction::make()
+                ->record(fn () => $this->getRecord()),
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
                 ->iconButton(),
             Actions\DeleteAction::make()
@@ -135,5 +144,68 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     public function getRedirectUrl(): ?string
     {
         return $this->getUrl(['record' => $this->getRecord()]);
+    }
+
+    public function updatedActiveLocale(string $newActiveLocale): void
+    {
+        $this->updatedActiveLocaleForContent($newActiveLocale);
+    }
+
+    protected function handleRecordUpdate(Model $record, array $data): Model
+    {
+        $translatableAttributes = static::getResource()::getTranslatableAttributes();
+
+        // Filter out the propertyDataTranslation
+        $translatableAttributes = Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
+
+        $record->fill(Arr::except($data, $translatableAttributes));
+
+        foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
+            $record->setTranslation($key, $this->activeLocale, $value);
+        }
+
+        $originalData = $this->data;
+
+        $existingLocales = null;
+
+        foreach ($this->otherLocaleData as $locale => $localeData) {
+            $existingLocales ??= collect($translatableAttributes)
+                ->map(fn (string $attribute): array => array_keys($record->getTranslations($attribute)))
+                ->flatten()
+                ->unique()
+                ->all();
+
+            $this->data = [
+                ...$this->data,
+                ...$localeData,
+            ];
+
+            try {
+                $this->form->validate();
+            } catch (ValidationException $exception) {
+                if (! array_key_exists($locale, $existingLocales)) {
+                    continue;
+                }
+
+                $this->setActiveLocale($locale);
+
+                throw $exception;
+            }
+
+            $localeData = $this->mutateFormDataBeforeSave($localeData);
+
+            foreach (Arr::only($localeData, $translatableAttributes) as $key => $value) {
+                $record->setTranslation($key, $locale, $value);
+            }
+        }
+
+        // handle 'Property Data' translation here
+        $record->setTranslation('propertyData', '', $data['propertyData'] ?? []);
+
+        $this->data = $originalData;
+
+        $record->save();
+
+        return $record;
     }
 }

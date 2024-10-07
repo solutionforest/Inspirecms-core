@@ -66,7 +66,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->schema([
                             static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getIsWebPageFormComponent(),
-                            static::getIsVaryByCultureFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -88,7 +87,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 static::getTitleFormComponent()->inlineLabel(),
                 static::getSlugFormComponent()->inlineLabel(),
                 static::getIsWebPageFormComponent(),
-                static::getIsVaryByCultureFormComponent(),
             ]);
     }
 
@@ -303,18 +301,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.is_web_page'))
             ->inlineLabel()
             ->default(true)
-            ->live();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getIsVaryByCultureFormComponent()
-    {
-        return Forms\Components\Toggle::make('is_vary_by_culture')
-            ->label(__('inspirecms::inspirecms.is_vary_by_culture'))
-            ->inlineLabel()
-            ->default(false)
             ->live();
     }
 

@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection> getSections(... $names)
  * @method static void addSection(\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section)
  * @method static \Illuminate\Support\Collection<\SolutionForest\InspireCms\Models\Contracts\Language> getAllAvailableLanguages()
+ * @method static ?\SolutionForest\InspireCms\Models\Contracts\Language getFallbackLanguage()
  *
  * @see \SolutionForest\InspireCms\InspireCmsManager
  */

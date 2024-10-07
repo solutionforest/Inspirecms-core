@@ -54,7 +54,6 @@ class FieldResource extends Resource implements ClusterSectionResource
                         static::getStatePathFormComponent()
                             ->hidden()->dehydrated(),
                         static::getMandatoryFormComponent()->columnSpanFull(),
-                        static::getIsVaryByCultureFormComponent()->columnSpanFull(),
                     ])
                     ->columnSpan(1),
                 static::getConfigFormComponent(),
@@ -234,16 +233,6 @@ class FieldResource extends Resource implements ClusterSectionResource
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
-    public static function getIsVaryByCultureFormComponent()
-    {
-        return Forms\Components\Toggle::make('is_vary_by_culture')
-            ->label(__('inspirecms::forms.fields.is_vary_by_culture.label'))
-            ->inlineLabel()
-            ->helperText(__('inspirecms::forms.fields.is_vary_by_culture.helper'))
-            ->inlineLabel();
-    }
-
-    /** @return Forms\Components\Field|Forms\Components\Component */
     public static function getConfigFormComponent()
     {
         return Forms\Components\Group::make()
@@ -251,8 +240,8 @@ class FieldResource extends Resource implements ClusterSectionResource
             ->statePath('config')
             ->schema(function (Forms\Get $get) {
 
-                if ($get('type')) {
-                    return FilamentFieldGroup::getFieldTypeConfigFormSchema($get('type'));
+                if ($type = $get('type')) {
+                    return FilamentFieldGroup::getFieldTypeConfigFormSchema($type);
                 }
 
                 return [];

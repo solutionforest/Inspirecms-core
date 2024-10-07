@@ -38,6 +38,12 @@ return [
 
     ],
 
+    'content_history' => [
+
+        'label' => 'Content History',
+
+    ],
+
     'open' => [
 
         'label' => 'Open',

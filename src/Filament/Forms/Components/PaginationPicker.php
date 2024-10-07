@@ -180,7 +180,6 @@ class PaginationPicker extends Field
                 $formattedState = Arr::mapWithKeys($component->getState(), fn ($key) => [$key => $key]);
 
                 $items = array_move_before($formattedState, $arguments['item']);
-                ray([$items, $formattedState, $arguments])->blue();
 
                 $component->state(array_values($items));
 

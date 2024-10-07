@@ -18,8 +18,8 @@ class BaseEditPage extends EditRecord
     public function getActions(): array
     {
         return [
-            ViewAction::make(),
-            DeleteAction::make(),
+            ViewAction::make()->iconButton(),
+            DeleteAction::make()->iconButton(),
         ];
     }
 

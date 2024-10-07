@@ -27,7 +27,6 @@ trait Publishable
                 $model->resetPublishableData();
             }
             $model->resetPublishableState();
-            ray($model)->purple();
         });
     }
 

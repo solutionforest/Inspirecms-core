@@ -292,6 +292,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->itemLabel(fn (array $state): ?string => $state['label'] ?? $state['name'] ?? null)
             ->collapsible()->collapsed()
             ->orderColumn('sort')
+            ->reorderableWithButtons()->reorderableWithDragAndDrop(false)
             ->addable(fn (?FieldGroup $record) => PermissionManifest::authorizeModel('create', get_class(($record ?? new (static::getModel()))->fields()->getModel())) === true)
             ->deletable(fn (Forms\Components\Repeater $component) => PermissionManifest::authorizeModel('delete', get_class($component->getRelationship()->getRelated())) === true)
             ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.fields'))]))
@@ -405,8 +406,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                         ->columnSpanFull(),
                     $fieldResource::getMandatoryFormComponent()->hidden()
                         ->saveRelationshipsWhenHidden()->dehydratedWhenHidden(),
-                    $fieldResource::getIsVaryByCultureFormComponent()->hidden()
-                        ->saveRelationshipsWhenHidden()->dehydratedWhenHidden(),
                     Forms\Components\Hidden::make('config'),
                 ]),
         ];
@@ -432,7 +431,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             Forms\Components\Section::make()
                 ->schema([
                     $fieldResource::getMandatoryFormComponent()->columnSpanFull(),
-                    $fieldResource::getIsVaryByCultureFormComponent()->columnSpanFull(),
                 ]),
             $fieldResource::getConfigFormComponent(),
         ];

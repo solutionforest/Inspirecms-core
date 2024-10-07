@@ -2,25 +2,35 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
-use Filament\Actions\Action;
+use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CanBePublish;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CreateContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasModelExplorer, HasPublishForm
+abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasModelExplorer
 {
-    use CanBePublish;
+    use ContentFormTrait;
     use ContentPageTrait;
     use CreateContentPageTrait;
     use WithPagination;
+    use CreateRecord\Concerns\Translatable {
+        updatedActiveLocale as protected traitUpdatedActiveLocale;
+    }
 
     protected static string $view = 'inspirecms::filament.pages.content.create';
 
+    protected function getHeaderActions(): array
+    {
+        return [
+            Actions\LocaleSwitcher::make(),
+            ...parent::getHeaderActions(),
+        ];
+    }
     protected function getFormActions(): array
     {
         return [
@@ -30,7 +40,7 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
         ];
     }
 
-    protected function getCreateFormAction(): Action
+    protected function getCreateFormAction(): Actions\Action
     {
         return parent::getCreateFormAction()
             ->label(__('inspirecms::actions.save_draft.label'))
@@ -50,5 +60,10 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
         }
 
         return $resource::getUrl('index');
+    }
+
+    public function updatedActiveLocale(string $newActiveLocale): void
+    {
+        $this->updatedActiveLocaleForContent($newActiveLocale);
     }
 }

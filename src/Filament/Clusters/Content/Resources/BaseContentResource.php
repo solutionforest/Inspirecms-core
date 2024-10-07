@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
@@ -12,10 +13,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\HasPublishForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -31,6 +33,7 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 abstract class BaseContentResource extends Resource implements ClusterSectionResource
 {
     use ClusterSectionResourceTrait;
+    use Translatable;
 
     public static function getBasePermissionPrefixes(): array
     {
@@ -49,6 +52,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'unpublish',
             'set_private',
         ];
+    }
+ 
+    public static function getTranslatableLocales(): array
+    {
+        $langs = InspireCms::getAllAvailableLanguages();
+
+        return $langs->pluck('code')->all();
     }
 
     public static function form(Form $form): Form
@@ -115,7 +125,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Forms\Components\Group::make()
                     ->statePath('formData')
                     // Here can validate form data
-                    ->afterStateHydrated(fn (HasPublishForm $livewire, $component) => $component->state($livewire->getPublishableFormDataBeforePublish([]))),
+                    ->afterStateHydrated(fn (ContentForm $livewire, $component) => $component->state($livewire->getPublishableFormDataBeforePublish([]))),
             ]);
     }
 
@@ -455,13 +465,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                 return $groupComponents;
             })
-            ->dehydrateStateUsing(fn ($component) => $component->getState())
-            ->afterStateHydrated(function ($record, $component) {
-                if ($record) {
-                    $state = $record->getLatestVersionPropertyData();
-                    $component->state($state);
-                }
-            });
+            ->dehydrateStateUsing(fn ($component) => $component->getState());
     }
 
     /**
