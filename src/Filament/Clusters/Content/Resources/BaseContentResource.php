@@ -766,14 +766,15 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getSiteMapFormComponent()
     {
         return Forms\Components\Section::make()
-            ->statePath('sitemap')
-            ->loadStateFromRelationshipsUsing(function (ModelsContent $record, $component) {
-                $data = $record->sitemap?->attributesToArray() ?? [];
-                $component->state($data);
-            })
-            ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
-                $record->sitemap()->updateOrCreate([], $state);
-            })
+            // ->statePath('sitemap')
+            ->relationship('sitemap')
+            // ->loadStateFromRelationshipsUsing(function (ModelsContent $record, $component) {
+            //     $data = $record->sitemap?->attributesToArray() ?? [];
+            //     $component->state($data);
+            // })
+            // ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
+            //     $record->sitemap()->updateOrCreate([], $state);
+            // })
             ->schema([
                 Forms\Components\Toggle::make('enable')
                     ->label(__('inspirecms::resources/content.sitemap.enable.label'))

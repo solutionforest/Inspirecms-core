@@ -133,6 +133,7 @@ class Content extends BaseModel implements ContentContract
             // Updates or creates the webSetting relation for the model if the tempRelationData contains webSetting.
             // After updating or creating, it unsets the webSetting from tempRelationData.
             if (isset($model->tempRelationData['webSetting'])) {
+                $model->webSetting()->create();
                 $model->webSetting()->updateOrCreate(['content_id' => $model->getKey()], $model->tempRelationData['webSetting']);
                 unset($model->tempRelationData['webSetting']);
             }
