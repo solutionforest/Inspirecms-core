@@ -40,11 +40,15 @@ class ContentDto extends BaseTranslatableModelDto
 
     public static function fromTranslatableModel($model, $locale)
     {
+        $model->loadMissing(['documentType']);
         /**
          * @var self
          */
         $dto = parent::fromTranslatableModel($model, $locale);
 
+        if ($model->documentType) {
+            $dto->documentType = DocumentTypeDto::fromModel($model->documentType);
+        }
         $dto->setPropertyData($model->getLatestPublishedPropertyData());
 
         return $dto;
@@ -69,7 +73,9 @@ class ContentDto extends BaseTranslatableModelDto
 
     public function getPropertyData(string $name, ?string $locale = null)
     {
-        $propertyType = $this->documentType?->getField($name)?->config;
+        $propertyField = $this->documentType?->getField($name);
+        
+        $propertyType = $propertyField?->config;
         $propertyData = $this->propertyData->first(fn ($propertyData) => $propertyData->propertyKey === $name)?->propertyValue;
 
         switch (true) {
