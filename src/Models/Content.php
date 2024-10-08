@@ -42,8 +42,8 @@ class Content extends BaseModel implements ContentContract
     ];
 
     /**
-     * @var array $tempRelationData
-     * 
+     * @var array
+     *
      * An array to temporarily store relation data for the Content model.
      * This array is used internally to manage and manipulate relationship data
      * before it is persisted to the database.
@@ -195,6 +195,7 @@ class Content extends BaseModel implements ContentContract
         if (isset($data['redirect_content_id']) && $data['redirect_content_id'] == '[]') {
             $data['redirect_content_id'] = [];
         }
+
         return $data;
     }
 

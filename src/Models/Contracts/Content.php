@@ -19,18 +19,14 @@ interface Content extends NestableInterface
      * @return BelongsTo The document type relation.
      */
     public function documentType(): BelongsTo;
-    
+
     /**
      * Define a one-to-one relationship with the WebSetting model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function webSetting(): HasOne;
 
     /**
      * Define a one-to-one relationship for the site map.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
      */
     public function siteMap(): MorphOne;
 

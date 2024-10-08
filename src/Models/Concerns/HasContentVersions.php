@@ -178,11 +178,12 @@ trait HasContentVersions
     protected function prepareAuditData(): array
     {
         $modelIsTranslatable = in_array(\Spatie\Translatable\HasTranslations::class, class_uses_recursive($this));
+
         return collect($this->getAuditAttributes())
             ->map(function ($attribute) use ($modelIsTranslatable): array {
-             
+
                 $isTranslatable = $modelIsTranslatable && $this->isTranslatableAttribute($attribute);
-                
+
                 $diff = [
                     'attribute' => $attribute,
                     'old' => $this->getOriginal($attribute),

@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Base\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum Frequency : int implements HasLabel
+enum Frequency: int implements HasLabel
 {
     case Never = 0;
     case Always = 1;

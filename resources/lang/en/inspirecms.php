@@ -79,7 +79,7 @@ return [
             'label' => 'Unpublish',
         ],
     ],
-    
+
     'frequency' => [
         'always' => [
             'label' => 'Always',
