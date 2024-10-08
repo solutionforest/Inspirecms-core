@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
+use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
@@ -13,8 +14,10 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
+use SolutionForest\InspireCms\Base\Enums\Frequency;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
@@ -84,17 +87,23 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 // Field group grouped component
                                 static::getPropertyDataValueComponent(),
                             ]),
-                        Forms\Components\Tabs\Tab::make('webSetting')
-                            ->label(__('inspirecms::inspirecms.web_setting'))
+                        Forms\Components\Tabs\Tab::make('seo')
+                            ->label(__('inspirecms::resources/content.seo.heading'))
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->columns(1)
-                                    ->heading(__('inspirecms::inspirecms.seo'))
+                                    ->heading(__('inspirecms::inspirecms.general'))
                                     ->aside()
                                     ->schema([
                                         static::getTitleFormComponent(),
                                         static::getSlugFormComponent(),
                                     ]),
+                                static::getSeoFormComponent(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('siteMap')
+                            ->label(__('inspirecms::resources/content.sitemap.heading'))
+                            ->schema([
+                                static::getSitemapFormComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
                             ->label(__('inspirecms::inspirecms.details'))
@@ -305,15 +314,21 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
-            ->label(__('inspirecms::inspirecms.title'))
-            ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
+            ->label(__('inspirecms::resources/content.title.label'))
+            ->placeholder(__('inspirecms::resources/content.title.placeholder'))
+            ->helperText(__('inspirecms::resources/content.title.instructions'))
+            ->live(true, 500)->afterStateUpdated(function ($state, $get, $set, $operation, ContentForm $livewire) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', Str::slug($state));
                 }
+                $locale = $livewire->getActiveActionsLocale();
+                $set("webSetting.seo.meta_title.{$locale}", $state);
             })
             ->autofocus()
-            ->required();
+            ->required()
+            ->limitLengthWithHint(60)
+            ->translatable();
     }
 
     /**
@@ -322,8 +337,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getSlugFormComponent()
     {
         return Forms\Components\TextInput::make('slug')
-            ->label(__('inspirecms::inspirecms.slug'))
-            ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->label(__('inspirecms::resources/content.slug.label'))
+            ->placeholder(__('inspirecms::resources/content.slug.placeholder'))
+            ->helperText(__('inspirecms::resources/content.slug.instructions'))
+            ->live(true, 500)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get, ContentForm $livewire, string $operation) {
                 $model = new (static::getModel());
 
@@ -598,5 +615,194 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             });
     }
 
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getSeoFormComponent()
+    {
+        $langs = InspireCms::getAllAvailableLanguages();
+
+        $configureTranslatableComponents = function (string $field, Closure $createFieldUsing) use ($langs) {
+
+            $components = [];
+
+            foreach ($langs as $lang) {
+
+                $locale = $lang->getCode();
+
+                $components[] = $createFieldUsing($field::make($locale)
+                    ->visible(fn (ContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
+                    ->translatable()
+                );
+            }
+
+            return $components;
+        };
+
+        return Forms\Components\Group::make()
+            ->columns(['md' => 3, 'default' => 1])
+            ->dehydrated()
+            ->statePath('webSettingData')
+            ->afterStateHydrated(function ($record, $component) {
+                if ($record) {
+                    $component->state($record->webSettingData);
+                }
+            })
+            ->schema([
+                Forms\Components\Section::make()
+                    ->columns(1)
+                    ->columnStart(['md' => 2])
+                    ->statePath('seo')
+                    ->schema([
+                        Forms\Components\Group::make()
+                            ->statePath('meta_title')
+                            ->schema(
+                                $configureTranslatableComponents(Forms\Components\TextInput::class, fn (Forms\Components\TextInput $field) =>
+                                    $field
+                                        ->label(__('inspirecms::resources/content.seo.meta_title.label'))
+                                        ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
+                                        ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
+                                        ->limitLengthWithHint(60)
+                                )
+                            ),
+                            Forms\Components\Group::make()
+                                ->statePath('meta_description')
+                                ->schema($configureTranslatableComponents(Forms\Components\Textarea::class, fn (Forms\Components\Textarea $field) =>
+                                        $field
+                                            ->label(__('inspirecms::resources/content.seo.meta_description.label'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
+                                            ->limitLengthWithHint(120)
+                                    )
+                                ),
+                        Forms\Components\TagsInput::make('meta_keywords')
+                            ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
+                            ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
+                    ]),
+                Forms\Components\Section::make()
+                    ->columns(1)
+                    ->heading(__('inspirecms::resources/content.seo.og.heading'))
+                    ->aside()
+                    ->statePath('seo')
+                    ->schema([
+                        
+                        Forms\Components\Group::make()
+                            ->statePath('og_title')
+                            ->schema($configureTranslatableComponents(Forms\Components\TextInput::class, fn (Forms\Components\TextInput $field) =>
+                                    $field
+                                        ->label(__('inspirecms::resources/content.seo.og.og_title.label'))
+                                        ->placeholder(__('inspirecms::resources/content.seo.og.og_title.placeholder'))
+                                        ->helperText(__('inspirecms::resources/content.seo.og.og_title.instructions'))
+                                        ->limitLengthWithHint(60)
+                                )
+                            ),
+                        Forms\Components\Group::make()
+                            ->statePath('og_description')
+                            ->schema($configureTranslatableComponents(Forms\Components\Textarea::class, fn (Forms\Components\Textarea $field) =>
+                                    $field
+                                        ->label(__('inspirecms::resources/content.seo.og.og_description.label'))
+                                        ->placeholder(__('inspirecms::resources/content.seo.og.og_description.placeholder'))
+                                        ->helperText(__('inspirecms::resources/content.seo.og.og_description.instructions'))
+                                        ->limitLengthWithHint(120)
+                                )
+                            ),
+                        Forms\Components\FileUpload::make('og_image')
+                            ->label(__('inspirecms::resources/content.seo.og.og_image.label'))
+                            ->placeholder(__('inspirecms::resources/content.seo.og.og_image.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.seo.og.og_image.instructions'))
+                            ->image(),
+                    ]),
+                Forms\Components\Section::make()
+                    ->heading(__('inspirecms::resources/content.seo.robots.heading'))
+                    ->aside()
+                    ->statePath('robots')
+                    ->schema([
+                        Forms\Components\Toggle::make('noindex')
+                            ->label(__('inspirecms::resources/content.seo.robots.noindex.label'))
+                            ->helperText(__('inspirecms::resources/content.seo.robots.noindex.instructions')),
+                        Forms\Components\Toggle::make('nofollow')
+                            ->label(__('inspirecms::resources/content.seo.robots.nofollow.label'))
+                            ->helperText(__('inspirecms::resources/content.seo.robots.nofollow.instructions')),
+                    ]),
+                Forms\Components\Section::make()
+                    ->heading(__('inspirecms::resources/content.redirect.heading'))
+                    ->aside()
+                    ->schema([
+                        Forms\Components\TextInput::make('redirect_path')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_path.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
+                        \SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker::make('redirect_content_id')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
+                            ->paginationOptions(function ($record) {
+                                $query = static::getEloquentQuery()
+                                    ->withoutGlobalScope(SoftDeletingScope::class);
+                                if ($record) {
+                                    $query->whereKeyNot($record->getKey());
+                                }
+                                return $query;
+                            })
+                            ->recordTitleUsing(fn ($record) => $record->title)
+                            ->tableColumns([
+                                Tables\Columns\TextColumn::make('id'),
+                                Tables\Columns\TextColumn::make('title'),
+                                Tables\Columns\TextColumn::make('slug'),
+                            ])
+                            ->maxItems(1),
+                        Forms\Components\Select::make('redirect_type')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_type.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_type.instructions'))
+                            ->options([
+                                301 => __('inspirecms::resources/content.redirect.redirect_type.301'),
+                                302 => __('inspirecms::resources/content.redirect.redirect_type.302'),
+                            ]),
+                    ]),
+            ]);
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getSiteMapFormComponent()
+    {
+        return Forms\Components\Section::make()
+            ->statePath('sitemap')
+            ->loadStateFromRelationshipsUsing(function (ModelsContent $record, $component) {
+                $data = $record->sitemap?->attributesToArray() ?? [];
+                $component->state($data);
+            })
+            ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
+                $record->sitemap()->updateOrCreate([], $state);
+            })
+            ->schema([
+                Forms\Components\Toggle::make('enable')
+                    ->label(__('inspirecms::resources/content.sitemap.enable.label'))
+                    ->helperText(__('inspirecms::resources/content.sitemap.enable.instructions'))
+                    ->inlineLabel()
+                    ->afterStateHydrated(fn ($component, $state) => $component->state(is_null($state) ? true : $state)),
+                Forms\Components\TextInput::make('priority')
+                    ->label(__('inspirecms::resources/content.sitemap.priority.label'))
+                    ->placeholder(__('inspirecms::resources/content.sitemap.priority.placeholder'))
+                    ->helperText(new HtmlString(__('inspirecms::resources/content.sitemap.priority.instructions')))
+                    ->inlineLabel()
+                    ->numeric()
+                    ->inputMode('decimal')
+                    ->maxValue(1)
+                    ->minValue(0)
+                    ->step(0.1)
+                    ->afterStateHydrated(fn ($component, $state) => $component->state($state?? 0.5))
+                    ->dehydrateStateUsing(fn ($state) => $state ?? 0.5)
+                    ->required(),
+                Forms\Components\Select::make('change_frequency')
+                    ->label(__('inspirecms::resources/content.sitemap.change_frequency.label'))
+                    ->placeholder(__('inspirecms::resources/content.sitemap.change_frequency.placeholder'))
+                    ->helperText(__('inspirecms::resources/content.sitemap.change_frequency.instructions'))
+                    ->inlineLabel()
+                    ->options(Frequency::class)
+                    ->afterStateHydrated(fn ($component, $state) => $component->state($state ?? Frequency::Monthly->value))
+                    ->dehydrateStateUsing(fn ($state) => $state ?? Frequency::Monthly->value)
+                    ->required(),
+            ]);
+    }
     //endregion Form field(s)/component(s)
 }

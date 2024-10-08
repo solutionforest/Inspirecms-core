@@ -89,6 +89,7 @@ class ModelManifest implements ModelManifestInterface
         return [
             Models\Content::class,
             Models\ContentVersion::class,
+            Models\ContentWebSetting::class,
             Models\DocumentType::class,
             Models\Language::class,
             Models\User::class,
@@ -97,6 +98,7 @@ class ModelManifest implements ModelManifestInterface
             Models\Users\UserLoginActivity::class,
             Models\Template::class,
             Models\Polymorphic\Templateable::class,
+            Models\SiteMap::class,
         ];
     }
 

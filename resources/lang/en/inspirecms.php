@@ -4,8 +4,8 @@ return [
     'add_xxx' => 'Add :name',
     'allow_sections' => 'Allow Sections',
     'back' => 'Back',
-    'code' => 'Code',
     'children' => 'Children',
+    'code' => 'Code',
     'content' => 'Content',
     'create_xxx' => 'Create :name',
     'created_at' => 'Created at',
@@ -13,21 +13,21 @@ return [
     'deleted_at' => 'Deleted at',
     'details' => 'Details',
     'document_type' => 'Document Type',
+    'element' => 'Element',
     'email_confirmed_at' => 'Email confirmed at',
     'email' => 'Email',
-    'element' => 'Element',
     'failed_login_attempt' => 'Failed login attempt',
     'field_group' => 'Field Group',
     'fields' => 'Fields',
     'general' => 'General',
     'group' => 'Group',
-    'label' => 'Label',
     'id' => 'ID',
     'is_active' => 'Active',
     'is_default' => 'Default',
     'is_published' => 'Is published',
     'is_root_level' => 'Is root',
     'is_web_page' => 'Is web page',
+    'label' => 'Label',
     'last_lockouted_at' => 'Last lockouted at',
     'last_logged_in_at' => 'Last logged in at',
     'last_published_at' => 'Last published at',
@@ -43,11 +43,11 @@ return [
     'path' => 'Path',
     'preview_fields' => 'Preview fields',
     'publish_at' => 'Publish at',
+    'referenced_by_xxx' => 'Referenced by :name',
+    'referenced_by' => 'Referenced by',
     'role' => 'Role',
     'roles' => 'Roles',
     'root' => 'Root',
-    'referenced_by' => 'Referenced by',
-    'referenced_by_xxx' => 'Referenced by :name',
     'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',
@@ -58,11 +58,12 @@ return [
     'title' => 'Title',
     'total_xxx_have_used' => 'Total :name has been used',
     'total' => 'Total',
+    'translatable' => 'Translatable',
+    'trash' => 'Trash',
     'type' => 'Type',
     'user' => 'User',
     'users' => 'Users',
     'visibility' => 'Visibility',
-    'trash' => 'Trash',
 
     'page_status' => [
         'draft' => [
@@ -78,9 +79,34 @@ return [
             'label' => 'Unpublish',
         ],
     ],
+    
+    'frequency' => [
+        'always' => [
+            'label' => 'Always',
+        ],
+        'hourly' => [
+            'label' => 'Hourly',
+        ],
+        'daily' => [
+            'label' => 'Daily',
+        ],
+        'weekly' => [
+            'label' => 'Weekly',
+        ],
+        'monthly' => [
+            'label' => 'Monthly',
+        ],
+        'yearly' => [
+            'label' => 'Yearly',
+        ],
+        'never' => [
+            'label' => 'Never',
+        ],
+    ],
 
     'hints' => [
         'future_published_at_description' => 'Content will be published automatically when the specified date and time arrives.',
         'future_publish' => 'If set to a future date, this page will be published automatically when that time is reached.',
+        'remaining_xxx_characters' => 'Remaining :number characters',
     ],
 ];

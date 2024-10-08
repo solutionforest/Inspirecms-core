@@ -14,7 +14,7 @@ use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
-#[ConfigName('translate', 'Translate', 'Translate')]
+#[ConfigName('translate', 'Translate', 'Translate', 'heroicon-m-language')]
 #[FormComponent(Forms\Components\Group::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
@@ -104,6 +104,8 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->hidden($langCode != $activeLocale)
                         ->dehydratedWhenHidden();
                 }
+
+                $fiFormComponent->translatable();
 
                 $components[] = $fiFormComponent;
             }

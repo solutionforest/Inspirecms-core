@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -18,6 +19,20 @@ interface Content extends NestableInterface
      * @return BelongsTo The document type relation.
      */
     public function documentType(): BelongsTo;
+    
+    /**
+     * Define a one-to-one relationship with the WebSetting model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function webSetting(): HasOne;
+
+    /**
+     * Define a one-to-one relationship for the site map.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
+    public function siteMap(): MorphOne;
 
     /**
      * Return the content versions relation.

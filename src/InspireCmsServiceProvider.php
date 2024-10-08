@@ -119,6 +119,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function packageBooted(): void
     {
+        $this->configureFilamentForm();
+
         // Asset Registration
         FilamentAsset::register(
             $this->getAssets(),
@@ -253,5 +255,18 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'driver' => 'session',
             'provider' => InspireCmsConfig::getGuardName(),
         ]);
+    }
+
+    protected function configureFilamentForm(): void
+    {
+        \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int|\Closure $length) {
+            return $this->live()
+                ->hint(fn ($state, $component) => __('inspirecms::inspirecms.hints.remaining_xxx_characters', ['number' => $component->getMaxLength() - strlen($state)]))
+                ->maxLength($length);
+        });
+        \Filament\Forms\Components\Field::macro('translatable', function () {
+            return $this
+                ->hintIcon('heroicon-m-language', __('inspirecms::inspirecms.translatable'));
+        });
     }
 }

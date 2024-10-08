@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
@@ -39,13 +41,30 @@ class Content extends BaseModel implements ContentContract
         'propertyData',
     ];
 
-    protected ?array $tempPropertyData = [];
+    /**
+     * @var array $tempRelationData
+     * 
+     * An array to temporarily store relation data for the Content model.
+     * This array is used internally to manage and manipulate relationship data
+     * before it is persisted to the database.
+     */
+    protected array $tempRelationData = [];
 
     protected $casts = [];
 
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');
+    }
+
+    public function webSetting(): HasOne
+    {
+        return $this->hasOne(InspireCmsConfig::getContentWebSettingModelClass(), 'content_id');
+    }
+
+    public function siteMap(): MorphOne
+    {
+        return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
     }
 
     /**
@@ -110,6 +129,14 @@ class Content extends BaseModel implements ContentContract
                 $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
             }
         });
+        static::saved(function (self $model) {
+            // Updates or creates the webSetting relation for the model if the tempRelationData contains webSetting.
+            // After updating or creating, it unsets the webSetting from tempRelationData.
+            if (isset($model->tempRelationData['webSetting'])) {
+                $model->webSetting()->updateOrCreate(['content_id' => $model->getKey()], $model->tempRelationData['webSetting']);
+                unset($model->tempRelationData['webSetting']);
+            }
+        });
         static::deleting(function (self $model) {
             $model->children()->delete();
         });
@@ -160,6 +187,20 @@ class Content extends BaseModel implements ContentContract
             get: fn ($value) => inspirecms_content_statuses()->getOption($this->status),
         );
     }
+
+    public function getWebSettingDataAttribute()
+    {
+        $data = $this->webSetting?->makeHidden(['id', 'content_id', 'created_at', 'updated_at'])?->toArray() ?? [];
+        if (isset($data['redirect_content_id']) && $data['redirect_content_id'] == '[]') {
+            $data['redirect_content_id'] = [];
+        }
+        return $data;
+    }
+
+    public function setWebSettingDataAttribute($value): void
+    {
+        $this->tempRelationData['webSetting'] = $value;
+    }
     //endregion Attribute(s)
 
     //region Nestable
@@ -196,9 +237,8 @@ class Content extends BaseModel implements ContentContract
     {
         $data = $this->traitPrepareAuditData();
         $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
-        $data['to']['propertyData'] = $this->tempPropertyData ?? [];
-
-        $this->tempPropertyData = [];
+        $data['to']['propertyData'] = $this->tempRelationData['propertyData'] ?? [];
+        unset($this->tempRelationData['propertyData']);
 
         return $data;
     }
@@ -206,7 +246,7 @@ class Content extends BaseModel implements ContentContract
     public function setTranslation(string $key, string $locale, $value): Content
     {
         if ($key === 'propertyData') {
-            $this->tempPropertyData = $value;
+            $this->tempRelationData['propertyData'] = $value;
 
             return $this;
         }

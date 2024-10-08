@@ -73,6 +73,30 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'ContentPublishVersion model');
     }
 
+    public static function getContentWebSettingTableName(): string
+    {
+        return app(static::getContentWebSettingModelClass())->getTable();
+    }
+
+    public static function getContentWebSettingModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\ContentWebSetting::class, Models\ContentWebSetting::class);
+
+        return self::ensureClassExists($class, 'ContentWebSetting model');
+    }
+
+    public static function getCSiteMapTableName(): string
+    {
+        return app(static::getSiteMapModelClass())->getTable();
+    }
+
+    public static function getSiteMapModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\SiteMap::class, Models\SiteMap::class);
+
+        return self::ensureClassExists($class, 'SiteMap model');
+    }
+
     public static function getDocumentTypeTableName(): string
     {
         return app(static::getDocumentTypeModelClass())->getTable();

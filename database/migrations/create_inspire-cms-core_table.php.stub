@@ -74,6 +74,29 @@ return new class extends BaseMigration
             $table->index('content_id');
             $table->index('version_id');
         });
+        Schema::create($tableNames['content_web_setting'], function (Blueprint $table) {
+            $table->id();
+            $table->uuid('content_id');
+            $table->json('seo')->nullable();
+            $table->json('robots')->nullable();
+            $table->string('redirect_path')->nullable();
+            $table->uuid('redirect_content_id')->default(0);
+            $table->integer('redirect_type')->unsigned()->nullable();
+
+            $table->timestamps();
+
+            $table->index('content_id');
+            $table->index('redirect_content_id');
+        });
+        Schema::create($tableNames['site_map'], function (Blueprint $table) {
+            $table->id();
+            $table->nullableMorphs('model');
+            $table->string('url')->nullable();
+            $table->integer('change_frequency')->unsigned();
+            $table->decimal('priority',2 ,1)->unsigned();
+            $table->boolean('enable');
+            $table->timestamps();
+        });
         Schema::create($tableNames['field_groupable'], function (Blueprint $table) {
             $table->id();
             $table->integer('field_group_id');
@@ -146,6 +169,9 @@ return new class extends BaseMigration
 
         Schema::dropIfExists($tableNames['nestable_tree']);
         Schema::dropIfExists($tableNames['field_groupable']);
+
+        Schema::dropIfExists($tableNames['site_map']);
+        Schema::dropIfExists($tableNames['content_web_setting']);
         Schema::dropIfExists($tableNames['content_publish_version']);
         Schema::dropIfExists($tableNames['content_version']);
 
@@ -170,6 +196,8 @@ return new class extends BaseMigration
             'user' => $this->prefix . 'users',
             'template' => $this->prefix . 'templates',
             'templatable' => $this->prefix . 'templateable',
+            'content_web_setting' => $this->prefix . 'content_web_settings',
+            'site_map' => $this->prefix . 'site_maps',
         ];
     }
 };
