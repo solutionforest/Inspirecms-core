@@ -211,7 +211,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return [
             'create_inspire-cms-core_table',
-            'add_custom_fields_on_advanced-fields_table',
         ];
     }
 
@@ -238,9 +237,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
             );
-        }
-        if (config('inspirecms.override_plugins.filament_peek', false)) {
-
         }
     }
 

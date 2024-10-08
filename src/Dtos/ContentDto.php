@@ -3,12 +3,13 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Collection;
+use SolutionForest\InspireCms\FieldTypes\Configs\Translate;
 use SolutionForest\InspireCms\Models\Content;
 
 /**
- * @extends BaseDto<Content>
+ * @extends BaseTranslatableModelDto<Content>
  */
-class ContentDto extends BaseDto
+class ContentDto extends BaseTranslatableModelDto
 {
     /**
      * @var int|string
@@ -16,7 +17,7 @@ class ContentDto extends BaseDto
     public $id;
 
     /**
-     * @var string
+     * @var array<string,string>
      */
     public $title;
 
@@ -26,70 +27,76 @@ class ContentDto extends BaseDto
     public $slug;
 
     /**
-     * @var ?DocumentTypeDto
+     * @var DocumentTypeDto
      */
     public $documentType;
 
     /**
-     * @var Collection<TemplateDto>
-     */
-    public $templates;
-
-    /**
      * @var Collection<PropertyDataDto>
      */
-    public $propertyDataVersions;
+    public $propertyData;
 
-    public static function fromModel($model)
+    protected array $translatableAttributes = ['title'];
+
+    public static function fromTranslatableModel($model, $locale)
     {
-        $model->loadMissing([
-            'documentType.templates',
-            'templates',
-            'contentVersions',
-        ]);
+        /**
+         * @var self
+         */
+        $dto = parent::fromTranslatableModel($model, $locale);
+        
+        $dto->setPropertyData($model->getLatestPublishedPropertyData());
 
-        return static::fromArray([
-            'id' => $model->getKey(),
-            'title' => $model->title,
-            'slug' => $model->slug,
-            'documentType' => DocumentTypeDto::fromModel($model->documentType),
-            'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
-            'propertyDataVersions' => collect($model->propertyDatas)->map(fn ($propertyData) => PropertyDataDto::fromModel($propertyData)),
-        ])->setModel($model);
+        return $dto;
     }
 
-    public function getDefaultTemplate(): ?TemplateDto
+    /**
+     * @param array $propertyData
+     * @return self
+     */
+    public function setPropertyData(array $propertyData)
     {
-        $fallbackTemplate = $this->documentType?->templates->first(function (TemplateDto $templateDto) {
-            return $templateDto->isDefault;
-        });
+        $this->propertyData = collect($propertyData)->map(function ($value, $key) {
+            
+            return [
+                'propertyKey' =>$key,
+                'propertyValue' => $value,
+            ];
 
-        $currTemplate = $this->templates->first(function (TemplateDto $templateDto) {
-            return $templateDto->isDefault;
-        });
+        })->values()->map(fn ($data) => PropertyDataDto::fromArray($data));
 
-        return $currTemplate ?? $fallbackTemplate;
-    }
-
-    public function getLatestPropertyData(): ?PropertyDataDto
-    {
-        return $this->propertyDataVersions
-            ->sortByDesc('versionDate')
-            ->first();
-    }
-
-    public function getLatestPublishedPropertyData(): ?PropertyDataDto
-    {
-        return $this->propertyDataVersions
-            ->sortByDesc('versionDate')
-            ->whereNotNull('publishedAt')
-            ->first();
+        return $this;
     }
 
     public function getPropertyData(string $name, ?string $locale = null)
     {
-        $latestPropertyData = $this->getLatestPropertyData();
+        $propertyType = $this->documentType?->getField($name)?->config;
+        $propertyData = $this->propertyData->first(fn ($propertyData) => $propertyData->propertyKey === $name)?->propertyValue;
 
-        return data_get($latestPropertyData?->propertyValue, $name);
+        switch (true) {
+            case $propertyType instanceof Translate:
+                return $this->getTranslations($propertyData, $locale);
+            case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image:
+                $disk = $propertyType->disk ?? config('filesystems.default');
+                $directory = $propertyType->directory;
+                return collect($propertyData)
+                    ->map(fn ($file) => filled($directory) ? $directory . '/' . $file : $file)
+                    ->map(fn ($filePath) => [
+                        'path' => $filePath,
+                        'disk' => $disk,
+                    ])
+                    ->values()->all();
+            default:
+                return $propertyData;
+        }
+    }
+
+    /**
+     * @param ?string $locale
+     * @return null|string|array<string,string>
+     */
+    public function getTitle(?string $locale = null)
+    {
+        return $this->getTranslation('title', $locale);
     }
 }

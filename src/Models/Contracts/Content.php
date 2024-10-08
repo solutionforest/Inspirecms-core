@@ -86,6 +86,13 @@ interface Content extends NestableInterface
     public function getLatestPublishedContentVersion(): ?ContentVersion;
 
     /**
+     * Retrieve the latest version property data.
+     *
+     * @return array The data of the latest version property.
+     */
+    public function getLatestPublishedPropertyData(): array;
+
+    /**
      * Retrieve the data of the latest version property.
      *
      * @return array The data of the latest version property.

@@ -3,12 +3,12 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Models\Contracts\DocumentType;
+use SolutionForest\InspireCms\Models\DocumentType;
 
 /**
- * @extends BaseDto<DocumentType>
+ * @extends BaseModelDto<DocumentType>
  */
-class DocumentTypeDto extends BaseDto
+class DocumentTypeDto extends BaseModelDto
 {
     /**
      * @var int|string
@@ -21,20 +21,25 @@ class DocumentTypeDto extends BaseDto
     public $title;
 
     /**
-     * @var Collection<TemplateDto>
+     * @var Collection<FieldDto>
      */
-    public $templates;
+    public $fields;
 
     public static function fromModel($model)
     {
-        $model->loadMissing([
-            'templates',
-        ]);
+        $model->loadMissing(['fieldGroups.fields']);
 
-        return static::fromArray([
-            'id' => $model->getKey(),
-            'title' => $model->title,
-            'templates' => collect($model->templates)->map(fn ($template) => TemplateDto::fromModel($template)),
-        ])->setModel($model);
+        $dto = parent::fromModel($model);
+
+        $dto->fields = $model->fieldGroups->flatMap(function ($group) {
+            return $group->fields;
+        })->map(fn ($field) => FieldDto::fromModel($field));
+
+        return $dto;
+    }
+
+    public function getField(string $name): ?FieldDto
+    {
+        return $this->fields->first(fn ($field) => $field->name === $name);
     }
 }

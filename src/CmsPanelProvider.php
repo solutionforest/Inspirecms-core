@@ -148,6 +148,9 @@ class CmsPanelProvider extends PanelProvider
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
                 $action->icon('heroicon-o-eye');
             });
+            \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction $action) {
+                $action->icon('heroicon-o-eye');
+            });
         });
     }
 

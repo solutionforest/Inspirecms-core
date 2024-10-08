@@ -75,9 +75,9 @@ class ImportDefaultData extends Command
         }
 
         $model::firstOrCreate([
-            'slug' => 'landing',
+            'slug' => 'homepage',
         ], [
-            'title' => 'Landing',
+            'title' => 'Homepage',
             'is_web_page' => true,
         ]);
     }

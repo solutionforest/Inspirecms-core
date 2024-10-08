@@ -89,6 +89,14 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
+    public function getLatestPublishedPropertyData(): array
+    {
+        $latestContentVersion = $this->getLatestPublishedContentVersion();
+
+        return $this->mutateLatestVersionPropertyData($latestContentVersion);
+    }
+
+    /** {@inheritDoc} */
     public function getLatestVersionPropertyData(): array
     {
         $latestContentVersion = $this->getLatestContentVersion();

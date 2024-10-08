@@ -30,7 +30,6 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
-        'filament_peek' => true,
     ],
 
     'template' => [

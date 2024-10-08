@@ -8,6 +8,7 @@ use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\CreateContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
@@ -20,6 +21,7 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     use CreateRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
+    use ContentPreviewEditorTrait;
     use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.create';

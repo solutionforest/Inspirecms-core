@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\FieldTypes\Configs;
 
 use Filament\Forms;
+use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
@@ -96,6 +97,11 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 
                     $fiFormComponent
                         ->hidden($langCode != $livewire->getActiveActionsLocale())
+                        ->dehydratedWhenHidden();
+                } else if ($livewire instanceof BuilderEditor) {
+                    $activeLocale = $livewire->editorData['activeLocale'] ?? null;
+                    $fiFormComponent
+                        ->hidden($langCode != $activeLocale)
                         ->dehydratedWhenHidden();
                 }
 

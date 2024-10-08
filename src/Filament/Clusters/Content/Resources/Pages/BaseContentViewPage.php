@@ -7,7 +7,9 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
 use Livewire\WithPagination;
+use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
+use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
@@ -25,6 +27,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     use ViewRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
+    use HasPreviewModal;
     use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.view';
@@ -38,12 +41,10 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 ->color('gray')
                 ->visible(fn ($record) => $record->trashed()),
             Actions\LocaleSwitcher::make(),
+            PreviewAction::make(),
             ContentHistoryAction::make()
                 ->record(fn () => $this->getRecord()),
             Actions\EditAction::make()
-                ->hidden(fn ($record) => $record->trashed())
-                ->iconButton(),
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
                 ->hidden(fn ($record) => $record->trashed())
                 ->iconButton(),
             Actions\DeleteAction::make()
@@ -56,13 +57,18 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         ];
     }
 
+    public function updatedActiveLocale(string $newActiveLocale): void
+    {
+        $this->updatedActiveLocaleForContent($newActiveLocale);
+    }
+
+    //region Preview
     protected function getPreviewModalView(): ?string
     {
-        /** @var ContentDto */
-        $dto = $this->dto;
-        $template = $dto->getDefaultTemplate();
-        $templateName = $template?->viewName;
-        if (blank($templateName)) {
+        $record = $this->getRecord();
+        $template = $record->getDefaultTemplate();
+        $template ??= $this->getDocumentType()?->getDefaultTemplate();
+        if (! $template) {
             Notification::make()
                 ->title(__('inspirecms::notification.template_file_not_found.title'))
                 ->body(__('inspirecms::notification.template_file_not_found.body'))
@@ -72,26 +78,36 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
             throw new Halt;
         }
 
-        return $templateName;
+        return $template->getViewFullName();
     }
 
     protected function mutatePreviewModalData(array $data): array
     {
-        unset($data['record']);
-        $data['content'] = $this->dto;
+        $data['content'] = $this->contentDto;
 
         return $data;
     }
-
-    //region Computed Property
-    public function getDtoProperty()
+    public static function renderPreviewModalView(string $view, array $data): string
     {
-        return ContentDto::fromModel($this->getRecord());
+        return Html::injectPreviewModalStyle(
+            view('inspirecms::filament-peek.preview', [
+                'templateData' => $data,
+                'templateView' => $view,
+            ])->render()
+        );
     }
-    //endregion Computed Property
+    //endregion Preview
 
-    public function updatedActiveLocale(string $newActiveLocale): void
+    //region Computed properties
+    #[\Livewire\Attributes\Computed(persist: true, seconds: 7200)]
+    public function contentDto()
     {
-        $this->updatedActiveLocaleForContent($newActiveLocale);
+        /**
+         * @var ContentDto
+         */
+        $dto = ContentDto::fromTranslatableModel($this->getRecord(), $this->getActiveFormsLocale());
+        $dto->setPropertyData($this->getRecord()->getLatestVersionPropertyData());
+        return $dto;
     }
+    //endregion Computed properties
 }

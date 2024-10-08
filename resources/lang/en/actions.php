@@ -67,6 +67,12 @@ return [
         ],
     ],
 
+    'preview' => [
+
+        'label' => 'Preview',
+
+    ],
+
     'private' => [
 
         'label' => 'Set privately used',

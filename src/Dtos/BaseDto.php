@@ -7,26 +7,30 @@ abstract class BaseDto
     public function __construct() {}
 
     /**
-     * @return BaseDto
+     * @return self
      */
     public static function fromArray(array $parameters)
     {
-        $class = new \ReflectionClass(static::class);
+        $reflection = new \ReflectionClass(static::class);
         /**
          * @var BaseDto
          */
-        $dto = $class->newInstanceWithoutConstructor();
+        $dto = $reflection->newInstanceWithoutConstructor();
 
         foreach ($parameters as $key => $value) {
+            if (! $reflection->hasProperty($key)) {
+                continue;
+            }
+
+            $property = $reflection->getProperty($key);
+            if (! $property->isPublic()) {
+                continue;
+            }
+
             $dto->$key = $value;
         }
 
         return $dto;
-    }
-
-    public function __get($name): mixed
-    {
-        return $this->{$name} ?? null;
     }
 
     public function __set($name, $value): void

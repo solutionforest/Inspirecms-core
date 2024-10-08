@@ -4,20 +4,17 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
 use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Livewire\WithPagination;
-use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
-use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
@@ -31,7 +28,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     use EditRecord\Concerns\Translatable{
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
-    use HasPreviewModal;
+    use ContentPreviewEditorTrait;
     use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.edit';
@@ -52,8 +49,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
             Actions\LocaleSwitcher::make(),
             ContentHistoryAction::make()
                 ->record(fn () => $this->getRecord()),
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::make()
-                ->iconButton(),
             Actions\DeleteAction::make()
                 ->iconButton(),
             Actions\RestoreAction::make()
@@ -85,46 +80,12 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         ];
     }
 
-    protected function getPreviewModalView(): ?string
-    {
-        /** @var ContentDto */
-        $dto = $this->dto;
-        $template = $dto->getDefaultTemplate();
-        $templateName = $template?->viewName;
-        if (blank($templateName)) {
-            Notification::make()
-                ->title(__('inspirecms::notification.template_file_not_found.title'))
-                ->body(__('inspirecms::notification.template_file_not_found.body'))
-                ->danger()
-                ->send();
-
-            throw new Halt;
-        }
-
-        return $templateName;
-    }
-
-    protected function mutatePreviewModalData(array $data): array
-    {
-        unset($data['record']);
-        $data['content'] = $this->dto;
-
-        return $data;
-    }
-
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
             ->label(__('inspirecms::actions.save_draft.label'))
             ->color('secondary');
     }
-
-    //region Computed Property
-    public function getDtoProperty()
-    {
-        return ContentDto::fromModel($this->getRecord());
-    }
-    //endregion Computed Property
 
     public function getDocumentType(): int | string | Model
     {

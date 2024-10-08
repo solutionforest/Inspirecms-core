@@ -14,9 +14,11 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Str;
+use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\ViewPage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -65,6 +67,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return $form
             ->columns(1)
             ->schema([
+                Forms\Components\Actions::make([
+                    \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::make()
+                        ->label(__('inspirecms::actions.preview.label'))
+                        ->builderName('propertyData'),
+                ])
+                ->alignEnd()
+                ->hidden(fn ($livewire) => $livewire instanceof ViewPage),
                 Forms\Components\Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
@@ -72,14 +81,20 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         Forms\Components\Tabs\Tab::make('content')
                             ->label(__('inspirecms::inspirecms.content'))
                             ->schema([
-
+                                // Field group grouped component
+                                static::getPropertyDataValueComponent(),
+                            ]),
+                        Forms\Components\Tabs\Tab::make('webSetting')
+                            ->label(__('inspirecms::inspirecms.web_setting'))
+                            ->schema([
                                 Forms\Components\Section::make()
                                     ->columns(1)
+                                    ->heading(__('inspirecms::inspirecms.seo'))
+                                    ->aside()
                                     ->schema([
                                         static::getTitleFormComponent(),
+                                        static::getSlugFormComponent(),
                                     ]),
-                                    // Field group grouped component
-                                    static::getPropertyDataValueComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
                             ->label(__('inspirecms::inspirecms.details'))
@@ -88,9 +103,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                                 Forms\Components\Section::make()
                                     ->columns(1)
-                                    ->columnSpan(fn ($record) => $record != null ? 1 : 3)
+                                    ->columnSpan(1)
                                     ->schema([
-                                        static::getSlugFormComponent(),
                                         static::getTemplateFormComponent(),
                                         static::getParentPageFormComponent(),
                                         static::getDocumentTypeFormComponent(),
@@ -98,17 +112,21 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 Forms\Components\Group::make()
                                     ->columns(1)
                                     ->columnSpan(2)
-                                    ->visible(fn ($record) => $record != null)
                                     ->schema([
                                         Forms\Components\Section::make([
                                             static::getDocumentTypeDisplayComponent(),
                                             Forms\Components\Placeholder::make('id')
                                                 ->label(__('inspirecms::inspirecms.id'))
                                                 ->inlineLabel()
+                                                ->visible(fn ($record) => $record != null)
                                                 ->content(fn (Model | ModelsContent | null $record) => $record->getKey()),
                                         ]),
-                                        static::getTimestampsGroupedFormComponent()->columnSpan(1),
-                                        static::getPublishDetailGroupedFormComponent()->columnSpan(1),
+                                        Forms\Components\Group::make()
+                                            ->visible(fn ($record) => $record != null)
+                                            ->schema([
+                                                static::getTimestampsGroupedFormComponent()->columnSpan(1),
+                                                static::getPublishDetailGroupedFormComponent()->columnSpan(1),
+                                            ]),
                                     ]),
                             ]),
                     ]),
@@ -125,6 +143,23 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     // Here can validate form data
                     ->afterStateHydrated(fn (ContentForm $livewire, $component) => $component->state($livewire->getPublishableFormDataBeforePublish([]))),
             ]);
+    }
+
+    public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component|array
+    {
+        $langs = collect(InspireCms::getAllAvailableLanguages())
+            ->mapWithKeys(fn ($lang) => [$lang->getCode() => $lang->getLabel()])
+            ->all();
+        return [
+            Forms\Components\Select::make('activeLocale')
+                ->options($langs)
+                ->afterStateHydrated(fn ($component) => $component->state(array_key_first($langs)))
+                ->selectablePlaceholder(false)
+                ->prefixIcon('heroicon-m-language')
+                ->hiddenLabel()
+                ->live(),
+            static::getPropertyDataValueComponent(),
+        ];
     }
 
     public static function table(Table $table): Table
@@ -407,9 +442,22 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\Placeholder::make('document_type')
             ->label(__('inspirecms::inspirecms.document_type'))
             ->inlineLabel()
-            ->content(function (Model | ModelsContent | null $record) {
-                $text = $record?->documentType->title ?? __('inspirecms::inspirecms.n/a');
-                $documentTypeKey = $record?->document_type_id ?? null;
+            ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
+                if ($record) {
+                    $documentType = $record->documentType;
+                    $text = $documentType->title;
+                } else {
+                    $documentType = $livewire->getDocumentType();
+                    if (! $documentType instanceof Model) {
+                        $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($documentType);
+                    }
+                    $text = $documentType?->title;
+                } 
+
+                if (!filled($text)) {
+                    $text = __('inspirecms::inspirecms.n/a');
+                }
+                $documentTypeKey = $documentType?->getKey();
                 $resource = config('inspirecms.resources.document_type', DocumentTypeResource::class);
                 $url = $documentTypeKey ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentTypeKey], false) : null;
                 if (! $url) {
@@ -450,10 +498,17 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->key('propertyData')
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->schema(function (ContentForm $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
-                $fieldGroups = $record
-                    ? $record->documentType->fieldGroups
-                    : $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
+            ->schema(function (ContentForm|BuilderEditor $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
+                if ($record) {
+                    $fieldGroups = $record->documentType->fieldGroups;
+                } else if ($livewire instanceof ContentForm) {
+                    $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
+                } else if ($livewire instanceof BuilderEditor)  {
+                    $fieldGroups = $getFieldGroupsFromDocumentType($livewire->editorData['documentType'] ?? null);
+                } else {
+                    $fieldGroups = collect();
+                }
+
                 $groupComponents = [];
 
                 foreach ($fieldGroups as $fieldGroupModel) {
