@@ -259,7 +259,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function configureFilamentForm(): void
     {
-        \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int|\Closure $length) {
+        \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int | \Closure $length) {
             return $this->live()
                 ->hint(fn ($state, $component) => __('inspirecms::inspirecms.hints.remaining_xxx_characters', ['number' => $component->getMaxLength() - strlen($state)]))
                 ->maxLength($length);

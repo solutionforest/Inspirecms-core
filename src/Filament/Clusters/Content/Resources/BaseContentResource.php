@@ -628,9 +628,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                 $locale = $lang->getCode();
 
-                $components[] = $createFieldUsing($field::make($locale)
-                    ->visible(fn (ContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
-                    ->translatable()
+                $components[] = $createFieldUsing(
+                    $field::make($locale)
+                        ->visible(fn (ContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
+                        ->translatable()
                 );
             }
 
@@ -655,24 +656,27 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         Forms\Components\Group::make()
                             ->statePath('meta_title')
                             ->schema(
-                                $configureTranslatableComponents(Forms\Components\TextInput::class, fn (Forms\Components\TextInput $field) =>
-                                    $field
+                                $configureTranslatableComponents(
+                                    Forms\Components\TextInput::class,
+                                    fn (Forms\Components\TextInput $field) => $field
                                         ->label(__('inspirecms::resources/content.seo.meta_title.label'))
                                         ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
                                         ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
                                         ->limitLengthWithHint(60)
                                 )
                             ),
-                            Forms\Components\Group::make()
-                                ->statePath('meta_description')
-                                ->schema($configureTranslatableComponents(Forms\Components\Textarea::class, fn (Forms\Components\Textarea $field) =>
-                                        $field
-                                            ->label(__('inspirecms::resources/content.seo.meta_description.label'))
-                                            ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
-                                            ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
-                                            ->limitLengthWithHint(120)
-                                    )
-                                ),
+                        Forms\Components\Group::make()
+                            ->statePath('meta_description')
+                            ->schema(
+                                $configureTranslatableComponents(
+                                    Forms\Components\Textarea::class,
+                                    fn (Forms\Components\Textarea $field) => $field
+                                        ->label(__('inspirecms::resources/content.seo.meta_description.label'))
+                                        ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
+                                        ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
+                                        ->limitLengthWithHint(120)
+                                )
+                            ),
                         Forms\Components\TagsInput::make('meta_keywords')
                             ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
                             ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
@@ -684,11 +688,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->aside()
                     ->statePath('seo')
                     ->schema([
-                        
+
                         Forms\Components\Group::make()
                             ->statePath('og_title')
-                            ->schema($configureTranslatableComponents(Forms\Components\TextInput::class, fn (Forms\Components\TextInput $field) =>
-                                    $field
+                            ->schema(
+                                $configureTranslatableComponents(
+                                    Forms\Components\TextInput::class,
+                                    fn (Forms\Components\TextInput $field) => $field
                                         ->label(__('inspirecms::resources/content.seo.og.og_title.label'))
                                         ->placeholder(__('inspirecms::resources/content.seo.og.og_title.placeholder'))
                                         ->helperText(__('inspirecms::resources/content.seo.og.og_title.instructions'))
@@ -697,8 +703,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ),
                         Forms\Components\Group::make()
                             ->statePath('og_description')
-                            ->schema($configureTranslatableComponents(Forms\Components\Textarea::class, fn (Forms\Components\Textarea $field) =>
-                                    $field
+                            ->schema(
+                                $configureTranslatableComponents(
+                                    Forms\Components\Textarea::class,
+                                    fn (Forms\Components\Textarea $field) => $field
                                         ->label(__('inspirecms::resources/content.seo.og.og_description.label'))
                                         ->placeholder(__('inspirecms::resources/content.seo.og.og_description.placeholder'))
                                         ->helperText(__('inspirecms::resources/content.seo.og.og_description.instructions'))
@@ -741,6 +749,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 if ($record) {
                                     $query->whereKeyNot($record->getKey());
                                 }
+
                                 return $query;
                             })
                             ->recordTitleUsing(fn ($record) => $record->title)
@@ -790,7 +799,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->maxValue(1)
                     ->minValue(0)
                     ->step(0.1)
-                    ->afterStateHydrated(fn ($component, $state) => $component->state($state?? 0.5))
+                    ->afterStateHydrated(fn ($component, $state) => $component->state($state ?? 0.5))
                     ->dehydrateStateUsing(fn ($state) => $state ?? 0.5)
                     ->required(),
                 Forms\Components\Select::make('change_frequency')

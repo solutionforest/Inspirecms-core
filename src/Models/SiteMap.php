@@ -12,7 +12,7 @@ class SiteMap extends BaseModel implements SiteMapContract
     protected $casts = [
         'enable' => 'boolean',
     ];
-    
+
     public function model()
     {
         return $this->morphTo();
