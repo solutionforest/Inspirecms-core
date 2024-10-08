@@ -74,7 +74,7 @@ class ContentDto extends BaseTranslatableModelDto
     public function getPropertyData(string $name, ?string $locale = null)
     {
         $propertyField = $this->documentType?->getField($name);
-        
+
         $propertyType = $propertyField?->config;
         $propertyData = $this->propertyData->first(fn ($propertyData) => $propertyData->propertyKey === $name)?->propertyValue;
 
