@@ -58,7 +58,7 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
     {
         return $this->fallbackLocale;
     }
-    
+
     /**
      * @return self
      */
@@ -68,7 +68,7 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
     }
 
     /**
-     * @param TModle $model
+     * @param  TModle  $model
      * @param string
      * @return self
      */
@@ -78,7 +78,7 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
     }
 
     /**
-     * @param TModle $model
+     * @param  TModle  $model
      * @param string
      * @return self
      */
@@ -109,7 +109,7 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
         if (! $translations || ! is_array($translations)) {
             return $translations;
         }
-        
+
         $locale = $locale ?? $this->getLocale();
         $fallbackLocale = $this->getFallbackLocale();
 

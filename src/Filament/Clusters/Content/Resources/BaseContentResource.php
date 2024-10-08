@@ -72,8 +72,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         ->label(__('inspirecms::actions.preview.label'))
                         ->builderName('propertyData'),
                 ])
-                ->alignEnd()
-                ->hidden(fn ($livewire) => $livewire instanceof ViewPage),
+                    ->alignEnd()
+                    ->hidden(fn ($livewire) => $livewire instanceof ViewPage),
                 Forms\Components\Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
@@ -145,11 +145,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ]);
     }
 
-    public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component|array
+    public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component | array
     {
         $langs = collect(InspireCms::getAllAvailableLanguages())
             ->mapWithKeys(fn ($lang) => [$lang->getCode() => $lang->getLabel()])
             ->all();
+
         return [
             Forms\Components\Select::make('activeLocale')
                 ->options($langs)
@@ -452,9 +453,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($documentType);
                     }
                     $text = $documentType?->title;
-                } 
+                }
 
-                if (!filled($text)) {
+                if (! filled($text)) {
                     $text = __('inspirecms::inspirecms.n/a');
                 }
                 $documentTypeKey = $documentType?->getKey();
@@ -498,12 +499,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->key('propertyData')
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->schema(function (ContentForm|BuilderEditor $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
+            ->schema(function (ContentForm | BuilderEditor $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
                 if ($record) {
                     $fieldGroups = $record->documentType->fieldGroups;
-                } else if ($livewire instanceof ContentForm) {
+                } elseif ($livewire instanceof ContentForm) {
                     $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
-                } else if ($livewire instanceof BuilderEditor)  {
+                } elseif ($livewire instanceof BuilderEditor) {
                     $fieldGroups = $getFieldGroupsFromDocumentType($livewire->editorData['documentType'] ?? null);
                 } else {
                     $fieldGroups = collect();

@@ -10,11 +10,11 @@ use Illuminate\Pagination\Paginator;
 
 trait HasPaginationOptions
 {
-    protected null|Closure|Builder $paginationOptions = null;
+    protected null | Closure | Builder $paginationOptions = null;
 
     protected int | string $perPage = 10;
 
-    public function paginationOptions(Closure|Builder $options): static
+    public function paginationOptions(Closure | Builder $options): static
     {
         $this->paginationOptions = $options;
 
@@ -33,7 +33,7 @@ trait HasPaginationOptions
         $pageName = $this->getPaginationName();
 
         $paginationOptions = $this->evaluate($this->paginationOptions);
-        
+
         if (! $paginationOptions) {
             return new Paginator([], $this->perPage, options: ['pageName' => $pageName]);
         }

@@ -15,7 +15,7 @@ abstract class BaseModelDto extends BaseDto
     protected $model;
 
     /**
-     * @param TModle $model
+     * @param  TModle  $model
      * @return self
      */
     public function setModel($model)
@@ -32,7 +32,7 @@ abstract class BaseModelDto extends BaseDto
     {
         return $this->model;
     }
-    
+
     /**
      * @return self
      */
@@ -42,7 +42,7 @@ abstract class BaseModelDto extends BaseDto
     }
 
     /**
-     * @param TModle $model
+     * @param  TModle  $model
      * @return self
      */
     public static function fromModel($model)

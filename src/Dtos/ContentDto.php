@@ -44,22 +44,21 @@ class ContentDto extends BaseTranslatableModelDto
          * @var self
          */
         $dto = parent::fromTranslatableModel($model, $locale);
-        
+
         $dto->setPropertyData($model->getLatestPublishedPropertyData());
 
         return $dto;
     }
 
     /**
-     * @param array $propertyData
      * @return self
      */
     public function setPropertyData(array $propertyData)
     {
         $this->propertyData = collect($propertyData)->map(function ($value, $key) {
-            
+
             return [
-                'propertyKey' =>$key,
+                'propertyKey' => $key,
                 'propertyValue' => $value,
             ];
 
@@ -79,6 +78,7 @@ class ContentDto extends BaseTranslatableModelDto
             case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image:
                 $disk = $propertyType->disk ?? config('filesystems.default');
                 $directory = $propertyType->directory;
+
                 return collect($propertyData)
                     ->map(fn ($file) => filled($directory) ? $directory . '/' . $file : $file)
                     ->map(fn ($filePath) => [
@@ -92,7 +92,6 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @param ?string $locale
      * @return null|string|array<string,string>
      */
     public function getTitle(?string $locale = null)

@@ -25,10 +25,10 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
 {
     use ContentFormTrait;
     use ContentPageTrait;
+    use ContentPreviewEditorTrait;
     use EditRecord\Concerns\Translatable{
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
-    use ContentPreviewEditorTrait;
     use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.edit';

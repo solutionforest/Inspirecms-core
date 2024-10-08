@@ -15,9 +15,9 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait ContentPreviewEditorTrait
 {
-    use HasPreviewModal;
     use HasBuilderPreview;
-    
+    use HasPreviewModal;
+
     protected function getBuilderPreviewView(string $builderName): ?string
     {
         $template = filled($this->data['template_id'] ?? null) ? InspireCmsConfig::getTemplateModelClass()::find($this->data['template_id']) : null;
@@ -35,13 +35,13 @@ trait ContentPreviewEditorTrait
         return $template->getViewFullName();
     }
 
-    public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component|array
+    public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
     {
         $resource = static::getResource();
 
         return $resource::getPreviewBuilderEditorSchema($builderName);
     }
-    
+
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
     {
         $documentType = $this->getDocumentType();
@@ -57,7 +57,7 @@ trait ContentPreviewEditorTrait
             $editorData['contentKey'] = $content->getKey();
 
         }
-    
+
         return $editorData;
     }
 
@@ -90,11 +90,12 @@ trait ContentPreviewEditorTrait
         $contentDto->setPropertyData($editorData['propertyData'] ?? []);
 
         $previewData['content'] = $contentDto;
+
         return $previewData;
     }
-    
+
     public static function renderBuilderPreview(string $view, array $data): string
-    {   
+    {
         return Html::injectPreviewModalStyle(
             view('inspirecms::filament-peek.preview', [
                 'templateData' => $data,

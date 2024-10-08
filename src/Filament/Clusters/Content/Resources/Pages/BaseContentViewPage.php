@@ -24,10 +24,10 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     use ContentFormTrait;
     use ContentPageTrait;
     use HasPreviewModal;
+    use HasPreviewModal;
     use ViewRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
     }
-    use HasPreviewModal;
     use WithPagination;
 
     protected static string $view = 'inspirecms::filament.pages.content.view';
@@ -87,6 +87,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
 
         return $data;
     }
+
     public static function renderPreviewModalView(string $view, array $data): string
     {
         return Html::injectPreviewModalStyle(
@@ -107,6 +108,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
          */
         $dto = ContentDto::fromTranslatableModel($this->getRecord(), $this->getActiveFormsLocale());
         $dto->setPropertyData($this->getRecord()->getLatestVersionPropertyData());
+
         return $dto;
     }
     //endregion Computed properties

@@ -98,7 +98,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                     $fiFormComponent
                         ->hidden($langCode != $livewire->getActiveActionsLocale())
                         ->dehydratedWhenHidden();
-                } else if ($livewire instanceof BuilderEditor) {
+                } elseif ($livewire instanceof BuilderEditor) {
                     $activeLocale = $livewire->editorData['activeLocale'] ?? null;
                     $fiFormComponent
                         ->hidden($langCode != $activeLocale)
