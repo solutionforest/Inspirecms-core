@@ -189,7 +189,7 @@ return new class extends BaseMigration
             'nestable_tree' => $this->prefix . 'nestable_trees',
             'content_version' => $this->prefix . 'content_versions',
             'content_publish_version' => $this->prefix . 'content_publish_version',
-            'content' => $this->prefix . 'contents',
+            'content' => $this->prefix . 'content',
             'document_type' => $this->prefix . 'document_types',
             'language' => $this->prefix . 'languages',
             'user_login_activity' => $this->prefix . 'user_login_activities',
