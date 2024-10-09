@@ -170,51 +170,6 @@ trait ContentPageTrait
         }
     }
 
-    public function getBreadcrumbs(): array
-    {
-        $resource = static::getResource();
-
-        $originalBreadcrumbs = parent::getBreadcrumbs();
-
-        if ($this instanceof BaseContentCreatePage) {
-            $parent = $this->getParentRecord();
-
-            $breadcrumbs = array_slice($originalBreadcrumbs, 0, -1);
-            $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -1);
-
-        } elseif ($this instanceof BaseContentEditPage || $this instanceof BaseContentViewPage) {
-            $parent = $this->getParent();
-
-            $breadcrumbs = array_slice($originalBreadcrumbs, 0, -2);
-            $slicedBreadcrumbs = array_slice($originalBreadcrumbs, -2);
-
-        } else {
-            $parent = null;
-
-            $breadcrumbs = $originalBreadcrumbs;
-            $slicedBreadcrumbs = [];
-        }
-
-        $ancestors = $parent ? collect($parent->ancestors())->push($parent)->filter() : collect();
-
-        foreach ($ancestors as $ancestor) {
-            $parameters = ['record' => $ancestor];
-            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], $parameters, true);
-
-            $parentTitle = $resource::getRecordTitle($ancestor) ?? $ancestor->getKey();
-
-            if ($url) {
-                $breadcrumbs[$url] = $parentTitle;
-            } else {
-                $breadcrumbs[] = $parentTitle;
-            }
-        }
-
-        $breadcrumbs = array_merge($breadcrumbs, $slicedBreadcrumbs);
-
-        return $breadcrumbs;
-    }
-
     public function getSubNavigation(): array
     {
         return [];
