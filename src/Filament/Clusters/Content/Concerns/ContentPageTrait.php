@@ -10,8 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
 use SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
