@@ -22,7 +22,7 @@ return [
 
     'cache' => [
         'languages' => [
-            'key' => 'inspirecms.languages.cache',
+            'key' => 'inspirecms.languages',
             'ttl' => 60 * 60 * 24,
         ],
     ],
