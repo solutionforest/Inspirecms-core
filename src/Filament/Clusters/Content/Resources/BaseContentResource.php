@@ -742,7 +742,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                                 if (is_null($state) || $state == 0 || $state == KeyHelper::generateMinUuid()) {
                                     $component->state([]);
-                                } else if (is_string($state)) {
+                                } elseif (is_string($state)) {
                                     $component->state([$state]);
                                 } else {
                                     $component->state($state);
