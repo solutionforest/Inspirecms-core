@@ -39,8 +39,17 @@
                     @foreach ($items as $item)
                         @php
                             $data = $item->getDifferences();
+
+                            // @todo: rolback action with avoid_to_clean and publishLog logic
                         @endphp
                         <li class="font-mono text-sm border rounded-md shadow-sm px-1.5 py-1">
+                            @if ($item->publishLog)
+                                <div class="inline-flex py-1">
+                                    <x-filament::badge size="sm" color="primary">
+                                        {{ trans('inspirecms::inspirecms.publish_at') }}: {{ $item->publishLog->published_at?->format('Y-m-d H:i:s') }}
+                                    </x-filament::badge>
+                                </div>
+                            @endif
                             <x-filament::grid default="3" class="gap-2">
                                 @foreach ($data as $key => $diff)
                                 @php

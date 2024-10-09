@@ -18,7 +18,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         'from_data' => 'array',
         'to_data' => 'array',
         'created_at' => 'datetime',
-        'is_avoid_clear' => 'boolean',
+        'avoid_to_clean' => 'boolean',
     ];
 
     public $timestamps = false;

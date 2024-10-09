@@ -26,18 +26,21 @@ trait HasContentVersions
         });
 
         static::saved(function (self $model) {
+
+            $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
+            $isPublishing = $statusOption && $statusOption->isPublishable();
+
             $contentVersion = $model->contentVersions()->create([
                 'from_data' => $model->auditData['from'] ?? [],
                 'to_data' => $model->auditData['to'] ?? [],
+                'avoid_to_clean' => $isPublishing,
             ]);
+            ray($isPublishing, $contentVersion, $contentVersion);
 
-            $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
-            if ($statusOption && $statusOption->isPublishable()) {
-
+            if ($isPublishing) {
                 $data = $model->getPublishableData();
                 $data['version_id'] = $contentVersion->getKey();
                 $model->publishVersionLogs()->create($data);
-
             }
 
             $model->resetPublishableData();
