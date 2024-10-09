@@ -9,11 +9,12 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
-class ContentsRelationManager extends RelationManager
+class ContentRelationManager extends RelationManager
 {
-    protected static string $relationship = 'contents';
+    protected static string $relationship = 'content';
 
     public function table(Table $table): Table
     {
@@ -41,27 +42,9 @@ class ContentsRelationManager extends RelationManager
 
     protected function getRecordUrl(Content $record): ?string
     {
-        try {
+        $resource = config('inspirecms.filament.resources.page', PageResource::class);
 
-            $url = null;
-
-            $resource = config('inspirecms.filament.resources.page', PageResource::class);
-
-            foreach (['view', 'edit'] as $action) {
-
-                if (filled($url)) {
-                    continue;
-                }
-
-                if ($resource::can($action, $record)) {
-                    $url = $resource::getUrl($action, ['record' => $record]);
-                }
-            }
-        } catch (\Throwable $th) {
-            return null;
-        }
-
-        return $url;
+        return FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $record], false);
     }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string

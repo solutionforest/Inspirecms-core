@@ -31,7 +31,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             ->orderBy('order');
     }
 
-    public function contents(): HasMany
+    public function content(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }

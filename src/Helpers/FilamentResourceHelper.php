@@ -31,7 +31,8 @@ class FilamentResourceHelper
                     continue;
                 }
 
-                if ($autorizeAction && ! $resource::can($action, $parameters)) {
+                $record = $parameters['record'] ?? null;
+                if ($autorizeAction && ! $resource::can($action, $record)) {
                     continue;
                 }
 

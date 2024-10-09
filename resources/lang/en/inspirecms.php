@@ -57,6 +57,7 @@ return [
     'something_went_wrong' => 'Something went wrong.',
     'status' => 'Status',
     'template' => 'Template',
+    'templates' => 'Templates',
     'title' => 'Title',
     'total_xxx_have_used' => 'Total :name has been used',
     'total' => 'Total',

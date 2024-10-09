@@ -162,7 +162,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return [
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
-                RelationManagers\ContentsRelationManager::class,
+                RelationManagers\ContentRelationManager::class,
             ]),
         ];
     }
@@ -235,7 +235,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->modifyFieldGroupSelectUsing(function (Forms\Components\Select $select) {
                 return $select
                     ->createOptionModalHeading(fn () => __('inspirecms::inspirecms.create_xxx', [
-                        'name' => strtolower(__('inspirecms::inspirecms.field_group')),
+                        'name' => __('inspirecms::inspirecms.field_group'),
                     ]))
                     ->createOptionForm(function (Form $form) {
 

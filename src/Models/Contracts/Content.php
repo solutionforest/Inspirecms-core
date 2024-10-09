@@ -62,9 +62,9 @@ interface Content extends NestableInterface
     public function parent(): BelongsTo;
 
     /**
-     * Return the children contents relation.
+     * Return the children content relation.
      *
-     * @return HasMany The children contents relation.
+     * @return HasMany The children content relation.
      */
     public function children(): HasMany;
 

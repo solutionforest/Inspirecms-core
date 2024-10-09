@@ -23,7 +23,7 @@ class Template extends BaseModel implements TemplateContract
         return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
     }
 
-    public function contents(): MorphToMany
+    public function content(): MorphToMany
     {
         return $this->morphedByMany(InspireCmsConfig::getContentModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
     }

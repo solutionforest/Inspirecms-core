@@ -23,11 +23,11 @@ interface DocumentType
     public function fieldGroupables(): MorphMany;
 
     /**
-     * Get the contents associated with the document type.
+     * Get the content associated with the document type.
      *
-     * @return HasMany The contents associated with the document type.
+     * @return HasMany The content associated with the document type.
      */
-    public function contents(): HasMany;
+    public function content(): HasMany;
 
     /**
      * Get the templates associated with the document type.

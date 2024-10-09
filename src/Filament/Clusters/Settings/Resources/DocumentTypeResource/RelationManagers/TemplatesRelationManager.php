@@ -60,6 +60,7 @@ class TemplatesRelationManager extends RelationManager
         return $table
             ->contentGrid(['lg' => 3, 'md' => 2])
             ->recordTitle(fn ($record) => $record->path)
+            ->modelLabel(fn () => __('inspirecms::inspirecms.template'))
             ->columns([
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\TextColumn::make('slug')
@@ -97,6 +98,11 @@ class TemplatesRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
             ]);
+    }
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('inspirecms::inspirecms.templates');
     }
 
     protected function configureCreateAction(CreateAction $action): void

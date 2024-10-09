@@ -11,7 +11,7 @@ interface Template
 
     public function documentTypes(): MorphToMany;
 
-    public function contents(): MorphToMany;
+    public function content(): MorphToMany;
 
     /**
      * Check if the template file has been created.

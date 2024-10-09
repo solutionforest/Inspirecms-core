@@ -57,6 +57,7 @@ return [
     'something_went_wrong' => '出了些問題。',
     'status' => '狀態',
     'template' => '模板',
+    'templates' => '模板',
     'title' => '標題',
     'total_xxx_have_used' => '總共使用了 :name',
     'total' => '總計',
