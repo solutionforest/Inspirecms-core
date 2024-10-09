@@ -108,5 +108,5 @@ return [
     ],
     'details' => [
         'heading' => 'Details',
-    ]
+    ],
 ];

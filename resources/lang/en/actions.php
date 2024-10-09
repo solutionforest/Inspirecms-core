@@ -181,6 +181,6 @@ return [
     'trash' => [
 
         'label' => 'Trash',
-        
+
     ],
 ];
