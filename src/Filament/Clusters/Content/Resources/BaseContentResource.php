@@ -739,14 +739,18 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
                             ->dehydrateStateUsing(fn ($state) => $state[0] ?? KeyHelper::generateMinUuid())
                             ->afterStateHydrated(function ($component, $state) {
+
                                 if (is_null($state) || $state == 0 || $state == KeyHelper::generateMinUuid()) {
                                     $component->state([]);
-                                } else {
+                                } else if (is_string($state)) {
                                     $component->state([$state]);
+                                } else {
+                                    $component->state($state);
                                 }
                             })
                             ->paginationOptions(function ($record) {
                                 $query = static::getEloquentQuery();
+
                                 if ($record) {
                                     $query->whereKeyNot($record->getKey());
                                 }
