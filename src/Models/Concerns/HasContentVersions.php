@@ -35,7 +35,6 @@ trait HasContentVersions
                 'to_data' => $model->auditData['to'] ?? [],
                 'avoid_to_clean' => $isPublishing,
             ]);
-            ray($isPublishing, $contentVersion, $contentVersion);
 
             if ($isPublishing) {
                 $data = $model->getPublishableData();
