@@ -44,7 +44,7 @@ class ManageFieldGroup extends BaseManagePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.field_group', FieldGroupResource::class);
+        return config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
     }
 
     protected function configureAction(Actions\Action $action): void

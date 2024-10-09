@@ -47,7 +47,7 @@ class DocumentTypesRelationManager extends RelationManager
                     continue;
                 }
 
-                $resource = config('inspirecms.resources.document_type', DocumentTypeResource::class);
+                $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
 
                 if ($resource::can($action, $record)) {
                     $url = $resource::getUrl($action, ['record' => $record]);

@@ -14,6 +14,6 @@ class CreateRole extends BaseCreatePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.role', RoleResource::class);
+        return config('inspirecms.filament.resources.role', RoleResource::class);
     }
 }

@@ -29,7 +29,7 @@ class CmsPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         $panel = $panel
-            ->id('cms')
+            ->id(config('insiprecms.filament.panel_id', 'cms'))
             ->path('cms')
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
@@ -51,7 +51,7 @@ class CmsPanelProvider extends PanelProvider
                 \Filament\SpatieLaravelTranslatablePlugin::make(),
                 new InspireCmsTheme,
             ])
-            ->resources(config('inspirecms.resources'))
+            ->resources(config('inspirecms.filament.resources'))
             ->pages([
                 Pages\Dashboard::class,
                 ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()

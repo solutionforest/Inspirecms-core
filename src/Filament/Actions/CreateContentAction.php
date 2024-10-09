@@ -26,7 +26,7 @@ class CreateContentAction extends BaseCreateContentAction
             ->where('is_web_page', true)
             ->get();
 
-        $contentResource = config('inspirecms.resources.page', PageResource::class);
+        $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
         $contentModel = $contentResource::getModel();
 
         $documentTypeActions = $documentTypes->map(

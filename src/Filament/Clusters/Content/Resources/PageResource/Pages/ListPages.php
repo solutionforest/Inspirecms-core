@@ -24,7 +24,7 @@ class ListPages extends BaseContentListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.filament.resources.page', PageResource::class);
     }
 
     protected function configureCreateAction(Actions\CreateAction | Tables\Actions\CreateAction $action): void

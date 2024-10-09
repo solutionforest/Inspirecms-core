@@ -239,7 +239,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ]))
                     ->createOptionForm(function (Form $form) {
 
-                        $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
+                        $fieldGroupResource = config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
 
                         if (method_exists($fieldGroupResource, 'quickForm')) {
                             return $fieldGroupResource::quickForm($form);
@@ -268,7 +268,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->hidden(fn ($action): bool => PermissionManifest::authorizeModel('update', InspireCmsConfig::getFieldGroupModelClass()) != true || blank($action->getUrl()))
                     ->url(function (array $arguments, Forms\Components\Repeater $component) {
 
-                        $fieldGroupResource = config('inspirecms.resources.field_group', FieldGroupResource::class);
+                        $fieldGroupResource = config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
 
                         $itemData = $component->getItemState($arguments['item']);
 

@@ -47,7 +47,7 @@ class CreatePage extends BaseContentCreatePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.filament.resources.page', PageResource::class);
     }
 
     public function getDocumentType(): int | Model | string

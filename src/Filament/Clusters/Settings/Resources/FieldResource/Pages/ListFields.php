@@ -17,6 +17,6 @@ class ListFields extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.field', FieldResource::class);
+        return config('inspirecms.filament.resources.field', FieldResource::class);
     }
 }

@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static ?string getInstallUrl()
  * @method static \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection> getSections(... $names)
  * @method static void addSection(\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section)
- * @method static \Illuminate\Support\Collection<\SolutionForest\InspireCms\Models\Contracts\Language> getAllAvailableLanguages()
- * @method static ?\SolutionForest\InspireCms\Models\Contracts\Language getFallbackLanguage()
+ * @method static array<string,\SolutionForest\InspireCms\Dtos\LanguageDto> getAllAvailableLanguages()
+ * @method static ?\SolutionForest\InspireCms\Dtos\LanguageDto getFallbackLanguage()
+ * @method static void forgetCachedLanguages()
  *
  * @see \SolutionForest\InspireCms\InspireCmsManager
  */

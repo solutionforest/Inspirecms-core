@@ -20,40 +20,47 @@ return [
         'driver' => 'public',
     ],
 
-    'filament' => [
-        'enable_cluster_navigation' => true,
+    'cache' => [
+        'languages' => [
+            'key' => 'inspirecms.languages.cache',
+            'ttl' => 60 * 60 * 24,
+        ],
     ],
 
-    'permissions' => [
-        'skip_access_right_permission_on_resource' => false,
+    'filament' => [
+        'enable_cluster_navigation' => true,
+        'panel_id' => 'cms',
+        'resources' => [
+            'page' => PageResource::class,
+            'document_type' => DocumentTypeResource::class,
+            'field_group' => FieldGroupResource::class,
+            'field' => FieldResource::class,
+            'language' => LanguageResource::class,
+            'template' => TemplateResource::class,
+            'user' => UserResource::class,
+            'role' => RoleResource::class,
+        ],
+    ],
+
+    'models' => [
+        'table_name_prefix' => 'cms_',
+        'morph_map_prefix' => 'cms_',
     ],
 
     'override_plugins' => [
         'field_group_models' => true,
     ],
 
-    'template' => [
-        'path' => env('INSPIRECMS_TEMPLATE_PATH', resource_path('views/inspire-cms/templates')),
+    'permissions' => [
+        'skip_access_right_permission_on_resource' => false,
     ],
 
-    'resources' => [
-        'page' => PageResource::class,
-        'document_type' => DocumentTypeResource::class,
-        'field_group' => FieldGroupResource::class,
-        'field' => FieldResource::class,
-        'language' => LanguageResource::class,
-        'template' => TemplateResource::class,
-        'user' => UserResource::class,
-        'role' => RoleResource::class,
+    'template' => [
+        'path' => resource_path('views/inspire-cms/templates'),
     ],
 
     'resolvers' => [
         'user' => \SolutionForest\InspireCms\Resolver\UserResolver::class,
-    ],
-
-    'models' => [
-        'table_name_prefix' => 'cms_',
-        'morph_map_prefix' => 'cms_',
     ],
 
     'available_locales' => [

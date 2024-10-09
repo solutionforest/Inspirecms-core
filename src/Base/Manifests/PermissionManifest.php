@@ -47,7 +47,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getClusterSectionResourceModelPermissions(): array
     {
-        return collect(config('inspirecms.resources'))
+        return collect(config('inspirecms.filament.resources'))
             ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Resources\Resource::class))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn)))
             ->map(function ($fqcn) {

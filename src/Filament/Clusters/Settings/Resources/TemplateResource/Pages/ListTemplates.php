@@ -36,7 +36,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.template', TemplateResource::class);
+        return config('inspirecms.filament.resources.template', TemplateResource::class);
     }
 
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer

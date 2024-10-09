@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Base\BaseModel;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
 
 class Language extends BaseModel implements LanguageContract
@@ -58,6 +59,13 @@ class Language extends BaseModel implements LanguageContract
                         ->update(['is_default' => false]);
                 });
             }
+            InspireCms::forgetCachedLanguages();
+        });
+        static::deleting(function (self $model) {
+            if ($model->is_default) {
+                throw new \Exception('Cannot delete default language');
+            }
+            InspireCms::forgetCachedLanguages();
         });
     }
 }

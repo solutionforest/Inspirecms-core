@@ -19,6 +19,7 @@ use Illuminate\Support\Str;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\InspireCms\Base\Enums\Frequency;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\ViewPage;
@@ -60,9 +61,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
     public static function getTranslatableLocales(): array
     {
-        $langs = InspireCms::getAllAvailableLanguages();
-
-        return $langs->pluck('code')->all();
+        return array_keys(InspireCms::getAllAvailableLanguages());
     }
 
     public static function form(Form $form): Form
@@ -157,7 +156,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component | array
     {
         $langs = collect(InspireCms::getAllAvailableLanguages())
-            ->mapWithKeys(fn ($lang) => [$lang->getCode() => $lang->getLabel()])
+            ->mapWithKeys(fn (LanguageDto $lang) => [$lang->code => $lang->name])
             ->all();
 
         return [
@@ -476,7 +475,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $text = __('inspirecms::inspirecms.n/a');
                 }
                 $documentTypeKey = $documentType?->getKey();
-                $resource = config('inspirecms.resources.document_type', DocumentTypeResource::class);
+                $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
                 $url = $documentTypeKey ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentTypeKey], false) : null;
                 if (! $url) {
                     return $text;
@@ -626,7 +625,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
             foreach ($langs as $lang) {
 
-                $locale = $lang->getCode();
+                $locale = $lang->code;
 
                 $components[] = $createFieldUsing(
                     $field::make($locale)

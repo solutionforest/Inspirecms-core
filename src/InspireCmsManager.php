@@ -4,8 +4,11 @@ namespace SolutionForest\InspireCms;
 
 use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
+use Illuminate\Cache\CacheManager;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
@@ -13,10 +16,16 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class InspireCmsManager
 {
+    protected CacheManager $cacheManager;
+
     protected Collection $sections;
 
-    public function __construct()
+    protected ?array $cachedLanguages = null;
+
+    public function __construct(CacheManager $cacheManager)
     {
+        $this->cacheManager = $cacheManager;
+        
         $this->sections = collect([
             new ClusterSection('content', Clusters\Content::class),
             new ClusterSection('setting', Clusters\Settings::class),
@@ -48,7 +57,7 @@ class InspireCmsManager
 
     public function getInstallUrl(): ?string
     {
-        return Filament::getPanel('cms')?->route(Install::getRouteSlug());
+        return Filament::getPanel(config('insiprecms.filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
     }
 
     /**
@@ -84,38 +93,65 @@ class InspireCmsManager
     }
 
     /**
-     * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\Models\Contracts\Language
+     * @return array<string,\SolutionForest\InspireCms\Dtos\LanguageDto>
      */
-    public function getAllAvailableLanguages(): Collection
+    public function getAllAvailableLanguages(): array
     {
-        // TODO: cahcing
-        $languages = InspireCmsConfig::getLanguageModelClass()::all()->keyBy('code');
-
-        /** @var ?Language */
-        $defaultLanguage = $languages->firstWhere(fn (Language $lang) => $lang->isDefault());
-
-        if ($defaultLanguage) {
-            $languages = collect($languages)
-                ->reduce(function ($array, Language $lang) use ($defaultLanguage) {
-                    $collect = collect($array);
-
-                    if ($lang->getCode() === $defaultLanguage->getCode()) {
-                        $collect->put(-1, $lang);
-                    }
-
-                    $collect->push($lang);
-
-                    return $collect;
-                })
-                ->sortKeys()
-                ->keyBy(fn (Language $lang) => $lang->getCode());
+        if (! $this->cachedLanguages) {
+            $this->cachedLanguages = $this->cacheManager->remember(
+                config('inspirecms.cache.languages.key'),
+                config('inspirecms.cache.languages.ttl'),
+                fn () => $this->getSerializedLanguagesForCache()
+            );
         }
 
-        return $languages;
+        return collect($this->cachedLanguages['languages'] ?? [])
+            ->map(fn ($arr) => array_combine($this->cachedLanguages['alias'] ?? [], $arr))
+            ->map(fn ($arr) => LanguageDto::fromArray($arr))
+            ->all();
     }
 
-    public function getFallbackLanguage(): ?Language
+    public function getFallbackLanguage(): ?LanguageDto
     {
-        return $this->getAllAvailableLanguages()->first(fn (Language $lang) => $lang->isDefault());
+        return collect($this->getAllAvailableLanguages())->first(fn (LanguageDto $lang) => $lang->isDefault == true);
+    }
+
+    public function forgetCachedLanguages(): void
+    {
+        $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
+    }
+
+    private function getSerializedLanguagesForCache(): array
+    {
+        $attributes = ['code', 'name', 'is_default'];
+
+        $alias = $this->aliasModelFields($attributes);
+
+        $languages = $this->getSortedLanguages()
+            ->map(fn ($language) => $this->aliasedModel($alias, $language))
+            ->all();
+
+        return compact('alias', 'languages');
+    }
+
+    private function getSortedLanguages(): Collection
+    {
+        return InspireCmsConfig::getLanguageModelClass()::query()
+            ->get()
+            // Sort languages by default language first
+            ->sortBy(fn (Language $lang) => $lang->isDefault() ? -1 : 1)
+            ->keyBy('code');
+    }
+
+    private function aliasedModel(array $alias, Model $language): array
+    {
+        return collect($alias)
+            ->mapWithKeys(fn ($attribute, $key) => [$key => $language->getAttribute($attribute)])
+            ->all();
+    }
+
+    private function aliasModelFields($attributes = []): array
+    {
+        return array_values(array_unique($attributes));
     }
 }

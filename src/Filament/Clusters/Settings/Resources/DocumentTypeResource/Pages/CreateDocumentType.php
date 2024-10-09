@@ -9,6 +9,6 @@ class CreateDocumentType extends BaseCreatePage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.resources.document_type', DocumentTypeResource::class);
+        return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
     }
 }

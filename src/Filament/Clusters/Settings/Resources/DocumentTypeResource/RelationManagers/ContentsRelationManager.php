@@ -45,7 +45,7 @@ class ContentsRelationManager extends RelationManager
 
             $url = null;
 
-            $resource = config('inspirecms.resources.page', PageResource::class);
+            $resource = config('inspirecms.filament.resources.page', PageResource::class);
 
             foreach (['view', 'edit'] as $action) {
 

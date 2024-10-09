@@ -53,7 +53,7 @@ class PageActivity extends BaseWidget
 
     protected function getRecordUrl(Model $record): ?string
     {
-        $resource = config('inspirecms.resources.page', PageResource::class);
+        $resource = config('inspirecms.filament.resources.page', PageResource::class);
 
         if (is_subclass_of($resource, Resource::class)) {
 

@@ -14,7 +14,7 @@ class CreateUser extends BaseCreatePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.user', UserResource::class);
+        return config('inspirecms.filament.resources.user', UserResource::class);
     }
 
     protected function getForms(): array

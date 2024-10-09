@@ -69,7 +69,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
             $components = [];
             foreach ($langs as $lang) {
 
-                $langCode = $lang->getCode();
+                $langCode = $lang->code;
                 $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($this->field, function ($fiFormConfig, $fiFormComponentFQCN) use ($langCode) {
 
                     if (! isset($this->fieldVariable['name']) || blank($this->fieldVariable['name'])) {

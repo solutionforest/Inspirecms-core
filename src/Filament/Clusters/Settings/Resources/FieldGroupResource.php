@@ -379,7 +379,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsRepeaterSchema(): array
     {
-        $fieldResource = config('inspirecms.resources.field', FieldResource::class);
+        $fieldResource = config('inspirecms.filament.resources.field', FieldResource::class);
 
         return [
             Forms\Components\Grid::make(3)
@@ -413,7 +413,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static function getFieldsEditFormSchema(): array
     {
-        $fieldResource = config('inspirecms.resources.field', FieldResource::class);
+        $fieldResource = config('inspirecms.filament.resources.field', FieldResource::class);
 
         return [
             Forms\Components\Section::make()

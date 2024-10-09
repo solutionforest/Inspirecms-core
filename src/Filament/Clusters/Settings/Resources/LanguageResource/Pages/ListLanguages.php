@@ -17,6 +17,6 @@ class ListLanguages extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.language', LanguageResource::class);
+        return config('inspirecms.filament.resources.language', LanguageResource::class);
     }
 }

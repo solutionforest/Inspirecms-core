@@ -10,6 +10,6 @@ trait HasTranslations
 
     public function getFallbackLocale(): string
     {
-        return InspireCms::getFallbackLanguage()?->getCode() ?? 'en';
+        return InspireCms::getFallbackLanguage()?->code ?? 'en';
     }
 }

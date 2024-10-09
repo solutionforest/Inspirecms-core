@@ -28,7 +28,7 @@ class ListDocumentTypes extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.document_type', DocumentTypeResource::class);
+        return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
     }
 
     protected function configureAction(Actions\Action $action): void

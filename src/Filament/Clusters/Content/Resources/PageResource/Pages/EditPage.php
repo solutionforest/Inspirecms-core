@@ -9,6 +9,6 @@ class EditPage extends BaseContentEditPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.filament.resources.page', PageResource::class);
     }
 }

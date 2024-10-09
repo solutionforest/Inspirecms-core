@@ -23,7 +23,7 @@ class Trashes extends BaseContentListTrashPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.resources.page', PageResource::class);
+        return config('inspirecms.filament.resources.page', PageResource::class);
     }
 
     protected function configureTableBulkAction(Tables\Actions\BulkAction $action): void
