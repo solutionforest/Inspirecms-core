@@ -738,7 +738,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->label(__('inspirecms::resources/content.redirect.redirect_path.label'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
-                        \SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker::make('redirect_content_id')
+                        \SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker::make('redirect_content_id')
                             ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
@@ -753,21 +753,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     $component->state($state);
                                 }
                             })
-                            ->paginationOptions(function ($record) {
-                                $query = static::getEloquentQuery();
-
-                                if ($record) {
-                                    $query->whereKeyNot($record->getKey());
-                                }
-
-                                return $query;
-                            })
-                            ->recordTitleUsing(fn ($record) => $record->title)
-                            ->tableColumns([
-                                Tables\Columns\TextColumn::make('id'),
-                                Tables\Columns\TextColumn::make('title'),
-                                Tables\Columns\TextColumn::make('slug'),
-                            ])
+                            ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
                             ->maxItems(1),
                         Forms\Components\Select::make('redirect_type')
                             ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))

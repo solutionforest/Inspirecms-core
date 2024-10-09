@@ -28,7 +28,7 @@ trait HasPaginationOptions
         return $this;
     }
 
-    public function getPaginationOptionsQuery(): ?Builder
+    protected function getPaginationOptionsQuery(): ?Builder
     {
         return $this->evaluate($this->paginationOptions);
     }

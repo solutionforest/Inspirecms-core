@@ -3,17 +3,16 @@
 namespace SolutionForest\InspireCms\FieldTypes\Configs;
 
 use Filament\Forms;
-use Filament\Tables;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
-use SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker as ContentPickerComponent;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 #[ConfigName('contentPicker', 'Content Picker', 'Picker', 'heroicon-o-pencil')]
-#[FormComponent(PaginationPicker::class)]
+#[FormComponent(ContentPickerComponent::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
 class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
@@ -30,7 +29,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function getFormSchema(): array
     {
-        $documentTypeOptions = function (Forms\Components\Select $component, $search) {
+        $documentTypeOptions = function ($component, $search) {
             $model = InspireCmsConfig::getDocumentTypeModelClass();
 
             return $model::query()
@@ -40,7 +39,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 })
                 ->get()
                 ->mapWithKeys(fn ($model) => [
-                    $model->getKey() => $model->name,
+                    $model->getKey() => $model->slug,
                 ]);
         };
         $templateOptions = function ($documentTypeId) {
@@ -92,30 +91,19 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function applyConfig(Forms\Components\Component $component): void
     {
-        if ($component instanceof PaginationPicker) {
+        if ($component instanceof ContentPickerComponent) {
 
-            $model = InspireCmsConfig::getContentModelClass();
+            $component->modifyPaginationOptionsUsing(function ($query) {
+                if ($this->documentType) {
+                    $query->where('document_type_id', $this->documentType);
+                }
 
-            $query = $model::query();
-
-            if ($this->documentType) {
-                $query->where('document_type_id', $this->documentType);
-            }
-
-            $component->paginationOptions($query);
-
-            $component->recordTitleUsing(fn ($record) => $record->title);
+                return $query;
+            });
 
             if ($this->perPage) {
                 $component->perPage($this->perPage);
             }
-
-            $component
-                ->tableColumns([
-                    Tables\Columns\TextColumn::make('id'),
-                    Tables\Columns\TextColumn::make('title'),
-                    Tables\Columns\TextColumn::make('slug'),
-                ]);
 
             if ($this->max) {
                 $component->maxItems($this->max);

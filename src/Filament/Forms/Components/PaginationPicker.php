@@ -151,7 +151,7 @@ class PaginationPicker extends Field
             ->form(function () {
                 $select = PaginationCheckboxList::make('records')
                     ->hiddenLabel()
-                    ->paginationOptions($this->paginationOptions)
+                    ->paginationOptions(fn () => $this->getPaginationOptionsQuery())
                     ->perPage($this->perPage)
                     ->contentGrid($this->contentGrid)
                     ->tableColumns($this->tableColumns);

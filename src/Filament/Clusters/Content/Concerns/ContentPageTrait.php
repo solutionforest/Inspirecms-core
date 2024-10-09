@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
-use SolutionForest\InspireCms\Filament\Forms\Components\PaginationPicker;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
@@ -63,24 +63,11 @@ trait ContentPageTrait
                 Actions\Action::make('linkToParent')
                     ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
                     ->form(function ($record) use ($modelClass) {
-                        $parentQuery = $modelClass::query();
-                        if ($record) {
-                            $parentQuery = $parentQuery
-                                ->whereKeyNot($record->getKey())
-                                ->whereKeyNot($record->parent_id);
-                        }
-
                         return [
                             Forms\Components\Toggle::make('asRoot')
                                 ->live(),
-                            PaginationPicker::make('parent')
-                                ->paginationOptions($parentQuery)
-                                ->recordTitleUsing(fn ($record) => $record->title)
-                                ->tableColumns([
-                                    Tables\Columns\TextColumn::make('id'),
-                                    Tables\Columns\TextColumn::make('title'),
-                                    Tables\Columns\TextColumn::make('slug'),
-                                ])
+                            ContentPicker::make('parent')
+                                ->exceptRecord(fn () => [$record, $record->parent_id])
                                 ->maxItems(1)
                                 ->minItems(1)
                                 ->visible(fn ($get) => $get('asRoot') === false),
