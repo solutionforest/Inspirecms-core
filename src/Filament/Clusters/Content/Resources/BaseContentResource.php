@@ -746,8 +746,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 }
                             })
                             ->paginationOptions(function ($record) {
-                                $query = static::getEloquentQuery()
-                                    ->withoutGlobalScope(SoftDeletingScope::class);
+                                $query = static::getEloquentQuery();
                                 if ($record) {
                                     $query->whereKeyNot($record->getKey());
                                 }
