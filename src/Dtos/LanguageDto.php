@@ -27,9 +27,9 @@ class LanguageDto extends BaseDto
 
         if (isset($parameters['is_default'])) {
             $parameters['isDefault'] = (bool) $parameters['is_default'];
-        } else if (! isset($parameters['isDefault'])) {
+        } elseif (! isset($parameters['isDefault'])) {
             $parameters['isDefault'] = false;
-        }  
+        }
 
         return parent::fromArray($parameters);
     }

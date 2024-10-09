@@ -25,7 +25,7 @@ class InspireCmsManager
     public function __construct(CacheManager $cacheManager)
     {
         $this->cacheManager = $cacheManager;
-        
+
         $this->sections = collect([
             new ClusterSection('content', Clusters\Content::class),
             new ClusterSection('setting', Clusters\Settings::class),
