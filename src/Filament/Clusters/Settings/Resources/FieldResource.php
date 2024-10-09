@@ -129,6 +129,11 @@ class FieldResource extends Resource implements ClusterSectionResource
         return InspireCmsConfig::getFieldModelClass();
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.field');
+    }
+
     //region Global search
     public static function canGloballySearch(): bool
     {
@@ -141,10 +146,10 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::forms.fields.name.label'))
+            ->label(__('inspirecms::resources/field.name.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms.fields.name.label'))
-            ->helperText(__('inspirecms::forms.fields.name.helper'))
+            ->placeholder(__('inspirecms::resources/field.name.label'))
+            ->helperText(__('inspirecms::resources/field.name.helper'))
             ->required()
             ->maxLength(255)
             ->live(debounce: 500)
@@ -165,10 +170,10 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getLabelFormComponent()
     {
         return Forms\Components\TextInput::make('label')
-            ->label(__('inspirecms::forms.fields.label.label'))
+            ->label(__('inspirecms::resources/field.label.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms.fields.label.label'))
-            ->helperText(__('inspirecms::forms.fields.label.helper'))
+            ->placeholder(__('inspirecms::resources/field.label.label'))
+            ->helperText(__('inspirecms::resources/field.label.helper'))
             ->required()
             ->columnSpan('full')
             ->maxLength(255)
@@ -180,10 +185,10 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getInstructionsFormComponent()
     {
         return Forms\Components\TextInput::make('instructions')
-            ->label(__('inspirecms::forms.fields.instructions.label'))
+            ->label(__('inspirecms::resources/field.instructions.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms.fields.instructions.label'))
-            ->helperText(__('inspirecms::forms.fields.instructions.helper'))
+            ->placeholder(__('inspirecms::resources/field.instructions.label'))
+            ->helperText(__('inspirecms::resources/field.instructions.helper'))
             ->maxLength(255)
             ->columnSpan('full');
     }
@@ -192,10 +197,10 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getTypeFormComponent()
     {
         return Forms\Components\Select::make('type')
-            ->label(__('inspirecms::forms.fields.type.label'))
+            ->label(__('inspirecms::resources/field.type.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms.fields.type.label'))
-            ->helperText(__('inspirecms::forms.fields.type.helper'))
+            ->placeholder(__('inspirecms::resources/field.type.label'))
+            ->helperText(__('inspirecms::resources/field.type.helper'))
             ->columns(4)
             ->options(FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions())
             ->searchable()
@@ -215,10 +220,10 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getStatePathFormComponent()
     {
         return Forms\Components\TextInput::make('state_path')
-            ->label(__('inspirecms::forms.fields.state_path.label'))
+            ->label(__('inspirecms::resources/field.state_path.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms.fields.state_path.label'))
-            ->helperText(__('inspirecms::forms.fields.state_path.helper'))
+            ->placeholder(__('inspirecms::resources/field.state_path.label'))
+            ->helperText(__('inspirecms::resources/field.state_path.helper'))
             ->maxLength(255);
     }
 
@@ -226,9 +231,9 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getMandatoryFormComponent()
     {
         return Forms\Components\Toggle::make('mandatory')
-            ->label(__('inspirecms::forms.fields.mandatory.label'))
+            ->label(__('inspirecms::resources/field.mandatory.label'))
             ->inlineLabel()
-            ->helperText(__('inspirecms::forms.fields.mandatory.helper'))
+            ->helperText(__('inspirecms::resources/field.mandatory.helper'))
             ->inlineLabel();
     }
 
@@ -252,7 +257,7 @@ class FieldResource extends Resource implements ClusterSectionResource
     public static function getGroupFormComponent()
     {
         return BelongsToParentSelect::make('group_id')
-            ->label(__('inspirecms::inspirecms.group'))
+            ->label(__('inspirecms::resources/field.group.label'))
             ->nestableParentRelationship('group', 'title')
             ->searchable()
             ->preload();

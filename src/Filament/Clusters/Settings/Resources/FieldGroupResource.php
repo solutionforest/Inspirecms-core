@@ -101,13 +101,9 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.fields'))
                     ->alignEnd()
                     ->width('5%'),
-                // Always true
-                // Tables\Columns\BooleanColumn::make('active')
-                //     ->label(__('inspirecms::inspirecms.active'))
-                //     ->width('1%'),
                 Tables\Columns\TextColumn::make('document_types_count')
                     ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
-                        'name' => (string) str(__('inspirecms::inspirecms.document_type'))->pluralStudly()->lower(),
+                        'name' => __('inspirecms::inspirecms.document_type'),
                     ]))
                     ->alignEnd()
                     ->width('5%'),

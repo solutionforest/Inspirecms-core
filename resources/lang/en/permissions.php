@@ -2,18 +2,6 @@
 
 return [
 
-    'roles' => [
-        'admin' => [
-            'label' => 'Administrator',
-        ],
-        'editor' => [
-            'label' => 'Editor',
-        ],
-        'writer' => [
-            'label' => 'Writer',
-        ],
-    ],
-
     'assign_access' => [
         'label' => 'Assign access',
     ],

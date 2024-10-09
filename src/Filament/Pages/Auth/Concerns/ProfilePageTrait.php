@@ -59,7 +59,7 @@ trait ProfilePageTrait
     protected function getNameFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.name.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
@@ -69,7 +69,7 @@ trait ProfilePageTrait
     protected function getEmailFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('email')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.email.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.email.label'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -80,7 +80,7 @@ trait ProfilePageTrait
     protected function getPasswordFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('password')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.password.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->rule(Password::default())
@@ -95,7 +95,7 @@ trait ProfilePageTrait
     protected function getPasswordConfirmationFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('passwordConfirmation')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.password_confirmation.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.password_confirmation.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -109,7 +109,7 @@ trait ProfilePageTrait
     protected function getPreferredLanguageFormComponent()
     {
         return Forms\Components\Select::make('preferred_language')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.preferred_language.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.preferred_language.label'))
             ->options(LocaleManifest::selectOptions())
             ->searchable()
             ->required();
@@ -121,7 +121,7 @@ trait ProfilePageTrait
     protected function getRolesFormComponent()
     {
         return UserRolePicker::make('roles')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.roles.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.roles.label'))
             ->required();
     }
 
@@ -131,7 +131,7 @@ trait ProfilePageTrait
     protected function getAvatarFormComponent()
     {
         return Forms\Components\FileUpload::make('avatar')
-            ->label(__('inspirecms::pages/auth/edit-profile.form.avatar.label'))
+            ->label(__('inspirecms::pages/auth/profile.form.avatar.label'))
             ->disk(config('inspirecms.avatar.driver'))
             ->image();
     }

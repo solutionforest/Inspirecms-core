@@ -74,6 +74,11 @@ class LanguageResource extends Resource implements ClusterSectionResource
         return InspireCmsConfig::getLanguageModelClass();
     }
 
+    public static function getModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.language');
+    }
+
     //region Global search
     public static function canGloballySearch(): bool
     {

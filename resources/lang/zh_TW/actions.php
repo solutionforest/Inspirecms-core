@@ -4,25 +4,25 @@ return [
 
     'clear' => [
 
-        'label' => 'Clear',
+        'label' => '清除',
 
     ],
 
     'clone' => [
 
-        'label' => 'Clone',
+        'label' => '複製',
 
         'modal' => [
 
-            'heading' => 'Cloning <i>:label</i>',
+            'heading' => '正在複製 <i>:label</i>',
 
-            'description' => 'Are you sure you want to clone this item?',
+            'description' => '您確定要複製此項目嗎？',
 
             'actions' => [
 
                 'clone' => [
 
-                    'label' => 'Clone',
+                    'label' => '複製',
 
                 ],
             ],
@@ -32,7 +32,7 @@ return [
 
             'cloned' => [
 
-                'title' => 'Clone Successful',
+                'title' => '複製成功',
 
             ],
         ],
@@ -40,81 +40,81 @@ return [
 
     'create_content' => [
 
-        'label' => 'Create content',
+        'label' => '創建內容',
 
     ],
 
     'content_history' => [
 
-        'label' => 'Content History',
+        'label' => '內容歷史',
 
     ],
 
     'open' => [
 
-        'label' => 'Open',
+        'label' => '打開',
 
     ],
 
     'publish' => [
 
-        'label' => 'Publish',
+        'label' => '發布',
 
         'actions' => [
             'publish' => [
-                'label' => 'Publish',
+                'label' => '發布',
             ],
         ],
 
         'notifications' => [
             'published' => [
-                'title' => 'Published Successful',
+                'title' => '發布成功',
             ],
         ],
     ],
 
     'preview' => [
 
-        'label' => 'Preview',
+        'label' => '預覽',
 
     ],
 
     'private' => [
 
-        'label' => 'Set privately used',
+        'label' => '設為私人使用',
 
         'actions' => [
             'private' => [
-                'label' => 'Set privately used',
+                'label' => '設為私人使用',
             ],
         ],
 
         'notifications' => [
             'updated' => [
-                'title' => 'Private Setting Updated Successfully',
+                'title' => '私人設置更新成功',
             ],
         ],
     ],
 
     'more_actions' => [
 
-        'label' => 'More actions',
+        'label' => '更多操作',
 
     ],
 
     'quick_create' => [
 
-        'label' => 'Quick create',
+        'label' => '快速創建',
 
         'modal' => [
 
-            'heading' => 'Quick create :label',
+            'heading' => '快速創建 :label',
 
             'actions' => [
 
                 'create' => [
 
-                    'label' => 'Create',
+                    'label' => '創建',
 
                 ],
             ],
@@ -123,17 +123,17 @@ return [
 
     'quick_edit' => [
 
-        'label' => 'Quick edit',
+        'label' => '快速編輯',
 
         'modal' => [
 
-            'heading' => 'Quick edit :label',
+            'heading' => '快速編輯 :label',
 
             'actions' => [
 
                 'save' => [
 
-                    'label' => 'Save',
+                    'label' => '保存',
 
                 ],
             ],
@@ -142,29 +142,29 @@ return [
 
     'save' => [
 
-        'label' => 'Save',
+        'label' => '保存',
 
     ],
 
     'save_draft' => [
 
-        'label' => 'Save draft',
+        'label' => '保存草稿',
 
     ],
 
     'select' => [
 
-        'label' => 'Select',
+        'label' => '選擇',
 
     ],
 
     'unpublish' => [
 
-        'label' => 'Unpublish',
+        'label' => '取消發布',
 
         'actions' => [
             'unpublish' => [
-                'label' => 'Unpublish',
+                'label' => '取消發布',
             ],
         ],
 
@@ -172,7 +172,7 @@ return [
 
             'unpublished' => [
 
-                'title' => 'Unpublished Successful',
+                'title' => '取消發布成功',
 
             ],
         ],
@@ -180,7 +180,7 @@ return [
 
     'trash' => [
 
-        'label' => 'Trash',
-        
+        'label' => '垃圾箱',
+
     ],
 ];

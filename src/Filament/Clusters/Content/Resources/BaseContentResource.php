@@ -81,7 +81,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->contained(false)
                     ->tabs([
                         Forms\Components\Tabs\Tab::make('content')
-                            ->label(__('inspirecms::inspirecms.content'))
+                            ->label(__('inspirecms::resources/content.content.heading'))
                             ->schema([
                                 // Field group grouped component
                                 static::getPropertyDataValueComponent(),
@@ -91,7 +91,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->columns(1)
-                                    ->heading(__('inspirecms::inspirecms.general'))
+                                    ->heading(__('inspirecms::resources/content.general.heading'))
                                     ->aside()
                                     ->schema([
                                         static::getTitleFormComponent(),
@@ -105,7 +105,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 static::getSitemapFormComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
-                            ->label(__('inspirecms::inspirecms.details'))
+                            ->label(__('inspirecms::resources/content.details.heading'))
                             ->columns(3)
                             ->schema([
 
@@ -286,6 +286,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getModel(): string
     {
         return InspireCmsConfig::getContentModelClass();
+    }
+
+    public static function getModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.content');
     }
 
     public static function getEloquentQuery(): Builder

@@ -11,6 +11,12 @@ return [
         'placeholder' => 'Enter slug',
         'instructions' => 'Enter the slug of the content',
     ],
+    'content' => [
+        'heading' => 'Content',
+    ],
+    'general' => [
+        'heading' => 'General',
+    ],
     'seo' => [
         'heading' => 'SEO',
         'meta_title' => [
@@ -100,4 +106,7 @@ return [
             'instructions' => 'Select the change frequency of the content',
         ],
     ],
+    'details' => [
+        'heading' => 'Details',
+    ]
 ];

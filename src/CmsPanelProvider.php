@@ -22,6 +22,7 @@ use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CmsPanelProvider extends PanelProvider
@@ -77,6 +78,7 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+                UserPreference::class,
             ]);
 
         $this->configureNavigation($panel);
