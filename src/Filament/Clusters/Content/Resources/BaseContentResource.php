@@ -521,6 +521,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             } else {
                 $fieldGroups = collect();
             }
+
             return $fieldGroups;
         };
 
@@ -538,7 +539,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         };
 
         if ($isTab) {
-            
+
             return Forms\Components\Tabs\Tab::make('content')
                 ->label(__('inspirecms::resources/content.content.heading'))
                 ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
