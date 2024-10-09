@@ -12,7 +12,7 @@ class ContentPicker extends PaginationPicker
 {
     protected ?Closure $modifyPaginationOptionsUsing = null;
 
-    protected null|Model|string|int|array|Closure $exceptRecord = null;
+    protected null | Model | string | int | array | Closure $exceptRecord = null;
 
     protected function setUp(): void
     {
@@ -56,14 +56,14 @@ class ContentPicker extends PaginationPicker
 
             if ($record instanceof Model) {
                 $query = $query->whereKeyNot($record->getKey());
-            } else if (is_array($record)) {
+            } elseif (is_array($record)) {
                 $recordKeys = collect($record)
                     ->map(fn ($record) => $record instanceof Model ? $record->getKey() : $record)
                     ->filter()
                     ->unique()
                     ->all();
                 $query = $query->whereKeyNot($recordKeys);
-            } else if (is_string($record) || is_int($record)) {
+            } elseif (is_string($record) || is_int($record)) {
                 $query = $query->whereKeyNot($record);
             }
         }

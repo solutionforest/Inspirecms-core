@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
-use Filament\Tables;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
@@ -62,7 +61,7 @@ trait ContentPageTrait
                 CreateContentAction::make(),
                 Actions\Action::make('linkToParent')
                     ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->form(function ($record) use ($modelClass) {
+                    ->form(function ($record) {
                         return [
                             Forms\Components\Toggle::make('asRoot')
                                 ->live(),

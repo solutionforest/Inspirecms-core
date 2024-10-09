@@ -51,7 +51,7 @@ class Content extends BaseModel implements ContentContract
     protected array $tempRelationData = [];
 
     protected $casts = [];
-    
+
     protected $table = 'content';
 
     public function documentType(): BelongsTo
