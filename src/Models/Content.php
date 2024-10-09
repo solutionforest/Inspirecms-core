@@ -129,15 +129,6 @@ class Content extends BaseModel implements ContentContract
                 $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
             }
         });
-        static::saved(function (self $model) {
-            // Updates or creates the webSetting relation for the model if the tempRelationData contains webSetting.
-            // After updating or creating, it unsets the webSetting from tempRelationData.
-            if (isset($model->tempRelationData['webSetting'])) {
-                $model->webSetting()->create();
-                $model->webSetting()->updateOrCreate(['content_id' => $model->getKey()], $model->tempRelationData['webSetting']);
-                unset($model->tempRelationData['webSetting']);
-            }
-        });
         static::deleting(function (self $model) {
             $model->children()->delete();
         });
@@ -187,21 +178,6 @@ class Content extends BaseModel implements ContentContract
         return Attribute::make(
             get: fn ($value) => inspirecms_content_statuses()->getOption($this->status),
         );
-    }
-
-    public function getWebSettingDataAttribute()
-    {
-        $data = $this->webSetting?->makeHidden(['id', 'content_id', 'created_at', 'updated_at'])?->toArray() ?? [];
-        if (isset($data['redirect_content_id']) && $data['redirect_content_id'] == '[]') {
-            $data['redirect_content_id'] = [];
-        }
-
-        return $data;
-    }
-
-    public function setWebSettingDataAttribute($value): void
-    {
-        $this->tempRelationData['webSetting'] = $value;
     }
     //endregion Attribute(s)
 

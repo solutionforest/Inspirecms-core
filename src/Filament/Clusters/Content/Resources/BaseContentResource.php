@@ -640,12 +640,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\Group::make()
             ->columns(['md' => 3, 'default' => 1])
             ->dehydrated()
-            ->statePath('webSettingData')
-            ->afterStateHydrated(function ($record, $component) {
-                if ($record) {
-                    $component->state($record->webSettingData);
-                }
-            })
+            ->relationship('webSetting')
             ->schema([
                 Forms\Components\Section::make()
                     ->columns(1)
@@ -742,6 +737,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
+                            ->dehydrateStateUsing(fn ($state) => $state[0] ?? KeyHelper::generateMinUuid())
+                            ->afterStateHydrated(function ($component, $state) {
+                                if (is_null($state) || $state == 0 || $state == KeyHelper::generateMinUuid()) {
+                                    $component->state([]);
+                                } else {
+                                    $component->state([$state]);
+                                }
+                            })
                             ->paginationOptions(function ($record) {
                                 $query = static::getEloquentQuery()
                                     ->withoutGlobalScope(SoftDeletingScope::class);
@@ -774,15 +777,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getSiteMapFormComponent()
     {
         return Forms\Components\Section::make()
-            // ->statePath('sitemap')
             ->relationship('sitemap')
-            // ->loadStateFromRelationshipsUsing(function (ModelsContent $record, $component) {
-            //     $data = $record->sitemap?->attributesToArray() ?? [];
-            //     $component->state($data);
-            // })
-            // ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
-            //     $record->sitemap()->updateOrCreate([], $state);
-            // })
             ->schema([
                 Forms\Components\Toggle::make('enable')
                     ->label(__('inspirecms::resources/content.sitemap.enable.label'))
