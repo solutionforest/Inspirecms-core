@@ -61,10 +61,12 @@ return new class extends BaseMigration
             $table->uuid('content_id');
             $table->json('from_data');
             $table->json('to_data');
+            $table->boolean('is_avoid_clear')->default(false);
 
             $table->author(nullable: true);
 
             $table->index('content_id');
+            $table->index('is_avoid_clear');
         });
         Schema::create($tableNames['content_publish_version'], function (Blueprint $table) {
             $table->uuid('content_id');
