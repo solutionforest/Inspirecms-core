@@ -79,6 +79,7 @@ class PaginationPicker extends Field
 
         $this->registerActions([
             $this->getSelectAction(),
+            $this->getClearAction(),
             $this->getMoveUpAction(),
             $this->getMoveDownAction(),
             $this->getDeleteAction(),
@@ -169,6 +170,16 @@ class PaginationPicker extends Field
             });
     }
 
+    public function getClearAction(): Action
+    {
+        return Action::make('clear')
+            ->label(__('inspirecms::actions.clear.label'))
+            ->color('gray')
+            ->action(function () {
+                $this->state([]);
+            });
+    }
+
     public function getMoveUpAction(): Action
     {
         return Action::make('moveUp')
@@ -240,7 +251,7 @@ class PaginationPicker extends Field
             return [];
         }
 
-        $records = $this->paginationOptions?->whereKey($state)->get();
+        $records = $this->getPaginationOptionsQuery()?->whereKey($state)->get();
 
         $formattedState = $records
             ->mapWithKeys(fn ($record) => [

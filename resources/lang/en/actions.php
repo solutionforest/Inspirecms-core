@@ -2,6 +2,12 @@
 
 return [
 
+    'clear' => [
+
+        'label' => 'Clear',
+
+    ],
+
     'clone' => [
 
         'label' => 'Clone',

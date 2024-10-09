@@ -28,11 +28,16 @@ trait HasPaginationOptions
         return $this;
     }
 
+    public function getPaginationOptionsQuery(): ?Builder
+    {
+        return $this->evaluate($this->paginationOptions);
+    }
+
     public function getPaginationOptions(): LengthAwarePaginator | ContractsPaginator
     {
         $pageName = $this->getPaginationName();
 
-        $paginationOptions = $this->evaluate($this->paginationOptions);
+        $paginationOptions = $this->getPaginationOptionsQuery();
 
         if (! $paginationOptions) {
             return new Paginator([], $this->perPage, options: ['pageName' => $pageName]);
