@@ -11,11 +11,19 @@ class BlueprintMarcos
 {
     public function author()
     {
-        return function (string $userType = 'integer') {
+        return function (string $userType = 'integer', bool $nullable = false) {
             if ($userType === 'integer') {
-                $this->morphs('author');
+                if ($nullable) {
+                    $this->nullableMorphs('author');
+                } else {
+                    $this->morphs('author');
+                }
             } else {
-                $this->uuidMorphs('author');
+                if ($nullable) {
+                    $this->nullableUuidMorphs('author');
+                } else {
+                    $this->uuidMorphs('author');
+                }
             }
         };
     }

@@ -10,8 +10,8 @@ trait HasAuthor
             if (empty($model->author_id) && empty($model->author_type)) {
                 $author = $model->resolveAuthor();
 
-                $model->author_id = $author->getKey();
-                $model->author_type = $author->getMorphClass();
+                $model->author_id = $author?->getKey();
+                $model->author_type = $author?->getMorphClass();
 
             }
         });

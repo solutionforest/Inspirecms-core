@@ -19,7 +19,7 @@ return new class extends BaseMigration
             $table->string('slug');
             $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
 
-            $table->author();
+            $table->author(nullable: true);
 
             $table->timestamps();
             $table->softDeletes();
@@ -62,7 +62,7 @@ return new class extends BaseMigration
             $table->json('from_data');
             $table->json('to_data');
 
-            $table->author();
+            $table->author(nullable: true);
 
             $table->index('content_id');
         });

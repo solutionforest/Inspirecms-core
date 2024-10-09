@@ -18,7 +18,6 @@ class ContentFactory extends Factory
             'status' => 0,
             'parent_id' => KeyHelper::generateMinUuid(),
             'document_type_id' => 1,
-            'published_at' => now(),
         ];
     }
 }
