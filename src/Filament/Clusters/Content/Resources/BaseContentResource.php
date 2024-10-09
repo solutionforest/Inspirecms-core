@@ -80,12 +80,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->persistTabInQueryString()
                     ->contained(false)
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('content')
-                            ->label(__('inspirecms::resources/content.content.heading'))
-                            ->schema([
-                                // Field group grouped component
-                                static::getPropertyDataValueComponent(),
-                            ]),
                         Forms\Components\Tabs\Tab::make('seo')
                             ->label(__('inspirecms::resources/content.seo.heading'))
                             ->schema([
@@ -99,6 +93,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ]),
                                 static::getSeoFormComponent(),
                             ]),
+                        static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('siteMap')
                             ->label(__('inspirecms::resources/content.sitemap.heading'))
                             ->schema([
@@ -493,7 +488,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getPropertyDataValueComponent()
+    protected static function getPropertyDataValueComponent(bool $isTab = false)
     {
         $getFieldGroupsFromDocumentType = function (int | string | Model | null $documentType) {
 
@@ -516,30 +511,49 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             return $documentType->fieldGroups ?? collect();
         };
 
+        $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromDocumentType) {
+            if ($record) {
+                $fieldGroups = $record->documentType->fieldGroups;
+            } elseif ($livewire instanceof ContentForm) {
+                $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
+            } elseif ($livewire instanceof BuilderEditor) {
+                $fieldGroups = $getFieldGroupsFromDocumentType($livewire->editorData['documentType'] ?? null);
+            } else {
+                $fieldGroups = collect();
+            }
+            return $fieldGroups;
+        };
+
+        $schema = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromLivewireOrRecord) {
+            $fieldGroups = $getFieldGroupsFromLivewireOrRecord($livewire, $record);
+
+            $groupComponents = [];
+
+            foreach ($fieldGroups as $fieldGroupModel) {
+
+                $groupComponents[] = $fieldGroupModel->toFilamentComponent();
+            }
+
+            return $groupComponents;
+        };
+
+        if ($isTab) {
+            
+            return Forms\Components\Tabs\Tab::make('content')
+                ->label(__('inspirecms::resources/content.content.heading'))
+                ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
+                ->key('propertyData')
+                ->statePath('propertyData')
+                ->dehydratedWhenHidden()
+                ->dehydrateStateUsing(fn ($component) => $component->getState())
+                ->schema($schema);
+        }
+
         return Forms\Components\Group::make()
             ->key('propertyData')
             ->statePath('propertyData')
             ->columnSpanFull()
-            ->schema(function (ContentForm | BuilderEditor $livewire, $record, $operation) use ($getFieldGroupsFromDocumentType) {
-                if ($record) {
-                    $fieldGroups = $record->documentType->fieldGroups;
-                } elseif ($livewire instanceof ContentForm) {
-                    $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
-                } elseif ($livewire instanceof BuilderEditor) {
-                    $fieldGroups = $getFieldGroupsFromDocumentType($livewire->editorData['documentType'] ?? null);
-                } else {
-                    $fieldGroups = collect();
-                }
-
-                $groupComponents = [];
-
-                foreach ($fieldGroups as $fieldGroupModel) {
-
-                    $groupComponents[] = $fieldGroupModel->toFilamentComponent();
-                }
-
-                return $groupComponents;
-            })
+            ->schema($schema)
             ->dehydrateStateUsing(fn ($component) => $component->getState());
     }
 
