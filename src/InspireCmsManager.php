@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;

@@ -14,11 +14,11 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 class MediaAsset extends BaseModel implements MediaAssetContract
 {
     use Concerns\BelongToCmsNestableTree;
-    use Concerns\NestableTrait;
     use Concerns\HasAuthor;
+    use Concerns\NestableTrait;
     use HasUuids;
-    use SoftDeletes;
     use InteractsWithMedia;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -87,6 +87,7 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         if (blank($mime)) {
             return false;
         }
+
         return str_starts_with($mime, 'image/');
     }
 

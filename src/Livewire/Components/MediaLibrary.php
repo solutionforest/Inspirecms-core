@@ -20,18 +20,18 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 /**
  * @property Form $uploadFileForm
  */
-class MediaLibrary extends Component implements HasForms, HasActions
+class MediaLibrary extends Component implements HasActions, HasForms
 {
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
 
-    #[Url(as:'p')]
+    #[Url(as: 'p')]
     public string | int $parentKey;
 
     public null | string | int $selectedMediaId = null;
 
     public ?Model $selectedMedia = null;
-    
+
     public ?array $uploadFileData = [];
 
     public function mount($parentKey = null)
@@ -61,7 +61,7 @@ class MediaLibrary extends Component implements HasForms, HasActions
         return [];
     }
 
-    #[On("updatedSelectedMediaId")]
+    #[On('updatedSelectedMediaId')]
     public function updatedSelectedMediaId($value)
     {
         if ($value) {
@@ -99,15 +99,17 @@ class MediaLibrary extends Component implements HasForms, HasActions
         }
         if ($key == static::getRootLevelParentId()) {
             $this->parentKey = $key;
+
             return;
         }
         $media = $this->getEloquentQuery()->find($key);
         if ($media && $media->isFolder()) {
             $this->parentKey = $key;
+
             return;
         }
     }
- 
+
     //region Form
     public function uploadFileForm(Form $form): Form
     {
@@ -137,7 +139,7 @@ class MediaLibrary extends Component implements HasForms, HasActions
         $this->fillForm();
     }
 
-    public function createFolderAction():Action
+    public function createFolderAction(): Action
     {
         return Action::make('createFolder')
             ->form([
@@ -219,7 +221,7 @@ class MediaLibrary extends Component implements HasForms, HasActions
         return InspireCmsConfig::getMediaAssetModelClass();
     }
 
-    protected static function getRootLevelParentId(): string|int
+    protected static function getRootLevelParentId(): string | int
     {
         return (new (static::getMediaAssetModel()))->getNestableRootValue();
     }
