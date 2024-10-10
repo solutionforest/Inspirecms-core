@@ -96,6 +96,13 @@ class MediaAsset extends BaseModel implements MediaAssetContract
         return $this->is_folder;
     }
 
+    //region Scopes
+    public function scopeFolders($query, bool $condition = true)
+    {
+        return $query->where('is_folder', $condition);
+    }
+    //endregion Scopes
+
     public static function boot()
     {
         parent::boot();
