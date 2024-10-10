@@ -11,4 +11,14 @@ class Content extends Cluster implements ClusterSection
     use ClusterSectionTrait;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
+
+    public static function getNavigationLabel(): string
+    {
+        return __('inspirecms::inspirecms.content');
+    }
+
+    public static function getClusterBreadcrumb(): ?string
+    {
+        return __('inspirecms::inspirecms.content');
+    }
 }
