@@ -39,6 +39,23 @@ trait NestableTrait
         return $this->hasMany(static::class, $this->getNestableParentIdColumn());
     }
 
+    //region Scopes
+    public function scopeRoot($query)
+    {
+        return $query->where($this->getNestableParentIdColumn(), $this->getNestableRootValue());
+    }
+
+    public function scopeLeaf($query)
+    {
+        return $query->whereDoesntHave('children');
+    }
+
+    public function scopeParent($query, $parentId)
+    {
+        return $query->where($this->getNestableParentIdColumn(), $parentId);
+    }
+    //endregion Scopes
+
     public function descendants(): Collection
     {
         return $this->children->flatMap(function ($child) {
@@ -57,6 +74,11 @@ trait NestableTrait
         }
 
         return $ancestors;
+    }
+
+    public function ancestorsAndSelf(): Collection
+    {
+        return $this->ancestors()->prepend($this);
     }
 
     public function getLevelAttribute(): int

@@ -41,6 +41,23 @@ return [
             'user' => UserResource::class,
             'role' => RoleResource::class,
         ],
+        'pages' => [
+            'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
+        ],
+        'clusters' => [
+            'content' => \SolutionForest\InspireCms\Filament\Clusters\Content::class,
+            'media' => \SolutionForest\InspireCms\Filament\Clusters\Media::class,
+            'settings' => \SolutionForest\InspireCms\Filament\Clusters\Settings::class,
+            'users' => \SolutionForest\InspireCms\Filament\Clusters\Users::class,
+        ],
+    ],
+
+    'media-library' => [
+        'disk' => 'public',
+        'thumbnail' => [
+            'width' => 300,
+            'height' => 300,
+        ],
     ],
 
     'models' => [
@@ -59,6 +76,7 @@ return [
             'template' => Models\Template::class,
             'templateable' => Models\Polymorphic\Templateable::class,
             'site_map' => Models\SiteMap::class,
+            'media_asset' => Models\MediaAsset::class,
         ],
     ],
 

@@ -28,7 +28,8 @@
         "pboivin/filament-peek": "^2.0",
         "riodwanto/filament-ace-editor": "^1.0",
         "solution-forest/filament-field-group": "^1.0.0",
-        "solution-forest/inspirecms-support": "*",
+        "solution-forest/inspirecms-support": "dev-main",
+        "spatie/laravel-medialibrary": "^11.0",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0"
     },
@@ -45,6 +46,12 @@
         "phpstan/phpstan-phpunit": "^1.0",
         "spatie/laravel-ray": "^1.26"
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../inspirecms-support"
+        }
+    ],
     "autoload": {
         "files": [
             "src/helpers.php"

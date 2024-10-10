@@ -26,11 +26,7 @@ class InspireCmsManager
     {
         $this->cacheManager = $cacheManager;
 
-        $this->sections = collect([
-            new ClusterSection('content', Clusters\Content::class),
-            new ClusterSection('setting', Clusters\Settings::class),
-            new ClusterSection('user', Clusters\Users::class),
-        ]);
+        $this->sections = collect(config('inspirecms.filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
     }
 
     /**

@@ -2,12 +2,97 @@
 @tailwind components;
 @tailwind utilities;
 
-@layer components {
-    .preview-fields-with-bg section {
-        @apply !bg-gray-100 dark:!bg-gray-700;
-        user-select: none;
-        pointer-events: none;
+@import '../../vendor/filament/filament/resources/css/theme.css';
+
+.media-library {
+    .media-content-container {
+        @apply flex flex-row gap-3;
+
+        .media-library__content__breadcrumbs {
+            @apply p-2;
+        }
+
+        .media-library__content {
+            @apply flex-1;
+
+            .media-library__content__items {
+                @apply gap-2;
+            }
+
+            .media-library__content__items__item {
+                @apply flex gap-3 flex-col justify-center items-center;
+            }
+
+            .media-library__content__items__item__title {
+                @apply text-sm text-gray-600 dark:text-gray-400 w-full text-center truncate select-none;
+            }
+    
+            .media-library__content__items__item__thumb {
+                @apply cursor-pointer rounded-md h-36 w-36 transition duration-300 ease-in-out;
+    
+                &:hover {
+                    @apply ring-1 shadow-lg ring-gray-200/100 dark:ring-gray-400/100;
+                }
+    
+                &.selected {
+                    @apply ring-2 ring-primary-500 ring-primary-500;
+                }
+    
+                img {
+                    @apply object-none rounded-md w-full h-full;
+                }
+    
+                .media-library__content__items__item__thumb__icon {
+                    @apply w-8 h-8 text-gray-500 dark:text-gray-400;
+                }
+            }
+        }
+
+        .media-library__item_detail {
+            @apply flex flex-col gap-2 border border-gray-200 dark:border-gray-400 rounded-md bg-gray-100 dark:bg-gray-800 transition duration-300 ease-in-out;
+            width: 25rem;
+
+            .media-library__item_detail__content{
+                @apply flex flex-1 flex-col gap-3 p-4;
+
+                .media-library__item_detail__thumb {
+                    
+                    @apply flex flex-col justify-center items-center;
+
+                    img {
+                        @apply object-cover rounded-md w-64 h-64;
+                    }
+
+                    .media-library__item_detail__content__icon {
+                        @apply w-8 h-8 text-gray-500 dark:text-gray-400;
+                    }
+                }
+
+                .media-library__item_detail__content__details {
+                    .media-library__item_detail__content__details__title {
+                        @apply overflow-hidden overflow-ellipsis whitespace-nowrap;
+                    }
+                    .media-library__item_detail__content__details__meta {
+                    }
+                }
+            }
+            .media-library__item_detail__content__actions {
+                @apply flex gap-2 justify-center pb-4;
+            }
+        }
     }
 }
 
-@import '../../vendor/filament/filament/resources/css/theme.css';
+.tree-node-layout {
+    :is(.dark *) {
+        ::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        /* ::-webkit-scrollbar-thumb {
+            background: #7a7a7a;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b8b8b;
+        } */
+    }
+}

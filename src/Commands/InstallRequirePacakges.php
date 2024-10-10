@@ -13,6 +13,7 @@ class InstallRequirePacakges extends Command
     {
         $this->installFieldGroupPackage();
         $this->installSpatieLaravelPermissionPackage();
+        $this->installSpatieLaravelMediaLibraryPackage();
 
         return static::SUCCESS;
     }
@@ -39,5 +40,17 @@ class InstallRequirePacakges extends Command
         ]);
 
         $this->components->info('Spatie\\LaravelPermission package installed successfully.');
+    }
+
+    protected function installSpatieLaravelMediaLibraryPackage()
+    {
+        $this->components->info('Installing Spatie\\MediaLibrary package...');
+
+        Artisan::call('vendor:publish', [
+            '--provider' => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
+            '--tag' => 'medialibrary-migrations',
+        ]);
+
+        $this->components->info('Spatie\\MediaLibrary package installed successfully.');
     }
 }

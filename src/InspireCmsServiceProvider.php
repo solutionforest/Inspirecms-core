@@ -12,6 +12,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifest;
@@ -119,6 +120,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         $this->configureFilamentForm();
+        Livewire::component('inspirecms::media-library', \SolutionForest\InspireCms\Livewire\Components\MediaLibrary::class);
 
         // Asset Registration
         FilamentAsset::register(

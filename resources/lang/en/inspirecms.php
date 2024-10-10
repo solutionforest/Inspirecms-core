@@ -34,6 +34,7 @@ return [
     'last_logged_in_at' => 'Last logged in at',
     'last_published_at' => 'Last published at',
     'last_updated_at' => 'Last updated at',
+    'media' => 'Media',
     'n/a' => 'N/A',
     'name' => 'Name',
     'no_parent' => 'No parent',

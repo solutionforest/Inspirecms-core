@@ -53,7 +53,7 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->resources(config('inspirecms.filament.resources'))
             ->pages([
-                Pages\Dashboard::class,
+                ...array_values(config('inspirecms.filament.pages')),
                 ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
                     ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
                     ->all(),
@@ -94,6 +94,7 @@ class CmsPanelProvider extends PanelProvider
             ->topNavigation()
             ->navigationGroups([
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
+                NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
             ]);

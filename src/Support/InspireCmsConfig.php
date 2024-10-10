@@ -213,6 +213,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Templateable model');
     }
 
+    public static function getMediaAssetTableName(): string
+    {
+        return app(static::getMediaAssetModelClass())->getTable();
+    }
+
+    public static function getMediaAssetModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\MediaAsset::class, Models\MediaAsset::class);
+
+        return self::ensureClassExists($class, 'MediaAsset model');
+    }
+
     /**
      * Ensure that a class exists, or throw an exception.
      *

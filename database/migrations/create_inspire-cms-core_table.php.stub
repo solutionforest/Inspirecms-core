@@ -159,11 +159,25 @@ return new class extends BaseMigration
             $table->unique('code');
             $table->index('is_default');
         });
+        Schema::create($tableNames['media_asset'], function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->string('title');
+            $table->uuid('parent_id')->default(0);
+            $table->boolean('is_folder')->default(false);
+            $table->author(nullable: true);
+            $table->timestamps();
+            $table->softDeletes();
+
+            $table->index('title');
+            $table->index('parent_id');
+        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
+
+        Schema::dropIfExists($tableNames['media_asset']);
 
         Schema::dropIfExists($tableNames['language']);
         Schema::dropIfExists($tableNames['user_login_activity']);
@@ -200,6 +214,8 @@ return new class extends BaseMigration
             'templatable' => $this->prefix . 'templateable',
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'site_map' => $this->prefix . 'site_maps',
+            'media_asset' => $this->prefix . 'media_assets',
+            'media_folder' => $this->prefix . 'media_folders',
         ];
     }
 };

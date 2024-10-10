@@ -34,6 +34,7 @@ return [
     'last_logged_in_at' => '最後登錄於',
     'last_published_at' => '最後發布於',
     'last_updated_at' => '最後更新於',
+    'media' => '媒體',
     'n/a' => '不適用',
     'name' => '名稱',
     'no_parent' => '無父項',
