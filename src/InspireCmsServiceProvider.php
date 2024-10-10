@@ -20,7 +20,6 @@ use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
 use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
-use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -158,11 +157,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getAssets(): array
     {
-        return [
-            // AlpineComponent::make('inspirecms', __DIR__ . '/../resources/dist/components/inspirecms.js'),
-            // Css::make('inspirecms-styles', __DIR__ . '/../resources/dist/inspirecms.css'),
-            // Js::make('inspirecms-scripts', __DIR__ . '/../resources/dist/inspirecms.js'),
-        ];
+        return [];
     }
 
     /**

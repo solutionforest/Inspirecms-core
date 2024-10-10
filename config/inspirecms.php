@@ -8,6 +8,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResou
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
+use SolutionForest\InspireCms\Models;
 
 // config for SolutionForest/InspireCms
 return [
@@ -45,6 +46,20 @@ return [
     'models' => [
         'table_name_prefix' => 'cms_',
         'morph_map_prefix' => 'cms_',
+        'fqcn' => [
+            'content' => Models\Content::class,
+            'content_version' => Models\ContentVersion::class,
+            'content_web_setting' => Models\ContentWebSetting::class,
+            'document_type' => Models\DocumentType::class,
+            'language' => Models\Language::class,
+            'user' => Models\User::class,
+            'field_groupable' => Models\Polymorphic\FieldGroupable::class,
+            'nestable_tree' => Models\Polymorphic\NestableTree::class,
+            'user_login_activity' => Models\Users\UserLoginActivity::class,
+            'template' => Models\Template::class,
+            'templateable' => Models\Polymorphic\Templateable::class,
+            'site_map' => Models\SiteMap::class,
+        ],
     ],
 
     'override_plugins' => [

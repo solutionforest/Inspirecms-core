@@ -86,20 +86,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected static function getDefaultModels(): array
     {
-        return [
-            Models\Content::class,
-            Models\ContentVersion::class,
-            Models\ContentWebSetting::class,
-            Models\DocumentType::class,
-            Models\Language::class,
-            Models\User::class,
-            Models\Polymorphic\FieldGroupable::class,
-            Models\Polymorphic\NestableTree::class,
-            Models\Users\UserLoginActivity::class,
-            Models\Template::class,
-            Models\Polymorphic\Templateable::class,
-            Models\SiteMap::class,
-        ];
+        return config('inspirecms.models.fqcn', []);
     }
 
     //region Helper methods
