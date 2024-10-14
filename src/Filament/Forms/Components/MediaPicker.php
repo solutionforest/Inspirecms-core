@@ -26,9 +26,9 @@ class MediaPicker extends Field
         $this->afterStateHydrated(function (MediaPicker $component, $state) {
             if (! is_array($state)) {
                 $state = is_null($state) || empty($state) ? [] : [$state];
-            } else if ($component->isMultiple()) {
+            } elseif ($component->isMultiple()) {
                 $state = array_filter($state);
-            } else if (! $component->isMultiple() && count(array_filter($state)) > 0) {
+            } elseif (! $component->isMultiple() && count(array_filter($state)) > 0) {
                 $state = array_filter([$state[0]]);
             } else {
                 $state = [];
@@ -89,7 +89,7 @@ class MediaPicker extends Field
             ->stickyModalHeader()
             ->action(function (array $data) {
                 $recordKeys = $data['records'] ?? [];
-                if (!is_array($recordKeys)) {
+                if (! is_array($recordKeys)) {
                     $recordKeys = [$recordKeys];
                 }
                 $this->state(array_filter($recordKeys));
@@ -120,7 +120,7 @@ class MediaPicker extends Field
             $item->getKey() => [
                 'title' => $item->title,
                 'url' => $item->getThumbnail(),
-            ]
+            ],
         ])->all();
     }
 

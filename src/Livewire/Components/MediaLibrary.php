@@ -196,38 +196,41 @@ class MediaLibrary extends Component implements HasActions, HasForms
 
         if (! empty($this->filter)) {
             $filter = $this->filter;
-            $query = $query->where(fn ($q) => $q
-                ->orWhere('is_folder', true)
-                ->orWhereHas('media', function ($query) use ($filter) {
+            $query = $query->where(
+                fn ($q) => $q
+                    ->orWhere('is_folder', true)
+                    ->orWhereHas('media', function ($query) use ($filter) {
 
-                    foreach ($filter as $key => $value) {
-                        switch ($key) {
-                            case 'mime_type':
-                                if (is_array($value)) {
-                                    $query = $query->where(function ($q) use ($value) {
-                                        foreach ($value as $mimeType) {
-                                        
-                                            $mimeType = str_replace(['*'], ['%'], $mimeType);
-                                            if ($mimeType == '%') {
-                                                continue;
+                        foreach ($filter as $key => $value) {
+                            switch ($key) {
+                                case 'mime_type':
+                                    if (is_array($value)) {
+                                        $query = $query->where(function ($q) use ($value) {
+                                            foreach ($value as $mimeType) {
+
+                                                $mimeType = str_replace(['*'], ['%'], $mimeType);
+                                                if ($mimeType == '%') {
+                                                    continue;
+                                                }
+                                                if (str_contains($mimeType, '%')) {
+                                                    $q->orWhere('mime_type', 'like', $mimeType);
+                                                } else {
+                                                    $q->orWhere('mime_type', $mimeType);
+                                                }
                                             }
-                                            if (str_contains($mimeType, '%')) {
-                                                $q->orWhere('mime_type', 'like', $mimeType);
-                                            } else {
-                                                $q->orWhere('mime_type', $mimeType);
-                                            }
-                                        }
-                                    });
-                                }
-                                break;
-                            default:
-                                $query->where($key, $value);
-                                break;
+                                        });
+                                    }
+
+                                    break;
+                                default:
+                                    $query->where($key, $value);
+
+                                    break;
+                            }
                         }
-                    }
-                })
+                    })
             );
-        } 
+        }
 
         return $query->get();
     }

@@ -40,14 +40,14 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     {
         if ($component instanceof MediaPickerComponent) {
 
-            $mimeTypes  = collect($this->mimeTypes)
+            $mimeTypes = collect($this->mimeTypes)
                 ->filter()
                 ->unique()
                 ->map(fn ($v) => trim($v))
                 ->all();
             if (empty($mimeTypes) || in_array('*', $mimeTypes)) {
                 $mimeTypes = ['*'];
-            } 
+            }
             $component->mimeTypes($mimeTypes);
             $component->multiple($this->multiple);
         }
