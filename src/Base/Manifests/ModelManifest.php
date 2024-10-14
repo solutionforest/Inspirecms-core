@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Models;
 
 class ModelManifest implements ModelManifestInterface
 {

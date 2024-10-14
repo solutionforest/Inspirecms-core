@@ -8,7 +8,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
-use SolutionForest\InspireCms\Filament\Forms\Components\MediaPicker as MediaPickerComponent;
+use SolutionForest\InspireCms\Support\Forms\Components\MediaPicker as MediaPickerComponent;
 
 #[ConfigName('mediaPicker', 'Media Picker', 'Picker', 'heroicon-o-pencil')]
 #[FormComponent(MediaPickerComponent::class)]

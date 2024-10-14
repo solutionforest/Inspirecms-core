@@ -88,12 +88,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(LocaleManifestInterface::class, fn () => $this->app->make(LocaleManifest::class));
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
+        \SolutionForest\InspireCms\Facades\ModelManifest::replace(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class, config('inspirecms.models.fqcn.media_asset', \SolutionForest\InspireCms\Support\Models\MediaAsset::class));
     }
 
     public function bootingPackage(): void
     {
         \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
         \SolutionForest\InspireCms\Facades\ModelManifest::registerPolices();
+        $this->registerMediaLibrary();
         $this->customPlugins();
         $this->registerAuthGuard();
 
@@ -120,7 +122,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function packageBooted(): void
     {
         $this->configureFilamentForm();
-        Livewire::component('inspirecms::media-library', \SolutionForest\InspireCms\Livewire\Components\MediaLibrary::class);
 
         // Asset Registration
         FilamentAsset::register(
@@ -265,5 +266,15 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             return $this
                 ->hintIcon('heroicon-m-language', __('inspirecms::inspirecms.translatable'));
         });
+    }
+
+    protected function registerMediaLibrary(): void
+    {
+        Support\Facades\MediaLibraryManifest::setModel(\SolutionForest\InspireCms\Facades\ModelManifest::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class));
+        Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
+        Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
+        Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+
+        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
     }
 }

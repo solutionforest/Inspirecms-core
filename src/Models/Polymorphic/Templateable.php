@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use SolutionForest\InspireCms\Base\BaseMorphPivotModel;
 use SolutionForest\InspireCms\Models\Contracts\Templateable as TemplateableContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseMorphPivotModel;
 
 class Templateable extends BaseMorphPivotModel implements TemplateableContract
 {

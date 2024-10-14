@@ -727,7 +727,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                         ->limitLengthWithHint(120)
                                 )
                             ),
-                        \SolutionForest\InspireCms\Filament\Forms\Components\MediaPicker::make('og_image')
+                        \SolutionForest\InspireCms\Support\Forms\Components\MediaPicker::make('og_image')
                             ->label(__('inspirecms::resources/content.seo.og.og_image.label'))
                             ->helperText(__('inspirecms::resources/content.seo.og.og_image.instructions'))
                             ->image()

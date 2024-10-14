@@ -3,9 +3,9 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Support\Facades\DB;
-use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class Language extends BaseModel implements LanguageContract
 {

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use SolutionForest\InspireCms\Base\BaseMigration;
+use SolutionForest\InspireCms\Support\Base\BaseMigration;
 
 return new class extends BaseMigration
 {
@@ -158,18 +158,6 @@ return new class extends BaseMigration
 
             $table->unique('code');
             $table->index('is_default');
-        });
-        Schema::create($tableNames['media_asset'], function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('title');
-            $table->uuid('parent_id')->default(0);
-            $table->boolean('is_folder')->default(false);
-            $table->author(nullable: true);
-            $table->timestamps();
-            $table->softDeletes();
-
-            $table->index('title');
-            $table->index('parent_id');
         });
     }
 

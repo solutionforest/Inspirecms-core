@@ -4,13 +4,14 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
 class ContentVersion extends BaseModel implements ContentVersionContract
 {
-    use Concerns\HasAuthor;
+    use HasAuthor;
 
     protected $guarded = ['id'];
 

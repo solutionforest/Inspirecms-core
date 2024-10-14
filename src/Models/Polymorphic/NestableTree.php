@@ -4,9 +4,9 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use SolutionForest\InspireCms\Base\BaseModel;
-use SolutionForest\InspireCms\Models\Concerns\NestableTrait;
 use SolutionForest\InspireCms\Models\Contracts\NestableTree as NestableTreeContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
+use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 use Spatie\EloquentSortable\SortableTrait;
 
 class NestableTree extends BaseModel implements NestableTreeContract

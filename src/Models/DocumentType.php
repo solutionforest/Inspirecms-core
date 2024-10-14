@@ -5,8 +5,8 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentType extends BaseModel implements DocumentTypeContract

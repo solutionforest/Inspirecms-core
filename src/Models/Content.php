@@ -10,16 +10,20 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Models\Concerns\BelongToCmsNestableTree;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
+use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 class Content extends BaseModel implements ContentContract
 {
-    use Concerns\BelongToCmsNestableTree;
-    use Concerns\HasAuthor;
+    use BelongToCmsNestableTree;
+    use HasAuthor;
+    use NestableTrait;
     use Concerns\HasContentVersions {
         prepareAuditData as protected traitPrepareAuditData;
     }
@@ -29,7 +33,6 @@ class Content extends BaseModel implements ContentContract
         getTranslation as protected traitGetTranslation;
         getTranslations as protected traitGetTranslations;
     }
-    use Concerns\NestableTrait;
     use HasFactory;
     use HasUuids;
     use SoftDeletes;

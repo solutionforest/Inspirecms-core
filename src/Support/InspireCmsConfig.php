@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support;
 
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models;
+use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;
 
 class InspireCmsConfig
@@ -220,7 +221,7 @@ class InspireCmsConfig
 
     public static function getMediaAssetModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\MediaAsset::class, Models\MediaAsset::class);
+        $class = ModelManifest::get(SupportModels\Contracts\MediaAsset::class, SupportModels\MediaAsset::class);
 
         return self::ensureClassExists($class, 'MediaAsset model');
     }

@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use SolutionForest\InspireCms\Base\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\EloquentSortable\SortableTrait;
 

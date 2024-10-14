@@ -13,6 +13,7 @@ class InstallRequirePacakges extends Command
     {
         $this->installFieldGroupPackage();
         $this->installSpatieLaravelPermissionPackage();
+        $this->installSupportPackage();
         $this->installSpatieLaravelMediaLibraryPackage();
 
         return static::SUCCESS;
@@ -40,6 +41,18 @@ class InstallRequirePacakges extends Command
         ]);
 
         $this->components->info('Spatie\\LaravelPermission package installed successfully.');
+    }
+
+    protected function installSupportPackage()
+    {
+        $this->components->info('Installing SolutionForest\\InspireCms\\Support package...');
+
+        Artisan::call('vendor:publish', [
+            '--provider' => 'SolutionForest\\InspireCms\\Support\\InspireCmsSupportServiceProvider',
+            '--tag' => 'inspirecms-support-migrations',
+        ]);
+
+        $this->components->info('Spatie\\MediaLibrary package installed successfully.');
     }
 
     protected function installSpatieLaravelMediaLibraryPackage()

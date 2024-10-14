@@ -9,6 +9,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResou
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 use SolutionForest\InspireCms\Models;
+use SolutionForest\InspireCms\Support\Models as SupportModels;
 
 // config for SolutionForest/InspireCms
 return [
@@ -52,7 +53,7 @@ return [
         ],
     ],
 
-    'media-library' => [
+    'media_library' => [
         'disk' => 'public',
         'directory' => '',
         'thumbnail' => [
@@ -77,7 +78,7 @@ return [
             'template' => Models\Template::class,
             'templateable' => Models\Polymorphic\Templateable::class,
             'site_map' => Models\SiteMap::class,
-            'media_asset' => Models\MediaAsset::class,
+            'media_asset' => SupportModels\MediaAsset::class,
         ],
     ],
 

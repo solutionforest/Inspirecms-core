@@ -4,9 +4,9 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use SolutionForest\InspireCms\Base\BaseAuthenticatableModel;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Models\Contracts\User as UserContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseAuthenticatableModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class User extends BaseAuthenticatableModel implements UserContract
