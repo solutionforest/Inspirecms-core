@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Models\Users;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\UserLoginActivity as UserLoginActivityContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class UserLoginActivity extends BaseModel implements UserLoginActivityContract

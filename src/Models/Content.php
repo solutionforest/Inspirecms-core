@@ -22,8 +22,6 @@ use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 class Content extends BaseModel implements ContentContract
 {
     use BelongToCmsNestableTree;
-    use HasAuthor;
-    use NestableTrait;
     use Concerns\HasContentVersions {
         prepareAuditData as protected traitPrepareAuditData;
     }
@@ -33,8 +31,10 @@ class Content extends BaseModel implements ContentContract
         getTranslation as protected traitGetTranslation;
         getTranslations as protected traitGetTranslations;
     }
+    use HasAuthor;
     use HasFactory;
     use HasUuids;
+    use NestableTrait;
     use SoftDeletes;
 
     protected $guarded = ['id'];
