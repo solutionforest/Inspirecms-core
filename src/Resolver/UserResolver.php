@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Resolver;
 use Illuminate\Support\Facades\Auth;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class UserResolver
+class UserResolver implements UserResolverInterface
 {
     /**
      * @return \Illuminate\Contracts\Auth\Authenticatable|null
