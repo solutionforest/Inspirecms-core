@@ -48,7 +48,6 @@ return [
             ],
             'og_image' => [
                 'label' => 'Open Graph 圖片',
-                'placeholder' => '輸入 Open Graph 圖片',
                 'instructions' => '輸入內容的 Open Graph 圖片',
             ],
         ],

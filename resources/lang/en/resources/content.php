@@ -48,7 +48,6 @@ return [
             ],
             'og_image' => [
                 'label' => 'Open Graph Image',
-                'placeholder' => 'Enter open graph image',
                 'instructions' => 'Enter the open graph image of the content',
             ],
         ],

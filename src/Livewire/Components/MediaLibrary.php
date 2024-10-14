@@ -28,15 +28,22 @@ class MediaLibrary extends Component implements HasActions, HasForms
     #[Url(as: 'p')]
     public string | int $parentKey;
 
-    public null | string | int $selectedMediaId = null;
+    public bool $isMultiple = false;
 
-    public ?Model $selectedMedia = null;
+    public array $filter = [];
+
+    public array | string | int | null $selectedMediaId = null;
+
+    public null | Model | array $selectedMedia = null;
 
     public ?array $uploadFileData = [];
 
     public function mount($parentKey = null)
     {
         $this->parentKey = $parentKey ?? static::getRootLevelParentId();
+        if ($this->isMultiple()) {
+            $this->selectedMediaId = [];
+        }
         $this->fillForm();
     }
 
@@ -64,7 +71,7 @@ class MediaLibrary extends Component implements HasActions, HasForms
     #[On('updatedSelectedMediaId')]
     public function updatedSelectedMediaId($value)
     {
-        if ($value) {
+        if ($value && ! is_array($value) && ! $this->isMultiple()) {
             $this->selectedMedia = $this->getEloquentQuery()->find($value);
         } else {
             $this->selectedMedia = null;
@@ -80,15 +87,17 @@ class MediaLibrary extends Component implements HasActions, HasForms
             }
         }
 
-        $this->selectedMediaId = null;
+        $this->selectedMediaId = [];
         $this->selectedMedia = null;
     }
 
     public function openFolder($mediaId = null)
     {
         $mediaId ??= $this->selectedMediaId;
-        $this->selectedMediaId = null;
-        $this->selectedMedia = null;
+        if (! $this->isMultiple()) {
+            $this->selectedMediaId = [];
+            $this->selectedMedia = null;
+        }
         $this->changeParent($mediaId);
     }
 
@@ -136,6 +145,8 @@ class MediaLibrary extends Component implements HasActions, HasForms
             $this->createMediaFromUploadedFile($file);
         }
 
+        $this->dispatch('form-processing-finished');
+
         $this->fillForm();
     }
 
@@ -179,7 +190,46 @@ class MediaLibrary extends Component implements HasActions, HasForms
     public function getMediaFromParent()
     {
         // ray($this->parentKey)->label(__FUNCTION__);
-        return $this->getEloquentQuery()->with('media')->parent($this->parentKey)->get();
+        $query = $this->getEloquentQuery()
+            ->with('media')
+            ->parent($this->parentKey);
+
+        if (! empty($this->filter)) {
+            $filter = $this->filter;
+            $query = $query->where(fn ($q) => $q
+                ->orWhere('is_folder', true)
+                ->orWhereHas('media', function ($query) use ($filter) {
+
+                    foreach ($filter as $key => $value) {
+                        switch ($key) {
+                            case 'mime_type':
+                                if (is_array($value)) {
+                                    $query = $query->where(function ($q) use ($value) {
+                                        foreach ($value as $mimeType) {
+                                        
+                                            $mimeType = str_replace(['*'], ['%'], $mimeType);
+                                            if ($mimeType == '%') {
+                                                continue;
+                                            }
+                                            if (str_contains($mimeType, '%')) {
+                                                $q->orWhere('mime_type', 'like', $mimeType);
+                                            } else {
+                                                $q->orWhere('mime_type', $mimeType);
+                                            }
+                                        }
+                                    });
+                                }
+                                break;
+                            default:
+                                $query->where($key, $value);
+                                break;
+                        }
+                    }
+                })
+            );
+        } 
+
+        return $query->get();
     }
 
     public function render()
@@ -190,6 +240,11 @@ class MediaLibrary extends Component implements HasActions, HasForms
     }
 
     //region Helpers
+    protected function isMultiple(): bool
+    {
+        return $this->isMultiple;
+    }
+
     protected function createMediaFromUploadedFile(TemporaryUploadedFile $file): Model
     {
         $media = $this->getEloquentQuery()->create([
