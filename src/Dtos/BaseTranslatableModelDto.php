@@ -3,61 +3,16 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Dtos\Concerns\Translatable;
 
 /**
  * @template TModle of Model
  */
 abstract class BaseTranslatableModelDto extends BaseModelDto
 {
-    /**
-     * @var ?string
-     */
-    protected $locale;
-
-    /**
-     * @var ?string
-     */
-    protected $fallbackLocale;
+    use Translatable;
 
     protected array $translatableAttributes = [];
-
-    /**
-     * @param string
-     * @return self
-     */
-    public function setLocale(string $locale)
-    {
-        $this->locale = $locale;
-
-        return $this;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getLocale()
-    {
-        return $this->locale;
-    }
-
-    /**
-     * @param string
-     * @return self
-     */
-    public function setFallbackLocale(string $locale)
-    {
-        $this->fallbackLocale = $locale;
-
-        return $this;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getFallbackLocale()
-    {
-        return $this->fallbackLocale;
-    }
 
     /**
      * @return self
@@ -102,23 +57,5 @@ abstract class BaseTranslatableModelDto extends BaseModelDto
         $locale = $locale ?? $this->getLocale();
 
         return $this->getTranslations($this->{$name}, $locale, $usingFallback);
-    }
-
-    protected function getTranslations($translations, ?string $locale = null, bool $usingFallback = true)
-    {
-        if (! $translations || ! is_array($translations)) {
-            return $translations;
-        }
-
-        $locale = $locale ?? $this->getLocale();
-        $fallbackLocale = $this->getFallbackLocale();
-
-        $value = data_get($translations, $locale);
-
-        if (! $value && $usingFallback && $locale !== $fallbackLocale && $fallbackLocale) {
-            $value = $this->getTranslations($translations, $fallbackLocale, false);
-        }
-
-        return $value;
     }
 }

@@ -50,6 +50,7 @@ trait ContentPreviewEditorTrait
         if ($this instanceof CreateRecord) {
             $editorData['operation'] = 'create';
             $editorData['contentData'] = $this->data;
+            $editorData['fallbackLocale'] = (new ($this->getModel()))->getFallbackLocale();
         } else {
             $editorData['operation'] = 'edit';
 
@@ -67,9 +68,12 @@ trait ContentPreviewEditorTrait
             /**
              * @var ContentDto
              */
-            $contentDto = ContentDto::fromArray($editorData['contentData']);
+            $contentDto = ContentDto::fromArray($editorData['contentData'])
+                ->setLocale($editorData['activeLocale'])
+                ->setFallbackLocale($editorData['fallbackLocale']);
+
             $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($editorData['documentType']);
-            if (! $documentType) {
+            if ($documentType) {
                 $contentDto->documentType = DocumentTypeDto::fromModel($documentType);
             }
 

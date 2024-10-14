@@ -32,7 +32,7 @@ class ContentDto extends BaseTranslatableModelDto
     public $documentType;
 
     /**
-     * @var Collection<PropertyDataDto>
+     * @var Collection<PropertyDataGroupDto>
      */
     public $propertyData;
 
@@ -59,42 +59,51 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public function setPropertyData(array $propertyData)
     {
-        $this->propertyData = collect($propertyData)->map(function ($value, $key) {
+        $this->propertyData = collect($propertyData)->map(function ($arr, $group) {
 
-            return [
-                'propertyKey' => $key,
-                'propertyValue' => $value,
-            ];
+            $data = collect($arr)->map(fn ($value, $key) => 
+                PropertyDataDto::fromArray([
+                    'propertyKey' => $key,
+                    'propertyValue' => $value,
+                    'config' => $this->documentType?->getField($key)?->config,
+                ])
+            )
+            ->values();
 
-        })->values()->map(fn ($data) => PropertyDataDto::fromArray($data));
+            return PropertyDataGroupDto::fromArray([
+                'name' => $group,
+                'data' => $data,
+            ])->setFallbackLocale($this->getFallbackLocale());
+
+        })->values();
 
         return $this;
     }
 
+    /**
+     * @param string $name
+     * @param mixed $locale
+     * @return Collection<PropertyDataDto>
+     */
     public function getPropertyData(string $name, ?string $locale = null)
     {
-        $propertyField = $this->documentType?->getField($name);
+        $groups = $this->propertyData->filter(fn (PropertyDataGroupDto $propertyData) => $propertyData->data?->contains('propertyKey', $name));
+        $result = collect();
 
-        $propertyType = $propertyField?->config;
-        $propertyData = $this->propertyData->first(fn ($propertyData) => $propertyData->propertyKey === $name)?->propertyValue;
-
-        switch (true) {
-            case $propertyType instanceof Translate:
-                return $this->getTranslations($propertyData, $locale);
-            case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image:
-                $disk = $propertyType->disk ?? config('filesystems.default');
-                $directory = $propertyType->directory;
-
-                return collect($propertyData)
-                    ->map(fn ($file) => filled($directory) ? $directory . '/' . $file : $file)
-                    ->map(fn ($filePath) => [
-                        'path' => $filePath,
-                        'disk' => $disk,
-                    ])
-                    ->values()->all();
-            default:
-                return $propertyData;
+        foreach ($groups as $group) {
+            $result = $result->put($group->name, $group->getPropertyData($name, $locale));
         }
+
+        return $result;
+    }
+
+    /**
+     * @param string $name
+     * @return ?PropertyDataGroupDto
+     */
+    public function getPropertyGroup(string $name)
+    {
+        return $this->propertyData->first(fn (PropertyDataGroupDto $propertyData) => $propertyData->name === $name);
     }
 
     /**

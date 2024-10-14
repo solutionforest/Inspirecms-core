@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
+
 class PropertyDataDto extends BaseDto
 {
     /**
@@ -13,4 +15,9 @@ class PropertyDataDto extends BaseDto
      * @var mixed
      */
     public $propertyValue;
+
+    /**
+     * @var ?FieldTypeConfig
+     */
+    public $config;
 }

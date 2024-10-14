@@ -82,7 +82,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                     $fiFormComponent->helperText($this->fieldVariable['helperText']);
                     $fiFormComponent->required($this->fieldVariable['required']);
 
-                    $fiFormComponent->statePath($this->fieldVariable['name'] . '.' . $langCode);
+                    $fiFormComponent->statePath($this->fieldVariable['statePath'] . '.' . $langCode);
 
                     return $fiFormComponent;
 

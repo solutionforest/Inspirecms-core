@@ -54,6 +54,7 @@ return [
 
     'media-library' => [
         'disk' => 'public',
+        'directory' => '',
         'thumbnail' => [
             'width' => 300,
             'height' => 300,
