@@ -94,7 +94,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
         \SolutionForest\InspireCms\Facades\ModelManifest::registerPolices();
-        $this->registerMediaLibrary();
+        $this->registerSupport();
         $this->customPlugins();
         $this->registerAuthGuard();
 
@@ -267,7 +267,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         });
     }
 
-    protected function registerMediaLibrary(): void
+    protected function registerSupport(): void
     {
         Support\Facades\MediaLibraryManifest::setModel(\SolutionForest\InspireCms\Facades\ModelManifest::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class));
         Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
@@ -275,5 +275,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
 
         Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+
+        Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
     }
 }

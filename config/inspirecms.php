@@ -95,7 +95,7 @@ return [
     ],
 
     'resolvers' => [
-        'user' => \SolutionForest\InspireCms\Resolver\UserResolver::class,
+        'user' => \SolutionForest\InspireCms\Support\Resolver\UserResolver::class,
     ],
 
     'available_locales' => [
