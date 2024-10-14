@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Collection;
-use SolutionForest\InspireCms\FieldTypes\Configs\Translate;
 use SolutionForest\InspireCms\Models\Content;
 
 /**
@@ -61,14 +60,14 @@ class ContentDto extends BaseTranslatableModelDto
     {
         $this->propertyData = collect($propertyData)->map(function ($arr, $group) {
 
-            $data = collect($arr)->map(fn ($value, $key) => 
-                PropertyDataDto::fromArray([
+            $data = collect($arr)->map(
+                fn ($value, $key) => PropertyDataDto::fromArray([
                     'propertyKey' => $key,
                     'propertyValue' => $value,
                     'config' => $this->documentType?->getField($key)?->config,
                 ])
             )
-            ->values();
+                ->values();
 
             return PropertyDataGroupDto::fromArray([
                 'name' => $group,
@@ -81,8 +80,7 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @param string $name
-     * @param mixed $locale
+     * @param  mixed  $locale
      * @return Collection<PropertyDataDto>
      */
     public function getPropertyData(string $name, ?string $locale = null)
@@ -98,7 +96,6 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @param string $name
      * @return ?PropertyDataGroupDto
      */
     public function getPropertyGroup(string $name)

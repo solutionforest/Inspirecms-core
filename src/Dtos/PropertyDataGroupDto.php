@@ -27,6 +27,7 @@ class PropertyDataGroupDto extends BaseDto
     {
         $dto = parent::fromArray($parameters);
         $dto->data ??= collect();
+
         return $dto;
     }
 
