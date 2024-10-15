@@ -74,11 +74,11 @@ class TemplatesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make()
-                ->after(function (Model $record) {
-                    if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
-                        $this->getOwnerRecord()->setAsDefaultTemplate($record);
-                    }
-                }),
+                    ->after(function (Model $record) {
+                        if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
+                            $this->getOwnerRecord()->setAsDefaultTemplate($record);
+                        }
+                    }),
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect(),
             ])
