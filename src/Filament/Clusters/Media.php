@@ -32,6 +32,11 @@ class Media extends Cluster implements ClusterSection
         return true;
     }
 
+    public static function getNavigationItemActiveRoutePattern(): string
+    {
+        return static::getRouteName();
+    }
+
     public static function getNavigationLabel(): string
     {
         return __('inspirecms::inspirecms.media');
