@@ -16,7 +16,7 @@ use SolutionForest\InspireCms\Support\Forms\Components\MediaPicker as MediaPicke
 #[DbType('sqlite', 'text')]
 class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
-    public array $mimeTypes = ['*'];
+    public array $types = [];
 
     public bool $multiple = false;
 
@@ -27,8 +27,11 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->tabs([
                     Forms\Components\Tabs\Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\TagsInput::make('mimeTypes')
-                                ->inlineLabel(),
+                            Forms\Components\Select::make('types')
+                                ->inlineLabel()
+                                ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
+                                ->options(__('inspirecms-support::media-library.filter.type.options'))
+                                ->multiple(),
                             Forms\Components\Toggle::make('multiple')
                                 ->default(false),
                         ]),
@@ -39,16 +42,7 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     public function applyConfig(Forms\Components\Component $component): void
     {
         if ($component instanceof MediaPickerComponent) {
-
-            $mimeTypes = collect($this->mimeTypes)
-                ->filter()
-                ->unique()
-                ->map(fn ($v) => trim($v))
-                ->all();
-            if (empty($mimeTypes) || in_array('*', $mimeTypes)) {
-                $mimeTypes = ['*'];
-            }
-            $component->mimeTypes($mimeTypes);
+            $component->filterTypes($this->types);
             $component->multiple($this->multiple);
         }
     }

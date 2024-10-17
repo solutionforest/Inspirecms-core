@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Dtos\Concerns\Translatable;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class PropertyDataGroupDto extends BaseDto
