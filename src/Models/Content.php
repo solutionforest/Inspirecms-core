@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\URL;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
@@ -74,10 +75,7 @@ class Content extends BaseModel implements ContentContract
         return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
     }
 
-    /**
-     * Generate a full slug base on parent.
-     */
-    public function generateFullSlug(): string
+    public function getFullSlug(): string
     {
         $ancestors = $this->ancestors();
         $slugs = [];
@@ -87,6 +85,11 @@ class Content extends BaseModel implements ContentContract
         $slugs[] = $this->slug;
 
         return implode('/', $slugs);
+    }
+
+    public function getUrl(): string
+    {
+        return URL::to($this->getFullSlug());
     }
 
     public function isPublished(?\Closure $callback = null): bool

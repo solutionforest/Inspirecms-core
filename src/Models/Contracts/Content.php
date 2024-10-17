@@ -55,4 +55,14 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoMode
     public function getNestableRootValue(): int | string;
 
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?DocumentType $documentType = null);
+
+    /**
+     * Generate a full slug base on parent.
+     */
+    public function getFullSlug(): string;
+
+    /**
+     * Get the full URL of the content.
+     */
+    public function getUrl(): string;
 }
