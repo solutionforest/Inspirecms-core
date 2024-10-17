@@ -103,7 +103,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->label(__('inspirecms::resources/content.details.heading'))
                             ->columns(3)
                             ->schema([
-
                                 Forms\Components\Section::make()
                                     ->columns(1)
                                     ->columnSpan(1)
@@ -118,11 +117,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->schema([
                                         Forms\Components\Section::make([
                                             static::getDocumentTypeDisplayComponent(),
-                                            Forms\Components\Placeholder::make('id')
-                                                ->label(__('inspirecms::inspirecms.id'))
-                                                ->inlineLabel()
-                                                ->visible(fn ($record) => $record != null)
-                                                ->content(fn (Model | ModelsContent | null $record) => $record->getKey()),
+                                            static::getDisplayKeyFormComponent(),
+                                            static::getDisplayUrlFormComponent(),
                                         ]),
                                         Forms\Components\Group::make()
                                             ->visible(fn ($record) => $record != null)
@@ -631,6 +627,33 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return UIHelper::getBadgePlaceholder($status->getLabel(), $status->getColor(), $status->getIcon());
+            });
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getDisplayKeyFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_id')
+            ->label(__('inspirecms::inspirecms.id'))
+            ->inlineLabel()
+            ->visible(fn ($record) => $record != null)
+            ->content(fn (Model | ModelsContent | null $record) => UIHelper::generateCopyableText($record->getKey()));
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getDisplayUrlFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_url')
+            ->label(__('inspirecms::inspirecms.url'))
+            ->inlineLabel()
+            ->content(function (Model | ModelsContent | null $record) {
+                if (is_null($record)) {
+                    return null;
+                }
+                
+                $url = $record->getUrl();
+
+                return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
             });
     }
 

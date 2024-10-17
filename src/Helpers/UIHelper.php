@@ -52,7 +52,7 @@ class UIHelper
         ]));
     }
 
-    public static function getInlineTextWithIconButtonPlaceholder(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = ''): HtmlString
+    public static function getInlineTextWithIconButtonPlaceholder(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = '', string $linkTarget = ''): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex items-center space-x-2 gap-2">
@@ -63,6 +63,7 @@ class UIHelper
                     class="{{$class}}"
                     tag="a"
                     href="{{$url}}"
+                    target="{{$linkTarget}}"
                 >
                     <x-filament::icon
                         icon="{{$icon}}"
@@ -78,6 +79,69 @@ class UIHelper
             'class' => $class,
             'icon' => $icon,
             'url' => $url,
+            'linkTarget' => $linkTarget,
+        ]));
+    }
+
+    public static function generateCopyableTextWithIconButton(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = '', string $linkTarget = ''): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex items-center space-x-2 gap-2">
+                <div class="flex-1 cursor-pointer">
+                    <span x-on:click="
+                            window.navigator.clipboard.writeText('{{$text}}')
+                                $tooltip('{{$copiedMessage}}', {
+                                theme: $store.theme,
+                                timeout: 2000,
+                            })
+                    ">
+                        {{$text}}
+                    </span>
+                </div>
+                <x-filament::button
+                    color="{{$color}}"
+                    size="{{$size}}"
+                    class="{{$class}}"
+                    tag="a"
+                    href="{{$url}}"
+                    target="{{$linkTarget}}"
+                >
+                    <x-filament::icon
+                        icon="{{$icon}}"
+                        class="h-5 w-5"
+                    >
+                    </x-filament::icon>
+                </x-filament::button>
+            </div>
+        blade, [
+            'text' => $text,
+            'color' => $color,
+            'size' => $size,
+            'class' => $class,
+            'icon' => $icon,
+            'url' => $url,
+            'linkTarget' => $linkTarget,
+            'copiedMessage' => __('inspirecms::inspirecms.copied'),
+        ]));
+    }
+
+    public static function generateCopyableText(string $text): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="cursor-pointer">
+                <span x-on:click="
+                        window.navigator.clipboard.writeText('{{$text}}')
+                        $tooltip('{{$copiedMessage}}', {
+                            theme: $store.theme,
+                            timeout: 2000,
+                        })
+                ">
+                    {{$text}}
+                </span>
+            </div>
+        blade, [
+            'text' => $text,
+            'copiedMessage' => __('inspirecms::inspirecms.copied'),
         ]));
     }
 
