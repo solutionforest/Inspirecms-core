@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+
 class LanguageDto extends BaseDto
 {
     /**

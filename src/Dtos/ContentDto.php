@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Collection;
 use SolutionForest\InspireCms\Models\Content;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 
 /**
  * @extends BaseTranslatableModelDto<Content>

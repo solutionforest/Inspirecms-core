@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
 class PropertyDataDto extends BaseDto
 {

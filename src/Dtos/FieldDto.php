@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Dtos;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\Models\Field;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 
 /**
  * @extends BaseModelDto<Field>

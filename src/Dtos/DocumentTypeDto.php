@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Models\DocumentType;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
 
 /**
  * @extends BaseModelDto<DocumentType>
