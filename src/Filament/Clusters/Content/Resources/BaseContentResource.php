@@ -650,7 +650,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 if (is_null($record)) {
                     return null;
                 }
-                
+
                 $url = $record->getUrl();
 
                 return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
