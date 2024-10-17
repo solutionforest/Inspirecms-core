@@ -7,7 +7,7 @@ use Illuminate\Support\HtmlString;
 
 class UIHelper
 {
-    public static function getBooleanIconPlaceholder(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
+    public static function generateBooleanIcon(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::icon
@@ -25,7 +25,7 @@ class UIHelper
         ]));
     }
 
-    public static function getIconButtonPlaceholder(string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = ''): HtmlString
+    public static function generateIconButton(string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = ''): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::button
@@ -52,7 +52,7 @@ class UIHelper
         ]));
     }
 
-    public static function getInlineTextWithIconButtonPlaceholder(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = '', string $linkTarget = ''): HtmlString
+    public static function generateTextWithIconButton(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = '', string $linkTarget = ''): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex items-center space-x-2 gap-2">
@@ -145,7 +145,7 @@ class UIHelper
         ]));
     }
 
-    public static function getBadgePlaceholder(string $text, string $color = 'primary', ?string $icon = null): HtmlString
+    public static function generateBadge(string $text, string $color = 'primary', ?string $icon = null): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::badge

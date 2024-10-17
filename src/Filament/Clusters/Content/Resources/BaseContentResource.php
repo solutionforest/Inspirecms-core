@@ -477,7 +477,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     return $text;
                 }
 
-                return UIHelper::getInlineTextWithIconButtonPlaceholder($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+                return UIHelper::generateTextWithIconButton($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
             });
     }
 
@@ -605,7 +605,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     return null;
                 }
 
-                return UIHelper::getBooleanIconPlaceholder($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+                return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
             });
     }
 
@@ -626,7 +626,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     return null;
                 }
 
-                return UIHelper::getBadgePlaceholder($status->getLabel(), $status->getColor(), $status->getIcon());
+                return UIHelper::generateBadge($status->getLabel(), $status->getColor(), $status->getIcon());
             });
     }
 

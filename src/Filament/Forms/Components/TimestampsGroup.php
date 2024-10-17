@@ -41,7 +41,7 @@ class TimestampsGroup extends Group
                                 return null;
                             }
                             $dt = $record?->deleted_at;
-                            $iconHtml = UIHelper::getBooleanIconPlaceholder(
+                            $iconHtml = UIHelper::generateBooleanIcon(
                                 condition: true,
                                 trueIcon: 'heroicon-o-trash',
                                 trueColor: 'danger',
