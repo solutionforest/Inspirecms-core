@@ -156,15 +156,21 @@ class Content extends BaseModel implements ContentContract
         if ($condition) {
 
             $query
-                ->where('published_at', '<', now())
+                ->whereHas('publishedVersions', fn ($q) => $q
+                    ->where('published_at', '<', now())
+                )
                 ->whereNot('status', $unpublishOption->getValue());
 
         } else {
 
             $query
-                ->orWhereNull('published_at')
-                ->orWhereNot('published_at', '<', now())
-                ->orWhere('status', $unpublishOption->getValue());
+                ->where(fn ($q) => $q
+                    ->orWhereDoesntHave('publishedVersions', fn ($q) => $q
+                        ->where('published_at', '<', now())
+                    )
+                    ->orWhere('status', $unpublishOption->getValue())
+                );
+
         }
 
     }
@@ -173,6 +179,11 @@ class Content extends BaseModel implements ContentContract
     {
         $rootValue = $this->getNestableRootValue();
         $query->where('parent_id', $condition ? $rootValue : '!=', $rootValue);
+    }
+
+    public function scopeIsWebPage(Builder $query): void
+    {
+        $query->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
     }
 
     //endregion Scope(s)
