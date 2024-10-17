@@ -106,7 +106,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         /**
          * @var ContentDto
          */
-        $dto = ContentDto::fromTranslatableModel($this->getRecord(), $this->getActiveFormsLocale());
+        $dto = $this->getRecord()->toDto($this->getActiveFormsLocale());
         $dto->setPropertyData($this->getRecord()->getLatestVersionPropertyData());
 
         return $dto;

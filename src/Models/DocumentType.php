@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -35,4 +36,16 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
+
+    //region Dto
+    public function toDto(...$args)
+    {
+        return static::getDtoClass()::fromModel($this);
+    }
+
+    public static function getDtoClass(): string
+    {
+        return DocumentTypeDto::class;
+    }
+    //endregion Dto
 }

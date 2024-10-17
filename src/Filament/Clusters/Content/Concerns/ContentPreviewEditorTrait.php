@@ -9,8 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use Pboivin\FilamentPeek\Support\Html;
-use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait ContentPreviewEditorTrait
@@ -44,13 +43,16 @@ trait ContentPreviewEditorTrait
 
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
     {
+        $contentModel = $this->getModel();
+        $editorData['contentModel'] = $contentModel;
+        
         $documentType = $this->getDocumentType();
         $editorData['documentType'] = $documentType instanceof Model ? $documentType->getKey() : $documentType;
 
         if ($this instanceof CreateRecord) {
             $editorData['operation'] = 'create';
             $editorData['contentData'] = $this->data;
-            $editorData['fallbackLocale'] = (new ($this->getModel()))->getFallbackLocale();
+            $editorData['fallbackLocale'] = (new ($contentModel))->getFallbackLocale();
         } else {
             $editorData['operation'] = 'edit';
 
@@ -64,34 +66,29 @@ trait ContentPreviewEditorTrait
 
     public static function mutateBuilderPreviewData(string $builderName, array $editorData, array $previewData): array
     {
+        $contentModel = $editorData['contentModel'];
+
+        if (!in_array(Content::class, class_implements($contentModel))) {
+            throw new \Exception('Model must implement ' . Content::class);
+        }
+
         if ($editorData['operation'] === 'create') {
-            /**
-             * @var ContentDto
-             */
-            $contentDto = ContentDto::fromArray($editorData['contentData'])
-                ->setLocale($editorData['activeLocale'])
-                ->setFallbackLocale($editorData['fallbackLocale']);
 
             $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($editorData['documentType']);
-            if ($documentType) {
-                $contentDto->documentType = DocumentTypeDto::fromModel($documentType);
-            }
 
         } else {
 
             $contentKey = $editorData['contentKey'];
             $content = static::getResource()::resolveRecordRouteBinding($contentKey);
-            /**
-             * @var ContentDto
-             */
-            $contentDto = ContentDto::fromArray($content->attributesToArray())
-                ->setLocale($editorData['activeLocale'])
-                ->setFallbackLocale($content->getFallbackLocale())
-                ->setModel($content);
-            $contentDto->documentType = DocumentTypeDto::fromModel($content->documentType);
         }
 
-        $contentDto->setPropertyData($editorData['propertyData'] ?? []);
+        $contentDto = $contentModel::toPreviewDto(
+            record: $editorData['operation'] === 'create' ? $editorData['contentData'] : $content,
+            propertyData: $editorData['propertyData'] ?? [],
+            locale: $editorData['activeLocale'],
+            fallbackLocale: $editorData['operation'] === 'create' ? $editorData['fallbackLocale'] : $content->getFallbackLocale(),
+            documentType: $editorData['operation'] === 'create' ? $documentType : $content->documentType
+        );
 
         $previewData['content'] = $contentDto;
 

@@ -5,8 +5,9 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
-interface DocumentType
+interface DocumentType extends HasDtoModel, Base\HasTemplates
 {
     /**
      * Get the field groups associated with the document type.
@@ -28,25 +29,4 @@ interface DocumentType
      * @return HasMany The content associated with the document type.
      */
     public function content(): HasMany;
-
-    /**
-     * Get the templates associated with the document type.
-     *
-     * @return MorphToMany The templates associated with the document type.
-     */
-    public function templates(): MorphToMany;
-
-    /**
-     * Get the morph field templates associated with the document type.
-     *
-     * @return MorphMany The morph field templates associated with the document type.
-     */
-    public function templateable(): MorphMany;
-
-    /**
-     * Set the specified template as the default for the document type.
-     *
-     * @param  Template|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
-     */
-    public function setAsDefaultTemplate(Template | string | int $template): void;
 }

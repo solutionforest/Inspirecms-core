@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
+use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -141,6 +143,33 @@ class Content extends BaseModel implements ContentContract
             $model->children()->forceDelete();
         });
     }
+
+    //region Dto
+    public function toDto(...$args)
+    {
+        return static::getDtoClass()::fromTranslatableModel($this, $args[0] ?? null);
+    }
+
+    public static function getDtoClass(): string
+    {
+        return ContentDto::class;
+    }
+
+    public static function toPreviewDto(array|Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
+    {
+        $dtoClass = static::getDtoClass();
+        $dto = $record instanceof Model ? $dtoClass::fromModel($record) : $dtoClass::fromArray($record);
+        if ($dto instanceof ContentDto) {
+            $dto->setLocale($locale)->setFallbackLocale($fallbackLocale);
+            
+            if ($documentType) {
+                $dto->documentType = $documentType->toDto();
+            }
+            $dto->setPropertyData($propertyData);
+        }
+        return $dto;
+    }
+    //endregion Dto
 
     //region Scope(s)
     /**
