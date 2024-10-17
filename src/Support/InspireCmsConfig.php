@@ -86,7 +86,7 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'ContentWebSetting model');
     }
 
-    public static function getCSiteMapTableName(): string
+    public static function getSiteMapTableName(): string
     {
         return app(static::getSiteMapModelClass())->getTable();
     }
