@@ -11,9 +11,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\URL;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Dtos\ContentDto;
+use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
+use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -77,19 +78,12 @@ class Content extends BaseModel implements ContentContract
 
     public function getFullSlug(): string
     {
-        $ancestors = $this->ancestors();
-        $slugs = [];
-        foreach ($ancestors as $ancestor) {
-            $slugs[] = $ancestor->slug;
-        }
-        $slugs[] = $this->slug;
-
-        return implode('/', $slugs);
+        return ContentPathGeneratorFactory::createFor($this)->getPath();
     }
 
     public function getUrl(): string
     {
-        return URL::to($this->getFullSlug());
+        return ContentUrlGeneratorFactory::createFor($this)->getUrl();
     }
 
     public function isPublished(?\Closure $callback = null): bool

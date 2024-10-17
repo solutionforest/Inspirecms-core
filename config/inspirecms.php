@@ -98,6 +98,11 @@ return [
         'user' => \SolutionForest\InspireCms\Support\Resolver\UserResolver::class,
     ],
 
+    'generators' => [
+        'content_path_generator' => \SolutionForest\InspireCms\Support\PathGenerators\ContentPathGenerator::class,
+        'content_url_generator' => \SolutionForest\InspireCms\Support\UrlGenerators\ContentUrlGenerator::class,
+    ],
+
     'available_locales' => [
         'en',
         'zh_CN',
