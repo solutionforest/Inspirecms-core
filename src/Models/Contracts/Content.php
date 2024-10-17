@@ -8,10 +8,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
-use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
-interface Content extends NestableInterface, HasDtoModel, Base\HasTemplates, Base\HasContentVersions
+interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoModel, NestableInterface
 {
     /**
      * Return the document type relation.
@@ -55,5 +54,5 @@ interface Content extends NestableInterface, HasDtoModel, Base\HasTemplates, Bas
 
     public function getNestableRootValue(): int | string;
 
-    public static function toPreviewDto(array|Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?DocumentType $documentType = null);
+    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?DocumentType $documentType = null);
 }

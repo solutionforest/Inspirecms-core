@@ -28,6 +28,6 @@ interface HasTemplates
      * @param  Template|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
      */
     public function setAsDefaultTemplate(Template | string | int $template): void;
-    
+
     public function getDefaultTemplate(): ?Template;
 }

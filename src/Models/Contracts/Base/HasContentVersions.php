@@ -24,7 +24,7 @@ interface HasContentVersions
      * Get the published versions.
      */
     public function publishedVersions(): BelongsToMany;
-    
+
     /**
      * Retrieve the latest version of the content.
      *

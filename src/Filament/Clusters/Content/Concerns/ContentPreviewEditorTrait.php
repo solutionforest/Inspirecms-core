@@ -45,7 +45,7 @@ trait ContentPreviewEditorTrait
     {
         $contentModel = $this->getModel();
         $editorData['contentModel'] = $contentModel;
-        
+
         $documentType = $this->getDocumentType();
         $editorData['documentType'] = $documentType instanceof Model ? $documentType->getKey() : $documentType;
 
@@ -68,7 +68,7 @@ trait ContentPreviewEditorTrait
     {
         $contentModel = $editorData['contentModel'];
 
-        if (!in_array(Content::class, class_implements($contentModel))) {
+        if (! in_array(Content::class, class_implements($contentModel))) {
             throw new \Exception('Model must implement ' . Content::class);
         }
 

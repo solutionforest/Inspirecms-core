@@ -155,18 +155,19 @@ class Content extends BaseModel implements ContentContract
         return ContentDto::class;
     }
 
-    public static function toPreviewDto(array|Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
+    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
     {
         $dtoClass = static::getDtoClass();
         $dto = $record instanceof Model ? $dtoClass::fromModel($record) : $dtoClass::fromArray($record);
         if ($dto instanceof ContentDto) {
             $dto->setLocale($locale)->setFallbackLocale($fallbackLocale);
-            
+
             if ($documentType) {
                 $dto->documentType = $documentType->toDto();
             }
             $dto->setPropertyData($propertyData);
         }
+
         return $dto;
     }
     //endregion Dto

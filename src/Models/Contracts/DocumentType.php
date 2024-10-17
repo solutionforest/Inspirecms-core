@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
-interface DocumentType extends HasDtoModel, Base\HasTemplates
+interface DocumentType extends Base\HasTemplates, HasDtoModel
 {
     /**
      * Get the field groups associated with the document type.
