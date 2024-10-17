@@ -185,19 +185,24 @@ class Content extends BaseModel implements ContentContract
         if ($condition) {
 
             $query
-                ->whereHas('publishedVersions', fn ($q) => $q
-                    ->where('published_at', '<', now())
+                ->whereHas(
+                    'publishedVersions',
+                    fn ($q) => $q
+                        ->where('published_at', '<', now())
                 )
                 ->whereNot('status', $unpublishOption->getValue());
 
         } else {
 
             $query
-                ->where(fn ($q) => $q
-                    ->orWhereDoesntHave('publishedVersions', fn ($q) => $q
-                        ->where('published_at', '<', now())
-                    )
-                    ->orWhere('status', $unpublishOption->getValue())
+                ->where(
+                    fn ($q) => $q
+                        ->orWhereDoesntHave(
+                            'publishedVersions',
+                            fn ($q) => $q
+                                ->where('published_at', '<', now())
+                        )
+                        ->orWhere('status', $unpublishOption->getValue())
                 );
 
         }
