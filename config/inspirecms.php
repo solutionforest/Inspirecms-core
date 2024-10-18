@@ -117,7 +117,7 @@ return [
 
     'routes' => [
         'middleware' => [
-            'web', 
+            'web',
             \SolutionForest\InspireCms\Http\Middlewares\ContentLocaleMiddleware::class,
         ],
     ],

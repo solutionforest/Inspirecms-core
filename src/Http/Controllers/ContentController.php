@@ -18,7 +18,7 @@ class ContentController extends Controller
 
     protected ContentUrlGeneratorInterface $urlGenerator;
 
-    public function __construct(ContentServiceInterface $contentService) 
+    public function __construct(ContentServiceInterface $contentService)
     {
         $this->contentService = $contentService;
 
@@ -36,7 +36,6 @@ class ContentController extends Controller
             return $this->redirectToLocalizedUrl($slug ?? '', request()->getDefaultLocale());
         }
 
-
         // Is index page
         if (blank($slug)) {
             // todo: add index page setting
@@ -44,7 +43,7 @@ class ContentController extends Controller
         }
 
         $content = $this->findContent($slug);
-        
+
         $contentDto = $content->toDto($locale);
 
         $view = $this->getTemplateView($content);
@@ -65,7 +64,7 @@ class ContentController extends Controller
             abort(404);
         }
 
-        if (!$content->isPublished() || ! $content->isWebPage()) {
+        if (! $content->isPublished() || ! $content->isWebPage()) {
             abort(404);
         }
 
@@ -86,8 +85,8 @@ class ContentController extends Controller
     /**
      * Redirects to a localized URL based on the provided slug and locale.
      *
-     * @param string $slug The slug of the content.
-     * @param string $locale The locale to redirect to.
+     * @param  string  $slug  The slug of the content.
+     * @param  string  $locale  The locale to redirect to.
      * @return \Illuminate\Http\RedirectResponse The redirect response to the localized URL.
      */
     protected function redirectToLocalizedUrl(string $slug, string $locale): \Illuminate\Http\RedirectResponse

@@ -13,8 +13,7 @@ abstract class BaseModelSerivce
 
     public function __construct(
         private string $modelClass,
-    )
-    {
+    ) {
         $this->model = new $this->modelClass;
     }
 

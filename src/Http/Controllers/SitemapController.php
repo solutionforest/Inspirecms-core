@@ -12,7 +12,7 @@ class SitemapController extends Controller
     {
         // todo: cache the sitemap
         $sitemap = InspireCmsConfig::getSiteMapModelClass()::with('model')->get();
-        
+
         $items = collect($sitemap)
             ->whereInstanceOf(SiteMap::class)
             ->map(fn (SiteMap $item) => $item->generateSitemapItem())->toArray();
@@ -30,7 +30,7 @@ class SitemapController extends Controller
         $xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
         foreach ($items as $arr) {
-            if ((!isset($arr['url']) || empty($arr['url'])) || !isset($arr['lastmod']) || !isset($arr['changefreq']) || !isset($arr['priority'])) {
+            if ((! isset($arr['url']) || empty($arr['url'])) || ! isset($arr['lastmod']) || ! isset($arr['changefreq']) || ! isset($arr['priority'])) {
                 continue;
             }
             $urlTag = $xml->addChild('url');

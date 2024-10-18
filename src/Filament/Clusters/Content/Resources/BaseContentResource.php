@@ -650,10 +650,10 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 if (is_null($record)) {
                     return null;
                 }
-                
+
                 $code = $livewire->getActiveActionsLocale();
                 $lang = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->code === $code);
-                
+
                 $url = $record->getUrl($lang?->locale);
 
                 return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');

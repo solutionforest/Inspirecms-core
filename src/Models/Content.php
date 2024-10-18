@@ -40,8 +40,8 @@ class Content extends BaseModel implements ContentContract
     use HasFactory;
     use HasUuids;
     use NestableTrait;
-    use SoftDeletes;
     use Searchable;
+    use SoftDeletes;
 
     protected $guarded = ['id'];
 
@@ -144,8 +144,8 @@ class Content extends BaseModel implements ContentContract
     {
         $this->loadMissing([
             'documentType',
-            'publishedVersions', 
-            'parent',   
+            'publishedVersions',
+            'parent',
         ]);
         $latestVersion = $this->getLatestPublishedContentVersion();
         $data = $this->makeHidden([
@@ -173,7 +173,7 @@ class Content extends BaseModel implements ContentContract
         $data['created_at'] = $this->{$this->getCreatedAtColumn()}->toIso8601String();
         $data['updated_at'] = $this->{$this->getUpdatedAtColumn()}->toIso8601String();
         $data['deleted_at'] = $this->{$this->getDeletedAtColumn()}?->toIso8601String();
-        
+
         $data['document_type'] = [
             'title' => $this->documentType?->title,
             'slug' => $this->documentType?->slug,

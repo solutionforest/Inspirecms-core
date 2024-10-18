@@ -90,8 +90,6 @@ class InspireCmsManager
      * This method is responsible for defining the routes that will be used
      * by the Inspire CMS. It should be called during the application's
      * bootstrapping process to ensure that all necessary routes are available.
-     *
-     * @return void
      */
     public function routes(): void
     {
@@ -102,13 +100,13 @@ class InspireCmsManager
 
             $contentPathGenerator = ContentPathGeneratorFactory::create();
             $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;
-            
+
             Route::name('inspirecms.content.index')
                 ->get('/', $controller);
             Route::name($contentPathGenerator->getRouteName())
                 ->get($contentPathGenerator->getPathPattern(), $controller)
                 ->where('slug', '.*');
-            });
+        });
     }
 
     public function addSection(ClusterSection $section): void

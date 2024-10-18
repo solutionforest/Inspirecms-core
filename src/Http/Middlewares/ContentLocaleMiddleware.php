@@ -12,7 +12,7 @@ class ContentLocaleMiddleware
     {
         $currentLocale = ContentUrlGeneratorFactory::create()->getLocaleFromRequest($request);
 
-        if (!blank($currentLocale)) {
+        if (! blank($currentLocale)) {
             $request->setLocale($currentLocale);
         }
 

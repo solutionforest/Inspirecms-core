@@ -10,10 +10,9 @@ class ContentObserver
     /**
      * Handle the product "creating" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function creating(Content|Model $content)
+    public function creating(Content | Model $content)
     {
         //region Set the parent ID to the fallback parent ID if it is blank
         if (blank($content->{$content->getNestableParentIdColumn()})) {
@@ -25,32 +24,29 @@ class ContentObserver
     /**
      * Handle the product "created" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function created(Content|Model $content)
+    public function created(Content | Model $content)
     {
-        // 
+        //
     }
 
     /**
      * Handle the product "updated" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function updated(Content|Model $content)
+    public function updated(Content | Model $content)
     {
-        // 
+        //
     }
 
     /**
      * Handle the product "deleting" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function deleting(Content|Model $content)
+    public function deleting(Content | Model $content)
     {
         $content->children()->delete();
     }
@@ -58,21 +54,19 @@ class ContentObserver
     /**
      * Handle the product "deleted" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function deleted(Content|Model $content)
+    public function deleted(Content | Model $content)
     {
-        // 
+        //
     }
 
     /**
      * Handle the product "forceDeleting" event.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|Model  $content
      * @return void
      */
-    public function forceDeleting(Content|Model $content)
+    public function forceDeleting(Content | Model $content)
     {
         $content->children()->forceDelete();
     }

@@ -13,7 +13,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
-use SolutionForest\InspireCms\Services;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -235,7 +234,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
-        
+
         if (InspireCmsConfig::get('override_plugins.scout', true)) {
 
             $indexSettings = config('scout.meilisearch.index-settings', []);
