@@ -84,6 +84,7 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
+        'scout' => true,
     ],
 
     'permissions' => [
@@ -101,6 +102,24 @@ return [
     'generators' => [
         'content_path_generator' => \SolutionForest\InspireCms\Support\PathGenerators\ContentPathGenerator::class,
         'content_url_generator' => \SolutionForest\InspireCms\Support\UrlGenerators\ContentUrlGenerator::class,
+    ],
+
+    'indexes' => [
+        'content' => [
+            'enabled' => true,
+            'index_name' => 'content_index',
+            'index_settings' => [
+                'filterableAttributes' => ['slug', 'full_path', 'level', 'published_at'],
+                'sortableAttributes' => ['level', 'published_at'],
+            ],
+        ],
+    ],
+
+    'routes' => [
+        'middleware' => [
+            'web', 
+            \SolutionForest\InspireCms\Http\Middlewares\ContentLocaleMiddleware::class,
+        ],
     ],
 
     'available_locales' => [

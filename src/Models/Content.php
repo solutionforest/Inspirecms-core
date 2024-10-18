@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
@@ -40,6 +41,7 @@ class Content extends BaseModel implements ContentContract
     use HasUuids;
     use NestableTrait;
     use SoftDeletes;
+    use Searchable;
 
     protected $guarded = ['id'];
 
@@ -129,22 +131,57 @@ class Content extends BaseModel implements ContentContract
         return $this->documentType?->is_web_page ?? false;
     }
 
-    public static function boot()
+    //region Indexing
+    /**
+     * Get the name of the index associated with the model.
+     */
+    public function searchableAs(): string
     {
-        parent::boot();
-
-        static::creating(function (self $model) {
-            if (blank($model->{$model->getNestableParentIdColumn()})) {
-                $model->{$model->getNestableParentIdColumn()} = $model->fallbackParentId();
-            }
-        });
-        static::deleting(function (self $model) {
-            $model->children()->delete();
-        });
-        static::forceDeleting(function (self $model) {
-            $model->children()->forceDelete();
-        });
+        return InspireCmsConfig::get('indexes.content.index_name', 'content_index');
     }
+
+    public function toSearchableArray(): array
+    {
+        $this->loadMissing([
+            'documentType',
+            'publishedVersions', 
+            'parent',   
+        ]);
+        $latestVersion = $this->getLatestPublishedContentVersion();
+        $data = $this->makeHidden([
+            $this->getCreatedAtColumn(),
+            $this->getUpdatedAtColumn(),
+            $this->getDeletedAtColumn(),
+            'document_type',
+            'published_versions',
+        ])->toArray();
+
+        unset(
+            $data['document_type_id'],
+            $data['document_type'],
+            $data['published_versions'],
+            $data['parent'],
+        );
+
+        $data['title'] = $this->getTranslations('title');
+        $data['is_web'] = $this->documentType?->is_web_page;
+
+        $data['level'] = $this->getLevel();
+        $data['path'] = $this->getFullSlug();
+
+        $data['published_at'] = $latestVersion?->pivot?->published_at->toIso8601String();
+        $data['created_at'] = $this->{$this->getCreatedAtColumn()}->toIso8601String();
+        $data['updated_at'] = $this->{$this->getUpdatedAtColumn()}->toIso8601String();
+        $data['deleted_at'] = $this->{$this->getDeletedAtColumn()}?->toIso8601String();
+        
+        $data['document_type'] = [
+            'title' => $this->documentType?->title,
+            'slug' => $this->documentType?->slug,
+        ];
+
+        return $data;
+    }
+    //endregion Indexing
 
     //region Dto
     public function toDto(...$args)

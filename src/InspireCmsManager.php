@@ -7,8 +7,10 @@ use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Route;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
+use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -80,6 +82,33 @@ class InspireCmsManager
         }
 
         return $sections;
+    }
+
+    /**
+     * Registers the routes for the Inspire CMS.
+     *
+     * This method is responsible for defining the routes that will be used
+     * by the Inspire CMS. It should be called during the application's
+     * bootstrapping process to ensure that all necessary routes are available.
+     *
+     * @return void
+     */
+    public function routes(): void
+    {
+        Route::name('inspirecms.sitemap')
+            ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
+
+        Route::group(['middleware' => InspireCmsConfig::get('routes.middleware')], function () {
+
+            $contentPathGenerator = ContentPathGeneratorFactory::create();
+            $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;
+            
+            Route::name('inspirecms.content.index')
+                ->get('/', $controller);
+            Route::name($contentPathGenerator->getRouteName())
+                ->get($contentPathGenerator->getPathPattern(), $controller)
+                ->where('slug', '.*');
+            });
     }
 
     public function addSection(ClusterSection $section): void

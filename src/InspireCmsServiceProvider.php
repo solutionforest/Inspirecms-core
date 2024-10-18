@@ -80,6 +80,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
 
+        $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
+
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
         \SolutionForest\InspireCms\Facades\ModelManifest::replace(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class, config('inspirecms.models.fqcn.media_asset', \SolutionForest\InspireCms\Support\Models\MediaAsset::class));
     }
@@ -93,6 +95,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerAuthGuard();
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
+
+        \SolutionForest\InspireCms\Facades\ModelManifest::get(\SolutionForest\InspireCms\Models\Contracts\Content::class)::observe(\SolutionForest\InspireCms\Observers\ContentObserver::class);
 
         Event::listen(
             AuthEvents\Login::class,
@@ -230,6 +234,17 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
             );
+        }
+        
+        if (InspireCmsConfig::get('override_plugins.scout', true)) {
+
+            $indexSettings = config('scout.meilisearch.index-settings', []);
+
+            if (InspireCmsConfig::get('indexes.content.enabled', true)) {
+                $indexSettings[InspireCmsConfig::getContentModelClass()] = InspireCmsConfig::get('indexes.content.index_settings', []);
+            }
+
+            config()->set('scout.meilisearch.index-settings', $indexSettings);
         }
     }
 
