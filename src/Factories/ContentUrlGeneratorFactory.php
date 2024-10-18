@@ -2,18 +2,17 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\UrlGenerators\ContentUrlGeneratorInterface;
 
 class ContentUrlGeneratorFactory
 {
-    public static function createFor(Content $content): ContentUrlGeneratorInterface
+    public static function create(): ContentUrlGeneratorInterface
     {
         $urlGeneratorClass = config('inspirecms.generators.content_url_generator');
 
         static::guardAgainstInvalidUrlGenerator($urlGeneratorClass);
 
-        return app($urlGeneratorClass, ['content' => $content]);
+        return app($urlGeneratorClass);
     }
 
     protected static function guardAgainstInvalidUrlGenerator(string $urlGeneratorClass): void

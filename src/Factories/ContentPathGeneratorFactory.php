@@ -2,18 +2,17 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\PathGenerators\ContentPathGeneratorInterface;
 
 class ContentPathGeneratorFactory
 {
-    public static function createFor(Content $content): ContentPathGeneratorInterface
+    public static function create(): ContentPathGeneratorInterface
     {
         $pathGeneratorClass = config('inspirecms.generators.content_path_generator');
 
         static::guardAgainstInvalidPathGenerator($pathGeneratorClass);
 
-        return app($pathGeneratorClass, ['content' => $content]);
+        return app($pathGeneratorClass);
     }
 
     protected static function guardAgainstInvalidPathGenerator(string $pathGeneratorClass): void

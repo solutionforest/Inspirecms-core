@@ -76,14 +76,14 @@ class Content extends BaseModel implements ContentContract
         return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
     }
 
-    public function getFullSlug(): string
+    public function getFullSlug(?string $locale = null): string
     {
-        return ContentPathGeneratorFactory::createFor($this)->getPath();
+        return ContentPathGeneratorFactory::create()->getPath($this, $locale);
     }
 
-    public function getUrl(): string
+    public function getUrl(?string $locale = null): string
     {
-        return ContentUrlGeneratorFactory::createFor($this)->getUrl();
+        return ContentUrlGeneratorFactory::create()->getUrl($this, $locale);
     }
 
     public function isPublished(?\Closure $callback = null): bool
@@ -122,6 +122,11 @@ class Content extends BaseModel implements ContentContract
 
         // If the publish date is in the future, it's not published
         return false;
+    }
+
+    public function isWebPage(): bool
+    {
+        return $this->documentType?->is_web_page ?? false;
     }
 
     public static function boot()

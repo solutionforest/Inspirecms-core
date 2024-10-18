@@ -646,12 +646,15 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\Placeholder::make('display_url')
             ->label(__('inspirecms::inspirecms.url'))
             ->inlineLabel()
-            ->content(function (Model | ModelsContent | null $record) {
+            ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
                 if (is_null($record)) {
                     return null;
                 }
                 
-                $url = $record->getUrl();
+                $code = $livewire->getActiveActionsLocale();
+                $lang = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->code === $code);
+                
+                $url = $record->getUrl($lang?->locale);
 
                 return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
             });

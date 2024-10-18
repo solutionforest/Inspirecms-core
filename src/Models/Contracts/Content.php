@@ -9,8 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 
-interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoModel, NestableInterface
+interface Content extends Base\HasContentVersions, Base\HasTemplates, IndexableModel, HasDtoModel, NestableInterface
 {
     /**
      * Return the document type relation.
@@ -59,10 +60,17 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoMode
     /**
      * Generate a full slug base on parent.
      */
-    public function getFullSlug(): string;
+    public function getFullSlug(?string $locale = null): string;
 
     /**
      * Get the full URL of the content.
      */
-    public function getUrl(): string;
+    public function getUrl(?string $locale = null): string;
+
+    /**
+     * Determine if the content is a web page.
+     *
+     * @return bool True if the content is a web page, false otherwise.
+     */
+    public function isWebPage(): bool;
 }
