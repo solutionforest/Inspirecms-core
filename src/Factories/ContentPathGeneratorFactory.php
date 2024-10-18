@@ -18,7 +18,7 @@ class ContentPathGeneratorFactory
     protected static function guardAgainstInvalidPathGenerator(string $pathGeneratorClass): void
     {
         if (! is_subclass_of($pathGeneratorClass, ContentPathGeneratorInterface::class)) {
-            throw new \InvalidArgumentException("Path generator class must implement " . ContentPathGeneratorInterface::class);
+            throw new \InvalidArgumentException('Path generator class must implement ' . ContentPathGeneratorInterface::class);
         }
     }
 }

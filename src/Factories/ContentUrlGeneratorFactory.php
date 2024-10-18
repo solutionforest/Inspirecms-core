@@ -18,7 +18,7 @@ class ContentUrlGeneratorFactory
     protected static function guardAgainstInvalidUrlGenerator(string $urlGeneratorClass): void
     {
         if (! is_subclass_of($urlGeneratorClass, ContentUrlGeneratorInterface::class)) {
-            throw new \InvalidArgumentException("Path generator class must implement " . ContentUrlGeneratorInterface::class);
+            throw new \InvalidArgumentException('Path generator class must implement ' . ContentUrlGeneratorInterface::class);
         }
     }
 }

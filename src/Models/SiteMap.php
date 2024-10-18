@@ -18,11 +18,9 @@ class SiteMap extends BaseModel implements SiteMapContract
     {
         return $this->morphTo();
     }
-    
+
     /**
      * Get the URL of the sitemap.
-     *
-     * @return string
      */
     public function getUrl(): string
     {
@@ -35,8 +33,6 @@ class SiteMap extends BaseModel implements SiteMapContract
 
     /**
      * Get the last modified date of the sitemap.
-     *
-     * @return \DateTime
      */
     public function getLastModified(): \DateTime
     {
@@ -45,8 +41,6 @@ class SiteMap extends BaseModel implements SiteMapContract
 
     /**
      * Get the change frequency of the sitemap.
-     *
-     * @return string
      */
     public function getChangeFrequency(): string
     {
@@ -55,8 +49,6 @@ class SiteMap extends BaseModel implements SiteMapContract
 
     /**
      * Get the priority of the sitemap.
-     *
-     * @return float
      */
     public function getPriority(): float
     {
