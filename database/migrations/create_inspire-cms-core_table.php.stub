@@ -161,14 +161,34 @@ return new class extends BaseMigration
             $table->index('is_default');
             $table->index('route_pattern');
         });
+        Schema::create($tableNames['navigation'], function (Blueprint $table) {
+            $table->uuid('id')->primary();
+
+            $table->uuid('content_id')->default('');
+            $table->string('url')->default('');
+            $table->string('target')->nullable();
+
+            $table->json('title');
+
+            $table->uuid('parent_id')->default('');
+
+            $table->string('type')->default('link');
+            $table->string('navigation_type')->default('main');
+
+            $table->timestamps();
+
+            $table->index('parent_id');
+            $table->index('content_id');
+            $table->index('url');
+            $table->index('type');
+        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
 
-        Schema::dropIfExists($tableNames['media_asset']);
-
+        Schema::dropIfExists($tableNames['navigation']);
         Schema::dropIfExists($tableNames['language']);
         Schema::dropIfExists($tableNames['user_login_activity']);
         Schema::dropIfExists($tableNames['user']);
@@ -204,8 +224,7 @@ return new class extends BaseMigration
             'templatable' => $this->prefix . 'templateable',
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'site_map' => $this->prefix . 'site_maps',
-            'media_asset' => $this->prefix . 'media_assets',
-            'media_folder' => $this->prefix . 'media_folders',
+            'navigation' => $this->prefix . 'navigation',
         ];
     }
 };

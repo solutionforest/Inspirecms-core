@@ -23,6 +23,8 @@ class InspireCmsManager
 
     protected ?array $cachedLanguages = null;
 
+    protected ?array $cachedNavigation = null;
+
     public function __construct(CacheManager $cacheManager)
     {
         $this->cacheManager = $cacheManager;
@@ -141,6 +143,19 @@ class InspireCmsManager
     public function forgetCachedLanguages(): void
     {
         $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
+    }
+
+    public function getNavigation(string $type, ?string $locale = null): array
+    {
+        // todo: cache navigation
+        // if (! $this->cachedNavigation) {
+        //     $this->cachedNavigation = [];
+        // }
+
+        // temp: current get root
+        $nav = InspireCmsConfig::getNavigationModelClass()::root()->navType($type)->get();
+
+        return $nav->map(fn ($item) => $item->toDto($locale ?? app()->getLocale()))->all();
     }
 
     //region Helpers

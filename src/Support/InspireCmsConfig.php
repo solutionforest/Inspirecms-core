@@ -231,6 +231,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'MediaAsset model');
     }
 
+    public static function getNavigationTableName(): string
+    {
+        return app(static::getNavigationModelClass())->getTable();
+    }
+
+    public static function getNavigationModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\Navigation::class, Models\Navigation::class);
+
+        return self::ensureClassExists($class, 'Navigation model');
+    }
+
     /**
      * Ensure that a class exists, or throw an exception.
      *

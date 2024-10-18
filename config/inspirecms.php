@@ -5,6 +5,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
@@ -41,6 +42,7 @@ return [
             'template' => TemplateResource::class,
             'user' => UserResource::class,
             'role' => RoleResource::class,
+            'navigation' => NavigationResource::class,
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
@@ -79,6 +81,7 @@ return [
             'templateable' => Models\Polymorphic\Templateable::class,
             'site_map' => Models\SiteMap::class,
             'media_asset' => SupportModels\MediaAsset::class,
+            'navigation' => Models\Navigation::class,
         ],
     ],
 

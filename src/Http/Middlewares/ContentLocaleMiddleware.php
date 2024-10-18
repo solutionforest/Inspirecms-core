@@ -12,8 +12,12 @@ class ContentLocaleMiddleware
     {
         $currentLocale = ContentUrlGeneratorFactory::create()->getLocaleFromRequest($request);
 
-        if (! blank($currentLocale)) {
-            $request->setLocale($currentLocale);
+        $lang = ! blank($currentLocale) 
+            ? collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn ($lang) => $lang->locale == $currentLocale)
+            : null;
+            
+        if ($lang) {
+            $request->setLocale($lang->code);
         }
 
         $request->setDefaultLocale(
