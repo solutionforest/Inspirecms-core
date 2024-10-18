@@ -116,9 +116,10 @@ class InspireCmsManager
         $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
     }
 
+    //region Helpers
     private function getSerializedLanguagesForCache(): array
     {
-        $attributes = ['code', 'name', 'is_default'];
+        $attributes = ['code', 'name', 'is_default', 'route_pattern'];
 
         $alias = $this->aliasModelFields($attributes);
 
@@ -149,4 +150,5 @@ class InspireCmsManager
     {
         return array_values(array_unique($attributes));
     }
+    //endregion Helpers
 }

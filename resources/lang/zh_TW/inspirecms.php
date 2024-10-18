@@ -52,6 +52,7 @@ return [
     'role' => '角色',
     'roles' => '角色',
     'root' => '根',
+    'route_pattern' => '路由格式',
     'set_as_default' => '設為默認',
     'setting' => '設置',
     'settings' => '設置',

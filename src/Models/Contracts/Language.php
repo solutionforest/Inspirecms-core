@@ -12,6 +12,13 @@ interface Language
     public function getCode(): string;
 
     /**
+     * Get the route pattern for the language.
+     *
+     * @return string The route pattern for the language.
+     */
+    public function routePattern(): string;
+
+    /**
      * Get the language label.
      *
      * @return string The language label.

@@ -16,6 +16,11 @@ class Language extends BaseModel implements LanguageContract
         return $this->code;
     }
 
+    public function routePattern(): string
+    {
+        return $this->route_pattern;
+    }
+
     public function getLabel(): string
     {
         return $this->name;
@@ -50,6 +55,9 @@ class Language extends BaseModel implements LanguageContract
         parent::boot();
 
         static::saving(function (self $model) {
+            if (blank($model->route_pattern)) {
+                $model->route_pattern = $model->code;
+            }
             // Set "is_default" of other languages as false if this model is changing to "default"
             if ($model->isDirty(['is_default']) && $model->is_default) {
                 DB::transaction(function () use ($model) {

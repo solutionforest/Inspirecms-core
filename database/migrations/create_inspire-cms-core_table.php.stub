@@ -152,12 +152,14 @@ return new class extends BaseMigration
             $table->id();
             $table->string('code');
             $table->string('name');
+            $table->string('route_pattern');
             $table->boolean('is_default')->default(false);
 
             $table->timestamps();
 
             $table->unique('code');
             $table->index('is_default');
+            $table->index('route_pattern');
         });
     }
 

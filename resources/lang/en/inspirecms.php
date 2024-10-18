@@ -52,6 +52,7 @@ return [
     'role' => 'Role',
     'roles' => 'Roles',
     'root' => 'Root',
+    'route_pattern' => 'Route pattern',
     'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',

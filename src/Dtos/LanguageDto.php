@@ -14,6 +14,11 @@ class LanguageDto extends BaseDto
     /**
      * @var string
      */
+    public $locale;
+
+    /**
+     * @var string
+     */
     public $name;
 
     /**
@@ -31,6 +36,12 @@ class LanguageDto extends BaseDto
             $parameters['isDefault'] = (bool) $parameters['is_default'];
         } elseif (! isset($parameters['isDefault'])) {
             $parameters['isDefault'] = false;
+        }
+
+        if (isset($parameters['route_pattern'])) {
+            $parameters['locale'] = strtolower($parameters['route_pattern']);
+        } else {
+            $parameters['locale'] = strtolower($parameters['code']);
         }
 
         return parent::fromArray($parameters);
