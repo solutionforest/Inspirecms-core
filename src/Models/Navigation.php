@@ -13,9 +13,9 @@ use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 class Navigation extends BaseModel implements NavigationContract
 {
-    use NestableTrait;
-    use HasUuids;
     use Concerns\HasTranslations;
+    use HasUuids;
+    use NestableTrait;
 
     protected $guarded = ['id'];
 
@@ -69,9 +69,11 @@ class Navigation extends BaseModel implements NavigationContract
             switch ($model->type) {
                 case 'content':
                     $model->url = null;
+
                     break;
                 case 'link':
                     $model->content_id = null;
+
                     break;
             }
             if (is_null($model->content_id)) {

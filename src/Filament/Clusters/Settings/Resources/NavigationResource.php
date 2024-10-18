@@ -33,6 +33,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return array_keys(InspireCms::getAllAvailableLanguages());
     }
+
     public static function form(Form $form): Form
     {
         return $form
