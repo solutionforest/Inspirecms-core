@@ -9,9 +9,14 @@ use Spatie\Permission\PermissionRegistrar;
 
 class InspireCmsConfig
 {
+    public static function get(string $key, mixed $default = null): mixed
+    {
+        return config("inspirecms.{$key}", $default);
+    }
+
     public static function getGuardName(): string
     {
-        return config('inspirecms.auth.guard', 'inspirecms');
+        return static::get('auth.guard', 'inspirecms');
     }
 
     public static function getContentTableName(): string

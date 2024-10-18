@@ -12,14 +12,8 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
-use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest;
-use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
-use SolutionForest\InspireCms\Base\Manifests\LocaleManifest;
-use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
-use SolutionForest\InspireCms\Base\Manifests\ModelManifest;
-use SolutionForest\InspireCms\Base\Manifests\ModelManifestInterface;
-use SolutionForest\InspireCms\Base\Manifests\PermissionManifest;
-use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
+use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Services;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -81,10 +75,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->registerPolymorphism();
 
-        $this->app->singleton(ModelManifestInterface::class, fn () => $this->app->make(ModelManifest::class));
-        $this->app->singleton(ContentStatusManifestInterface::class, fn () => $this->app->make(ContentStatusManifest::class));
-        $this->app->singleton(PermissionManifestInterface::class, fn () => $this->app->make(PermissionManifest::class));
-        $this->app->singleton(LocaleManifestInterface::class, fn () => $this->app->make(LocaleManifest::class));
+        $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));
+        $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
+        $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
+        $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
         \SolutionForest\InspireCms\Facades\ModelManifest::replace(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class, config('inspirecms.models.fqcn.media_asset', \SolutionForest\InspireCms\Support\Models\MediaAsset::class));
@@ -227,7 +221,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function customPlugins(): void
     {
-        if (config('inspirecms.override_plugins.field_group_models', false)) {
+        if (InspireCmsConfig::get('override_plugins.field_group_models', false)) {
 
             // override field group models
             \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldGroupModelClass(
