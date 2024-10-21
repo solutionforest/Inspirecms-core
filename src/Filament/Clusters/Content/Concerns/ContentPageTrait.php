@@ -94,6 +94,30 @@ trait ContentPageTrait
                 Actions\Action::make('reorder')
                     ->modalContent(new HtmlString('not implemented'))
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
+                Actions\Action::make('delete_item')
+                    ->color('danger')
+                    ->icon(FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash')
+                    ->requiresConfirmation()
+                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root')
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
+                    ->action(function (?Model $record, Actions\Action $action) {
+
+                        if (! $record) {
+            
+                            return;
+                        }
+
+                        $result = $record->delete();
+
+                        if (! $result) {
+                            $action->failure();
+            
+                            return;
+                        }
+            
+                        $action->success();
+                    }),
             ]);
     }
 
