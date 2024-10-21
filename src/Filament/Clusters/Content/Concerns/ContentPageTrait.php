@@ -54,9 +54,10 @@ trait ContentPageTrait
                     'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false),
                 ],
             ], $items))
-            ->mutuateNodeItemsUsing(fn (array $item, Model $record) => array_merge($item, [
-                'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], ['record' => $record->getKey()], false),
-            ]))
+            ->mutuateNodeItemsUsing(function (array $item, Model $record) {
+                $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], ['record' => $record], true);
+                return $item;
+            })
             ->actions([
                 CreateContentAction::make(),
                 Actions\Action::make('linkToParent')

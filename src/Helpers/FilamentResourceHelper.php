@@ -32,8 +32,12 @@ class FilamentResourceHelper
                 }
 
                 $record = $parameters['record'] ?? null;
-                if ($autorizeAction && ! $resource::can($action, $record)) {
-                    continue;
+                if ($autorizeAction) {
+
+                    $method = (string)str($action)->studly()->prepend('can');
+                    if (! $resource::{$method}($record)) {
+                        continue;
+                    }
                 }
 
                 $url = $resource::getUrl($action, $parameters);
