@@ -117,6 +117,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->schema([
                                         Forms\Components\Section::make([
                                             static::getDocumentTypeDisplayComponent(),
+                                            static::getDisplayParentFormComponent(),
                                             static::getDisplayKeyFormComponent(),
                                             static::getDisplayUrlFormComponent(),
                                         ]),
@@ -238,6 +239,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton()->visible(fn ($record) => ! $record->trashed()),
+                Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\DeleteAction::make(),
                     Tables\Actions\ForceDeleteAction::make(),
@@ -638,6 +640,32 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->inlineLabel()
             ->visible(fn ($record) => $record != null)
             ->content(fn (Model | ModelsContent | null $record) => UIHelper::generateCopyableText($record->getKey()));
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component */
+    protected static function getDisplayParentFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_parent')
+            ->label(__('inspirecms::inspirecms.parent'))
+            ->inlineLabel()
+            ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
+                if (is_null($record)) {
+                    return null;
+                }
+
+                if ($record->isRoot()) {
+                    return __('inspirecms::inspirecms.root');
+                }
+
+                $url = FilamentResourceHelper::attemptToGetUrl(
+                    static::class,
+                    ['view', 'edit'],
+                    ['record' => $record->parent_id],
+                    false
+                );
+
+                return UIHelper::generateCopyableTextWithIconButton($record->parent_id, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+            });
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component */
