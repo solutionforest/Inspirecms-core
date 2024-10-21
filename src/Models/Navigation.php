@@ -63,9 +63,6 @@ class Navigation extends BaseModel implements NavigationContract
         parent::boot();
 
         static::saving(function (self $model) {
-            if (blank($model->{$model->getNestableParentIdColumn()})) {
-                $model->{$model->getNestableParentIdColumn()} = $model->getNestableRootValue();
-            }
             switch ($model->type) {
                 case 'content':
                     $model->url = null;

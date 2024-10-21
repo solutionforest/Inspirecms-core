@@ -95,8 +95,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
 
-        \SolutionForest\InspireCms\Facades\ModelManifest::get(\SolutionForest\InspireCms\Models\Contracts\Content::class)::observe(\SolutionForest\InspireCms\Observers\ContentObserver::class);
-
         Event::listen(
             AuthEvents\Login::class,
             [Listeners\UserAuthActivityListener::class, 'login']
