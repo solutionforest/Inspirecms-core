@@ -11,25 +11,25 @@ use SolutionForest\InspireCms\Models\Contracts\User;
 class FieldGroupPolicy extends BasePolicy
 {
     /**
-     * @param  Authenticatable|User|Model  $fieldGroup
+     * @param  Authenticatable|User|Model  $user
      * @return bool
      */
-    public function create($fieldGroup)
+    public function create($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
     }
 
     /**
-     * @param  Authenticatable|User|Model  $fieldGroup
+     * @param  Authenticatable|User|Model  $user
      * @return bool
      */
-    public function viewAny($fieldGroup)
+    public function viewAny($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
     }
 
     /**
-     * @param  Authenticatable|User|Model  $fieldGroup
+     * @param  Authenticatable|User|Model  $user
      * @param  FieldGroup|Model  $fieldGroup
      * @return bool
      */
