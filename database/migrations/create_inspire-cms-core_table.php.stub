@@ -33,6 +33,7 @@ return new class extends BaseMigration
             $table->string('title');
             $table->string('slug');
             $table->boolean('is_web_page')->default(true);
+            $table->boolean('show_children_as_table')->default(false);
 
             $table->timestamps();
 

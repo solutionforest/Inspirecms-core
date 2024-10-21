@@ -29,4 +29,7 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
      * @return HasMany The content associated with the document type.
      */
     public function content(): HasMany;
+    
+    public function isShowChildrenAsTable(): bool;
+
 }

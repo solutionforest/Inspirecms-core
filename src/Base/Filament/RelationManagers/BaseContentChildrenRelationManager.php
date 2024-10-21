@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 class BaseContentChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
+    protected static ?string $inverseRelationship = 'parent';
 
     public function form(Form $form): Form
     {

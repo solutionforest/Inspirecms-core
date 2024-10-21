@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Database\Eloquent\Model;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
@@ -37,11 +38,20 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         return [
             Actions\Action::make('back')
                 ->label(__('inspirecms::inspirecms.back'))
-                ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['trash', 'index'], [], false))
                 ->color('gray')
-                ->visible(fn ($record) => $record->trashed()),
+                ->url(function ($record) {
+                    if ($record->trashed()) {
+                        return FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['trash', 'index'], [], false);
+                    }
+
+                    return null;
+                })
+                ->visible(function (Actions\Action $action) {
+                    return filled($action->getUrl());
+                }),
             Actions\LocaleSwitcher::make(),
-            PreviewAction::make(),
+            PreviewAction::make()
+                ->hidden(fn ($record) => $record->trashed()),
             ContentHistoryAction::make()
                 ->record(fn () => $this->getRecord()),
             Actions\EditAction::make()

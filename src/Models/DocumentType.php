@@ -18,6 +18,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     protected $casts = [
         'is_web_page' => 'boolean',
+        'show_children_as_table' => 'boolean',
     ];
 
     public function fieldGroups(): MorphToMany
@@ -48,4 +49,9 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return DocumentTypeDto::class;
     }
     //endregion Dto
+
+    public function isShowChildrenAsTable(): bool
+    {
+        return $this->show_children_as_table;
+    }
 }

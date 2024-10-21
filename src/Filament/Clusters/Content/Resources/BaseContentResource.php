@@ -23,6 +23,7 @@ use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\ViewPage;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\RelationManagers\ChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -267,13 +268,16 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         true: fn (Builder $query) => $query->isRootLevel(condition: true),
                         false: fn (Builder $query) => $query->isRootLevel(condition: false),
                         blank: fn (Builder $query) => $query,
-                    ),
+                    )
+                    ->hiddenOn([ChildrenRelationManager::class]),
             ]);
     }
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ChildrenRelationManager::make(),
+        ];
     }
 
     public static function getModel(): string

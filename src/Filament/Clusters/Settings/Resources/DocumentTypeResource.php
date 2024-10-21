@@ -66,6 +66,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         ->schema([
                             static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
                             static::getIsWebPageFormComponent(),
+                            static::getShowChildAsTableFormComponent(),
                             static::getTimestampsGroupedFormComponent(),
                         ])
                         ->grow(false),
@@ -87,6 +88,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 static::getTitleFormComponent()->inlineLabel(),
                 static::getSlugFormComponent()->inlineLabel(),
                 static::getIsWebPageFormComponent(),
+                static::getShowChildAsTableFormComponent(),
             ]);
     }
 
@@ -107,6 +109,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->badge(),
                 Tables\Columns\IconColumn::make('is_web_page')
                     ->label(__('inspirecms::inspirecms.is_web_page'))
+                    ->boolean(),
+                Tables\Columns\IconColumn::make('show_children_as_table')
+                    ->label(__('inspirecms::inspirecms.show_children_as_table'))
                     ->boolean(),
 
                 // timestamps
@@ -301,6 +306,16 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.is_web_page'))
             ->inlineLabel()
             ->default(true)
+            ->live();
+    }
+
+    /** @return Forms\Components\Field | Forms\Components\Component*/
+    protected static function getShowChildAsTableFormComponent()
+    {
+        return Forms\Components\Toggle::make('show_children_as_table')
+            ->label(__('inspirecms::inspirecms.show_children_as_table'))
+            ->inlineLabel()
+            ->default(false)
             ->live();
     }
 

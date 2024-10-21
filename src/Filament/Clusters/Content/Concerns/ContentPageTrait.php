@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 use Filament\Actions;
 use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
@@ -18,6 +19,8 @@ trait ContentPageTrait
 {
     use InteractsWithModelExplorer {
         modelExplorer as protected traitModelExplorer;
+        setSelectedModelItem as protected traitSetSelectedModelItem;
+        getModelExplorerItemsFrom as protected traitGetModelExplorerItemsFrom;
     }
 
     public array $expandedModelExplorerItems = [];
@@ -40,9 +43,21 @@ trait ContentPageTrait
             ->model($modelClass)
             ->parentColumnName($parentIdColumn)
             ->rootLevelKey($rootLevelKey)
-            ->modifyQueryUsing(fn ($query) => $query->withCount('children'))
+            ->modifyQueryUsing(fn ($query) => $query
+                ->withCount([
+                    'children',
+                ])
+                ->with([
+                    'documentType',
+                ])
+            )
             ->determineRecordLabelUsing(fn ($record) => $record->title)
-            ->determineRecordHasChildrenUsing(fn ($record) => $record->children_count > 0)
+            ->determineRecordHasChildrenUsing(function ($record) {
+                if ($record->documentType->isShowChildrenAsTable()) {
+                    return false;
+                }
+                return $record->children_count > 0;
+            })
             ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
                 [
                     'key' => 'root',
@@ -121,6 +136,34 @@ trait ContentPageTrait
             ]);
     }
 
+    //region Model Explorer
+    protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
+    {
+        $selectItem = $this->resolveSelectedModelItem($parentKey);
+
+        if ($selectItem?->documentType->isShowChildrenAsTable()) {
+            return [];
+        }
+
+        return $this->traitGetModelExplorerItemsFrom($parentKey, $depth);
+    }
+
+    protected function setSelectedModelItem(string | int | Model | null $record): void
+    {
+        if ($record) {
+
+            $item = $record instanceof Model ? $record : $this->resolveSelectedModelItem($record);
+
+            if ($item->parent?->documentType->isShowChildrenAsTable()) {
+                $this->traitSetSelectedModelItem($item->parent);
+                return;
+            }
+        }
+
+        $this->traitSetSelectedModelItem($item);
+        return;
+    }
+
     protected function resolveSelectedModelItem(string | int $key): ?Model
     {
         if (in_array($key, ['root'])) {
@@ -178,6 +221,7 @@ trait ContentPageTrait
             }
         }
     }
+    //endregion
 
     public function getSubNavigation(): array
     {

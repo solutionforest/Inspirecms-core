@@ -59,6 +59,7 @@ return [
     'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',
+    'show_children_as_table' => 'Show children as table',
     'slug' => 'Slug',
     'something_went_wrong' => 'Something went wrong.',
     'status' => 'Status',
