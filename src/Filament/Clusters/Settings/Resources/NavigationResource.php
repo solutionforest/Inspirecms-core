@@ -55,7 +55,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.navigation_type'))
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('type')
-                    ->label(__('inspirecms::inspirecms.target'))
+                    ->label(__('inspirecms::inspirecms.type'))
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title')),
@@ -119,7 +119,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->markAsRequired()
             ->visible(fn ($get) => $get('type') == 'content')
             ->afterStateHydrated(function ($state, $component, $record) {
-                if ($record->type == 'content') {
+                if ($record?->type == 'content') {
                     $component->state([$state]);
                 }
             })
@@ -149,11 +149,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Select::make('type')
             ->label(__('inspirecms::inspirecms.type'))
-            ->inlineLabel()
             ->columnSpanFull()
             ->live()
             ->required()
-            //todo: translate
             ->options([
                 'content' => __('inspirecms::inspirecms.content'),
                 'link' => __('inspirecms::inspirecms.link'),
@@ -169,7 +167,6 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('navigation_type')
             ->label(__('inspirecms::inspirecms.navigation_type'))
             ->required()
-            //todo: translate
             ->datalist([
                 'main',
                 'footer',
@@ -198,7 +195,6 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
-            ->inlineLabel()
             ->required();
     }
     //endregion Form field(s)/component(s)
