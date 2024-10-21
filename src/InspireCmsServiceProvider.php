@@ -266,7 +266,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int | \Closure $length) {
             return $this->live()
-                ->hint(fn ($state, $component) => __('inspirecms::inspirecms.hints.remaining_xxx_characters', ['number' => $component->getMaxLength() - strlen($state)]))
+                ->hint(function ($state, $component) {
+                    if (! is_string($state)) {
+                        return '';
+                    }
+                    return __('inspirecms::inspirecms.hints.remaining_xxx_characters', ['number' => $component->getMaxLength() - strlen($state)]);
+                })
                 ->maxLength($length);
         });
         \Filament\Forms\Components\Field::macro('translatable', function () {

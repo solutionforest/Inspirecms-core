@@ -22,6 +22,7 @@
             @else
                 <div
                     wire:key="{{ $this->getId() }}.forms.{{ $this->getFormStatePath() }}"
+                    class="pb-6"
                 >
                     {{ $this->form }}
                 </div>

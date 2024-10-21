@@ -45,8 +45,6 @@ class BaseCreateContentAction extends Action implements HasLivewire
     use HasSize;
     use HasTooltip;
 
-    // protected ?BaseCreateContentAction $group = null;
-
     public const BADGE_VIEW = 'filament-actions::badge-group';
 
     public const BUTTON_VIEW = 'filament-actions::button-group';
@@ -220,33 +218,4 @@ class BaseCreateContentAction extends Action implements HasLivewire
 
         return true;
     }
-
-    // public function group(?BaseCreateContentAction $group): static
-    // {
-    //     $this->group = $group;
-
-    //     return $this;
-    // }
-
-    // public function getGroup(): ?BaseCreateContentAction
-    // {
-    //     return $this->group;
-    // }
-
-    // public function getRootGroup(): ?BaseCreateContentAction
-    // {
-    //     $group = $this->getGroup();
-
-    //     while ($group) {
-    //         $parentGroup = $group->getGroup();
-
-    //         if (! $parentGroup) {
-    //             break;
-    //         }
-
-    //         $group = $parentGroup;
-    //     }
-
-    //     return $group;
-    // }
 }

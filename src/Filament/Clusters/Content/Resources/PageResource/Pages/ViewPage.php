@@ -27,4 +27,9 @@ class ViewPage extends BaseContentViewPage
     {
         return $this->getRecord()->parent_id;
     }
+    
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
 }
