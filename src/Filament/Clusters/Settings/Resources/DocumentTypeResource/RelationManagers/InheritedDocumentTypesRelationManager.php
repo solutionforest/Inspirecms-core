@@ -17,14 +17,15 @@ class InheritedDocumentTypesRelationManager extends RelationManager
     use CanAuthorizeRelationManager;
 
     protected static string $relationship = 'inheritedDocumentTypes';
+
     protected static ?string $inverseRelationship = 'inheritingDocumentTypes';
-    
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
             return false;
         }
-        
+
         return $ownerRecord->canInheriting();
     }
 
@@ -85,7 +86,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             if (! $record) {
                 return;
             }
-            
+
             $this->getOwnerRecord()->deteachInheritFieldGroupsFrom($record);
 
             $this->dispatch('refreshFieldGroups');
@@ -101,6 +102,6 @@ class InheritedDocumentTypesRelationManager extends RelationManager
 
     protected static function getModelLabel(): ?string
     {
-        return  __('inspirecms::inspirecms.document_type');
+        return __('inspirecms::inspirecms.document_type');
     }
 }

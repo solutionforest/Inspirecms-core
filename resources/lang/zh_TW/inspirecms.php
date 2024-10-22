@@ -121,7 +121,7 @@ return [
         ],
         'inheritance' => [
             'label' => '繼承',
-            'description' => '可以繼承的文檔類型佈局。'
+            'description' => '可以繼承的文檔類型佈局。',
         ],
     ],
 

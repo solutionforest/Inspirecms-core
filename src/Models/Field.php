@@ -15,6 +15,7 @@ class Field extends BaseModel
     public function getFieldTypeConfigAttribute()
     {
         $fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($this->type);
+
         return $fieldTypeConfig?->getConfigNames() ?? [];
     }
 

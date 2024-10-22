@@ -32,7 +32,7 @@ class FieldTypeHelper
         return $fiFormComponent;
     }
 
-    public static function getFieldTypeConfig(string $typeName, array $config = []): FieldTypeConfig|null
+    public static function getFieldTypeConfig(string $typeName, array $config = []): ?FieldTypeConfig
     {
         return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
     }

@@ -5,11 +5,11 @@ namespace SolutionForest\InspireCms\Base\Enums;
 enum DocumentTypeType: string implements Interfaces\DocumentTypeType
 {
     case Web = 'web';
-    
+
     /**
      * To allow inherits field groups from other document types.
      */
-     case Inheritance = 'layout';
+    case Inheritance = 'layout';
 
     public function getLabel(): ?string
     {
@@ -29,7 +29,7 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Web => 'primary',

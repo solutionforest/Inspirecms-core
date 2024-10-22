@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -101,29 +100,29 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public static function getTypeEnumClass(): string
     {
-        $class =  \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::class;
+        $class = \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::class;
 
-        if (!in_array(\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType::class, class_implements($class))) {
+        if (! in_array(\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType::class, class_implements($class))) {
             throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType");
         }
 
         return $class;
     }
 
-    public function inheritFieldGroupsFrom(string|int|DocumentTypeContract $documentType): bool
+    public function inheritFieldGroupsFrom(string | int | DocumentTypeContract $documentType): bool
     {
         try {
             if (is_string($documentType) || is_int($documentType)) {
                 $documentType = static::query()->findOrFail($documentType);
             }
 
-            if (!$documentType->canBeInherited() || !$this->canInheriting()) {
+            if (! $documentType->canBeInherited() || ! $this->canInheriting()) {
                 return false;
             }
 
             $ids = $documentType->fieldGroups()
                 ->get()
-                ->map(fn($fieldGroup) => $fieldGroup->getKey())
+                ->map(fn ($fieldGroup) => $fieldGroup->getKey())
                 ->toArray();
 
             $pivotData = [
@@ -140,7 +139,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             if (empty($ids)) {
                 return true;
             }
-            
+
             $this->fieldGroups()->syncWithPivotValues(
                 $ids,
                 $pivotData,
@@ -155,7 +154,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         }
     }
 
-    public function deteachInheritFieldGroupsFrom(string|int|DocumentTypeContract $documentType): bool
+    public function deteachInheritFieldGroupsFrom(string | int | DocumentTypeContract $documentType): bool
     {
         try {
             if (is_string($documentType) || is_int($documentType)) {
@@ -164,7 +163,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
             $ids = $documentType->fieldGroups()
                 ->get()
-                ->map(fn($fieldGroup) => $fieldGroup->getKey())
+                ->map(fn ($fieldGroup) => $fieldGroup->getKey())
                 ->toArray();
 
             $this->fieldGroups()->detach($ids);

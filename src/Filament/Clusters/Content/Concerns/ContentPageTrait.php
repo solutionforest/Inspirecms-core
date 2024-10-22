@@ -44,19 +44,21 @@ trait ContentPageTrait
             ->model($modelClass)
             ->parentColumnName($parentIdColumn)
             ->rootLevelKey($rootLevelKey)
-            ->modifyQueryUsing(fn ($query) => $query
-                ->withCount([
-                    'children',
-                ])
-                ->with([
-                    'documentType',
-                ])
+            ->modifyQueryUsing(
+                fn ($query) => $query
+                    ->withCount([
+                        'children',
+                    ])
+                    ->with([
+                        'documentType',
+                    ])
             )
             ->determineRecordLabelUsing(fn ($record) => $record->title)
             ->determineRecordHasChildrenUsing(function ($record) {
                 if ($record->documentType->isShowChildrenAsTable()) {
                     return false;
                 }
+
                 return $record->children_count > 0;
             })
             ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
@@ -72,6 +74,7 @@ trait ContentPageTrait
             ], $items))
             ->mutuateNodeItemsUsing(function (array $item, Model $record) {
                 $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], ['record' => $record], true);
+
                 return $item;
             })
             ->actions([
@@ -120,7 +123,7 @@ trait ContentPageTrait
                     ->action(function (?Model $record, Actions\Action $action) {
 
                         if (! $record) {
-            
+
                             return;
                         }
 
@@ -128,14 +131,15 @@ trait ContentPageTrait
 
                         if (! $result) {
                             $action->failure();
-            
+
                             return;
                         }
-            
+
                         $action->success();
                     }),
             ]);
     }
+
     protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
     {
         $selectItem = $this->resolveSelectedModelItem($parentKey);
@@ -155,12 +159,13 @@ trait ContentPageTrait
 
             if ($item->parent?->documentType->isShowChildrenAsTable()) {
                 $this->traitSetSelectedModelItem($item->parent);
+
                 return;
             }
         }
 
         $this->traitSetSelectedModelItem($item);
-        return;
+
     }
 
     protected function resolveSelectedModelItem(string | int $key): ?Model
@@ -226,5 +231,4 @@ trait ContentPageTrait
     {
         return [];
     }
-
 }

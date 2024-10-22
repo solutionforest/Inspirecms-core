@@ -98,7 +98,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Grouping\Group::make('type')
                     ->label(__('inspirecms::inspirecms.type'))
                     ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getLabel())
-                    ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getDescription())
+                    ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getDescription()),
             ])
             ->defaultGroup('type')
             ->columns([
@@ -117,6 +117,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         if ($record->getTypeEnum()?->canManageChildDocumentTypes() === false) {
                             return 'gray';
                         }
+
                         return $state ? 'success' : 'danger';
                     })
                     ->icon(function (DocumentType $record, $state) {
@@ -127,6 +128,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                             return FilamentIcon::resolve('tables::columns.icon-column.true')
                                 ?? 'heroicon-o-check-circle';
                         }
+
                         return FilamentIcon::resolve('tables::columns.icon-column.false')
                             ?? 'heroicon-o-x-circle';
                     }),
@@ -263,6 +265,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         return $enum->getDescription();
                     }
                 }
+
                 return null;
             });
     }
@@ -279,6 +282,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 if ($enum = static::getModel()::getTypeEnumClass()::tryFrom($get('type'))) {
                     return ! $enum->canManageChildDocumentTypes();
                 }
+
                 return false;
             });
     }

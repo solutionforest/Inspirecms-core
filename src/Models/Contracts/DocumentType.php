@@ -26,8 +26,6 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
 
     /**
      * Get the document types that are inherited by this document type.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function inheritedDocumentTypes(): BelongsToMany;
 
@@ -44,7 +42,7 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
      * @return HasMany The content associated with the document type.
      */
     public function content(): HasMany;
-    
+
     /**
      * Determine if the children should be displayed as a table.
      *
@@ -53,7 +51,7 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
     public function isShowChildrenAsTable(): bool;
 
     public function isWebPageType(): bool;
-    
+
     public function canInheriting(): bool;
 
     public function canBeInherited(): bool;
@@ -67,7 +65,7 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
      */
     public static function getTypeEnumClass(): string;
 
-    public function inheritFieldGroupsFrom(string|int|DocumentType $documentType): bool;
-    
-    public function deteachInheritFieldGroupsFrom(string|int|DocumentType $documentType): bool;
+    public function inheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
+
+    public function deteachInheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
 }

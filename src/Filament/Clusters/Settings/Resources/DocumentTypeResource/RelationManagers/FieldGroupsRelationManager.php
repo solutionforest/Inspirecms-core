@@ -20,12 +20,13 @@ class FieldGroupsRelationManager extends RelationManager
     use CanAuthorizeRelationManager;
 
     protected static string $relationship = 'fieldGroups';
+
     protected static ?string $inverseRelationship = 'documentTypes';
 
     protected $listeners = [
         'refreshFieldGroups' => '$refresh',
     ];
-    
+
     public function table(Table $table): Table
     {
         return $table
@@ -48,13 +49,13 @@ class FieldGroupsRelationManager extends RelationManager
 
                         Tables\Columns\TextColumn::make('inherited_from_title')
                             ->label(__('inspirecms::inspirecms.title'))
-                            ->getStateUsing(function ($record)  {
+                            ->getStateUsing(function ($record) {
                                 return $record->pivot?->inheritedFrom?->title;
                             }),
                         Tables\Columns\TextColumn::make('inherited_from_slug')
                             ->label(__('inspirecms::inspirecms.slug'))
                             ->width('5%')
-                            ->getStateUsing(function ($record)  {
+                            ->getStateUsing(function ($record) {
                                 return $record->pivot?->inheritedFrom?->slug;
                             })
                             ->badge(),
@@ -68,6 +69,7 @@ class FieldGroupsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make()
                     ->url(function () {
                         $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
+
                         return FilamentResourceHelper::attemptToGetUrl($resource, 'create', [], true);
                     }, true)
                     ->visible(function (Tables\Actions\Action $action) {
@@ -90,7 +92,8 @@ class FieldGroupsRelationManager extends RelationManager
                     ->iconPosition(IconPosition::After)
                     ->url(function ($record) {
                         $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
-                        return FilamentResourceHelper::attemptToGetUrl($resource, ['view','edit'], ['record' => $record], true);
+
+                        return FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], ['record' => $record], true);
                     }, true)
                     ->visible(fn (Tables\Actions\Action $action) => filled($action->getUrl())),
                 Tables\Actions\DetachAction::make()
@@ -118,7 +121,7 @@ class FieldGroupsRelationManager extends RelationManager
                             Infolists\Components\TextEntry::make('label')
                                 ->label(__('inspirecms::resources/field.label.label'))
                                 ->inlineLabel(),
-                                
+
                             Infolists\Components\TextEntry::make('name')
                                 ->label(__('inspirecms::resources/field.name.label'))
                                 ->inlineLabel()
@@ -133,8 +136,9 @@ class FieldGroupsRelationManager extends RelationManager
     {
         return __('inspirecms::inspirecms.field_group');
     }
+
     protected static function getModelLabel(): ?string
     {
-        return  __('inspirecms::inspirecms.field_group');
+        return __('inspirecms::inspirecms.field_group');
     }
 }

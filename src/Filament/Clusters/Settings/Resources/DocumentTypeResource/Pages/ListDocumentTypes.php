@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 
 use Filament\Actions;
 use Filament\Resources\Components\Tab;
-use Illuminate\Database\Query\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;

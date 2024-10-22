@@ -17,7 +17,7 @@ class FieldGroupable extends BaseMorphPivotModel implements FieldGroupableContra
     protected $guarded = ['id'];
 
     public $timestamps = false;
-    
+
     public $table = 'field_groupables';
 
     public $sortable = [

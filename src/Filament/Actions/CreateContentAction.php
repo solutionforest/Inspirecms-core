@@ -32,7 +32,7 @@ class CreateContentAction extends BaseCreateContentAction
         $contentModel = $contentResource::getModel();
 
         $documentTypeActions = $documentTypes->map(
-            fn (DocumentType|Model $documentType) => Action::make('create_content_' . $documentType->slug)
+            fn (DocumentType | Model $documentType) => Action::make('create_content_' . $documentType->slug)
                 ->label($documentType->title)
                 ->url(function () use ($documentType, $contentResource) {
 

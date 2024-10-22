@@ -68,6 +68,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
         if (! static::getResource()::can('updateView')) {
             return [];
         }
+
         return [
             Action::make('save')
                 ->label(__('inspirecms::actions.save.label'))

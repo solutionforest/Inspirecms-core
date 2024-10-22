@@ -11,7 +11,7 @@ class EditPage extends BaseContentEditPage
     {
         return config('inspirecms.filament.resources.page', PageResource::class);
     }
-    
+
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
         return true;

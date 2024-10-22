@@ -39,6 +39,7 @@ class DocumentTypesRelationManager extends RelationManager
     protected function getRecordUrl($record): ?string
     {
         $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
+
         return FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], ['record' => $record], true);
     }
 

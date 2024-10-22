@@ -24,8 +24,6 @@ interface FieldGroupable extends Sortable
 
     /**
      * Define a polymorphic relationship for inherited models.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
     public function inheritedFrom(): MorphTo;
 }

@@ -268,6 +268,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     if (! is_string($state)) {
                         return '';
                     }
+
                     return __('inspirecms::inspirecms.hints.remaining_xxx_characters', ['number' => $component->getMaxLength() - strlen($state)]);
                 })
                 ->maxLength($length);

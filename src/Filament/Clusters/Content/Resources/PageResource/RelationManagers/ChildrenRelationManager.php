@@ -16,14 +16,14 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 class ChildrenRelationManager extends BaseContentChildrenRelationManager implements ContentForm
 {
-    use Translatable;
     use ContentFormTrait;
+    use Translatable;
 
     #[Reactive]
     public ?string $activeLocale = null;
-    
+
     protected static ?string $recordTitleAttribute = 'title';
- 
+
     public function getTranslatableLocales(): array
     {
         return array_keys(InspireCms::getAllAvailableLanguages());
@@ -31,7 +31,7 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
-        if (!parent::canViewForRecord($ownerRecord, $pageClass)) {
+        if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
             return false;
         }
 
@@ -49,12 +49,12 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
             ]);
     }
 
-    public function getDocumentType(): int|Model|string
+    public function getDocumentType(): int | Model | string
     {
         return $this->getOwnerRecord()->documentType;
     }
 
-    public function getParent(): int|Model|string|null
+    public function getParent(): int | Model | string | null
     {
         return $this->getOwnerRecord()->parent;
     }
@@ -68,11 +68,10 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
     {
         parent::configureEditAction($action);
 
-        
         $resource = $this->getPageClass()::getResource();
 
-        $action->url(fn ($record) => 
-            FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record], false)
+        $action->url(
+            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record], false)
         );
     }
 
@@ -82,8 +81,8 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
 
         $resource = $this->getPageClass()::getResource();
 
-        $action->url(fn ($record) => 
-            FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record], false)
+        $action->url(
+            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record], false)
         );
     }
 }

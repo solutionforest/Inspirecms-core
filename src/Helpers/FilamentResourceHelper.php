@@ -34,7 +34,7 @@ class FilamentResourceHelper
                 $record = $parameters['record'] ?? null;
                 if ($autorizeAction) {
 
-                    $method = (string)str($action)->studly()->prepend('can');
+                    $method = (string) str($action)->studly()->prepend('can');
                     if (! $resource::{$method}($record)) {
                         continue;
                     }

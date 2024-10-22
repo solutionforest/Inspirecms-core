@@ -15,13 +15,13 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 class InheritingDocumentTypesRelationManager extends RelationManager
 {
     protected static string $relationship = 'inheritingDocumentTypes';
-    
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
             return false;
         }
-        
+
         return $ownerRecord->canBeInherited();
     }
 
