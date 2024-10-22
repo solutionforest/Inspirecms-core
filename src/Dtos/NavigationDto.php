@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Models\Navigation;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 
@@ -28,14 +29,28 @@ class NavigationDto extends BaseTranslatableModelDto
     /**
      * @var string
      */
+    public $category;
+
+    /**
+     * @var string
+     */
     public $type;
+
+    /**
+     * @var Collection<NavigationDto>
+     */
+    public $children;
 
     public static function fromTranslatableModel($model, $locale)
     {
+        $model->loadMissing(['content', 'children']);
+
         $dto = parent::fromTranslatableModel($model, $locale);
 
         $dto->url = $model->getUrl();
-        $dto->type = $model->navigation_type;
+        $dto->children = collect($model->children)
+            ->map(fn ($child) => self::fromTranslatableModel($child, $locale))
+            ->values();
 
         return $dto;
     }
@@ -43,5 +58,10 @@ class NavigationDto extends BaseTranslatableModelDto
     public function getTitle(?string $locale = null, bool $usingFallback = true): string
     {
         return $this->getTranslations($this->title, $locale, $usingFallback);
+    }
+
+    public function hasChildren(): bool
+    {
+        return $this->children->isNotEmpty() && $this->type == 'group';
     }
 }

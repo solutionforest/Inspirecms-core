@@ -153,7 +153,7 @@ class InspireCmsManager
         // }
 
         // temp: current get root
-        $nav = InspireCmsConfig::getNavigationModelClass()::with('content')->root()->category($category)->get();
+        $nav = InspireCmsConfig::getNavigationModelClass()::with(['content', 'children'])->root()->category($category)->get();
 
         return $nav->map(fn ($item) => $item->toDto($locale ?? app()->getLocale()))->all();
     }
