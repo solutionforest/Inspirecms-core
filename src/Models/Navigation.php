@@ -10,6 +10,10 @@ use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
+use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
+use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 
 class Navigation extends BaseModel implements NavigationContract
 {
@@ -40,11 +44,33 @@ class Navigation extends BaseModel implements NavigationContract
     }
 
     //region Scopes
-    public function scopeNavType($query, string $type)
+    public function scopeCategory($query, string $type)
     {
-        return $query->where('navigation_type', $type);
+        return $query->where('category', $type);
     }
     //endregion Scopes
+
+    //region Enums
+    public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface
+    {
+        return static::getNavigationCategoryEnumClass()::tryFrom($this->category);
+    }
+    
+    public static function getNavigationCategoryEnumClass(): string
+    {
+        return NavigationCategoryEnum::class;
+    }
+
+    public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface
+    {
+        return static::getNavigationCategoryEnumClass()::tryFrom($this->type);
+    }
+    
+    public static function getNavigationTypeEnumClass(): string
+    {
+        return NavigationTypeEnum::class;
+    }
+    //endregion Enums
 
     //region Dto
     public function toDto(...$args)
@@ -63,21 +89,30 @@ class Navigation extends BaseModel implements NavigationContract
         parent::boot();
 
         static::saving(function (self $model) {
+            if ($model->type instanceof NavigationTypeEnumInterface) {
+                $model->type = $model->type->value;
+            }
+            if ($model->category instanceof NavigationCategoryEnumInterface) {
+                $model->category = $model->category->value;
+            }
             switch ($model->type) {
-                case 'content':
+                case NavigationTypeEnum::Content->value:
                     $model->url = null;
 
                     break;
-                case 'link':
+                case NavigationTypeEnum::Link:
                     $model->content_id = null;
-
                     break;
+                case NavigationTypeEnum::Group:
+                    $model->content_id = null;
+                    $model->url = null;
+                    break;
+            }
+            if (blank($model->category)) {
+                $model->category = static::getNavigationCategoryEnumClass()::getDefaultValue()->value;
             }
             if (is_null($model->content_id)) {
                 $model->content_id = KeyHelper::generateMinUuid();
-            }
-            if (is_null($model->url)) {
-                $model->url = '';
             }
         });
     }

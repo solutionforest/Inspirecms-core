@@ -8,12 +8,16 @@ use Filament\Resources\Concerns\Translatable;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory;
+use SolutionForest\InspireCms\Base\Enums\NavigationType;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
+use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class NavigationResource extends Resource implements ClusterSectionResource
@@ -38,8 +42,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return $form
             ->schema([
-                static::getNavigationTypeFormComponent(),
+                static::getCategoryFormComponent(),
                 static::getTitleFormComponent(),
+                static::getParentFormComponent(),
                 static::getTypeFormComponent(),
                 static::getContentFormComponent(),
                 static::getUrlFormComponent(),
@@ -88,6 +93,23 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return InspireCmsConfig::getNavigationModelClass();
     }
 
+    public static function guardAgainstInvalidModel(string $model): string
+    {
+        if (!in_array(Navigation::class, class_implements($model))) {
+            throw new \InvalidArgumentException("The model must implement the " . Navigation::class . " interface.");
+        }
+
+        return $model;
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\MainNavigation::class,
+            Widgets\FooterNavigation::class,
+        ];
+    }
+
     public static function getModelLabel(): string
     {
         return __('inspirecms::inspirecms.navigation');
@@ -115,15 +137,19 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.content'))
             ->maxItems(1)
             ->columnSpanFull()
-            ->requiredIf('type', 'content')
+            ->required(function ($get) {
+                return $get('type') == NavigationType::Content;
+            })
             ->markAsRequired()
-            ->visible(fn ($get) => $get('type') == 'content')
+            ->visible(function ($get) {
+                return $get('type') == NavigationType::Content;
+            })
             ->afterStateHydrated(function ($state, $component, $record) {
-                if ($record?->type == 'content') {
+                if ($record?->type == NavigationType::Content) {
                     $component->state([$state]);
                 }
             })
-            ->dehydrateStateUsing(fn ($get, $state) => $get('type') == 'content' ? $state[0] ?? null : null)
+            ->dehydrateStateUsing(fn ($get, $state) => $get('type') == NavigationType::Content ? $state[0] ?? null : null)
             ->dehydratedWhenHidden();
     }
 
@@ -134,12 +160,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('url')
             ->label(__('inspirecms::inspirecms.url'))
-            ->columnSpanFull()
-            ->requiredIf('type', 'link')
-            ->markAsRequired()
-            ->visible(fn ($get) => $get('type') == 'link')
-            ->dehydrateStateUsing(fn ($get, $state) => $get('type') == 'link' ? $state : null)
-            ->dehydratedWhenHidden();
+            ->columnSpanFull();
     }
 
     /**
@@ -152,26 +173,34 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->columnSpanFull()
             ->live()
             ->required()
-            ->options([
-                'content' => __('inspirecms::inspirecms.content'),
-                'link' => __('inspirecms::inspirecms.link'),
-            ])
-            ->default('content');
+            ->options(function () {
+                $model = static::guardAgainstInvalidModel(static::getModel());
+                return $model::getNavigationTypeEnumClass();
+            })
+            ->default(function () {
+                $model = static::guardAgainstInvalidModel(static::getModel());
+                return $model::getNavigationTypeEnumClass()::getDefaultValue();
+            });
     }
 
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getNavigationTypeFormComponent()
+    protected static function getCategoryFormComponent()
     {
-        return Forms\Components\TextInput::make('navigation_type')
-            ->label(__('inspirecms::inspirecms.navigation_type'))
+        return Forms\Components\Select::make('category')
+            ->label(__('inspirecms::inspirecms.category'))
             ->required()
-            ->datalist([
-                'main',
-                'footer',
-            ])
-            ->default('main');
+            ->disabledOn(['edit'])
+            ->options(function () {
+                $model = static::guardAgainstInvalidModel(static::getModel());
+                return $model::getNavigationCategoryEnumClass();
+            })
+            ->default(function () {
+                $model = static::guardAgainstInvalidModel(static::getModel());
+                return $model::getNavigationCategoryEnumClass()::getDefaultValue();
+            })
+            ->live();
     }
 
     /**
@@ -196,6 +225,47 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
             ->required();
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getParentFormComponent()
+    {
+        $model = static::guardAgainstInvalidModel(static::getModel());
+        $rootParentId = (new $model ())->getNestableRootValue();
+        return Forms\Components\Select::make('parent_id')
+            ->label(__('inspirecms::inspirecms.parent'))
+            ->options(function ($get, $record)  use ($model) {
+                $model = static::guardAgainstInvalidModel(static::getModel());
+                $category = $get('category');
+                if ($category instanceof NavigationCategory) {
+                    $category = $category->value;
+                }
+                return $model::query()
+                    ->category($category)
+                    ->when($record, fn ($query) => $query->whereKeyNot($record->getKey()))
+                    ->get()
+                    ->mapWithKeys(fn ($record) => [$record->getKey() => $record->title]);
+            })
+            ->placeholder('(' . strtolower(__('inspirecms::inspirecms.no_parent') . ')'))
+            ->native(false)
+            // handle min uuid
+            ->afterStateHydrated(function ($component, $state) use ($rootParentId) {
+                if (filled($state)) {
+                    if ($state == 0 || $state == $rootParentId) {
+                        // If no parent ID == root level
+                        $component->state(null);
+                    }
+                }
+            })
+            ->dehydrateStateUsing(function ($component, $state)  use ($rootParentId) {
+                if (empty($state)) {
+                    return $rootParentId;
+                }
+    
+                return $state;
+            });
     }
     //endregion Form field(s)/component(s)
 }

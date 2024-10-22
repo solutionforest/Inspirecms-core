@@ -145,7 +145,7 @@ class InspireCmsManager
         $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
     }
 
-    public function getNavigation(string $type, ?string $locale = null): array
+    public function getNavigation(string $category, ?string $locale = null): array
     {
         // todo: cache navigation
         // if (! $this->cachedNavigation) {
@@ -153,7 +153,7 @@ class InspireCmsManager
         // }
 
         // temp: current get root
-        $nav = InspireCmsConfig::getNavigationModelClass()::with('content')->root()->navType($type)->get();
+        $nav = InspireCmsConfig::getNavigationModelClass()::with('content')->root()->category($category)->get();
 
         return $nav->map(fn ($item) => $item->toDto($locale ?? app()->getLocale()))->all();
     }

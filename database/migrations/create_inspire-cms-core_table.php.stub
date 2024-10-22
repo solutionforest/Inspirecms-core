@@ -176,7 +176,7 @@ return new class extends BaseMigration
             $table->uuid('id')->primary();
 
             $table->uuid('content_id')->default('');
-            $table->string('url')->default('');
+            $table->string('url')->nullable();
             $table->string('target')->nullable();
 
             $table->json('title');
@@ -184,13 +184,12 @@ return new class extends BaseMigration
             $table->uuid('parent_id')->default('');
 
             $table->string('type')->default('link');
-            $table->string('navigation_type')->default('main');
+            $table->string('category')->default('main');
 
             $table->timestamps();
 
             $table->index('parent_id');
             $table->index('content_id');
-            $table->index('url');
             $table->index('type');
         });
     }
