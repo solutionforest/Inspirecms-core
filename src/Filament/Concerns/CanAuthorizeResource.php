@@ -25,12 +25,12 @@ trait CanAuthorizeResource
 
                 $user = Filament::auth()->user();
 
-                return $user->can($permissionName);
+                return $user->can($permissionName) && static::canViewAny();
 
             }
         }
 
-        return static::canAccess();
+        return parent::canAccess();
     }
 
     public static function can(string $action, ?Model $record = null): bool
