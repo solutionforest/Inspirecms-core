@@ -129,7 +129,7 @@ class PermissionManifest implements PermissionManifestInterface
 
         $permissionName = $this->getPermissionNameForModel(Str::snake($ability), $model);
 
-        return auth()->user()->can($permissionName);
+        return auth()->user()?->can($permissionName);
     }
 
     //region Helper methods

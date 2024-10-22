@@ -179,6 +179,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     {
         return [
             'index' => Pages\ManageFieldGroup::route('/'),
+            'create' => Pages\CreateFieldGroup::route('/create'),
             'edit' => Pages\EditFieldGroup::route('/{record}/edit'),
             'view' => Pages\ViewFieldGroup::route('/{record}'),
         ];
@@ -299,6 +300,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return Forms\Components\Repeater::make('fields')
             ->key('fieldsRepeater')
             ->hiddenLabel()
+            ->defaultItems(0)
             ->validationAttribute(strtolower(__('inspirecms::inspirecms.fields')))
             ->relationship('fields')
             ->itemLabel(fn (array $state): ?string => $state['label'] ?? $state['name'] ?? null)

@@ -138,7 +138,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $form
             ->schema([
-                static::getPublishedAtComponent(),
+                static::getPublishedAtFormComponent(),
                 Forms\Components\Group::make()
                     ->statePath('formData')
                     // Here can validate form data
@@ -171,22 +171,22 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')
-                    ->label(__('inspirecms::inspirecms.id'))
+                    ->label(__('inspirecms::resources/content.id.label'))
                     ->width('1%')->sortable(),
 
                 Tables\Columns\TextColumn::make('deleted_at')
-                    ->label(__('inspirecms::inspirecms.deleted_at'))
+                    ->label(__('inspirecms::resources/content.deleted_at.label'))
                     ->sortable()
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
                     ->visibleOn([BaseContentListTrashPage::class])
                     ->width('5%'),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title'))
+                    ->label(__('inspirecms::resources/content.title.label'))
                     ->sortable()
                     ->grow(),
                 Tables\Columns\TextColumn::make('parent')
-                    ->label(__('inspirecms::inspirecms.parent'))
+                    ->label(__('inspirecms::resources/content.parent.label'))
                     ->getStateUsing(function ($record) {
                         if ($record->isRoot()) {
                             return null;
@@ -196,11 +196,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     })
                     ->grow(),
 
-                Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.visibility'))
+                Tables\Columns\ColumnGroup::make(__('inspirecms::resources/content.visibility.label'))
                     ->columns([
 
                         Tables\Columns\TextColumn::make('displayStatus')
-                            ->label(__('inspirecms::inspirecms.status'))
+                            ->label(__('inspirecms::resources/content.status.label'))
                             ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
                             ->color(fn (?ContentStatusOption $state) => $state->getColor())
                             ->icon(fn (?ContentStatusOption $state) => $state->getIcon())
@@ -209,7 +209,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->width('2%'),
 
                         Tables\Columns\IconColumn::make('is_published')
-                            ->label(__('inspirecms::inspirecms.is_published'))
+                            ->label(__('inspirecms::resources/content.is_published.label'))
                             ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())  // Already include private
                             ->boolean()
                             ->width('2%')
@@ -220,7 +220,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->hiddenOn([BaseContentListTrashPage::class]),
 
                         Tables\Columns\TextColumn::make('published_at')
-                            ->label(__('inspirecms::inspirecms.publish_at'))
+                            ->label(__('inspirecms::resources/content.publish_at.label'))
                             ->getStateUsing(fn (ModelsContent $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
                             ->width('5%')
                             ->hiddenOn([BaseContentListTrashPage::class]),
@@ -228,12 +228,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('inspirecms::inspirecms.created_at'))
+                    ->label(__('inspirecms::resources/content.created_at.label'))
                     ->sortable()
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('inspirecms::inspirecms.last_updated_at'))
+                    ->label(__('inspirecms::resources/content.updated_at.label'))
                     ->sortable()
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
@@ -256,14 +256,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_published')
-                    ->label(__('inspirecms::inspirecms.is_published'))
+                    ->label(__('inspirecms::resources/content.is_published.label'))
                     ->queries(
                         true: fn (Builder $query) => $query->isPublished(condition: true),
                         false: fn (Builder $query) => $query->isPublished(condition: false),
                         blank: fn (Builder $query) => $query,
                     ),
                 Tables\Filters\TernaryFilter::make('is_root_level')
-                    ->label(__('inspirecms::inspirecms.is_root_level'))
+                    ->label(__('inspirecms::resources/content.is_root_level.label'))
                     ->queries(
                         true: fn (Builder $query) => $query->isRootLevel(condition: true),
                         false: fn (Builder $query) => $query->isRootLevel(condition: false),
@@ -358,24 +358,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 return $rule
                     ->where('parent_id', $parentId);
             })
-            ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    public static function getPublishedAtComponent()
-    {
-        return Forms\Components\DateTimePicker::make('published_at')
-            ->label(__('inspirecms::inspirecms.publish_at'))
-            ->native(false)
-            ->prefixIcon('heroicon-m-calendar-date-range')
-            ->suffixAction(ResetAction::make())
-            ->hintIcon(
-                'heroicon-o-information-circle',
-                __('inspirecms::inspirecms.hints.future_publish')
-            )
-            ->default(now())
             ->required();
     }
 
@@ -580,7 +562,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\Section::make()
             ->schema([
                 static::getDisplayIsPublishedFormComponent(),
-                static::getPublishedAtFormComponent(),
+                static::getDisplayPublishedAtFormComponent(),
                 static::getDisplayStatusFormComponent(),
             ])
             ->columns(['default' => 1]);
@@ -589,11 +571,29 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getPublishedAtFormComponent()
+    public static function getPublishedAtFormComponent()
+    {
+        return Forms\Components\DateTimePicker::make('published_at')
+            ->label(__('inspirecms::resources/content.published_at.label'))
+            ->native(false)
+            ->prefixIcon('heroicon-m-calendar-date-range')
+            ->suffixAction(ResetAction::make())
+            ->hintIcon(
+                'heroicon-o-information-circle',
+                __('inspirecms::resources/content.published_at.hint')
+            )
+            ->default(now())
+            ->required();
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayPublishedAtFormComponent()
     {
         return Forms\Components\Placeholder::make('published_at')
             ->content(fn (Model | ModelsContent | null $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at)
-            ->label(__('inspirecms::inspirecms.publish_at'))
+            ->label(__('inspirecms::resources/content.published_at.label'))
             ->inlineLabel();
     }
 
@@ -603,7 +603,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayIsPublishedFormComponent()
     {
         return Forms\Components\Placeholder::make('display_is_published')
-            ->label(__('inspirecms::inspirecms.is_published'))
+            ->label(__('inspirecms::resources/content.is_published.label'))
             ->inlineLabel()
             ->extraAttributes(['class' => 'flex align-items-center h-full'])
             ->content(function (Model | ModelsContent | null $record) {
@@ -619,7 +619,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayStatusFormComponent()
     {
         return Forms\Components\Placeholder::make('display_status')
-            ->label(__('inspirecms::inspirecms.status'))
+            ->label(__('inspirecms::resources/content.status.label'))
             ->inlineLabel()
             ->content(function (Model | ModelsContent | null $record) {
                 if (is_null($record)) {
@@ -640,7 +640,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayKeyFormComponent()
     {
         return Forms\Components\Placeholder::make('display_id')
-            ->label(__('inspirecms::inspirecms.id'))
+            ->label(__('inspirecms::resources/content.id.label'))
             ->inlineLabel()
             ->visible(fn ($record) => $record != null)
             ->content(fn (Model | ModelsContent | null $record) => UIHelper::generateCopyableText($record->getKey()));
@@ -650,7 +650,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayParentFormComponent()
     {
         return Forms\Components\Placeholder::make('display_parent')
-            ->label(__('inspirecms::inspirecms.parent'))
+            ->label(__('inspirecms::resources/content.parent.label'))
             ->inlineLabel()
             ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
                 if (is_null($record)) {
@@ -676,7 +676,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayUrlFormComponent()
     {
         return Forms\Components\Placeholder::make('display_url')
-            ->label(__('inspirecms::inspirecms.url'))
+            ->label(__('inspirecms::resources/content.url.label'))
             ->inlineLabel()
             ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
                 if (is_null($record)) {

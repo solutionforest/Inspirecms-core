@@ -108,4 +108,38 @@ return [
     'details' => [
         'heading' => '詳情',
     ],
+    'parent' => [
+        'label' => '父項',
+    ],
+    'id' => [
+        'label' => 'ID',
+    ],
+    'created_at' => [
+        'label' => '創建時間',
+    ],
+    'updated_at' => [
+        'label' => '最後更新時間',
+    ],
+    'deleted_at' => [
+        'label' => '刪除時間',
+    ],
+    'visibility' => [
+        'label' => '可見性',
+    ],
+    'is_published' => [
+        'label' => '已發布',
+    ],
+    'status' => [
+        'label' => '狀態',
+    ],
+    'is_root_level' => [
+        'label' => '是否為根級別',
+    ],
+    'published_at' => [
+        'label' => '發布時間',
+        'hint' => '如果設置為未來日期，則此頁面將在該時間自動發布。',
+    ],
+    'url' => [
+        'label' => 'URL',
+    ],
 ];

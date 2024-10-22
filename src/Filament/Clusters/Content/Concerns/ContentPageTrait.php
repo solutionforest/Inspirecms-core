@@ -32,6 +32,7 @@ trait ContentPageTrait
         }
     }
 
+    //region Model Explorer
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {
         $modelClass = $this->getModel();
@@ -135,8 +136,6 @@ trait ContentPageTrait
                     }),
             ]);
     }
-
-    //region Model Explorer
     protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
     {
         $selectItem = $this->resolveSelectedModelItem($parentKey);
@@ -227,4 +226,5 @@ trait ContentPageTrait
     {
         return [];
     }
+
 }

@@ -32,12 +32,13 @@ return new class extends BaseMigration
             $table->id();
             $table->string('title');
             $table->string('slug');
-            $table->boolean('is_web_page')->default(true);
+            $table->string('type')->default('web');
             $table->boolean('show_children_as_table')->default(false);
 
             $table->timestamps();
 
             $table->unique('slug');
+            $table->index('type');
         });
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();
@@ -105,8 +106,17 @@ return new class extends BaseMigration
             $table->integer('field_group_id');
             $table->morphs('groupabled');
             $table->integer('order')->default(0);
+            $table->nullableMorphs('inherited_from');
 
             $table->index('field_group_id');
+        });
+        Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) {
+            $table->integer('document_type_id');
+            $table->integer('inherited_document_type_id');
+            $table->integer('order')->default(0);
+
+            $table->index('document_type_id');
+            $table->index('inherited_document_type_id');
         });
         Schema::create($tableNames['nestable_tree'], function (Blueprint $table) {
             $table->id();
@@ -195,6 +205,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['user']);
 
         Schema::dropIfExists($tableNames['nestable_tree']);
+        Schema::dropIfExists($tableNames['document_type_inheritance']);
         Schema::dropIfExists($tableNames['field_groupable']);
 
         Schema::dropIfExists($tableNames['site_map']);
@@ -218,6 +229,7 @@ return new class extends BaseMigration
             'content_publish_version' => $this->prefix . 'content_publish_version',
             'content' => $this->prefix . 'content',
             'document_type' => $this->prefix . 'document_types',
+            'document_type_inheritance' => $this->prefix . 'document_type_inheritance',
             'language' => $this->prefix . 'languages',
             'user_login_activity' => $this->prefix . 'user_login_activities',
             'user' => $this->prefix . 'users',

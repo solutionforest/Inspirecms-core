@@ -115,6 +115,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'DocumentType model');
     }
 
+    public static function getDocumentTypeInheritanceTableName(): string
+    {
+        return app(static::getDocumentTypeInheritanceModelClass())->getTable();
+    }
+
+    public static function getDocumentTypeInheritanceModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\DocumentTypeInheritance::class, Models\Pivot\DocumentTypeInheritance::class);
+
+        return self::ensureClassExists($class, 'DocumentTypeInheritance model');
+    }
+
     public static function getFieldGroupTableName(): string
     {
         return app(static::getFieldGroupModelClass())->getTable();

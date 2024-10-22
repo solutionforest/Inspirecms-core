@@ -24,11 +24,11 @@ return [
     'general' => '一般',
     'group' => '組',
     'id' => 'ID',
+    'inherited_from' => '繼承自',
+    'inherited_xxx' => '從 :name 繼承',
+    'inheriting_xxx' => '被 :name 繼承',
     'is_active' => '活躍',
     'is_default' => '默認',
-    'is_published' => '已發布',
-    'is_root_level' => '是根級別',
-    'is_web_page' => '是網頁',
     'label' => '標籤',
     'language' => '語言',
     'last_lockouted_at' => '最後鎖定於',
@@ -42,14 +42,13 @@ return [
     'navigation' => '導航',
     'navigation_type' => '導航類型',
     'no_parent' => '無父項',
+    'order' => '排序',
     'page' => '頁面',
     'parent_xxx' => '父項 :name',
     'parent' => '父項',
     'password_confirmation' => '確認密碼',
     'password' => '密碼',
     'path' => '路徑',
-    'preview_fields' => '預覽字段',
-    'publish_at' => '發布於',
     'referenced_by_xxx' => '被 :name 引用',
     'referenced_by' => '被引用',
     'role' => '角色',
@@ -60,7 +59,7 @@ return [
     'setting' => '設置',
     'settings' => '設置',
     'show_children_as_table' => '顯示子項為表格',
-    'slug' => '短網址',
+    'slug' => '標識',
     'something_went_wrong' => '出了些問題。',
     'status' => '狀態',
     'target' => '目標',
@@ -75,7 +74,6 @@ return [
     'url' => '網址',
     'user' => '用戶',
     'users' => '用戶',
-    'visibility' => '可見性',
 
     'page_status' => [
         'draft' => [
@@ -116,9 +114,18 @@ return [
         ],
     ],
 
+    'document_type_type' => [
+        'web' => [
+            'label' => '網頁',
+            'description' => '標準的網頁佈局。',
+        ],
+        'inheritance' => [
+            'label' => '繼承',
+            'description' => '可以繼承的文檔類型佈局。'
+        ],
+    ],
+
     'hints' => [
-        'future_published_at_description' => '內容將在指定的日期和時間自動發布。',
-        'future_publish' => '如果設置為未來日期，則此頁面將在該時間自動發布。',
         'remaining_xxx_characters' => '剩餘 :number 個字符',
     ],
 ];

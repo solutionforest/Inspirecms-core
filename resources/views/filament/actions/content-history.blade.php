@@ -46,7 +46,7 @@
                             @if ($item->publishLog)
                                 <div class="inline-flex py-1">
                                     <x-filament::badge size="sm" color="primary">
-                                        {{ trans('inspirecms::inspirecms.publish_at') }}: {{ $item->publishLog->published_at?->format('Y-m-d H:i:s') }}
+                                        {{ trans('inspirecms::resources/content.published_at.label') }}: {{ $item->publishLog->published_at?->format('Y-m-d H:i:s') }}
                                     </x-filament::badge>
                                 </div>
                             @endif

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
@@ -24,12 +25,49 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
     public function fieldGroupables(): MorphMany;
 
     /**
+     * Get the document types that are inherited by this document type.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function inheritedDocumentTypes(): BelongsToMany;
+
+    /**
+     * Get the document types that inherit from this document type.
+     *
+     * @return BelongsToMany The relationship instance.
+     */
+    public function inheritingDocumentTypes(): BelongsToMany;
+
+    /**
      * Get the content associated with the document type.
      *
      * @return HasMany The content associated with the document type.
      */
     public function content(): HasMany;
     
+    /**
+     * Determine if the children should be displayed as a table.
+     *
+     * @return bool True if the children should be shown as a table, false otherwise.
+     */
     public function isShowChildrenAsTable(): bool;
 
+    public function isWebPageType(): bool;
+    
+    public function canInheriting(): bool;
+
+    public function canBeInherited(): bool;
+
+    public function getTypeEnum(): ?\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType;
+
+    /**
+     * Get the class name of the type enumeration.
+     *
+     * @return string The class name of the type enumeration.
+     */
+    public static function getTypeEnumClass(): string;
+
+    public function inheritFieldGroupsFrom(string|int|DocumentType $documentType): bool;
+    
+    public function deteachInheritFieldGroupsFrom(string|int|DocumentType $documentType): bool;
 }

@@ -108,4 +108,38 @@ return [
     'details' => [
         'heading' => 'Details',
     ],
+    'parent' => [
+        'label' => 'Parent',
+    ],
+    'id' => [
+        'label' => 'ID',
+    ],
+    'created_at' => [
+        'label' => 'Created At',
+    ],
+    'updated_at' => [
+        'label' => 'Last Updated At',
+    ],
+    'deleted_at' => [
+        'label' => 'Deleted At',
+    ],
+    'visibility' => [
+        'label' => 'Visibility',
+    ],
+    'is_published' => [
+        'label' => 'Is Published',
+    ],
+    'status' => [
+        'label' => 'Status',
+    ],
+    'is_root_level' => [
+        'label' => 'Is Root Level',
+    ],
+    'published_at' => [
+        'label' => 'Publish At',
+        'hint' => 'If set to a future date, this page will be published automatically when that time is reached.',
+    ],
+    'url' => [
+        'label' => 'URL',
+    ],
 ];

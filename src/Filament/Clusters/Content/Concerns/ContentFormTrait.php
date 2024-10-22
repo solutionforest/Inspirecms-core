@@ -243,13 +243,13 @@ trait ContentFormTrait
             ->color('primary')
             ->form(function (Form $form) {
                 $resource = config('inspirecms::resources.page', PageResource::class);
-                if (! method_exists($resource, 'getPublishedAtComponent')) {
-                    throw new \RuntimeException('The resource must have a getPublishedAtComponent method.');
+                if (! method_exists($resource, 'getPublishedAtFormComponent')) {
+                    throw new \RuntimeException('The resource must have a getPublishedAtFormComponent method.');
                 }
 
                 return $form
                     ->schema([
-                        $resource::getPublishedAtComponent(),
+                        $resource::getPublishedAtFormComponent(),
                     ])
                     ->operation('publish');
             })

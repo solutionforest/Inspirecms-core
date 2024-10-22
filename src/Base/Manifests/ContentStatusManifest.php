@@ -149,7 +149,7 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ->modalSubmitActionLabel(__('inspirecms::actions.private.actions.private.label'))
                     ->color('gray')
                     ->form(fn (Form $form) => $form->schema([
-                        BaseContentResource::getPublishedAtComponent(),
+                        BaseContentResource::getPublishedAtFormComponent(),
                     ])->operation('publish'))
                     ->beforeFormValidated(function (Action $action, $livewire) {
 

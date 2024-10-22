@@ -4,13 +4,14 @@ namespace SolutionForest\InspireCms\Helpers;
 
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 
 class FieldTypeHelper
 {
     public static function performFormFieldFromConfig(string $typeName, \Closure $createFieldUsing, array $config = [])
     {
 
-        $fiFormConfig = FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
+        $fiFormConfig = static::getFieldTypeConfig($typeName, $config);
 
         if (! $fiFormConfig) {
             return null;
@@ -29,5 +30,10 @@ class FieldTypeHelper
         $fiFormConfig->applyConfig($fiFormComponent);
 
         return $fiFormComponent;
+    }
+
+    public static function getFieldTypeConfig(string $typeName, array $config = []): FieldTypeConfig|null
+    {
+        return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
     }
 }

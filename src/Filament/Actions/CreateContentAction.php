@@ -4,9 +4,11 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Closure;
 use Filament\Actions\Action;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Filament\Actions\BaseCreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class CreateContentAction extends BaseCreateContentAction
@@ -23,14 +25,14 @@ class CreateContentAction extends BaseCreateContentAction
         parent::setUp();
 
         $documentTypes = InspireCmsConfig::getDocumentTypeModelClass()::query()
-            ->where('is_web_page', true)
+            ->isWebPage()
             ->get();
 
         $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
         $contentModel = $contentResource::getModel();
 
         $documentTypeActions = $documentTypes->map(
-            fn ($documentType) => Action::make('create_content_' . $documentType->slug)
+            fn (DocumentType|Model $documentType) => Action::make('create_content_' . $documentType->slug)
                 ->label($documentType->title)
                 ->url(function () use ($documentType, $contentResource) {
 

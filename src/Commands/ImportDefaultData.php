@@ -78,7 +78,6 @@ class ImportDefaultData extends Command
             'slug' => 'homepage',
         ], [
             'title' => 'Homepage',
-            'is_web_page' => true,
         ]);
     }
 

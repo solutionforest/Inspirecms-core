@@ -24,11 +24,11 @@ return [
     'general' => 'General',
     'group' => 'Group',
     'id' => 'ID',
+    'inherited_from' => 'Inherited from',
+    'inherited_xxx' => 'Inherited from :name',
+    'inheriting_xxx' => 'Inheriting to :name',
     'is_active' => 'Active',
     'is_default' => 'Default',
-    'is_published' => 'Is published',
-    'is_root_level' => 'Is root',
-    'is_web_page' => 'Is web page',
     'label' => 'Label',
     'language' => 'Language',
     'last_lockouted_at' => 'Last lockouted at',
@@ -42,14 +42,13 @@ return [
     'navigation' => 'Navigation',
     'navigation_type' => 'Navigation type',
     'no_parent' => 'No parent',
+    'order' => 'Order',
     'page' => 'Page',
     'parent_xxx' => 'Parent :name',
     'parent' => 'Parent',
     'password_confirmation' => 'Confirm password',
     'password' => 'Password',
     'path' => 'Path',
-    'preview_fields' => 'Preview fields',
-    'publish_at' => 'Publish at',
     'referenced_by_xxx' => 'Referenced by :name',
     'referenced_by' => 'Referenced by',
     'role' => 'Role',
@@ -75,7 +74,6 @@ return [
     'url' => 'URL',
     'user' => 'User',
     'users' => 'Users',
-    'visibility' => 'Visibility',
 
     'page_status' => [
         'draft' => [
@@ -116,9 +114,18 @@ return [
         ],
     ],
 
+    'document_type_type' => [
+        'web' => [
+            'label' => 'Web page',
+            'description' => 'A standard web page layout.',
+        ],
+        'inheritance' => [
+            'label' => 'Inheritance',
+            'description' => 'A document type layout that can be inherited.',
+        ],
+    ],
+
     'hints' => [
-        'future_published_at_description' => 'Content will be published automatically when the specified date and time arrives.',
-        'future_publish' => 'If set to a future date, this page will be published automatically when that time is reached.',
         'remaining_xxx_characters' => 'Remaining :number characters',
     ],
 ];

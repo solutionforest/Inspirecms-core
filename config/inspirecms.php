@@ -72,6 +72,7 @@ return [
             'content_version' => Models\ContentVersion::class,
             'content_web_setting' => Models\ContentWebSetting::class,
             'document_type' => Models\DocumentType::class,
+            'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
             'language' => Models\Language::class,
             'user' => Models\User::class,
             'field_groupable' => Models\Polymorphic\FieldGroupable::class,

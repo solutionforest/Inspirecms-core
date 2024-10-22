@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 
 use Filament\Actions;
+use Filament\Resources\Components\Tab;
+use Illuminate\Database\Query\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Actions\QuickCreateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
@@ -26,6 +28,20 @@ class ListDocumentTypes extends BaseListPage
     public static function getResource(): string
     {
         return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
+    }
+
+    public function getTabs(): array
+    {
+        return collect(\SolutionForest\InspireCms\Base\Enums\DocumentTypeType::cases())
+            ->mapWithKeys(
+                fn (\SolutionForest\InspireCms\Base\Enums\DocumentTypeType $value) => [
+                    $value->value => Tab::make()
+                        ->label($value->getLabel())
+                        ->modifyQueryUsing(fn ($query) => $query->where('type', $value->value)),
+                ]
+            )
+            ->prepend(Tab::make(), 'all')
+            ->toArray();
     }
 
     protected function configureAction(Actions\Action $action): void

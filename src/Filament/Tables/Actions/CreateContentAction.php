@@ -23,7 +23,7 @@ class CreateContentAction extends BaseCreateContentAction
         parent::setUp();
 
         $documentTypes = InspireCmsConfig::getDocumentTypeModelClass()::query()
-            ->where('is_web_page', true)
+            ->isWebPage()
             ->get();
 
         $contentResource = config('inspirecms.filament.resources.page', PageResource::class);

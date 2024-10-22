@@ -8,26 +8,32 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
-class ContentRelationManager extends RelationManager
+class InheritingDocumentTypesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'content';
+    protected static string $relationship = 'inheritingDocumentTypes';
+    
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
+            return false;
+        }
+        
+        return $ownerRecord->canBeInherited();
+    }
 
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with('parent'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::resources/content.title.label')),
+                    ->label(__('inspirecms::inspirecms.title')),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label(__('inspirecms::resources/content.slug.label'))
+                    ->label(__('inspirecms::inspirecms.slug'))
                     ->badge(),
-                Tables\Columns\TextColumn::make('parent.title')
-                    ->label(__('inspirecms::resources/content.parent.label')),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->actions([
@@ -40,17 +46,17 @@ class ContentRelationManager extends RelationManager
             ]);
     }
 
-    protected function getRecordUrl(Content $record): ?string
+    protected function getRecordUrl(DocumentType $record): ?string
     {
-        $resource = config('inspirecms.filament.resources.page', PageResource::class);
+        $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
 
         return FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $record], true);
     }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.referenced_by_xxx', [
-            'name' => __('inspirecms::inspirecms.content'),
+        return __('inspirecms::inspirecms.inheriting_xxx', [
+            'name' => __('inspirecms::inspirecms.document_type'),
         ]);
     }
 }

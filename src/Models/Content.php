@@ -128,7 +128,7 @@ class Content extends BaseModel implements ContentContract
 
     public function isWebPage(): bool
     {
-        return $this->documentType?->is_web_page ?? false;
+        return $this->documentType?->isWebPageType() ?? false;
     }
 
     //region Indexing
@@ -164,7 +164,7 @@ class Content extends BaseModel implements ContentContract
         );
 
         $data['title'] = $this->getTranslations('title');
-        $data['is_web'] = $this->documentType?->is_web_page;
+        $data['is_web'] = $this->documentType?->isWebPageType();
 
         $data['level'] = $this->getLevel();
         $data['path'] = $this->getFullSlug();
@@ -257,7 +257,7 @@ class Content extends BaseModel implements ContentContract
 
     public function scopeIsWebPage(Builder $query): void
     {
-        $query->whereHas('documentType', fn ($q) => $q->where('is_web_page', true));
+        $query->whereHas('documentType', fn ($q) => $q->isWebPage());
     }
 
     //endregion Scope(s)
