@@ -4,16 +4,16 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
+use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
+use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
-use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
-use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 
 class Navigation extends BaseModel implements NavigationContract
 {
@@ -55,7 +55,7 @@ class Navigation extends BaseModel implements NavigationContract
     {
         return static::getNavigationCategoryEnumClass()::tryFrom($this->category);
     }
-    
+
     public static function getNavigationCategoryEnumClass(): string
     {
         return NavigationCategoryEnum::class;
@@ -65,7 +65,7 @@ class Navigation extends BaseModel implements NavigationContract
     {
         return static::getNavigationCategoryEnumClass()::tryFrom($this->type);
     }
-    
+
     public static function getNavigationTypeEnumClass(): string
     {
         return NavigationTypeEnum::class;
@@ -102,10 +102,12 @@ class Navigation extends BaseModel implements NavigationContract
                     break;
                 case NavigationTypeEnum::Link:
                     $model->content_id = null;
+
                     break;
                 case NavigationTypeEnum::Group:
                     $model->content_id = null;
                     $model->url = null;
+
                     break;
             }
             if (blank($model->category)) {

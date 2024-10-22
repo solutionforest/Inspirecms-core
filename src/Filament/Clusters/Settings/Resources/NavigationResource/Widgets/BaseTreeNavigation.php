@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Facades\PermissionManifest;
 
 abstract class BaseTreeNavigation extends BaseWidget
 {
-    protected abstract function getNavigationCategory(): NavigationCategory;
+    abstract protected function getNavigationCategory(): NavigationCategory;
 
     protected static int $maxDepth = 3;
 
@@ -28,7 +28,7 @@ abstract class BaseTreeNavigation extends BaseWidget
 
     public function mount()
     {
-        if (blank($this->resource) || !is_a($this->resource, Resource::class, true)) {
+        if (blank($this->resource) || ! is_a($this->resource, Resource::class, true)) {
             throw new \Exception('Resource is required for TreeNavigation widget');
         }
 
@@ -40,7 +40,7 @@ abstract class BaseTreeNavigation extends BaseWidget
     public function makeFilamentTranslatableContentDriver(): ?\Filament\Support\Contracts\TranslatableContentDriver
     {
         try {
-            
+
             $driver = new ($this->translatableContentDriver)($this->activeLocale);
 
             if (! $driver instanceof \Filament\Support\Contracts\TranslatableContentDriver) {
@@ -59,7 +59,7 @@ abstract class BaseTreeNavigation extends BaseWidget
     {
         return $this->getResource()::getModel();
     }
-    
+
     protected function getTreeQuery(): Builder
     {
         return $this->getResource()::getEloquentQuery()->category($this->getNavigationCategory()->value);

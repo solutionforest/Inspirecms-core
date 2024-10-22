@@ -95,8 +95,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     public static function guardAgainstInvalidModel(string $model): string
     {
-        if (!in_array(Navigation::class, class_implements($model))) {
-            throw new \InvalidArgumentException("The model must implement the " . Navigation::class . " interface.");
+        if (! in_array(Navigation::class, class_implements($model))) {
+            throw new \InvalidArgumentException('The model must implement the ' . Navigation::class . ' interface.');
         }
 
         return $model;
@@ -175,10 +175,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->required()
             ->options(function () {
                 $model = static::guardAgainstInvalidModel(static::getModel());
+
                 return $model::getNavigationTypeEnumClass();
             })
             ->default(function () {
                 $model = static::guardAgainstInvalidModel(static::getModel());
+
                 return $model::getNavigationTypeEnumClass()::getDefaultValue();
             });
     }
@@ -194,10 +196,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->disabledOn(['edit'])
             ->options(function () {
                 $model = static::guardAgainstInvalidModel(static::getModel());
+
                 return $model::getNavigationCategoryEnumClass();
             })
             ->default(function () {
                 $model = static::guardAgainstInvalidModel(static::getModel());
+
                 return $model::getNavigationCategoryEnumClass()::getDefaultValue();
             })
             ->live();
@@ -233,15 +237,17 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getParentFormComponent()
     {
         $model = static::guardAgainstInvalidModel(static::getModel());
-        $rootParentId = (new $model ())->getNestableRootValue();
+        $rootParentId = (new $model)->getNestableRootValue();
+
         return Forms\Components\Select::make('parent_id')
             ->label(__('inspirecms::inspirecms.parent'))
-            ->options(function ($get, $record)  use ($model) {
+            ->options(function ($get, $record) use ($model) {
                 $model = static::guardAgainstInvalidModel(static::getModel());
                 $category = $get('category');
                 if ($category instanceof NavigationCategory) {
                     $category = $category->value;
                 }
+
                 return $model::query()
                     ->category($category)
                     ->when($record, fn ($query) => $query->whereKeyNot($record->getKey()))
@@ -259,11 +265,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     }
                 }
             })
-            ->dehydrateStateUsing(function ($component, $state)  use ($rootParentId) {
+            ->dehydrateStateUsing(function ($component, $state) use ($rootParentId) {
                 if (empty($state)) {
                     return $rootParentId;
                 }
-    
+
                 return $state;
             });
     }

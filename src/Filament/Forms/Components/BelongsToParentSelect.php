@@ -12,7 +12,7 @@ class BelongsToParentSelect extends Select
 
     public function nestableParentRelationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, bool $ignoreRecord = false, ?string $emptyStateLabel = null): static
     {
-        $modifyQueryUsing = function ($query, $record){
+        $modifyQueryUsing = function ($query, $record) {
 
             // Skip its children
             if ($record && $record instanceof NestableInterface) {
@@ -67,7 +67,7 @@ class BelongsToParentSelect extends Select
         return $this;
     }
 
-    public function getRootParentId(): string|int
+    public function getRootParentId(): string | int
     {
         return $this->evaluate($this->rootParentId);
     }

@@ -12,7 +12,7 @@ interface Navigation extends HasDtoModel
     public function content(): BelongsTo;
 
     public function getUrl(): ?string;
-    
+
     public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface;
 
     /**
@@ -24,9 +24,9 @@ interface Navigation extends HasDtoModel
      * @return string The class name of the NavigationCategoryEnumInterface.
      */
     public static function getNavigationCategoryEnumClass(): string;
-    
+
     public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface;
-    
+
     /**
      * Get the class name of the NavigationCategoryEnum.
      *
