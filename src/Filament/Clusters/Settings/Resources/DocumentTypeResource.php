@@ -42,7 +42,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'update',
             'delete',
             'delete_any',
-            'replicate',
+            'attach',
+            'detach',
         ];
     }
 

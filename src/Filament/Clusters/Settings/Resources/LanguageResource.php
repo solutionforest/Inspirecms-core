@@ -26,6 +26,17 @@ class LanguageResource extends Resource implements ClusterSectionResource
 
     protected static ?string $cluster = Settings::class;
 
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

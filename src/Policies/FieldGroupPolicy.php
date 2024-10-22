@@ -50,10 +50,37 @@ class FieldGroupPolicy extends BasePolicy
 
     /**
      * @param  Authenticatable|User|Model  $fieldGroup
-     * @param  null|FieldGroup|Model  $fieldGroup
      * @return bool
      */
-    public function replicate($user, $fieldGroup = null)
+    public function attach($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $fieldGroup
+     * @param  FieldGroup|Model  $fieldGroup
+     * @return bool
+     */
+    public function detach($user, FieldGroup $fieldGroup)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $fieldGroup
+     * @return bool
+     */
+    public function reorder($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
+    }
+
+    /**
+     * @param  Authenticatable|User|Model  $fieldGroup
+     * @return bool
+     */
+    public function replicate($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, FieldGroup::class));
     }

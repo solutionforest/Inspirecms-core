@@ -38,6 +38,22 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static ?string $cluster = Settings::class;
 
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'attach',
+            'detach',
+            'reorder',
+            'replicate',
+        ];
+    }
+
     public static function form(Form $form): Form
     {
         return $form

@@ -7,6 +7,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Support\Enums\Alignment;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
@@ -42,8 +43,14 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
     {
         return $fileExplorer
-            ->directory(resource_path('views'))
-            ->selectedFileItemFormSchema([
+            ->directory(resource_path('views'));
+    }
+
+    public function selectedFileItemForm(Form $form): Form
+    {
+        return $form
+            ->disabled(fn () => ! static::getResource()::can('updateView'))
+            ->schema([
                 TextInput::make('path')
                     ->disabled()
                     ->inlineLabel(),
@@ -58,6 +65,9 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
 
     public function getSelectedFileItemFormActions(): array
     {
+        if (! static::getResource()::can('updateView')) {
+            return [];
+        }
         return [
             Action::make('save')
                 ->label(__('inspirecms::actions.save.label'))

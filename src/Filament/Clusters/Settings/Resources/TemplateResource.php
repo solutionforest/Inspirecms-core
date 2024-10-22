@@ -31,7 +31,9 @@ class TemplateResource extends Resource implements ClusterSectionResource
             'update',
             'delete',
             'delete_any',
+            'attach',
             'detach',
+            'update_view',
         ];
     }
 

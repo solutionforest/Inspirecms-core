@@ -66,8 +66,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.target')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()
-                    ->iconButton(),
+                Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()->iconButton(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

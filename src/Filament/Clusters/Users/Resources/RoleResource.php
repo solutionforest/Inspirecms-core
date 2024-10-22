@@ -217,7 +217,12 @@ class RoleResource extends Resource implements ClusterSectionResource
                 )
                 ->compact()
                 ->aside()
-                ->columnSpanFull()->columns(1);
+                ->columnSpanFull()->columns([
+                    'default' => 2,
+                    'md' => 2,
+                    'lg' => 3,
+                    'xl' => 4,
+                ]);
 
         }
 
