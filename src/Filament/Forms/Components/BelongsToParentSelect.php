@@ -8,17 +8,17 @@ use SolutionForest\InspireCms\Base\Interfaces\NestableInterface;
 
 class BelongsToParentSelect extends Select
 {
-    protected int | string $rootParentId = 0;
+    protected int | string | Closure $rootParentId = 0;
 
     public function nestableParentRelationship(string | Closure | null $name = null, string | Closure | null $titleAttribute = null, bool $ignoreRecord = false, ?string $emptyStateLabel = null): static
     {
-        $modifyQueryUsing = function ($query, $record) {
+        $modifyQueryUsing = function ($query, $record){
 
             // Skip its children
             if ($record && $record instanceof NestableInterface) {
                 // Exclude the current record and all its descendants
                 $descendantIds = $record->descendants()->pluck('id')->toArray();
-                $query->whereNotIn('id', $descendantIds);
+                $query->whereKeyNotIn('id', $descendantIds);
             }
 
             return $query;
@@ -60,15 +60,15 @@ class BelongsToParentSelect extends Select
         return $this;
     }
 
-    public function rootParentId(int | string $rootParentId): static
+    public function rootParentId(int | string | Closure $rootParentId): static
     {
         $this->rootParentId = $rootParentId;
 
         return $this;
     }
 
-    public function getRootParentId()
+    public function getRootParentId(): string|int
     {
-        return $this->rootParentId;
+        return $this->evaluate($this->rootParentId);
     }
 }
