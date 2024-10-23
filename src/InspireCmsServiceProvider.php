@@ -13,8 +13,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
-use SolutionForest\InspireCms\Facades;
-use SolutionForest\InspireCms\Observers;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -87,11 +85,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Facades\ModelManifest::register();
         $supportModels = $this->getConfigSupoortModels();
         Facades\ModelManifest::replace(
-            SupportModels\Contracts\MediaAsset::class, 
+            SupportModels\Contracts\MediaAsset::class,
             $supportModels['media_asset']
         );
         Facades\ModelManifest::replace(
-            SupportModels\Contracts\NestableTree::class, 
+            SupportModels\Contracts\NestableTree::class,
             $supportModels['nestable_tree']
         );
     }

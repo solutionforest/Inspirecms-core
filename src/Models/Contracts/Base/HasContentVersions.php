@@ -49,8 +49,7 @@ interface HasContentVersions
     /**
      * Set the ability to audit content versions.
      *
-     * @param bool $canAudit Indicates whether auditing is enabled.
-     * @return void
+     * @param  bool  $canAudit  Indicates whether auditing is enabled.
      */
     public function setCanAudit(bool $canAudit): void;
 

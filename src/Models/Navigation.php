@@ -59,7 +59,7 @@ class Navigation extends BaseModel implements NavigationContract
     public static function getNavigationCategoryEnumClass(): string
     {
         $class = NavigationCategoryEnum::class;
-        
+
         if (! in_array(NavigationCategoryEnumInterface::class, class_implements($class))) {
             throw new \RuntimeException("{$class} must implement " . NavigationCategoryEnumInterface::class);
         }

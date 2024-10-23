@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
 
-interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoModel, IndexableModel, NestableInterface, BelongToNestableTree
+interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongToNestableTree, HasDtoModel, IndexableModel, NestableInterface
 {
     /**
      * Return the document type relation.
@@ -32,8 +32,6 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, HasDtoMode
 
     /**
      * Establish a relationship with the parent model, including those that are soft deleted.
-     *
-     * @return BelongsTo
      */
     public function withTrashedParent(): BelongsTo;
 

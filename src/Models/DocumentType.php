@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType as DocumentTypeTypeInterface;
 use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType as DocumentTypeTypeInterface;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {

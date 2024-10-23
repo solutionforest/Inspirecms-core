@@ -10,10 +10,10 @@ class ContentObserver
     /**
      * Handle the Content "restoring" event.
      *
-     * @param Content|Model $model The model instance being restored.
+     * @param  Content|Model  $model  The model instance being restored.
      * @return void
      */
-    public function restoring(Content|Model $model)
+    public function restoring(Content | Model $model)
     {
         // Prevent auditing of the model when it is being restored.
         $model->setCanAudit(false);
@@ -32,7 +32,7 @@ class ContentObserver
      * @param  \App\Models\Content|\Illuminate\Database\Eloquent\Model  $model
      * @return void
      */
-    public function resotred(Content|Model $model)
+    public function resotred(Content | Model $model)
     {
         // Re-enable auditing of the model after it has been restored.
         $model->setCanAudit(true);

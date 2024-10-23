@@ -34,7 +34,7 @@ trait HasContentVersions
 
                 $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
                 $isPublishing = $statusOption && $statusOption->isPublishable();
-    
+
                 $contentVersion = $model->contentVersions()->create([
                     'from_data' => $model->auditData['from'] ?? [],
                     'to_data' => $model->auditData['to'] ?? [],
@@ -42,7 +42,7 @@ trait HasContentVersions
                 ]);
 
                 event(new ContentEvents\VersionCreated($model, $contentVersion, $statusOption, $isPublishing));
-    
+
                 if ($isPublishing) {
                     $data = $model->getPublishableData();
                     $data['version_id'] = $contentVersion->getKey();
@@ -51,7 +51,7 @@ trait HasContentVersions
                     event(new ContentEvents\PublishVersionCreated($model, $contentVersion, $publishVersion, $statusOption));
                 }
             }
-    
+
             $model->resetPublishableData();
             $model->resetPublishableState();
             $model->resetAuditData();
@@ -150,7 +150,7 @@ trait HasContentVersions
     public function save(array $options = [])
     {
         $status = inspirecms_content_statuses()->getOption($this->getPublishableState());
-        $oldStatus = $this->status ? 
+        $oldStatus = $this->status ?
             inspirecms_content_statuses()->getOption($this->status) :
             null;
 
