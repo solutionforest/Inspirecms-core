@@ -62,8 +62,11 @@ class ContentVersion extends BaseModel implements ContentVersionContract
     {
         parent::boot();
 
-        static::creating(function ($model) {
+        static::creating(function (self $model) {
             $model->created_at = $model->freshTimestamp();
+        });
+        static::deleting(function (self $model) {
+            $model->publishLog()->delete();
         });
     }
 }

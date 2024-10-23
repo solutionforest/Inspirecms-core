@@ -59,6 +59,7 @@ trait HasContentVersions
 
         static::forceDeleting(function (self $model) {
             $model->contentVersions()->delete();
+            $model->publishVersionLogs()->delete();
         });
     }
 
