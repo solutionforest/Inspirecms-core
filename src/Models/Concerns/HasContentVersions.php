@@ -20,6 +20,8 @@ trait HasContentVersions
 
     protected array $publishableData = [];
 
+    protected bool $canAudit = true;
+
     public static function bootHasContentVersions()
     {
         static::saving(function (self $model) {
@@ -28,21 +30,28 @@ trait HasContentVersions
 
         static::saved(function (self $model) {
 
-            $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
-            $isPublishing = $statusOption && $statusOption->isPublishable();
+            if ($model->canAudit) {
 
-            $contentVersion = $model->contentVersions()->create([
-                'from_data' => $model->auditData['from'] ?? [],
-                'to_data' => $model->auditData['to'] ?? [],
-                'avoid_to_clean' => $isPublishing,
-            ]);
+                $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
+                $isPublishing = $statusOption && $statusOption->isPublishable();
+    
+                $contentVersion = $model->contentVersions()->create([
+                    'from_data' => $model->auditData['from'] ?? [],
+                    'to_data' => $model->auditData['to'] ?? [],
+                    'avoid_to_clean' => $isPublishing,
+                ]);
 
-            if ($isPublishing) {
-                $data = $model->getPublishableData();
-                $data['version_id'] = $contentVersion->getKey();
-                $model->publishVersionLogs()->create($data);
+                event(new ContentEvents\VersionCreated($model, $contentVersion, $statusOption, $isPublishing));
+    
+                if ($isPublishing) {
+                    $data = $model->getPublishableData();
+                    $data['version_id'] = $contentVersion->getKey();
+                    $publishVersion = $model->publishVersionLogs()->create($data);
+
+                    event(new ContentEvents\PublishVersionCreated($model, $contentVersion, $publishVersion, $statusOption));
+                }
             }
-
+    
             $model->resetPublishableData();
             $model->resetPublishableState();
             $model->resetAuditData();
@@ -111,6 +120,12 @@ trait HasContentVersions
     public function setPublishableState(string $state): void
     {
         $this->publishableState = $state;
+    }
+
+    /** {@inheritDoc} */
+    public function setCanAudit(bool $canAudit): void
+    {
+        $this->canAudit = $canAudit;
     }
 
     /** {@inheritDoc} */

@@ -13,7 +13,10 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Facades;
+use SolutionForest\InspireCms\Observers;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
@@ -87,11 +90,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
-        \SolutionForest\InspireCms\Facades\ModelManifest::registerPolices();
+        Facades\ModelManifest::registerMorphMap();
+        Facades\ModelManifest::registerPolices();
         $this->registerSupport();
         $this->customPlugins();
         $this->registerAuthGuard();
+        $this->registerObservers();
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
 
@@ -249,7 +253,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         config()->set('auth.providers.inspirecms', [
             'driver' => 'eloquent',
-            'model' => \SolutionForest\InspireCms\Facades\ModelManifest::get(
+            'model' => Facades\ModelManifest::get(
                 \SolutionForest\InspireCms\Models\Contracts\User::class,
                 \SolutionForest\InspireCms\Models\User::class,
             ),
@@ -258,6 +262,15 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'driver' => 'session',
             'provider' => InspireCmsConfig::getGuardName(),
         ]);
+    }
+
+    protected function registerObservers(): void
+    {
+        $contentModel = Facades\ModelManifest::get(
+            \SolutionForest\InspireCms\Models\Contracts\Content::class
+        );
+
+        $contentModel::observe(Observers\ContentObserver::class);
     }
 
     protected function configureFilamentForm(): void

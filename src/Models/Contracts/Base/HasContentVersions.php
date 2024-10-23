@@ -47,6 +47,14 @@ interface HasContentVersions
     public function getLatestPublishedPropertyData(): array;
 
     /**
+     * Set the ability to audit content versions.
+     *
+     * @param bool $canAudit Indicates whether auditing is enabled.
+     * @return void
+     */
+    public function setCanAudit(bool $canAudit): void;
+
+    /**
      * Retrieve the data of the latest version property.
      *
      * @return array The data of the latest version property.
