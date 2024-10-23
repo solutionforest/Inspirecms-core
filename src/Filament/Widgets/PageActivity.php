@@ -29,10 +29,10 @@ class PageActivity extends BaseWidget
             ->emptyStateHeading(__('inspirecms::widgets.page_activity.empty_state.heading'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title'))
+                    ->label(__('inspirecms::resources/content.title.label'))
                     ->grow(),
                 Tables\Columns\TextColumn::make('displayStatus')
-                    ->label(__('inspirecms::inspirecms.status'))
+                    ->label(__('inspirecms::resources/content.status.label'))
                     ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
                     ->color(fn (?ContentStatusOption $state) => $state->getColor())
                     ->icon(fn (?ContentStatusOption $state) => $state->getIcon())
@@ -41,11 +41,11 @@ class PageActivity extends BaseWidget
                     ->width('2%'),
 
                 Tables\Columns\TextColumn::make('published_at')
-                    ->label(__('inspirecms::inspirecms.publish_at'))
+                    ->label(__('inspirecms::resources/content.published_at.label'))
                     ->getStateUsing(fn ($record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('inspirecms::inspirecms.last_updated_at'))
+                    ->label(__('inspirecms::resources/content.updated_at.label'))
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
             ]);
