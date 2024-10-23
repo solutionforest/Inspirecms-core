@@ -58,7 +58,13 @@ class Navigation extends BaseModel implements NavigationContract
 
     public static function getNavigationCategoryEnumClass(): string
     {
-        return NavigationCategoryEnum::class;
+        $class = NavigationCategoryEnum::class;
+        
+        if (! in_array(NavigationCategoryEnumInterface::class, class_implements($class))) {
+            throw new \RuntimeException("{$class} must implement " . NavigationCategoryEnumInterface::class);
+        }
+
+        return $class;
     }
 
     public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface
@@ -68,7 +74,13 @@ class Navigation extends BaseModel implements NavigationContract
 
     public static function getNavigationTypeEnumClass(): string
     {
-        return NavigationTypeEnum::class;
+        $class = NavigationTypeEnum::class;
+
+        if (! in_array(NavigationTypeEnumInterface::class, class_implements($class))) {
+            throw new \RuntimeException("{$class} must implement " . NavigationTypeEnumInterface::class);
+        }
+
+        return $class;
     }
     //endregion Enums
 

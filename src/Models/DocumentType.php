@@ -10,6 +10,8 @@ use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType as DocumentTypeTypeInterface;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
@@ -93,16 +95,16 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->getTypeEnum()?->canBeInherited();
     }
 
-    public function getTypeEnum(): ?\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType
+    public function getTypeEnum(): ?DocumentTypeTypeInterface
     {
         return static::getTypeEnumClass()::tryFrom($this->type);
     }
 
     public static function getTypeEnumClass(): string
     {
-        $class = \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::class;
+        $class = DocumentTypeTypeEnum::class;
 
-        if (! in_array(\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType::class, class_implements($class))) {
+        if (! in_array(DocumentTypeTypeInterface::class, class_implements($class))) {
             throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType");
         }
 
