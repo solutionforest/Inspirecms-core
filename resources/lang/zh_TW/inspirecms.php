@@ -3,6 +3,7 @@
 return [
     'add_xxx' => '新增 :name',
     'allow_sections' => '允許部分',
+    'as_root' => '作為根',
     'back' => '返回',
     'category' => '類別',
     'children' => '子項',

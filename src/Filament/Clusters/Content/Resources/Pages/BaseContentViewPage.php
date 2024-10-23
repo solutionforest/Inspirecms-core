@@ -13,6 +13,7 @@ use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
+use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
@@ -63,12 +64,29 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false)),
             Actions\ForceDeleteAction::make()
                 ->iconButton(),
+            Actions\ActionGroup::make([
+                LinkToParentAction::make(),
+            ]),
         ];
     }
 
     public function updatedActiveLocale(string $newActiveLocale): void
     {
         $this->updatedActiveLocaleForContent($newActiveLocale);
+    }
+
+    protected function configureAction(Actions\Action $action): void
+    {
+        parent::configureAction($action);
+
+        if ($action instanceof LinkToParentAction) {
+            $record = $this->getRecord();
+            if (method_exists($record, 'getNestableRootValue')) {
+                $action->rootLevelKey($record->getNestableRootValue());
+            } else {
+                $action->hidden();
+            }
+        }
     }
 
     //region Preview

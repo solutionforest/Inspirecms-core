@@ -3,14 +3,13 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
-use Filament\Forms;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
+use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
-use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
@@ -79,37 +78,9 @@ trait ContentPageTrait
             })
             ->actions([
                 CreateContentAction::make(),
-                Actions\Action::make('linkToParent')
-                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->form(function ($record) {
-                        return [
-                            Forms\Components\Toggle::make('asRoot')
-                                ->live(),
-                            ContentPicker::make('parent')
-                                ->exceptRecord(fn () => [$record, $record->parent_id])
-                                ->maxItems(1)
-                                ->minItems(1)
-                                ->visible(fn ($get) => $get('asRoot') === false),
-                        ];
-                    })
-                    ->action(function (?Model $record, array $data, $action) use ($rootLevelKey) {
-                        if ($record) {
-                            if (isset($data['asRoot']) && $data['asRoot'] === true) {
-
-                                $record->parent_id = $rootLevelKey;
-
-                            } elseif (isset($data['parent'])) {
-
-                                $record->parent_id = $data['parent'][0];
-                            }
-
-                            $record->save();
-
-                            $action->success();
-                        }
-                    })
-                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
-                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
+                LinkToParentAction::make('item_link_to_parent')
+                    ->parentIdColumnName($parentIdColumn)
+                    ->rootLevelKey($rootLevelKey),
                 Actions\Action::make('reorder')
                     ->modalContent(new HtmlString('not implemented'))
                     ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
@@ -179,8 +150,8 @@ trait ContentPageTrait
 
     protected function configureSelectedModelItemFormAction(Actions\Action $action): void
     {
-        match (true) {
-            $action instanceof CreateContentAction => $action
+        if ($action instanceof CreateContentAction) {
+            $action
                 ->color('gray')
                 ->extraAttributes(['class' => 'flex-1'])
                 ->modifyUrlParameterUsing(function (array $arguments, array $parameters) {
@@ -192,9 +163,13 @@ trait ContentPageTrait
                     return array_merge($parameters, [
                         'parent' => $parent,
                     ]);
-                }),
-            default => null,
-        };
+                });
+        } else if ($action instanceof LinkToParentAction) {
+
+            $action
+                ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                ->hidden(fn (array $arguments) => $arguments['key'] === 'root');
+        }
 
         $this->cacheAction($action);
     }

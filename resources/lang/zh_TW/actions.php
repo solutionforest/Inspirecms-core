@@ -183,4 +183,16 @@ return [
         'label' => '垃圾箱',
 
     ],
+
+    'link_to_parent' => [
+            
+        'label' => '鏈接到父項',
+
+
+        'notifications' => [
+            'success' => [
+                'title' => '鏈接到父項成功',
+            ],
+        ],
+    ],
 ];

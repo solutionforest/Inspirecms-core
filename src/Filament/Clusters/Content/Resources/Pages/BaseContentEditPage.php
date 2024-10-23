@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
+use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
@@ -55,6 +56,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 ->iconButton(),
             Actions\ForceDeleteAction::make()
                 ->iconButton(),
+            Actions\ActionGroup::make([
+                LinkToParentAction::make(),
+            ]),
         ];
     }
 
@@ -168,5 +172,19 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         $record->save();
 
         return $record;
+    }
+
+    protected function configureAction(Actions\Action $action): void
+    {
+        parent::configureAction($action);
+
+        if ($action instanceof LinkToParentAction) {
+            $record = $this->getRecord();
+            if (method_exists($record, 'getNestableRootValue')) {
+                $action->rootLevelKey($record->getNestableRootValue());
+            } else {
+                $action->hidden();
+            }
+        }
     }
 }

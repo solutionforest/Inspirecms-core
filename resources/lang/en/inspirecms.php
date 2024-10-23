@@ -3,6 +3,7 @@
 return [
     'add_xxx' => 'Add :name',
     'allow_sections' => 'Allow Sections',
+    'as_root' => 'As root',
     'back' => 'Back',
     'category' => 'Category',
     'children' => 'Children',

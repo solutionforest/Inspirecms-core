@@ -183,4 +183,15 @@ return [
         'label' => 'Trash',
 
     ],
+
+    'link_to_parent' => [
+            
+        'label' => 'Link to parent',
+
+        'notifications' => [
+            'success' => [
+                'title' => 'Link to parent successful',
+            ],
+        ],
+    ],
 ];
