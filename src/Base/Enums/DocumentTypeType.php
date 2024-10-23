@@ -9,7 +9,7 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
     /**
      * To allow inherits field groups from other document types.
      */
-    case Inheritance = 'layout';
+    case Inheritance = 'inheritance';
 
     public function getLabel(): ?string
     {
