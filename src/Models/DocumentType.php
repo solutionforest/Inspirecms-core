@@ -111,6 +111,28 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $class;
     }
 
+    public function inheritDocumentType(string | int | DocumentTypeContract $documentType): bool
+    {
+        try {
+            if (is_string($documentType) || is_int($documentType)) {
+                $documentType = static::query()->findOrFail($documentType);
+            }
+
+            if (! $documentType->canBeInherited() || ! $this->canInheriting()) {
+                return false;
+            }
+
+            $this->inheritedDocumentTypes()->syncWithoutDetaching($documentType->getKey());
+
+            $this->inheritFieldGroupsFrom($documentType);
+
+            return true;
+
+        } catch (\Throwable $th) {
+            return false;
+        }
+    }
+
     public function inheritFieldGroupsFrom(string | int | DocumentTypeContract $documentType): bool
     {
         try {

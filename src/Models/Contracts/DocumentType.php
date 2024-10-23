@@ -65,6 +65,8 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
      */
     public static function getTypeEnumClass(): string;
 
+    public function inheritDocumentType(string | int | DocumentType $documentType): bool;
+    
     public function inheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
 
     public function deteachInheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
