@@ -185,9 +185,8 @@ return [
     ],
 
     'link_to_parent' => [
-            
-        'label' => '鏈接到父項',
 
+        'label' => '鏈接到父項',
 
         'notifications' => [
             'success' => [

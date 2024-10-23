@@ -164,7 +164,7 @@ trait ContentPageTrait
                         'parent' => $parent,
                     ]);
                 });
-        } else if ($action instanceof LinkToParentAction) {
+        } elseif ($action instanceof LinkToParentAction) {
 
             $action
                 ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))

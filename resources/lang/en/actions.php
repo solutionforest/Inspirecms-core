@@ -185,7 +185,7 @@ return [
     ],
 
     'link_to_parent' => [
-            
+
         'label' => 'Link to parent',
 
         'notifications' => [

@@ -53,7 +53,7 @@ class UIHelper
         ]));
     }
 
-    public static function generateTextWithIcon(string $text, string $icon, string $color = 'primary', IconPosition|string $iconPosition = IconPosition::Before): HtmlString
+    public static function generateTextWithIcon(string $text, string $icon, string $color = 'primary', IconPosition | string $iconPosition = IconPosition::Before): HtmlString
     {
         $data = [
             'text' => $text,
@@ -80,6 +80,7 @@ class UIHelper
                 </div>
             blade, $data));
         }
+
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex gap-2">
                 <x-filament::icon
