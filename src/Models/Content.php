@@ -20,13 +20,13 @@ use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\Models\Concerns\BelongToCmsNestableTree;
+use SolutionForest\InspireCms\Support\Models\Concerns\BelongToNestableTree;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 class Content extends BaseModel implements ContentContract
 {
-    use BelongToCmsNestableTree;
+    use BelongToNestableTree;
     use Concerns\HasContentVersions {
         prepareAuditData as protected traitPrepareAuditData;
     }
@@ -76,6 +76,11 @@ class Content extends BaseModel implements ContentContract
     public function siteMap(): MorphOne
     {
         return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
+    }
+
+    public function withTrashedParent(): BelongsTo
+    {
+        return $this->parent()->withTrashed();
     }
 
     public function getFullSlug(?string $locale = null): string
@@ -272,16 +277,6 @@ class Content extends BaseModel implements ContentContract
     //endregion Attribute(s)
 
     //region Nestable
-    protected function getParentId()
-    {
-        return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
-    }
-
-    public function getNestableParentIdColumn(): string
-    {
-        return 'parent_id';
-    }
-
     protected function fallbackParentId()
     {
         return $this->getNestableRootValue();

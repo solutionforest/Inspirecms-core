@@ -118,15 +118,6 @@ return new class extends BaseMigration
             $table->index('document_type_id');
             $table->index('inherited_document_type_id');
         });
-        Schema::create($tableNames['nestable_tree'], function (Blueprint $table) {
-            $table->id();
-            $table->integer('parent_id')->default(-1);
-            $table->integer('order')->default(0);
-            $table->morphs('nestable');
-            $table->timestamps();
-
-            $table->index('parent_id');
-        });
         
         Schema::create($tableNames['user'], function (Blueprint $table) {
             $table->string('id')->primary();
@@ -203,7 +194,6 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['user_login_activity']);
         Schema::dropIfExists($tableNames['user']);
 
-        Schema::dropIfExists($tableNames['nestable_tree']);
         Schema::dropIfExists($tableNames['document_type_inheritance']);
         Schema::dropIfExists($tableNames['field_groupable']);
 
@@ -223,7 +213,6 @@ return new class extends BaseMigration
     {
         return [
             'field_groupable' => $this->prefix . 'field_groupables',
-            'nestable_tree' => $this->prefix . 'nestable_trees',
             'content_version' => $this->prefix . 'content_versions',
             'content_publish_version' => $this->prefix . 'content_publish_version',
             'content' => $this->prefix . 'content',

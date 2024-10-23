@@ -84,8 +84,16 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
 
-        \SolutionForest\InspireCms\Facades\ModelManifest::register();
-        \SolutionForest\InspireCms\Facades\ModelManifest::replace(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class, config('inspirecms.models.fqcn.media_asset', \SolutionForest\InspireCms\Support\Models\MediaAsset::class));
+        Facades\ModelManifest::register();
+        $supportModels = $this->getConfigSupoortModels();
+        Facades\ModelManifest::replace(
+            SupportModels\Contracts\MediaAsset::class, 
+            $supportModels['media_asset']
+        );
+        Facades\ModelManifest::replace(
+            SupportModels\Contracts\NestableTree::class, 
+            $supportModels['nestable_tree']
+        );
     }
 
     public function bootingPackage(): void
@@ -294,13 +302,26 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerSupport(): void
     {
-        Support\Facades\MediaLibraryManifest::setModel(\SolutionForest\InspireCms\Facades\ModelManifest::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class));
+        Support\Facades\MediaLibraryManifest::setModel(
+            Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
+        );
         Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
         Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
         Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
 
         Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+        Support\Facades\InspireCmsSupport::setNestableTreeModel(
+            Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
+        );
 
         Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+    }
+
+    protected function getConfigSupoortModels(): array
+    {
+        return Arr::only(config('inspirecms.models.fqcn'), [
+            'media_asset',
+            'nestable_tree',
+        ]);
     }
 }

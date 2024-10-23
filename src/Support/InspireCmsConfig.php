@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Support;
 
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models;
+use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -50,7 +51,7 @@ class InspireCmsConfig
 
     public static function getNestableTreeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\NestableTree::class, Models\Polymorphic\NestableTree::class);
+        $class = InspireCmsSupport::getNestableTreeModel();
 
         return self::ensureClassExists($class, 'NestableTree model');
     }
