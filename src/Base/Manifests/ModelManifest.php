@@ -115,6 +115,8 @@ class ModelManifest implements ModelManifestInterface
 
         if (str($namespace)->startsWith('SolutionForest\\InspireCms\\Models')) {
             $namespace = 'SolutionForest\\InspireCms\\Models';
+        } else if (str($namespace)->startsWith('SolutionForest\\InspireCms\\Support\\Models')) {
+            $namespace = 'SolutionForest\\InspireCms\\Support\\Models';
         }
 
         return "{$namespace}\\Contracts\\$shortName";
