@@ -14,7 +14,9 @@
     $columnsLayout = $getTableColumnsLayout();
     $collapsibleColumnsLayout = $getCollapsibleTableColumnsLayout();
     $records = $getPaginationOptions();
-    $statePath = $getStatePath()
+    $statePath = $getStatePath();
+
+    $maxItems = $getMaxItems();
 
 @endphp
 
@@ -22,13 +24,32 @@
     <div 
         x-data="{ 
             selectedRecords: $wire.$entangle('{{ $statePath }}'),
+            maxItems: @js($maxItems),
             isRecordSelected(key) {
-                return this.selectedRecords.includes(key);
+                return this.selectedRecords?.includes(key) ?? false;
             },
+            selectedRecordsCount() {
+                return this.selectedRecords?.length ?? 0;
+            },
+            selectedRecordsCountText() {
+                let message = @js(trans('inspirecms::inspirecms.total_xxx_selected'));
+                return message?.replace(':count', this.selectedRecordsCount());
+            },
+            init() {
+                this.$watch('selectedRecords', (value) => {
+                    if (this.maxItems && value?.length > this.maxItems) {
+                        this.selectedRecords = value.slice(value.length - this.maxItems);
+                    }
+                });
+            }
         }"
     >
         <x-filament-tables::container>
             <x-filament-tables::table>
+
+                <div class="mx-3 py-1.5">
+                    <p x-text="selectedRecordsCountText" class="text-sm"></p>
+                </div>
 
                 <x-slot:header>
                     @if (! $hasTableColumnsLayout())
@@ -67,7 +88,7 @@
                 </x-slot>
 
                 @if (! $hasTableColumnsLayout())
-                    @foreach ($records as $record)
+                    @foreach ($records as $index => $record)
                         @php
                             $recordKey = $getRecordKey($record);
 
@@ -84,6 +105,7 @@
                                     :label="__('filament-tables::table.fields.bulk_select_record.label', ['key' => $recordKey])"
                                     :value="$recordKey"
                                     x-model="selectedRecords"
+                                    x-ref="rowCheckbox_{{ $index }}"
                                     class="fi-ta-record-checkbox mx-3 my-4"
                                 />
                             </x-filament-tables::selection.cell>
@@ -108,6 +130,7 @@
                                                 },
                                             ])
                                     "
+                                    @click="$refs.rowCheckbox_{{ $index }}.click()"
                                 >
                                     <x-filament-tables::columns.column
                                         :column="$column"

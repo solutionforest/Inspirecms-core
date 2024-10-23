@@ -30,4 +30,9 @@ class PaginationCheckboxList extends Field
             $component->state([]);
         });
     }
+
+    public function isMultiple(): bool
+    {
+        return $this->getMaxItems() !== 1;
+    }
 }

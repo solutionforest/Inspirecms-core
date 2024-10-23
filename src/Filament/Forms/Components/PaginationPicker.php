@@ -154,7 +154,9 @@ class PaginationPicker extends Field
                     ->paginationOptions(fn () => $this->getPaginationOptionsQuery())
                     ->perPage($this->perPage)
                     ->contentGrid($this->contentGrid)
-                    ->tableColumns($this->tableColumns);
+                    ->tableColumns($this->tableColumns)
+                    ->minItems($this->minItems)
+                    ->maxItems($this->maxItems);
 
                 if ($this->modifySelectActionSelectorUsing) {
                     $select = $this->evaluate($this->modifySelectActionSelectorUsing, [
@@ -265,5 +267,10 @@ class PaginationPicker extends Field
         }
 
         return $orderedState;
+    }
+
+    public function isMultiple(): bool
+    {
+        return $this->getMaxItems() !== 1;
     }
 }
