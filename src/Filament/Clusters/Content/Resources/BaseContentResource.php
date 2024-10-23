@@ -220,7 +220,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->hiddenOn([BaseContentListTrashPage::class]),
 
                         Tables\Columns\TextColumn::make('published_at')
-                            ->label(__('inspirecms::resources/content.publish_at.label'))
+                            ->label(__('inspirecms::resources/content.published_at.label'))
                             ->getStateUsing(fn (ModelsContent $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
                             ->width('5%')
                             ->hiddenOn([BaseContentListTrashPage::class]),

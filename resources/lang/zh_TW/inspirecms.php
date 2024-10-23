@@ -67,6 +67,7 @@ return [
     'templates' => '模板',
     'title' => '標題',
     'total_xxx_have_used' => '總共使用了 :name',
+    'total_xxx_selected' => '總共選擇了 :count',
     'total' => '總計',
     'translatable' => '可翻譯',
     'trash' => '垃圾',

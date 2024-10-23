@@ -67,6 +67,7 @@ return [
     'templates' => 'Templates',
     'title' => 'Title',
     'total_xxx_have_used' => 'Total :name has been used',
+    'total_xxx_selected' => 'Total :count selected',
     'total' => 'Total',
     'translatable' => 'Translatable',
     'trash' => 'Trash',
