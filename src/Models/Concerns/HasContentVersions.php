@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Events\Content as ContentEvents;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -133,10 +134,13 @@ trait HasContentVersions
     public function save(array $options = [])
     {
         $status = inspirecms_content_statuses()->getOption($this->getPublishableState());
+        $oldStatus = $this->status ? 
+            inspirecms_content_statuses()->getOption($this->status) :
+            null;
 
         $result = $this->performPublishableAction($options, $status);
 
-        event(new \SolutionForest\InspireCms\Events\ChangeContentStatus($result, $status));
+        event(new ContentEvents\ChangeStatus($result, $oldStatus, $status));
 
         return $result;
     }

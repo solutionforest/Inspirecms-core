@@ -1,10 +1,10 @@
 <?php
 
-namespace SolutionForest\InspireCms\Events;
+namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Queue\SerializesModels;
 
-class ChangeContentStatus
+class ChangeStatus
 {
     use SerializesModels;
 
@@ -16,18 +16,25 @@ class ChangeContentStatus
     /**
      * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
      */
+    public $oldStatus;
+
+    /**
+     * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
+     */
     public $status;
 
     /**
      * Create a new event instance.
      *
      * @param  \SolutionForest\InspireCms\Models\Contracts\Content  $content
+     * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $oldStatus
      * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $status
      * @return void
      */
-    public function __construct($content, $status)
+    public function __construct($content, $oldStatus, $status)
     {
         $this->content = $content;
+        $this->oldStatus = $oldStatus;
         $this->status = $status;
     }
 }
