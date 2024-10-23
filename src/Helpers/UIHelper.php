@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Filament\Support\Enums\IconPosition;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
@@ -50,6 +51,47 @@ class UIHelper
             'icon' => $icon,
             'url' => $url,
         ]));
+    }
+
+    public static function generateTextWithIcon(string $text, string $icon, string $color = 'primary', IconPosition|string $iconPosition = IconPosition::Before): HtmlString
+    {
+        $data = [
+            'text' => $text,
+            'icon' => $icon,
+            'iconStyle' => \Filament\Support\get_color_css_variables(
+                $color,
+                shades: [400, 500],
+            ),
+        ];
+        if (is_string($iconPosition)) {
+            $iconPosition = IconPosition::tryFrom($iconPosition) ?? IconPosition::Before;
+        }
+        if ($iconPosition == IconPosition::After) {
+            return new HtmlString(Blade::render(<<<'blade'
+                <div class="flex gap-2">
+                    <span>
+                        {{ $text }}
+                    </span>
+                    <x-filament::icon
+                        icon="{{$icon}}"
+                        class="h-5 w-5 text-custom-500 dark:text-custom-400"
+                        style="{{$iconStyle}}"
+                    />
+                </div>
+            blade, $data));
+        }
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex gap-2">
+                <x-filament::icon
+                    icon="{{$icon}}"
+                    class="h-5 w-5 text-custom-500 dark:text-custom-400"
+                    style="{{$iconStyle}}"
+                />
+                <span>
+                    {{ $text }}
+                </span>
+            </div>
+        blade, $data));
     }
 
     public static function generateTextWithIconButton(string $text, string $icon, string $color = 'primary', string $size = 'md', string $class = '', string $url = '', string $linkTarget = ''): HtmlString
