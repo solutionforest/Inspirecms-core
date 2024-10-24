@@ -27,6 +27,7 @@ class Navigation extends BaseModel implements NavigationContract
 
     public ?array $translatable = [
         'title',
+        'url',
     ];
 
     public function content(): BelongsTo
@@ -34,13 +35,18 @@ class Navigation extends BaseModel implements NavigationContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function getUrl(): ?string
+    public function getUrl(?string $locale = null): ?string
     {
-        if (trim($this->type) == 'content') {
-            return $this->content?->getUrl();
+        switch (trim($this->type)) {
+            case NavigationTypeEnum::Link->value:
+                return $this->getTranslation('url', $locale);
+            case NavigationTypeEnum::Group->value:
+                return null;
+            case NavigationTypeEnum::Content->value:
+                return $this->content?->getUrl($locale);
+            default:
+                return null;
         }
-
-        return $this->url;
     }
 
     //region Scopes

@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 class NavigationDto extends BaseTranslatableModelDto
 {
     /**
-     * @var string
+     * @var array<string,string>
      */
     public $url;
 
@@ -47,7 +47,6 @@ class NavigationDto extends BaseTranslatableModelDto
 
         $dto = parent::fromTranslatableModel($model, $locale);
 
-        $dto->url = $model->getUrl();
         $dto->children = collect($model->children)
             ->map(fn ($child) => self::fromTranslatableModel($child, $locale))
             ->values();
@@ -56,6 +55,11 @@ class NavigationDto extends BaseTranslatableModelDto
     }
 
     public function getTitle(?string $locale = null, bool $usingFallback = true): string
+    {
+        return $this->getTranslations($this->title, $locale, $usingFallback);
+    }
+
+    public function getUrl(?string $locale = null, bool $usingFallback = true): string
     {
         return $this->getTranslations($this->title, $locale, $usingFallback);
     }
