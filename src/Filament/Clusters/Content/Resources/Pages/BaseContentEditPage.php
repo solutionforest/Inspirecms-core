@@ -6,7 +6,6 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
@@ -20,9 +19,10 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
+
+use function Filament\Support\is_app_url;
 
 abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer
 {

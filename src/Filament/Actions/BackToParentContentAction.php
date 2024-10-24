@@ -28,10 +28,10 @@ class BackToParentContentAction extends Action
         $this->icon('heroicon-o-chevron-left');
 
         $this->url(function (?Model $record) {
-            if ($record->trashed() || !$record || ! ($record instanceof Content)) {
+            if ($record->trashed() || ! $record || ! ($record instanceof Content)) {
                 return null;
             }
-            if (!$record->parent?->documentType?->isShowChildrenAsTable()) {
+            if (! $record->parent?->documentType?->isShowChildrenAsTable()) {
                 return null;
             }
 
