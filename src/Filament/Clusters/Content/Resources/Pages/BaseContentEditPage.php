@@ -6,11 +6,13 @@ use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
+use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
@@ -18,10 +20,9 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
-
-use function Filament\Support\is_app_url;
 
 abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer
 {
@@ -48,9 +49,11 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     protected function getHeaderActions(): array
     {
         return [
+            BackToParentContentAction::make(),
             Actions\LocaleSwitcher::make(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([
+                    Actions\ViewAction::make(),
                     Actions\DeleteAction::make(),
                     Actions\RestoreAction::make(),
                     Actions\ForceDeleteAction::make(),

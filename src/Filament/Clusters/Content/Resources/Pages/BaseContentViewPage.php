@@ -12,6 +12,7 @@ use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
+use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
@@ -50,11 +51,12 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 ->visible(function (Actions\Action $action) {
                     return filled($action->getUrl());
                 }),
+            BackToParentContentAction::make(),
             Actions\LocaleSwitcher::make(),
             PreviewAction::make(),
+            Actions\EditAction::make()->iconButton(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([
-                    Actions\EditAction::make(),
                     Actions\DeleteAction::make(),
                     Actions\RestoreAction::make(),
                     Actions\ForceDeleteAction::make(),
