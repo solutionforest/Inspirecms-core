@@ -118,11 +118,11 @@ class Navigation extends BaseModel implements NavigationContract
                     $model->url = null;
 
                     break;
-                case NavigationTypeEnum::Link:
+                case NavigationTypeEnum::Link->value:
                     $model->content_id = null;
 
                     break;
-                case NavigationTypeEnum::Group:
+                case NavigationTypeEnum::Group->value:
                     $model->content_id = null;
                     $model->url = null;
 

@@ -133,24 +133,33 @@ class NavigationResource extends Resource implements ClusterSectionResource
      */
     protected static function getContentFormComponent()
     {
+        $requiredOrDisplayIfContent = function ($type) {
+            return $type == NavigationType::Content || 
+                $type == NavigationType::Content->value;
+        };
         return ContentPicker::make('content_id')
             ->label(__('inspirecms::inspirecms.content'))
             ->maxItems(1)
+            ->minItems(function ($get) use ($requiredOrDisplayIfContent) {
+                return $requiredOrDisplayIfContent($get('type')) ? 1 : 0;
+            })
             ->columnSpanFull()
-            ->required(function ($get) {
-                return $get('type') == NavigationType::Content;
-            })
+            ->required(fn ($get) => $requiredOrDisplayIfContent($get('type')))
             ->markAsRequired()
-            ->visible(function ($get) {
-                return $get('type') == NavigationType::Content;
-            })
-            ->afterStateHydrated(function ($state, $component, $record) {
-                if ($record?->type == NavigationType::Content) {
-                    $component->state([$state]);
+            ->visible(fn ($get) => $requiredOrDisplayIfContent($get('type')))
+            ->afterStateHydrated(function ($state, $component)  use ($requiredOrDisplayIfContent) {
+                if (empty($state) || is_null($state)) {
+                    $state = [];
+                } else {
+                    $state = [$state];
                 }
+                $component->state($state);
             })
-            ->dehydrateStateUsing(fn ($get, $state) => $get('type') == NavigationType::Content ? $state[0] ?? null : null)
-            ->dehydratedWhenHidden();
+            ->dehydrateStateUsing(function ($get, $state) use ($requiredOrDisplayIfContent) {
+                return $requiredOrDisplayIfContent($get('type')) ? 
+                    $state[0] ?? null : 
+                    null;
+            });
     }
 
     /**
