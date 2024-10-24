@@ -83,6 +83,7 @@ class CmsPanelProvider extends PanelProvider
             ]);
 
         $this->configureNavigation($panel);
+        $this->configureNotification($panel);
         $this->configureFilamentActions($panel);
         $this->registerLivewireComponents($panel);
 
@@ -99,6 +100,18 @@ class CmsPanelProvider extends PanelProvider
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
             ]);
+    }
+
+    protected function configureNotification(Panel $panel): Panel
+    {
+        if (InspireCmsConfig::get('filament.database_notification.enabled')) {
+            $panel
+                ->databaseNotifications()
+                ->databaseNotificationsPolling(
+                    InspireCmsConfig::get('filament.database_notification.polling_interval', '30s')
+                );
+        }
+        return $panel;
     }
 
     protected function configureFilamentActions(Panel $panel): Panel

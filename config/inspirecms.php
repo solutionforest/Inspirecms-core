@@ -33,6 +33,10 @@ return [
     'filament' => [
         'enable_cluster_navigation' => true,
         'panel_id' => 'cms',
+        'database_notification' => [
+            'enabled' => true,
+            'polling_interval' => '30s',
+        ],
         'resources' => [
             'page' => PageResource::class,
             'document_type' => DocumentTypeResource::class,
