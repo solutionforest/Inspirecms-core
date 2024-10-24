@@ -12,7 +12,7 @@ interface Navigation extends HasDtoModel
 {
     public function content(): BelongsTo;
 
-    public function getUrl(null|string|LanguageDto $locale = null): ?string;
+    public function getUrl(null | string | LanguageDto $locale = null): ?string;
 
     public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface;
 

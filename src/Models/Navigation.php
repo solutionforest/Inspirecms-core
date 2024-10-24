@@ -36,16 +36,18 @@ class Navigation extends BaseModel implements NavigationContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function getUrl(null|string|LanguageDto $locale = null): ?string
+    public function getUrl(null | string | LanguageDto $locale = null): ?string
     {
         switch (trim($this->type)) {
             case NavigationTypeEnum::Link->value:
                 $locale = $locale instanceof LanguageDto ? $locale->code : $locale;
+
                 return $this->getTranslation('url', $locale);
             case NavigationTypeEnum::Group->value:
                 return null;
             case NavigationTypeEnum::Content->value:
                 $locale = $locale instanceof LanguageDto ? $locale->locale : $locale;
+
                 return $this->content?->getUrl($locale);
             default:
                 return null;

@@ -74,7 +74,7 @@ abstract class BaseTreeNavigation extends BaseWidget
         return $this->resource;
     }
 
-    public function getTreeRootLevelKey(): null|string|int
+    public function getTreeRootLevelKey(): null | string | int
     {
         return app($this->getModel())->defaultParentKey();
     }
@@ -92,7 +92,7 @@ abstract class BaseTreeNavigation extends BaseWidget
         return $record->title;
     }
 
-    public function getTreeRecordDescription(?Model $record = null): string|HtmlString|null
+    public function getTreeRecordDescription(?Model $record = null): string | HtmlString | null
     {
         $url = $record->getUrl($this->activeLocale);
 

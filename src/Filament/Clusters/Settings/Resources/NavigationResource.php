@@ -134,9 +134,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getContentFormComponent()
     {
         $requiredOrDisplayIfContent = function ($type) {
-            return $type == NavigationType::Content || 
+            return $type == NavigationType::Content ||
                 $type == NavigationType::Content->value;
         };
+
         return ContentPicker::make('content_id')
             ->label(__('inspirecms::inspirecms.content'))
             ->maxItems(1)
@@ -147,7 +148,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->required(fn ($get) => $requiredOrDisplayIfContent($get('type')))
             ->markAsRequired()
             ->visible(fn ($get) => $requiredOrDisplayIfContent($get('type')))
-            ->afterStateHydrated(function ($state, $component)  use ($requiredOrDisplayIfContent) {
+            ->afterStateHydrated(function ($state, $component) {
                 if (empty($state) || is_null($state)) {
                     $state = [];
                 } else {
@@ -156,8 +157,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $component->state($state);
             })
             ->dehydrateStateUsing(function ($get, $state) use ($requiredOrDisplayIfContent) {
-                return $requiredOrDisplayIfContent($get('type')) ? 
-                    $state[0] ?? null : 
+                return $requiredOrDisplayIfContent($get('type')) ?
+                    $state[0] ?? null :
                     null;
             });
     }
