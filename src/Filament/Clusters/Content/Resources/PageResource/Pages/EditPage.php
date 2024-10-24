@@ -17,7 +17,7 @@ class EditPage extends BaseContentEditPage
     {
         return true;
     }
-    
+
     public function getContentTabPosition(): ?ContentTabPosition
     {
         return ContentTabPosition::After;

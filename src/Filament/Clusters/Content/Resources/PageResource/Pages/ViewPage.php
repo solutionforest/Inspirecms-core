@@ -33,7 +33,7 @@ class ViewPage extends BaseContentViewPage
     {
         return true;
     }
-    
+
     public function getContentTabPosition(): ?ContentTabPosition
     {
         return ContentTabPosition::After;

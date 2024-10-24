@@ -174,11 +174,11 @@ trait ContentPageTrait
             $action
                 ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
                 ->hidden(fn (array $arguments) => $arguments['key'] === 'root');
-                
+
             if ($action instanceof ReorderContentAction) {
                 $action
-                    ->parentId(fn (array $arguments, $record) => 
-                        $record?->{$record?->getNestableParentIdColumn()} ?? $arguments['parent'] ?? null
+                    ->parentId(
+                        fn (array $arguments, $record) => $record?->{$record?->getNestableParentIdColumn()} ?? $arguments['parent'] ?? null
                     )
                     ->successRedirectUrl(function () {
                         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
@@ -191,8 +191,8 @@ trait ContentPageTrait
 
                         return null;
                     });
-            } 
-        } 
+            }
+        }
 
         $this->cacheAction($action);
     }

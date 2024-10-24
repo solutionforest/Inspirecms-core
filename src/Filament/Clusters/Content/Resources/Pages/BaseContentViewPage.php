@@ -81,30 +81,34 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
             case $action instanceof Actions\RestoreAction:
                 $action
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false));
+
                 break;
             case $action instanceof Actions\EditAction:
                 $action
                     ->hidden(fn ($record) => $record->trashed());
+
                 break;
             case $action instanceof LinkToParentAction:
                 $action
                     ->rootLevelKey(fn ($record) => $record->getNestableRootValue())
                     ->parentIdColumnName(fn ($record) => $record->getNestableParentIdColumn())
-                    ->hidden(fn ($record) => 
-                        ! method_exists($record, 'getNestableRootValue') || 
-                        ! method_exists($record, 'getNestableParentIdColumn') || 
+                    ->hidden(
+                        fn ($record) => ! method_exists($record, 'getNestableRootValue') ||
+                        ! method_exists($record, 'getNestableParentIdColumn') ||
                         $record->trashed()
                     );
+
                 break;
             case $action instanceof ReorderContentAction:
                 $action
                     ->parentId(fn ($record) => $record->getParentId())
-                    ->hidden(fn ($record) => 
-                        ! method_exists($record, 'getParentId') || 
+                    ->hidden(
+                        fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record]);
                     });
+
                 break;
         }
     }

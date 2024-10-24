@@ -185,21 +185,23 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 $action
                     ->rootLevelKey(fn ($record) => $record->getNestableRootValue())
                     ->parentIdColumnName(fn ($record) => $record->getNestableParentIdColumn())
-                    ->hidden(fn ($record) => 
-                        ! method_exists($record, 'getNestableRootValue') || 
-                        ! method_exists($record, 'getNestableParentIdColumn') || 
+                    ->hidden(
+                        fn ($record) => ! method_exists($record, 'getNestableRootValue') ||
+                        ! method_exists($record, 'getNestableParentIdColumn') ||
                         $record->trashed()
                     );
+
                 break;
             case $action instanceof ReorderContentAction:
                 $action
                     ->parentId(fn ($record) => $record->getParentId())
-                    ->hidden(fn ($record) => 
-                        ! method_exists($record, 'getParentId') || 
+                    ->hidden(
+                        fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record]);
                     });
+
                 break;
         }
     }

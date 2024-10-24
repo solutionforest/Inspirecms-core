@@ -36,7 +36,7 @@ class ReorderContentAction extends Action
 
         $contentModel = InspireCmsConfig::getContentModelClass();
 
-        $this->form(function (Form $form, string $model, ?Model $record)  use ($contentModel) {
+        $this->form(function (Form $form, string $model, ?Model $record) use ($contentModel) {
 
             $contents = $model::query()
                 ->whereHasMorph('nestable', [$contentModel])
@@ -57,7 +57,7 @@ class ReorderContentAction extends Action
                         ->addable(false)
                         ->deletable(false)
                         ->orderable()
-                        ->afterStateHydrated(function (Repeater $component)  use ($contents) {
+                        ->afterStateHydrated(function (Repeater $component) use ($contents) {
                             $state = collect($contents)
                                 ->mapWithKeys(fn ($data) => [$component->generateUuid() => $data])
                                 ->all();
@@ -76,11 +76,11 @@ class ReorderContentAction extends Action
                                 ->label(__('inspirecms::resources/content.slug.label'))
                                 ->inlineLabel()
                                 ->disabled(),
-                        ])
+                        ]),
                 ]);
         });
 
-        $this->action(function (array $data, string $model, Action $action)  use ($contentModel){
+        $this->action(function (array $data, string $model, Action $action) use ($contentModel) {
 
             if (! in_array(NestableTree::class, class_implements($model))) {
 
@@ -116,16 +116,16 @@ class ReorderContentAction extends Action
             }
 
         });
-    } 
+    }
 
-    public function parentId(Closure|string|int $parentId): static
+    public function parentId(Closure | string | int $parentId): static
     {
         $this->parentId = $parentId;
 
         return $this;
     }
 
-    public function getParentId(): string|int|null
+    public function getParentId(): string | int | null
     {
         return $this->evaluate($this->parentId);
     }

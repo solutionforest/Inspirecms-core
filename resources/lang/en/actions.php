@@ -210,6 +210,6 @@ return [
                 'title' => 'Reorder content error',
             ],
         ],
-        
+
     ],
 ];

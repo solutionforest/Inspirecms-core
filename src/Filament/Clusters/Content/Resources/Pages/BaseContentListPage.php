@@ -71,6 +71,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
                     ->modifyUrlParameterUsing(function (array $parameters) {
                         return array_merge($parameters, ['parent' => $this->getParentKey()]);
                     });
+
                 break;
 
         }
