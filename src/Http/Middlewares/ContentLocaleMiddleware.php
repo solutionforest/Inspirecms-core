@@ -21,7 +21,7 @@ class ContentLocaleMiddleware
         }
 
         $request->setDefaultLocale(
-            InspireCms::getFallbackLanguage()?->locale ?? config('app.locale')
+            InspireCms::getFallbackLanguage()?->code ?? config('app.locale')
         );
 
         return $next($request);

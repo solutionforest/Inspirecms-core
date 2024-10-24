@@ -49,7 +49,7 @@ class NavigationDto extends BaseTranslatableModelDto
 
         $dto->url = collect(inspirecms()->getAllAvailableLanguages())
             ->mapWithKeys(fn ($language) => [
-                $language->locale => $model->getUrl($language),
+                $language->code => $model->getUrl($language),
             ])
             ->all();
 
