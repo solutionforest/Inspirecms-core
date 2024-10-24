@@ -49,7 +49,6 @@ class FilamentResourceHelper
 
         } catch (\Throwable $th) {
             //
-            dd($th);
         }
 
         return $url;
