@@ -156,7 +156,7 @@ trait HasContentVersions
 
         $result = $this->performPublishableAction($options, $status);
 
-        event(new ContentEvents\ChangeStatus($result, $oldStatus, $status));
+        event(new ContentEvents\ChangeStatus($this, $oldStatus, $status));
 
         return $result;
     }
