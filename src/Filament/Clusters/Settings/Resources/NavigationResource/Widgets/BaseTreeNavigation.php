@@ -4,6 +4,8 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Navigat
 
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\HtmlString;
 use Livewire\Attributes\Reactive;
 use SolutionForest\FilamentTree\Actions\EditAction;
 use SolutionForest\FilamentTree\Actions\ViewAction;
@@ -62,12 +64,19 @@ abstract class BaseTreeNavigation extends BaseWidget
 
     protected function getTreeQuery(): Builder
     {
-        return $this->getResource()::getEloquentQuery()->category($this->getNavigationCategory()->value);
+        return $this->getResource()::getEloquentQuery()
+            ->with(['content'])
+            ->category($this->getNavigationCategory()->value);
     }
 
     protected function getResource(): string
     {
         return $this->resource;
+    }
+
+    public function getTreeRootLevelKey(): null|string|int
+    {
+        return app($this->getModel())->defaultParentKey();
     }
 
     public function getTreeRecordTitle(?\Illuminate\Database\Eloquent\Model $record = null): string
@@ -81,6 +90,21 @@ abstract class BaseTreeNavigation extends BaseWidget
         $translatableContentDriver->setRecordLocale($record);
 
         return $record->title;
+    }
+
+    public function getTreeRecordDescription(?Model $record = null): string|HtmlString|null
+    {
+        $url = $record->getUrl($this->activeLocale);
+
+        if (blank($url)) {
+            return null;
+        }
+
+        return new HtmlString(<<<Html
+            <p class="text-xs truncate max-w-[12rem] md:max-w-[7rem] lg:max-w-full">
+                $url
+            </p>
+        Html);
     }
 
     //region Helpers

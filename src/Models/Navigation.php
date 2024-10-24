@@ -141,16 +141,6 @@ class Navigation extends BaseModel implements NavigationContract
     }
 
     //region Nestable
-    protected function getParentId()
-    {
-        return $this->{$this->getNestableParentIdColumn()} ?? $this->fallbackParentId();
-    }
-
-    public function getNestableParentIdColumn(): string
-    {
-        return 'parent_id';
-    }
-
     protected function fallbackParentId()
     {
         return $this->getNestableRootValue();
@@ -158,7 +148,24 @@ class Navigation extends BaseModel implements NavigationContract
 
     public function getNestableRootValue(): int | string
     {
-        return KeyHelper::generateMinUuid();
+        return static::defaultParentKey();
     }
     //endregion Nestable
+
+    //region Tree
+    public function determineParentColumnName(): string
+    {
+        return $this->getNestableParentIdColumn();
+    }
+
+    public function determineOrderColumnName(): string
+    {
+        return 'order';
+    }
+
+    public static function defaultParentKey(): int | string | null
+    {
+        return KeyHelper::generateMinUuid();
+    }
+    //endregion Tree
 }
