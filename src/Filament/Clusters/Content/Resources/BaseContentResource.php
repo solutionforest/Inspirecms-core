@@ -32,6 +32,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -714,6 +715,21 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
             return $components;
         };
+        $createSeoField = function ($key, $field, $callback) use ($configureTranslatableComponents) {
+
+            if (in_array($key, SeoHelper::getTranslatableAttributes())) {
+                return Forms\Components\Group::make()
+                    ->statePath($key)
+                    ->schema(
+                        $configureTranslatableComponents(
+                            $field,
+                            $callback
+                        )
+                    );
+            } else {
+                return $callback($field::make($key));
+            }
+        };
 
         return Forms\Components\Group::make()
             ->columns(['md' => 3, 'default' => 1])
@@ -724,73 +740,80 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->columns(1)
                     ->columnStart(['md' => 2])
                     ->statePath('seo')
-                    ->schema([
-                        Forms\Components\Group::make()
-                            ->statePath('meta_title')
-                            ->schema(
-                                $configureTranslatableComponents(
-                                    Forms\Components\TextInput::class,
-                                    fn (Forms\Components\TextInput $field) => $field
-                                        ->label(__('inspirecms::resources/content.seo.meta_title.label'))
-                                        ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
-                                        ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
-                                        ->limitLengthWithHint(60)
-                                )
-                            ),
-                        Forms\Components\Group::make()
-                            ->statePath('meta_description')
-                            ->schema(
-                                $configureTranslatableComponents(
-                                    Forms\Components\Textarea::class,
-                                    fn (Forms\Components\Textarea $field) => $field
-                                        ->label(__('inspirecms::resources/content.seo.meta_description.label'))
-                                        ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
-                                        ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
-                                        ->limitLengthWithHint(120)
-                                )
-                            ),
-                        Forms\Components\TagsInput::make('meta_keywords')
-                            ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
-                            ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
-                            ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
-                    ]),
+                    ->schema(function () use ($createSeoField) {
+                        $attribtues = [
+                            'meta_title' => [
+                                'field' => Forms\Components\TextInput::class,
+                                'callback' => fn (Forms\Components\TextInput $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.meta_title.label'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
+                                    ->limitLengthWithHint(60),
+                            ],
+                            'meta_description' => [
+                                'field' => Forms\Components\Textarea::class,
+                                'callback' => fn (Forms\Components\Textarea $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.meta_description.label'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
+                                    ->limitLengthWithHint(120),
+                            ],
+                            'meta_keywords' => [
+                                'field' => Forms\Components\TagsInput::class,
+                                'callback' => fn (Forms\Components\TagsInput $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
+                            ],
+                        ];
+
+                        $components = [];
+                        foreach ($attribtues as $key => $attribute) {
+                            $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
+                        }
+
+                        return $components;
+                }),
                 Forms\Components\Section::make()
                     ->columns(1)
                     ->heading(__('inspirecms::resources/content.seo.og.heading'))
                     ->aside()
                     ->statePath('seo')
-                    ->schema([
+                    ->schema(function ()  use ($createSeoField){
+                        $attribtues = [
+                            'og_title' => [
+                                'field' => Forms\Components\TextInput::class,
+                                'callback' => fn (Forms\Components\TextInput $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.og.og_title.label'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.og.og_title.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og.og_title.instructions'))
+                                    ->limitLengthWithHint(60),
+                            ],
+                            'og_description' => [
+                                'field' => Forms\Components\Textarea::class,
+                                'callback' => fn (Forms\Components\Textarea $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.og.og_description.label'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.og.og_description.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og.og_description.instructions'))
+                                    ->limitLengthWithHint(120),
+                            ],
+                            'og_image' => [
+                                'field' => \SolutionForest\InspireCms\Support\Forms\Components\MediaPicker::class,
+                                'callback' => fn (\SolutionForest\InspireCms\Support\Forms\Components\MediaPicker $field) => $field
+                                    ->label(__('inspirecms::resources/content.seo.og.og_image.label'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og.og_image.instructions'))
+                                    ->image()
+                                    ->multiple(true),
+                            ],
+                        ];
 
-                        Forms\Components\Group::make()
-                            ->statePath('og_title')
-                            ->schema(
-                                $configureTranslatableComponents(
-                                    Forms\Components\TextInput::class,
-                                    fn (Forms\Components\TextInput $field) => $field
-                                        ->label(__('inspirecms::resources/content.seo.og.og_title.label'))
-                                        ->placeholder(__('inspirecms::resources/content.seo.og.og_title.placeholder'))
-                                        ->helperText(__('inspirecms::resources/content.seo.og.og_title.instructions'))
-                                        ->limitLengthWithHint(60)
-                                )
-                            ),
-                        Forms\Components\Group::make()
-                            ->statePath('og_description')
-                            ->schema(
-                                $configureTranslatableComponents(
-                                    Forms\Components\Textarea::class,
-                                    fn (Forms\Components\Textarea $field) => $field
-                                        ->label(__('inspirecms::resources/content.seo.og.og_description.label'))
-                                        ->placeholder(__('inspirecms::resources/content.seo.og.og_description.placeholder'))
-                                        ->helperText(__('inspirecms::resources/content.seo.og.og_description.instructions'))
-                                        ->limitLengthWithHint(120)
-                                )
-                            ),
-                        \SolutionForest\InspireCms\Support\Forms\Components\MediaPicker::make('og_image')
-                            ->label(__('inspirecms::resources/content.seo.og.og_image.label'))
-                            ->helperText(__('inspirecms::resources/content.seo.og.og_image.instructions'))
-                            ->image()
-                            ->multiple(false),
-                    ]),
+                        $components = [];
+                        foreach ($attribtues as $key => $attribute) {
+                            $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
+                        }
+
+                        return $components;
+                }),
                 Forms\Components\Section::make()
                     ->heading(__('inspirecms::resources/content.seo.robots.heading'))
                     ->aside()
