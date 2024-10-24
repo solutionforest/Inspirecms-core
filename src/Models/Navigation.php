@@ -8,6 +8,7 @@ use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as Naviga
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
@@ -35,14 +36,16 @@ class Navigation extends BaseModel implements NavigationContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function getUrl(?string $locale = null): ?string
+    public function getUrl(null|string|LanguageDto $locale = null): ?string
     {
         switch (trim($this->type)) {
             case NavigationTypeEnum::Link->value:
+                $locale = $locale instanceof LanguageDto ? $locale->code : $locale;
                 return $this->getTranslation('url', $locale);
             case NavigationTypeEnum::Group->value:
                 return null;
             case NavigationTypeEnum::Content->value:
+                $locale = $locale instanceof LanguageDto ? $locale->locale : $locale;
                 return $this->content?->getUrl($locale);
             default:
                 return null;

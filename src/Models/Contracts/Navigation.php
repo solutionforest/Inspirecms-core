@@ -5,13 +5,14 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
 interface Navigation extends HasDtoModel
 {
     public function content(): BelongsTo;
 
-    public function getUrl(?string $locale = null): ?string;
+    public function getUrl(null|string|LanguageDto $locale = null): ?string;
 
     public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface;
 
