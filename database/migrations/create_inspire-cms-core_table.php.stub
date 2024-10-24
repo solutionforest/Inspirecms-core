@@ -168,6 +168,7 @@ return new class extends BaseMigration
             $table->uuid('content_id')->default('');
             $table->string('url')->nullable();
             $table->string('target')->nullable();
+            $table->integer('order')->default(0);
 
             $table->json('title');
 
