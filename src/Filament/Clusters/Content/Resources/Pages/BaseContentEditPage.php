@@ -13,6 +13,7 @@ use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
+use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
@@ -48,16 +49,17 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     {
         return [
             Actions\LocaleSwitcher::make(),
-            ContentHistoryAction::make()
-                ->record(fn () => $this->getRecord()),
-            Actions\DeleteAction::make()
-                ->iconButton(),
-            Actions\RestoreAction::make()
-                ->iconButton(),
-            Actions\ForceDeleteAction::make()
-                ->iconButton(),
             Actions\ActionGroup::make([
-                LinkToParentAction::make(),
+                Actions\ActionGroup::make([
+                    Actions\DeleteAction::make(),
+                    Actions\RestoreAction::make(),
+                    Actions\ForceDeleteAction::make(),
+                ])->dropdown(false),
+                Actions\ActionGroup::make([
+                    ContentHistoryAction::make(),
+                    LinkToParentAction::make(),
+                    ReorderContentAction::make(),
+                ])->dropdown(false),
             ]),
         ];
     }
@@ -178,13 +180,27 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     {
         parent::configureAction($action);
 
-        if ($action instanceof LinkToParentAction) {
-            $record = $this->getRecord();
-            if (method_exists($record, 'getNestableRootValue')) {
-                $action->rootLevelKey($record->getNestableRootValue());
-            } else {
-                $action->hidden();
-            }
+        switch (true) {
+            case $action instanceof LinkToParentAction:
+                $action
+                    ->rootLevelKey(fn ($record) => $record->getNestableRootValue())
+                    ->parentIdColumnName(fn ($record) => $record->getNestableParentIdColumn())
+                    ->hidden(fn ($record) => 
+                        ! method_exists($record, 'getNestableRootValue') || 
+                        ! method_exists($record, 'getNestableParentIdColumn') || 
+                        $record->trashed()
+                    );
+                break;
+            case $action instanceof ReorderContentAction:
+                $action
+                    ->parentId(fn ($record) => $record->getParentId())
+                    ->hidden(fn ($record) => 
+                        ! method_exists($record, 'getParentId') || 
+                        $record->trashed()
+                    )->successRedirectUrl(function ($record) {
+                        return $this->getUrl(['record' => $record]);
+                    });
+                break;
         }
     }
 }

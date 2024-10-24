@@ -38,6 +38,8 @@ class LinkToParentAction extends Action
 
         $this->successNotificationTitle(__('inspirecms::actions.link_to_parent.notifications.success.title'));
 
+        $this->groupedIcon('heroicon-o-link');
+
         $this->form(
             fn (Form $form, Model $record) => $form
                 ->schema([

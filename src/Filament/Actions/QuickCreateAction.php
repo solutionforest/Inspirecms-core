@@ -28,6 +28,7 @@ class QuickCreateAction extends Action
 
     protected function setUp(): void
     {
+        // todo: permission check
         parent::setUp();
 
         $this->label(fn (): string => __('inspirecms::actions.quick_create.label'));

@@ -3,12 +3,15 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
 use Filament\Actions;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
+use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
@@ -36,7 +39,7 @@ trait ContentPageTrait
     {
         $modelClass = $this->getModel();
         $model = new $modelClass;
-        $parentIdColumn = $model->getNestableParentIdColumn();
+        $parentIdColumn = $model->getQualifiedNestableParentIdColumn();
         $rootLevelKey = $model->getNestableRootValue();
 
         return $modelExplorer
@@ -45,6 +48,7 @@ trait ContentPageTrait
             ->rootLevelKey($rootLevelKey)
             ->modifyQueryUsing(
                 fn ($query) => $query
+                    ->sorted()
                     ->withCount([
                         'children',
                     ])
@@ -81,9 +85,7 @@ trait ContentPageTrait
                 LinkToParentAction::make('item_link_to_parent')
                     ->parentIdColumnName($parentIdColumn)
                     ->rootLevelKey($rootLevelKey),
-                Actions\Action::make('reorder')
-                    ->modalContent(new HtmlString('not implemented'))
-                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root'),
+                ReorderContentAction::make('reorder_content_item'),
                 Actions\Action::make('delete_item')
                     ->color('danger')
                     ->icon(FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash')
@@ -164,12 +166,30 @@ trait ContentPageTrait
                         'parent' => $parent,
                     ]);
                 });
-        } elseif ($action instanceof LinkToParentAction) {
+        } elseif ($action instanceof LinkToParentAction || $action instanceof ReorderContentAction) {
 
             $action
                 ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
                 ->hidden(fn (array $arguments) => $arguments['key'] === 'root');
-        }
+                
+            if ($action instanceof ReorderContentAction) {
+                $action
+                    ->parentId(fn (array $arguments, $record) => 
+                        $record?->{$record?->getNestableParentIdColumn()} ?? $arguments['parent'] ?? null
+                    )
+                    ->successRedirectUrl(function () {
+                        if ($this instanceof EditRecord || $this instanceof ViewRecord) {
+                            return $this->getUrl(['record' => $this->getRecord()]);
+                        }
+
+                        if ($this instanceof ListRecords || $this instanceof CreateRecord) {
+                            return $this->getUrl();
+                        }
+
+                        return null;
+                    });
+            } 
+        } 
 
         $this->cacheAction($action);
     }

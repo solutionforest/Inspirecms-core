@@ -249,7 +249,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->visible(fn ($livewire) => ! $livewire instanceof BaseContentListTrashPage),
                     Tables\Actions\ForceDeleteBulkAction::make(),
                     Tables\Actions\RestoreBulkAction::make(),
                 ])->iconButton(),

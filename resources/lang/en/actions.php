@@ -194,4 +194,22 @@ return [
             ],
         ],
     ],
+
+    'reorder_content' => [
+
+        'label' => 'Reorder content',
+
+        'notifications' => [
+            'invalid_model' => [
+                'title' => 'Invalid Model',
+            ],
+            'success' => [
+                'title' => 'Reorder content successful',
+            ],
+            'error' => [
+                'title' => 'Reorder content error',
+            ],
+        ],
+        
+    ],
 ];

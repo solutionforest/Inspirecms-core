@@ -13,6 +13,7 @@ class ContentHistoryAction extends Action
 
     protected function setUp(): void
     {
+        // todo: permission check
         parent::setUp();
 
         $this->label(fn () => __('inspirecms::actions.content_history.label'));

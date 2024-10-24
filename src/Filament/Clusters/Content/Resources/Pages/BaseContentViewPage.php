@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
+use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
@@ -50,22 +51,19 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                     return filled($action->getUrl());
                 }),
             Actions\LocaleSwitcher::make(),
-            PreviewAction::make()
-                ->hidden(fn ($record) => $record->trashed()),
-            ContentHistoryAction::make()
-                ->record(fn () => $this->getRecord()),
-            Actions\EditAction::make()
-                ->hidden(fn ($record) => $record->trashed())
-                ->iconButton(),
-            Actions\DeleteAction::make()
-                ->iconButton(),
-            Actions\RestoreAction::make()
-                ->iconButton()
-                ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false)),
-            Actions\ForceDeleteAction::make()
-                ->iconButton(),
+            PreviewAction::make(),
             Actions\ActionGroup::make([
-                LinkToParentAction::make(),
+                Actions\ActionGroup::make([
+                    Actions\EditAction::make(),
+                    Actions\DeleteAction::make(),
+                    Actions\RestoreAction::make(),
+                    Actions\ForceDeleteAction::make(),
+                ])->dropdown(false),
+                Actions\ActionGroup::make([
+                    ContentHistoryAction::make(),
+                    LinkToParentAction::make(),
+                    ReorderContentAction::make(),
+                ])->dropdown(false),
             ]),
         ];
     }
@@ -79,13 +77,35 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     {
         parent::configureAction($action);
 
-        if ($action instanceof LinkToParentAction) {
-            $record = $this->getRecord();
-            if (method_exists($record, 'getNestableRootValue')) {
-                $action->rootLevelKey($record->getNestableRootValue());
-            } else {
-                $action->hidden();
-            }
+        switch (true) {
+            case $action instanceof Actions\RestoreAction:
+                $action
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false));
+                break;
+            case $action instanceof Actions\EditAction:
+                $action
+                    ->hidden(fn ($record) => $record->trashed());
+                break;
+            case $action instanceof LinkToParentAction:
+                $action
+                    ->rootLevelKey(fn ($record) => $record->getNestableRootValue())
+                    ->parentIdColumnName(fn ($record) => $record->getNestableParentIdColumn())
+                    ->hidden(fn ($record) => 
+                        ! method_exists($record, 'getNestableRootValue') || 
+                        ! method_exists($record, 'getNestableParentIdColumn') || 
+                        $record->trashed()
+                    );
+                break;
+            case $action instanceof ReorderContentAction:
+                $action
+                    ->parentId(fn ($record) => $record->getParentId())
+                    ->hidden(fn ($record) => 
+                        ! method_exists($record, 'getParentId') || 
+                        $record->trashed()
+                    )->successRedirectUrl(function ($record) {
+                        return $this->getUrl(['record' => $record]);
+                    });
+                break;
         }
     }
 

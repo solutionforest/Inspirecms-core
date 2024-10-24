@@ -24,10 +24,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
     {
         return [
             Actions\LocaleSwitcher::make(),
-            CreateContentAction::make()
-                ->modifyUrlParameterUsing(function (array $parameters) {
-                    return array_merge($parameters, ['parent' => $this->getParentKey()]);
-                }),
+            CreateContentAction::make(),
         ];
     }
 
@@ -62,5 +59,20 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
     public function getSubNavigationPosition(): SubNavigationPosition
     {
         return SubNavigationPosition::Start;
+    }
+
+    protected function configureAction(Actions\Action $action): void
+    {
+        parent::configureAction($action);
+
+        switch (true) {
+            case $action instanceof CreateContentAction:
+                $action
+                    ->modifyUrlParameterUsing(function (array $parameters) {
+                        return array_merge($parameters, ['parent' => $this->getParentKey()]);
+                    });
+                break;
+
+        }
     }
 }
