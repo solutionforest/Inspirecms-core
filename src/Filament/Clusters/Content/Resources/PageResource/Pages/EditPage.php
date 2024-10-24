@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
+use Filament\Resources\Pages\ContentTabPosition;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
 
@@ -15,5 +16,10 @@ class EditPage extends BaseContentEditPage
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
         return true;
+    }
+    
+    public function getContentTabPosition(): ?ContentTabPosition
+    {
+        return ContentTabPosition::After;
     }
 }

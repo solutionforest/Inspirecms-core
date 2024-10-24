@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 
+use Filament\Resources\Pages\ContentTabPosition;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
@@ -31,5 +32,10 @@ class ViewPage extends BaseContentViewPage
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
         return true;
+    }
+    
+    public function getContentTabPosition(): ?ContentTabPosition
+    {
+        return ContentTabPosition::After;
     }
 }

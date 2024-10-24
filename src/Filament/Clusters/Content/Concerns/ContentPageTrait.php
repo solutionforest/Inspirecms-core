@@ -76,7 +76,10 @@ trait ContentPageTrait
                 ],
             ], $items))
             ->mutuateNodeItemsUsing(function (array $item, Model $record) {
-                $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], ['record' => $record], true);
+                $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], [
+                    'record' => $record,
+                    'activeRelationManager' => 0,
+                ], true);
 
                 return $item;
             })
