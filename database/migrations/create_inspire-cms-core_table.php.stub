@@ -113,7 +113,6 @@ return new class extends BaseMigration
         Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) {
             $table->integer('document_type_id');
             $table->integer('inherited_document_type_id');
-            $table->integer('order')->default(0);
 
             $table->index('document_type_id');
             $table->index('inherited_document_type_id');
