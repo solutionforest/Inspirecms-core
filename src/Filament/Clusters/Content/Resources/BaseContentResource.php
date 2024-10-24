@@ -117,7 +117,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->columnSpan(2)
                                     ->schema([
                                         Forms\Components\Section::make([
-                                            static::getDocumentTypeDisplayComponent(),
+                                            static::getDisplayDocumentTypeComponent(),
                                             static::getDisplayParentFormComponent(),
                                             static::getDisplayKeyFormComponent(),
                                             static::getDisplayUrlFormComponent(),
@@ -438,9 +438,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     /**
      * @return Forms\Components\Field | Forms\Components\Select
      */
-    protected static function getDocumentTypeDisplayComponent()
+    protected static function getDisplayDocumentTypeComponent()
     {
-        return Forms\Components\Placeholder::make('document_type')
+        return Forms\Components\Placeholder::make('display_document_type')
             ->label(__('inspirecms::inspirecms.document_type'))
             ->inlineLabel()
             ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
@@ -458,9 +458,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 if (! filled($text)) {
                     $text = __('inspirecms::inspirecms.n/a');
                 }
-                $documentTypeKey = $documentType?->getKey();
                 $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
-                $url = $documentTypeKey ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentTypeKey], false) : null;
+                $url = $documentType ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentType], true) : null;
                 if (! $url) {
                     return $text;
                 }
