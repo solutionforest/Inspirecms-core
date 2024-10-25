@@ -4,23 +4,23 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Dtos\NavigationDto;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 class Navigation extends BaseModel implements NavigationContract
 {
     use Concerns\HasTranslations;
     use HasUuids;
-    use NestableTrait;
+    use NodeTrait;
 
     protected $guarded = ['id'];
 
@@ -42,7 +42,7 @@ class Navigation extends BaseModel implements NavigationContract
             case NavigationTypeEnum::Link->value:
                 $locale = $locale instanceof LanguageDto ? $locale->code : $locale;
 
-                return $this->getTranslation('url', $locale);
+                return $this->getTranslation('url', $locale ?? $this->getFallbackLocale());
             case NavigationTypeEnum::Group->value:
                 return null;
             case NavigationTypeEnum::Content->value:
@@ -57,7 +57,7 @@ class Navigation extends BaseModel implements NavigationContract
     //region Scopes
     public function scopeCategory($query, string $type)
     {
-        return $query->where('category', $type);
+        $query->where('category', $type);
     }
     //endregion Scopes
 
@@ -80,7 +80,7 @@ class Navigation extends BaseModel implements NavigationContract
 
     public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface
     {
-        return static::getNavigationCategoryEnumClass()::tryFrom($this->type);
+        return static::getNavigationTypeEnumClass()::tryFrom($this->type);
     }
 
     public static function getNavigationTypeEnumClass(): string
@@ -95,17 +95,19 @@ class Navigation extends BaseModel implements NavigationContract
     }
     //endregion Enums
 
-    //region Dto
-    public function toDto(...$args)
+    //region Node
+    protected function getScopeAttributes()
     {
-        return static::getDtoClass()::fromTranslatableModel($this, $args[0] ?? null);
+        return [
+            'category',
+        ];
     }
+    //endregion Node
 
-    public static function getDtoClass(): string
+    public static function defaultContentId(): string|int|null
     {
-        return NavigationDto::class;
+        return KeyHelper::generateMinUuid();
     }
-    //endregion Dto
 
     public static function boot()
     {
@@ -136,38 +138,20 @@ class Navigation extends BaseModel implements NavigationContract
             if (blank($model->category)) {
                 $model->category = static::getNavigationCategoryEnumClass()::getDefaultValue()->value;
             }
-            if (is_null($model->content_id)) {
-                $model->content_id = KeyHelper::generateMinUuid();
+            
+            // If the category is changed, make the model root
+            if ($model->isDirty('category')) {
+                $model->makeRoot();
             }
+            if (is_null($model->content_id)) {
+                $model->content_id = static::defaultContentId();
+            }
+
+            InspireCms::forgetCachedNavigation();
+        });
+
+        static::deleting(function (self $model) {
+            InspireCms::forgetCachedNavigation();
         });
     }
-
-    //region Nestable
-    protected function fallbackParentId()
-    {
-        return $this->getNestableRootValue();
-    }
-
-    public function getNestableRootValue(): int | string
-    {
-        return static::defaultParentKey();
-    }
-    //endregion Nestable
-
-    //region Tree
-    public function determineParentColumnName(): string
-    {
-        return $this->getNestableParentIdColumn();
-    }
-
-    public function determineOrderColumnName(): string
-    {
-        return 'order';
-    }
-
-    public static function defaultParentKey(): int | string | null
-    {
-        return KeyHelper::generateMinUuid();
-    }
-    //endregion Tree
 }

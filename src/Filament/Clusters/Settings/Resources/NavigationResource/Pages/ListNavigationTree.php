@@ -4,13 +4,16 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Navigat
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
+use Livewire\Attributes\On;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
 
-class ListNavigation extends BaseManagePage
+class ListNavigationTree extends BaseManagePage
 {
     use Translatable;
+    use NavigationListPageTrait;
 
     /**
      * @var view-string
@@ -25,7 +28,7 @@ class ListNavigation extends BaseManagePage
         ];
     }
 
-    protected function getHeaderWidgets(): array
+    protected function getWidgets(): array
     {
         $commonNavWidgetData = [
             'resource' => static::getResource(),
@@ -40,6 +43,17 @@ class ListNavigation extends BaseManagePage
             ->all();
 
         return $widgets;
+    }
+
+    #[On('refreshAllTree')]
+    public function getVisibleWidgets(): array
+    {
+        return $this->filterVisibleWidgets($this->getWidgets());
+    }
+
+    public function getWidgetsColumns(): int | string | array
+    {
+        return 1;
     }
 
     public static function getResource(): string

@@ -28,6 +28,10 @@ return [
             'key' => 'inspirecms.languages',
             'ttl' => 60 * 60 * 24,
         ],
+        'navigation' => [
+            'key' => 'inspirecms.navigation',
+            'ttl' => 60 * 60 * 24,
+        ],
     ],
 
     'filament' => [

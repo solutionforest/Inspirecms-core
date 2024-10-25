@@ -6,9 +6,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
-interface Navigation extends HasDtoModel
+interface Navigation
 {
     public function content(): BelongsTo;
 
@@ -37,4 +36,6 @@ interface Navigation extends HasDtoModel
      * @return string The class name of the NavigationTypeEnumInterface.
      */
     public static function getNavigationTypeEnumClass(): string;
+
+    public static function defaultContentId(): string|int|null;
 }

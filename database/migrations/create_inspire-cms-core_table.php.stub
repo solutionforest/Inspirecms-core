@@ -166,20 +166,18 @@ return new class extends BaseMigration
             $table->uuid('id')->primary();
 
             $table->uuid('content_id')->default('');
-            $table->text('url')->nullable();
+            $table->json('url')->nullable();
             $table->string('target')->nullable();
-            $table->integer('order')->default(0);
 
             $table->json('title');
-
-            $table->uuid('parent_id')->default('');
 
             $table->string('type')->default('link');
             $table->string('category')->default('main');
 
+            $table->nestedSet(); // This method adds left, right, depth columns.
+
             $table->timestamps();
 
-            $table->index('parent_id');
             $table->index('content_id');
             $table->index('type');
         });

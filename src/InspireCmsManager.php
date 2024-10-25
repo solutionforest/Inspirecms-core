@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
+use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
@@ -148,14 +149,35 @@ class InspireCmsManager
     public function getNavigation(string $category, ?string $locale = null): array
     {
         // todo: cache navigation
-        // if (! $this->cachedNavigation) {
-        //     $this->cachedNavigation = [];
-        // }
+        if (! $this->cachedNavigation) {
+            $this->cachedNavigation = $this->cacheManager->remember(
+                config('inspirecms.cache.navigation.key'),
+                config('inspirecms.cache.navigation.ttl'),
+                fn () => $this->getSerializedNavigationForCache()
+            );
+        }
 
-        // temp: current get root
-        $nav = InspireCmsConfig::getNavigationModelClass()::with(['content', 'children'])->root()->category($category)->get();
+        return collect($this->cachedNavigation['navigation'] ?? [])
+            ->map(function ($arr) {
+                $alias = $this->cachedNavigation['alias'] ?? [];
+                $data = array_combine($alias, $arr);
+                if (isset($data['children'])) {
+                    $data['children'] = collect($data['children'])
+                        ->map(fn ($childArr) => array_combine($alias, $childArr))
+                        ->values()
+                        ->all();
+                }
+                return $data;
+            })
+            ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code))
+            ->where(fn (NavigationDto $nav) => $nav->category == $category)
+            ->values()
+            ->all();
+    }
 
-        return $nav->map(fn ($item) => $item->toDto($locale ?? app()->getLocale()))->all();
+    public function forgetCachedNavigation(): void
+    {
+        $this->cacheManager->forget(config('inspirecms.cache.navigation.key'));
     }
 
     //region Helpers
@@ -172,6 +194,27 @@ class InspireCmsManager
         return compact('alias', 'languages');
     }
 
+    private function getSerializedNavigationForCache(): array
+    {
+        $attributes = ['title', 'url', 'target', 'category', 'type'];
+        $relations = ['children'];
+
+        $alias = $this->aliasModelFields($attributes, $relations);
+
+        $models = InspireCmsConfig::getNavigationModelClass()::with(['content', 'children'])
+            ->defaultOrder()
+            ->get()
+            ->toTree();
+
+        $navigation = [];
+
+        foreach ($models as $model) {
+            $navigation[] = $this->aliasedNavigation($alias, $model);
+        }
+
+        return compact('alias', 'navigation');
+    }
+
     private function getSortedLanguages(): Collection
     {
         return InspireCmsConfig::getLanguageModelClass()::query()
@@ -181,16 +224,57 @@ class InspireCmsManager
             ->keyBy('code');
     }
 
-    private function aliasedModel(array $alias, Model $language): array
+    private function aliasedModel(array $alias, Model $model): array
     {
         return collect($alias)
-            ->mapWithKeys(fn ($attribute, $key) => [$key => $language->getAttribute($attribute)])
+            ->mapWithKeys(fn ($attribute, $key) => [$key => $model->getAttribute($attribute)])
             ->all();
     }
 
-    private function aliasModelFields($attributes = []): array
+    private function aliasedNavigation(array $alias, Model $navigation): array
     {
-        return array_values(array_unique($attributes));
+        $allLanguages = $this->getAllAvailableLanguages();
+
+        $result = [];
+
+        foreach ($alias as $key => $attribute) {
+            $value = null;
+            switch ($attribute) {
+                case 'url':
+                    $value = collect($allLanguages)
+                        ->mapWithKeys(fn ($language) => [
+                            $language->code => $navigation->getUrl($language),
+                        ])
+                        ->all();
+                    break;
+                case 'children': 
+                    $value = collect($navigation->{$attribute})
+                        ->map(fn ($child) => $this->aliasedNavigation($alias, $child))
+                        ->values()
+                        ->all();
+                    break;
+                case class_uses_recursive($navigation, \Spatie\Translatable\HasTranslations::class) &&
+                    in_array($attribute, $navigation->getTranslatableAttributes()):
+                    $value = collect($allLanguages)
+                        ->mapWithKeys(fn ($language) => [
+                            $language->code => $navigation->getTranslation($attribute, $language->code),
+                        ])
+                        ->all();
+                    break;
+                default:
+                    $value = $navigation->getAttribute($attribute);
+                    break;
+            }
+            $result[$key] = $value;
+        }
+
+        return $result;
     }
+
+    private function aliasModelFields($attributes = [], $relations = []): array
+    {
+        return array_values(array_unique(array_merge($attributes, $relations)));
+    }
+
     //endregion Helpers
 }

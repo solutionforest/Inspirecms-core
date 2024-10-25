@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
 
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -62,24 +63,63 @@ abstract class BaseTreeNavigation extends BaseWidget
         return $this->getResource()::getModel();
     }
 
+    //region Tree Configuration
     protected function getTreeQuery(): Builder
     {
-        return $this->getResource()::getEloquentQuery()
-            ->with(['content'])
-            ->category($this->getNavigationCategory()->value);
+        return $this->getModel()
+            ::scoped(['category' => $this->getNavigationCategory()->value])
+            ->withDepth();
     }
 
-    protected function getResource(): string
+    protected function getWithRelationQuery(): Builder
     {
-        return $this->resource;
+        return $this->getTreeQuery()->with(['children', 'content']);
     }
 
-    public function getTreeRootLevelKey(): null | string | int
+    protected function getSortedQuery(): Builder
     {
-        return app($this->getModel())->defaultParentKey();
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) { 
+            return $this->getWithRelationQuery()->defaultOrder();
+        }
+        return parent::getSortedQuery();
     }
 
-    public function getTreeRecordTitle(?\Illuminate\Database\Eloquent\Model $record = null): string
+    public function getRootLayerRecords(): \Illuminate\Support\Collection
+    {
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) { 
+            return $this->getRecords()->toTree();
+        }
+        return parent::getRootLayerRecords();
+    }
+
+    public function updateTree(?array $list = null): array
+    {
+        $model = $this->getModel();
+        $reload = false;
+
+        // Using "kalnoy/nestedset" package to handle tree structure
+        // "kalnoy/nestedset v6.0.4" for Laravel 11
+        // "kalnoy/nestedset v6.0.2" for Laravel 10
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($model))) { 
+            $this->getTreeQuery()->rebuildTree($list);
+            $reload = true;
+        }
+
+        if ($reload) {
+
+            Notification::make()
+                ->success()
+                ->title(__('filament-actions::edit.single.modal.actions.save.label'))
+                ->send();
+
+            // Reload data
+            $this->dispatch('refreshTree');
+        }
+
+        return ['reload' => $reload];
+    }
+
+    public function getTreeRecordTitle(?Model $record = null): string
     {
         if (! $record) {
             return '';
@@ -106,8 +146,14 @@ abstract class BaseTreeNavigation extends BaseWidget
             </p>
         Html);
     }
+    //endregion Tree Configuration
 
     //region Helpers
+    protected function getResource(): string
+    {
+        return $this->resource;
+    }
+
     protected function authorizeAction(string $action): bool
     {
         $result = PermissionManifest::authorizeModel($action, $this->getModel(), true);
@@ -141,6 +187,11 @@ abstract class BaseTreeNavigation extends BaseWidget
         parent::configureEditAction($action);
 
         $action->form(fn ($form) => $this->getResource()::form($form));
+
+        $action->after(function () {
+            // refresh other tree widget
+            $this->dispatch('refreshAllTree');
+        });
 
         return $action;
     }

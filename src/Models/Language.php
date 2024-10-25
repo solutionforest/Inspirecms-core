@@ -68,12 +68,14 @@ class Language extends BaseModel implements LanguageContract
                 });
             }
             InspireCms::forgetCachedLanguages();
+            InspireCms::forgetCachedNavigation();
         });
         static::deleting(function (self $model) {
             if ($model->is_default) {
                 throw new \Exception('Cannot delete default language');
             }
             InspireCms::forgetCachedLanguages();
+            InspireCms::forgetCachedNavigation();
         });
     }
 }

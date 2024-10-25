@@ -3,13 +3,9 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Models\Navigation;
-use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableDto;
 
-/**
- * @extends BaseTranslatableModelDto<Navigation>
- */
-class NavigationDto extends BaseTranslatableModelDto
+class NavigationDto extends BaseTranslatableDto
 {
     /**
      * @var array<string,string>
@@ -41,26 +37,18 @@ class NavigationDto extends BaseTranslatableModelDto
      */
     public $children;
 
-    public static function fromTranslatableModel($model, $locale)
+    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale)
     {
-        $model->loadMissing(['content', 'children']);
+        $dto = parent::fromTranslatableArray($parameters, $locale, $fallbackLocale);
 
-        $dto = parent::fromTranslatableModel($model, $locale);
-
-        $dto->url = collect(inspirecms()->getAllAvailableLanguages())
-            ->mapWithKeys(fn ($language) => [
-                $language->code => $model->getUrl($language),
-            ])
-            ->all();
-
-        $dto->children = collect($model->children)
-            ->map(fn ($child) => self::fromTranslatableModel($child, $locale))
+        $dto->children = collect($parameters['children'] ?? [])
+            ->map(fn ($child) => self::fromTranslatableArray($child, $locale, $fallbackLocale))
             ->values();
 
         return $dto;
     }
 
-    public function getTitle(?string $locale = null, bool $usingFallback = true): string
+    public function getTitle(?string $locale = null, bool $usingFallback = true): ?string
     {
         return $this->getTranslations($this->title, $locale, $usingFallback);
     }

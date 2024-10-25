@@ -15,6 +15,14 @@ enum NavigationCategory: string implements Interfaces\NavigationCategory
         };
     }
 
+    public function getColor(): string|array|null
+    {
+        return match ($this) {
+            self::Main => 'info',
+            self::Footer => 'success',
+        };
+    }
+
     public static function getDefaultValue(): Interfaces\NavigationCategory
     {
         return self::Main;
