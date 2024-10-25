@@ -163,7 +163,7 @@ return new class extends BaseMigration
             $table->index('route_pattern');
         });
         Schema::create($tableNames['navigation'], function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
 
             $table->uuid('content_id')->default('');
             $table->json('url')->nullable();

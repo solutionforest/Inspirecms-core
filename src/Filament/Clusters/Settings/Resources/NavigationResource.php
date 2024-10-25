@@ -65,6 +65,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->defaultGroup('category')
             ->modifyQueryUsing(fn ($query) => $query->with(['parent']))
             ->columns([
+
+                Tables\Columns\TextColumn::make('id')
+                    ->label(__('inspirecms::inspirecms.id')),
+
                 Tables\Columns\TextColumn::make('category')
                     ->label(__('inspirecms::inspirecms.category'))
                     ->badge()
@@ -73,8 +77,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->width('5%'),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title'))
-                    ->tooltip(fn ($record) => __('inspirecms::inspirecms.id') . ': ' . $record->getKey()),
+                    ->label(__('inspirecms::inspirecms.title')),
 
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label(__('inspirecms::inspirecms.parent'))

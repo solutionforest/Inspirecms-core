@@ -19,7 +19,6 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 class Navigation extends BaseModel implements NavigationContract
 {
     use Concerns\HasTranslations;
-    use HasUuids;
     use NodeTrait;
 
     protected $guarded = ['id'];
