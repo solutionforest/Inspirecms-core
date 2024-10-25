@@ -111,6 +111,7 @@ class CmsPanelProvider extends PanelProvider
                     InspireCmsConfig::get('filament.database_notification.polling_interval', '30s')
                 );
         }
+
         return $panel;
     }
 

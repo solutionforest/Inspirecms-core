@@ -66,8 +66,7 @@ abstract class BaseTreeNavigation extends BaseWidget
     //region Tree Configuration
     protected function getTreeQuery(): Builder
     {
-        return $this->getModel()
-            ::scoped(['category' => $this->getNavigationCategory()->value])
+        return $this->getModel()::scoped(['category' => $this->getNavigationCategory()->value])
             ->withDepth();
     }
 
@@ -78,17 +77,19 @@ abstract class BaseTreeNavigation extends BaseWidget
 
     protected function getSortedQuery(): Builder
     {
-        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) { 
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) {
             return $this->getWithRelationQuery()->defaultOrder();
         }
+
         return parent::getSortedQuery();
     }
 
     public function getRootLayerRecords(): \Illuminate\Support\Collection
     {
-        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) { 
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($this->getModel()))) {
             return $this->getRecords()->toTree();
         }
+
         return parent::getRootLayerRecords();
     }
 
@@ -100,7 +101,7 @@ abstract class BaseTreeNavigation extends BaseWidget
         // Using "kalnoy/nestedset" package to handle tree structure
         // "kalnoy/nestedset v6.0.4" for Laravel 11
         // "kalnoy/nestedset v6.0.2" for Laravel 10
-        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($model))) { 
+        if (in_array('Kalnoy\Nestedset\NodeTrait', class_uses_recursive($model))) {
             $this->getTreeQuery()->rebuildTree($list);
             $reload = true;
         }

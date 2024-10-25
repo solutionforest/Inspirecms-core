@@ -15,7 +15,7 @@ enum NavigationCategory: string implements Interfaces\NavigationCategory
         };
     }
 
-    public function getColor(): string|array|null
+    public function getColor(): string | array | null
     {
         return match ($this) {
             self::Main => 'info',

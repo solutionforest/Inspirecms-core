@@ -37,5 +37,5 @@ interface Navigation
      */
     public static function getNavigationTypeEnumClass(): string;
 
-    public static function defaultContentId(): string|int|null;
+    public static function defaultContentId(): string | int | null;
 }

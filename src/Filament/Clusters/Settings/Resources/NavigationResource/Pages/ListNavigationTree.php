@@ -12,8 +12,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationRes
 
 class ListNavigationTree extends BaseManagePage
 {
-    use Translatable;
     use NavigationListPageTrait;
+    use Translatable;
 
     /**
      * @var view-string

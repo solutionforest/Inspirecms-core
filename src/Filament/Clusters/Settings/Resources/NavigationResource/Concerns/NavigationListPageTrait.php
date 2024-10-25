@@ -14,7 +14,7 @@ trait NavigationListPageTrait
         if ($value == 'tree') {
             $value = 'index';
         }
-        $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), $value, [] , false);
+        $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), $value, [], false);
         $this->redirect($url);
     }
 
@@ -25,13 +25,15 @@ trait NavigationListPageTrait
         return collect($pages)->mapWithKeys(
             function ($page) {
                 $key = ($page == 'index' ? 'tree' : $page);
+
                 return [
                     $key => Tab::make()
                         ->label(__('inspirecms::inspirecms.' . $key)),
                 ];
-            })->all();
+            }
+        )->all();
     }
- 
+
     public function getDefaultActiveTab(): string | int | null
     {
         switch (true) {

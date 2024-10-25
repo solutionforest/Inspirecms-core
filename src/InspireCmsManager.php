@@ -167,6 +167,7 @@ class InspireCmsManager
                         ->values()
                         ->all();
                 }
+
                 return $data;
             })
             ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code))
@@ -246,23 +247,27 @@ class InspireCmsManager
                             $language->code => $navigation->getUrl($language),
                         ])
                         ->all();
+
                     break;
-                case 'children': 
+                case 'children':
                     $value = collect($navigation->{$attribute})
                         ->map(fn ($child) => $this->aliasedNavigation($alias, $child))
                         ->values()
                         ->all();
+
                     break;
                 case class_uses_recursive($navigation, \Spatie\Translatable\HasTranslations::class) &&
-                    in_array($attribute, $navigation->getTranslatableAttributes()):
+                in_array($attribute, $navigation->getTranslatableAttributes()):
                     $value = collect($allLanguages)
                         ->mapWithKeys(fn ($language) => [
                             $language->code => $navigation->getTranslation($attribute, $language->code),
                         ])
                         ->all();
+
                     break;
                 default:
                     $value = $navigation->getAttribute($attribute);
+
                     break;
             }
             $result[$key] = $value;

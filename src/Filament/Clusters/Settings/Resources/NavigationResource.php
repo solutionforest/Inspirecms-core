@@ -79,7 +79,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('parent.title')
                     ->label(__('inspirecms::inspirecms.parent'))
                     ->tooltip(fn ($record) => ($parentId = $record->parent?->getKey()) ? __('inspirecms::inspirecms.id') . ': ' . $parentId : null),
-                    
+
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.url'), [
                     Tables\Columns\TextColumn::make('type')
                         ->label(__('inspirecms::inspirecms.type'))
@@ -179,8 +179,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->markAsRequired()
             ->visible(fn ($get) => $requiredOrDisplayIfContent($get('type')))
             ->afterStateHydrated(function ($state, $component) {
-                if (empty($state) || 
-                    is_null($state) || 
+                if (empty($state) ||
+                    is_null($state) ||
                     (is_string($state) && $state == app(static::getModel())::defaultContentId())
                 ) {
                     $state = [];

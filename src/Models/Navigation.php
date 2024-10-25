@@ -104,7 +104,7 @@ class Navigation extends BaseModel implements NavigationContract
     }
     //endregion Node
 
-    public static function defaultContentId(): string|int|null
+    public static function defaultContentId(): string | int | null
     {
         return KeyHelper::generateMinUuid();
     }
@@ -138,7 +138,7 @@ class Navigation extends BaseModel implements NavigationContract
             if (blank($model->category)) {
                 $model->category = static::getNavigationCategoryEnumClass()::getDefaultValue()->value;
             }
-            
+
             // If the category is changed, make the model root
             if ($model->isDirty('category')) {
                 $model->makeRoot();

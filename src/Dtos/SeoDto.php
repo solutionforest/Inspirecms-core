@@ -8,136 +8,189 @@ class SeoDto extends BaseDto
 {
     /**
      *  The title of the content.
+     *
      * @var string
      */
     public $title;
+
     /**
      *  The description of the content.
+     *
      * @var string
      */
     public $description;
+
     /**
      *  The keywords associated with the content.
+     *
      * @var string
      */
     public $keywords;
+
     /**
      *  The URL of the image associated with the content.
+     *
      * @var string
      */
     public $image;
+
     /**
      *  The URL of the content.
+     *
      * @var string
      */
     public $url;
+
     /**
      *  The type of the content (e.g., article, video).
+     *
      * @var string
      */
     public $type;
+
     /**
      *  The name of the site.
+     *
      * @var string
      */
     public $siteName;
+
     /**
      *  The locale of the content.
+     *
      * @var string
      */
     public $locale;
+
     /**
      *  The published time of the content.
+     *
      * @var string
      */
     public $publishedTime;
+
     /**
      *  The last modified time of the content.
+     *
      * @var string
      */
     public $modifiedTime;
+
     /**
      *  The author of the content.
+     *
      * @var string
      */
     public $author;
+
     /**
      *  The section of the site where the content is located.
+     *
      * @var string
      */
     public $section;
+
     /**
      *  The tag associated with the content.
+     *
      * @var string
      */
     public $tag;
+
     /**
      *  The category of the content.
+     *
      * @var string
      */
     public $category;
+
     /**
      *  The canonical URL of the content.
+     *
      * @var string
      */
     public $canonical;
+
     /**
      *  The alternate URL of the content.
+     *
      * @var string
      */
     public $alternate;
+
     /**
      *  The AMP HTML version of the content.
+     *
      * @var string
      */
     public $ampHtml;
+
     /**
      *  The AMP version of the content.
+     *
      * @var string
      */
     public $amp;
+
     /**
      *  Indicates whether the content should not be indexed by search engines.
+     *
      * @var string
      */
     public $noIndex;
+
     /**
      *  Indicates whether search engines should not follow links on the content.
+     *
      * @var string
      */
     public $noFollow;
+
     /**
      *  Indicates whether the content should not be archived by search engines.
+     *
      * @var string
      */
     public $noArchive;
+
     /**
      *  Indicates whether search engines should not show a snippet of the content.
+     *
      * @var string
      */
     public $noSnippet;
+
     /**
      *  Indicates whether the content should not be included in the Open Directory Project.
+     *
      * @var string
      */
     public $noOdp;
+
     /**
      *  Indicates whether the content should not be included in Yahoo Directory.
+     *
      * @var string
      */
     public $noYdir;
+
     /**
      *  Indicates whether images on the content should not be indexed by search engines.
+     *
      * @var string
      */
     public $noImageIndex;
+
     /**
      *  Indicates whether the content should not be translated by search engines.
+     *
      * @var string
      */
     public $noTranslate;
+
     /**
      *  Indicates whether the content should not be cached by search engines.
+     *
      * @var string
      */
     public $noCache;

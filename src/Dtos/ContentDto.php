@@ -137,7 +137,7 @@ class ContentDto extends BaseTranslatableModelDto
                     $seoData[$value] = $dataBefore[$key] ?? false;
                 }
             }
-            
+
             $this->seo = SeoDto::fromArray($seoData);
         }
     }

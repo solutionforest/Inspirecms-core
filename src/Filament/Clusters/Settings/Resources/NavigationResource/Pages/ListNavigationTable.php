@@ -10,8 +10,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationRes
 
 class ListNavigationTable extends BaseManagePage
 {
-    use Translatable;
     use NavigationListPageTrait;
+    use Translatable;
 
     protected function getHeaderActions(): array
     {
