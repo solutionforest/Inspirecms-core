@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static array<string,\SolutionForest\InspireCms\Dtos\LanguageDto> getAllAvailableLanguages()
  * @method static ?\SolutionForest\InspireCms\Dtos\LanguageDto getFallbackLanguage()
  * @method static void forgetCachedLanguages()
+ * @method static \SolutionForest\InspireCms\Dtos\NavigationDto[] getNavigation(string $category, ?string $locale = null)
+ * @method static void forgetCachedNavigation()
  *
  * @see \SolutionForest\InspireCms\InspireCmsManager
  */

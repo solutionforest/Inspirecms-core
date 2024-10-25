@@ -146,9 +146,11 @@ class InspireCmsManager
         $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
     }
 
+    /**
+     * @return NavigationDto[]
+     */
     public function getNavigation(string $category, ?string $locale = null): array
     {
-        // todo: cache navigation
         if (! $this->cachedNavigation) {
             $this->cachedNavigation = $this->cacheManager->remember(
                 config('inspirecms.cache.navigation.key'),
