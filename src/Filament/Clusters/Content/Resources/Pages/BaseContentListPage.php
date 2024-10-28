@@ -30,6 +30,10 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
 
     public function getTabs(): array
     {
+        // avoid to display table (performance tuning)
+        if (! $this->isDisplayTable()) {
+            return [];
+        }
         return inspirecms_content_statuses()->all()
             ->mapWithKeys(
                 fn (ContentStatusOption $option) => [
