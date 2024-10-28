@@ -21,7 +21,7 @@ trait CmsUserTrait
             return true;
         }
 
-        if (!$this->is_active) {
+        if (! $this->is_active) {
             return false;
         }
 
@@ -59,7 +59,7 @@ trait CmsUserTrait
             case UserActivity::Login:
 
                 $this->updateQuietly(['last_logged_in_at' => now()]);
-    
+
                 $this->userActivity()->updateOrCreate([
                     'ip_address' => request()->ip(),
                 ], [
@@ -67,7 +67,7 @@ trait CmsUserTrait
                 ]);
 
                 break;
-            
+
             case UserActivity::Logout:
 
                 $this->userActivity()->updateOrCreate([
@@ -75,20 +75,20 @@ trait CmsUserTrait
                 ], [
                     'last_logged_out_at_utc' => now()->utc(),
                 ]);
-                
+
                 break;
 
             case UserActivity::FailedLogin:
 
                 $failedLoginAttempt = $user->failed_login_attempt ?? 0;
                 $failedLoginAttempt += 1;
-    
+
                 if ($this->hasExceededMaxLoginAttempts($failedLoginAttempt)) {
                     $this->last_lockouted_at = now();
                 }
-    
+
                 $this->failed_login_attempt = $failedLoginAttempt;
-    
+
                 $this->saveQuietly();
 
                 break;
@@ -122,7 +122,7 @@ trait CmsUserTrait
     {
         $lockoutDuration = InspireCmsConfig::get('auth.lockout_duration', 5);
 
-        if (!$this->hasExceededMaxLoginAttempts($this->failed_login_attempt ?? 0)) {
+        if (! $this->hasExceededMaxLoginAttempts($this->failed_login_attempt ?? 0)) {
             return true;
         }
 

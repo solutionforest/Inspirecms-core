@@ -9,12 +9,12 @@ class IndexingModel
     use SerializesModels;
 
     /**
-     * @var \Illuminate\Database\Eloquent\Mode $model The model associated with the index.
+     * @var \Illuminate\Database\Eloquent\Mode The model associated with the index.
      */
     public $model;
 
     /**
-     * @var array $data The data associated with the index model.
+     * @var array The data associated with the index model.
      */
     public $data;
 

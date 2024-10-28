@@ -63,7 +63,7 @@ trait HasContentVersions
 
         $isSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive(static::class));
 
-        static::deleting(function (self $model)  use ($isSoftDeletes) {
+        static::deleting(function (self $model) use ($isSoftDeletes) {
             event(new ContentEvents\RegenerateSitemap($model, 'deleting'));
 
             if (! $isSoftDeletes) {
@@ -73,7 +73,7 @@ trait HasContentVersions
         });
 
         if ($isSoftDeletes) {
-            
+
             static::restoring(function (self $model) {
                 event(new ContentEvents\RegenerateSitemap($model, 'restoring'));
             });

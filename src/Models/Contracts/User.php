@@ -32,7 +32,7 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     /**
      * Determine if the user has exceeded the maximum number of login attempts.
      *
-     * @param int $attempt The current number of login attempts.
+     * @param  int  $attempt  The current number of login attempts.
      * @return bool True if the maximum number of login attempts has been exceeded, false otherwise.
      */
     public function hasExceededMaxLoginAttempts($attempt): bool;

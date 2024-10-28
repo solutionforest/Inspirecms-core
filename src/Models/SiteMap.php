@@ -59,7 +59,7 @@ class SiteMap extends BaseModel implements SiteMapContract
     public function generateSitemapItem(): array
     {
         $languages = InspireCms::getAllAvailableLanguages();
-        
+
         $urls = collect($languages)->map(function ($language) {
             return [
                 'code' => $language->code,

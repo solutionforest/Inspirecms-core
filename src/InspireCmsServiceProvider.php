@@ -13,7 +13,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
-use SolutionForest\InspireCms\Events;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;

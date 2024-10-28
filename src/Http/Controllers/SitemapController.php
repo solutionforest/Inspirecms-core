@@ -11,7 +11,7 @@ class SitemapController extends Controller
     {
         $filePath = InspireCmsConfig::get('routes.sitemap.file_path');
 
-        if (!file_exists($filePath)) {
+        if (! file_exists($filePath)) {
             abort(404);
         }
 
