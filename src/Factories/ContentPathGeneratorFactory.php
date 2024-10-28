@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Support\PathGenerators\ContentPathGeneratorInterface;
+use SolutionForest\InspireCms\PathGenerators\ContentPathGeneratorInterface;
 
 class ContentPathGeneratorFactory
 {

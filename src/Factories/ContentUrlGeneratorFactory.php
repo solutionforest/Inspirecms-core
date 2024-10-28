@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Support\UrlGenerators\ContentUrlGeneratorInterface;
+use SolutionForest\InspireCms\UrlGenerators\ContentUrlGeneratorInterface;
 
 class ContentUrlGeneratorFactory
 {
