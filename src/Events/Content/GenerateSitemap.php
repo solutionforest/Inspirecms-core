@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Queue\SerializesModels;
 
-class RegenerateSitemap
+class GenerateSitemap
 {
     use SerializesModels;
 

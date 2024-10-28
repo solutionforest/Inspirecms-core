@@ -276,7 +276,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         //endregion User Auth Activity
 
         //region Content
-        Event::listen(Events\Content\RegenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
+        Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
         //endregion Content
     }
 

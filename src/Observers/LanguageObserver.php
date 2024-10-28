@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
-use SolutionForest\InspireCms\Events\Content\RegenerateSitemap;
+use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 
@@ -42,7 +42,7 @@ class LanguageObserver
      */
     public function updated(Language | Model $model)
     {
-        event(new RegenerateSitemap($model, 'updated'));
+        event(new GenerateSitemap($model, 'updated'));
     }
 
     /**
@@ -57,7 +57,7 @@ class LanguageObserver
             throw new \Exception('Cannot delete default language');
         }
 
-        event(new RegenerateSitemap($model, 'updated'));
+        event(new GenerateSitemap($model, 'updated'));
         $this->clearCached();
     }
 
