@@ -17,6 +17,11 @@ return [
 
     'auth' => [
         'guard' => 'inspirecms',
+        'failed_login_attempts' => 5,
+        /**
+         * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
+         */
+        'lockout_duration' => 120,
     ],
 
     'avatar' => [

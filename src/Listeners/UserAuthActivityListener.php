@@ -8,11 +8,13 @@ use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use SolutionForest\InspireCms\Models\CmsUser;
+use SolutionForest\InspireCms\Base\Enums\UserActivity;
+use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserAuthActivityListener
 {
@@ -39,16 +41,11 @@ class UserAuthActivityListener
 
         $this->wrapInDatabaseTransaction(function () use ($event) {
 
-            /** @var Model|CmsUser */
+            /** @var Model|User */
             $user = $event->user;
 
-            $user->updateQuietly(['last_logged_in_at' => now()]);
+            $user->handleActivity(UserActivity::Login);
 
-            $user->userActivity()->updateOrCreate([
-                'ip_address' => request()->ip(),
-            ], [
-                'last_logged_in_at_utc' => now()->utc(),
-            ]);
         });
     }
 
@@ -65,14 +62,11 @@ class UserAuthActivityListener
 
         $this->wrapInDatabaseTransaction(function () use ($event) {
 
-            /** @var Model|CmsUser */
+            /** @var Model|User */
             $user = $event->user;
 
-            $user->userActivity()->updateOrCreate([
-                'ip_address' => request()->ip(),
-            ], [
-                'last_logged_out_at_utc' => now()->utc(),
-            ]);
+            $user->handleActivity(UserActivity::Logout);
+
         });
     }
 
@@ -87,7 +81,7 @@ class UserAuthActivityListener
             return;
         }
 
-        /** @var Model|CmsUser|null */
+        /** @var Model|User|null */
         $user = null;
 
         if (is_null($event->user)) {
@@ -98,7 +92,7 @@ class UserAuthActivityListener
             /** @var EloquentUserProvider $provider */
             $provider = $authGuard->getProvider();
 
-            /** @var Model|CmsUser|null */
+            /** @var Model|User|null */
             $user = $provider->getModel()::query()
                 ->where('email', $event->credentials['email'] ?? null)
                 ->first();
@@ -113,17 +107,8 @@ class UserAuthActivityListener
                 return;
             }
 
-            $failedLoginAttempt = $user->failed_login_attempt ?? 0;
-            $failedLoginAttempt += 1;
+            $user->handleActivity(UserActivity::FailedLogin);
 
-            // TODO: put at config && put this logic on Login page
-            if ($failedLoginAttempt >= 5) {
-                $user->last_lockouted_at = now();
-            }
-
-            $user->failed_login_attempt = $failedLoginAttempt;
-
-            $user->saveQuietly();
         });
     }
 
@@ -139,11 +124,11 @@ class UserAuthActivityListener
         }
 
         $this->wrapInDatabaseTransaction(function () use ($event) {
-            /** @var Model|CmsUser */
+            /** @var Model|User */
             $user = $event->user;
-            $user->updateQuietly([
-                'last_password_change_date' => now(),
-            ]);
+
+            $user->handleActivity(UserActivity::PasswordReset);
+
         });
     }
 

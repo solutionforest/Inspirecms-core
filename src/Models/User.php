@@ -21,6 +21,10 @@ class User extends BaseAuthenticatableModel implements UserContract
         'remember_token',
     ];
 
+    protected $appends = [
+        'is_active',
+    ];
+
     protected $casts = [
         'last_lockouted_at' => 'datetime',
         'last_password_change_date' => 'datetime',
