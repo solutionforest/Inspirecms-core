@@ -804,47 +804,47 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->aside()
                     ->statePath('robots')
                     ->schema([
-                            Forms\Components\Toggle::make('noindex')
-                                ->label(__('inspirecms::resources/content.seo.robots.noindex.label'))
-                                ->helperText(__('inspirecms::resources/content.seo.robots.noindex.instructions')),
-                            Forms\Components\Toggle::make('nofollow')
-                                ->label(__('inspirecms::resources/content.seo.robots.nofollow.label'))
-                                ->helperText(__('inspirecms::resources/content.seo.robots.nofollow.instructions')),
-                        ]),
+                        Forms\Components\Toggle::make('noindex')
+                            ->label(__('inspirecms::resources/content.seo.robots.noindex.label'))
+                            ->helperText(__('inspirecms::resources/content.seo.robots.noindex.instructions')),
+                        Forms\Components\Toggle::make('nofollow')
+                            ->label(__('inspirecms::resources/content.seo.robots.nofollow.label'))
+                            ->helperText(__('inspirecms::resources/content.seo.robots.nofollow.instructions')),
+                    ]),
                 Forms\Components\Section::make()
                     ->heading(__('inspirecms::resources/content.redirect.heading'))
                     ->aside()
                     ->schema([
-                            Forms\Components\TextInput::make('redirect_path')
-                                ->label(__('inspirecms::resources/content.redirect.redirect_path.label'))
-                                ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
-                                ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
-                            \SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker::make('redirect_content_id')
-                                ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
-                                ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
-                                ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
-                                ->dehydrateStateUsing(fn ($state) => $state[0] ?? KeyHelper::generateMinUuid())
-                                ->afterStateHydrated(function ($component, $state) {
+                        Forms\Components\TextInput::make('redirect_path')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_path.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
+                        \SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker::make('redirect_content_id')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
+                            ->dehydrateStateUsing(fn ($state) => $state[0] ?? KeyHelper::generateMinUuid())
+                            ->afterStateHydrated(function ($component, $state) {
 
-                                    if (is_null($state) || $state == 0 || $state == KeyHelper::generateMinUuid()) {
-                                        $component->state([]);
-                                    } elseif (is_string($state)) {
-                                        $component->state([$state]);
-                                    } else {
-                                        $component->state($state);
-                                    }
-                                })
-                                ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
-                                ->maxItems(1),
-                            Forms\Components\Select::make('redirect_type')
-                                ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))
-                                ->placeholder(__('inspirecms::resources/content.redirect.redirect_type.placeholder'))
-                                ->helperText(__('inspirecms::resources/content.redirect.redirect_type.instructions'))
-                                ->options([
-                                    301 => __('inspirecms::resources/content.redirect.redirect_type.301'),
-                                    302 => __('inspirecms::resources/content.redirect.redirect_type.302'),
-                                ]),
-                        ]),
+                                if (is_null($state) || $state == 0 || $state == KeyHelper::generateMinUuid()) {
+                                    $component->state([]);
+                                } elseif (is_string($state)) {
+                                    $component->state([$state]);
+                                } else {
+                                    $component->state($state);
+                                }
+                            })
+                            ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
+                            ->maxItems(1),
+                        Forms\Components\Select::make('redirect_type')
+                            ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))
+                            ->placeholder(__('inspirecms::resources/content.redirect.redirect_type.placeholder'))
+                            ->helperText(__('inspirecms::resources/content.redirect.redirect_type.instructions'))
+                            ->options([
+                                301 => __('inspirecms::resources/content.redirect.redirect_type.301'),
+                                302 => __('inspirecms::resources/content.redirect.redirect_type.302'),
+                            ]),
+                    ]),
             ]);
     }
 
