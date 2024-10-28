@@ -16,7 +16,7 @@ class ContentObserver
     public function restoring(Content | Model $model)
     {
         // Prevent auditing of the model when it is being restored.
-        $model->setCanAudit(false);
+        $model->setCanAddNewConentVersion(false);
 
         // Keep the status of the model when it is being restoring
         // since "restore" event will call "save" method to update the model.
@@ -35,6 +35,6 @@ class ContentObserver
     public function resotred(Content | Model $model)
     {
         // Re-enable auditing of the model after it has been restored.
-        $model->setCanAudit(true);
+        $model->setCanAddNewConentVersion(true);
     }
 }

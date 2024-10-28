@@ -562,9 +562,44 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\Section::make()
             ->schema([
-                static::getDisplayIsPublishedFormComponent(),
-                static::getDisplayPublishedAtFormComponent(),
-                static::getDisplayStatusFormComponent(),
+                Forms\Components\Placeholder::make('display_is_published')
+                    ->label(__('inspirecms::resources/content.is_published.label'))
+                    ->inlineLabel()
+                    ->extraAttributes(['class' => 'flex align-items-center h-full'])
+                    ->content(function (Model | ModelsContent | null $record) {
+                        if (is_null($record)) {
+                            return null;
+                        }
+
+                        return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+                    }),
+                    
+                Forms\Components\Placeholder::make('display_published_at')
+                    ->content(fn (Model | ModelsContent | null $record) => $record->getPublishTime())
+                    ->label(__('inspirecms::resources/content.published_at.label'))
+                    ->inlineLabel(),
+                    
+                Forms\Components\Placeholder::make('display_latest_published_at')
+                    ->content(fn (Model | ModelsContent | null $record) => $record->getLatestPublishedTime())
+                    ->label(__('inspirecms::resources/content.latest_published_at.label'))
+                    ->inlineLabel(),
+
+                Forms\Components\Placeholder::make('display_status')
+                    ->label(__('inspirecms::resources/content.status.label'))
+                    ->inlineLabel()
+                    ->content(function (Model | ModelsContent | null $record) {
+                        if (is_null($record)) {
+                            return null;
+                        }
+        
+                        $status = inspirecms_content_statuses()->getOption($record->status);
+        
+                        if (! $status) {
+                            return null;
+                        }
+        
+                        return UIHelper::generateBadge($status->getLabel(), $status->getColor(), $status->getIcon());
+                    }),
             ])
             ->columns(['default' => 1]);
     }
@@ -585,56 +620,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             )
             ->default(now())
             ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getDisplayPublishedAtFormComponent()
-    {
-        return Forms\Components\Placeholder::make('published_at')
-            ->content(fn (Model | ModelsContent | null $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at)
-            ->label(__('inspirecms::resources/content.published_at.label'))
-            ->inlineLabel();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getDisplayIsPublishedFormComponent()
-    {
-        return Forms\Components\Placeholder::make('display_is_published')
-            ->label(__('inspirecms::resources/content.is_published.label'))
-            ->inlineLabel()
-            ->extraAttributes(['class' => 'flex align-items-center h-full'])
-            ->content(function (Model | ModelsContent | null $record) {
-                if (is_null($record)) {
-                    return null;
-                }
-
-                return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
-            });
-    }
-
-    /** @return Forms\Components\Field | Forms\Components\Component */
-    protected static function getDisplayStatusFormComponent()
-    {
-        return Forms\Components\Placeholder::make('display_status')
-            ->label(__('inspirecms::resources/content.status.label'))
-            ->inlineLabel()
-            ->content(function (Model | ModelsContent | null $record) {
-                if (is_null($record)) {
-                    return null;
-                }
-
-                $status = inspirecms_content_statuses()->getOption($record->status);
-
-                if (! $status) {
-                    return null;
-                }
-
-                return UIHelper::generateBadge($status->getLabel(), $status->getColor(), $status->getIcon());
-            });
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component */

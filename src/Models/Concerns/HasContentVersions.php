@@ -4,6 +4,8 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Events\Content as ContentEvents;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
@@ -16,28 +18,28 @@ trait HasContentVersions
      */
     protected string $publishableState = 'draft';
 
-    protected array $auditData = [];
+    protected array $contentVersionData = [];
 
     protected array $publishableData = [];
 
-    protected bool $canAudit = true;
+    protected bool $canAddContentVersion = true;
 
     public static function bootHasContentVersions()
     {
         static::saving(function (self $model) {
-            $model->auditData = $model->prepareAuditData();
+            $model->contentVersionData = $model->prepareContentVersionData();
         });
 
         static::saved(function (self $model) {
 
-            if ($model->canAudit) {
+            if ($model->canAddContentVersion) {
 
                 $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
                 $isPublishing = $statusOption && $statusOption->isPublishable();
 
                 $contentVersion = $model->contentVersions()->create([
-                    'from_data' => $model->auditData['from'] ?? [],
-                    'to_data' => $model->auditData['to'] ?? [],
+                    'from_data' => $model->contentVersionData['from'] ?? [],
+                    'to_data' => $model->contentVersionData['to'] ?? [],
                     'avoid_to_clean' => $isPublishing,
                 ]);
 
@@ -54,7 +56,7 @@ trait HasContentVersions
 
             $model->resetPublishableData();
             $model->resetPublishableState();
-            $model->resetAuditData();
+            $model->resetContentVersionData();
         });
 
         static::forceDeleting(function (self $model) {
@@ -86,19 +88,31 @@ trait HasContentVersions
         )->withPivot('published_at')->orderBy('published_at', 'desc')->using(InspireCmsConfig::getContentPublishVersionModelClass());
     }
 
-    /** {@inheritDoc} */
-    public function getLatestContentVersion(): ?ContentVersion
+    public function latestContentVersion(): HasOne
     {
-        $this->loadMissing('contentVersions');
+        return $this->hasOne(InspireCmsConfig::getContentVersionModelClass(), 'content_id')->latestOfMany();
+    }
 
-        return $this->contentVersions->sortByDesc('created_at')->first();
+    public function getPublishedVersions(): Collection
+    {
+        $this->loadMissing('publishedVersions');
+
+        return collect($this->publishedVersions);
+    }
+
+    protected function getOrderedPublishedVersions(): Collection
+    {
+        return $this->getPublishedVersions()->sortByDesc('pivot.published_at');
+    }
+
+    public function getLatestContentVersionHasPublish(): ?ContentVersion
+    {
+        return $this->getOrderedPublishedVersions()->first();
     }
 
     public function getLatestPublishedContentVersion(): ?ContentVersion
     {
-        $this->loadMissing('publishedVersions');
-
-        return $this->publishedVersions->first();
+        return $this->getOrderedPublishedVersions()->where(fn ($version) => $version?->pivot?->published_at?->isPast())->first();
     }
 
     /** {@inheritDoc} */
@@ -112,7 +126,9 @@ trait HasContentVersions
     /** {@inheritDoc} */
     public function getLatestVersionPropertyData(): array
     {
-        $latestContentVersion = $this->getLatestContentVersion();
+        $this->loadMissing('latestContentVersion');
+
+        $latestContentVersion = $this->latestContentVersion;
 
         return $this->mutateLatestVersionPropertyData($latestContentVersion);
     }
@@ -124,9 +140,9 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function setCanAudit(bool $canAudit): void
+    public function setCanAddNewConentVersion(bool $canAddContentVersion): void
     {
-        $this->canAudit = $canAudit;
+        $this->canAddContentVersion = $canAddContentVersion;
     }
 
     /** {@inheritDoc} */
@@ -192,16 +208,16 @@ trait HasContentVersions
         return [];
     }
 
-    protected function getAuditAttributes(): array
+    protected function getContentVersioingAttributes(): array
     {
-        return $this->auditAttributes ?? [];
+        return $this->contentVersionAttributes ?? [];
     }
 
-    protected function prepareAuditData(): array
+    protected function prepareContentVersionData(): array
     {
         $modelIsTranslatable = in_array(\Spatie\Translatable\HasTranslations::class, class_uses_recursive($this));
 
-        return collect($this->getAuditAttributes())
+        return collect($this->getContentVersioingAttributes())
             ->map(function ($attribute) use ($modelIsTranslatable): array {
 
                 $isTranslatable = $modelIsTranslatable && $this->isTranslatableAttribute($attribute);
@@ -227,9 +243,9 @@ trait HasContentVersions
             });
     }
 
-    protected function resetAuditData(): void
+    protected function resetContentVersionData(): void
     {
-        $this->auditData = [];
+        $this->contentVersionData = [];
     }
 
     protected function resetPublishableData(): void

@@ -139,6 +139,9 @@ return [
         'label' => '發布時間',
         'hint' => '如果設置為未來日期，則此頁面將在該時間自動發布。',
     ],
+    'latest_published_at' => [
+        'label' => '最新發布時間',
+    ],
     'url' => [
         'label' => 'URL',
     ],

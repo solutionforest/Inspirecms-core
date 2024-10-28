@@ -68,7 +68,7 @@ class UIHelper
         }
         if ($iconPosition == IconPosition::After) {
             return new HtmlString(Blade::render(<<<'blade'
-                <div class="flex gap-2">
+                <div class="flex items-center gap-2">
                     <span>
                         {{ $text }}
                     </span>
@@ -82,7 +82,7 @@ class UIHelper
         }
 
         return new HtmlString(Blade::render(<<<'blade'
-            <div class="flex gap-2">
+            <div class="flex items-center gap-2">
                 <x-filament::icon
                     icon="{{$icon}}"
                     class="h-5 w-5 text-custom-500 dark:text-custom-400"

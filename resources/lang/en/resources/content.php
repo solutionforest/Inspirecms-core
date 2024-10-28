@@ -139,6 +139,9 @@ return [
         'label' => 'Publish At',
         'hint' => 'If set to a future date, this page will be published automatically when that time is reached.',
     ],
+    'latest_published_at' => [
+        'label' => 'Latest Published At',
+    ],
     'url' => [
         'label' => 'URL',
     ],

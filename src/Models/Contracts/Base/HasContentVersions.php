@@ -4,6 +4,9 @@ namespace SolutionForest\InspireCms\Models\Contracts\Base;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Collections\VersionCollection;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
 interface HasContentVersions
@@ -26,11 +29,20 @@ interface HasContentVersions
     public function publishedVersions(): BelongsToMany;
 
     /**
-     * Retrieve the latest version of the content.
+     * Get the latest content version associated with the model.
      *
-     * @return ContentVersion|null The latest content version or null if none exists.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function getLatestContentVersion(): ?ContentVersion;
+    public function latestContentVersion(): HasOne;
+    
+    public function getPublishedVersions(): Collection;
+
+    /**
+     * Retrieve the latest content version that has been published.
+     *
+     * @return ContentVersion|null The latest published content version, or null if none exists.
+     */
+    public function getLatestContentVersionHasPublish(): ?ContentVersion;
 
     /**
      * Retrieve the latest published content version.
@@ -51,7 +63,7 @@ interface HasContentVersions
      *
      * @param  bool  $canAudit  Indicates whether auditing is enabled.
      */
-    public function setCanAudit(bool $canAudit): void;
+    public function setCanAddNewConentVersion(bool $canAudit): void;
 
     /**
      * Retrieve the data of the latest version property.
@@ -70,6 +82,20 @@ interface HasContentVersions
      * @return bool True if published, false otherwise.
      */
     public function isPublished(?\Closure $callback = null): bool;
+
+    /**
+     * Get the publish time of the content.
+     *
+     * @return \Carbon\Carbon|null The publish time of the content, or null if not set.
+     */
+    public function getPublishTime(): ?\Carbon\Carbon;
+
+    /**
+     * Get the latest published time (includes schedule publish).
+     *
+     * @return \Carbon\Carbon|null The latest published time or null if not available.
+     */
+    public function getLatestPublishedTime(): ?\Carbon\Carbon;
 
     /**
      * Set the publishable state.

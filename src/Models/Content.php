@@ -29,7 +29,7 @@ class Content extends BaseModel implements ContentContract
 {
     use BelongToNestableTree;
     use Concerns\HasContentVersions {
-        prepareAuditData as protected traitPrepareAuditData;
+        prepareContentVersionData as protected traitPrepareContentVersionData;
     }
     use Concerns\HasTemplates;
     use Concerns\HasTranslations {
@@ -96,9 +96,7 @@ class Content extends BaseModel implements ContentContract
 
     public function isPublished(?\Closure $callback = null): bool
     {
-        $latestContentVersion = $this->getLatestPublishedContentVersion();
-        /** @var ?\Carbon\Carbon */
-        $publishedAt = $latestContentVersion?->pivot?->published_at;
+        $publishedAt = $this->getPublishTime();
         $status = $this->status;
 
         // If there's no publish date, it's not published
@@ -106,30 +104,34 @@ class Content extends BaseModel implements ContentContract
             return false;
         }
 
-        // Check if the publish date is in the past
-        if ($publishedAt->isPast()) {
 
-            $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
-            if (is_null($unpublishOption)) {
-                throw new \Exception('At least one "unpublish" option is required in the manifest.');
-            }
-
-            switch ($status) {
-
-                case $unpublishOption->getValue():
-                    return false;
-
-                default:
-                    if ($callback) {
-                        return $callback($this, inspirecms_content_statuses()->getOption($status));
-                    }
-
-                    return true;
-            }
+        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        if (is_null($unpublishOption)) {
+            throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
 
+        switch ($status) {
+
+            case $unpublishOption->getValue():
+                return false;
+        }
+
+        if ($callback) {
+            return $callback($this, inspirecms_content_statuses()->getOption($status));
+        }
+
+        return true;
+    }
+
+    public function getPublishTime(): ?\Carbon\Carbon
+    {
         // If the publish date is in the future, it's not published
-        return false;
+        return $this->getLatestPublishedContentVersion()?->pivot?->published_at;
+    }
+
+    public function getLatestPublishedTime(): ?\Carbon\Carbon
+    {
+        return $this->getLatestContentVersionHasPublish()?->pivot?->published_at;
     }
 
     public function isWebPage(): bool
@@ -233,8 +235,7 @@ class Content extends BaseModel implements ContentContract
             $query
                 ->whereHas(
                     'publishedVersions',
-                    fn ($q) => $q
-                        ->where('published_at', '<', now())
+                    fn ($q) => $q->whereIsPublished()
                 )
                 ->whereNot('status', $unpublishOption->getValue());
 
@@ -245,8 +246,7 @@ class Content extends BaseModel implements ContentContract
                     fn ($q) => $q
                         ->orWhereDoesntHave(
                             'publishedVersions',
-                            fn ($q) => $q
-                                ->where('published_at', '<', now())
+                            fn ($q) => $q->whereIsPublished()
                         )
                         ->orWhere('status', $unpublishOption->getValue())
                 );
@@ -285,12 +285,12 @@ class Content extends BaseModel implements ContentContract
     }
     //endregion Factory
 
-    //region Audit
-    protected function prepareAuditData(): array
+    //region ContentVersion
+    protected function prepareContentVersionData(): array
     {
-        $data = $this->traitPrepareAuditData();
+        $data = $this->traitPrepareContentVersionData();
         $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
-        $data['to']['propertyData'] = $this->tempRelationData['propertyData'] ?? [];
+        $data['to']['propertyData'] = $this->tempRelationData['propertyData'] ?? $this->getLatestVersionPropertyData();
         unset($this->tempRelationData['propertyData']);
 
         return $data;
@@ -325,7 +325,7 @@ class Content extends BaseModel implements ContentContract
         return $this->traitGetTranslations($key, $allowedLocales);
     }
 
-    protected function getAuditAttributes(): array
+    protected function getContentVersioingAttributes(): array
     {
         return [
             'title',
@@ -335,7 +335,7 @@ class Content extends BaseModel implements ContentContract
             'parent_id',
         ];
     }
-    //endregion Audit
+    //endregion ContentVersion
 
     public static function boot()
     {
