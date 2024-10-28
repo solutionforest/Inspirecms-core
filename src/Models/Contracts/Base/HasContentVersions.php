@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Collections\VersionCollection;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
 interface HasContentVersions
@@ -30,11 +29,9 @@ interface HasContentVersions
 
     /**
      * Get the latest content version associated with the model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function latestContentVersion(): HasOne;
-    
+
     public function getPublishedVersions(): Collection;
 
     /**

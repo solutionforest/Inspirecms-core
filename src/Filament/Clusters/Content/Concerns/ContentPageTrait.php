@@ -174,11 +174,11 @@ trait ContentPageTrait
 
             $action
                 ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                ->hidden(fn (array $arguments) => $arguments['key'] === 'root' || !isset($arguments['key']));
+                ->hidden(fn (array $arguments) => $arguments['key'] === 'root' || ! isset($arguments['key']));
 
             if ($action instanceof ReorderContentAction) {
                 $action
-                    ->nodeParentId(function (array $arguments, null|Model $record) {
+                    ->nodeParentId(function (array $arguments, ?Model $record) {
                         // find from argument
                         if (is_null($record)) {
                             $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)

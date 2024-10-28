@@ -6,7 +6,6 @@ use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
@@ -39,14 +38,14 @@ class ReorderContentAction extends Action
                 ->whereAncesterOfTree($action->getNodeParentId())
                 ->sortedByTree()
                 ->get()
-                ->mapWithKeys(fn ($content) => [ 
+                ->mapWithKeys(fn ($content) => [
                     $content->getKey() => [
                         'id' => $content->getKey(),
                         'title' => $content->title,
                         'slug' => $content->slug,
-                    ]
+                    ],
                 ])
-                ->all()
+                ->all(),
         ]);
         $this->form([
             Repeater::make('contents')

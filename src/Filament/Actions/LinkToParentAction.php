@@ -44,7 +44,7 @@ class LinkToParentAction extends Action
         $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->form(
-            fn (Form $form, Model&Content $record) => $form
+            fn (Form $form, Model & Content $record) => $form
                 ->schema([
                     Toggle::make('as_root')
                         ->label(__('inspirecms::inspirecms.as_root'))
@@ -59,7 +59,7 @@ class LinkToParentAction extends Action
                 ])
         );
 
-        $this->action(function (array $data, Model&Content $record, Action $action) {
+        $this->action(function (array $data, Model & Content $record, Action $action) {
             if (! $record) {
                 return;
             }

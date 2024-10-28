@@ -104,7 +104,6 @@ class Content extends BaseModel implements ContentContract
             return false;
         }
 
-
         $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
         if (is_null($unpublishOption)) {
             throw new \Exception('At least one "unpublish" option is required in the manifest.');

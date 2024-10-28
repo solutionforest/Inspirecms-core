@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-interface ContentPublishVersion 
+interface ContentPublishVersion
 {
     public function content(): BelongsTo;
 

@@ -573,12 +573,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                         return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
                     }),
-                    
+
                 Forms\Components\Placeholder::make('display_published_at')
                     ->content(fn (Model | ModelsContent | null $record) => $record->getPublishTime())
                     ->label(__('inspirecms::resources/content.published_at.label'))
                     ->inlineLabel(),
-                    
+
                 Forms\Components\Placeholder::make('display_latest_published_at')
                     ->content(fn (Model | ModelsContent | null $record) => $record->getLatestPublishedTime())
                     ->label(__('inspirecms::resources/content.latest_published_at.label'))
@@ -591,13 +591,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         if (is_null($record)) {
                             return null;
                         }
-        
+
                         $status = inspirecms_content_statuses()->getOption($record->status);
-        
+
                         if (! $status) {
                             return null;
                         }
-        
+
                         return UIHelper::generateBadge($status->getLabel(), $status->getColor(), $status->getIcon());
                     }),
             ])

@@ -34,6 +34,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
         if (! $this->isDisplayTable()) {
             return [];
         }
+
         return inspirecms_content_statuses()->all()
             ->mapWithKeys(
                 fn (ContentStatusOption $option) => [
