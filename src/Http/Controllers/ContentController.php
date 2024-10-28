@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -33,7 +34,7 @@ class ContentController extends Controller
 
         // Redirect to the localized URL if needed
         if (blank($locale)) {
-            return $this->redirectToLocalizedUrl($slug ?? '', request()->getDefaultLocale());
+            return $this->redirectToLocalizedUrl($slug ?? '', $this->getDefaultLocale());
         }
 
         // Is index page
@@ -94,5 +95,10 @@ class ContentController extends Controller
         $url = $this->urlGenerator->getLocalizedUrl($slug, $locale);
 
         return redirect($url);
+    }
+
+    protected function getDefaultLocale(): string
+    {
+        return InspireCms::getFallbackLanguage()?->locale ?? app()->getLocale() ?? '';
     }
 }
