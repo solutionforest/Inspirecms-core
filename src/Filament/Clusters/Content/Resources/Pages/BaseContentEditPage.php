@@ -186,18 +186,14 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         switch (true) {
             case $action instanceof LinkToParentAction:
                 $action
-                    ->rootLevelKey(fn ($record) => $record->getNestableRootValue())
-                    ->parentIdColumnName(fn ($record) => $record->getNestableParentIdColumn())
                     ->hidden(
-                        fn ($record) => ! method_exists($record, 'getNestableRootValue') ||
-                        ! method_exists($record, 'getNestableParentIdColumn') ||
-                        $record->trashed()
+                        fn ($record) => $record->trashed()
                     );
 
                 break;
             case $action instanceof ReorderContentAction:
                 $action
-                    ->parentId(fn ($record) => $record->getParentId())
+                    ->nodeParentId(fn ($record) => $record->getParentNestableTreeId())
                     ->hidden(
                         fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()

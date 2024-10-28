@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class LinkToParentAction extends Action
@@ -40,15 +41,17 @@ class LinkToParentAction extends Action
 
         $this->groupedIcon('heroicon-o-link');
 
+        $this->model(InspireCmsConfig::getContentModelClass());
+
         $this->form(
-            fn (Form $form, Model $record) => $form
+            fn (Form $form, Model&Content $record) => $form
                 ->schema([
                     Toggle::make('as_root')
                         ->label(__('inspirecms::inspirecms.as_root'))
                         ->live(),
                     ContentPicker::make('parent')
                         ->label(__('inspirecms::resources/content.parent.label'))
-                        ->exceptRecord(fn () => [$record, $record->parent_id])
+                        ->exceptRecord(fn () => [$record, $record->getParentId()])
                         ->maxItems(1)
                         ->minItems(1)
                         ->perPage(5)
@@ -56,23 +59,19 @@ class LinkToParentAction extends Action
                 ])
         );
 
-        $this->action(function (array $data, Model $record, Action $action) {
+        $this->action(function (array $data, Model&Content $record, Action $action) {
             if (! $record) {
                 return;
             }
 
-            $parentIdColumnName = $this->getParentIdColumnName();
-
             if (isset($data['as_root']) && $data['as_root'] === true) {
 
-                $record->{$parentIdColumnName} = $this->getRootLevelKey();
+                $record->asRoot();
 
             } elseif (isset($data['parent'])) {
 
-                $record->{$parentIdColumnName} = $data['parent'][0];
+                $record->setParentNode($data['parent'][0]);
             }
-
-            $record->save();
 
             $action->success();
         });

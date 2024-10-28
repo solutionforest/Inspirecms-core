@@ -267,8 +267,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Filters\TernaryFilter::make('is_root_level')
                     ->label(__('inspirecms::resources/content.is_root_level.label'))
                     ->queries(
-                        true: fn (Builder $query) => $query->isRootLevel(condition: true),
-                        false: fn (Builder $query) => $query->isRootLevel(condition: false),
+                        true: fn (Builder $query) => $query->whereIsRoot(condition: true),
+                        false: fn (Builder $query) => $query->whereIsRoot(condition: false),
                         blank: fn (Builder $query) => $query,
                     )
                     ->hiddenOn([ChildrenRelationManager::class]),

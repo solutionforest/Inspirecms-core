@@ -14,6 +14,8 @@ use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
@@ -48,7 +50,8 @@ trait ContentPageTrait
             ->rootLevelKey($rootLevelKey)
             ->modifyQueryUsing(
                 fn ($query) => $query
-                    ->sorted()
+                    ->sortedByTree()
+                    ->withNestableTreeParentId()
                     ->withCount([
                         'children',
                     ])
@@ -85,9 +88,7 @@ trait ContentPageTrait
             })
             ->actions([
                 CreateContentAction::make(),
-                LinkToParentAction::make('item_link_to_parent')
-                    ->parentIdColumnName($parentIdColumn)
-                    ->rootLevelKey($rootLevelKey),
+                LinkToParentAction::make('item_link_to_parent'),
                 ReorderContentAction::make('reorder_content_item'),
                 Actions\Action::make('delete_item')
                     ->color('danger')
@@ -133,7 +134,7 @@ trait ContentPageTrait
 
             $item = $record instanceof Model ? $record : $this->resolveSelectedModelItem($record);
 
-            if ($item->parent?->documentType->isShowChildrenAsTable()) {
+            if ($item?->parent?->documentType->isShowChildrenAsTable()) {
                 $this->traitSetSelectedModelItem($item->parent);
 
                 return;
@@ -172,14 +173,24 @@ trait ContentPageTrait
         } elseif ($action instanceof LinkToParentAction || $action instanceof ReorderContentAction) {
 
             $action
-                ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                ->hidden(fn (array $arguments) => $arguments['key'] === 'root');
+                ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                ->hidden(fn (array $arguments) => $arguments['key'] === 'root' || !isset($arguments['key']));
 
             if ($action instanceof ReorderContentAction) {
                 $action
-                    ->parentId(
-                        fn (array $arguments, $record) => $record?->{$record?->getNestableParentIdColumn()} ?? $arguments['parent'] ?? null
-                    )
+                    ->nodeParentId(function (array $arguments, null|Model $record) {
+                        // find from argument
+                        if (is_null($record)) {
+                            $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
+                                // throw error if still null
+                                 ?? throw new \Exception('Record not found for the given parent ID.');
+                        }
+                        if (! $record instanceof Content) {
+                            throw new \Exception('The provided record is not an instance of the Content model.');
+                        }
+
+                        return $record->nestable_tree_parent_id;
+                    })
                     ->successRedirectUrl(function () {
                         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
                             return $this->getUrl(['record' => $this->getRecord()]);

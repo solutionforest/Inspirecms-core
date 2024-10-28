@@ -8,13 +8,12 @@ use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 
 class ReorderContentAction extends Action
 {
-    protected Closure | string | int | null $parentId = null;
+    protected Closure | string | int | null $nodeParentId = null;
 
     public static function getDefaultName(): ?string
     {
@@ -30,59 +29,50 @@ class ReorderContentAction extends Action
 
         $this->successNotificationTitle(__('inspirecms::actions.reorder_content.notifications.success.title'));
 
-        $this->model(InspireCmsConfig::getNestableTreeModelClass());
-
         $this->groupedIcon('heroicon-o-arrows-up-down');
 
         $contentModel = InspireCmsConfig::getContentModelClass();
+        $nestableTreeModel = InspireCmsConfig::getNestableTreeModelClass();
 
-        $this->form(function (Form $form, string $model, ?Model $record) use ($contentModel) {
-
-            $contents = $model::query()
-                ->whereHasMorph('nestable', [$contentModel])
-                ->parent($this->getParentId())
+        $this->fillForm(fn (ReorderContentAction $action) => [
+            'contents' => $contentModel::query()
+                ->whereAncesterOfTree($action->getNodeParentId())
+                ->sortedByTree()
                 ->get()
-                ->map(fn ($tree) => $tree->nestable)
-                ->map(fn ($content) => [
-                    'id' => $content->getKey(),
-                    'title' => $content->title,
-                    'slug' => $content->slug,
+                ->mapWithKeys(fn ($content) => [ 
+                    $content->getKey() => [
+                        'id' => $content->getKey(),
+                        'title' => $content->title,
+                        'slug' => $content->slug,
+                    ]
                 ])
-                ->all();
-
-            return $form
+                ->all()
+        ]);
+        $this->form([
+            Repeater::make('contents')
+                ->hiddenLabel()
+                ->addable(false)
+                ->deletable(false)
+                ->orderable()
+                ->columns(2)
                 ->schema([
-                    Repeater::make('contents')
-                        ->hiddenLabel()
-                        ->addable(false)
-                        ->deletable(false)
-                        ->orderable()
-                        ->afterStateHydrated(function (Repeater $component) use ($contents) {
-                            $state = collect($contents)
-                                ->mapWithKeys(fn ($data) => [$component->generateUuid() => $data])
-                                ->all();
-                            $component->state($state);
-                        })
-                        ->columns(2)
-                        ->schema([
-                            TextInput::make('id')
-                                ->hidden()
-                                ->dehydratedWhenHidden(),
-                            TextInput::make('title')
-                                ->label(__('inspirecms::resources/content.title.label'))
-                                ->inlineLabel()
-                                ->disabled(),
-                            TextInput::make('slug')
-                                ->label(__('inspirecms::resources/content.slug.label'))
-                                ->inlineLabel()
-                                ->disabled(),
-                        ]),
-                ]);
-        });
+                    TextInput::make('id')
+                        ->hidden()
+                        ->dehydratedWhenHidden(),
+                    TextInput::make('title')
+                        ->label(__('inspirecms::resources/content.title.label'))
+                        ->inlineLabel()
+                        ->disabled(),
+                    TextInput::make('slug')
+                        ->label(__('inspirecms::resources/content.slug.label'))
+                        ->inlineLabel()
+                        ->disabled(),
+                ]),
+        ]);
 
-        $this->action(function (array $data, string $model, Action $action) use ($contentModel) {
+        $this->action(function (array $data, Action $action) use ($contentModel, $nestableTreeModel) {
 
-            if (! in_array(NestableTree::class, class_implements($model))) {
+            if (! in_array(NestableTree::class, class_implements($nestableTreeModel))) {
 
                 Notification::make()
                     ->title(__('inspirecms::actions.reorder_content.notifications.invalid_model.title'))
@@ -98,9 +88,7 @@ class ReorderContentAction extends Action
 
             try {
 
-                $morphableType = app($contentModel)->getMorphClass();
-
-                $model::setNewOrderForNestable($sortedKeys, $morphableType);
+                $nestableTreeModel::setNewOrderForNestable($this->getNodeParentId(), $sortedKeys, $contentModel);
 
                 $action->success();
 
@@ -118,15 +106,15 @@ class ReorderContentAction extends Action
         });
     }
 
-    public function parentId(Closure | string | int $parentId): static
+    public function nodeParentId(Closure | string | int $nodeParentId): static
     {
-        $this->parentId = $parentId;
+        $this->nodeParentId = $nodeParentId;
 
         return $this;
     }
 
-    public function getParentId(): string | int | null
+    public function getNodeParentId(): string | int | null
     {
-        return $this->evaluate($this->parentId);
+        return $this->evaluate($this->nodeParentId);
     }
 }

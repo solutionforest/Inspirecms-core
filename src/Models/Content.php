@@ -255,15 +255,9 @@ class Content extends BaseModel implements ContentContract
 
     }
 
-    public function scopeIsRootLevel(Builder $query, bool $condition = true): void
-    {
-        $rootValue = $this->getNestableRootValue();
-        $query->where('parent_id', $condition ? $rootValue : '!=', $rootValue);
-    }
-
     public function scopeIsWebPage(Builder $query): void
     {
-        $query->whereHas('documentType', fn ($q) => $q->isWebPage());
+        $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }
 
     //endregion Scope(s)
@@ -278,11 +272,6 @@ class Content extends BaseModel implements ContentContract
     //endregion Attribute(s)
 
     //region Nestable
-    protected function fallbackParentId()
-    {
-        return $this->getNestableRootValue();
-    }
-
     public function getNestableRootValue(): int | string
     {
         return KeyHelper::generateMinUuid();
