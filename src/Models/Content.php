@@ -155,7 +155,6 @@ class Content extends BaseModel implements ContentContract
     {
         $this->loadMissing([
             'documentType',
-            'publishedVersions',
             'parent',
             'webSetting',
         ]);
@@ -165,7 +164,6 @@ class Content extends BaseModel implements ContentContract
             $this->getUpdatedAtColumn(),
             $this->getDeletedAtColumn(),
             'document_type',
-            'published_versions',
         ])->toArray();
 
         unset(
@@ -173,6 +171,7 @@ class Content extends BaseModel implements ContentContract
             $data['document_type'],
             $data['published_versions'],
             $data['parent'],
+            $data['web_setting'],
         );
 
         $data['title'] = $this->getTranslations('title');
@@ -189,6 +188,14 @@ class Content extends BaseModel implements ContentContract
         $data['document_type'] = [
             'title' => $this->documentType?->title,
             'slug' => $this->documentType?->slug,
+        ];
+
+        $data['web_setting'] = [
+            'seo' => $this->webSetting->seo ?? [],
+            'robots' => $this->webSetting->robots ?? [],
+            'redirect_type' => $this->webSetting->redirect_type ?? null,
+            'redirect_content_id' => $this->webSetting->redirect_content_id ?? null,
+            'redirect_path' => $this->webSetting->redirect_path ?? null,
         ];
 
         event(new Events\Indexes\IndexingModel($this, $data));
