@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
@@ -19,12 +20,14 @@ use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
+use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\BelongToNestableTree;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
+#[ObservedBy(ContentObserver::class)]
 class Content extends BaseModel implements ContentContract
 {
     use BelongToNestableTree;
@@ -153,6 +156,7 @@ class Content extends BaseModel implements ContentContract
             'documentType',
             'publishedVersions',
             'parent',
+            'webSetting',
         ]);
         $latestVersion = $this->getLatestPublishedContentVersion();
         $data = $this->makeHidden([

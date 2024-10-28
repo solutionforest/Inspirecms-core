@@ -101,7 +101,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerSupport();
         $this->customPlugins();
         $this->registerAuthGuard();
-        $this->registerObservers();
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
 
@@ -268,15 +267,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'driver' => 'session',
             'provider' => InspireCmsConfig::getGuardName(),
         ]);
-    }
-
-    protected function registerObservers(): void
-    {
-        $contentModel = Facades\ModelManifest::get(
-            \SolutionForest\InspireCms\Models\Contracts\Content::class
-        );
-
-        $contentModel::observe(Observers\ContentObserver::class);
     }
 
     protected function configureFilamentForm(): void
