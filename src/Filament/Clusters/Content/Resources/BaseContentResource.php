@@ -835,7 +835,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 }
                             })
                             ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
-                            ->maxItems(1),
+                            ->maxItems(1)
+                            ->minItems(0),
                         Forms\Components\Select::make('redirect_type')
                             ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_type.placeholder'))
