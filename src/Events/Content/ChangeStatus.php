@@ -9,7 +9,7 @@ class ChangeStatus
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Content
+     * @var \SolutionForest\InspireCms\Models\Contracts\Content|Model
      */
     public $content;
 

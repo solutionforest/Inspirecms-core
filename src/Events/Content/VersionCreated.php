@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Events\Content;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 
 class VersionCreated
@@ -9,12 +10,12 @@ class VersionCreated
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Content
+     * @var \SolutionForest\InspireCms\Models\Contracts\Content|Model
      */
     public $content;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\ContentVersion
+     * @var \SolutionForest\InspireCms\Models\Contracts\ContentVersion|Model
      */
     public $version;
 
