@@ -355,6 +355,11 @@ class Content extends BaseModel implements ContentContract
             InspireCms::forgetCachedNavigation();
         });
 
+        static::forceDeleting(function (self $model) {
+            $model->webSetting()->delete();
+            $model->siteMap()->delete();
+        });
+
         static::restoring(function (self $model) {
             InspireCms::forgetCachedNavigation();
         });
