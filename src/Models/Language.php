@@ -2,11 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Support\Facades\DB;
-use SolutionForest\InspireCms\Facades\InspireCms;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
+use SolutionForest\InspireCms\Observers\LanguageObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
+#[ObservedBy(LanguageObserver::class)]
 class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
@@ -48,34 +49,5 @@ class Language extends BaseModel implements LanguageContract
         );
 
         return $result;
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saving(function (self $model) {
-            if (blank($model->route_pattern)) {
-                $model->route_pattern = $model->code;
-            }
-            // Set "is_default" of other languages as false if this model is changing to "default"
-            if ($model->isDirty(['is_default']) && $model->is_default) {
-                DB::transaction(function () use ($model) {
-                    static::query()
-                        ->where('is_default', true)
-                        ->whereKeyNot($model->getKey())
-                        ->update(['is_default' => false]);
-                });
-            }
-            InspireCms::forgetCachedLanguages();
-            InspireCms::forgetCachedNavigation();
-        });
-        static::deleting(function (self $model) {
-            if ($model->is_default) {
-                throw new \Exception('Cannot delete default language');
-            }
-            InspireCms::forgetCachedLanguages();
-            InspireCms::forgetCachedNavigation();
-        });
     }
 }

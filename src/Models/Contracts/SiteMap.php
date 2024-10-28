@@ -11,7 +11,7 @@ interface SiteMap
     /**
      * Get the URL of the sitemap.
      */
-    public function getUrl(): string;
+    public function getUrl(?string $locale = null): string;
 
     /**
      * Get the last modified date of the sitemap.

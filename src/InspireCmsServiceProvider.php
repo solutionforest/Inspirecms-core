@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Events;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -104,22 +105,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
 
-        Event::listen(
-            AuthEvents\Login::class,
-            [Listeners\UserAuthActivityListener::class, 'login']
-        );
-        Event::listen(
-            AuthEvents\Logout::class,
-            [Listeners\UserAuthActivityListener::class, 'logout']
-        );
-        Event::listen(
-            AuthEvents\Failed::class,
-            [Listeners\UserAuthActivityListener::class, 'loginFailed']
-        );
-        Event::listen(
-            AuthEvents\PasswordReset::class,
-            [Listeners\UserAuthActivityListener::class, 'passwordReset']
-        );
+        $this->registerEvents();
     }
 
     public function packageBooted(): void
@@ -267,6 +253,32 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'driver' => 'session',
             'provider' => InspireCmsConfig::getGuardName(),
         ]);
+    }
+
+    protected function registerEvents(): void
+    {
+        //region User Auth Activity
+        Event::listen(
+            AuthEvents\Login::class,
+            [Listeners\UserAuthActivityListener::class, 'login']
+        );
+        Event::listen(
+            AuthEvents\Logout::class,
+            [Listeners\UserAuthActivityListener::class, 'logout']
+        );
+        Event::listen(
+            AuthEvents\Failed::class,
+            [Listeners\UserAuthActivityListener::class, 'loginFailed']
+        );
+        Event::listen(
+            AuthEvents\PasswordReset::class,
+            [Listeners\UserAuthActivityListener::class, 'passwordReset']
+        );
+        //endregion User Auth Activity
+
+        //region Content
+        Event::listen(Events\Content\RegenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
+        //endregion Content
     }
 
     protected function configureFilamentForm(): void

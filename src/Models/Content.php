@@ -16,7 +16,6 @@ use Laravel\Scout\Searchable;
 use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Events;
-use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
@@ -349,26 +348,4 @@ class Content extends BaseModel implements ContentContract
         ];
     }
     //endregion ContentVersion
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saving(function (self $model) {
-            InspireCms::forgetCachedNavigation();
-        });
-
-        static::deleting(function (self $model) {
-            InspireCms::forgetCachedNavigation();
-        });
-
-        static::forceDeleting(function (self $model) {
-            $model->webSetting()->delete();
-            $model->siteMap()->delete();
-        });
-
-        static::restoring(function (self $model) {
-            InspireCms::forgetCachedNavigation();
-        });
-    }
 }

@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Events\Content as ContentEvents;
@@ -50,6 +51,7 @@ trait HasContentVersions
                     $data['version_id'] = $contentVersion->getKey();
                     $publishVersion = $model->publishVersionLogs()->create($data);
 
+                    event(new ContentEvents\RegenerateSitemap($model, 'saved'));
                     event(new ContentEvents\PublishVersionCreated($model, $contentVersion, $publishVersion, $statusOption));
                 }
             }
@@ -59,10 +61,28 @@ trait HasContentVersions
             $model->resetContentVersionData();
         });
 
-        static::forceDeleting(function (self $model) {
-            $model->contentVersions()->delete();
-            $model->publishVersionLogs()->delete();
+        $isSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive(static::class));
+
+        static::deleting(function (self $model)  use ($isSoftDeletes) {
+            event(new ContentEvents\RegenerateSitemap($model, 'deleting'));
+
+            if (! $isSoftDeletes) {
+                $model->contentVersions()->delete();
+                $model->publishVersionLogs()->delete();
+            }
         });
+
+        if ($isSoftDeletes) {
+            
+            static::restoring(function (self $model) {
+                event(new ContentEvents\RegenerateSitemap($model, 'restoring'));
+            });
+
+            static::forceDeleting(function (self $model) {
+                $model->contentVersions()->delete();
+                $model->publishVersionLogs()->delete();
+            });
+        }
     }
 
     /** {@inheritDoc} */

@@ -3,10 +3,45 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentObserver
 {
+    /**
+     * Handle the Content "saving" event.
+     *
+     * @param  Content|Model  $model  The model instance being saving.
+     * @return void
+     */
+    public function saving(Content | Model $model)
+    {
+        $this->clearCached();
+    }
+
+    /**
+     * Handle the Content "deleting" event.
+     *
+     * @param  Content|Model  $model  The model instance being deleting.
+     * @return void
+     */
+    public function deleting(Content | Model $model)
+    {
+        $this->clearCached();
+    }
+
+    /**
+     * Handle the Content "forceDeleting" event.
+     *
+     * @param  Content|Model  $model  The model instance being forceDeleting.
+     * @return void
+     */
+    public function forceDeleting(Content | Model $model)
+    {
+        $model->webSetting()->delete();
+        $model->siteMap()->delete();
+    }
+
     /**
      * Handle the Content "restoring" event.
      *
@@ -15,8 +50,10 @@ class ContentObserver
      */
     public function restoring(Content | Model $model)
     {
-        // Prevent auditing of the model when it is being restored.
-        $model->setCanAddNewConentVersion(false);
+        $this->clearCached();
+
+        // Prevent saving the content version when the model is being restored.
+        $this->avoidSaveContentVersion($model);
 
         // Keep the status of the model when it is being restoring
         // since "restore" event will call "save" method to update the model.
@@ -34,7 +71,23 @@ class ContentObserver
      */
     public function resotred(Content | Model $model)
     {
-        // Re-enable auditing of the model after it has been restored.
+        $this->refreshSaveContentVersionFlag($model);
+    }
+
+    protected function avoidSaveContentVersion(Content | Model $model)
+    {
+        // Prevent saving the content version when the model is being restored.
+        $model->setCanAddNewConentVersion(false);
+    }
+
+    protected function refreshSaveContentVersionFlag(Content | Model $model)
+    {
+        // Re-enable save the conent version of the model after it has been restored.
         $model->setCanAddNewConentVersion(true);
+    }
+
+    protected function clearCached()
+    {
+        InspireCms::forgetCachedNavigation();
     }
 }

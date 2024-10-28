@@ -137,6 +137,9 @@ return [
             'web',
             \SolutionForest\InspireCms\Http\Middlewares\ContentLocaleMiddleware::class,
         ],
+        'sitemap' => [
+            'file_path' => public_path('site-map.xml'),
+        ],
     ],
 
     'available_locales' => [
