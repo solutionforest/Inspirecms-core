@@ -263,7 +263,9 @@ class PaginationPicker extends Field
 
         $orderedState = [];
         foreach ($state as $key) {
-            $orderedState[$key] = $formattedState[$key];
+            if (array_key_exists($key, $formattedState)) {
+                $orderedState[$key] = $formattedState[$key];
+            }
         }
 
         return $orderedState;
