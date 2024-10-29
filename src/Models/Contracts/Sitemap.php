@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
-interface SiteMap
+interface Sitemap
 {
     public function model(): MorphTo;
 

@@ -76,7 +76,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
 
     public static function getModel(): string
     {
-        return InspireCmsConfig::getSiteMapModelClass();
+        return InspireCmsConfig::getSitemapModelClass();
     }
 
     public static function getModelLabel(): string

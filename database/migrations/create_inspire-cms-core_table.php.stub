@@ -92,7 +92,7 @@ return new class extends BaseMigration
             $table->index('content_id');
             $table->index('redirect_content_id');
         });
-        Schema::create($tableNames['site_map'], function (Blueprint $table) {
+        Schema::create($tableNames['sitemap'], function (Blueprint $table) {
             $table->id();
             $table->nullableMorphs('model');
             $table->string('url')->nullable();
@@ -198,7 +198,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['document_type_inheritance']);
         Schema::dropIfExists($tableNames['field_groupable']);
 
-        Schema::dropIfExists($tableNames['site_map']);
+        Schema::dropIfExists($tableNames['sitemap']);
         Schema::dropIfExists($tableNames['content_web_setting']);
         Schema::dropIfExists($tableNames['content_publish_version']);
         Schema::dropIfExists($tableNames['content_version']);
@@ -225,7 +225,7 @@ return new class extends BaseMigration
             'template' => $this->prefix . 'templates',
             'templatable' => $this->prefix . 'templateable',
             'content_web_setting' => $this->prefix . 'content_web_settings',
-            'site_map' => $this->prefix . 'site_maps',
+            'sitemap' => $this->prefix . 'sitemaps',
             'navigation' => $this->prefix . 'navigation',
         ];
     }

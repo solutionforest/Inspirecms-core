@@ -30,7 +30,7 @@ class ContentObserver
         $this->clearCached();
 
         //region sitemap
-        $model->siteMap?->setDisable();
+        $model->sitemap?->setDisable();
         //endregion sitemap
 
         //region navigation
@@ -47,7 +47,7 @@ class ContentObserver
     public function forceDeleting(Content | Model $model)
     {
         $model->webSetting()->delete();
-        $model->siteMap()->delete();
+        $model->sitemap()->delete();
         
         $model->navigation()->delete();
         $this->clearCached(); // Since the navigation is deleted, we need to clear the cache.
@@ -74,7 +74,7 @@ class ContentObserver
         }
         
         //region sitemap
-        $model->siteMap?->setEnable();
+        $model->sitemap?->setEnable();
         //endregion sitemap
         
         //region navigation

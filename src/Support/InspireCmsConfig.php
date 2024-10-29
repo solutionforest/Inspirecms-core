@@ -92,16 +92,16 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'ContentWebSetting model');
     }
 
-    public static function getSiteMapTableName(): string
+    public static function getSitemapTableName(): string
     {
-        return app(static::getSiteMapModelClass())->getTable();
+        return app(static::getSitemapModelClass())->getTable();
     }
 
-    public static function getSiteMapModelClass(): string
+    public static function getSitemapModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\SiteMap::class, Models\SiteMap::class);
+        $class = ModelManifest::get(Models\Contracts\Sitemap::class, Models\Sitemap::class);
 
-        return self::ensureClassExists($class, 'SiteMap model');
+        return self::ensureClassExists($class, 'Sitemap model');
     }
 
     public static function getDocumentTypeTableName(): string

@@ -77,9 +77,9 @@ class Content extends BaseModel implements ContentContract
         return $this->hasOne(InspireCmsConfig::getContentWebSettingModelClass(), 'content_id');
     }
 
-    public function siteMap(): MorphOne
+    public function sitemap(): MorphOne
     {
-        return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
+        return $this->morphOne(InspireCmsConfig::getSitemapModelClass(), 'model');
     }
 
     public function trashedParent(): BelongsTo

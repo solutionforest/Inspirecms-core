@@ -95,7 +95,7 @@ return [
             'user_login_activity' => Models\Users\UserLoginActivity::class,
             'template' => Models\Template::class,
             'templateable' => Models\Polymorphic\Templateable::class,
-            'site_map' => Models\SiteMap::class,
+            'sitemap' => Models\Sitemap::class,
             'navigation' => Models\Navigation::class,
             'media_asset' => SupportModels\MediaAsset::class,
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,

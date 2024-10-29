@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Listeners\Content;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
-use SolutionForest\InspireCms\Models\Contracts\SiteMap;
+use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class GenerateContentSitemap implements ShouldQueue
@@ -27,6 +27,8 @@ class GenerateContentSitemap implements ShouldQueue
     protected function generateSitemap($fullFilePath)
     {
         $sitemapData = $this->getAllAvailableSitemapData();
+
+        ray($sitemapData);
 
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
 
@@ -63,11 +65,11 @@ class GenerateContentSitemap implements ShouldQueue
 
     protected function getAllAvailableSitemapData(): array
     {
-        $records = InspireCmsConfig::getSiteMapModelClass()::with('model')->whereEnabled()->get();
+        $records = InspireCmsConfig::getSitemapModelClass()::with('model')->whereEnabled()->get();
 
         return collect($records)
-            ->whereInstanceOf(SiteMap::class)
-            ->map(fn (SiteMap $item) => $item->generateSitemapItem())
+            ->whereInstanceOf(Sitemap::class)
+            ->map(fn (Sitemap $item) => $item->generateSitemapItem())
             ->toArray();
 
     }

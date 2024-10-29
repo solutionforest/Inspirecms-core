@@ -26,9 +26,9 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongToNe
     public function webSetting(): HasOne;
 
     /**
-     * Define a one-to-one relationship for the site map.
+     * Define a one-to-one relationship for the sitemap.
      */
-    public function siteMap(): MorphOne;
+    public function sitemap(): MorphOne;
 
     /**
      * Establish a relationship with the parent model, including those that are soft deleted.

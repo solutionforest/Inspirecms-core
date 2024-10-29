@@ -96,7 +96,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 static::getSeoFormComponent(),
                             ]),
                         static::getPropertyDataValueComponent(isTab: true),
-                        Forms\Components\Tabs\Tab::make('siteMap')
+                        Forms\Components\Tabs\Tab::make('sitemap')
                             ->label(__('inspirecms::resources/content.sitemap.heading'))
                             ->schema([
                                 static::getSitemapFormComponent(),
@@ -850,7 +850,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component */
-    protected static function getSiteMapFormComponent()
+    protected static function getSitemapFormComponent()
     {
         return Forms\Components\Section::make()
             ->relationship('sitemap')
