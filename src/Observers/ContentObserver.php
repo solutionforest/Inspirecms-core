@@ -48,7 +48,7 @@ class ContentObserver
     {
         $model->webSetting()->delete();
         $model->siteMap()->delete();
-        
+
         $model->navigation()->delete();
         $this->clearCached(); // Since the navigation is deleted, we need to clear the cache.
     }
@@ -72,11 +72,11 @@ class ContentObserver
         if ($publishedState) {
             $model->setPublishableState($publishedState->getName());
         }
-        
+
         //region sitemap
         $model->siteMap?->setEnable();
         //endregion sitemap
-        
+
         //region navigation
         $model->navigation?->setEnable();
         //endregion sitemap

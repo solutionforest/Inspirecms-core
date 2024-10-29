@@ -19,7 +19,7 @@ use Spatie\Permission\PermissionRegistrar;
 
 // todo: add permission check to access this page
 // todo: need redo the layout
-class Health extends Page implements ClusterSectionPage, HasForms, HasActions
+class Health extends Page implements ClusterSectionPage, HasActions, HasForms
 {
     use ClusterSectionPageTrait;
     use InteractsWithActions;
@@ -52,6 +52,7 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
     public function getStatusInfo(): array
     {
         $permissions = $this->getPermissionsStatus();
+
         return [
             'permissions' => [
                 'title' => __('inspirecms::health.permissions.label'),
@@ -72,6 +73,7 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
                     case 'permissions':
                         $this->resolvePermissions();
                         $this->dispatch('$refresh');
+
                         break;
                 }
             });
@@ -91,9 +93,9 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
         return [
             'status' => $this->formateStatusData(count($permissions), count($missing), count($missing) == 0),
             'data' => array_merge(
-                    Arr::map(array_values($missing), fn ($val) => ['name' => $val, 'valid' => false]),
-                    Arr::map(array_values($valid), fn ($val) => ['name' => $val, 'valid' => true]),
-                )
+                Arr::map(array_values($missing), fn ($val) => ['name' => $val, 'valid' => false]),
+                Arr::map(array_values($valid), fn ($val) => ['name' => $val, 'valid' => true]),
+            ),
         ];
     }
 
@@ -106,11 +108,10 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
         }
 
         $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
-        
+
         foreach ($missins as $permission) {
             $permissionModel::findOrCreate($permission, InspireCmsConfig::getGuardName());
         }
-
 
         $this->dispatch('$refresh');
     }

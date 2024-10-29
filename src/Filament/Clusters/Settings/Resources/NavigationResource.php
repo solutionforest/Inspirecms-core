@@ -253,7 +253,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 return $model::getNavigationTypeEnumClass()::getDefaultValue();
             })
             ->afterStateUpdated(function ($state, $set, $operation) {
-                if ($operation == 'create' && 
+                if ($operation == 'create' &&
                     ($state == NavigationType::Content->value || $state == NavigationType::Content)) {
                     $set('is_active', true);
                 }
@@ -321,8 +321,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     $type = NavigationType::tryFrom($type);
                 }
                 if ($type) {
-                    return !$type->canEditIsVisible();
+                    return ! $type->canEditIsVisible();
                 }
+
                 return false;
             })
             ->dehydrated(true);

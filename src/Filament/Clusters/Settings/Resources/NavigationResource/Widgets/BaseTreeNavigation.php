@@ -151,7 +151,7 @@ abstract class BaseTreeNavigation extends BaseWidget
         Html);
     }
 
-    public function getTreeRecordIcon(?Model $record = null): string | null
+    public function getTreeRecordIcon(?Model $record = null): ?string
     {
         if (! $record->isVisibility()) {
             return 'heroicon-o-eye-slash';

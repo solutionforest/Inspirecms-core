@@ -9,7 +9,7 @@ interface SiteMap
     public function model(): MorphTo;
 
     public function getType(): string;
-    
+
     /**
      * Get the URL of the sitemap.
      */

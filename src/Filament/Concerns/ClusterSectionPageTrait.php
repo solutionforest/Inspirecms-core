@@ -23,7 +23,7 @@ trait ClusterSectionPageTrait
     {
         if (in_array(ClusterSectionPage::class, class_implements(static::class))) {
             $cluster = static::getClusterSection();
-            
+
             $permissionName = ! blank($cluster) && in_array(ClusterSection::class, class_implements($cluster)) ? $cluster::getAccessRightPermissionName() : null;
 
             $user = Filament::auth()->user();

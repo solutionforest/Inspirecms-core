@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 class DocumentTypeObserver
 {

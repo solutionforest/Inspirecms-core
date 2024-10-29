@@ -154,7 +154,7 @@ trait ContentPageTrait
         return $this->getModelExplorer()->findRecord($key);
     }
 
-    protected function configureSelectedModelItemFormAction(Actions\Action|ActionGroup $action): void
+    protected function configureSelectedModelItemFormAction(Actions\Action | ActionGroup $action): void
     {
         if ($action instanceof CreateContentAction) {
             $action
