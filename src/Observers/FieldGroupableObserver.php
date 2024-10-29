@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable;
 
 class FieldGroupableObserver
