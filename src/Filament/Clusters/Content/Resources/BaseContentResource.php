@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
-use SolutionForest\InspireCms\Base\Enums\Frequency;
+use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -878,9 +878,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->placeholder(__('inspirecms::resources/content.sitemap.change_frequency.placeholder'))
                     ->helperText(__('inspirecms::resources/content.sitemap.change_frequency.instructions'))
                     ->inlineLabel()
-                    ->options(Frequency::class)
-                    ->afterStateHydrated(fn ($component, $state) => $component->state($state ?? Frequency::Monthly->value))
-                    ->dehydrateStateUsing(fn ($state) => $state ?? Frequency::Monthly->value)
+                    ->options(SitemapChangeFrequency::class)
+                    ->afterStateHydrated(fn ($component, $state) => $component->state($state ?? SitemapChangeFrequency::Monthly->value))
+                    ->dehydrateStateUsing(fn ($state) => $state ?? SitemapChangeFrequency::Monthly->value)
                     ->required(),
             ]);
     }

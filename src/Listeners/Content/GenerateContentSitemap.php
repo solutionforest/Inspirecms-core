@@ -29,7 +29,6 @@ class GenerateContentSitemap implements ShouldQueue
         $sitemapData = $this->getAllAvailableSitemapData();
 
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
-        // $xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
         foreach ($sitemapData as $arr) {
             if ((! isset($arr['urls']) || empty($arr['urls'])) || ! isset($arr['lastmod']) || ! isset($arr['changefreq']) || ! isset($arr['priority'])) {
@@ -47,7 +46,6 @@ class GenerateContentSitemap implements ShouldQueue
                 }
 
                 $linkTag = $urlTag->addChild('xhtml:link');
-                // $linkTag = $urlTag->addChild('xhtml:link', null, 'http://www.w3.org/1999/xhtml');
                 $linkTag->addAttribute('rel', 'alternate');
                 $linkTag->addAttribute('hreflang', $urlData['code']);
                 $linkTag->addAttribute('href', $urlData['url']);

@@ -16,7 +16,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
 {
     use ClusterSectionResourceTrait;
 
-    protected static ?int $navigationSort = -6;
+    protected static ?int $navigationSort = -5;
 
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 

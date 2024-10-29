@@ -6,6 +6,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupRes
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
@@ -56,6 +57,7 @@ return [
             'user' => UserResource::class,
             'role' => RoleResource::class,
             'navigation' => NavigationResource::class,
+            'sitemap' => SitemapResource::class,
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,

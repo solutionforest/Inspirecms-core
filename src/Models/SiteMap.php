@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\SiteMap as SiteMapContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -18,6 +19,16 @@ class SiteMap extends BaseModel implements SiteMapContract
     public function model(): MorphTo
     {
         return $this->morphTo();
+    }
+
+    public function getType(): string
+    {
+        if ($this->model) {
+
+            return $this->model_type;
+        }
+
+        return 'general';
     }
 
     /**
@@ -45,7 +56,7 @@ class SiteMap extends BaseModel implements SiteMapContract
      */
     public function getChangeFrequency(): string
     {
-        return $this->change_frequency;
+        return (SitemapChangeFrequency::tryFrom($this->change_frequency) ?? SitemapChangeFrequency::Monthly)->value;
     }
 
     /**
