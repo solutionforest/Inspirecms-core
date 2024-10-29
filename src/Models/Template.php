@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use SolutionForest\InspireCms\Events\CreateTemplate;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -66,27 +65,7 @@ class Template extends BaseModel implements TemplateContract
             ->toString();
     }
 
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (self $model) {
-
-            $model->path = $model->performTemplatePath();
-
-            $model->createTemplateFile();
-
-            event(new CreateTemplate($model));
-
-        });
-        static::saving(function (self $model) {
-
-            $model->path = $model->performTemplatePath();
-
-        });
-    }
-
-    protected function performTemplatePath(): string
+    public function performTemplatePath(): string
     {
         return str($this->slug)
             ->trim()

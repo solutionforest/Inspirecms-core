@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 class ContentObserver
 {
     /**
-     * Handle the Content "saving" event.
+     * Handle "saving" event.
      *
      * @param  Content|Model  $model  The model instance being saving.
      * @return void
@@ -20,7 +20,7 @@ class ContentObserver
     }
 
     /**
-     * Handle the Content "deleting" event.
+     * Handle "deleting" event.
      *
      * @param  Content|Model  $model  The model instance being deleting.
      * @return void
@@ -31,7 +31,7 @@ class ContentObserver
     }
 
     /**
-     * Handle the Content "forceDeleting" event.
+     * Handle "forceDeleting" event.
      *
      * @param  Content|Model  $model  The model instance being forceDeleting.
      * @return void
@@ -43,7 +43,7 @@ class ContentObserver
     }
 
     /**
-     * Handle the Content "restoring" event.
+     * Handle "restoring" event.
      *
      * @param  Content|Model  $model  The model instance being restored.
      * @return void
@@ -64,7 +64,7 @@ class ContentObserver
     }
 
     /**
-     * Handle the Content "restored" event.
+     * Handle "restored" event.
      *
      * @param  \App\Models\Content|\Illuminate\Database\Eloquent\Model  $model
      * @return void

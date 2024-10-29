@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -10,9 +11,11 @@ use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnu
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType as DocumentTypeTypeInterface;
 use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
+use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
+#[ObservedBy(DocumentTypeObserver::class)]
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
@@ -82,7 +85,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function isWebPageType(): bool
     {
-        return $this->type == static::getTypeEnumClass()::Web->value;
+        return $this->type == DocumentTypeTypeEnum::Web->value;
     }
 
     public function canInheriting(): bool
@@ -197,19 +200,5 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         } catch (\Throwable $th) {
             return false;
         }
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saving(function (self $model) {
-            if (blank($model->type) || is_null($model->type)) {
-                $model->type = static::getTypeEnumClass()::Web->value;
-            }
-            if (! $model->canInheriting()) {
-                $model->show_children_as_table = false;
-            }
-        });
     }
 }

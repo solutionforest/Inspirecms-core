@@ -2,13 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
+use SolutionForest\InspireCms\Observers\ContentVersionObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
+#[ObservedBy(ContentVersionObserver::class)]
 class ContentVersion extends BaseModel implements ContentVersionContract
 {
     use HasAuthor;
@@ -56,17 +59,5 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         }
 
         return $diff;
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (self $model) {
-            $model->created_at = $model->freshTimestamp();
-        });
-        static::deleting(function (self $model) {
-            $model->publishLog()->delete();
-        });
     }
 }

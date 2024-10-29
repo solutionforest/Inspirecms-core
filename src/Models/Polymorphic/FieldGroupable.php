@@ -2,14 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models\Polymorphic;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
+use SolutionForest\InspireCms\Observers\FieldGroupableObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseMorphPivotModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\EloquentSortable\SortableTrait;
 
+#[ObservedBy(FieldGroupableObserver::class)]
 class FieldGroupable extends BaseMorphPivotModel implements FieldGroupableContract
 {
     use SortableTrait;
@@ -38,26 +40,5 @@ class FieldGroupable extends BaseMorphPivotModel implements FieldGroupableContra
     public function inheritedFrom(): MorphTo
     {
         return $this->morphTo();
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::created(function (self $model) {
-            if ($model->groupabled instanceof DocumentType) {
-                $model->groupabled->inheritingDocumentTypes()->each(function ($documentType) use ($model) {
-                    $documentType->inheritFieldGroupsFrom($model->groupabled);
-                });
-            }
-        });
-
-        static::deleting(function (self $model) {
-            if ($model->groupabled instanceof DocumentType) {
-                $model->groupabled->inheritingDocumentTypes()->each(function (DocumentType $documentType) use ($model) {
-                    $documentType->deteachInheritFieldGroupsFrom($model->groupabled);
-                });
-            }
-        });
     }
 }

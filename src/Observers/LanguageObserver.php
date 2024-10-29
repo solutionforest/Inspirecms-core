@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Models\Contracts\Language;
 class LanguageObserver
 {
     /**
-     * Handle the Language "saving" event.
+     * Handle "saving" event.
      *
      * @param  Language|Model  $model  The model instance being saving.
      * @return void
@@ -35,7 +35,7 @@ class LanguageObserver
     }
 
     /**
-     * Handle the Language "updated" event.
+     * Handle "updated" event.
      *
      * @param  Language|Model  $model  The model instance being updated.
      * @return void
@@ -46,7 +46,7 @@ class LanguageObserver
     }
 
     /**
-     * Handle the Language "deleting" event.
+     * Handle "deleting" event.
      *
      * @param  Language|Model  $model  The model instance being deleting.
      * @return void

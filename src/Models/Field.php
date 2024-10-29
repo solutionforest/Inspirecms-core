@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use SolutionForest\FilamentFieldGroup\Models\Field as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
+use SolutionForest\InspireCms\Observers\FieldObserver;
 
+#[ObservedBy(FieldObserver::class)]
 class Field extends BaseModel
 {
     public function getStatePathWithGroup(): string
@@ -17,14 +20,5 @@ class Field extends BaseModel
         $fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($this->type);
 
         return $fieldTypeConfig?->getConfigNames() ?? [];
-    }
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::saving(function (self $model) {
-            $model->config ??= [];
-        });
     }
 }
