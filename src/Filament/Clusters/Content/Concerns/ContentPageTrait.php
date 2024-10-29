@@ -154,10 +154,11 @@ trait ContentPageTrait
         return $this->getModelExplorer()->findRecord($key);
     }
 
-    protected function configureSelectedModelItemFormAction(Actions\Action $action): void
+    protected function configureSelectedModelItemFormAction(Actions\Action|ActionGroup $action): void
     {
         if ($action instanceof CreateContentAction) {
             $action
+                ->outlined(false)
                 ->color('gray')
                 ->extraAttributes(['class' => 'flex-1'])
                 ->modifyUrlParameterUsing(function (array $arguments, array $parameters) {
@@ -206,6 +207,7 @@ trait ContentPageTrait
         }
 
         $this->cacheAction($action);
+
     }
 
     protected function refreshModelExplorerSidebar(): void
