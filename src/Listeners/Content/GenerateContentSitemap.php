@@ -28,8 +28,6 @@ class GenerateContentSitemap implements ShouldQueue
     {
         $sitemapData = $this->getAllAvailableSitemapData();
 
-        ray($sitemapData);
-
         $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
 
         foreach ($sitemapData as $arr) {

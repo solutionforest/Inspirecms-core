@@ -96,7 +96,7 @@ return new class extends BaseMigration
             $table->id();
             $table->nullableMorphs('model');
             $table->string('url')->nullable();
-            $table->integer('change_frequency')->unsigned();
+            $table->string('change_frequency')->default('monthly');
             $table->decimal('priority',2 ,1)->unsigned();
             $table->boolean('enable');
             $table->timestamps();

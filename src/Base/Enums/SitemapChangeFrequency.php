@@ -4,15 +4,15 @@ namespace SolutionForest\InspireCms\Base\Enums;
 
 use Filament\Support\Contracts\HasLabel;
 
-enum SitemapChangeFrequency: int implements HasLabel
+enum SitemapChangeFrequency: string implements HasLabel
 {
-    case Always = 1;
-    case Hourly = 2;
-    case Daily = 3;
-    case Weekly = 4;
-    case Monthly = 5;
-    case Yearly = 6;
-    case Never = 7;
+    case Always = 'always';
+    case Hourly = 'hourly';
+    case Daily = 'daily';
+    case Weekly = 'weekly';
+    case Monthly = 'monthly';
+    case Yearly = 'yearly';
+    case Never = 'never';
 
     public function getLabel(): ?string
     {
