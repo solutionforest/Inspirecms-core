@@ -2,7 +2,7 @@
 
 
 return [
-    'health' => 'Health',
+    'title' => 'Health',
 
     'permissions' => [
         'label' => 'Permissions',

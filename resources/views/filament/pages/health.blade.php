@@ -1,34 +1,57 @@
 <x-filament-panels::page>
-    <x-filament::section>
-        <ul>
-            @foreach ($this->getStatusInfo() as $key => $item)
-                @php
-                    $title = $item['title'];
-                    $isHealthy = $item['status']['isHealthy'] ?? null;
-                    $icon = $isHealthy ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle';
+    @foreach ($this->getStatusInfo() as $key => $item)
+        @php
+            $title = $item['title'];
+            $isHealthy = $item['status']['isHealthy'] ?? null;
+            $icon = $isHealthy ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle';
 
-                    $invalidStatus = ($item['status']['invalid'] ?? 0) . ' / ' . ($item['status']['total'] ?? 0);
+            $invalidCount = ($item['status']['invalid'] ?? 0);
 
-                    $actionName = $item['action']?? null;
-                @endphp
-                <li class="inline-flex gap-2 items-center">
-                    <strong>{{ $title }}</strong>
-                    <span>Invalid: {{ $invalidStatus }}</span>
-                    <x-filament::icon
-                        icon="{{$icon}}"
-                        class="h-5 w-5 text-custom-500 dark:text-custom-400"
-                        @style(\Filament\Support\get_color_css_variables(
-                            $isHealthy ? 'success' : 'danger',
-                            shades: [400, 500],
-                        ))
-                    >
-                    </x-filament::icon>
+            $actionName = $item['action']?? null;
+        @endphp
+        <x-filament::section 
+            collapsible
+            collapsed
+            :icon="$icon"
+            icon-size="md"
+            icon-color="{{ $isHealthy ? 'success' : 'danger' }}"
+        >
+            <x-slot name="heading">
+                {{ $title }}
+            </x-slot>
+ 
+            <x-slot name="headerEnd">
+                @if (!$isHealthy)
+                    <span class="text-gray-400 dark:text-white">{{ $invalidCount }}</span>
+                @endif
+            </x-slot>
 
-                    @if ($actionName)
-                        {{ ($this->{$actionName})(['action' => $key]) }}
+            @switch($key)
+                @case('permissions')
+                    @php
+                        $invalidPermissions = collect($item['data'] ?? [])->where(fn ($arr) => $arr['valid'] === false)->all();
+                    @endphp
+                    @if (count($invalidPermissions))
+                        <div class="flex gap-2 flex-col md:flex-col-reverse">
+                            <ul class="flex-1">
+                                @foreach ($invalidPermissions as $permissionData)
+                                    <li class="text-sm text-gray-500 dark:text-gray-200 select-none">
+                                        <span>{{ $permissionData['name'] }}</span>
+                                    </li>
+                                @endforeach
+                            </ul>
+                            @if ($actionName)
+                                <div>
+                                    {{ ($this->{$actionName})(['action' => $key]) }}
+                                </div>
+                            @endif
+                        </div>
                     @endif
-                </li>
-            @endforeach
-        </ul>
-    </x-filament::section>
+                    @break
+                @default
+                    
+            @endswitch
+
+        </x-filament::section>
+    @endforeach
 </x-filament-panels::page>

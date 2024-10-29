@@ -8,6 +8,8 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Pages\Page;
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
@@ -37,12 +39,24 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
         ];
     }
 
+    public function getTitle(): string | Htmlable
+    {
+        return static::getNavigationLabel();
+    }
+
+    public static function getNavigationLabel(): string
+    {
+        return __('inspirecms::health.title');
+    }
+
     public function getStatusInfo(): array
     {
+        $permissions = $this->getPermissionsStatus();
         return [
             'permissions' => [
                 'title' => __('inspirecms::health.permissions.label'),
-                'status' => $this->getPermissionsStatus(),
+                'status' => $permissions['status'],
+                'data' => $permissions['data'],
                 'action' => 'fix',
             ],
         ];
@@ -72,11 +86,14 @@ class Health extends Page implements ClusterSectionPage, HasForms, HasActions
         $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
 
         $missing = array_diff($permissions, $existingPermissions);
-        // $valid = array_intersect($permissions, $existingPermissions);
+        $valid = array_intersect($permissions, $existingPermissions);
 
         return [
-            ...$this->formateStatusData(count($permissions), count($missing), count($missing) == 0),
-            'missing' => array_values($missing),
+            'status' => $this->formateStatusData(count($permissions), count($missing), count($missing) == 0),
+            'data' => array_merge(
+                    Arr::map(array_values($missing), fn ($val) => ['name' => $val, 'valid' => false]),
+                    Arr::map(array_values($valid), fn ($val) => ['name' => $val, 'valid' => true]),
+                )
         ];
     }
 

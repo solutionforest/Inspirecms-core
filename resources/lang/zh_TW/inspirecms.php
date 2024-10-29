@@ -59,6 +59,7 @@ return [
     'set_as_default' => '設為默認',
     'setting' => '設置',
     'settings' => '設置',
+    'sitemap' => '網站地圖',
     'show_children_as_table' => '顯示子項為表格',
     'slug' => '標識',
     'something_went_wrong' => '出了些問題。',
