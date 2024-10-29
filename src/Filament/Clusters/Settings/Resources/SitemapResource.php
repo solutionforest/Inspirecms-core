@@ -119,7 +119,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
 
         return parent::canDelete($record);
     }
-    
+
     //region Form field(s)/component(s)
     /** @return Forms\Components\Field | Forms\Components\Component */
     protected static function getUrlFormComponent()
@@ -158,7 +158,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component */
-     protected static function getEnableFormComponent()
+    protected static function getEnableFormComponent()
     {
         return Forms\Components\Toggle::make('enable')
             ->label(__('inspirecms::resources/sitemap.enable.label'))

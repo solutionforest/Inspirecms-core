@@ -33,6 +33,6 @@ interface Template
     public function getFileFullPath(): string;
 
     public function getViewFullName(): string;
-    
+
     public function performTemplatePath(): string;
 }

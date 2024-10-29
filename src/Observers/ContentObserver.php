@@ -72,11 +72,11 @@ class ContentObserver
         if ($publishedState) {
             $model->setPublishableState($publishedState->getName());
         }
-        
+
         //region sitemap
         $model->sitemap?->setEnable();
         //endregion sitemap
-        
+
         //region navigation
         $model->navigation?->setEnable();
         //endregion sitemap

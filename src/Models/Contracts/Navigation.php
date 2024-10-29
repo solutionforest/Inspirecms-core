@@ -40,7 +40,7 @@ interface Navigation
     public static function defaultContentId(): string | int | null;
 
     public function isVisibility(): bool;
-    
+
     public function setDisable(bool $save = true): void;
 
     public function setEnable(bool $save = true): void;
