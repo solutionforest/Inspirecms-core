@@ -22,4 +22,22 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
         // Implement the logic to find content by slug
         return $this->getQuery()->where('slug', $slug)->first();
     }
+
+    public function findPage(string $fullSlug)
+    {
+        $content = $this->searchOne($fullSlug);
+
+        if ($content) {
+
+            $content->loadMissing([
+                'documentType.fieldGroups.fields',
+                'documentType.templates',
+                'webSetting',
+                'publishedVersions',
+                'templates',
+            ]);
+        }
+
+        return $content;
+    }
 }

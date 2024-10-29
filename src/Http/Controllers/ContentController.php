@@ -59,7 +59,7 @@ class ContentController extends Controller
         // Remove the leading and trailing slashes
         $fullPath = trim($slug, '/');
 
-        $content = $this->contentService->searchOne($fullPath);
+        $content = $this->contentService->findPage($fullPath);
 
         if (is_null($content) || ! $content instanceof Content) {
             abort(404);
