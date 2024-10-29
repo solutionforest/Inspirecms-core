@@ -51,7 +51,7 @@ trait HasContentVersions
                     $data['version_id'] = $contentVersion->getKey();
                     $publishVersion = $model->publishVersionLogs()->create($data);
 
-                    event(new ContentEvents\RegenerateSitemap($model, 'saved'));
+                    event(new ContentEvents\GenerateSitemap($model, 'saved'));
                     event(new ContentEvents\PublishVersionCreated($model, $contentVersion, $publishVersion, $statusOption));
                 }
             }
@@ -64,7 +64,7 @@ trait HasContentVersions
         $isSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive(static::class));
 
         static::deleting(function (self $model) use ($isSoftDeletes) {
-            event(new ContentEvents\RegenerateSitemap($model, 'deleting'));
+            event(new ContentEvents\GenerateSitemap($model, 'deleting'));
 
             if (! $isSoftDeletes) {
                 $model->contentVersions()->delete();
@@ -75,7 +75,7 @@ trait HasContentVersions
         if ($isSoftDeletes) {
 
             static::restoring(function (self $model) {
-                event(new ContentEvents\RegenerateSitemap($model, 'restoring'));
+                event(new ContentEvents\GenerateSitemap($model, 'restoring'));
             });
 
             static::forceDeleting(function (self $model) {
