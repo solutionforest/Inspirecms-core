@@ -18,7 +18,7 @@ class DocumentTypeObserver
     {
         //region Set default value
         if (blank($model->type) || is_null($model->type)) {
-            $model->type = DocumentTypeTypeEnum::Web->valuee;
+            $model->type = DocumentTypeTypeEnum::Web->value;
         }
         //endregion Set default value
 

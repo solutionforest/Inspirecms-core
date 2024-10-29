@@ -16,7 +16,6 @@ class TemplateObserver
      */
     public function creating(Template | Model $model)
     {
-
         $model->path = $model->performTemplatePath();
 
         $model->createTemplateFile();
