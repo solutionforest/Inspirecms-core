@@ -38,6 +38,7 @@ trait HasTemplates
         if ($this->relationLoaded('templates')) {
             return $this->templates->first(fn (Template $template) => $template->pivot->is_default);
         }
+
         return $this->templates()->wherePivot('is_default', true)->first();
     }
 }

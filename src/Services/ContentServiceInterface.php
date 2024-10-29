@@ -27,11 +27,11 @@ interface ContentServiceInterface extends IndexSearchServiceInterface
      * @return null|Model|Content The content associated with the given slug.
      */
     public function findBySlug(string $slug);
-    
+
     /**
      * Finds a page by its full slug.
      *
-     * @param string $fullSlug The full slug of the page to find.
+     * @param  string  $fullSlug  The full slug of the page to find.
      * @return mixed The page object if found, or null if not found.
      */
     public function findPage(string $fullSlug);
