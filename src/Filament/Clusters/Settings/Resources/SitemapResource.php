@@ -24,7 +24,6 @@ class SitemapResource extends Resource implements ClusterSectionResource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $cluster = Settings::class;
-    
 
     public static function getPermissionPrefixes(): array
     {
@@ -67,7 +66,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
                     ->formatStateUsing(fn ($state) => SitemapChangeFrequency::tryFrom($state)?->getLabel()),
                 Tables\Columns\CheckboxColumn::make('enable')
                     ->label(__('inspirecms::resources/sitemap.enable.label'))
-                    ->disabled(fn ($record) => !static::canEdit($record)),
+                    ->disabled(fn ($record) => ! static::canEdit($record)),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/sitemap.last_modified.label'))
                     ->sortable(),

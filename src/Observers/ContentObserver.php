@@ -48,7 +48,7 @@ class ContentObserver
     {
         $model->webSetting()->delete();
         $model->sitemap()->delete();
-        
+
         $model->navigation()->delete();
         $this->clearCached(); // Since the navigation is deleted, we need to clear the cache.
     }
