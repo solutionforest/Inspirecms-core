@@ -82,9 +82,14 @@ class Content extends BaseModel implements ContentContract
         return $this->morphOne(InspireCmsConfig::getSiteMapModelClass(), 'model');
     }
 
-    public function withTrashedParent(): BelongsTo
+    public function trashedParent(): BelongsTo
     {
         return $this->parent()->withTrashed();
+    }
+
+    public function navigation(): HasOne
+    {
+        return $this->hasOne(InspireCmsConfig::getNavigationModelClass(), 'content_id');
     }
 
     public function getFullSlug(?string $locale = null): string

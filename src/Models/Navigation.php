@@ -26,6 +26,10 @@ class Navigation extends BaseModel implements NavigationContract
 
     protected $table = 'navigation';
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
     public ?array $translatable = [
         'title',
         'url',
@@ -59,7 +63,17 @@ class Navigation extends BaseModel implements NavigationContract
     {
         $query->where('category', $type);
     }
+
+    public function scopeWhereIsActive($query, bool $condition = true)
+    {
+        $query->where('is_active', $condition);
+    }
     //endregion Scopes
+
+    public function isVisibility(): bool
+    {
+        return $this->is_active;
+    }
 
     //region Enums
     public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface
@@ -107,5 +121,21 @@ class Navigation extends BaseModel implements NavigationContract
     public static function defaultContentId(): string | int | null
     {
         return KeyHelper::generateMinUuid();
+    }
+
+    public function setDisable(bool $save = true): void
+    {
+        $this->is_active = false;
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    public function setEnable(bool $save = true): void
+    {
+        $this->is_active = true;
+        if ($save) {
+            $this->save();
+        }
     }
 }

@@ -72,7 +72,10 @@ abstract class BaseTreeNavigation extends BaseWidget
 
     protected function getWithRelationQuery(): Builder
     {
-        return $this->getTreeQuery()->with(['children', 'content']);
+        return $this->getTreeQuery()->with([
+            'content' => fn ($q) => $q->withTrashed(),
+            'children',
+        ]);
     }
 
     protected function getSortedQuery(): Builder
@@ -146,6 +149,15 @@ abstract class BaseTreeNavigation extends BaseWidget
                 $url
             </p>
         Html);
+    }
+
+    public function getTreeRecordIcon(?Model $record = null): string | null
+    {
+        if (! $record->isVisibility()) {
+            return 'heroicon-o-eye-slash';
+        }
+
+        return null;
     }
     //endregion Tree Configuration
 

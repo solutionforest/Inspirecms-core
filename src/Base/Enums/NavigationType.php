@@ -21,4 +21,9 @@ enum NavigationType: string implements Interfaces\NavigationType
     {
         return self::Group;
     }
+
+    public function canEditIsVisible(): bool
+    {
+        return $this->value !== self::Content->value;
+    }
 }

@@ -33,6 +33,11 @@ class NavigationDto extends BaseTranslatableDto
     public $type;
 
     /**
+     * @var bool
+     */
+    public $isActive;
+
+    /**
      * @var Collection<NavigationDto>
      */
     public $children;

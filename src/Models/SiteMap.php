@@ -23,12 +23,7 @@ class SiteMap extends BaseModel implements SiteMapContract
 
     public function getType(): string
     {
-        if ($this->model) {
-
-            return $this->model_type;
-        }
-
-        return 'general';
+        return $this->model_type ?? 'general';
     }
 
     /**
@@ -98,4 +93,20 @@ class SiteMap extends BaseModel implements SiteMapContract
         return $query->where('enable', $condition);
     }
     //endregions Scope(s)
+
+    public function setDisable(bool $save = true): void
+    {
+        $this->enable = false;
+        if ($save) {
+            $this->save();
+        }
+    }
+
+    public function setEnable(bool $save = true): void
+    {
+        $this->enable = true;
+        if ($save) {
+            $this->save();
+        }
+    }
 }

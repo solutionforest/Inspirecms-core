@@ -170,10 +170,15 @@ class InspireCmsManager
                         ->all();
                 }
 
+                $data['isActive'] = (bool) $data['is_active'];
+
                 return $data;
             })
             ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code))
-            ->where(fn (NavigationDto $nav) => $nav->category == $category)
+            ->where(fn (NavigationDto $nav) => 
+                $nav->category == $category && 
+                $nav->isActive
+            )
             ->values()
             ->all();
     }
@@ -199,7 +204,7 @@ class InspireCmsManager
 
     private function getSerializedNavigationForCache(): array
     {
-        $attributes = ['title', 'url', 'target', 'category', 'type'];
+        $attributes = ['title', 'url', 'target', 'category', 'type', 'is_active'];
         $relations = ['children'];
 
         $alias = $this->aliasModelFields($attributes, $relations);

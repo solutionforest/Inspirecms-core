@@ -43,7 +43,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return $form
             ->schema([
                 static::getCategoryFormComponent(),
-                static::getTitleFormComponent(),
+                Forms\Components\Grid::make(2)
+                    ->schema([
+                        static::getTitleFormComponent(),
+                        static::getIsActiveFormComponent(),
+                    ]),
                 static::getTypeFormComponent(),
                 static::getContentFormComponent(),
                 static::getUrlFormComponent(),
@@ -118,7 +122,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->with(['content', 'children']);
+        return parent::getEloquentQuery()->with([
+            'content' => fn ($q) => $q->withTrashed(),
+            'children',
+        ]);
     }
 
     public static function getModel(): string
@@ -171,6 +178,18 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $type == NavigationType::Content->value;
         };
 
+        $isRelatedRecordDeleted = function ($record) {
+            if (! $record) {
+                return false;
+            }
+
+            if ($record->type != NavigationType::Content->value) {
+                return false;
+            }
+
+            return $record->content?->trashed();
+        };
+
         return ContentPicker::make('content_id')
             ->label(__('inspirecms::inspirecms.content'))
             ->maxItems(1)
@@ -181,7 +200,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->required(fn ($get) => $requiredOrDisplayIfContent($get('type')))
             ->markAsRequired()
             ->visible(fn ($get) => $requiredOrDisplayIfContent($get('type')))
-            ->afterStateHydrated(function ($state, $component) {
+            ->afterStateHydrated(function ($state, $component, $record) {
                 if (empty($state) ||
                     is_null($state) ||
                     (is_string($state) && $state == app(static::getModel())::defaultContentId())
@@ -196,7 +215,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 return $requiredOrDisplayIfContent($get('type')) ?
                     $state[0] ?? null :
                     null;
-            });
+            })
+            // display deleted content
+            ->modifyPaginationOptionsUsing(fn ($query, $record) => $isRelatedRecordDeleted($record) ? $query->withTrashed() : $query)
+            // disable if content is deleted
+            ->disabled(fn ($record) => $isRelatedRecordDeleted($record));
     }
 
     /**
@@ -228,6 +251,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $model = static::guardAgainstInvalidModel(static::getModel());
 
                 return $model::getNavigationTypeEnumClass()::getDefaultValue();
+            })
+            ->afterStateUpdated(function ($state, $set, $operation) {
+                if ($operation == 'create' && 
+                    ($state == NavigationType::Content->value || $state == NavigationType::Content)) {
+                    $set('is_active', true);
+                }
             });
     }
 
@@ -273,7 +302,30 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::inspirecms.title'))
+            ->inlineLabel()
             ->required();
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getIsActiveFormComponent()
+    {
+        return Forms\Components\Toggle::make('is_active')
+            ->label(__('inspirecms::inspirecms.is_active'))
+            ->inlineLabel()
+            ->default(true)
+            ->disabled(function ($get, $record, $operation) {
+                $type = $operation == 'create' ? $get('type') : $record?->type;
+                if (! $type instanceof NavigationType) {
+                    $type = NavigationType::tryFrom($type);
+                }
+                if ($type) {
+                    return !$type->canEditIsVisible();
+                }
+                return false;
+            })
+            ->dehydrated(true);
     }
     //endregion Form field(s)/component(s)
 }

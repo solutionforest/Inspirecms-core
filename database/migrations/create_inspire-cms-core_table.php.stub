@@ -174,12 +174,15 @@ return new class extends BaseMigration
             $table->string('type')->default('link');
             $table->string('category')->default('main');
 
+            $table->boolean('is_active')->default(true);
+
             $table->nestedSet(); // This method adds left, right, depth columns.
 
             $table->timestamps();
 
             $table->index('content_id');
             $table->index('type');
+            $table->index('is_active');
         });
     }
 

@@ -33,7 +33,9 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongToNe
     /**
      * Establish a relationship with the parent model, including those that are soft deleted.
      */
-    public function withTrashedParent(): BelongsTo;
+    public function trashedParent(): BelongsTo;
+
+    public function navigation(): HasOne;
 
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?DocumentType $documentType = null);
 

@@ -39,7 +39,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query->with('model'))
+            ->modifyQueryUsing(fn ($query) => $query->with('model', fn ($query) => $query->withTrashed()))
             ->defaultSort('updated_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('type')

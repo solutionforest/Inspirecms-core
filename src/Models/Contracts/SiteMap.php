@@ -36,4 +36,8 @@ interface SiteMap
      * @return {url: string, lastmod: string, changefreq: string, priority: string}
      */
     public function generateSitemapItem(): array;
+
+    public function setDisable(bool $save = true): void;
+
+    public function setEnable(bool $save = true): void;
 }
