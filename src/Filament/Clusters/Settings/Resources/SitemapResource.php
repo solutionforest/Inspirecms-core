@@ -24,6 +24,17 @@ class SitemapResource extends Resource implements ClusterSectionResource
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $cluster = Settings::class;
+    
+
+    public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view_any',
+            'create',
+            'update',
+            'delete',
+        ];
+    }
 
     public static function form(Form $form): Form
     {
@@ -54,9 +65,9 @@ class SitemapResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('change_frequency')
                     ->label(__('inspirecms::resources/sitemap.change_frequency.label'))
                     ->formatStateUsing(fn ($state) => SitemapChangeFrequency::tryFrom($state)?->getLabel()),
-                Tables\Columns\IconColumn::make('enable')
+                Tables\Columns\CheckboxColumn::make('enable')
                     ->label(__('inspirecms::resources/sitemap.enable.label'))
-                    ->boolean(),
+                    ->disabled(fn ($record) => !static::canEdit($record)),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/sitemap.last_modified.label'))
                     ->sortable(),
