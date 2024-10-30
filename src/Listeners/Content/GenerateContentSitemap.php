@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Listeners\Content;
 
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -22,6 +23,8 @@ class GenerateContentSitemap implements ShouldQueue
         $this->ensureDirectoryExists($fullFilePath);
 
         $this->generateSitemap($fullFilePath);
+
+        event(new SitemapGenerated($fullFilePath));
     }
 
     protected function generateSitemap($fullFilePath)
