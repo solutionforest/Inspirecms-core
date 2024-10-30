@@ -43,9 +43,7 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
         return parent::table($table)
             ->headerActions([
                 CreateContentAction::make()
-                    ->modifyUrlParameterUsing(function (array $parameters) {
-                        return array_merge($parameters, ['parent' => $this->getOwnerRecord()->getKey()]);
-                    }),
+                    ->parentContentKey(fn () => $this->getOwnerRecord()->getKey()),
             ]);
     }
 

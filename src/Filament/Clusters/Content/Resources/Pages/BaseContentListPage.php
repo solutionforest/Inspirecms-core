@@ -73,9 +73,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
         switch (true) {
             case $action instanceof CreateContentAction:
                 $action
-                    ->modifyUrlParameterUsing(function (array $parameters) {
-                        return array_merge($parameters, ['parent' => $this->getParentKey()]);
-                    });
+                    ->parentContentKey($this->getParentKey());
 
                 break;
 

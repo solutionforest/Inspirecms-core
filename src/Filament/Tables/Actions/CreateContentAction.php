@@ -2,16 +2,14 @@
 
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
-use Closure;
 use Filament\Tables\Actions\Action;
-use SolutionForest\InspireCms\Base\Filament\Tables\Actions\BaseCreateContentAction;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
-use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CreateContentActionTrait;
 
-class CreateContentAction extends BaseCreateContentAction
+class CreateContentAction extends Action
 {
-    protected ?Closure $modifyUrlParameterUsing = null;
+    use CreateContentActionTrait;
+
+    protected static string $actionType = Action::class;
 
     public static function getDefaultName(): ?string
     {
@@ -22,45 +20,6 @@ class CreateContentAction extends BaseCreateContentAction
     {
         parent::setUp();
 
-        $documentTypes = InspireCmsConfig::getDocumentTypeModelClass()::query()
-            ->isWebPage()
-            ->get();
-
-        $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
-        $contentModel = $contentResource::getModel();
-
-        $documentTypeActions = $documentTypes->map(
-            fn ($documentType) => Action::make('create_content_' . $documentType->slug)
-                ->label($documentType->title)
-                ->url(function () use ($documentType, $contentResource) {
-
-                    $parameters = ['documentType' => $documentType];
-
-                    if ($this->modifyUrlParameterUsing) {
-                        $parameters = $this->evaluate($this->modifyUrlParameterUsing, [
-                            'parameters' => $parameters,
-                            'documentType' => $documentType,
-                        ]);
-                    }
-
-                    return FilamentResourceHelper::attemptToGetUrl($contentResource, ['create'], $parameters, false);
-                })
-                ->model($contentModel)
-                ->hidden(fn (Action $action) => ! $contentResource::can('create') && ! blank($action->getUrl()))
-        )->toArray();
-
-        $this->actions($documentTypeActions);
-
-        $this->label(__('inspirecms::actions.create_content.label'));
-
-        $this->model($contentModel);
-        $this->hidden(fn () => ! $contentResource::can('create'));
-    }
-
-    public function modifyUrlParameterUsing(Closure $callback): static
-    {
-        $this->modifyUrlParameterUsing = $callback;
-
-        return $this;
+        $this->setUpAction(Action::class);
     }
 }

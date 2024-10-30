@@ -87,7 +87,7 @@ trait ContentPageTrait
                 return $item;
             })
             ->actions([
-                CreateContentAction::make(),
+                CreateContentAction::make('create_content_item'),
                 LinkToParentAction::make('item_link_to_parent'),
                 ReorderContentAction::make('reorder_content_item'),
                 Actions\Action::make('delete_item')
@@ -95,7 +95,7 @@ trait ContentPageTrait
                     ->icon(FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash')
                     ->requiresConfirmation()
                     ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->hidden(fn (array $arguments) => $arguments['key'] === 'root')
+                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
                     ->action(function (?Model $record, Actions\Action $action) {
 
@@ -154,28 +154,25 @@ trait ContentPageTrait
         return $this->getModelExplorer()->findRecord($key);
     }
 
-    protected function configureSelectedModelItemFormAction(Actions\Action | ActionGroup $action): void
+    protected function configureSelectedModelItemFormAction(Actions\Action $action): void
     {
         if ($action instanceof CreateContentAction) {
             $action
-                ->outlined(false)
-                ->color('gray')
-                ->extraAttributes(['class' => 'flex-1'])
-                ->modifyUrlParameterUsing(function (array $arguments, array $parameters) {
+                ->color('primary')
+                ->parentContentKey(function (array $arguments) {
                     $parent = $arguments['key'] ?? null;
+                    
                     if (in_array($parent, ['root'])) {
                         $parent = null;
                     }
 
-                    return array_merge($parameters, [
-                        'parent' => $parent,
-                    ]);
+                    return $parent;
                 });
         } elseif ($action instanceof LinkToParentAction || $action instanceof ReorderContentAction) {
 
             $action
                 ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                ->hidden(fn (array $arguments) => $arguments['key'] === 'root' || ! isset($arguments['key']));
+                ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
 
             if ($action instanceof ReorderContentAction) {
                 $action
