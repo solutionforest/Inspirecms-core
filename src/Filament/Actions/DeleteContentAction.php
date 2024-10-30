@@ -21,7 +21,7 @@ class DeleteContentAction extends Action
 
         $this->authorize('delete');
 
-        $this->modalHeading(fn (): string => __('filament-actions::delete.single.modal.heading', ['label' => $this->getRecordTitle()]));
+        $this->modalHeading(fn (): string => __('filament-actions::delete.single.label'));
 
         $this->modalSubmitActionLabel(__('filament-actions::delete.single.modal.actions.delete.label'));
 
