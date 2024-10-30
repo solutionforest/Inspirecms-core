@@ -73,7 +73,13 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                         'content' => $content,
                     ];
                 })
-                ->disabledForm(!static::getResource()::can('updateView'))
+                ->disabledForm(!$this->canEditView())
+                ->modalSubmitAction(function ($action) {
+                    if (! $this->canEditView()) {
+                        return false;
+                    }
+                    return $action;
+                })
                 ->extraAttributes(['class' => 'hidden']) // keep it action but hidden on frontend
                 ->successNotificationTitle(__('inspirecms::notification.saved.title'))
                 ->modalSubmitActionLabel(__('inspirecms::actions.save.label'))
@@ -90,5 +96,10 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
     public function fileExplorerItemSelected($path)
     {
         $this->mountAction('openTemplateForm', ['path' => $path]);
+    }
+
+    protected function canEditView(): bool
+    {
+        return static::getResource()::can('updateView');
     }
 }
