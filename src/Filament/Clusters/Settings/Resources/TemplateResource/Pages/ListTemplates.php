@@ -48,7 +48,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                 ->slideOver()
                 ->modalWidth('7xl')
                 ->modalHeading(function (array $arguments) {
-                    
+
                     $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
 
                     if (blank($fullPath)) {
@@ -58,11 +58,12 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                     return basename($fullPath);
                 })
                 ->fillForm(function (array $arguments, Action $action) {
-                    
+
                     $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
 
                     if (blank($fullPath)) {
                         $action->halt();
+
                         return [];
                     }
 
@@ -84,7 +85,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                 ->successNotificationTitle(__('inspirecms::notification.saved.title'))
                 ->modalSubmitActionLabel(__('inspirecms::actions.save.label'))
                 ->action(function (array $data, Action $action) {
-                    
+
                     file_put_contents($data['full_path'], $data['content']);
 
                     $action->success();
