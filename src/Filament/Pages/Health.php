@@ -101,15 +101,19 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
 
     protected function resolvePermissions()
     {
-        $missins = $this->getPermissionsStatus()['missing'] ?? [];
+        $missing = collect($this->getPermissionsStatus()['data'] ?? [])
+            ->where('valid', false)
+            ->pluck('name')
+            ->unique()
+            ->all();
 
-        if (empty($missins)) {
+        if (empty($missing)) {
             return;
         }
 
         $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
 
-        foreach ($missins as $permission) {
+        foreach ($missing as $permission) {
             $permissionModel::findOrCreate($permission, InspireCmsConfig::getGuardName());
         }
 
@@ -127,11 +131,6 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
 
     private function getAllPermissions(): array
     {
-        return collect([
-            ...array_keys(PermissionManifest::getClusterSectionPermissions()),
-            ...collect(PermissionManifest::getClusterSectionResourceModelPermissions())
-                ->flatMap(fn ($arr) => array_keys($arr))
-                ->all(),
-        ])->unique()->sort()->values()->all();
+        return PermissionManifest::permissions()->unique()->sort()->values()->all();
     }
 }
