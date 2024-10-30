@@ -8,7 +8,7 @@
     <x-inspirecms-support::model-explorer 
         :items="$this->getGroupedNodeItems()"
         expandedItemsStateKey="expandedModelExplorerItems"
-        :actions="$this->getModelExplorer()->getActions()"
+        :model-explorer="$this->getModelExplorer()"
     >
             
         @capture($form)
