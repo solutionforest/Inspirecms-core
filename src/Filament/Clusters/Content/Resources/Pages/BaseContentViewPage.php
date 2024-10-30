@@ -53,7 +53,8 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 }),
             BackToParentContentAction::make(),
             Actions\LocaleSwitcher::make(),
-            PreviewAction::make(),
+            PreviewAction::make()
+                ->label(__('inspirecms::actions.preview.label')),
             Actions\EditAction::make()->iconButton(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([

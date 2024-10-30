@@ -48,6 +48,8 @@ return [
 
         'label' => 'Content History',
 
+        'permission_display_name' => 'View content history',
+
     ],
 
     'open' => [
@@ -193,6 +195,8 @@ return [
                 'title' => 'Link to parent successful',
             ],
         ],
+
+        'permission_display_name' => 'Link to parent',
     ],
 
     'reorder_content' => [
@@ -210,6 +214,8 @@ return [
                 'title' => 'Reorder content error',
             ],
         ],
+
+        'permission_display_name' => 'Reorder content',
 
     ],
 ];

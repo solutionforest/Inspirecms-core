@@ -18,7 +18,6 @@ class BackToParentContentAction extends Action
 
     protected function setUp(): void
     {
-        // todo: permission check
         parent::setUp();
 
         $this->color('gray');

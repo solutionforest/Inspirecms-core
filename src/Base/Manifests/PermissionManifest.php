@@ -89,6 +89,15 @@ class PermissionManifest implements PermissionManifestInterface
             });
     }
 
+    public function getActionPermissions(): array
+    {
+        return collect(config('inspirecms.filament.actions'))
+            ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($fqcn)))
+            ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
+            ->sortKeys()
+            ->toArray();
+    }
+
     /**
      * Get the permission name for a given model and ability.
      *
@@ -118,7 +127,7 @@ class PermissionManifest implements PermissionManifestInterface
                 return null;
             }
 
-            $permissionNames = data_get(PermissionManifest::getClusterSectionResourceModelPermissions(), $modelShortName);
+            $permissionNames = data_get($this->getClusterSectionResourceModelPermissions(), $modelShortName);
 
             $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $ability)->keys()->first();
 
@@ -128,6 +137,21 @@ class PermissionManifest implements PermissionManifestInterface
         }
 
         $permissionName = $this->getPermissionNameForModel(Str::snake($ability), $model);
+
+        return auth()->user()?->can($permissionName);
+    }
+
+    public function authorizeAction(string $actionFqcn): ?bool
+    {
+        if (! class_exists($actionFqcn) || ! in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($actionFqcn))) {
+            return null;
+        }
+
+        $permissionName = $actionFqcn::getPermissionName();
+
+        if (blank($permissionName)) {
+            return null;
+        }
 
         return auth()->user()?->can($permissionName);
     }
@@ -142,6 +166,7 @@ class PermissionManifest implements PermissionManifestInterface
     {
         return collect($this->getClusterSectionPermissions())->keys()
             ->merge(collect($this->getClusterSectionResourceModelPermissions())->collapse()->keys())
+            ->merge(collect($this->getActionPermissions())->keys())
             ->map(fn ($permission) => str($permission)->lower()->toString())
             ->values()
             ->unique()

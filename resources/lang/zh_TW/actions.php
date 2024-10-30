@@ -48,6 +48,8 @@ return [
 
         'label' => '內容歷史',
 
+        'permission_display_name' => '查看內容歷史',
+
     ],
 
     'open' => [
@@ -193,5 +195,27 @@ return [
                 'title' => '鏈接到父項成功',
             ],
         ],
+
+        'permission_display_name' => '鏈接到父項',
+    ],
+
+    'reorder_content' => [
+
+        'label' => '重新排序內容',
+
+        'notifications' => [
+            'invalid_model' => [
+                'title' => '無效的模型',
+            ],
+            'success' => [
+                'title' => '重新排序內容成功',
+            ],
+            'error' => [
+                'title' => '重新排序內容錯誤',
+            ],
+        ],
+
+        'permission_display_name' => '重新排序內容',
+
     ],
 ];

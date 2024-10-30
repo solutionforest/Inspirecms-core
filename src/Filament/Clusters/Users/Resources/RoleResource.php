@@ -52,6 +52,11 @@ class RoleResource extends Resource implements ClusterSectionResource
                             ->schema([
                                 static::getFormComponentForDefaultPermissionsSection(),
                             ]),
+                        Forms\Components\Section::make()
+                            ->heading(__('inspirecms::permissions.action_permissions.label'))
+                            ->schema([
+                                static::getFormComponentForActionPermissionsSection(),
+                            ]),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
                         if (is_null($record)) {
@@ -229,6 +234,21 @@ class RoleResource extends Resource implements ClusterSectionResource
         return Forms\Components\Group::make()
             ->statePath('default_permissions')
             ->schema($components);
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getFormComponentForActionPermissionsSection()
+    {
+        return Forms\Components\Group::make()
+            ->statePath('action_permissions')
+            ->schema(
+                collect(PermissionManifest::getActionPermissions())
+                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+                    ->all()
+            )
+            ->columnSpanFull()->columns(1);
     }
     //endregion Form field(s)/component(s)
 }

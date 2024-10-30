@@ -19,6 +19,5 @@ class CreateContentAction extends Action
         parent::setUp();
 
         $this->setUpAction(Action::class);
-
     }
 }

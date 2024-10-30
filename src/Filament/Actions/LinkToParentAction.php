@@ -7,14 +7,18 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class LinkToParentAction extends Action
+class LinkToParentAction extends Action implements GuardAction
 {
+    use CanCustomizeAuthorizedGuardActionProcess;
+
     protected Closure | string | int | null $rootLevelKey = null;
 
     protected Closure | string $parentIdColumnName = 'parent_id';
@@ -24,9 +28,18 @@ class LinkToParentAction extends Action
         return 'create_content';
     }
 
+    public static function getPermissionName(): string
+    {
+        return 'action_link_content_to_parent';
+    }
+    
+    public static function getPermissionDisplayName(): string
+    {
+        return __('inspirecms::actions.link_to_parent.permission_display_name');
+    }
+
     protected function setUp(): void
     {
-        // todo: permission check
         parent::setUp();
 
         $this->label(__('inspirecms::actions.link_to_parent.label'));

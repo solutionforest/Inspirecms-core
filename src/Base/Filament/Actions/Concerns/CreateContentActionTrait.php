@@ -40,6 +40,8 @@ trait CreateContentActionTrait
         }
 
         $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
+
+        $this->authorize('create', InspireCmsConfig::getContentModelClass());
         
         $this->label(__('inspirecms::actions.create_content.label'));
 

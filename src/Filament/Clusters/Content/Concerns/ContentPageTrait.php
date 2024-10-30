@@ -7,9 +7,9 @@ use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
+use SolutionForest\InspireCms\Filament\Actions\DeleteContentAction;
 use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
@@ -90,30 +90,7 @@ trait ContentPageTrait
                 CreateContentAction::make('create_content_item'),
                 LinkToParentAction::make('item_link_to_parent'),
                 ReorderContentAction::make('reorder_content_item'),
-                Actions\Action::make('delete_item')
-                    ->color('danger')
-                    ->icon(FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash')
-                    ->requiresConfirmation()
-                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
-                    ->action(function (?Model $record, Actions\Action $action) {
-
-                        if (! $record) {
-
-                            return;
-                        }
-
-                        $result = $record->delete();
-
-                        if (! $result) {
-                            $action->failure();
-
-                            return;
-                        }
-
-                        $action->success();
-                    }),
+                DeleteContentAction::make('delete_content_item'),
             ]);
     }
 
@@ -156,51 +133,71 @@ trait ContentPageTrait
 
     protected function configureSelectedModelItemFormAction(Actions\Action $action): void
     {
-        if ($action instanceof CreateContentAction) {
-            $action
-                ->color('primary')
-                ->parentContentKey(function (array $arguments) {
-                    $parent = $arguments['key'] ?? null;
-                    
-                    if (in_array($parent, ['root'])) {
-                        $parent = null;
-                    }
+        switch (true) {
+            case $action instanceof CreateContentAction:
+                {
+                    $action
+                        ->color('primary')
+                        ->parentContentKey(function (array $arguments) {
+                            $parent = $arguments['key'] ?? null;
+                            
+                            if (in_array($parent, ['root'])) {
+                                $parent = null;
+                            }
+        
+                            return $parent;
+                        });
+                }
+                break;
+            case $action instanceof DeleteContentAction:
+                {
+                    $action
+                        ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                        ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
+                }
+                break;
 
-                    return $parent;
-                });
-        } elseif ($action instanceof LinkToParentAction || $action instanceof ReorderContentAction) {
+            case $action instanceof LinkToParentAction:
+                {
+                    $action
+                        ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
+                }
+                break;
+            case $action instanceof ReorderContentAction:
+                {
+                    $action
+                        ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                        ->nodeParentId(function (array $arguments, ?Model $record) {
+                            // find from argument
+                            if (is_null($record)) {
+                                $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
+                                    // throw error if still null
+                                    ?? throw new \Exception('Record not found for the given parent ID.');
+                            }
+                            if (! $record instanceof Content) {
+                                throw new \Exception('The provided record is not an instance of the Content model.');
+                            }
 
-            $action
-                ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
+                            return $record->nestable_tree_parent_id;
+                        })
+                        ->successRedirectUrl(function () {
+                            if ($this instanceof EditRecord || $this instanceof ViewRecord) {
+                                return $this->getUrl(['record' => $this->getRecord()]);
+                            }
 
-            if ($action instanceof ReorderContentAction) {
-                $action
-                    ->nodeParentId(function (array $arguments, ?Model $record) {
-                        // find from argument
-                        if (is_null($record)) {
-                            $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
-                                // throw error if still null
-                                 ?? throw new \Exception('Record not found for the given parent ID.');
-                        }
-                        if (! $record instanceof Content) {
-                            throw new \Exception('The provided record is not an instance of the Content model.');
-                        }
+                            if ($this instanceof ListRecords || $this instanceof CreateRecord) {
+                                return $this->getUrl();
+                            }
 
-                        return $record->nestable_tree_parent_id;
-                    })
-                    ->successRedirectUrl(function () {
-                        if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-                            return $this->getUrl(['record' => $this->getRecord()]);
-                        }
-
-                        if ($this instanceof ListRecords || $this instanceof CreateRecord) {
-                            return $this->getUrl();
-                        }
-
-                        return null;
-                    });
-            }
+                            return null;
+                        });
+                }
+                break;
+            default:
+                break;
         }
 
         $this->cacheAction($action);

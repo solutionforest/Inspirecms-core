@@ -15,4 +15,8 @@ return [
         'label' => '預設權限',
         'helper_text' => '',
     ],
+
+    'action_permissions' => [
+        'label' => 'Actions',
+    ],
 ];

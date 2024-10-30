@@ -7,11 +7,15 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
+use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 
-class ReorderContentAction extends Action
+class ReorderContentAction extends Action implements GuardAction
 {
+    use CanCustomizeAuthorizedGuardActionProcess;
+    
     protected Closure | string | int | null $nodeParentId = null;
 
     public static function getDefaultName(): ?string
@@ -19,9 +23,18 @@ class ReorderContentAction extends Action
         return 'reorder_content';
     }
 
+    public static function getPermissionName(): string
+    {
+        return 'action_reorder_content';
+    }
+    
+    public static function getPermissionDisplayName(): string
+    {
+        return __('inspirecms::actions.reorder_content.permission_display_name');
+    }
+
     protected function setUp(): void
     {
-        // todo: permission check
         parent::setUp();
 
         $this->label(__('inspirecms::actions.reorder_content.label'));

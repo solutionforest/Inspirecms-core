@@ -69,6 +69,11 @@ return [
             'settings' => \SolutionForest\InspireCms\Filament\Clusters\Settings::class,
             'users' => \SolutionForest\InspireCms\Filament\Clusters\Users::class,
         ],
+        'actions' => [
+            'link_to_parent' => \SolutionForest\InspireCms\Filament\Actions\LinkToParentAction::class,
+            'reorder_content' => \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
+            'content_history' => \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
+        ],
     ],
 
     'media_library' => [

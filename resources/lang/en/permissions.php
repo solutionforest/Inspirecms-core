@@ -15,4 +15,8 @@ return [
         'label' => 'Default permissions',
         'helper_text' => '',
     ],
+
+    'action_permissions' => [
+        'label' => 'Actions',
+    ],
 ];

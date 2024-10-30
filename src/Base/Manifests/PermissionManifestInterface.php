@@ -37,4 +37,12 @@ interface PermissionManifestInterface
      * @return bool|null Returns true if the ability is authorized, false if not authorized, or null if the permission does not exist and $checkExist is true.
      */
     public function authorizeModel(string $ability, string $model, bool $checkExist = true): ?bool;
+
+    /**
+     * Authorizes the specified action.
+     *
+     * @param string $actionFqcn The fully qualified class name of the action to authorize.
+     * @return bool|null Returns true if the action is authorized, false if it is not, or null if the authorization status is indeterminate.
+     */
+    public function authorizeAction(string $actionFqcn): ?bool;
 }
