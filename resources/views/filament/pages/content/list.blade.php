@@ -8,6 +8,8 @@
         :items="$this->getGroupedNodeItems()"
         expandedItemsStateKey="expandedModelExplorerItems"
         :model-explorer="$this->getModelExplorer()"
+        translatable
+        translatable-locale="{{ $this->getActiveActionsLocale() }}"
     >
         @if ($this->isDisplayTable())
             <div class="flex flex-col gap-y-6">

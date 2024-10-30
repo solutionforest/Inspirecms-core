@@ -10,6 +10,8 @@
         :items="$this->getGroupedNodeItems()"
         expandedItemsStateKey="expandedModelExplorerItems"
         :model-explorer="$this->getModelExplorer()"
+        translatable
+        translatable-locale="{{ $this->getActiveActionsLocale() }}"
     >
         @php
             $relationManagers = $this->getRelationManagers();

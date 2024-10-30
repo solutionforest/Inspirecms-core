@@ -9,6 +9,8 @@
         :items="$this->getGroupedNodeItems()"
         expandedItemsStateKey="expandedModelExplorerItems"
         :model-explorer="$this->getModelExplorer()"
+        translatable
+        translatable-locale="{{ $this->getActiveActionsLocale() }}"
     >
             
         @capture($form)

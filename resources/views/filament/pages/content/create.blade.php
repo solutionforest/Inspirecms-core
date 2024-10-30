@@ -8,6 +8,8 @@
         :items="$this->getGroupedNodeItems()"
         expandedItemsStateKey="expandedModelExplorerItems"
         :model-explorer="$this->getModelExplorer()"
+        translatable
+        translatable-locale="{{ $this->getActiveActionsLocale() }}"
     >
 
         <x-filament-panels::form

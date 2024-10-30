@@ -84,6 +84,11 @@ trait ContentPageTrait
                     'activeRelationManager' => 0,
                 ], true);
 
+                if (in_array('Spatie\Translatable\HasTranslations',class_uses_recursive($record))) {
+                    $item['label'] = $record->getTranslations('title');
+                    $item['fallbackLocale'] = $record->getFallbackLocale();
+                }
+
                 return $item;
             })
             ->actions([
