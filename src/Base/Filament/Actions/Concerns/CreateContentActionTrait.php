@@ -12,9 +12,9 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait CreateContentActionTrait
 {
-    protected null|Closure|string|int $parentContentKey = null;
+    protected null | Closure | string | int $parentContentKey = null;
 
-    protected null|Closure $documentTypeTitleUsing = null;
+    protected ?Closure $documentTypeTitleUsing = null;
 
     public static function getDefaultName(): ?string
     {
@@ -24,15 +24,13 @@ trait CreateContentActionTrait
     /**
      * Sets up the action based on the specified action type.
      *
-     * @param string $actionType The type of action to set up.
-     *
-     * @return void
+     * @param  string  $actionType  The type of action to set up.
      */
     protected function setUpAction(string $actionType): void
     {
-        if (blank($actionType) || !class_exists($actionType) || 
+        if (blank($actionType) || ! class_exists($actionType) ||
             ! (
-                is_a($actionType, Action::class, true) || 
+                is_a($actionType, Action::class, true) ||
                 is_a($actionType, TableAction::class, true)
             )
         ) {
@@ -42,7 +40,7 @@ trait CreateContentActionTrait
         $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
 
         $this->authorize('create', InspireCmsConfig::getContentModelClass());
-        
+
         $this->label(__('inspirecms::actions.create_content.label'));
 
         $this->icon('heroicon-o-plus');
@@ -87,22 +85,24 @@ trait CreateContentActionTrait
                     'class' => 'hidden',
                 ])
                 ->cancelParentActions() // cancel parent actions if this action is cancelled
-                ->action(function (array $arguments, Action|TableAction $action)  use ($contentResource) {
-                    if (!isset($arguments['documentTypeKey'])) {
+                ->action(function (array $arguments, Action | TableAction $action) use ($contentResource) {
+                    if (! isset($arguments['documentTypeKey'])) {
                         $action->cancel();
+
                         return;
                     }
-                    $url =  FilamentResourceHelper::attemptToGetUrl(
-                        $contentResource, 
-                        'create', 
+                    $url = FilamentResourceHelper::attemptToGetUrl(
+                        $contentResource,
+                        'create',
                         [
                             'documentType' => $arguments['documentTypeKey'],
                             'parent' => $this->getParentContentKey(),
-                        ], 
+                        ],
                         false
                     );
                     if (blank($url)) {
                         $action->cancel();
+
                         return;
                     }
                     $action->redirect($url);
@@ -110,7 +110,7 @@ trait CreateContentActionTrait
         ]);
     }
 
-    public function parentContentKey(Closure|string|int|null $parentContentKey): static
+    public function parentContentKey(Closure | string | int | null $parentContentKey): static
     {
         $this->parentContentKey = $parentContentKey;
 
@@ -124,7 +124,7 @@ trait CreateContentActionTrait
         return $this;
     }
 
-    public function getParentContentKey(): null|Closure|string|int
+    public function getParentContentKey(): null | Closure | string | int
     {
         return $this->evaluate($this->parentContentKey);
     }

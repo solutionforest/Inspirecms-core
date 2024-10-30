@@ -32,7 +32,7 @@ class LinkToParentAction extends Action implements GuardAction
     {
         return 'action_link_content_to_parent';
     }
-    
+
     public static function getPermissionDisplayName(): string
     {
         return __('inspirecms::actions.link_to_parent.permission_display_name');
