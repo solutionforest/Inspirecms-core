@@ -3,37 +3,23 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource\Pages;
 
 use Filament\Actions\Action;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Support\Enums\Alignment;
+use Livewire\Attributes\On;
+use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
 
-class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
+class ListTemplates extends BaseListPage implements HasFileExplorer
 {
     use InteractsWithFileExplorer;
-    use InteractsWithForms;
 
     /**
      * @var view-string
      */
     protected static string $view = 'inspirecms::filament.pages.list-templates';
-
-    public array $fileExplorerSelectedItemData = [];
-
-    public ?string $selectedFileItemContent = '';
-
-    public function getFormActionsAlignment(): string | Alignment
-    {
-        return 'end';
-    }
 
     public static function getResource(): string
     {
@@ -42,54 +28,67 @@ class ListTemplates extends BaseListPage implements HasFileExplorer, HasForms
 
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
     {
-        return $fileExplorer
-            ->directory(resource_path('views'));
+        return $fileExplorer->directory(resource_path('views'));
     }
 
-    public function selectedFileItemForm(Form $form): Form
+    public function getActions(): array
     {
-        return $form
-            ->disabled(fn () => ! static::getResource()::can('updateView'))
-            ->schema([
-                TextInput::make('path')
-                    ->disabled()
-                    ->inlineLabel(),
-                TextInput::make('full_path')
-                    ->hidden()
-                    ->dehydratedWhenHidden(),
-                TextArea::make('content')
-                    ->rows(20)
-                    ->helperText('TODO: ace editor have debugs, using textarea for temp solution'),
-            ]);
-    }
-
-    public function getSelectedFileItemFormActions(): array
-    {
-        if (! static::getResource()::can('updateView')) {
-            return [];
-        }
-
         return [
-            Action::make('save')
-                ->label(__('inspirecms::actions.save.label'))
-                ->submit('saveSelectedItem')
-                ->keyBindings(['mod+s']),
+            Action::make('openTemplateForm')
+                ->form([
+                    TextInput::make('full_path')
+                        ->hiddenLabel()
+                        ->disabled()
+                        ->dehydrated(),
+                    AceEditor::make('content')
+                        ->mode('php')
+                        ->theme('github')
+                        ->darkTheme('dracula'),
+                ])
+                ->slideOver()
+                ->modalWidth('7xl')
+                ->modalHeading(function (array $arguments) {
+                    
+                    $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
+
+                    if (blank($fullPath)) {
+                        return static::getTitle();
+                    }
+
+                    return basename($fullPath);
+                })
+                ->fillForm(function (array $arguments, Action $action) {
+                    
+                    $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
+
+                    if (blank($fullPath)) {
+                        $action->halt();
+                        return [];
+                    }
+
+                    $content = $this->getFileContent($fullPath);
+
+                    return [
+                        'full_path' => $fullPath,
+                        'content' => $content,
+                    ];
+                })
+                ->disabledForm(!static::getResource()::can('updateView'))
+                ->extraAttributes(['class' => 'hidden']) // keep it action but hidden on frontend
+                ->successNotificationTitle(__('inspirecms::notification.saved.title'))
+                ->modalSubmitActionLabel(__('inspirecms::actions.save.label'))
+                ->action(function (array $data, Action $action) {
+                    
+                    file_put_contents($data['full_path'], $data['content']);
+
+                    $action->success();
+                }),
         ];
     }
 
-    protected function getSavedNotification(): ?Notification
+    #[On('selectFileExplorerItem')]
+    public function fileExplorerItemSelected($path)
     {
-        return Notification::make()
-            ->success()
-            ->title(__('inspirecms::notification.saved.title'));
-    }
-
-    public function saveSelectedItem(): void
-    {
-        $data = $this->selectedFileItemForm->getState();
-
-        file_put_contents($data['full_path'], $data['content']);
-
-        $this->getSavedNotification()?->send();
+        $this->mountAction('openTemplateForm', ['path' => $path]);
     }
 }
