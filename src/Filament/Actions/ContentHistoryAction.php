@@ -19,7 +19,7 @@ class ContentHistoryAction extends Action implements GuardAction
     {
         return 'action_view_content_history';
     }
-    
+
     public static function getPermissionDisplayName(): string
     {
         return __('inspirecms::actions.content_history.permission_display_name');

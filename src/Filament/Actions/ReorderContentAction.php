@@ -15,7 +15,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 class ReorderContentAction extends Action implements GuardAction
 {
     use CanCustomizeAuthorizedGuardActionProcess;
-    
+
     protected Closure | string | int | null $nodeParentId = null;
 
     public static function getDefaultName(): ?string
@@ -27,7 +27,7 @@ class ReorderContentAction extends Action implements GuardAction
     {
         return 'action_reorder_content';
     }
-    
+
     public static function getPermissionDisplayName(): string
     {
         return __('inspirecms::actions.reorder_content.permission_display_name');

@@ -49,20 +49,20 @@ class DeleteContentAction extends Action
 
         $this->action(function (?Model $record, Action $action): void {
 
-                if (! $record) {
+            if (! $record) {
 
-                    return;
-                }
+                return;
+            }
 
-                $result = $record->delete();
+            $result = $record->delete();
 
-                if (! $result) {
-                    $action->failure();
+            if (! $result) {
+                $action->failure();
 
-                    return;
-                }
+                return;
+            }
 
-                $action->success();
-            });
+            $action->success();
+        });
     }
 }

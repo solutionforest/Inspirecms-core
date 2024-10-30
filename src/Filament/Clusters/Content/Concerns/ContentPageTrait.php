@@ -140,66 +140,66 @@ trait ContentPageTrait
     {
         switch (true) {
             case $action instanceof CreateContentAction:
-                {
-                    $action
-                        ->color('primary')
-                        ->parentContentKey(function (array $arguments) {
-                            $parent = $arguments['key'] ?? null;
-                            
-                            if (in_array($parent, ['root'])) {
-                                $parent = null;
-                            }
-        
-                            return $parent;
-                        });
-                }
+
+                $action
+                    ->color('primary')
+                    ->parentContentKey(function (array $arguments) {
+                        $parent = $arguments['key'] ?? null;
+
+                        if (in_array($parent, ['root'])) {
+                            $parent = null;
+                        }
+
+                        return $parent;
+                    });
+
                 break;
             case $action instanceof DeleteContentAction:
-                {
-                    $action
-                        ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-                        ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
-                }
+
+                $action
+                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
+                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
+
                 break;
 
             case $action instanceof LinkToParentAction:
-                {
-                    $action
-                        ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
-                }
+
+                $action
+                    ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
+
                 break;
             case $action instanceof ReorderContentAction:
-                {
-                    $action
-                        ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                        ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-                        ->nodeParentId(function (array $arguments, ?Model $record) {
-                            // find from argument
-                            if (is_null($record)) {
-                                $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
-                                    // throw error if still null
-                                    ?? throw new \Exception('Record not found for the given parent ID.');
-                            }
-                            if (! $record instanceof Content) {
-                                throw new \Exception('The provided record is not an instance of the Content model.');
-                            }
 
-                            return $record->nestable_tree_parent_id;
-                        })
-                        ->successRedirectUrl(function () {
-                            if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-                                return $this->getUrl(['record' => $this->getRecord()]);
-                            }
+                $action
+                    ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                    ->nodeParentId(function (array $arguments, ?Model $record) {
+                        // find from argument
+                        if (is_null($record)) {
+                            $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
+                                // throw error if still null
+                                ?? throw new \Exception('Record not found for the given parent ID.');
+                        }
+                        if (! $record instanceof Content) {
+                            throw new \Exception('The provided record is not an instance of the Content model.');
+                        }
 
-                            if ($this instanceof ListRecords || $this instanceof CreateRecord) {
-                                return $this->getUrl();
-                            }
+                        return $record->nestable_tree_parent_id;
+                    })
+                    ->successRedirectUrl(function () {
+                        if ($this instanceof EditRecord || $this instanceof ViewRecord) {
+                            return $this->getUrl(['record' => $this->getRecord()]);
+                        }
 
-                            return null;
-                        });
-                }
+                        if ($this instanceof ListRecords || $this instanceof CreateRecord) {
+                            return $this->getUrl();
+                        }
+
+                        return null;
+                    });
+
                 break;
             default:
                 break;
