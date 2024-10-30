@@ -74,11 +74,12 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                         'content' => $content,
                     ];
                 })
-                ->disabledForm(!$this->canEditView())
+                ->disabledForm(! $this->canEditView())
                 ->modalSubmitAction(function ($action) {
                     if (! $this->canEditView()) {
                         return false;
                     }
+
                     return $action;
                 })
                 ->extraAttributes(['class' => 'hidden']) // keep it action but hidden on frontend
