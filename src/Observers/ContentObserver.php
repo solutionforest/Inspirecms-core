@@ -79,13 +79,6 @@ class ContentObserver
     {
         $this->clearCached();
 
-        // // Keep the status of the model when it is being restoring
-        // // since "restore" event will call "save" method to update the model.
-        // $publishedState = inspirecms_content_statuses()->getOption($model->status);
-        // if ($publishedState) {
-        //     $model->setPublishableState($publishedState->getName());
-        // }
-
         $model->sitemap?->setEnable();
         $model->navigation?->setEnable();
     }

@@ -25,6 +25,10 @@ class HasContentVersionsObserver
      */
     public function saving(HasContentVersions | Model $model)
     {
+        // Skip state the versioning if restoring
+        if (static::$restoring) {
+            return;
+        }
         // Preset the content version event
         $event = $model->exists ? 'updated' : 'created';
         $model->setVersioningEvent($event);
@@ -38,6 +42,10 @@ class HasContentVersionsObserver
      */
     public function saved(HasContentVersions | Model $model)
     {
+        // Skip state the versioning if restoring
+        if (static::$restoring) {
+            return;
+        }
         $this->dispatchContentVersioning($model);
     }
 
