@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongToNestableTree;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
 
-interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongToNestableTree, HasDtoModel, IndexableModel, NestableInterface
+interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, IndexableModel, NestableInterface
 {
     /**
      * Return the document type relation.

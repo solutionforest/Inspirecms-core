@@ -23,14 +23,14 @@ use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\Models\Concerns\BelongToNestableTree;
+use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 #[ObservedBy(ContentObserver::class)]
 class Content extends BaseModel implements ContentContract
 {
-    use BelongToNestableTree;
+    use BelongsToNestableTree;
     use Concerns\HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
