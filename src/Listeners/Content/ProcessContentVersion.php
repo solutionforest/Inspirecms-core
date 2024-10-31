@@ -27,7 +27,7 @@ class ProcessContentVersion
         }
     }
 
-    protected function processContentVersion(HasContentVersions|Model $model)
+    protected function processContentVersion(HasContentVersions | Model $model)
     {
         $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
         $isPublishing = $statusOption && $statusOption->isPublishable();
@@ -51,7 +51,7 @@ class ProcessContentVersion
         }
     }
 
-    protected function processPublishVersion(HasContentVersions|Model $model, Model $contentVersion, ?ContentStatusOption $statusOption)
+    protected function processPublishVersion(HasContentVersions | Model $model, Model $contentVersion, ?ContentStatusOption $statusOption)
     {
         $data = $model->getPublishableData();
         $data['version_id'] = $contentVersion->getKey();

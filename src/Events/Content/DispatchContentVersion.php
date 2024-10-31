@@ -8,12 +8,11 @@ use SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions;
 class DispatchContentVersion
 {
     use SerializesModels;
-    
+
     /**
      * @var HasContentVersions
      */
     public $model;
-
 
     public function __construct(HasContentVersions $model)
     {
