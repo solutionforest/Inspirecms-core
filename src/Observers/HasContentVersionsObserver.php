@@ -57,8 +57,6 @@ class HasContentVersionsObserver
      */
     public function deleting(HasContentVersions | Model $model)
     {
-        $this->dispatchGenerateSitemap($model, 'deleting');
-
         if (! $this->isSupportSoftDelete($model)) {
             $this->deleteContentVersions($model);
         }
@@ -85,8 +83,6 @@ class HasContentVersionsObserver
     {
         // When restoring a model, an updated event is also fired.
         static::$restoring = true;
-
-        $this->dispatchGenerateSitemap($model, 'restoring');
     }
 
     /**
@@ -108,12 +104,6 @@ class HasContentVersionsObserver
 
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
         event(new DispatchContentVersion($model->withoutRelations()));
-    }
-
-    protected function dispatchGenerateSitemap(HasContentVersions | Model $model, string $event)
-    {
-        // Unload the relations to prevent large amounts of unnecessary data from being serialized.
-        event(new GenerateSitemap($model->withoutRelations(), $event));
     }
 
     protected function isSupportSoftDelete(HasContentVersions | Model $model)
