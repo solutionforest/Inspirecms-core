@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Events\Content;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 
-class PublishVersionCreated
+class CreatingPublishContentVersion
 {
     use SerializesModels;
 
@@ -17,12 +17,12 @@ class PublishVersionCreated
     /**
      * @var \SolutionForest\InspireCms\Models\Contracts\ContentVersion|Model
      */
-    public $version;
+    public $contentVersion;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion|Model
+     * @var array
      */
-    public $publishVersion;
+    public $publishData;
 
     /**
      * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
@@ -33,16 +33,16 @@ class PublishVersionCreated
      * Create a new event instance.
      *
      * @param  \SolutionForest\InspireCms\Models\Contracts\Content  $content
-     * @param  \SolutionForest\InspireCms\Models\Contracts\ContentVersion  $version
-     * @param  \SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion  $publishVersion
+     * @param  \SolutionForest\InspireCms\Models\Contracts\ContentVersion  $contentVersion
+     * @param  array  $publishData
      * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $status
      * @return void
      */
-    public function __construct($content, $version, $publishVersion, $status)
+    public function __construct($content, $contentVersion, $publishData, $status)
     {
         $this->content = $content;
-        $this->version = $version;
-        $this->publishVersion = $publishVersion;
+        $this->contentVersion = $contentVersion;
+        $this->publishData = $publishData;
         $this->status = $status;
     }
 }

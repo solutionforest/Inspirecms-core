@@ -60,6 +60,9 @@ return new class extends BaseMigration
             $table->id();
             $table->timestamp('created_at');
 
+            $table->string('event_name')->nullable();
+            $table->string('publish_state')->nullable();
+
             $table->uuid('content_id');
             $table->json('from_data');
             $table->json('to_data');

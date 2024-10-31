@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Events\Content;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
 
-class VersionCreated
+class CreatedContentVersion
 {
     use SerializesModels;
 

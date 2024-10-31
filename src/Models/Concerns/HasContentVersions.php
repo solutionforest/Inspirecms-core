@@ -5,11 +5,10 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Events\Content as ContentEvents;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
+use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasContentVersions
@@ -19,70 +18,15 @@ trait HasContentVersions
      */
     protected string $publishableState = 'draft';
 
-    protected array $contentVersionData = [];
+    protected ?string $versioningEvent = null;
+
+    protected array $preloadContentVersionData = [];
 
     protected array $publishableData = [];
 
-    protected bool $canAddContentVersion = true;
-
     public static function bootHasContentVersions()
     {
-        static::saving(function (self $model) {
-            $model->contentVersionData = $model->prepareContentVersionData();
-        });
-
-        static::saved(function (self $model) {
-
-            if ($model->canAddContentVersion) {
-
-                $statusOption = inspirecms_content_statuses()->getOption($model->getPublishableState());
-                $isPublishing = $statusOption && $statusOption->isPublishable();
-
-                $contentVersion = $model->contentVersions()->create([
-                    'from_data' => $model->contentVersionData['from'] ?? [],
-                    'to_data' => $model->contentVersionData['to'] ?? [],
-                    'avoid_to_clean' => $isPublishing,
-                ]);
-
-                event(new ContentEvents\VersionCreated($model, $contentVersion, $statusOption, $isPublishing));
-
-                if ($isPublishing) {
-                    $data = $model->getPublishableData();
-                    $data['version_id'] = $contentVersion->getKey();
-                    $publishVersion = $model->publishVersionLogs()->create($data);
-
-                    event(new ContentEvents\GenerateSitemap($model, 'saved'));
-                    event(new ContentEvents\PublishVersionCreated($model, $contentVersion, $publishVersion, $statusOption));
-                }
-            }
-
-            $model->resetPublishableData();
-            $model->resetPublishableState();
-            $model->resetContentVersionData();
-        });
-
-        $isSoftDeletes = in_array(SoftDeletes::class, class_uses_recursive(static::class));
-
-        static::deleting(function (self $model) use ($isSoftDeletes) {
-            event(new ContentEvents\GenerateSitemap($model, 'deleting'));
-
-            if (! $isSoftDeletes) {
-                $model->contentVersions()->delete();
-                $model->publishVersionLogs()->delete();
-            }
-        });
-
-        if ($isSoftDeletes) {
-
-            static::restoring(function (self $model) {
-                event(new ContentEvents\GenerateSitemap($model, 'restoring'));
-            });
-
-            static::forceDeleting(function (self $model) {
-                $model->contentVersions()->delete();
-                $model->publishVersionLogs()->delete();
-            });
-        }
+        static::observe(new HasContentVersionsObserver());
     }
 
     /** {@inheritDoc} */
@@ -160,15 +104,21 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function setCanAddNewConentVersion(bool $canAddContentVersion): void
-    {
-        $this->canAddContentVersion = $canAddContentVersion;
-    }
-
-    /** {@inheritDoc} */
     public function getPublishableState(): string
     {
         return $this->publishableState;
+    }
+
+    /** {@inheritDoc} */
+    public function setVersioningEvent(string $event): void
+    {
+        $this->versioningEvent = $event;
+    }
+
+    /** {@inheritDoc} */
+    public function getVersioningEvent(): ?string
+    {
+        return $this->versioningEvent;
     }
 
     /** {@inheritDoc} */
@@ -186,15 +136,28 @@ trait HasContentVersions
     public function save(array $options = [])
     {
         $status = inspirecms_content_statuses()->getOption($this->getPublishableState());
-        $oldStatus = $this->status ?
-            inspirecms_content_statuses()->getOption($this->status) :
-            null;
+        
+        return $this->performPublishableAction($options, $status);
+    }
 
-        $result = $this->performPublishableAction($options, $status);
+    /** {@inheritDoc} */
+    public function preloadContentVersionData(): void
+    {
+        $this->preloadContentVersionData = $this->prepareContentVersionData();
+    }
 
-        event(new ContentEvents\ChangeStatus($this, $oldStatus, $status));
+    /** {@inheritDoc} */
+    public function getPreloadVersionData(): array
+    {
+        return $this->preloadContentVersionData;
+    }
 
-        return $result;
+    /** {@inheritDoc} */
+    public function resetContentVersionState(): void
+    {
+        $this->resetPublishableData();
+        $this->resetPublishableState();
+        $this->resetContentVersionData();
     }
 
     //region Helper(s)
@@ -237,7 +200,7 @@ trait HasContentVersions
     {
         $modelIsTranslatable = in_array(\Spatie\Translatable\HasTranslations::class, class_uses_recursive($this));
 
-        return collect($this->getContentVersioingAttributes())
+        return collect($this->getContentVersioningAttributes())
             ->map(function ($attribute) use ($modelIsTranslatable): array {
 
                 $isTranslatable = $modelIsTranslatable && $this->isTranslatableAttribute($attribute);
@@ -258,6 +221,8 @@ trait HasContentVersions
                 $carry ??= [];
                 $carry['from'][$item['attribute']] = $item['old'];
                 $carry['to'][$item['attribute']] = $item['new'];
+                $carry['event_name'] = $this->getVersioningEvent();
+                $carry['publish_state'] = $this->getPublishableState();
 
                 return $carry;
             });
@@ -265,7 +230,7 @@ trait HasContentVersions
 
     protected function resetContentVersionData(): void
     {
-        $this->contentVersionData = [];
+        $this->preloadContentVersionData = [];
     }
 
     protected function resetPublishableData(): void

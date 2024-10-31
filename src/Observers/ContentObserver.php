@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Events\Content\ChangeStatus;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -20,6 +21,26 @@ class ContentObserver
     }
 
     /**
+     * Handle "updated" event.
+     *
+     * @param  Content|Model  $model  The model instance being saving.
+     * @return void
+     */
+    public function updated(Content | Model $model)
+    {
+        $diff = [$model->getOriginal('status'), $model->getAttribute('status')];
+
+        if ($diff[0] !== $diff[1]) {
+
+            $oldStatus = inspirecms_content_statuses()->getOption($diff[0]);
+            $status = inspirecms_content_statuses()->getOption($diff[1]);
+
+            // Unload the relations to prevent large amounts of unnecessary data from being serialized.
+            event(new ChangeStatus($model->withoutRelations(), $oldStatus, $status));
+        }
+    }
+
+    /**
      * Handle "deleting" event.
      *
      * @param  Content|Model  $model  The model instance being deleting.
@@ -29,13 +50,8 @@ class ContentObserver
     {
         $this->clearCached();
 
-        //region sitemap
         $model->sitemap?->setDisable();
-        //endregion sitemap
-
-        //region navigation
         $model->navigation?->setDisable();
-        //endregion sitemap
     }
 
     /**
@@ -63,46 +79,15 @@ class ContentObserver
     {
         $this->clearCached();
 
-        // Prevent saving the content version when the model is being restored.
-        $this->avoidSaveContentVersion($model);
+        // // Keep the status of the model when it is being restoring
+        // // since "restore" event will call "save" method to update the model.
+        // $publishedState = inspirecms_content_statuses()->getOption($model->status);
+        // if ($publishedState) {
+        //     $model->setPublishableState($publishedState->getName());
+        // }
 
-        // Keep the status of the model when it is being restoring
-        // since "restore" event will call "save" method to update the model.
-        $publishedState = inspirecms_content_statuses()->getOption($model->status);
-        if ($publishedState) {
-            $model->setPublishableState($publishedState->getName());
-        }
-
-        //region sitemap
         $model->sitemap?->setEnable();
-        //endregion sitemap
-
-        //region navigation
         $model->navigation?->setEnable();
-        //endregion sitemap
-    }
-
-    /**
-     * Handle "restored" event.
-     *
-     * @param  \App\Models\Content|\Illuminate\Database\Eloquent\Model  $model
-     * @return void
-     */
-    public function resotred(Content | Model $model)
-    {
-        $this->refreshSaveContentVersionFlag($model);
-    }
-
-    protected function avoidSaveContentVersion(Content | Model $model)
-    {
-        // Prevent saving the content version when the model is being restored.
-        $model->setCanAddNewConentVersion(false);
-    }
-
-    protected function refreshSaveContentVersionFlag(Content | Model $model)
-    {
-        // Re-enable save the conent version of the model after it has been restored.
-        $model->setCanAddNewConentVersion(true);
     }
 
     protected function clearCached()
