@@ -111,9 +111,7 @@ interface HasContentVersions
     /**
      * Sets the versioning event for the content.
      *
-     * @param string $event The event to set for versioning.
-     *
-     * @return void
+     * @param  string  $event  The event to set for versioning.
      */
     public function setVersioningEvent(string $event): void;
 
@@ -144,8 +142,6 @@ interface HasContentVersions
      * Preloads the content version data.
      *
      * This method is responsible for preloading any necessary data related to content versions.
-     *
-     * @return void
      */
     public function preloadContentVersionData(): void;
 
@@ -164,8 +160,6 @@ interface HasContentVersions
      *
      * This method is responsible for resetting any state or data
      * related to the content version of the implementing class.
-     *
-     * @return void
      */
     public function resetContentVersionState(): void;
 }

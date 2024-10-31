@@ -26,7 +26,7 @@ trait HasContentVersions
 
     public static function bootHasContentVersions()
     {
-        static::observe(new HasContentVersionsObserver());
+        static::observe(new HasContentVersionsObserver);
     }
 
     /** {@inheritDoc} */
@@ -136,7 +136,7 @@ trait HasContentVersions
     public function save(array $options = [])
     {
         $status = inspirecms_content_statuses()->getOption($this->getPublishableState());
-        
+
         return $this->performPublishableAction($options, $status);
     }
 

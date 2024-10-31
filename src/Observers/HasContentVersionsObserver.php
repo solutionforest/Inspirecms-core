@@ -20,25 +20,23 @@ class HasContentVersionsObserver
     /**
      * Handle the saving event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function saving(HasContentVersions|Model $model)
+    public function saving(HasContentVersions | Model $model)
     {
         // Preset the content version event
         $event = $model->exists ? 'updated' : 'created';
         $model->setVersioningEvent($event);
     }
-    
+
     /**
      * Handle the saved event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function saved(HasContentVersions|Model $model)
+    public function saved(HasContentVersions | Model $model)
     {
         $this->dispatchContentVersioning($model);
     }
@@ -46,11 +44,10 @@ class HasContentVersionsObserver
     /**
      * Handle the deleting event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function deleting(HasContentVersions|Model $model)
+    public function deleting(HasContentVersions | Model $model)
     {
         $this->dispatchGenerateSitemap($model, 'deleting');
 
@@ -62,45 +59,42 @@ class HasContentVersionsObserver
     /**
      * Handle the forceDeleting event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function forceDeleting(HasContentVersions|Model $model)
+    public function forceDeleting(HasContentVersions | Model $model)
     {
         $this->deleteContentVersions($model);
     }
-    
+
     /**
      * Handle the restoring event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function restoring(HasContentVersions|Model $model)
+    public function restoring(HasContentVersions | Model $model)
     {
         // When restoring a model, an updated event is also fired.
         static::$restoring = true;
 
         $this->dispatchGenerateSitemap($model, 'restoring');
     }
-    
+
     /**
      * Handle the resotred event.
      *
-     * @param \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions $model
-     *
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
      * @return void
      */
-    public function resotred(HasContentVersions|Model $model)
+    public function resotred(HasContentVersions | Model $model)
     {
         // Once the model is restored, we need to put everything back
         // as before, in case a legitimate update event is fired
         static::$restoring = false;
     }
 
-    protected function dispatchContentVersioning(HasContentVersions|Model $model)
+    protected function dispatchContentVersioning(HasContentVersions | Model $model)
     {
         $model->preloadContentVersionData();
 
@@ -108,18 +102,18 @@ class HasContentVersionsObserver
         event(new DispatchContentVersion($model->withoutRelations()));
     }
 
-    protected function dispatchGenerateSitemap(HasContentVersions|Model $model, string $event)
+    protected function dispatchGenerateSitemap(HasContentVersions | Model $model, string $event)
     {
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
         event(new GenerateSitemap($model->withoutRelations(), $event));
     }
 
-    protected function isSupportSoftDelete(HasContentVersions|Model $model)
+    protected function isSupportSoftDelete(HasContentVersions | Model $model)
     {
         return in_array(SoftDeletes::class, class_uses($model));
     }
 
-    protected function deleteContentVersions(HasContentVersions|Model $model)
+    protected function deleteContentVersions(HasContentVersions | Model $model)
     {
         $model->contentVersions()->delete();
         $model->publishVersionLogs()->delete();
