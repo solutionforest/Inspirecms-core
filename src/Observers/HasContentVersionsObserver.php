@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Observers;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SolutionForest\InspireCms\Events\Content\DispatchContentVersion;
-use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
 use SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions;
 
 class HasContentVersionsObserver
