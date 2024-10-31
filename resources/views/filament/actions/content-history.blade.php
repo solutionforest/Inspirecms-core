@@ -1,84 +1,113 @@
 @php
 
     $history = $record->contentVersions()
-        ->with('publishLog')
+        ->with(['publishLog', 'author'])
         ->orderByDesc('created_at')
         ->paginate(10, pageName: 'history-page');
 
-    $groupedHistory = tap($history, function ($paginatedInstance) {
-        $items = $paginatedInstance->getCollection()->groupBy(function ($item) {
-            return $item->created_at->format('Y-m-d');
-        });
+    $items = $history->getCollection()->transform(function ($item) {
+        $diff = collect($item->getDifferences())
+            ->map(fn ($diffsArr) => collect($diffsArr)
+                ->map(fn ($value) => is_array($value) ? json_encode($value) : $value)
+                ->all()
+            )
+            ->all();
+        $data['diff'] = $diff;
 
-        $paginatedInstance->setCollection($items);
+        $publishTime = $item->publishLog?->published_at;
+        $data['isPublished'] = $publishTime != null;
+        $data['publishTime'] = $publishTime?->format('Y-m-d H:i:s');
+        $data['publishTimeShort'] = $publishTime?->diffForHumans();
+
+        $data['logTime'] = $item->created_at->format('Y-m-d H:i:s');
+
+        $data['event'] = $item->event_name;
+        $data['authorName'] = $item->author?->name;
+
+        return $data;
     });
-
-    $columns = ['default' => 4];
-    $dtColumnSpan = ['default' => 1];
-    $ddColumnSpan = ['default' => 3];
 
 @endphp
 <div class="flex flex-col gap-y-2">
-    <x-filament::grid
-        default="4"
-        class="gap-3"
-    >
-        @foreach ($groupedHistory as $date => $items)
-            <x-filament::grid.column 
-                default="1"
-            >
-                <x-filament::badge size="md">
-                    {{ $date }}
-                </x-filament::badge>
-            </x-filament::grid.column>
-            
-            <x-filament::grid.column 
-                default="3"
-            >
-                <ul class="flex flex-col gap-2">
-                    @foreach ($items as $item)
-                        @php
-                            $data = $item->getDifferences();
-
-                            // @todo: rolback action with avoid_to_clean and publishLog logic
-                        @endphp
-                        <li class="font-mono text-sm border rounded-md shadow-sm px-1.5 py-1">
-                            @if ($item->publishLog)
-                                <div class="inline-flex py-1">
-                                    <x-filament::badge size="sm" color="primary">
-                                        {{ trans('inspirecms::resources/content.published_at.label') }}: {{ $item->publishLog->published_at?->format('Y-m-d H:i:s') }}
+    <div class="flow-root">
+        
+    <ul class="-mb-8">
+        @foreach ($items as $item)
+            @php
+                $isPublished = boolval($item['isPublished'] ?? false);
+            @endphp
+            <li>
+                <div class="relative pb-8">
+                    <div class="relative flex space-x-3">
+                        <div>
+                            @unless ($loop->last)
+                                <div class="absolute -bottom-6 left-0 top-6 flex w-6 justify-center">
+                                    <div class="w-px bg-gray-200 dark:bg-gray-500"></div>
+                                </div>
+                            @endunless
+                            <div class="relative flex h-6 w-6 flex-none items-center justify-center rounded-full bg-white dark:bg-white/5">
+                                @if ($isPublished)
+                                    <x-filament::icon
+                                        icon="heroicon-o-eye"
+                                        @style([
+                                             \Filament\Support\get_color_css_variables(
+                                                'success',
+                                                shades: [400, 500],
+                                            )
+                                        ])
+                                        class="w-5 w-5 text-custom-500 dark:text-custom-400"
+                                    />
+                                @else
+                                    <div class="h-1.5 w-1.5 rounded-full bg-gray-100 ring-1 ring-gray-300"></div>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="flex flex-col gap-y-1 min-w-0 flex-1 pt-1.5">
+                            <div class="inline-flex space-x-4 justify-between">
+                                <div>
+                                    <p class="text-sm text-gray-500 dark:text-white"><span class="font-medium text-gray-900 dark:text-gray-200">{{ $item['authorName'] }}</span> {{ $item['event']}}.</p>
+                                </div>
+                                <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-white/50">
+                                    <time datetime="{{ $item['logTime'] }}">{{ $item['logTime'] }}</time>
+                                </div>
+                            </div>
+                            @if ($isPublished)
+                                <div class="flex-auto">
+                                    <x-filament::badge color="primary" size="sm" class="w-full">
+                                        <div class="inline-flex space-x-4 justify-between">
+                                            <span>
+                                                {{ @trans('inspirecms::inspirecms.publish_at_xxx', ['time' => $item['publishTime']]) }}
+                                            </span>
+                                            <time datetime="{{ $item['publishTime'] }}">{{ $item['publishTimeShort'] }}</time>
+                                        </div>
                                     </x-filament::badge>
                                 </div>
                             @endif
-                            <x-filament::grid default="3" class="gap-2">
-                                @foreach ($data as $key => $diff)
-                                @php
-                                    $from = $diff['from'] ?? '';
-                                    $to = $diff['to'] ?? '';
-                                    if (is_array($from)) {
-                                        $from = json_encode($from);
-                                    }
-                                    if (is_array($to)) {
-                                        $to = json_encode($to);
-                                    }
-                                @endphp
-                                    <x-filament::grid.column default="1">
-                                        {{ $key }}
-                                    </x-filament::grid.column>
-                                    <x-filament::grid.column default="2">
-                                        <span class="text-gray-400" style="text-decoration-line: line-through;">{{ $from }}</span>
-                                        <span>{{ $to }}</span>
-                                    </x-filament::grid.column>
+                            <div class="rounded-md p-3 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 shadow-xl">
+                                @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
+                                    <div class="flex justify-between gap-x-4">
+                                        @php
+                                            $from = $diffValue['from'] ?? '';
+                                            $to = $diffValue['to'] ?? '';
+                                        @endphp
+                                        <span default="1">
+                                            {{ $diffKey }}
+                                        </span>
+                                        <div default="2" class="text-xs/5">
+                                            <span class="text-gray-400 line-through">{{ $from }}</span>
+                                            <span>{{ $to }}</span>
+                                        </div>
+                                    </div>
                                 @endforeach
-
-                            </x-filament::grid>
-                        </li>
-                    @endforeach
-                </ul>
-            </x-filament::grid.column>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </li>
         @endforeach
-    </x-filament::grid>
+    </ul>
+</div>
     
-    {{ $groupedHistory }}
+    {{ $history }}
 
 </div>

@@ -50,6 +50,7 @@ return [
     'password_confirmation' => 'Confirm password',
     'password' => 'Password',
     'path' => 'Path',
+    'publish_at_xxx' => 'Publish at :time',
     'referenced_by_xxx' => 'Referenced by :name',
     'referenced_by' => 'Referenced by',
     'role' => 'Role',

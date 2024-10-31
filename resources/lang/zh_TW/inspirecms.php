@@ -50,6 +50,7 @@ return [
     'password_confirmation' => '確認密碼',
     'password' => '密碼',
     'path' => '路徑',
+    'publish_at_xxx' => '發布於:time',
     'referenced_by_xxx' => '被 :name 引用',
     'referenced_by' => '被引用',
     'role' => '角色',
