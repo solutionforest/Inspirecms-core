@@ -93,7 +93,8 @@ trait ContentPageTrait
             })
             ->actions([
                 CreateContentAction::make('create_content_item'),
-                LinkToParentAction::make('item_link_to_parent'),
+                // Some logic change (documentType also is nestable now)
+                // LinkToParentAction::make('item_link_to_parent'),
                 ReorderContentAction::make('reorder_content_item'),
                 DeleteContentAction::make('delete_content_item'),
             ]);

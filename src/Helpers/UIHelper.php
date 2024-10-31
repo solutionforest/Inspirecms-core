@@ -203,4 +203,26 @@ class UIHelper
             'icon' => $icon,
         ]));
     }
+
+    public static function generateTextWithBadge(string $text, $badgeText, string $color = 'primary', ?string $icon = null): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex items-center gap-2">
+                <span>
+                    {{$text}}
+                </span>
+                <x-filament::badge
+                    color="{{$color}}"
+                    icon="{{$icon}}"
+                >
+                    {{$badgeText}}
+                </x-filament::badge>
+            </div>
+        blade, [
+            'text' => $text,
+            'badgeText' => $badgeText,
+            'color' => $color,
+            'icon' => $icon,
+        ]));
+    }
 }

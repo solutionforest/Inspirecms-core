@@ -34,6 +34,7 @@ return new class extends BaseMigration
             $table->string('slug');
             $table->string('type')->default('web');
             $table->boolean('show_children_as_table')->default(false);
+            $table->unsignedBigInteger('parent_id')->default(0);
 
             $table->timestamps();
 

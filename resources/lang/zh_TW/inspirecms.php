@@ -31,6 +31,7 @@ return [
     'inheriting_xxx' => '被 :name 繼承',
     'is_active' => '活躍',
     'is_default' => '默認',
+    'is_root' => '根',
     'label' => '標籤',
     'language' => '語言',
     'last_lockouted_at' => '最後鎖定於',

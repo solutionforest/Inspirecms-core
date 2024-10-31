@@ -10,18 +10,22 @@ use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
+use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
@@ -54,26 +58,32 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(1)
+            ->columns(3)
             ->schema([
-                Forms\Components\Grid::make(3)
+                Forms\Components\Group::make()
+                    ->columns(1)
+                    ->columnSpan(2)
                     ->schema([
-
                         Forms\Components\Section::make()
-                            ->columns(1)
-                            ->columnSpan(2)
+                            ->hiddenOn(['create'])
                             ->schema([
+                                static::getDisplayIdFormComponent()->inlineLabel(),
+                                static::getDisplayParentFormComponent()->inlineLabel(),
+                            ]),
+                        Forms\Components\Section::make()
+                            ->schema([
+                                static::getParentIdFormComponent(),
                                 static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
                                 static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
                             ]),
-                        Forms\Components\Section::make()
-                            ->columns(1)
-                            ->columnSpan(1)
-                            ->schema([
-                                static::getTypeFormComponent(),
-                                static::getShowChildAsTableFormComponent(),
-                                static::getTimestampsGroupedFormComponent(),
-                            ]),
+                    ]),
+                Forms\Components\Section::make()
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->schema([
+                        static::getTypeFormComponent(),
+                        static::getShowChildAsTableFormComponent(),
+                        static::getTimestampsGroupedFormComponent(),
                     ]),
             ]);
     }
@@ -82,6 +92,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return $form
             ->schema([
+                static::getDisplayIdFormComponent()->inlineLabel(),
+                static::getDisplayParentFormComponent()->inlineLabel(),
                 static::getTitleFormComponent()->inlineLabel(),
                 static::getSlugFormComponent()->inlineLabel(),
                 static::getTypeFormComponent()->inlineLabel(),
@@ -111,6 +123,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.slug'))
                     ->sortable()
                     ->badge(),
+                Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.parent'), [
+                    Tables\Columns\TextColumn::make('parent.title')
+                        ->label(__('inspirecms::inspirecms.title')),
+                    Tables\Columns\TextColumn::make('parent.slug')
+                        ->label(__('inspirecms::inspirecms.slug'))
+                        ->badge(),
+                ]),
                 Tables\Columns\IconColumn::make('show_children_as_table')
                     ->label(__('inspirecms::inspirecms.show_children_as_table'))
                     ->color(function (DocumentType $record, $state) {
@@ -158,9 +177,20 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 ]),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
+            Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
+            ])
+            ->filters([
+                Tables\Filters\TernaryFilter::make('is_root')
+                    ->label(__('inspirecms::inspirecms.is_root'))
+                    ->default(true)
+                    ->queries(
+                        true: fn ($query) => $query->whereIsRoot(condition: true),
+                        false: fn ($query) => $query->whereIsRoot(condition: false),
+                        blank: fn ($query) => $query,
+                    )
+                    ->hiddenOn([RelationManagers\ChildrenRelationManager::class]),
             ]);
     }
 
@@ -181,6 +211,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
             ]),
+            RelationManagers\ChildrenRelationManager::class,
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
                 RelationManagers\ContentRelationManager::class,
@@ -199,6 +230,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return __('inspirecms::inspirecms.document_type');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with('parent');
+    }
+
     //region Global search
     public static function getGloballySearchableAttributes(): array
     {
@@ -207,18 +244,60 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-        return new HtmlString(Blade::render(<<<'blade'
-            <div class="flex gap-x-2 items-center">
-                <span>{{ $title }}</span>
-                <x-filament::badge>
-                    {{ $badge }}
-                </x-filament::badge>
-            </div>
-        blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
+        return UIHelper::generateTextWithBadge(static::getRecordTitle($record), $record->slug);
     }
     //endregion Global search
 
     //region Form field(s)/component(s)
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayIdFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_id')
+            ->label(__('inspirecms::inspirecms.id'))
+            ->hiddenOn(['create', 'quick_create'])
+            ->content(fn ($record) => $record?->getKey());
+    }
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getDisplayParentFormComponent()
+    {
+        return Forms\Components\Placeholder::make('display_parent')
+            ->label(__('inspirecms::inspirecms.parent'))
+            ->visible(function ($operation, ?DocumentType $record) {
+                if ($operation === 'create' || $operation === 'quick_create') {
+                    return false;
+                }
+                return $record?->canHaveParent() ?? false;
+            })
+            ->content(function ($livewire, $record) {
+                if ($livewire instanceof DocumentTypeForm) {
+                    $parent = $livewire->getParent();
+                } else {
+                    $parent = $record?->parent;
+                }
+
+                if (! $parent) {
+                    return null;
+                }
+
+                $url = FilamentResourceHelper::attemptToGetUrl(static::class, ['edit', 'view'], ['record' => $parent], true);
+
+                $title = static::getRecordTitle($parent);
+                $slug = $parent->slug;
+
+                $text = "{$title} ({$slug})";
+
+                if (! $url) {
+                    return $text;
+                }
+
+                return UIHelper::generateTextWithIconButton($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+            });
+    }
+
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -257,7 +336,17 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.type'))
             ->options(static::getModel()::getTypeEnumClass())
             ->default(static::getModel()::getTypeEnumClass()::getDefaultValue()->value)
-            ->disabledOn(['edit'])
+            ->disabled(function ($operation, $livewire) {
+                if ($operation === 'edit' || $operation === 'quick_edit') {
+                    return true;
+                }
+                else if ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
+
+                    return $livewire->canBeParent($livewire->getParentKey());
+                }
+
+                return false;
+            })
             ->required()
             ->live()->helperText(function ($state) {
                 if ($state) {
@@ -294,6 +383,28 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return TimestampsGroup::make()
             ->columns(['default' => 1]);
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getParentIdFormComponent()
+    {
+        return Forms\Components\Hidden::make('parent_id')
+            ->dehydratedWhenHidden()
+            ->afterStateHydrated(function ($operation, $livewire, $state, $component) {
+                if ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
+                    $parentKey = $livewire->getParentKey();
+
+                    if ($livewire->canBeParent($parentKey)) {
+                        $component->state($parentKey);
+                        return;
+                    }
+                } 
+
+                $component->state($state);
+                
+            });
     }
     //endregion Form field(s)/component(s)
 }

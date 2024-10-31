@@ -70,4 +70,18 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
     public function inheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
 
     public function deteachInheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
+
+    /**
+     * Determine if the document type can be a parent.
+     *
+     * @return bool True if the document type can be a parent, false otherwise.
+     */
+    public function canBeParent(): bool;
+
+    /**
+     * Determine if the document type can have a parent.
+     *
+     * @return bool True if the document type can have a parent, false otherwise.
+     */
+    public function canHaveParent(): bool;
 }

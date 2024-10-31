@@ -31,6 +31,7 @@ return [
     'inheriting_xxx' => 'Inheriting to :name',
     'is_active' => 'Active',
     'is_default' => 'Default',
+    'is_root' => 'Root',
     'label' => 'Label',
     'language' => 'Language',
     'last_lockouted_at' => 'Last lockouted at',

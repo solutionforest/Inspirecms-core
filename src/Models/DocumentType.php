@@ -14,11 +14,13 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContr
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 #[ObservedBy(DocumentTypeObserver::class)]
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
+    use NestableTrait;
 
     protected $guarded = ['id'];
 
@@ -200,5 +202,19 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         } catch (\Throwable $th) {
             return false;
         }
+    }
+
+    public function canBeParent(): bool
+    {
+        return $this->exists &&
+            $this->isRoot() &&
+            $this->isWebPageType();
+    }
+
+    public function canHaveParent(): bool
+    {
+        return $this->exists &&
+            ! $this->isRoot() &&
+            $this->isWebPageType();
     }
 }
