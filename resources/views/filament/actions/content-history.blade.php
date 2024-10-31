@@ -19,6 +19,11 @@
         $data['publishTime'] = $publishTime?->format('Y-m-d H:i:s');
         $data['publishTimeShort'] = $publishTime?->diffForHumans();
 
+        $publishState = $item->publish_state;
+        $publishStateOption = !blank($publishState) ? inspirecms_content_statuses()->getOption($publishState) : null;
+        $data['publishState'] = $publishStateOption?->getLabel() ?? $publishState;
+        $data['publishStateColor'] = $publishStateOption?->getColor() ?? 'gray';
+
         $data['logTime'] = $item->created_at->format('Y-m-d H:i:s');
 
         $data['event'] = $item->event_name;
@@ -64,8 +69,11 @@
                         </div>
                         <div class="flex flex-col gap-y-1 min-w-0 flex-1 pt-1.5">
                             <div class="inline-flex space-x-4 justify-between">
-                                <div>
+                                <div class="inline-flex space-x-3">
                                     <p class="text-sm text-gray-500 dark:text-white"><span class="font-medium text-gray-900 dark:text-gray-200">{{ $item['authorName'] }}</span> {{ $item['event']}}.</p>
+                                    <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-1">
+                                        {{ $item['publishState'] }}
+                                    </x-filament::badge>
                                 </div>
                                 <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-white/50">
                                     <time datetime="{{ $item['logTime'] }}">{{ $item['logTime'] }}</time>
@@ -74,16 +82,14 @@
                             @if ($isPublished)
                                 <div class="flex-auto">
                                     <x-filament::badge color="primary" size="sm" class="w-full">
-                                        <div class="inline-flex space-x-4 justify-between">
-                                            <span>
+                                            <span class="text-sm">
                                                 {{ @trans('inspirecms::inspirecms.publish_at_xxx', ['time' => $item['publishTime']]) }}
                                             </span>
-                                            <time datetime="{{ $item['publishTime'] }}">{{ $item['publishTimeShort'] }}</time>
-                                        </div>
+                                            <time class="font-light text-xs" datetime="{{ $item['publishTime'] }}">({{ $item['publishTimeShort'] }})</time>
                                     </x-filament::badge>
                                 </div>
                             @endif
-                            <div class="rounded-md p-3 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 shadow-xl">
+                            <div class="rounded-md p-3 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 shadow-lg">
                                 @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
                                     <div class="flex justify-between gap-x-4">
                                         @php
