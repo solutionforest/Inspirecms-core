@@ -44,7 +44,10 @@ class Content extends BaseModel implements ContentContract
     use HasFactory;
     use HasUuids;
     use NestableTrait;
-    use Searchable;
+    use Searchable {
+        queueMakeSearchable as protected traitQueueMakeSearchable;
+        queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
+    }
     use SoftDeletes;
 
     protected $guarded = ['id'];
@@ -184,9 +187,9 @@ class Content extends BaseModel implements ContentContract
         $data['level'] = $this->getLevel();
         $data['path'] = $this->getFullSlug();
 
-        $data['published_at'] = $latestVersion?->pivot?->published_at->toIso8601String();
-        $data['created_at'] = $this->{$this->getCreatedAtColumn()}->toIso8601String();
-        $data['updated_at'] = $this->{$this->getUpdatedAtColumn()}->toIso8601String();
+        $data['published_at'] = $latestVersion?->pivot?->published_at?->toIso8601String();
+        $data['created_at'] = $this->{$this->getCreatedAtColumn()}?->toIso8601String();
+        $data['updated_at'] = $this->{$this->getUpdatedAtColumn()}?->toIso8601String();
         $data['deleted_at'] = $this->{$this->getDeletedAtColumn()}?->toIso8601String();
 
         $data['document_type'] = [
@@ -205,6 +208,52 @@ class Content extends BaseModel implements ContentContract
         event(new Events\Indexes\IndexingModel($this, $data));
 
         return $data;
+    }
+
+    /**
+     * Dispatch the job to make the given models searchable.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $models
+     * @return void
+     */
+    public function queueMakeSearchable($models)
+    {
+        // Also index the descendants of the models
+        $models = $this->getModelsForIndexSearch($models);
+        $this->traitQueueMakeSearchable($models);
+    }
+
+    /**
+     * Dispatch the job to make the given models unsearchable.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection  $models
+     * @return void
+     */
+    public function queueRemoveFromSearch($models)
+    {
+        // Also index the descendants of the models
+        $models = $this->getModelsForIndexSearch($models);
+        $this->traitQueueRemoveFromSearch($models);
+    }
+
+    /**
+     * @param  \Illuminate\Database\Eloquent\Collection  $models
+     */
+    protected function getModelsForIndexSearch($models)
+    {
+        $result = collect();
+
+        foreach ($models as $model) {
+            // affecting the "full path" of the model
+            if ($model instanceof ContentContract) {
+                $result = $result->merge($model->descendants());
+
+            } else {
+                $result->push($model);
+            }
+        }
+
+        return $result;
     }
     //endregion Indexing
 
