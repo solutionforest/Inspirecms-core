@@ -342,7 +342,7 @@ class Content extends BaseModel implements ContentContract
         return $this->traitGetTranslations($key, $allowedLocales);
     }
 
-    protected function getContentVersioingAttributes(): array
+    protected function getContentVersioningAttributes(): array
     {
         return [
             'title',

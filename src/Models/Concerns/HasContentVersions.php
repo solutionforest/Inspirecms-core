@@ -228,7 +228,7 @@ trait HasContentVersions
         return [];
     }
 
-    protected function getContentVersioingAttributes(): array
+    protected function getContentVersioningAttributes(): array
     {
         return $this->contentVersionAttributes ?? [];
     }
