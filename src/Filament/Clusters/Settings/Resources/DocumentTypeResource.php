@@ -12,8 +12,6 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -177,7 +175,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 ]),
             ])
             ->bulkActions([
-            Tables\Actions\BulkActionGroup::make([
+                Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
             ])
@@ -259,6 +257,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->hiddenOn(['create', 'quick_create'])
             ->content(fn ($record) => $record?->getKey());
     }
+
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -270,6 +269,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 if ($operation === 'create' || $operation === 'quick_create') {
                     return false;
                 }
+
                 return $record?->canHaveParent() ?? false;
             })
             ->content(function ($livewire, $record) {
@@ -339,8 +339,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->disabled(function ($operation, $livewire) {
                 if ($operation === 'edit' || $operation === 'quick_edit') {
                     return true;
-                }
-                else if ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
+                } elseif ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
 
                     return $livewire->canBeParent($livewire->getParentKey());
                 }
@@ -398,12 +397,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                     if ($livewire->canBeParent($parentKey)) {
                         $component->state($parentKey);
+
                         return;
                     }
-                } 
+                }
 
                 $component->state($state);
-                
+
             });
     }
     //endregion Form field(s)/component(s)

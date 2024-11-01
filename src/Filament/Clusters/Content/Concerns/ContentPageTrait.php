@@ -15,7 +15,6 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\LinkContentItemToParentA
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
@@ -156,6 +155,7 @@ trait ContentPageTrait
                         if (blank($itemKey) || $itemKey === 'root') {
                             return null;
                         }
+
                         return $itemKey;
                     })
                     ->parentDocumentType(fn ($itemKey, HasModelExplorer $livewire) => data_get($livewire->getCacheModelItemNode($itemKey) ?? [], 'documentTypeKey'))
@@ -165,10 +165,10 @@ trait ContentPageTrait
                         $itemLabel = $item['label'] ?? null;
 
                         $translatableLocale = $livewire->getActiveActionsLocale();
-                        
-                        if (!blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
+
+                        if (! blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
                             $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
-                        } else if (is_array($itemLabel)) {
+                        } elseif (is_array($itemLabel)) {
                             $itemLabel = reset($itemLabel);
                         }
 
@@ -186,16 +186,15 @@ trait ContentPageTrait
 
             case $action instanceof LinkContentItemToParentAction:
 
-                $action
-                    // ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                    // ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-                    ;
+                $action;
+                // ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                // ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
 
                 break;
             case $action instanceof ReorderContentItemAction:
 
                 $action
-                    ->record(fn ($itemKey) => !blank($itemKey) ? $this->resolveSelectedModelItem($itemKey) : null)
+                    ->record(fn ($itemKey) => ! blank($itemKey) ? $this->resolveSelectedModelItem($itemKey) : null)
                     ->nodeParentId(function (?Model $record) {
                         if (! $record instanceof Content) {
                             throw new \Exception('The provided record is not an instance of the Content model.');

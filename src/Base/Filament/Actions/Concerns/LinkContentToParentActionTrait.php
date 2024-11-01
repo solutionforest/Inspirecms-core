@@ -91,7 +91,7 @@ trait LinkContentToParentActionTrait
                 ])
         );
 
-        $this->action(function (array $data, Model & Content $record, Action|TreeNodeAction $action) {
+        $this->action(function (array $data, Model & Content $record, Action | TreeNodeAction $action) {
             if (! $record) {
                 return;
             }

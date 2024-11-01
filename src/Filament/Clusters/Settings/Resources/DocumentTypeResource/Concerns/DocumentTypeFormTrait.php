@@ -19,7 +19,7 @@ trait DocumentTypeFormTrait
     {
         $this->getParent();
     }
-    
+
     public function getParentKey(): string | int | null
     {
         switch (true) {
@@ -41,12 +41,14 @@ trait DocumentTypeFormTrait
             case $this instanceof EditRecord:
             case $this instanceof ViewRecord:
                 $parent = $this->getRecord()->parent;
+
                 break;
 
             case $this instanceof CreateRecord:
                 if (filled($this->parent)) {
                     $parent = $this->resolveParent($this->parent);
                 }
+
                 break;
         }
 

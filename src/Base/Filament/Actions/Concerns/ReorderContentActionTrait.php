@@ -92,7 +92,7 @@ trait ReorderContentActionTrait
                 ]),
         ]);
 
-        $this->action(function (array $data, Action|TreeNodeAction $action) use ($contentModel, $nestableTreeModel) {
+        $this->action(function (array $data, Action | TreeNodeAction $action) use ($contentModel, $nestableTreeModel) {
 
             if (! in_array(NestableTree::class, class_implements($nestableTreeModel))) {
 
