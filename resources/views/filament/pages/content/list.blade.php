@@ -23,4 +23,7 @@
             </div>
         @endif
     </x-inspirecms-support::model-explorer>
+
+    <x-inspirecms-support::tree-node.actions.modals />
+    
 </x-filament-panels::page>

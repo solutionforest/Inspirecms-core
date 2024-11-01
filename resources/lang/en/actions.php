@@ -42,6 +42,12 @@ return [
 
         'label' => 'Create content',
 
+        'modal' => [
+
+            'heading' => 'Create content under :title',
+
+        ],
+
     ],
 
     'content_history' => [

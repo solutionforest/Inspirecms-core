@@ -3,9 +3,8 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
-use Filament\Actions\Action;
-use Filament\Tables\Actions\Action as TableAction;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -14,29 +13,19 @@ trait CreateContentActionTrait
 {
     protected null | Closure | string | int $parentContentKey = null;
 
+    protected null | Closure | string | int | Model $parentDocumentType = null;
+
     protected ?Closure $documentTypeTitleUsing = null;
+
+    protected ?Closure $nodeTitleUsing = null;
 
     public static function getDefaultName(): ?string
     {
         return 'create_content';
     }
 
-    /**
-     * Sets up the action based on the specified action type.
-     *
-     * @param  string  $actionType  The type of action to set up.
-     */
-    protected function setUpAction(string $actionType): void
+    protected function setUpAction(): void
     {
-        if (blank($actionType) || ! class_exists($actionType) ||
-            ! (
-                is_a($actionType, Action::class, true) ||
-                is_a($actionType, TableAction::class, true)
-            )
-        ) {
-            throw new \InvalidArgumentException('The action type must be a valid Action or TableAction class.');
-        }
-
         $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
 
         $this->authorize('create', InspireCmsConfig::getContentModelClass());
@@ -55,59 +44,40 @@ trait CreateContentActionTrait
 
         $this->stickyModalHeader();
 
-        $this->modalHeading(fn () => __('inspirecms::actions.create_content.label'));
+        $this->modalHeading(function () {
+            $title = $this->evaluate($this->nodeTitleUsing);
 
-        $this->modalContent(function () use ($actionType) {
+            if (! is_string($title)) {
+                $title = null;
+            }
 
-            $documentTypes = InspireCmsConfig::getDocumentTypeModelClass()::query()
-                ->isWebPage()
-                ->get();
+            if (blank($title)) {
+                return __('inspirecms::actions.create_content.label');
+            }
 
-            return view('inspirecms::filament.actions.create-content', [
-                'documentTypes' => $documentTypes,
-                'getLabelUsing' => fn (?Model $record) => $this->getDocumentTypeTitleFor($record) ?? $record?->title,
-                'actionType' => match ($actionType) {
-                    Action::class => 'action',
-                    TableAction::class => 'table-action',
-                    default => null,
-                },
-            ]);
+            return __('inspirecms::actions.create_content.modal.heading', ['title' => $title]);
         });
 
-        // use 'selectDocumentType' action
-        $this->modalSubmitAction(false);
+        $this->modalContent(function () use ($contentResource) {
 
-        // Needed. call from view
-        $this->extraModalFooterActions([
-            $actionType::make('selectDocumentType')
-                // hide from frontend and keep it action
-                ->extraAttributes([
-                    'class' => 'hidden',
-                ])
-                ->cancelParentActions() // cancel parent actions if this action is cancelled
-                ->action(function (array $arguments, Action | TableAction $action) use ($contentResource) {
-                    if (! isset($arguments['documentTypeKey'])) {
-                        $action->cancel();
-
-                        return;
-                    }
-                    $url = FilamentResourceHelper::attemptToGetUrl(
+            return view('inspirecms::filament.actions.create-content', [
+                'documentTypes' => $this->getAvailableDocumentTypes(),
+                'getLabelUsing' => fn (?Model $record) => $this->evaluate($this->documentTypeTitleUsing, ['record' => $record]) ?? $record?->title,
+                'getUrlUsing' => function (?Model $record) use ($contentResource) {
+                    return FilamentResourceHelper::attemptToGetUrl(
                         $contentResource,
                         'create',
                         [
-                            'documentType' => $arguments['documentTypeKey'],
+                            'documentType' => $record->getKey(),
                             'parent' => $this->getParentContentKey(),
                         ],
                         false
                     );
-                    if (blank($url)) {
-                        $action->cancel();
+                },
+            ]);
+        });
 
-                        return;
-                    }
-                    $action->redirect($url);
-                }),
-        ]);
+        $this->modalSubmitAction(false);
     }
 
     public function parentContentKey(Closure | string | int | null $parentContentKey): static
@@ -117,7 +87,14 @@ trait CreateContentActionTrait
         return $this;
     }
 
-    public function getDocumentTypeTitleUsing(Closure $callback): static
+    public function parentDocumentType(Closure | string | int | Model | null $parentDocumentType): static
+    {
+        $this->parentDocumentType = $parentDocumentType;
+
+        return $this;
+    }
+
+    public function documentTypeTitleUsing(Closure $callback): static
     {
         $this->documentTypeTitleUsing = $callback;
 
@@ -129,8 +106,31 @@ trait CreateContentActionTrait
         return $this->evaluate($this->parentContentKey);
     }
 
-    public function getDocumentTypeTitleFor(?Model $record): ?string
+    public function getParentDocumentType(): null | Closure | string | int | Model
     {
-        return $this->evaluate($this->documentTypeTitleUsing, ['record' => $record]);
+        return $this->evaluate($this->parentDocumentType);
+    }
+
+    public function nodeTitleUsing(Closure $callback): static
+    {
+        $this->nodeTitleUsing = $callback;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|array
+     */
+    protected function getAvailableDocumentTypes()
+    {
+        $query = InspireCmsConfig::getDocumentTypeModelClass()::isWebPage();
+
+        if (($parentDocumentType = $this->getParentDocumentType()) !== null) {
+            $query->whereParent($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType);
+        } else {
+            $query->whereIsRoot();
+        }
+
+        return $query->get();
     }
 }

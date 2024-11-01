@@ -1,19 +1,17 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Tables\Actions;
+namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use Filament\Tables\Actions\Action;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CreateContentActionTrait;
+use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 
-class CreateContentAction extends Action
+class CreateContentItemAction extends Action
 {
     use CreateContentActionTrait;
 
-    protected static string $actionType = Action::class;
-
     public static function getDefaultName(): ?string
     {
-        return 'create_content';
+        return 'create_content_item';
     }
 
     protected function setUp(): void

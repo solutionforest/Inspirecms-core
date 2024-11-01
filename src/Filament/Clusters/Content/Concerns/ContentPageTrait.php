@@ -8,15 +8,18 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
-use SolutionForest\InspireCms\Filament\Actions\DeleteContentAction;
-use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
-use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\LinkContentItemToParentAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
+use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
 trait ContentPageTrait
@@ -76,6 +79,7 @@ trait ContentPageTrait
                     'depth' => 0,
                     'icon' => 'heroicon-o-home',
                     'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false),
+                    'documentTypeKey' => null,
                 ],
             ], $items))
             ->mutuateNodeItemsUsing(function (array $item, Model $record) {
@@ -89,14 +93,18 @@ trait ContentPageTrait
                     $item['fallbackLocale'] = $record->getFallbackLocale();
                 }
 
+                $item['documentTypeKey'] = $record->document_type_id;
+
                 return $item;
             })
             ->actions([
-                CreateContentAction::make('create_content_item'),
-                // Some logic change (documentType also is nestable now)
-                // LinkToParentAction::make('item_link_to_parent'),
-                ReorderContentAction::make('reorder_content_item'),
-                DeleteContentAction::make('delete_content_item'),
+                CreateContentItemAction::make(),
+                ActionGroup::make([
+                    // Some logic change (documentType also is nestable now)
+                    // LinkContentItemToParentAction::make('item_link_to_parent'),
+                    ReorderContentItemAction::make('reorder_content_item'),
+                    DeleteContentItemAction::make(),
+                ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
     }
 
@@ -137,52 +145,58 @@ trait ContentPageTrait
         return $this->getModelExplorer()->findRecord($key);
     }
 
-    protected function configureSelectedModelItemFormAction(Actions\Action $action): void
+    protected function configureSelectedModelItemFormAction(Actions\Action | TreeNodeAction $action): void
     {
         switch (true) {
-            case $action instanceof CreateContentAction:
+            case $action instanceof CreateContentItemAction:
 
                 $action
                     ->color('primary')
-                    ->parentContentKey(function (array $arguments) {
-                        $parent = $arguments['key'] ?? null;
+                    ->parentContentKey(function ($itemKey) {
+                        if (blank($itemKey) || $itemKey === 'root') {
+                            return null;
+                        }
+                        return $itemKey;
+                    })
+                    ->parentDocumentType(fn ($itemKey, HasModelExplorer $livewire) => data_get($livewire->getCacheModelItemNode($itemKey) ?? [], 'documentTypeKey'))
+                    ->nodeTitleUsing(function ($itemKey, $livewire) {
+                        $item = $livewire->getCacheModelItemNode($itemKey);
 
-                        if (in_array($parent, ['root'])) {
-                            $parent = null;
+                        $itemLabel = $item['label'] ?? null;
+
+                        $translatableLocale = $livewire->getActiveActionsLocale();
+                        
+                        if (!blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
+                            $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
+                        } else if (is_array($itemLabel)) {
+                            $itemLabel = reset($itemLabel);
                         }
 
-                        return $parent;
+                        return $itemLabel;
                     });
 
                 break;
-            case $action instanceof DeleteContentAction:
+            case $action instanceof DeleteContentItemAction:
 
                 $action
-                    ->record(fn (array $arguments) => $this->resolveSelectedModelItem($arguments['key']))
-                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
 
                 break;
 
-            case $action instanceof LinkToParentAction:
+            case $action instanceof LinkContentItemToParentAction:
 
                 $action
-                    ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']));
+                    // ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
+                    // ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
+                    ;
 
                 break;
-            case $action instanceof ReorderContentAction:
+            case $action instanceof ReorderContentItemAction:
 
                 $action
-                    ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                    ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-                    ->nodeParentId(function (array $arguments, ?Model $record) {
-                        // find from argument
-                        if (is_null($record)) {
-                            $record = (isset($arguments['parent']) ? InspireCmsConfig::getContentModelClass()::find($arguments['parent']) : null)
-                                // throw error if still null
-                                ?? throw new \Exception('Record not found for the given parent ID.');
-                        }
+                    ->record(fn ($itemKey) => !blank($itemKey) ? $this->resolveSelectedModelItem($itemKey) : null)
+                    ->nodeParentId(function (?Model $record) {
                         if (! $record instanceof Content) {
                             throw new \Exception('The provided record is not an instance of the Content model.');
                         }
@@ -230,7 +244,7 @@ trait ContentPageTrait
 
         $ancestors = collect($record->ancestors())->push($record);
         foreach ($ancestors as $index => $ancestor) {
-            $this->getModelExplorerNodes($ancestor->parent_id, $index);
+            $this->cacheModelExplorerNodesOn($ancestor->parent_id, $index);
             if ($ancestor->getKey() !== $record->getKey()) {
                 $this->expandedModelExplorerItems[] = $ancestor->getKey();
             }

@@ -13,7 +13,7 @@ use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
-use SolutionForest\InspireCms\Filament\Actions\LinkToParentAction;
+use SolutionForest\InspireCms\Filament\Actions\LinkContentToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
@@ -60,7 +60,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 ])->dropdown(false),
                 Actions\ActionGroup::make([
                     ContentHistoryAction::make(),
-                    LinkToParentAction::make(),
+                    // Some logic change (documentType also is nestable now)
+                    // LinkContentToParentAction::make(),
                     ReorderContentAction::make(),
                 ])->dropdown(false),
             ]),
@@ -184,7 +185,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         parent::configureAction($action);
 
         switch (true) {
-            case $action instanceof LinkToParentAction:
+            case $action instanceof LinkContentToParentAction:
                 $action
                     ->hidden(
                         fn ($record) => $record->trashed()

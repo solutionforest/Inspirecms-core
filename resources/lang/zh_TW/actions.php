@@ -42,6 +42,12 @@ return [
 
         'label' => '創建內容',
 
+        'modal' => [
+
+            'heading' => '在 :title 下創建內容',
+
+        ],
+
     ],
 
     'content_history' => [

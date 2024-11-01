@@ -70,9 +70,12 @@ return [
             'users' => \SolutionForest\InspireCms\Filament\Clusters\Users::class,
         ],
         'actions' => [
-            'link_to_parent' => \SolutionForest\InspireCms\Filament\Actions\LinkToParentAction::class,
-            'reorder_content' => \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
-            'content_history' => \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
+            // \SolutionForest\InspireCms\Filament\Actions\LinkContentToParentAction::class,
+            \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
+            \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
+
+            // \SolutionForest\InspireCms\Filament\TreeNode\Actions\LinkContentItemToParentAction::class,
+            \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
         ],
     ],
 

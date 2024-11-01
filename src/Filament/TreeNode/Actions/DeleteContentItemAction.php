@@ -1,12 +1,12 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Actions;
+namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use Filament\Actions\Action;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 
-class DeleteContentAction extends Action
+class DeleteContentItemAction extends Action
 {
     public static function getDefaultName(): ?string
     {

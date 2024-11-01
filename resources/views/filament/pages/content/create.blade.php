@@ -27,4 +27,5 @@
     </x-inspirecms-support::model-explorer>
 
     <x-filament-panels::page.unsaved-data-changes-alert />
+    <x-inspirecms-support::tree-node.actions.modals />
 </x-filament-panels::page>

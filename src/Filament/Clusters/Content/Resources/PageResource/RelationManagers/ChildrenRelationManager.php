@@ -43,7 +43,8 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager impleme
         return parent::table($table)
             ->headerActions([
                 CreateContentAction::make()
-                    ->parentContentKey(fn () => $this->getOwnerRecord()->getKey()),
+                    ->parentContentKey(fn () => $this->getOwnerRecord()->getKey())
+                    ->parentDocumentType(fn () => $this->getOwnerRecord()->documentType),
             ]);
     }
 

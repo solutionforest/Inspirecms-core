@@ -4,13 +4,13 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
-use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\ReorderContentActionTrait;
+use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\LinkContentToParentActionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 
-class ReorderContentAction extends Action implements GuardAction
+class LinkContentToParentAction extends Action implements GuardAction
 {
     use CanCustomizeAuthorizedGuardActionProcess;
-    use ReorderContentActionTrait;
+    use LinkContentToParentActionTrait;
 
     protected function setUp(): void
     {

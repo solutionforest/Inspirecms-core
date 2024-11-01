@@ -1,31 +1,52 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Actions;
+namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 
-class LinkToParentAction extends Action implements GuardAction
+trait LinkContentToParentActionTrait
 {
-    use CanCustomizeAuthorizedGuardActionProcess;
-
     protected Closure | string | int | null $rootLevelKey = null;
 
     protected Closure | string $parentIdColumnName = 'parent_id';
 
+    public function rootLevelKey(Closure | string | int $rootLevelKey): static
+    {
+        $this->rootLevelKey = $rootLevelKey;
+
+        return $this;
+    }
+
+    public function getRootLevelKey(): string | int
+    {
+        return $this->evaluate($this->rootLevelKey);
+    }
+
+    public function parentIdColumnName(Closure | string $parentIdColumnName): static
+    {
+        $this->parentIdColumnName = $parentIdColumnName;
+
+        return $this;
+    }
+
+    public function getParentIdColumnName(): string
+    {
+        return (string) $this->evaluate($this->parentIdColumnName);
+    }
+
     public static function getDefaultName(): ?string
     {
-        return 'create_content';
+        return 'link_content_to_parent';
     }
 
     public static function getPermissionName(): string
@@ -38,10 +59,8 @@ class LinkToParentAction extends Action implements GuardAction
         return __('inspirecms::actions.link_to_parent.permission_display_name');
     }
 
-    protected function setUp(): void
+    protected function setUpAction(): void
     {
-        parent::setUp();
-
         $this->label(__('inspirecms::actions.link_to_parent.label'));
 
         $this->successRedirectUrl(function () {
@@ -72,7 +91,7 @@ class LinkToParentAction extends Action implements GuardAction
                 ])
         );
 
-        $this->action(function (array $data, Model & Content $record, Action $action) {
+        $this->action(function (array $data, Model & Content $record, Action|TreeNodeAction $action) {
             if (! $record) {
                 return;
             }
@@ -88,29 +107,5 @@ class LinkToParentAction extends Action implements GuardAction
 
             $action->success();
         });
-    }
-
-    public function rootLevelKey(Closure | string | int $rootLevelKey): static
-    {
-        $this->rootLevelKey = $rootLevelKey;
-
-        return $this;
-    }
-
-    public function getRootLevelKey(): string | int
-    {
-        return $this->evaluate($this->rootLevelKey);
-    }
-
-    public function parentIdColumnName(Closure | string $parentIdColumnName): static
-    {
-        $this->parentIdColumnName = $parentIdColumnName;
-
-        return $this;
-    }
-
-    public function getParentIdColumnName(): string
-    {
-        return (string) $this->evaluate($this->parentIdColumnName);
     }
 }

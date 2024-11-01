@@ -58,5 +58,6 @@
         @endif
     </x-inspirecms-support::model-explorer>
 
+    <x-inspirecms-support::tree-node.actions.modals />
     <x-filament-panels::page.unsaved-data-changes-alert />
 </x-filament-panels::page>
