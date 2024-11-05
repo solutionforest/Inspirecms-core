@@ -347,6 +347,13 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->color('gray')
                     ->slideOver()
                     ->modalWidth('5xl')
+                    ->visible(function ($component) {
+                        if ($component->isDisabled()) {
+                            return false;
+                        }
+
+                        return true;
+                    })
                     ->authorize(fn (Forms\Components\Repeater $component) => PermissionManifest::authorizeModel('update', get_class($component->getRelationship()->getRelated())) === true)
                     ->fillForm(function (array $arguments, Forms\Components\Repeater $component) {
 
