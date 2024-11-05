@@ -76,6 +76,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             $success = $this->getOwnerRecord()->inheritFieldGroupsFrom($recordId);
 
             $this->dispatch('refreshFieldGroups');
+            $this->dispatch('refreshAlerts');
         });
     }
 
@@ -91,6 +92,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             $this->getOwnerRecord()->deteachInheritFieldGroupsFrom($record);
 
             $this->dispatch('refreshFieldGroups');
+            $this->dispatch('refreshAlerts');
         });
     }
 

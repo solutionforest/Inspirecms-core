@@ -86,14 +86,8 @@ class TemplatesRelationManager extends RelationManager
                 ]),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->after(function (Model $record) {
-                        if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
-                            $this->getOwnerRecord()->setAsDefaultTemplate($record);
-                        }
-                    }),
-                Tables\Actions\AttachAction::make()
-                    ->preloadRecordSelect(),
+                Tables\Actions\CreateAction::make(),
+                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\Action::make('set_as_default')
@@ -131,7 +125,47 @@ class TemplatesRelationManager extends RelationManager
 
         $action
             ->form(fn (Form $form): Form => $this->createForm($form->columns(2)))
-            ->createAnother(false);
+            ->createAnother(false)
+            // Set the default template if it's not set
+            ->after(function (Model $record) {
+                if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
+                    $this->getOwnerRecord()->setAsDefaultTemplate($record);
+                }
+            });
+    }
+
+    protected function configureAttachAction(Tables\Actions\AttachAction $action): void
+    {
+        parent::configureAttachAction($action);
+
+        $action
+            // Set the default template if it's not set
+            ->after(function (Model $record) {
+                if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
+                    $this->getOwnerRecord()->setAsDefaultTemplate($record);
+                }
+                $this->dispatch('refreshAlerts');
+            });
+    }
+
+    protected function configureDetachAction(Tables\Actions\DetachAction $action): void
+    {
+        parent::configureDetachAction($action);
+
+        $action
+            ->after(function (Model $record) {
+                $this->dispatch('refreshAlerts');
+            });
+    }
+
+    protected function configureDeleteBulkAction(Tables\Actions\DeleteBulkAction $action): void
+    {
+        parent::configureDeleteBulkAction($action);
+
+        $action
+            ->after(function () {
+                $this->dispatch('refreshAlerts');
+            });
     }
 
     protected function configureEditAction(Tables\Actions\EditAction $action): void

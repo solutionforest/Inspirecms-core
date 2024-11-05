@@ -10,8 +10,22 @@ class AlertOverview extends BaseWidget
 {
     public ?Model $ownerRecord = null;
 
+    protected $listeners = [
+        'refreshAlerts' => '$refresh',
+    ];
+
     protected function getAlerts(): array
     {
+        if ($this->ownerRecord) {
+
+            if (is_null($this->ownerRecord->templates_count)) {
+                $this->ownerRecord->loadCount('templates');
+            }
+            if (is_null($this->ownerRecord->field_groups_count)) {
+                $this->ownerRecord->loadCount('fieldGroups');
+            }
+        }
+        
         if (($this->ownerRecord?->templates_count ?? 0) === 0) {
             $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.templates.hint'), 'warn');
         }

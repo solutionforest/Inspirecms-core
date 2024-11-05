@@ -139,4 +139,22 @@ class FieldGroupsRelationManager extends RelationManager
     {
         return __('inspirecms::resources/document-type.field_groups.label');
     }
+
+    protected function configureAttachAction(Tables\Actions\AttachAction $action): void
+    {
+        parent::configureAttachAction($action);
+
+        $action->after(function (array $data) {
+            $this->dispatch('refreshAlerts');
+        });
+    }
+
+    protected function configureDetachAction(Tables\Actions\DetachAction $action): void
+    {
+        parent::configureDetachAction($action);
+
+        $action->after(function (array $data) {
+            $this->dispatch('refreshAlerts');
+        });
+    }
 }

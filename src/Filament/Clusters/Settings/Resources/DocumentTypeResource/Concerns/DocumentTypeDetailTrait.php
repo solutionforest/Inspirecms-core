@@ -9,20 +9,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 
 trait DocumentTypeDetailTrait
 {
-    public function mountDocumentTypeDetailTrait()
-    {
-        if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-            $record = $this->getRecord();
-            if (is_null($record->templates_count)) {
-                $record->loadCount('templates');
-            }
-            if (is_null($record->field_groups_count)) {
-                $record->loadCount('fieldGroups');
-            }
-            $this->record = $record;
-        }
-    }
-
     protected function getHeaderWidgets(): array
     {
         $widgets = [];
