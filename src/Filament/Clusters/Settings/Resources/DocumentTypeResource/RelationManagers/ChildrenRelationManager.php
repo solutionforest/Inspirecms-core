@@ -15,4 +15,17 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager
 
         return $ownerRecord->isRoot();
     }
+
+    public static function getBadge(Model $ownerRecord, string $pageClass): ?string
+    {
+        if (is_null($ownerRecord->children_count)) {
+            $ownerRecord->loadCount('children');
+        }
+        return $ownerRecord->children_count;
+    }
+
+    protected function isRedirectToDetailPage(): bool
+    {
+        return true;
+    }
 }

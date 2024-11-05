@@ -34,6 +34,9 @@ class FieldGroupsRelationManager extends RelationManager
             ->reorderable('order')
             ->defaultSort('order')
             ->modifyQueryUsing(fn ($query) => $query->withCount('fields'))
+            ->modelLabel(fn () => __('inspirecms::resources/document-type.field_groups.singular'))
+            ->pluralModelLabel(fn () => __('inspirecms::resources/document-type.field_groups.plural'))
+            ->description(fn () => __('inspirecms::resources/document-type.field_groups.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title')),
@@ -44,7 +47,7 @@ class FieldGroupsRelationManager extends RelationManager
                     ->label(__('inspirecms::inspirecms.fields')),
 
                 Tables\Columns\ColumnGroup::make('inherited_from')
-                    ->label(__('inspirecms::inspirecms.inherited_from'))
+                    ->label(__('inspirecms::resources/document-type.inherited_from.label'))
                     ->columns([
 
                         Tables\Columns\TextColumn::make('inherited_from_title')
@@ -53,7 +56,7 @@ class FieldGroupsRelationManager extends RelationManager
                                 return $record->pivot?->inheritedFrom?->title;
                             }),
                         Tables\Columns\TextColumn::make('inherited_from_slug')
-                            ->label(__('inspirecms::inspirecms.slug'))
+                            ->label(__('inspirecms::resources/document-type.slug.label'))
                             ->width('5%')
                             ->getStateUsing(function ($record) {
                                 return $record->pivot?->inheritedFrom?->slug;
@@ -134,11 +137,6 @@ class FieldGroupsRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.field_group');
-    }
-
-    protected static function getModelLabel(): ?string
-    {
-        return __('inspirecms::inspirecms.field_group');
+        return __('inspirecms::resources/document-type.field_groups.label');
     }
 }

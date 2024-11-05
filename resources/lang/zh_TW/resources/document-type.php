@@ -1,0 +1,44 @@
+<?php
+
+return [
+    'title' => [
+        'label' => '標題',
+    ],
+    'type' => [
+        'label' => '類型',
+    ],
+    'show_children_as_table' => [
+        'label' => '顯示子項為表格',
+    ],
+    'is_root' => [
+        'label' => '根',
+    ],
+    'slug' => [
+        'label' => '標識',
+    ],
+    'inherited_from' => [
+        'label' => '繼承自',
+    ],
+    'templates' => [
+        'label' => '模板',
+        'singular' => '模板',
+        'plural' => '模板',
+        'description' => '渲染此文檔類型時使用的模板。',
+        'hint' => '創建一個模板來顯示此文檔類型。',
+    ],
+    'field_groups' => [
+        'label' => '字段組',
+        'singular' => '字段組',
+        'plural' => '字段組',
+        'description' => '創建此類型文檔時使用的字段組。',
+        'hint' => '創建一個字段組來與此文檔類型一起使用。',
+    ],
+    'inherited' => [
+        'label' => '繼承自 :name',
+        'description' => '此文檔類型繼承自的文檔類型。',
+    ],
+    'inheriting' => [
+        'label' => '繼承到 :name',
+        'description' => '繼承自此文檔類型的文檔類型。',
+    ],
+];

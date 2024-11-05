@@ -61,6 +61,7 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->widgets([
                 Widgets\PageActivity::class,
+                Widgets\AlertOverview::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')

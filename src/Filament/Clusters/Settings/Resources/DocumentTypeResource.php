@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
@@ -106,7 +107,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->emptyStateActions([])
             ->groups([
                 Tables\Grouping\Group::make('type')
-                    ->label(__('inspirecms::inspirecms.type'))
+                    ->label(__('inspirecms::resources/document-type.type.label'))
                     ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getLabel())
                     ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getDescription()),
             ])
@@ -116,20 +117,20 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/document-type.title.label')),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label(__('inspirecms::inspirecms.slug'))
+                    ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->sortable()
                     ->badge(),
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.parent'), [
                     Tables\Columns\TextColumn::make('parent.title')
-                        ->label(__('inspirecms::inspirecms.title')),
+                        ->label(__('inspirecms::resources/document-type.title.label')),
                     Tables\Columns\TextColumn::make('parent.slug')
-                        ->label(__('inspirecms::inspirecms.slug'))
+                        ->label(__('inspirecms::resources/document-type.slug.label'))
                         ->badge(),
                 ]),
                 Tables\Columns\IconColumn::make('show_children_as_table')
-                    ->label(__('inspirecms::inspirecms.show_children_as_table'))
+                    ->label(__('inspirecms::resources/document-type.show_children_as_table.label'))
                     ->color(function (DocumentType $record, $state) {
                         if ($record->getTypeEnum()?->canManageChildDocumentTypes() === false) {
                             return 'gray';
@@ -150,7 +151,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                             ?? 'heroicon-o-x-circle';
                     }),
                 Tables\Columns\TextColumn::make('type')
-                    ->label(__('inspirecms::inspirecms.type'))
+                    ->label(__('inspirecms::resources/document-type.type.label'))
                     ->badge()
                     ->getStateUsing(fn (DocumentType $record) => $record->getTypeEnum())
                     ->formatStateUsing(fn (?DocumentTypeType $state) => $state?->getLabel())
@@ -181,7 +182,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_root')
-                    ->label(__('inspirecms::inspirecms.is_root'))
+                    ->label(__('inspirecms::resources/document-type.is_root.label'))
                     ->default(true)
                     ->queries(
                         true: fn ($query) => $query->whereIsRoot(condition: true),
@@ -205,16 +206,28 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make(fn () => __('inspirecms::inspirecms.field_group'), [
+            RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.label'), [
                 RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
-            ]),
+            ])->badge(function ($ownerRecord) {
+                if (is_null($ownerRecord->field_groups_count)) {
+                    $ownerRecord->loadCount('fieldGroups');
+                }
+                return $ownerRecord->field_groups_count;
+            }),
             RelationManagers\ChildrenRelationManager::class,
             RelationManagers\TemplatesRelationManager::class,
             RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
                 RelationManagers\ContentRelationManager::class,
                 RelationManagers\InheritingDocumentTypesRelationManager::class,
             ]),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\AlertOverview::make(),
         ];
     }
 
@@ -231,7 +244,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with('parent');
+            ->with(['parent'])
+            ->withCount(['templates', 'fieldGroups', 'children']);
     }
 
     //region Global search
@@ -304,7 +318,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
-            ->label(__('inspirecms::inspirecms.title'))
+            ->label(__('inspirecms::resources/document-type.title.label'))
             ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || $operation === 'quick_create' || empty($get('slug'))) {
@@ -321,7 +335,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getSlugFormComponent()
     {
         return Forms\Components\TextInput::make('slug')
-            ->label(__('inspirecms::inspirecms.slug'))
+            ->label(__('inspirecms::resources/document-type.slug.label'))
             ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true)
             ->required();
@@ -333,7 +347,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getTypeFormComponent()
     {
         return Forms\Components\Select::make('type')
-            ->label(__('inspirecms::inspirecms.type'))
+            ->label(__('inspirecms::resources/document-type.type.label'))
             ->options(static::getModel()::getTypeEnumClass())
             ->default(static::getModel()::getTypeEnumClass()::getDefaultValue()->value)
             ->disabled(function ($operation, $livewire) {
@@ -362,7 +376,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getShowChildAsTableFormComponent()
     {
         return Forms\Components\Toggle::make('show_children_as_table')
-            ->label(__('inspirecms::inspirecms.show_children_as_table'))
+            ->label(__('inspirecms::resources/document-type.show_children_as_table.label'))
             ->inlineLabel()
             ->default(false)
             ->live()

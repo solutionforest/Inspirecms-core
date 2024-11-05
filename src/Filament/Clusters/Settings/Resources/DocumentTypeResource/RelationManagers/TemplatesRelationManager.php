@@ -21,6 +21,16 @@ class TemplatesRelationManager extends RelationManager
 
     protected static string $relationship = 'templates';
 
+    protected static ?string $icon = 'heroicon-c-sparkles';
+
+    public static function getBadge(Model $ownerRecord, string $pageClass): ?string
+    {
+        if (is_null($ownerRecord->templates_count)) {
+            $ownerRecord->loadCount('templates');
+        }
+        return $ownerRecord->templates_count;
+    }
+
     public function createForm(Form $form): Form
     {
         return $form
@@ -60,7 +70,9 @@ class TemplatesRelationManager extends RelationManager
         return $table
             ->contentGrid(['lg' => 3, 'md' => 2])
             ->recordTitle(fn ($record) => $record->path)
-            ->modelLabel(fn () => __('inspirecms::inspirecms.template'))
+            ->modelLabel(fn () => __('inspirecms::resources/document-type.templates.singular'))
+            ->pluralModelLabel(__('inspirecms::resources/document-type.templates.plural'))
+            ->description(fn () => __('inspirecms::resources/document-type.templates.description'))
             ->columns([
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\TextColumn::make('slug')
@@ -109,7 +121,7 @@ class TemplatesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.templates');
+        return __('inspirecms::resources/document-type.templates.plural');
     }
 
     protected function configureCreateAction(CreateAction $action): void

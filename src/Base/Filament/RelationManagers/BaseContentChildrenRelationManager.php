@@ -28,6 +28,7 @@ class BaseContentChildrenRelationManager extends RelationManager
 
         return $resource::table($table)
             ->modelLabel(__('inspirecms::inspirecms.children'))
+            ->pluralModelLabel(fn () => __('inspirecms::inspirecms.children'))
             ->emptyStateHeading(null)
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
@@ -62,8 +63,21 @@ class BaseContentChildrenRelationManager extends RelationManager
     {
         parent::configureEditAction($action);
 
+        if ($this->isRedirectToDetailPage()) {
+            $resource = $this->getPageClass()::getResource();
+
+            $action->url(
+                fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record], false)
+            );
+        }
+
         $action
             ->slideOver()
             ->modalWidth('7xl');
+    }
+
+    protected function isRedirectToDetailPage(): bool
+    {
+        return false;
     }
 }

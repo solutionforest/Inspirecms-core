@@ -30,12 +30,13 @@ class InheritingDocumentTypesRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/document-type.title.label')),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label(__('inspirecms::inspirecms.slug'))
+                    ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
+            ->description(fn () => __('inspirecms::resources/document-type.inheriting.description'))
             ->actions([
                 Tables\Actions\Action::make('open')
                     ->label(__('inspirecms::actions.open.label'))
@@ -55,8 +56,13 @@ class InheritingDocumentTypesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.inheriting_xxx', [
-            'name' => __('inspirecms::inspirecms.document_type'),
+        return __('inspirecms::resources/document-type.inheriting.label', [
+            'name' => static::getModelLabel(),
         ]);
+    }
+
+    protected static function getModelLabel(): ?string
+    {
+        return __('inspirecms::inspirecms.document_type');
     }
 }
