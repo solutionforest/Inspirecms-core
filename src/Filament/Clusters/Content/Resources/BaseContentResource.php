@@ -403,13 +403,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return collect($documentType->templates)
-                    ->mapWithKeys(function ($template)  use ($documentType) {
+                    ->mapWithKeys(function ($template) use ($documentType) {
                         $label = $template->slug;
                         if ($template->getKey() === $documentType->getDefaultTemplate()?->getKey()) {
                             $label = '<b class="font-bold">' . $label . '</b><span class="font-mono"> (' . __('inspirecms::inspirecms.default') . ')</span>';
                         }
+
                         return [
-                            $template->getKey() => $label
+                            $template->getKey() => $label,
                         ];
                     })
                     ->all();
