@@ -65,6 +65,13 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
         return $resource::getUrl('index');
     }
 
+    protected function getRedirectUrlParameters(): array
+    {
+        return [
+            'activeRelationManager' => 0,
+        ];
+    }
+
     public function updatedActiveLocale(string $newActiveLocale): void
     {
         $this->updatedActiveLocaleForContent($newActiveLocale);
