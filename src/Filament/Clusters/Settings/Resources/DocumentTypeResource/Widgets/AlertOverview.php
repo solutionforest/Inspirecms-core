@@ -25,7 +25,7 @@ class AlertOverview extends BaseWidget
                 $this->ownerRecord->loadCount('fieldGroups');
             }
         }
-        
+
         if (($this->ownerRecord?->templates_count ?? 0) === 0) {
             $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.templates.hint'), 'warn');
         }
