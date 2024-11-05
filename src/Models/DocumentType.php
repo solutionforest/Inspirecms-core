@@ -207,7 +207,6 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     public function canBeParent(): bool
     {
         return $this->exists &&
-            $this->isRoot() &&
             $this->isWebPageType();
     }
 

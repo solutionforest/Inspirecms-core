@@ -7,15 +7,6 @@ use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildren
 
 class ChildrenRelationManager extends BaseContentChildrenRelationManager
 {
-    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
-    {
-        if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
-            return false;
-        }
-
-        return $ownerRecord->isRoot();
-    }
-
     public static function getBadge(Model $ownerRecord, string $pageClass): ?string
     {
         if (is_null($ownerRecord->children_count)) {
