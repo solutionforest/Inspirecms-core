@@ -13,6 +13,7 @@ return [
     'create_xxx' => 'Create :name',
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
+    'default' => 'Default',
     'deleted_at' => 'Deleted at',
     'details' => 'Details',
     'document_type' => 'Document Type',

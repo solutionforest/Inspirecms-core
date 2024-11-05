@@ -145,4 +145,8 @@ return [
     'url' => [
         'label' => 'URL',
     ],
+    'template' => [
+        'label' => '模板',
+        'helperText' => '保持空白以使用文檔類型的默認模板',
+    ],
 ];

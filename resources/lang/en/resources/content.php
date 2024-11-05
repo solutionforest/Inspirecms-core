@@ -145,4 +145,8 @@ return [
     'url' => [
         'label' => 'URL',
     ],
+    'template' => [
+        'label' => 'Template',
+        'helperText' => 'Keep empty to use the default template of the document type',
+    ],
 ];

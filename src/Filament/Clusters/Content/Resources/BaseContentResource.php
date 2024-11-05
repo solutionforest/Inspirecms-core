@@ -387,7 +387,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getTemplateFormComponent()
     {
         return Forms\Components\Select::make('template_id')
-            ->label(__('inspirecms::inspirecms.template'))
+            ->label(__('inspirecms::resources/content.template.label'))
+            ->helperText(__('inspirecms::resources/content.template.helperText'))
             ->options(function (ContentForm $livewire) {
                 $documentType = $livewire->getDocumentType();
                 if (! $documentType instanceof Model) {
@@ -402,12 +403,19 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 }
 
                 return collect($documentType->templates)
-                    ->mapWithKeys(function ($template) {
-                        return [$template->getKey() => $template->slug];
+                    ->mapWithKeys(function ($template)  use ($documentType) {
+                        $label = $template->slug;
+                        if ($template->getKey() === $documentType->getDefaultTemplate()?->getKey()) {
+                            $label = '<b class="font-bold">' . $label . '</b><span class="font-mono"> (' . __('inspirecms::inspirecms.default') . ')</span>';
+                        }
+                        return [
+                            $template->getKey() => $label
+                        ];
                     })
                     ->all();
             })
             ->searchable()
+            ->allowHtml()
             ->dehydrated(false)
             ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
                 if ($state) {
@@ -415,6 +423,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $record->setAsDefaultTemplate($state);
                 } else {
                     $record->templates()->sync([]);
+                }
+            })
+            ->loadStateFromRelationshipsUsing(function ($record, $component) {
+                if ($template = $record?->getDefaultTemplate()) {
+                    $component->state($template->getKey());
                 }
             });
     }

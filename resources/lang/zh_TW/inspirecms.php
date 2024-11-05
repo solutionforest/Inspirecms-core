@@ -13,6 +13,7 @@ return [
     'create_xxx' => '創建 :name',
     'created_at' => '創建於',
     'dashboard' => '儀表板',
+    'default' => '默認',
     'deleted_at' => '刪除於',
     'details' => '詳情',
     'document_type' => '文件類型',
