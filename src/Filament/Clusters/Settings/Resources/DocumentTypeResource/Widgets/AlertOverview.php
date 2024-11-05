@@ -3,13 +3,13 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Widgets\AlertOverview as BaseWidget;
 use SolutionForest\InspireCms\Filament\Widgets\AlertOverview\Alert;
+use SolutionForest\InspireCms\Filament\Widgets\AlertOverview as BaseWidget;
 
 class AlertOverview extends BaseWidget
 {
     public ?Model $ownerRecord = null;
-    
+
     protected function getAlerts(): array
     {
         if (($this->ownerRecord?->templates_count ?? 0) === 0) {

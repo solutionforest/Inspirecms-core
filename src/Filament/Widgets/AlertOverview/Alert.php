@@ -4,12 +4,12 @@ namespace SolutionForest\InspireCms\Filament\Widgets\AlertOverview;
 
 use Closure;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\View\Component;
 use Illuminate\Contracts\View\View;
+use Illuminate\View\Component;
 
 class Alert extends Component implements Htmlable
 {
-    protected string|Htmlable|Closure $label = '';
+    protected string | Htmlable | Closure $label = '';
 
     protected string $type = 'info';
 

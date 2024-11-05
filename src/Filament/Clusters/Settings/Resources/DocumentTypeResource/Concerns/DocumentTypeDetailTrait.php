@@ -30,12 +30,13 @@ trait DocumentTypeDetailTrait
             $widgetFqcn = $widget instanceof WidgetConfiguration ? $widget->widget : $widget;
             $widgetProperties = $widget instanceof WidgetConfiguration ? $widget->getProperties() : [];
             if (is_a($widgetFqcn, AlertOverview::class, true) && ($this instanceof EditRecord || $this instanceof ViewRecord)) {
-                if (!isset($widgetProperties['ownerRecord'])) {
+                if (! isset($widgetProperties['ownerRecord'])) {
                     $widgetProperties['ownerRecord'] = $this->getRecord();
                 }
             }
             $widgets[] = $widgetFqcn::make($widgetProperties);
         }
+
         return $widgets;
     }
 }
