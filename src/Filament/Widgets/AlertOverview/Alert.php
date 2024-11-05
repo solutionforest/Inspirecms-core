@@ -39,7 +39,9 @@ class Alert extends Component implements Htmlable
 
     public function getLabel(): string | Htmlable
     {
-        return is_callable($this->label) ? ($this->label)() : $this->label;
+        $label = is_callable($this->label) ? ($this->label)() : $this->label;
+        
+        return $label ?? '';
     }
 
     public function type(string $type): static
@@ -59,6 +61,17 @@ class Alert extends Component implements Htmlable
             'primary' => 'primary',
             'secondary' => 'secondary',
             default => 'gray',
+        };
+    }
+
+    public function getIcon(): string
+    {
+        return match ($this->type) {
+            'success' => 'heroicon-s-check-circle',
+            'error', 'danger' => 'heroicon-s-exclamation-circle',
+            'warning', 'warn' => 'heroicon-s-exclamation-triangle',
+            'info', 'primary', 'secondary' => 'heroicon-s-information-circle',
+            default => 'heroicon-s-information-circle',
         };
     }
 

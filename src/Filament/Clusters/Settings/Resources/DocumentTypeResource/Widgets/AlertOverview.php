@@ -13,11 +13,11 @@ class AlertOverview extends BaseWidget
     protected function getAlerts(): array
     {
         if (($this->ownerRecord?->templates_count ?? 0) === 0) {
-            $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.templates.hint'), 'primary');
+            $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.templates.hint'), 'warn');
         }
 
         if (($this->ownerRecord?->field_groups_count ?? 0) === 0) {
-            $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.field_groups.hint'), 'primary');
+            $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.field_groups.hint'), 'warn');
         }
 
         return $alerts ?? [];

@@ -2,23 +2,40 @@
 @php
     $label = $getLabel();
     $color = $getColor();
+    $icon = $getIcon();
 @endphp
 
-<div class="w-full">
-    @if (filled($label))
-        <div 
-            @class([
-                'ring-1 ring-inset rounded-md px-6 py-3 font-medium',
-                'inline-flex items-center w-full',
-                'bg-custom-100 text-custom-700 ring-custom-600/10 dark:bg-custom-400/10 dark:text-custom-400 dark:ring-custom-400/20' => $color != 'gray',
-                'bg-gray-100 text-gray-600 ring-gray-500/10 dark:bg-gray-400/10 dark:text-gray-400 dark:ring-gray-400/20' => $color == 'gray',
-            ])
-            @style(\Filament\Support\get_color_css_variables(
-                $color,
-                shades: [100, 400, 600, 700],
-            ))
-        >
-            {{ $label }}
+<div 
+    @class([
+        'rounded-r-md border-l-4 p-4',
+        'border-custom-400 bg-custom-50 dark:bg-custom-400/40' => $color != 'gray',
+        'border-gray-400 bg-gray-50 dark:bg-gray-400/40' => $color == 'gray',
+    ])
+    @style(\Filament\Support\get_color_css_variables(
+        $color,
+        shades: [50, 200, 400, 700],
+    ))>
+    <div class="flex">
+        <div class="flex-shrink-0">
+            <x-filament::icon 
+                :icon="$icon" 
+                @class([
+                    'w-5 h-5',
+                    'text-custom-400 dark:text-custom-200/80' => $color != 'gray',
+                    'text-gray-400 dark:text-gray-200/80' => $color == 'gray',
+                ])
+            />
         </div>
-    @endif
+        <div class="ml-3">
+            <p 
+                @class([
+                    'text-sm',
+                    'text-custom-700 dark:text-custom-400' => $color != 'gray',
+                    'text-gray-700 dark:text-gray-400' => $color == 'gray',
+                ])
+            >
+                {{ $label }}
+            </p>
+        </div>
+    </div>
 </div>
