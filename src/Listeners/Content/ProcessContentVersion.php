@@ -61,8 +61,8 @@ class ProcessContentVersion
 
         $publishVersion = $model->publishVersionLogs()->create($data);
 
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), $model->getVersioningEvent()));
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
-        event(new GenerateSitemap($model->withoutRelations(), $model->getVersioningEvent()));
         event(new CreatedPublishContentVersion($model->withoutRelations(), $contentVersion->withoutRelations(), $publishVersion->withoutRelations(), $statusOption));
     }
 }

@@ -16,7 +16,7 @@ class SitemapObserver
      */
     public function updated(Sitemap | Model $model)
     {
-        event(new GenerateSitemap($model, 'updated'));
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
     }
 
     /**
@@ -27,6 +27,6 @@ class SitemapObserver
      */
     public function deleted(Sitemap | Model $model)
     {
-        event(new GenerateSitemap($model, 'deleted'));
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'deleted'));
     }
 }

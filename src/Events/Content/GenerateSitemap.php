@@ -9,18 +9,24 @@ class GenerateSitemap
     use SerializesModels;
 
     /**
-     * @var \Illuminate\Database\Eloquent\Model
+     * @var class-string
      */
     public $model;
+
+    /**
+     * @var string|int
+     */
+    public $modelKey;
 
     /**
      * @var string
      */
     public $triggerEvent;
 
-    public function __construct($model, $triggerEvent)
+    public function __construct($model, $modelKey, $triggerEvent)
     {
         $this->model = $model;
+        $this->modelKey = $modelKey;
         $this->triggerEvent = $triggerEvent;
     }
 }

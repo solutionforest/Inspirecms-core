@@ -42,7 +42,7 @@ class LanguageObserver
      */
     public function updated(Language | Model $model)
     {
-        event(new GenerateSitemap($model, 'updated'));
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
     }
 
     /**
@@ -57,7 +57,7 @@ class LanguageObserver
             throw new \Exception('Cannot delete default language');
         }
 
-        event(new GenerateSitemap($model, 'updated'));
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
         $this->clearCached();
     }
 
