@@ -28,6 +28,7 @@ class TemplatesRelationManager extends RelationManager
         if (is_null($ownerRecord->templates_count)) {
             $ownerRecord->loadCount('templates');
         }
+
         return $ownerRecord->templates_count;
     }
 

@@ -10,8 +10,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 
 class ViewDocumentType extends BaseViewPage implements DocumentTypeForm
 {
-    use DocumentTypeFormTrait;
     use DocumentTypeDetailTrait;
+    use DocumentTypeFormTrait;
 
     public static function getResource(): string
     {

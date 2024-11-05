@@ -33,7 +33,7 @@ class AlertOverview extends Widget
     /**
      * @return int|array<string,int>
      */
-    public function getColumns(): int|array
+    public function getColumns(): int | array
     {
         return 1;
     }

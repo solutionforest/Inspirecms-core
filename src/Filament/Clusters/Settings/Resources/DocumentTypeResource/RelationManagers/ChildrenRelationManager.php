@@ -21,6 +21,7 @@ class ChildrenRelationManager extends BaseContentChildrenRelationManager
         if (is_null($ownerRecord->children_count)) {
             $ownerRecord->loadCount('children');
         }
+
         return $ownerRecord->children_count;
     }
 

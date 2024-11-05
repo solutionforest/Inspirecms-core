@@ -213,6 +213,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 if (is_null($ownerRecord->field_groups_count)) {
                     $ownerRecord->loadCount('fieldGroups');
                 }
+
                 return $ownerRecord->field_groups_count;
             }),
             RelationManagers\ChildrenRelationManager::class,
