@@ -56,6 +56,7 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
             return $slug;
         }
 
-        return array_reverse($parts)[0] ?? null;
+
+        return implode('/', array_slice($parts, 1));
     }
 }
