@@ -31,11 +31,22 @@ class BaseCreatePage extends CreateRecord
     {
         $resource = static::getResource();
 
-        return $resource::getUrl('index');
+        if ($this->redirectToIndex()) {
+
+            return $resource::getUrl('index');
+        }
+
+        return parent::getRedirectUrl();
+
     }
 
     public function getSubNavigation(): array
     {
         return static::getResource()::getRecordSubNavigation($this);
+    }
+
+    protected function redirectToIndex(): bool
+    {
+        return false;
     }
 }
