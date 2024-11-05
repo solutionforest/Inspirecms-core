@@ -40,7 +40,7 @@ class Alert extends Component implements Htmlable
     public function getLabel(): string | Htmlable
     {
         $label = is_callable($this->label) ? ($this->label)() : $this->label;
-        
+
         return $label ?? '';
     }
 
