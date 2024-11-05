@@ -279,6 +279,7 @@ class Content extends BaseModel implements ContentContract
                 $dto->documentType = $documentType->toDto();
             }
             $dto->setPropertyData($propertyData);
+            $dto->setSeoData($record);
         }
 
         return $dto;

@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection as SupportCollection;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Models\Content;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
@@ -34,20 +34,23 @@ class ContentDto extends BaseTranslatableModelDto
     public $documentType;
 
     /**
-     * @var Collection<PropertyDataGroupDto>
+     * @var SupportCollection<PropertyDataGroupDto>
      */
     public $propertyData;
 
     /**
      * @var SeoDto
      */
-    public $seo;
 
     protected array $translatableAttributes = ['title'];
 
-    public static function fromTranslatableModel($model, $locale)
+    public static function fromTranslatableModel($model, $locale, bool $withChildren = true): self
     {
-        $model->loadMissing(['documentType', 'webSetting']);
+        $model->loadMissing([
+            'documentType.fieldGroups.fields',
+            'webSetting',
+            ...($withChildren ? ['children'] : []),
+        ]);
         /**
          * @var self
          */
@@ -58,6 +61,9 @@ class ContentDto extends BaseTranslatableModelDto
             $dto->documentType = DocumentTypeDto::fromModel($model->documentType);
         }
         $dto->setPropertyData($model->getLatestPublishedPropertyData());
+
+        // avoid loading children if not needed
+        $dto->children = $model->children->map(fn ($child) => self::fromTranslatableModel($child, $locale, false));
 
         return $dto;
     }
@@ -89,8 +95,28 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
+     * @return ?PropertyDataGroupDto
+     */
+    public function getPropertyGroup(string $name)
+    {
+        return $this->propertyData->first(fn (PropertyDataGroupDto $propertyData) => $propertyData->name === $name);
+    }
+
+    /**
+     * @return SupportCollection<ContentDto>
+     */
+    public function getChildren()
+    {
+        ray($this);
+        if (isset($this->children)) {
+            return $this->children ?? collect();
+        }
+        return $this->children = $this->getModel()->children->map(fn ($child) => self::fromTranslatableModel($child, $this->getLocale(), false));
+    }
+
+    /**
      * @param  mixed  $locale
-     * @return Collection<PropertyDataDto>
+     * @return SupportCollection<PropertyDataDto>
      */
     public function getPropertyData(string $name, ?string $locale = null)
     {
@@ -104,7 +130,7 @@ class ContentDto extends BaseTranslatableModelDto
         return $result;
     }
 
-    public function setSeoData(Model $model)
+    public function setSeoData(Model|array $model)
     {
         if ($model instanceof Content) {
 
@@ -118,36 +144,30 @@ class ContentDto extends BaseTranslatableModelDto
             $seoData['locale'] = $this->getLocale();
             // todo: get image by id
             $seoData['image'] = $dataBefore['og_image'][0] ?? null;
-
-            $mapper = [
-                'meta_description' => 'description',
-                'og_description' => 'ogDescription',
-                'noindex' => 'noIndex',
-                'nofollow' => 'noFollow',
-                'noarchive' => 'noArchive',
-                'nosnippet' => 'noSnippet',
-                'noodp' => 'noOdp',
-                'noydir' => 'noYdir',
-            ];
-
-            foreach ($mapper as $key => $value) {
-                if (in_array($key, SeoHelper::getTranslatableAttributes())) {
-                    $seoData[$value] = $this->getTranslations($dataBefore[$key] ?? [], $this->getLocale());
-                } else {
-                    $seoData[$value] = $dataBefore[$key] ?? false;
-                }
-            }
-
-            $this->seo = SeoDto::fromArray($seoData);
+        } else if (is_array($model)) {
+            $dataBefore = $model;
         }
-    }
 
-    /**
-     * @return ?PropertyDataGroupDto
-     */
-    public function getPropertyGroup(string $name)
-    {
-        return $this->propertyData->first(fn (PropertyDataGroupDto $propertyData) => $propertyData->name === $name);
+        $mapper = [
+            'meta_description' => 'description',
+            'og_description' => 'ogDescription',
+            'noindex' => 'noIndex',
+            'nofollow' => 'noFollow',
+            'noarchive' => 'noArchive',
+            'nosnippet' => 'noSnippet',
+            'noodp' => 'noOdp',
+            'noydir' => 'noYdir',
+        ];
+
+        foreach ($mapper as $key => $value) {
+            if (in_array($key, SeoHelper::getTranslatableAttributes())) {
+                $seoData[$value] = $this->getTranslations($dataBefore[$key] ?? [], $this->getLocale());
+            } else {
+                $seoData[$value] = $dataBefore[$key] ?? false;
+            }
+        }
+
+        $this->seo = SeoDto::fromArray($seoData);
     }
 
     /**
@@ -156,5 +176,13 @@ class ContentDto extends BaseTranslatableModelDto
     public function getTitle(?string $locale = null)
     {
         return $this->getTranslation('title', $locale);
+    }
+
+    /**
+     * @return null|string|array<string,string>
+     */
+    public function getUrl(?string $locale = null)
+    {
+        return $this->getModel()?->getUrl($locale);
     }
 }

@@ -35,6 +35,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
                 'webSetting',
                 'publishedVersions',
                 'templates',
+                'children',
             ]);
         }
 
