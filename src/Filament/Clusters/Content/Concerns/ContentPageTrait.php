@@ -89,7 +89,7 @@ trait ContentPageTrait
 
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');
-                    $item['fallbackLocale'] = $record->getFallbackLocale();
+                    $item['fallbackLabel'] = $record->getTranslation('title', $record->getFallbackLocale());
                 }
 
                 $item['documentTypeKey'] = $record->document_type_id;
