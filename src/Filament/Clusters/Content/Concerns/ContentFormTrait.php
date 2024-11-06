@@ -32,7 +32,7 @@ trait ContentFormTrait
         $this->otherLocaleData[$this->oldActiveLocale] = Arr::only($this->data, $translatableAttributes);
 
         $this->data = $this->mutuateDataWhileUpdatedActiveLocale(
-            Arr::except($this->data, $translatableAttributes), 
+            Arr::except($this->data, $translatableAttributes),
             $this->otherLocaleData[$this->activeLocale] ?? []
         );
 
@@ -42,7 +42,7 @@ trait ContentFormTrait
     /**
      * Get the list of translatable attributes.
      *
-     * @param bool $exceptPropertyData Whether to exclude property data from the attributes.
+     * @param  bool  $exceptPropertyData  Whether to exclude property data from the attributes.
      * @return array The list of translatable attributes.
      */
     protected function getTranslatableAttributes(bool $exceptPropertyData = true): array
@@ -64,7 +64,7 @@ trait ContentFormTrait
             $data[$key] = $value;
 
         }
-        
+
         return $data;
     }
 

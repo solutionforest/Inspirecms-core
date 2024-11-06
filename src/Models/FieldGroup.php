@@ -37,8 +37,8 @@ class FieldGroup extends BaseModel
                 $fieldName = $field->name;
                 $groupName = $this->name;
 
-                $statePath = method_exists($field, '') ? 
-                    $field->getStatePathWithGroup() : 
+                $statePath = method_exists($field, '') ?
+                    $field->getStatePathWithGroup() :
                     implode('.', [$groupName, $fieldName]);
 
                 if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {

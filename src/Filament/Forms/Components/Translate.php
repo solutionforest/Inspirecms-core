@@ -6,7 +6,6 @@ use Closure;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
-use Livewire\Livewire;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -19,9 +18,9 @@ class Translate extends Component
      */
     protected string $view = 'inspirecms::filament.forms.components.translate';
 
-    protected null|array|Closure $locales = null;
+    protected null | array | Closure $locales = null;
 
-    protected null|string|Closure $defaultLocale = null;
+    protected null | string | Closure $defaultLocale = null;
 
     protected ?string $groupName = null;
 
@@ -50,7 +49,7 @@ class Translate extends Component
         foreach ($locales as $locale) {
             $containers[$locale] = ComponentContainer::make($this->getLivewire())
                 ->parentComponent($this)
-                ->components(function ($livewire)  use ($locale) {
+                ->components(function ($livewire) use ($locale) {
 
                     $components = [];
 
@@ -96,7 +95,7 @@ class Translate extends Component
 
     public function getLocales(): array
     {
-        return $this->evaluate($this->locales) ?? 
+        return $this->evaluate($this->locales) ??
             collect(InspireCms::getAllAvailableLanguages())
                 ->map(fn (LanguageDto $lang) => $lang->code)
                 ->values()
@@ -107,7 +106,7 @@ class Translate extends Component
     {
         return $this->evaluate($this->defaultLocale) ?? InspireCms::getFallbackLanguage()->code;
     }
-    
+
     public function getGroupName(): ?string
     {
         return $this->evaluate($this->groupName);
@@ -131,7 +130,7 @@ class Translate extends Component
         $defaultLocale = $this->getDefaultLocale();
 
         if ($localeComponent instanceof Field) {
-            
+
             $localeComponent->label($component->getLabel());
 
             // Spatie translatable field format
@@ -176,12 +175,14 @@ class Translate extends Component
         switch (true) {
             case $livewire instanceof ContentForm:
                 $component = $this->configureComponentForContentForm($component, $locale, $livewire);
+
                 break;
             case $livewire instanceof BuilderEditor:
                 $component = $this->configureComponentForBuilderEditor($component, $locale, $livewire);
+
                 break;
         }
-        
+
         return $component;
     }
 
