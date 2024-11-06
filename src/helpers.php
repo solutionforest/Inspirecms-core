@@ -1,5 +1,6 @@
 <?php
 
+use SolutionForest\InspireCms\Base\Assets\InspireCmsAssetManagerInterface;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
@@ -10,6 +11,13 @@ if (! function_exists('inspirecms')) {
     function inspirecms(): InspireCmsManager
     {
         return app(InspireCmsManager::class);
+    }
+}
+
+if (! function_exists('inspirecms_asset')) {
+    function inspirecms_asset(): InspireCmsAssetManagerInterface
+    {
+        return app(InspireCmsAssetManagerInterface::class);
     }
 }
 

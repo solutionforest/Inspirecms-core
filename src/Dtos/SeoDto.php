@@ -32,7 +32,21 @@ class SeoDto extends BaseDto
      *
      * @var string
      */
-    public $image;
+    public $ogImage;
+    
+    /**
+     * The Open Graph title used for social media sharing.
+     * 
+     * @var string
+     */
+    public $ogTitle;
+
+    /**
+     * The Open Graph description for SEO purposes.
+     * 
+     * @var string|null 
+     */
+    public $ogDescription;
 
     /**
      *  The URL of the content.
@@ -200,7 +214,9 @@ class SeoDto extends BaseDto
         $mapper = [
             'meta_title' => 'title',
             'meta_description' => 'description',
+            'og_title' => 'ogTitle',
             'og_description' => 'ogDescription',
+            'og_image' => 'ogImage',
             'noindex' => 'noIndex',
             'nofollow' => 'noFollow',
             'noarchive' => 'noArchive',
@@ -212,7 +228,6 @@ class SeoDto extends BaseDto
         foreach ($parameters as $key => $value) {
 
             if ($key == 'og_image' && is_array($value)) {
-                // todo: get image by id
                 $value = $value[0] ?? null;
             }
 
@@ -243,8 +258,16 @@ class SeoDto extends BaseDto
             $html .= "<meta name=\"keywords\" content=\"{$this->keywords}\">\n";
         }
 
-        if ($this->image) {
-            $html .= "<meta property=\"og:image\" content=\"{$this->image}\">\n";
+        if ($this->ogTitle) {
+            $html .= "<meta property=\"og:title\" content=\"{$this->ogTitle}\">\n";
+        }
+
+        if ($this->ogDescription) {
+            $html .= "<meta property=\"og:description\" content=\"{$this->ogDescription}\">\n";
+        }
+
+        if ($this->ogImage && ($mediaAssetUrl = inspirecms_asset()->getAssetUrl($this->ogImage))) {
+            $html .= "<meta property=\"og:image\" content=\"{$mediaAssetUrl}\">\n";
         }
 
         if ($this->url) {

@@ -12,6 +12,7 @@ use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -74,6 +75,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerPolymorphism();
+        
+        $this->app->scoped(BaseAssets\InspireCmsAssetManagerInterface::class, fn () => $this->app->make(BaseAssets\InspireCmsAssetManager::class));
 
         $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));

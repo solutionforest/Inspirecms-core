@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Dtos\Assets\FileDto;
+use SolutionForest\InspireCms\Dtos\Assets\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\Translatable;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
@@ -47,23 +49,17 @@ class PropertyDataGroupDto extends BaseDto
                 $directory = $propertyType->directory;
 
                 return collect($propertyDataValue)
-                    ->map(fn ($file) => filled($directory) ? $directory . '/' . $file : $file)
-                    ->map(fn ($filePath) => [
-                        'path' => $filePath,
+                    ->map(fn ($path) => FileDto::fromArray([
+                        'path' => $path,
                         'disk' => $disk,
-                    ])
-                    ->values()->all();
+                        'directory' => $directory,
+                    ]))->values()->all();
 
             case $propertyType instanceof \SolutionForest\InspireCms\FieldTypes\Configs\MediaPicker:
-                $media = InspireCmsConfig::getMediaAssetModelClass()::with('media')->findMany($propertyDataValue)->map(fn ($mediaAsset) => $mediaAsset->media)->flatten();
 
-                return collect($media)
-                    ->map(fn ($media) => [
-                        'path' => $media->file_name,
-                        'disk' => $media->disk,
-                        'url' => $media->getUrl(),
-                    ])
-                    ->values()->all();
+                return MediaAssetDto::fromArray([
+                    'keys' => $propertyDataValue,
+                ]);
 
             default:
                 return $propertyDataValue;

@@ -96,6 +96,10 @@ class InspireCmsManager
      */
     public function routes(): void
     {
+        Route::name('inspirecms.asset')
+            ->get('assets/{key}', \SolutionForest\InspireCms\Http\Controllers\AssetController::class)
+            ->middleware(inspirecms_asset()->getAssetMiddleware());
+
         Route::name('inspirecms.sitemap')
             ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
 
