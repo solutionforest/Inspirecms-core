@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
 
-interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, IndexableModel, NestableInterface
+interface Content extends Base\HasContentVersions, Base\HasTemplates, Base\HasContentWebSetting, BelongsToNestableTree, HasDtoModel, IndexableModel, NestableInterface
 {
     /**
      * Return the document type relation.
@@ -19,11 +19,6 @@ interface Content extends Base\HasContentVersions, Base\HasTemplates, BelongsToN
      * @return BelongsTo The document type relation.
      */
     public function documentType(): BelongsTo;
-
-    /**
-     * Define a one-to-one relationship with the WebSetting model.
-     */
-    public function webSetting(): HasOne;
 
     /**
      * Define a one-to-one relationship for the sitemap.

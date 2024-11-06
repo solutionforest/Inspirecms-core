@@ -66,11 +66,14 @@ class GenerateContentSitemap implements ShouldQueue
 
     protected function getAllAvailableSitemapData(): array
     {
-        $records = InspireCmsConfig::getSitemapModelClass()::with('model')->whereEnabled()->get();
+        $records = InspireCmsConfig::getSitemapModelClass()::with('model.webSetting')
+            ->whereEnabled()
+            ->get();
 
         return collect($records)
             ->whereInstanceOf(Sitemap::class)
             ->map(fn (Sitemap $item) => $item->generateSitemapItem())
+            ->filter(fn ($item) => ! empty($item))
             ->toArray();
 
     }

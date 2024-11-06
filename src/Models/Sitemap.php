@@ -65,6 +65,19 @@ class Sitemap extends BaseModel implements SitemapContract
         return $this->priority;
     }
 
+    protected function isAllowIndex(): bool
+    {
+        if (!$this->enable) {
+            return false;
+        }
+
+        if ($this->model && $this->model instanceof Contracts\Content) {
+            return $this->model->isAllowIndex();
+        }
+        
+        return true;
+    }
+
     public function generateSitemapItem(): array
     {
         $languages = InspireCms::getAllAvailableLanguages();
@@ -78,6 +91,10 @@ class Sitemap extends BaseModel implements SitemapContract
         })->values()->all();
 
         if (empty($urls)) {
+            return [];
+        }
+
+        if (!$this->isAllowIndex()) {
             return [];
         }
 

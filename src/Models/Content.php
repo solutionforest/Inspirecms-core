@@ -35,6 +35,7 @@ class Content extends BaseModel implements ContentContract
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
     use Concerns\HasTemplates;
+    use Concerns\HasContentWebSetting;
     use Concerns\HasTranslations {
         setTranslation as protected traitSetTranslation;
         getTranslation as protected traitGetTranslation;
@@ -73,11 +74,6 @@ class Content extends BaseModel implements ContentContract
     public function documentType(): BelongsTo
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');
-    }
-
-    public function webSetting(): HasOne
-    {
-        return $this->hasOne(InspireCmsConfig::getContentWebSettingModelClass(), 'content_id');
     }
 
     public function sitemap(): MorphOne
