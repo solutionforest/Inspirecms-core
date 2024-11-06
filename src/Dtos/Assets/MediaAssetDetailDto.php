@@ -10,7 +10,7 @@ class MediaAssetDetailDto extends BaseDto
      * @var string
      */
     public $uid;
-    
+
     /**
      * @var ?string
      */

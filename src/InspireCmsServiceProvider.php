@@ -75,7 +75,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function packageRegistered(): void
     {
         $this->registerPolymorphism();
-        
+
         $this->app->scoped(BaseAssets\InspireCmsAssetManagerInterface::class, fn () => $this->app->make(BaseAssets\InspireCmsAssetManager::class));
 
         $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));

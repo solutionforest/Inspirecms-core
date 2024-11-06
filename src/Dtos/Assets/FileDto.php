@@ -10,12 +10,12 @@ class FileDto extends BaseDto
      * @var ?string
      */
     public $disk;
-    
+
     /**
      * @var string
      */
     public $path;
-    
+
     /**
      * @var ?string
      */

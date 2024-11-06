@@ -13,7 +13,7 @@ class MediaAssetDto extends BaseDto
 
     public function getDetails(): array
     {
-        if (blank($this->keys) || !is_array($this->keys) || is_null($this->keys)) {
+        if (blank($this->keys) || ! is_array($this->keys) || is_null($this->keys)) {
             return [];
         }
         $assets = inspirecms_asset()->findByKeys($this->keys);

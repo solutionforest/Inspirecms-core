@@ -16,16 +16,15 @@ class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
     }
 
     /**
-     * @param string|int $key
      * @return ?Model
      */
-    public function findByKey(string|int $key)
+    public function findByKey(string | int $key)
     {
         return InspireCmsConfig::getMediaAssetModelClass()::with('media')->find($key);
     }
 
     /**
-     * @param string|int ...$keys
+     * @param  string|int  ...$keys
      * @return ?Model
      */
     public function findByKeys(...$keys)
@@ -33,13 +32,14 @@ class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
         return InspireCmsConfig::getMediaAssetModelClass()::with('media')->findMany($keys);
     }
 
-    public function getAssetUrl(Model|string|int $asset): string
+    public function getAssetUrl(Model | string | int $asset): string
     {
         try {
             return route('inspirecms.asset', ['key' => $asset instanceof Model ? $asset->getKey() : $asset]);
         } catch (\Throwable $th) {
             //throw $th;
         }
+
         return $asset->media->getUrl();
     }
 
