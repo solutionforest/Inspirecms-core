@@ -166,7 +166,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 $content->documentType,
             );
         }
-        
+
         return null;
     }
     //endregion Computed properties

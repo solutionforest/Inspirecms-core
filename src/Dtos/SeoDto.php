@@ -211,12 +211,11 @@ class SeoDto extends BaseDto
 
         foreach ($parameters as $key => $value) {
 
-
             if ($key == 'og_image' && is_array($value)) {
                 // todo: get image by id
                 $value = $value[0] ?? null;
             }
-            
+
             if (array_key_exists($key, $mapper)) {
                 $parameters[$mapper[$key]] = $value;
                 unset($parameters[$key]);

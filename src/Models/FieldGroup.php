@@ -11,13 +11,13 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroup extends BaseModel implements FieldGroupContract
 {
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function documentTypes(): MorphToMany
     {
         return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName());
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function groupabled(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getFieldGroupableModelClass(), 'field_group_id');

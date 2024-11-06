@@ -53,9 +53,9 @@ class ContentDto extends BaseTranslatableDto
     public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale, $availableLocales = [])
     {
         return parent::fromTranslatableArray(
-            static::mutuateParameters($parameters, [$locale, $fallbackLocale, $availableLocales]), 
-            $locale, 
-            $fallbackLocale, 
+            static::mutuateParameters($parameters, [$locale, $fallbackLocale, $availableLocales]),
+            $locale,
+            $fallbackLocale,
             $availableLocales
         );
     }
@@ -106,6 +106,7 @@ class ContentDto extends BaseTranslatableDto
     public function getUrl(?string $locale = null)
     {
         $urls = collect($this->urls);
+
         return $urls->get($locale ?? $this->getLocale()) ?? $urls->get($this->getFallbackLocale());
     }
 
@@ -126,7 +127,7 @@ class ContentDto extends BaseTranslatableDto
     }
 
     /**
-     * @param ?DocumentTypeDto $documentTypes
+     * @param  ?DocumentTypeDto  $documentTypes
      * @return array
      */
     protected static function mutuatePropertyData(array $propertyData, $documentType, $fallbackLocale)
@@ -158,11 +159,12 @@ class ContentDto extends BaseTranslatableDto
 
             if ($data instanceof SeoDto) {
                 $result[$locale] = $data;
+
                 continue;
-            } elseif (!is_array($data)) {
+            } elseif (! is_array($data)) {
                 continue;
             }
-            
+
             foreach ($data as $key => $value) {
 
                 if (in_array($key, SeoHelper::getTranslatableAttributes()) && is_array($value)) {
@@ -171,7 +173,7 @@ class ContentDto extends BaseTranslatableDto
 
                 $data[$key] = $value;
             }
-            
+
             $result[$locale] = SeoDto::fromArray($data);
         }
 

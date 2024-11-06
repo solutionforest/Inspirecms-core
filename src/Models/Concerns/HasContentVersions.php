@@ -62,7 +62,7 @@ trait HasContentVersions
         if (! $this->relationLoaded('publishedVersions')) {
             $this->loadMissing('publishedVersions');
         }
-        
+
         return collect($this->publishedVersions);
     }
 
