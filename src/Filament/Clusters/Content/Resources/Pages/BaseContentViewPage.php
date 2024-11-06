@@ -20,13 +20,13 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer
 {
     use ContentFormTrait;
     use ContentPageTrait;
-    use HasPreviewModal;
     use HasPreviewModal;
     use ViewRecord\Concerns\Translatable {
         updatedActiveLocale as protected traitUpdatedActiveLocale;
@@ -128,7 +128,14 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
 
     protected function mutatePreviewModalData(array $data): array
     {
-        $data['content'] = $this->contentDto;
+        $contentDto = $this->contentDto;
+
+        if ($contentDto instanceof ContentDto) {
+            // Set the locale of the content dto to the active locale
+            $contentDto->setLocale($this->getActiveFormsLocale());
+        }
+
+        $data['content'] = $contentDto;
 
         return $data;
     }
@@ -148,13 +155,19 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     #[\Livewire\Attributes\Computed(persist: true, seconds: 7200)]
     public function contentDto()
     {
-        /**
-         * @var ContentDto
-         */
-        $dto = $this->getRecord()->toDto($this->getActiveFormsLocale());
-        $dto->setPropertyData($this->getRecord()->getLatestVersionPropertyData());
+        $content = $this->getRecord();
 
-        return $dto;
+        if ($content instanceof Content) {
+            return $content->toPreviewDto(
+                $content,
+                $content->getLatestPublishedPropertyData(),
+                $this->getActiveFormsLocale(),
+                inspirecms()->getFallbackLanguage()?->code ?? app()->getLocale(),
+                $content->documentType,
+            );
+        }
+        
+        return null;
     }
     //endregion Computed properties
 }
