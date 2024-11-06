@@ -41,7 +41,6 @@ class ContentDto extends BaseTranslatableModelDto
     /**
      * @var SeoDto
      */
-
     protected array $translatableAttributes = ['title'];
 
     public static function fromTranslatableModel($model, $locale, bool $withChildren = true): self
@@ -111,6 +110,7 @@ class ContentDto extends BaseTranslatableModelDto
         if (isset($this->children)) {
             return $this->children ?? collect();
         }
+
         return $this->children = $this->getModel()->children->map(fn ($child) => self::fromTranslatableModel($child, $this->getLocale(), false));
     }
 
@@ -130,7 +130,7 @@ class ContentDto extends BaseTranslatableModelDto
         return $result;
     }
 
-    public function setSeoData(Model|array $model)
+    public function setSeoData(Model | array $model)
     {
         if ($model instanceof Content) {
 
@@ -144,7 +144,7 @@ class ContentDto extends BaseTranslatableModelDto
             $seoData['locale'] = $this->getLocale();
             // todo: get image by id
             $seoData['image'] = $dataBefore['og_image'][0] ?? null;
-        } else if (is_array($model)) {
+        } elseif (is_array($model)) {
             $dataBefore = $model;
         }
 
