@@ -17,6 +17,7 @@ class ContentLocaleMiddleware
             : null;
 
         if ($lang) {
+            // Set the language code to the request
             $request->setLocale($lang->code);
         }
 

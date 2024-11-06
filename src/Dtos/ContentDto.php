@@ -106,7 +106,6 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public function getChildren()
     {
-        ray($this);
         if (isset($this->children)) {
             return $this->children ?? collect();
         }
@@ -183,6 +182,6 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public function getUrl(?string $locale = null)
     {
-        return $this->getModel()?->getUrl($locale);
+        return $this->getModel()?->getUrl($locale ?? $this->getLocale());
     }
 }
