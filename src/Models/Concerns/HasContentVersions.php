@@ -59,8 +59,10 @@ trait HasContentVersions
 
     public function getPublishedVersions(): Collection
     {
-        $this->loadMissing('publishedVersions');
-
+        if (! $this->relationLoaded('publishedVersions')) {
+            $this->loadMissing('publishedVersions');
+        }
+        
         return collect($this->publishedVersions);
     }
 

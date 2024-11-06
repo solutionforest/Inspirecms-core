@@ -59,7 +59,18 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     //region Dto
     public function toDto(...$args)
     {
-        return static::getDtoClass()::fromModel($this);
+        $dtoClass = static::getDtoClass();
+
+        $this->loadMissing([
+            'fieldGroups.fields',
+        ]);
+
+        $dtoParameters = $this->toArray();
+        $dtoParameters['fields'] = $this->fieldGroups->flatMap(function ($group) {
+            return $group->fields;
+        })->map(fn ($field) => $field->toDto());
+
+        return $dtoClass::fromArray($dtoParameters);
     }
 
     public static function getDtoClass(): string

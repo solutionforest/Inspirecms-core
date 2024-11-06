@@ -258,31 +258,89 @@ class Content extends BaseModel implements ContentContract
     //endregion Indexing
 
     //region Dto
-    public function toDto(...$args)
-    {
-        return static::getDtoClass()::fromTranslatableModel($this, $args[0] ?? null);
-    }
-
     public static function getDtoClass(): string
     {
         return ContentDto::class;
     }
 
+    public function toDto(...$args)
+    {
+        $fallbackLocale = $this->getFallbackLocale();
+        $locale = $args[0] ?? $fallbackLocale;
+        $propertyData = $this->getLatestPublishedPropertyData();
+
+        $dtoClass = static::getDtoClass();
+
+        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
+
+        $dtoParameters = static::prepareDtoParameters($this, $propertyData, $locale, $fallbackLocale);
+
+        return $dtoClass::fromTranslatableArray(
+            $dtoParameters,
+            $locale,
+            $fallbackLocale,
+            $availableLocales,
+        );
+    }
+
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
     {
-        $dtoClass = static::getDtoClass();
-        $dto = $record instanceof Model ? $dtoClass::fromModel($record) : $dtoClass::fromArray($record);
-        if ($dto instanceof ContentDto) {
-            $dto->setLocale($locale)->setFallbackLocale($fallbackLocale);
+        if (is_array($record)) {
 
-            if ($documentType) {
-                $dto->documentType = $documentType->toDto();
+            $id = $record['id'] ?? null;
+            if (blank($id)) {
+                throw new \Exception('The record must have an "id" key.');
             }
-            $dto->setPropertyData($propertyData);
-            $dto->setSeoData($record);
+
+            $record = static::query()->findOrFail($id);
+
+            return static::toPreviewDto($record, $propertyData, $locale, $fallbackLocale, $documentType);
         }
 
-        return $dto;
+        $dtoClass = static::getDtoClass();
+
+        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
+
+        $dtoParameters = static::prepareDtoParameters($record, $propertyData, $locale, $fallbackLocale, $documentType);
+
+        return $dtoClass::fromTranslatableArray(
+            $dtoParameters,
+            $locale,
+            $fallbackLocale,
+            $availableLocales,
+        );
+    }
+
+    private static function prepareDtoParameters(Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null): array
+    {
+        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
+
+        $record->loadMissing([
+            'documentType',
+            'webSetting',
+            'children',
+        ]);
+        $dtoParameters = $record->toArray();
+
+        //region Prepare parameters
+        
+        $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+            $locale => $record->webSetting->toDto($locale),
+        ])->all();
+
+        $dtoParameters['urls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+            $locale => $record->getUrl($locale),
+        ])->all();
+
+        $dtoParameters['documentType'] = ($documentType ?? $record->documentType)?->toDto();
+
+        $dtoParameters['propertyData'] = $propertyData;
+
+        $dtoParameters['children'] = collect($record->children)
+            ->map(fn ($child) => static::toPreviewDto($child, [], $locale, $fallbackLocale))
+            ->all();
+
+        return $dtoParameters;
     }
     //endregion Dto
 

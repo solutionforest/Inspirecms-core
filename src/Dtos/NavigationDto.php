@@ -42,12 +42,12 @@ class NavigationDto extends BaseTranslatableDto
      */
     public $children;
 
-    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale)
+    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale, $availableLocales = [])
     {
-        $dto = parent::fromTranslatableArray($parameters, $locale, $fallbackLocale);
+        $dto = parent::fromTranslatableArray($parameters, $locale, $fallbackLocale, $availableLocales);
 
         $dto->children = collect($parameters['children'] ?? [])
-            ->map(fn ($child) => self::fromTranslatableArray($child, $locale, $fallbackLocale))
+            ->map(fn ($child) => self::fromTranslatableArray($child, $locale, $fallbackLocale, $availableLocales))
             ->values();
 
         return $dto;

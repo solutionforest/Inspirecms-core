@@ -195,6 +195,39 @@ class SeoDto extends BaseDto
      */
     public $noCache;
 
+    public static function fromArray(array $parameters)
+    {
+        $mapper = [
+            'meta_title' => 'title',
+            'meta_description' => 'description',
+            'og_description' => 'ogDescription',
+            'noindex' => 'noIndex',
+            'nofollow' => 'noFollow',
+            'noarchive' => 'noArchive',
+            'nosnippet' => 'noSnippet',
+            'noodp' => 'noOdp',
+            'noydir' => 'noYdir',
+        ];
+
+        foreach ($parameters as $key => $value) {
+
+
+            if ($key == 'og_image' && is_array($value)) {
+                // todo: get image by id
+                $value = $value[0] ?? null;
+            }
+            
+            if (array_key_exists($key, $mapper)) {
+                $parameters[$mapper[$key]] = $value;
+                unset($parameters[$key]);
+            }
+        }
+
+        $dto = parent::fromArray($parameters);
+
+        return $dto;
+    }
+
     public function __toString(): string
     {
         $html = '';

@@ -3,13 +3,9 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection;
-use SolutionForest\InspireCms\Models\DocumentType;
-use SolutionForest\InspireCms\Support\Base\Dtos\BaseModelDto;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
-/**
- * @extends BaseModelDto<DocumentType>
- */
-class DocumentTypeDto extends BaseModelDto
+class DocumentTypeDto extends BaseDto
 {
     /**
      * @var int|string
@@ -25,19 +21,6 @@ class DocumentTypeDto extends BaseModelDto
      * @var Collection<FieldDto>
      */
     public $fields;
-
-    public static function fromModel($model)
-    {
-        $model->loadMissing(['fieldGroups.fields']);
-
-        $dto = parent::fromModel($model);
-
-        $dto->fields = $model->fieldGroups->flatMap(function ($group) {
-            return $group->fields;
-        })->map(fn ($field) => FieldDto::fromModel($field));
-
-        return $dto;
-    }
 
     public function getField(string $name): ?FieldDto
     {

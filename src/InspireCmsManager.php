@@ -174,7 +174,7 @@ class InspireCmsManager
 
                 return $data;
             })
-            ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code))
+            ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code, array_keys($this->getAllAvailableLanguages())))
             ->where(
                 fn (NavigationDto $nav) => $nav->category == $category &&
                 $nav->isActive
