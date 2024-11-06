@@ -9,6 +9,17 @@ use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 class SitemapObserver
 {
     /**
+     * Handle "created" event.
+     *
+     * @param  Sitemap|Model  $model  The model instance being updated.
+     * @return void
+     */
+    public function created(Sitemap | Model $model)
+    {
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'created'));
+    }
+    
+    /**
      * Handle "updated" event.
      *
      * @param  Sitemap|Model  $model  The model instance being updated.
