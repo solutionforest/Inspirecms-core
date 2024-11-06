@@ -45,7 +45,6 @@ class ContentController extends Controller
 
         $content = $this->findContent($slug);
 
-
         if ($content->isRedirectable()) {
 
             $redirectUrl = $content->getRedirectUrl($locale);

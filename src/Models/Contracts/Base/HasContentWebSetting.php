@@ -35,7 +35,7 @@ interface HasContentWebSetting
     /**
      * Get the redirect URL for the given locale.
      *
-     * @param string|null $locale The locale for which to get the redirect URL. If null, the default locale will be used.
+     * @param  string|null  $locale  The locale for which to get the redirect URL. If null, the default locale will be used.
      * @return string|null The redirect URL for the specified locale, or null if no redirect URL is set.
      */
     public function getRedirectUrl(?string $locale = null): ?string;

@@ -52,7 +52,7 @@ trait HasContentWebSetting
         if (! blank($redirectContentId) && $redirectContentId !== $this->getKey() && $redirectContentId !== KeyHelper::generateMinUuid()) {
             return true;
         }
-        
+
         return false;
     }
 
@@ -67,7 +67,7 @@ trait HasContentWebSetting
         }
 
         if (($redirectContentId = $this->webSetting?->redirect_content_id) && $redirectContentId !== $this->getKey() && $redirectContentId !== KeyHelper::generateMinUuid()) {
-            
+
             $content = $this->newQuery()->isPublished()->find($redirectContentId);
 
             if ($content) {
@@ -83,7 +83,7 @@ trait HasContentWebSetting
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');
         }
-        
+
         return $this->webSetting?->redirect_type ?? 302;
     }
 }
