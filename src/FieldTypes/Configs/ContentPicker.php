@@ -39,7 +39,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 })
                 ->get()
                 ->mapWithKeys(fn ($model) => [
-                    $model->getKey() => $model->slug,
+                    $model->getKey() => "<span class=\"font-bold\">{$model->title}</span><br/><span class=\"font-light\">{$model->slug}</span>",
                 ]);
         };
         $templateOptions = function ($documentTypeId) {
@@ -52,11 +52,11 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             return $model::query()
                 ->whereHas(
                     'documentTypes',
-                    fn ($q) => $q->where('templateable_id', $documentTypeId)
+                    fn ($q) => $q->whereKey($documentTypeId)
                 )
                 ->get()
                 ->mapWithKeys(fn ($model) => [
-                    $model->getKey() => $model->name,
+                    $model->getKey() => "<span class=\"font-bold\">{$model->slug}</span><br/><span class=\"font-light\">{$model->path}</span>",
                 ]);
 
         };
@@ -77,13 +77,15 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->inlineLabel()
                                 ->searchable()
                                 ->optionsLimit(10)
+                                ->allowHtml()
                                 ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
                                 ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search))
                                 ->live(),
                             Forms\Components\Select::make('template')
                                 ->inlineLabel()
                                 ->searchable()
-                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType'))),
+                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType')))
+                                ->allowHtml(),
                         ]),
                 ]),
         ];
