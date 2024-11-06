@@ -135,7 +135,16 @@ class InspireCmsConfig
 
     public static function getFieldGroupModelClass(): string
     {
-        return \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldGroupModelClass();
+        $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldGroupModelClass();
+
+        self::ensureClassExists($class, 'FieldGroup model');
+        
+        // Ensure the model implements the FieldGroup contract
+        if (!in_array(Models\Contracts\FieldGroup::class, class_implements($class))) {
+            throw new \Exception("The FieldGroup model '{$class}' must implement the FieldGroup contract.");
+        }
+        
+        return $class;
     }
 
     public static function getFieldTableName(): string
@@ -145,7 +154,16 @@ class InspireCmsConfig
 
     public static function getFieldModelClass(): string
     {
-        return \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldModelClass();
+        $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldModelClass();
+
+        static::ensureClassExists($class, 'Field model');
+
+        // Ensure the model implements the Field contract
+        if (!in_array(Models\Contracts\Field::class, class_implements($class))) {
+            throw new \Exception("The Field model '{$class}' must implement the Field contract.");
+        }
+
+        return $class;
     }
 
     public static function getUserTableName(): string

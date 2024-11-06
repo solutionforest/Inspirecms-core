@@ -6,18 +6,18 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup as FieldGroupContract;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
-class FieldGroup extends BaseModel
+class FieldGroup extends BaseModel implements FieldGroupContract
 {
-    /**
-     * Get all of the docuemnt types that are assigned this field group.
-     */
+    /** @inheritDoc */
     public function documentTypes(): MorphToMany
     {
         return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName());
     }
 
+    /** @inheritDoc */
     public function groupabled(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getFieldGroupableModelClass(), 'field_group_id');
