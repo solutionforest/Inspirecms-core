@@ -322,8 +322,6 @@ class Content extends BaseModel implements ContentContract
         ]);
         $dtoParameters = $record->toArray();
 
-        //region Prepare parameters
-
         $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
             $locale => $record->webSetting->toDto($locale),
         ])->all();
