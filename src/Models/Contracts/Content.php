@@ -11,7 +11,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\NestableInterface;
 
-interface Content extends Base\HasContentVersions, Base\HasTemplates, Base\HasContentWebSetting, BelongsToNestableTree, HasDtoModel, IndexableModel, NestableInterface
+interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, IndexableModel, NestableInterface
 {
     /**
      * Return the document type relation.

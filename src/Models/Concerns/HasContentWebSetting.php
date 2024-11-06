@@ -17,9 +17,10 @@ trait HasContentWebSetting
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');
         }
-        
+
         $robots = $this->webSetting?->robots ?? [];
         $noindex = $robots['noindex'] ?? false;
+
         return $noindex === false;
     }
 

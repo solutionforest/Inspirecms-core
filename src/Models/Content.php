@@ -34,8 +34,8 @@ class Content extends BaseModel implements ContentContract
     use Concerns\HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
-    use Concerns\HasTemplates;
     use Concerns\HasContentWebSetting;
+    use Concerns\HasTemplates;
     use Concerns\HasTranslations {
         setTranslation as protected traitSetTranslation;
         getTranslation as protected traitGetTranslation;
