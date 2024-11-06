@@ -81,7 +81,7 @@ return [
             'placeholder' => 'Select redirect type',
             'instructions' => 'Select the type of redirect',
             '301' => '301 Permanent',
-            '302' => '302 Temporary',
+            '302' => '302 Temporary (default)',
         ],
     ],
     'sitemap' => [

@@ -374,7 +374,7 @@ class Content extends BaseModel implements ContentContract
             $query
                 ->whereHas(
                     'publishedVersions',
-                    fn ($q) => $q->whereIsPublished()
+                    fn ($q) => $q->isPublished()
                 )
                 ->whereNot('status', $unpublishOption->getValue());
 
@@ -385,7 +385,7 @@ class Content extends BaseModel implements ContentContract
                     fn ($q) => $q
                         ->orWhereDoesntHave(
                             'publishedVersions',
-                            fn ($q) => $q->whereIsPublished()
+                            fn ($q) => $q->isPublished()
                         )
                         ->orWhere('status', $unpublishOption->getValue())
                 );
