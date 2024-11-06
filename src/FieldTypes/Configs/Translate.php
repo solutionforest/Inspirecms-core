@@ -3,17 +3,14 @@
 namespace SolutionForest\InspireCms\FieldTypes\Configs;
 
 use Filament\Forms;
-use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
-use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
+use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
 #[ConfigName('translate', 'Translate', 'Translate', 'heroicon-m-language')]
 #[FormComponent(TranslateComponent::class)]
@@ -66,7 +63,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
         if ($component instanceof TranslateComponent) {
 
             $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig(
-                $this->field, 
+                $this->field,
                 function ($fiFormConfig, $fiFormComponentFQCN) {
 
                     if (! isset($this->fieldVariable['name']) || blank($this->fieldVariable['name'])) {
@@ -78,7 +75,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->helperText($this->fieldVariable['helperText'])
                         ->required($this->fieldVariable['required']);
 
-                }, 
+                },
                 $this->fieldConfig
             );
 
