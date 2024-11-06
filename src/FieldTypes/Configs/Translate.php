@@ -13,9 +13,10 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
+use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
 
 #[ConfigName('translate', 'Translate', 'Translate', 'heroicon-m-language')]
-#[FormComponent(Forms\Components\Group::class)]
+#[FormComponent(TranslateComponent::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
 class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
@@ -62,56 +63,36 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function applyConfig(Forms\Components\Component $component): void
     {
-        $langs = InspireCms::getAllAvailableLanguages();
+        if ($component instanceof TranslateComponent) {
 
-        $component->schema(function ($livewire) use ($langs) {
-
-            $components = [];
-            foreach ($langs as $lang) {
-
-                $langCode = $lang->code;
-                $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($this->field, function ($fiFormConfig, $fiFormComponentFQCN) use ($langCode) {
+            $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig(
+                $this->field, 
+                function ($fiFormConfig, $fiFormComponentFQCN) {
 
                     if (! isset($this->fieldVariable['name']) || blank($this->fieldVariable['name'])) {
                         throw new \Exception('The field variable name is required.');
                     }
 
-                    $fiFormComponent = $fiFormComponentFQCN::make($this->fieldVariable['name']);
+                    return $fiFormComponentFQCN::make($this->fieldVariable['name'])
+                        ->label($this->fieldVariable['label'])
+                        ->helperText($this->fieldVariable['helperText'])
+                        ->required($this->fieldVariable['required']);
 
-                    $fiFormComponent->label($this->fieldVariable['label']);
-                    $fiFormComponent->helperText($this->fieldVariable['helperText']);
-                    $fiFormComponent->required($this->fieldVariable['required']);
+                }, 
+                $this->fieldConfig
+            );
 
-                    $fiFormComponent->statePath($this->fieldVariable['statePath'] . '.' . $langCode);
+            $groupName = isset($this->fieldVariable['group']) ? $this->fieldVariable['group'] : (explode('.', $this->fieldVariable['statePath'])[0] ?? null);
 
-                    return $fiFormComponent;
-
-                }, $this->fieldConfig);
-
-                if (! $fiFormComponent) {
-                    continue;
-                }
-
-                if ($livewire instanceof ContentForm) {
-                    $livewire->setPropertyDataTranslationFields([$this->fieldVariable['name']], true);
-
-                    $fiFormComponent
-                        ->hidden($langCode != $livewire->getActiveActionsLocale())
-                        ->dehydratedWhenHidden();
-                } elseif ($livewire instanceof BuilderEditor) {
-                    $activeLocale = $livewire->editorData['activeLocale'] ?? null;
-                    $fiFormComponent
-                        ->hidden($langCode != $activeLocale)
-                        ->dehydratedWhenHidden();
-                }
-
-                $fiFormComponent->translatable();
-
-                $components[] = $fiFormComponent;
+            if (blank($groupName)) {
+                throw new \Exception('The field group name is required.');
             }
 
-            return $components;
-        });
+            $component
+                ->schema([$fiFormComponent])
+                // also set the state path for this component
+                ->groupName($groupName);
+        }
     }
 
     public function setFieldVariable(array $variable): static

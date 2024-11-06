@@ -124,10 +124,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $translatableAttributes = static::getResource()::getTranslatableAttributes();
-
-        // Filter out the propertyDataTranslation
-        $translatableAttributes = Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
+        $translatableAttributes = $this->getTranslatableAttributes();
 
         $record->fill(Arr::except($data, $translatableAttributes));
 

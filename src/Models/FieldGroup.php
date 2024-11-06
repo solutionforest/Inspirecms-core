@@ -35,7 +35,11 @@ class FieldGroup extends BaseModel
             $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($field->type, function ($fiFormConfig, $fiFormComponentFQCN) use ($field) {
 
                 $fieldName = $field->name;
-                $statePath = $field->getStatePathWithGroup();
+                $groupName = $this->name;
+
+                $statePath = method_exists($field, '') ? 
+                    $field->getStatePathWithGroup() : 
+                    implode('.', [$groupName, $fieldName]);
 
                 if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
                     $fiFormComponent = $fiFormComponentFQCN::make($fieldName);
@@ -46,6 +50,7 @@ class FieldGroup extends BaseModel
                     $fiFormComponent->statePath($statePath);
 
                 } else {
+
                     if ($fiFormConfig instanceof \SolutionForest\InspireCms\FieldTypes\Configs\Translate) {
                         $fiFormConfig->setFieldVariable([
                             'name' => $fieldName,
@@ -53,15 +58,11 @@ class FieldGroup extends BaseModel
                             'helperText' => $field->instructions,
                             'required' => $field->mandatory,
                             'statePath' => $statePath,
+                            'group' => $groupName,
                         ]);
                     }
 
-                    switch ($fiFormComponentFQCN) {
-                        default:
-                            $fiFormComponent = $fiFormComponentFQCN::make();
-
-                            break;
-                    }
+                    $fiFormComponent = $fiFormComponentFQCN::make();
                 }
 
                 return $fiFormComponent;

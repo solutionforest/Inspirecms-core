@@ -17,24 +17,7 @@ use function Filament\Support\is_app_url;
 
 trait ContentFormTrait
 {
-    public array $propertyDataTranslationFields = [];
-
     protected ?string $publishOperation = null;
-
-    public function setPropertyDataTranslationFields(array $fields, bool $merge = false): static
-    {
-        if ($merge) {
-            foreach ($fields as $field) {
-                if (! in_array($field, $this->propertyDataTranslationFields)) {
-                    $this->propertyDataTranslationFields[] = $field;
-                }
-            }
-        } else {
-            $this->propertyDataTranslationFields = $fields;
-        }
-
-        return $this;
-    }
 
     public function updatedActiveLocaleForContent(string $newActiveLocale): void
     {
@@ -44,19 +27,45 @@ trait ContentFormTrait
 
         $this->resetValidation();
 
-        $translatableAttributes = static::getResource()::getTranslatableAttributes();
-
-        // Filter out the propertyDataTranslation
-        $translatableAttributes = Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
+        $translatableAttributes = $this->getTranslatableAttributes();
 
         $this->otherLocaleData[$this->oldActiveLocale] = Arr::only($this->data, $translatableAttributes);
 
-        $this->data = [
-            ...Arr::except($this->data, $translatableAttributes),
-            ...$this->otherLocaleData[$this->activeLocale] ?? [],
-        ];
+        $this->data = $this->mutuateDataWhileUpdatedActiveLocale(
+            Arr::except($this->data, $translatableAttributes), 
+            $this->otherLocaleData[$this->activeLocale] ?? []
+        );
 
         unset($this->otherLocaleData[$this->activeLocale]);
+    }
+
+    /**
+     * Get the list of translatable attributes.
+     *
+     * @param bool $exceptPropertyData Whether to exclude property data from the attributes.
+     * @return array The list of translatable attributes.
+     */
+    protected function getTranslatableAttributes(bool $exceptPropertyData = true): array
+    {
+        $translatableAttributes = static::getResource()::getTranslatableAttributes();
+
+        if (! $exceptPropertyData) {
+            return $translatableAttributes;
+        }
+
+        // Filter out the propertyDataTranslation
+        return Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
+    }
+
+    protected function mutuateDataWhileUpdatedActiveLocale(array $data, array $otherLocaleData): array
+    {
+        foreach ($otherLocaleData as $key => $value) {
+
+            $data[$key] = $value;
+
+        }
+        
+        return $data;
     }
 
     public function validatePublishableData(): void

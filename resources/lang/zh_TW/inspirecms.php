@@ -131,4 +131,8 @@ return [
     'hints' => [
         'remaining_xxx_characters' => '剩餘 :number 個字符',
     ],
+
+    'validation' => [
+        'translatable_child_field_has_error' => '此或其他語言的子字段有錯誤。',
+    ],
 ];

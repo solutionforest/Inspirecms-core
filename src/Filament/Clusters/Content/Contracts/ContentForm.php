@@ -12,8 +12,6 @@ interface ContentForm
 
     public function getParentKey(): string | int | null;
 
-    public function setPropertyDataTranslationFields(array $fields, bool $merge = false): static;
-
     public function getActiveActionsLocale(): ?string;
 
     public function validatePublishableData(): void;

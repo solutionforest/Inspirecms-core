@@ -131,4 +131,8 @@ return [
     'hints' => [
         'remaining_xxx_characters' => 'Remaining :number characters',
     ],
+
+    'validation' => [
+        'translatable_child_field_has_error' => 'The child field has an error in this or another locale.',
+    ],
 ];
