@@ -294,9 +294,9 @@ class Content extends BaseModel implements ContentContract
             $id = $record['id'] ?? null;
 
             if (isset($record['id'])) {
-                
+
                 $record = static::query()->findOrFail($id);
-                
+
                 return static::toPreviewDto($record, $propertyData, $locale, $fallbackLocale, $documentType);
             }
 
@@ -316,7 +316,6 @@ class Content extends BaseModel implements ContentContract
             $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
                 $locale => $seoData,
             ])->all();
-
 
         } else {
 

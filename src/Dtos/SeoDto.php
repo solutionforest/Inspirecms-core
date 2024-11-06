@@ -33,18 +33,18 @@ class SeoDto extends BaseDto
      * @var string
      */
     public $ogImage;
-    
+
     /**
      * The Open Graph title used for social media sharing.
-     * 
+     *
      * @var string
      */
     public $ogTitle;
 
     /**
      * The Open Graph description for SEO purposes.
-     * 
-     * @var string|null 
+     *
+     * @var string|null
      */
     public $ogDescription;
 
