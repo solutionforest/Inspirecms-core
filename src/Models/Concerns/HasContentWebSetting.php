@@ -21,6 +21,7 @@ trait HasContentWebSetting
 
         $robots = $this->webSetting?->robots ?? [];
         $noindex = $robots['noindex'] ?? false;
+
         return $noindex === false;
     }
 

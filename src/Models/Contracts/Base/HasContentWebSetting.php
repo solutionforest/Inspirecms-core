@@ -8,8 +8,6 @@ interface HasContentWebSetting
 {
     /**
      * Define a one-to-one relationship with the WebSetting model.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function webSetting(): HasOne;
 

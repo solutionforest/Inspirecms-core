@@ -67,14 +67,14 @@ class Sitemap extends BaseModel implements SitemapContract
 
     protected function isAllowIndex(): bool
     {
-        if (!$this->enable) {
+        if (! $this->enable) {
             return false;
         }
 
         if ($this->model && $this->model instanceof Contracts\Content) {
             return $this->model->isAllowIndex();
         }
-        
+
         return true;
     }
 
@@ -94,7 +94,7 @@ class Sitemap extends BaseModel implements SitemapContract
             return [];
         }
 
-        if (!$this->isAllowIndex()) {
+        if (! $this->isAllowIndex()) {
             return [];
         }
 

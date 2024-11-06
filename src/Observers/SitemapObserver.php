@@ -18,7 +18,7 @@ class SitemapObserver
     {
         event(new GenerateSitemap(get_class($model), $model?->getKey(), 'created'));
     }
-    
+
     /**
      * Handle "updated" event.
      *
