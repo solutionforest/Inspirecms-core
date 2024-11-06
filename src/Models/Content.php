@@ -285,23 +285,44 @@ class Content extends BaseModel implements ContentContract
 
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
     {
-        if (is_array($record)) {
-
-            $id = $record['id'] ?? null;
-            if (blank($id)) {
-                throw new \Exception('The record must have an "id" key.');
-            }
-
-            $record = static::query()->findOrFail($id);
-
-            return static::toPreviewDto($record, $propertyData, $locale, $fallbackLocale, $documentType);
-        }
-
         $dtoClass = static::getDtoClass();
 
         $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
 
-        $dtoParameters = static::prepareDtoParameters($record, $propertyData, $locale, $fallbackLocale, $documentType);
+        if (is_array($record)) {
+
+            $id = $record['id'] ?? null;
+
+            if (isset($record['id'])) {
+                
+                $record = static::query()->findOrFail($id);
+                
+                return static::toPreviewDto($record, $propertyData, $locale, $fallbackLocale, $documentType);
+            }
+
+            // Is preview while creating a new record
+
+            $dtoParameters = $record;
+
+            $dtoParameters['documentType'] = $documentType?->toDto();
+
+            $dtoParameters['propertyData'] = $propertyData;
+
+            $seoData = [
+                ...($record['webSetting']['seo'] ?? []),
+                ...($record['webSetting']['robots'] ?? []),
+            ];
+
+            $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+                $locale => $seoData,
+            ])->all();
+
+
+        } else {
+
+            $dtoParameters = static::prepareDtoParameters($record, $propertyData, $locale, $fallbackLocale, $documentType);
+
+        }
 
         return $dtoClass::fromTranslatableArray(
             $dtoParameters,
