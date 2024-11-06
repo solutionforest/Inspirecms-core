@@ -57,9 +57,13 @@ trait ContentFormTrait
         return Arr::where($translatableAttributes, fn ($attribute) => $attribute != 'propertyData');
     }
 
-    protected function mutuateDataWhileUpdatedActiveLocale(array $data, array $otherLocaleData): array
+    protected function mutuateDataWhileUpdatedActiveLocale(array $data, array $otherLocaleData, bool $exceptPropertyData = true): array
     {
         foreach ($otherLocaleData as $key => $value) {
+
+            if ($exceptPropertyData && $key === 'propertyData') {
+                continue;
+            }
 
             $data[$key] = $value;
 
