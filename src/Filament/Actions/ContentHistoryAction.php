@@ -38,8 +38,8 @@ class ContentHistoryAction extends Action implements GuardAction
 
         $this->slideOver();
 
-        $this->modalContent(fn (Model | Content $record, $action) => 
-            view('inspirecms::filament.actions.content-history', [
+        $this->modalContent(
+            fn (Model | Content $record, $action) => view('inspirecms::filament.actions.content-history', [
                 'record' => $record,
                 'action' => $action,
             ])
@@ -59,15 +59,16 @@ class ContentHistoryAction extends Action implements GuardAction
         $this->registerModalActions([
             Action::make('toggleAvoidToClear')
                 ->size('xs')
-                ->hidden(fn ($arguments) => !isset($arguments['item']))
+                ->hidden(fn ($arguments) => ! isset($arguments['item']))
                 ->label(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')
                 ->color(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'gray' : 'danger')
                 ->outlined()
                 ->successNotificationTitle(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'Now avoiding to clean' : 'Now waiting to clean')
-                ->successNotification(fn (Notification $notification) => $notification
-                    ->icon('heroicon-o-exclamation-triangle')
-                    ->color('warning')
-                    ->iconColor('warning')
+                ->successNotification(
+                    fn (Notification $notification) => $notification
+                        ->icon('heroicon-o-exclamation-triangle')
+                        ->color('warning')
+                        ->iconColor('warning')
                 )
                 ->action(function (array $arguments, Action $action, Model | Content $record) {
                     if (! isset($arguments['item']['id'])) {
@@ -81,7 +82,6 @@ class ContentHistoryAction extends Action implements GuardAction
 
                     $contentVersion->avoid_to_clean = ! $contentVersion->avoid_to_clean;
                     $contentVersion->save();
-
 
                     $action->success();
                 }),

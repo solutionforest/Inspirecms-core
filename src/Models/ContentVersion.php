@@ -64,7 +64,6 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         return $diff;
     }
 
-
     //region Scopes
     public function scopeWhereIsPublished($query, bool $condition = true)
     {

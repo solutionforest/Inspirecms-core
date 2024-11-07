@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Tests\ContentVersions\Commands;
 
 use SolutionForest\InspireCms\Commands\CleanupContentVersion;
 use SolutionForest\InspireCms\Tests\TestCase;
+
 // use RefreshDatabase;
 
 class CleanCommandTest extends TestCase

@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
-use SolutionForest\InspireCms\Models\ContentPublishVersion;
 use SolutionForest\InspireCms\Models\ContentVersion;
 
 class ContentVersionFactory extends Factory
@@ -27,7 +26,7 @@ class ContentVersionFactory extends Factory
 
     public function avoidToClean(bool $condition = true)
     {
-        return $this->state(function (array $attributes)  use ($condition) {
+        return $this->state(function (array $attributes) use ($condition) {
             return [
                 'avoid_to_clean' => $condition,
             ];

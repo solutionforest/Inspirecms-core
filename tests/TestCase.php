@@ -74,10 +74,10 @@ abstract class TestCase extends Orchestra
         //endregion inspirecms
 
         $migrations = [
-            __DIR__.'/../database/migrations/create_inspire-cms-core_table.php.stub',
-            __DIR__.'/../vendor/solution-forest/inspirecms-support/database/migrations/create_nestable-trees_table.php.stub',
-            __DIR__.'/../vendor/solution-forest/inspirecms-support/database/migrations/create_media-assets_table.php.stub',
-            __DIR__.'/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub',
+            __DIR__ . '/../database/migrations/create_inspire-cms-core_table.php.stub',
+            __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_nestable-trees_table.php.stub',
+            __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_media-assets_table.php.stub',
+            __DIR__ . '/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub',
         ];
 
         foreach ($migrations as $migrationPath) {
