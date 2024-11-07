@@ -12,6 +12,9 @@
                 ->all()
             )
             ->all();
+
+        $data['id'] = $item->getKey();
+
         $data['diff'] = $diff;
 
         $publishTime = $item->publishLog?->published_at;
@@ -29,8 +32,12 @@
         $data['event'] = $item->event_name;
         $data['authorName'] = $item->author?->name;
 
+        $data['avoidToClear'] = $item->avoid_to_clean;
+
         return $data;
     });
+
+    $toggleAvoidToClearAction = $action->getModalAction('toggleAvoidToClear');
 
 @endphp
 <div class="flex flex-col gap-y-2">
@@ -67,16 +74,19 @@
                                 @endif
                             </div>
                         </div>
-                        <div class="flex flex-col gap-y-1 min-w-0 flex-1 pt-1.5">
-                            <div class="inline-flex space-x-4 justify-between">
+                        <div class="flex flex-col gap-y-2 min-w-0 flex-1 pt-1.5">
+                            <div class="inline-flex gap-4 lg:items-center lg:justify-between flex-col lg:flex-row">
                                 <div class="inline-flex space-x-3">
                                     <p class="text-sm text-gray-500 dark:text-white"><span class="font-medium text-gray-900 dark:text-gray-200">{{ $item['authorName'] }}</span> {{ $item['event']}}.</p>
                                     <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-1">
                                         {{ $item['publishState'] }}
                                     </x-filament::badge>
                                 </div>
-                                <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-white/50">
-                                    <time datetime="{{ $item['logTime'] }}">{{ $item['logTime'] }}</time>
+                                <div class="inline-flex items-center gap-x-1.5">
+                                    <div class="whitespace-nowrap text-right text-sm text-gray-500 dark:text-white/50">
+                                        <time datetime="{{ $item['logTime'] }}">{{ $item['logTime'] }}</time>
+                                    </div>
+                                    {{ $toggleAvoidToClearAction(['item' => $item]) }}
                                 </div>
                             </div>
                             @if ($isPublished)
