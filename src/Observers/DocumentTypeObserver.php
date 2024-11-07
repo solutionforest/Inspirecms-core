@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 class DocumentTypeObserver
@@ -17,8 +17,8 @@ class DocumentTypeObserver
     public function saving(DocumentType | Model $model)
     {
         //region Set default value
-        if (blank($model->type) || is_null($model->type)) {
-            $model->type = DocumentTypeTypeEnum::Web->value;
+        if (blank($model->category) || is_null($model->category)) {
+            $model->category = DocumentTypeCategoryEnum::Web->value;
         }
         //endregion Set default value
 

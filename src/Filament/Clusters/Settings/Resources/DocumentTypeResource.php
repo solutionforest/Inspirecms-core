@@ -13,7 +13,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
@@ -106,12 +106,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->defaultSort('created_at', 'desc')
             ->emptyStateActions([])
             ->groups([
-                Tables\Grouping\Group::make('type')
-                    ->label(__('inspirecms::resources/document-type.type.label'))
-                    ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getLabel())
-                    ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getTypeEnum()?->getDescription()),
+                Tables\Grouping\Group::make('category')
+                    ->label(__('inspirecms::resources/document-type.category.label'))
+                    ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getLabel())
+                    ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
             ])
-            ->defaultGroup('type')
+            ->defaultGroup('category')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -132,14 +132,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\IconColumn::make('show_children_as_table')
                     ->label(__('inspirecms::resources/document-type.show_children_as_table.label'))
                     ->color(function (DocumentType $record, $state) {
-                        if ($record->getTypeEnum()?->canManageChildDocumentTypes() === false) {
+                        if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
                             return 'gray';
                         }
 
                         return $state ? 'success' : 'danger';
                     })
                     ->icon(function (DocumentType $record, $state) {
-                        if ($record->getTypeEnum()?->canManageChildDocumentTypes() === false) {
+                        if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
                             return 'heroicon-o-minus-circle';
                         }
                         if ($state) {
@@ -150,12 +150,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         return FilamentIcon::resolve('tables::columns.icon-column.false')
                             ?? 'heroicon-o-x-circle';
                     }),
-                Tables\Columns\TextColumn::make('type')
-                    ->label(__('inspirecms::resources/document-type.type.label'))
+                Tables\Columns\TextColumn::make('category')
+                    ->label(__('inspirecms::resources/document-type.category.label'))
                     ->badge()
-                    ->getStateUsing(fn (DocumentType $record) => $record->getTypeEnum())
-                    ->formatStateUsing(fn (?DocumentTypeType $state) => $state?->getLabel())
-                    ->color(fn (?DocumentTypeType $state) => $state?->getColor()),
+                    ->getStateUsing(fn (DocumentType $record) => $record->getCategoryEnum())
+                    ->formatStateUsing(fn (?DocumentTypeCategory $state) => $state?->getLabel())
+                    ->color(fn (?DocumentTypeCategory $state) => $state?->getColor()),
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
@@ -347,10 +347,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
      */
     protected static function getTypeFormComponent()
     {
-        return Forms\Components\Select::make('type')
-            ->label(__('inspirecms::resources/document-type.type.label'))
-            ->options(static::getModel()::getTypeEnumClass())
-            ->default(static::getModel()::getTypeEnumClass()::getDefaultValue()->value)
+        return Forms\Components\Select::make('category')
+            ->label(__('inspirecms::resources/document-type.category.label'))
+            ->options(static::getModel()::getCategoryEnumClass())
+            ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
             ->disabled(function ($operation, $livewire) {
                 if ($operation === 'edit' || $operation === 'quick_edit') {
                     return true;
@@ -364,7 +364,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->required()
             ->live()->helperText(function ($state) {
                 if ($state) {
-                    if ($enum = static::getModel()::getTypeEnumClass()::tryFrom($state)) {
+                    if ($enum = static::getModel()::getCategoryEnumClass()::tryFrom($state)) {
                         return $enum->getDescription();
                     }
                 }
@@ -382,7 +382,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->default(false)
             ->live()
             ->hidden(function ($get) {
-                if ($enum = static::getModel()::getTypeEnumClass()::tryFrom($get('type'))) {
+                if ($enum = static::getModel()::getCategoryEnumClass()::tryFrom($get('category'))) {
                     return ! $enum->canManageChildDocumentTypes();
                 }
 

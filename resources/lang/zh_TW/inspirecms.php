@@ -117,17 +117,6 @@ return [
         ],
     ],
 
-    'document_type_type' => [
-        'web' => [
-            'label' => '網頁',
-            'description' => '標準的網頁佈局。',
-        ],
-        'inheritance' => [
-            'label' => '繼承',
-            'description' => '可以繼承的文檔類型佈局。',
-        ],
-    ],
-
     'hints' => [
         'remaining_xxx_characters' => '剩餘 :number 個字符',
     ],

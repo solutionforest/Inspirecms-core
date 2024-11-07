@@ -4,8 +4,8 @@ return [
     'title' => [
         'label' => '標題',
     ],
-    'type' => [
-        'label' => '類型',
+    'category' => [
+        'label' => '類別',
     ],
     'show_children_as_table' => [
         'label' => '顯示子項為表格',
@@ -40,5 +40,16 @@ return [
     'inheriting' => [
         'label' => '繼承到 :name',
         'description' => '繼承自此文檔類型的文檔類型。',
+    ],
+
+    'categories' => [
+        'web' => [
+            'label' => '網頁',
+            'description' => '標準的網頁佈局。',
+        ],
+        'inheritance' => [
+            'label' => '繼承',
+            'description' => '可以繼承的文檔類型佈局。',
+        ],
     ],
 ];

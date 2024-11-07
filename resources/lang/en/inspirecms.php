@@ -117,17 +117,6 @@ return [
         ],
     ],
 
-    'document_type_type' => [
-        'web' => [
-            'label' => 'Web page',
-            'description' => 'A standard web page layout.',
-        ],
-        'inheritance' => [
-            'label' => 'Inheritance',
-            'description' => 'A document type layout that can be inherited.',
-        ],
-    ],
-
     'hints' => [
         'remaining_xxx_characters' => 'Remaining :number characters',
     ],

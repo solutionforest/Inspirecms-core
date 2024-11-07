@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use SolutionForest\InspireCms\Base\Enums\DocumentTypeType as DocumentTypeTypeEnum;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType as DocumentTypeTypeInterface;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
 use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
@@ -82,12 +82,12 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     //region Scope(s)
     public function scopeCanBeInherited($query)
     {
-        return $query->where('type', static::getTypeEnumClass()::allCanBeInherited());
+        return $query->where('category', static::getCategoryEnumClass()::allCanBeInherited());
     }
 
     public function scopeIsWebPage($query)
     {
-        return $query->where('type', static::getTypeEnumClass()::Web->value);
+        return $query->where('category', static::getCategoryEnumClass()::Web->value);
     }
     //endregion Scope(s)
 
@@ -98,30 +98,30 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function isWebPageType(): bool
     {
-        return $this->type == DocumentTypeTypeEnum::Web->value;
+        return $this->category == DocumentTypeCategoryEnum::Web->value;
     }
 
     public function canInheriting(): bool
     {
-        return $this->getTypeEnum()?->canInheriting();
+        return $this->getCategoryEnum()?->canInheriting() ?? false;
     }
 
     public function canBeInherited(): bool
     {
-        return $this->getTypeEnum()?->canBeInherited();
+        return $this->getCategoryEnum()?->canBeInherited() ?? false;
     }
 
-    public function getTypeEnum(): ?DocumentTypeTypeInterface
+    public function getCategoryEnum(): ?DocumentTypeCategoryInterface
     {
-        return static::getTypeEnumClass()::tryFrom($this->type);
+        return static::getCategoryEnumClass()::tryFrom($this->category);
     }
 
-    public static function getTypeEnumClass(): string
+    public static function getCategoryEnumClass(): string
     {
-        $class = DocumentTypeTypeEnum::class;
+        $class = DocumentTypeCategoryEnum::class;
 
-        if (! in_array(DocumentTypeTypeInterface::class, class_implements($class))) {
-            throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType");
+        if (! in_array(DocumentTypeCategoryInterface::class, class_implements($class))) {
+            throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory");
         }
 
         return $class;
@@ -217,20 +217,16 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function canBeParent(): bool
     {
-        return $this->exists &&
-            $this->isWebPageType();
+        return $this->exists && $this->isWebPageType();
     }
 
     public function canHaveParent(): bool
     {
-        return $this->exists &&
-            ! $this->isRoot() &&
-            $this->isWebPageType();
+        return $this->exists && ! $this->isRoot() && $this->isWebPageType();
     }
 
     public function canManageTemplates(): bool
     {
-        return $this->exists &&
-            $this->isWebPageType();
+        return $this->exists && $this->isWebPageType();
     }
 }

@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Enums;
 
-enum DocumentTypeType: string implements Interfaces\DocumentTypeType
+enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
 {
     case Web = 'web';
 
@@ -14,8 +14,8 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
     public function getLabel(): ?string
     {
         return match ($this) {
-            self::Web => __('inspirecms::inspirecms.document_type_type.web.label'),
-            self::Inheritance => __('inspirecms::inspirecms.document_type_type.inheritance.label'),
+            self::Web => __('inspirecms::resources/document-type.categories.web.label'),
+            self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.label'),
             default => null,
         };
     }
@@ -23,8 +23,8 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
     public function getDescription(): ?string
     {
         return match ($this) {
-            self::Web => __('inspirecms::inspirecms.document_type_type.web.description'),
-            self::Inheritance => __('inspirecms::inspirecms.document_type_type.inheritance.description'),
+            self::Web => __('inspirecms::resources/document-type.categories.web.description'),
+            self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.description'),
             default => null,
         };
     }
@@ -41,19 +41,19 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
     /** @inheritDoc*/
     public function canInheriting(): bool
     {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::Web;
+        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web;
     }
 
     /** @inheritDoc*/
     public function canBeInherited(): bool
     {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::Inheritance;
+        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Inheritance;
     }
 
     /** @inheritDoc*/
     public function canManageChildDocumentTypes(): bool
     {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeType::Web;
+        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web;
     }
 
     /** @inheritDoc*/
@@ -64,7 +64,7 @@ enum DocumentTypeType: string implements Interfaces\DocumentTypeType
         ];
     }
 
-    public static function getDefaultValue(): Interfaces\DocumentTypeType
+    public static function getDefaultValue(): Interfaces\DocumentTypeCategory
     {
         return self::Web;
     }

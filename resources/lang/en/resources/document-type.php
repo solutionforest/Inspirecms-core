@@ -4,8 +4,8 @@ return [
     'title' => [
         'label' => 'Title',
     ],
-    'type' => [
-        'label' => 'Type',
+    'category' => [
+        'label' => 'Category',
     ],
     'show_children_as_table' => [
         'label' => 'Show children as table',
@@ -40,5 +40,16 @@ return [
     'inheriting' => [
         'label' => 'Inheriting to :name',
         'description' => 'The document types that inherit from this document type.',
+    ],
+
+    'categories' => [
+        'web' => [
+            'label' => 'Web page',
+            'description' => 'A standard web page layout.',
+        ],
+        'inheritance' => [
+            'label' => 'Inheritance',
+            'description' => 'A document type layout that can be inherited.',
+        ],
     ],
 ];

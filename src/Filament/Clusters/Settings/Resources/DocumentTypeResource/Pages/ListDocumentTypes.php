@@ -31,9 +31,9 @@ class ListDocumentTypes extends BaseListPage
 
     public function getTabs(): array
     {
-        return collect(\SolutionForest\InspireCms\Base\Enums\DocumentTypeType::cases())
+        return collect(\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::cases())
             ->mapWithKeys(
-                fn (\SolutionForest\InspireCms\Base\Enums\DocumentTypeType $value) => [
+                fn (\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory $value) => [
                     $value->value => Tab::make()
                         ->label($value->getLabel())
                         ->modifyQueryUsing(fn ($query) => $query->where('type', $value->value)),

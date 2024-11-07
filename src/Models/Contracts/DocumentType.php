@@ -56,14 +56,14 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
 
     public function canBeInherited(): bool;
 
-    public function getTypeEnum(): ?\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeType;
+    public function getCategoryEnum(): ?\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 
     /**
      * Get the class name of the type enumeration.
      *
      * @return string The class name of the type enumeration.
      */
-    public static function getTypeEnumClass(): string;
+    public static function getCategoryEnumClass(): string;
 
     public function inheritDocumentType(string | int | DocumentType $documentType): bool;
 

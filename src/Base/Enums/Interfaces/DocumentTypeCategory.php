@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasDescription;
 use Filament\Support\Contracts\HasLabel;
 
-interface DocumentTypeType extends HasColor, HasDescription, HasLabel
+interface DocumentTypeCategory extends HasColor, HasDescription, HasLabel
 {
     public function canInheriting(): bool;
 
@@ -31,5 +31,5 @@ interface DocumentTypeType extends HasColor, HasDescription, HasLabel
      */
     public static function allCanBeInherited(): array;
 
-    public static function getDefaultValue(): DocumentTypeType;
+    public static function getDefaultValue(): DocumentTypeCategory;
 }
