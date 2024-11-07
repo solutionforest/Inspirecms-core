@@ -35,6 +35,11 @@ php artisan solutionforest/inspirecms:install
 );
 ```
 
+## Schedule jobs
+config on `inspirecms.php` config file:
+
+1. cleanup_content_verion
+
 ## Testing
 
 ```bash

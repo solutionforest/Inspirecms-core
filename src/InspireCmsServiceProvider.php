@@ -105,6 +105,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerAuthGuard();
 
         $this->registerEvents();
+
+        $this->registerScheduleCommands();
     }
 
     public function packageBooted(): void
@@ -324,5 +326,47 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'media_asset',
             'nestable_tree',
         ]);
+    }
+
+    protected function registerScheduleCommands(): void
+    {
+        $schedule = $this->app[\Illuminate\Console\Scheduling\Schedule::class];
+
+        $tasks = Arr::only(config('inspirecms.scheduled_tasks', []), [
+            'cleanup_content_verion',
+        ]);
+
+        foreach ($tasks as $taskKey => $task) {
+
+            if (! is_array($task)) {
+                continue;
+            }
+
+            if (! ($task['enabled'] ?? false) || 
+                ! isset($task['schedule'])
+            ) {
+                continue;
+            }
+
+            $func = $task['schedule'];
+
+            switch ($taskKey) {
+                case 'cleanup_content_verion':
+
+                    $command  = $task['command'] ?? null;
+
+                    if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
+                        break;
+                    }
+
+                    // check have this func
+                    if (method_exists($schedule->command($command), $func)) {
+
+                        $schedule->command($command)->{$func}();
+                    } 
+                    break;
+            }
+
+        }
     }
 }
