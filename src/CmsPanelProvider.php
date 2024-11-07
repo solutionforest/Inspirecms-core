@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
@@ -81,7 +82,17 @@ class CmsPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
                 UserPreference::class,
-            ]);
+            ])
+            ->bootUsing(function () {
+
+                // Gate for super admin
+                Gate::before(function ($user, $ability) {
+                    if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                        return true;
+                    }
+                });
+                
+            });
 
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
