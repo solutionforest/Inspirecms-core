@@ -20,7 +20,7 @@ use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 
 // todo: need redo the layout
-class Health extends Page implements ClusterSectionPage, HasActions, HasForms, GuardPage
+class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
 {
     use ClusterSectionPageTrait;
     use InteractsWithActions;
@@ -31,7 +31,7 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms, G
     protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
 
     protected static ?string $cluster = Settings::class;
-    
+
     public static function getPermissionName(): string
     {
         return 'view_health';
@@ -92,10 +92,12 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms, G
                 switch ($arguments['action']) {
                     case 'permissions':
                         $needRefresh = $this->fixPermissions();
+
                         break;
 
                     case 'sitemap':
                         $needRefresh = $this->fixSiteMap();
+
                         break;
 
                 }
@@ -164,7 +166,7 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms, G
         try {
             // call the sitemap generator
             $generator = SitemapGeneratorFactory::create();
-    
+
             $generator->generateSitemapFile();
         } catch (\Throwable $th) {
 
