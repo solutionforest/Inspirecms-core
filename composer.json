@@ -33,7 +33,16 @@
         "solution-forest/filament-tree": "^2.1.0",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0",
-        "solution-forest/inspirecms-support": "self.version"
+        "solution-forest/inspirecms-support": "*"
+    },
+    "require-dev": {
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^7.9",
+        "orchestra/testbench": "^8.0",
+        "pestphp/pest": "^2.0",
+        "pestphp/pest-plugin-arch": "^2.0",
+        "pestphp/pest-plugin-laravel": "^2.0",
+        "spatie/laravel-ray": "^1.26"
     },
     "autoload": {
         "files": [
@@ -49,6 +58,12 @@
             "SolutionForest\\InspireCms\\Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "~/html/packages/*"
+        }
+    ],
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
