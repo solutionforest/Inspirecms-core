@@ -6,10 +6,10 @@ use Illuminate\Routing\Controller;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
+use SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGeneratorInterface;
+use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\PathGenerators\ContentPathGeneratorInterface;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
-use SolutionForest\InspireCms\UrlGenerators\ContentUrlGeneratorInterface;
 
 class ContentController extends Controller
 {

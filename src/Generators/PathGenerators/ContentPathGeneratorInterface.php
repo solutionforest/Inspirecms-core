@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\PathGenerators;
+namespace SolutionForest\InspireCms\Generators\PathGenerators;
 
 use SolutionForest\InspireCms\Models\Contracts\Content;
 

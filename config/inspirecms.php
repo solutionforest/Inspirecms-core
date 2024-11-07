@@ -128,8 +128,8 @@ return [
     ],
 
     'generators' => [
-        'content_path_generator' => \SolutionForest\InspireCms\PathGenerators\ContentPathGenerator::class,
-        'content_url_generator' => \SolutionForest\InspireCms\UrlGenerators\ContentUrlGenerator::class,
+        'content_path_generator' => \SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGenerator::class,
+        'content_url_generator' => \SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGenerator::class,
     ],
 
     'indexes' => [

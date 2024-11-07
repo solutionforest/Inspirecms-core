@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\UrlGenerators;
+namespace SolutionForest\InspireCms\Generators\UrlGenerators;
 
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
