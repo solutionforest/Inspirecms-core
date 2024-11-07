@@ -7,7 +7,6 @@ use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
@@ -104,8 +103,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->registerSupport();
         $this->customPlugins();
         $this->registerAuthGuard();
-
-        Blueprint::mixin(new \SolutionForest\InspireCms\Macros\BlueprintMarcos);
 
         $this->registerEvents();
     }
