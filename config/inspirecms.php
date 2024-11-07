@@ -130,6 +130,7 @@ return [
     'generators' => [
         'content_path_generator' => \SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGenerator::class,
         'content_url_generator' => \SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGenerator::class,
+        'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
     ],
 
     'indexes' => [
