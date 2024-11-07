@@ -154,9 +154,15 @@ class PaginationPicker extends Field
                     ->paginationOptions(fn () => $this->getPaginationOptionsQuery())
                     ->perPage($this->perPage)
                     ->contentGrid($this->contentGrid)
-                    ->tableColumns($this->tableColumns)
-                    ->minItems($this->minItems)
-                    ->maxItems($this->maxItems);
+                    ->tableColumns($this->tableColumns);
+
+                if ($this->minItems) {
+                    $select->minItems($this->minItems);
+                }
+
+                if ($this->maxItems) {
+                    $select->maxItems($this->maxItems);
+                }
 
                 if ($this->modifySelectActionSelectorUsing) {
                     $select = $this->evaluate($this->modifySelectActionSelectorUsing, [
