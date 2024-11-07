@@ -19,4 +19,8 @@ return [
     'action_permissions' => [
         'label' => 'Actions',
     ],
+
+    'page_permissions' => [
+        'label' => 'Pages',
+    ],
 ];

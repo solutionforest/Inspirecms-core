@@ -98,6 +98,15 @@ class PermissionManifest implements PermissionManifestInterface
             ->toArray();
     }
 
+    public function getPagePermissions(): array
+    {
+        return collect(config('inspirecms.filament.pages'))
+            ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardPage::class, class_implements($fqcn)))
+            ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
+            ->sortKeys()
+            ->toArray();
+    }
+
     /**
      * Get the permission name for a given model and ability.
      *
@@ -167,6 +176,7 @@ class PermissionManifest implements PermissionManifestInterface
         return collect($this->getClusterSectionPermissions())->keys()
             ->merge(collect($this->getClusterSectionResourceModelPermissions())->collapse()->keys())
             ->merge(collect($this->getActionPermissions())->keys())
+            ->merge(collect($this->getPagePermissions())->keys())
             ->map(fn ($permission) => str($permission)->lower()->toString())
             ->values()
             ->unique()

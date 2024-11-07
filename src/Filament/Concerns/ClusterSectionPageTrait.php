@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Concerns;
 use Filament\Facades\Filament;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
+use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 
 trait ClusterSectionPageTrait
 {
@@ -21,17 +22,32 @@ trait ClusterSectionPageTrait
 
     public static function canAccess(): bool
     {
-        if (in_array(ClusterSectionPage::class, class_implements(static::class))) {
+        $inplements = class_implements(static::class);
+
+        $permissionsToCheck = [];
+
+        if (in_array(ClusterSectionPage::class, $inplements)) {
             $cluster = static::getClusterSection();
 
-            $permissionName = ! blank($cluster) && in_array(ClusterSection::class, class_implements($cluster)) ? $cluster::getAccessRightPermissionName() : null;
+            $permissionsToCheck[] = ! blank($cluster) && in_array(ClusterSection::class, class_implements($cluster)) ? $cluster::getAccessRightPermissionName() : null;
+
+        }
+
+        if (in_array(GuardPage::class, $inplements)) {
+
+            $permissionsToCheck[] = static::getPermissionName();
+        }
+
+        foreach ($permissionsToCheck as $permissionName) {
 
             $user = Filament::auth()->user();
 
-            if (! blank($permissionName) && $user) {
+            if (blank($permissionName) || !$user) {
+                continue;
+            }
 
-                return $user->can($permissionName);
-
+            if (! $user->can($permissionName)) {
+                return false;
             }
         }
 

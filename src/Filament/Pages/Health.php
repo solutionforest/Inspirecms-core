@@ -10,18 +10,17 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Factories\SitemapGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
+use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 
-// todo: add permission check to access this page
 // todo: need redo the layout
-class Health extends Page implements ClusterSectionPage, HasActions, HasForms
+class Health extends Page implements ClusterSectionPage, HasActions, HasForms, GuardPage
 {
     use ClusterSectionPageTrait;
     use InteractsWithActions;
@@ -32,6 +31,16 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
     protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
 
     protected static ?string $cluster = Settings::class;
+    
+    public static function getPermissionName(): string
+    {
+        return 'view_health';
+    }
+
+    public static function getPermissionDisplayName(): string
+    {
+        return __('inspirecms::health.title');
+    }
 
     public function getBreadcrumbs(): array
     {

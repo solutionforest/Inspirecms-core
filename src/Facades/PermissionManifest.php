@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
  * @method static array getClusterSectionPermissions()
  * @method static array getClusterSectionResourceModelPermissions()
  * @method static array getActionPermissions()
+ * @method static array getPagePermissions()
  * @method static string getPermissionNameForModel(string $ability, string $model)
  * @method static ?bool authorizeModel(string $ability, string $model, bool $checkExist = true)
  * @method static ?bool authorizeAction(string $actionFqcn)

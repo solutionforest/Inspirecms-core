@@ -44,18 +44,27 @@ class RoleResource extends Resource implements ClusterSectionResource
                     ->schema([
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::permissions.assign_access.label'))
+                            ->collapsible()
                             ->schema([
                                 static::getFormComponentForClusterSection(),
                             ]),
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::permissions.default_permissions.label'))
+                            ->collapsible()
                             ->schema([
                                 static::getFormComponentForDefaultPermissionsSection(),
                             ]),
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::permissions.action_permissions.label'))
+                            ->collapsible()
                             ->schema([
                                 static::getFormComponentForActionPermissionsSection(),
+                            ]),
+                        Forms\Components\Section::make()
+                            ->heading(__('inspirecms::permissions.page_permissions.label'))
+                            ->collapsible()
+                            ->schema([
+                                static::getFormComponentForPagePermissionsSection(),
                             ]),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
@@ -245,6 +254,21 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->statePath('action_permissions')
             ->schema(
                 collect(PermissionManifest::getActionPermissions())
+                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+                    ->all()
+            )
+            ->columnSpanFull()->columns(1);
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getFormComponentForPagePermissionsSection()
+    {
+        return Forms\Components\Group::make()
+            ->statePath('page_permissions')
+            ->schema(
+                collect(PermissionManifest::getPagePermissions())
                     ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
                     ->all()
             )
