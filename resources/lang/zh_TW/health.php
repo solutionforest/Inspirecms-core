@@ -7,6 +7,10 @@ return [
         'label' => '權限',
     ],
 
+    'sitemap' => [
+        'label' => '網站地圖',
+    ],
+
     'actions' => [
         'fix' => [
             'label' => '修復',

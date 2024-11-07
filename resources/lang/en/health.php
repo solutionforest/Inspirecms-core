@@ -7,6 +7,10 @@ return [
         'label' => 'Permissions',
     ],
 
+    'sitemap' => [
+        'label' => 'Sitemap',
+    ],
+
     'actions' => [
         'fix' => [
             'label' => 'Fix',

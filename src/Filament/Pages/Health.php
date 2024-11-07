@@ -7,10 +7,12 @@ use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
+use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Factories\SitemapGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
@@ -51,13 +53,18 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
 
     public function getStatusInfo(): array
     {
-        $permissions = $this->getPermissionsStatus();
+        $permissions = $this->getPermissionsStatusData();
+        $sitemap = $this->getSiteMapStatusData();
 
         return [
             'permissions' => [
                 'title' => __('inspirecms::health.permissions.label'),
-                'status' => $permissions['status'],
-                'data' => $permissions['data'],
+                ...$permissions,
+                'action' => 'fix',
+            ],
+            'sitemap' => [
+                'title' => __('inspirecms::health.sitemap.label'),
+                ...$sitemap,
                 'action' => 'fix',
             ],
         ];
@@ -68,18 +75,29 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
         return Action::make('fix')
             ->label(__('inspirecms::health.actions.fix.label'))
             ->outlined()
+            ->size('sm')
             ->action(function (array $arguments) {
+
+                $needRefresh = false;
+
                 switch ($arguments['action']) {
                     case 'permissions':
-                        $this->resolvePermissions();
-                        $this->dispatch('$refresh');
-
+                        $needRefresh = $this->fixPermissions();
                         break;
+
+                    case 'sitemap':
+                        $needRefresh = $this->fixSiteMap();
+                        break;
+
+                }
+
+                if ($needRefresh) {
+                    $this->dispatch('$refresh');
                 }
             });
     }
 
-    protected function getPermissionsStatus(): array
+    protected function getPermissionsStatusData(): array
     {
         $permissions = $this->getAllPermissions();
 
@@ -88,18 +106,30 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
         $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
 
         $missing = array_diff($permissions, $existingPermissions);
-        $valid = array_intersect($permissions, $existingPermissions);
+        // $valid = array_intersect($permissions, $existingPermissions);
 
         return [
             'status' => $this->formateStatusData(count($permissions), count($missing), count($missing) == 0),
-            'data' => array_merge(
-                Arr::map(array_values($missing), fn ($val) => ['name' => $val, 'valid' => false]),
-                Arr::map(array_values($valid), fn ($val) => ['name' => $val, 'valid' => true]),
-            ),
+            'data' => $this->formateStatusContent([
+                'Missing permissions' => array_values($missing),
+            ]),
         ];
     }
 
-    protected function resolvePermissions()
+    protected function getSiteMapStatusData(): array
+    {
+        // Determin the sitemap is generated or not
+        $fullFilePath = InspireCmsConfig::get('routes.sitemap.file_path');
+
+        return [
+            'status' => $this->formateStatusData(1, file_exists($fullFilePath) ? 0 : 1, file_exists($fullFilePath)),
+            'data' => $this->formateStatusContent([
+                'Missing sitemap file',
+            ]),
+        ];
+    }
+
+    protected function fixPermissions(): bool
     {
         $missing = collect($this->getPermissionsStatus()['data'] ?? [])
             ->where('valid', false)
@@ -108,7 +138,7 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
             ->all();
 
         if (empty($missing)) {
-            return;
+            return false;
         }
 
         $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
@@ -117,7 +147,27 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
             $permissionModel::findOrCreate($permission, InspireCmsConfig::getGuardName());
         }
 
-        $this->dispatch('$refresh');
+        return true;
+    }
+
+    protected function fixSiteMap(): bool
+    {
+        try {
+            // call the sitemap generator
+            $generator = SitemapGeneratorFactory::create();
+    
+            $generator->generateSitemapFile();
+        } catch (\Throwable $th) {
+
+            Notification::make()
+                ->danger()
+                ->title($th->getMessage())
+                ->send();
+
+            return false;
+        }
+
+        return true;
     }
 
     protected function formateStatusData($total, $invalid, $valid): array
@@ -126,6 +176,13 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
             'total' => $total,
             'invalid' => $invalid,
             'isHealthy' => $valid,
+        ];
+    }
+
+    protected function formateStatusContent(array $invalidItems): array
+    {
+        return [
+            'invalidMessage' => $invalidItems,
         ];
     }
 
