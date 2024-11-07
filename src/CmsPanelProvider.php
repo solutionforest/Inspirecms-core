@@ -91,7 +91,7 @@ class CmsPanelProvider extends PanelProvider
                         return true;
                     }
                 });
-                
+
             });
 
         $this->configureNavigation($panel);

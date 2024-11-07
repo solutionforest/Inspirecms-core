@@ -17,7 +17,7 @@ class AlertOverview extends BaseWidget
     protected function getAlerts(): array
     {
         $templateRequired = $this->ownerRecord?->canManageTemplates() ?? false;
-        
+
         if ($this->ownerRecord) {
 
             if ($templateRequired && is_null($this->ownerRecord->templates_count)) {

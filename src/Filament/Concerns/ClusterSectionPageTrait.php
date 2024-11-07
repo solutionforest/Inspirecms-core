@@ -42,7 +42,7 @@ trait ClusterSectionPageTrait
 
             $user = Filament::auth()->user();
 
-            if (blank($permissionName) || !$user) {
+            if (blank($permissionName) || ! $user) {
                 continue;
             }
 
