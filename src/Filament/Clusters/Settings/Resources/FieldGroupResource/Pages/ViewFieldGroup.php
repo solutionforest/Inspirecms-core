@@ -10,7 +10,7 @@ class ViewFieldGroup extends BaseViewPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resourcesresources.field_group', FieldGroupResource::class);
+        return config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
     }
 
     public function getHeading(): string
