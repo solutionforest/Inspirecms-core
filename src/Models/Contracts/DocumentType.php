@@ -84,4 +84,11 @@ interface DocumentType extends Base\HasTemplates, HasDtoModel
      * @return bool True if the document type can have a parent, false otherwise.
      */
     public function canHaveParent(): bool;
+
+    /**
+     * Determine if the document type can manage templates.
+     *
+     * @return bool True if the document type can manage templates, false otherwise.
+     */
+    public function canManageTemplates(): bool;
 }

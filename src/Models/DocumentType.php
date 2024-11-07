@@ -227,4 +227,10 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             ! $this->isRoot() &&
             $this->isWebPageType();
     }
+
+    public function canManageTemplates(): bool
+    {
+        return $this->exists &&
+            $this->isWebPageType();
+    }
 }

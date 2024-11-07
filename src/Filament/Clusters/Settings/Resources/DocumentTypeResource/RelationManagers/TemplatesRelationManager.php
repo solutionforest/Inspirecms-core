@@ -23,6 +23,15 @@ class TemplatesRelationManager extends RelationManager
 
     protected static ?string $icon = 'heroicon-c-sparkles';
 
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
+            return false;
+        }
+
+        return $ownerRecord->canManageTemplates();
+    }
+
     public static function getBadge(Model $ownerRecord, string $pageClass): ?string
     {
         if (is_null($ownerRecord->templates_count)) {

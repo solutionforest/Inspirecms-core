@@ -16,9 +16,11 @@ class AlertOverview extends BaseWidget
 
     protected function getAlerts(): array
     {
+        $templateRequired = $this->ownerRecord?->canManageTemplates() ?? false;
+        
         if ($this->ownerRecord) {
 
-            if (is_null($this->ownerRecord->templates_count)) {
+            if ($templateRequired && is_null($this->ownerRecord->templates_count)) {
                 $this->ownerRecord->loadCount('templates');
             }
             if (is_null($this->ownerRecord->field_groups_count)) {
@@ -26,7 +28,7 @@ class AlertOverview extends BaseWidget
             }
         }
 
-        if (($this->ownerRecord?->templates_count ?? 0) === 0) {
+        if ($templateRequired && ($this->ownerRecord?->templates_count ?? 0) === 0) {
             $alerts[] = Alert::make(fn () => __('inspirecms::resources/document-type.templates.hint'), 'warn');
         }
 
