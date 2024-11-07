@@ -342,7 +342,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 continue;
             }
 
-            if (! ($task['enabled'] ?? false) || 
+            if (! ($task['enabled'] ?? false) ||
                 ! isset($task['schedule'])
             ) {
                 continue;
@@ -353,7 +353,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             switch ($taskKey) {
                 case 'cleanup_content_verion':
 
-                    $command  = $task['command'] ?? null;
+                    $command = $task['command'] ?? null;
 
                     if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
                         break;
@@ -363,7 +363,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     if (method_exists($schedule->command($command), $func)) {
 
                         $schedule->command($command)->{$func}();
-                    } 
+                    }
+
                     break;
             }
 
