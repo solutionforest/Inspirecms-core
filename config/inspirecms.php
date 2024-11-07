@@ -154,6 +154,15 @@ return [
         ],
     ],
 
+    'scheduled_tasks' => [
+        'cleanup_content_verion' => [
+            'enabled' => true,
+            'schedule' => 'daily',
+            'command' => \SolutionForest\InspireCms\Commands\CleanupContentVersion::class,
+            'old_content_version_days' => 30,
+        ],
+    ],
+
     'available_locales' => [
         'en',
         'zh_CN',

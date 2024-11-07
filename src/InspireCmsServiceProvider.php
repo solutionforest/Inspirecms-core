@@ -160,6 +160,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
+            Commands\CleanupContentVersion::class,
         ];
     }
 

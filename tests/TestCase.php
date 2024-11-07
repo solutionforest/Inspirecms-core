@@ -16,10 +16,11 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
+use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
 use SolutionForest\InspireCms\InspireCmsServiceProvider;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 
-class TestCase extends Orchestra
+abstract class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
@@ -45,7 +46,12 @@ class TestCase extends Orchestra
             SupportServiceProvider::class,
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
+
+            FilamentFieldGroupServiceProvider::class,
+            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
+
             InspireCmsSupportServiceProvider::class,
+
             InspireCmsServiceProvider::class,
         ];
     }
@@ -54,9 +60,47 @@ class TestCase extends Orchestra
     {
         config()->set('database.default', 'testing');
 
-        /*
-        $migration = include __DIR__.'/../database/migrations/create_inspirecms-core_table.php.stub';
-        $migration->up();
-        */
+        //region inspirecms
+        //endregion inspirecms
+
+        //region inspirecms support
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+
+        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+
+        \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        //endregion inspirecms
+
+        $migrations = [
+            __DIR__.'/../database/migrations/create_inspire-cms-core_table.php.stub',
+            __DIR__.'/../vendor/solution-forest/inspirecms-support/database/migrations/create_nestable-trees_table.php.stub',
+            __DIR__.'/../vendor/solution-forest/inspirecms-support/database/migrations/create_media-assets_table.php.stub',
+            __DIR__.'/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub',
+        ];
+
+        foreach ($migrations as $migrationPath) {
+            $migration = include $migrationPath;
+            $migration->up();
+        }
+    }
+
+    public function getModel(string $name)
+    {
+        $guessName = (string) str($name)->studly()->replace(' ', '');
+
+        try {
+            $model = match ($guessName) {
+                'Field' => \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::getFieldModelClass(),
+                'FieldGroup' => \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::getFieldGroupModelClass(),
+                'MediaAsset' => \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::getModel(),
+                default => \SolutionForest\InspireCms\Facades\ModelManifest::get("SolutionForest\\InspireCms\\Models\\Contracts\\{$guessName}"),
+            };
+        } catch (\Throwable $th) {
+            $model = null;
+        }
+
+        return $model ?? "SolutionForest\\InspireCms\\Models\\{$guessName}";
     }
 }
