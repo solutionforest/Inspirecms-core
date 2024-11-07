@@ -101,12 +101,7 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
     {
         $permissions = $this->getAllPermissions();
 
-        // check permissions exist
-        $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
-        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
-
-        $missing = array_diff($permissions, $existingPermissions);
-        // $valid = array_intersect($permissions, $existingPermissions);
+        $missing = $this->getMissingPermissions($permissions);
 
         return [
             'status' => $this->formateStatusData(count($permissions), count($missing), count($missing) == 0),
@@ -114,6 +109,15 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
                 'Missing permissions' => array_values($missing),
             ]),
         ];
+    }
+
+    private function getMissingPermissions(array $permissions = []): array
+    {
+        // check permissions exist
+        $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
+        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
+
+        return array_diff($permissions, $existingPermissions);
     }
 
     protected function getSiteMapStatusData(): array
@@ -131,11 +135,7 @@ class Health extends Page implements ClusterSectionPage, HasActions, HasForms
 
     protected function fixPermissions(): bool
     {
-        $missing = collect($this->getPermissionsStatus()['data'] ?? [])
-            ->where('valid', false)
-            ->pluck('name')
-            ->unique()
-            ->all();
+        $missing = $this->getMissingPermissions($this->getAllPermissions());
 
         if (empty($missing)) {
             return false;
