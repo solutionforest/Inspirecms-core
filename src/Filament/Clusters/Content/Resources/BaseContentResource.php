@@ -260,8 +260,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label(__('inspirecms::resources/content.is_published.label'))
                     ->queries(
-                        true: fn (Builder $query) => $query->isPublished(condition: true),
-                        false: fn (Builder $query) => $query->isPublished(condition: false),
+                        true: fn (Builder $query) => $query->whereIsPublished(condition: true),
+                        false: fn (Builder $query) => $query->whereIsPublished(condition: false),
                         blank: fn (Builder $query) => $query,
                     ),
                 Tables\Filters\TernaryFilter::make('is_root_level')

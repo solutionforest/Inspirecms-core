@@ -68,7 +68,7 @@ trait HasContentWebSetting
 
         if (($redirectContentId = $this->webSetting?->redirect_content_id) && $redirectContentId !== $this->getKey() && $redirectContentId !== KeyHelper::generateMinUuid()) {
 
-            $content = $this->newQuery()->isPublished()->find($redirectContentId);
+            $content = $this->newQuery()->whereIsPublished()->find($redirectContentId);
 
             if ($content) {
                 return $content->getUrl($locale);

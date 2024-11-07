@@ -41,7 +41,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
                     $option->getName() => Tab::make()
                         ->icon($option->getIcon())
                         ->label($option->getLabel())
-                        ->badge($option->getName() != 'unpublish' ? static::getResource()::getEloquentQuery()->where('status', $option->getValue())->isPublished()->count() : null)
+                        ->badge($option->getName() != 'unpublish' ? static::getResource()::getEloquentQuery()->where('status', $option->getValue())->whereIsPublished()->count() : null)
                         ->modifyQueryUsing(fn (Builder $query) => $query->where('status', $option->getValue())),
                 ]
             )

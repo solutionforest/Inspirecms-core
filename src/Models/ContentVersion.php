@@ -61,7 +61,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         return $diff;
     }
 
-    public function scopeIsPublished($query)
+    public function scopeWhereIsPublished($query)
     {
         return $query->whereHas('publishLog', function ($query) {
             $query->whereIsPublished();

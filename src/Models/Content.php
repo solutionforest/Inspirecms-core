@@ -362,7 +362,7 @@ class Content extends BaseModel implements ContentContract
     /**
      * Determine if this content is already published.
      */
-    public function scopeIsPublished(Builder $query, bool $condition = true): void
+    public function scopeWhereIsPublished(Builder $query, bool $condition = true): void
     {
         $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
         if (is_null($unpublishOption)) {
@@ -374,7 +374,7 @@ class Content extends BaseModel implements ContentContract
             $query
                 ->whereHas(
                     'publishedVersions',
-                    fn ($q) => $q->isPublished()
+                    fn ($q) => $q->whereIsPublished()
                 )
                 ->whereNot('status', $unpublishOption->getValue());
 
@@ -385,7 +385,7 @@ class Content extends BaseModel implements ContentContract
                     fn ($q) => $q
                         ->orWhereDoesntHave(
                             'publishedVersions',
-                            fn ($q) => $q->isPublished()
+                            fn ($q) => $q->whereIsPublished()
                         )
                         ->orWhere('status', $unpublishOption->getValue())
                 );
