@@ -11,6 +11,7 @@ use SolutionForest\InspireCms\Events\Content\CreatingPublishContentVersion;
 use SolutionForest\InspireCms\Events\Content\DispatchContentVersion;
 use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
 use SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions;
+use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
 class ProcessContentVersion
 {
@@ -38,10 +39,16 @@ class ProcessContentVersion
         unset($contentVersionData['from'], $contentVersionData['to']);
         $contentVersionData['avoid_to_clean'] = $isPublishing;
 
+        $contentVersion = $model->contentVersions()->make($contentVersionData);
+
+        if ($contentVersion instanceof ContentVersion && count($contentVersion->getDifferences()) === 0) {
+            return;
+        }
+
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
         event(new CreatingContentVersion($model->withoutRelations(), $contentVersionData, $statusOption, $isPublishing));
 
-        $contentVersion = $model->contentVersions()->create($contentVersionData);
+        $contentVersion->save();
 
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
         event(new CreatedContentVersion($model->withoutRelations(), $contentVersion, $statusOption, $isPublishing));

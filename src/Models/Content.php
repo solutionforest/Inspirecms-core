@@ -30,26 +30,26 @@ use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 #[ObservedBy(ContentObserver::class)]
 class Content extends BaseModel implements ContentContract
 {
+    use HasUuids;
+    use HasAuthor;
+    use NestableTrait;
     use BelongsToNestableTree;
-    use Concerns\HasContentVersions {
-        prepareContentVersionData as protected traitPrepareContentVersionData;
-    }
-    use Concerns\HasContentWebSetting;
-    use Concerns\HasTemplates;
     use Concerns\HasTranslations {
         setTranslation as protected traitSetTranslation;
         getTranslation as protected traitGetTranslation;
         getTranslations as protected traitGetTranslations;
     }
-    use HasAuthor;
-    use HasFactory;
-    use HasUuids;
-    use NestableTrait;
+    use Concerns\HasContentVersions {
+        prepareContentVersionData as protected traitPrepareContentVersionData;
+    }
+    use Concerns\HasContentWebSetting;
+    use Concerns\HasTemplates;
     use Searchable {
         queueMakeSearchable as protected traitQueueMakeSearchable;
         queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
     }
     use SoftDeletes;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -336,7 +336,7 @@ class Content extends BaseModel implements ContentContract
     {
         $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
 
-        //region Load the necessary relations
+        // Load the necessary relations
         $record->loadMissing([
             // 'documentType.fieldGroups.fields.group',
             'webSetting',
@@ -350,7 +350,6 @@ class Content extends BaseModel implements ContentContract
         if ($documentType && ! $documentType->relationLoaded('fields')) {
             $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
         }
-        //endregion Load the necessary relations
 
         $dtoParameters = $record->toArray();
 
