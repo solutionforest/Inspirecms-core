@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms;
 
 use SolutionForest\InspireCms\Facades\ModelManifest;
-use SolutionForest\InspireCms\Models;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;

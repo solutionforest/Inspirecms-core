@@ -13,7 +13,6 @@ use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 
 class InspireCmsManager
