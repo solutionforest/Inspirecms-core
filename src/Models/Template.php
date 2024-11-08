@@ -43,7 +43,7 @@ class Template extends BaseModel implements TemplateContract
 
         // Create file if not exists
         if (! file_exists($fullpath)) {
-            file_put_contents($fullpath, '');
+            file_put_contents($fullpath, '<div>Template file</div>');
         }
     }
 
