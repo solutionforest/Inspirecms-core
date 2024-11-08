@@ -3,13 +3,13 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
-use SolutionForest\InspireCms\Dtos\DocumentTypeDto;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -27,6 +27,26 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     protected $casts = [
         'show_children_as_table' => 'boolean',
     ];
+
+    public function getFieldsThroughQuery()
+    {
+        /** @var Model*/
+        $fieldModel = app(InspireCmsConfig::getFieldModelClass());
+        $fieldGroupModel = $this->fieldGroups()->getRelated();
+
+        $q = $fieldModel::query()
+            ->withGroupName()
+            ->whereExists(
+                $this->fieldGroups()->getBaseQuery()
+                    ->select($fieldGroupModel->getQualifiedKeyName())
+                    ->whereColumn(
+                        $fieldGroupModel->getQualifiedKeyName(),
+                        $fieldModel->qualifyColumn('group_id'),
+                    )
+            );
+
+        return $q;
+    }
 
     public function fieldGroups(): MorphToMany
     {
@@ -55,29 +75,6 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
-
-    //region Dto
-    public function toDto(...$args)
-    {
-        $dtoClass = static::getDtoClass();
-
-        $this->loadMissing([
-            'fieldGroups.fields',
-        ]);
-
-        $dtoParameters = $this->toArray();
-        $dtoParameters['fields'] = $this->fieldGroups->flatMap(function ($group) {
-            return $group->fields;
-        })->map(fn ($field) => $field->toDto());
-
-        return $dtoClass::fromArray($dtoParameters);
-    }
-
-    public static function getDtoClass(): string
-    {
-        return DocumentTypeDto::class;
-    }
-    //endregion Dto
 
     //region Scope(s)
     public function scopeCanBeInherited($query)

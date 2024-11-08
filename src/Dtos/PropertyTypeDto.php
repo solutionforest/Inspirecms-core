@@ -5,17 +5,17 @@ namespace SolutionForest\InspireCms\Dtos;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
-class FieldDto extends BaseDto
+class PropertyTypeDto extends BaseDto
 {
     /**
      * @var string
      */
-    public $name;
+    public $key;
 
     /**
      * @var string
      */
-    public $label;
+    public $group;
 
     /**
      * @var FieldTypeConfig

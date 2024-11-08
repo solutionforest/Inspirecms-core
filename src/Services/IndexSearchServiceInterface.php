@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Closure;
 use Illuminate\Support\Collection;
 
 /**
@@ -17,7 +18,7 @@ interface IndexSearchServiceInterface
      * @param  string  $keyword  The keyword to search for.
      * @return ?T The result of the search, or null if no match is found.
      */
-    public function searchOne(string $keyword);
+    public function searchOne(string $keyword, ?Closure $queryBuilder = null);
 
     /**
      * Searches for the given keyword.
@@ -25,5 +26,5 @@ interface IndexSearchServiceInterface
      * @param  string  $keyword  The keyword to search for.
      * @return Collection<T> The result of the search operation.
      */
-    public function search(string $keyword);
+    public function search(string $keyword, ?Closure $queryBuilder = null);
 }

@@ -5,10 +5,11 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Models\Field as BaseModel;
-use SolutionForest\InspireCms\Dtos\FieldDto;
+use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Models\Contracts\Field as FieldContract;
 use SolutionForest\InspireCms\Observers\FieldObserver;
+use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 
 #[ObservedBy(FieldObserver::class)]
 class Field extends BaseModel implements FieldContract
@@ -29,7 +30,9 @@ class Field extends BaseModel implements FieldContract
     public function toDto(...$args)
     {
         $dtoClass = static::getDtoClass();
-        $dtoParameters = $this->toArray();
+        
+        $dtoParameters['key'] = $this->name;
+        $dtoParameters['group'] = $this->group_name ?? $this->group?->name;
         $dtoParameters['config'] = FilamentFieldGroup::getFieldTypeConfig($this->type, $this->config ?? []);
 
         return $dtoClass::fromArray($dtoParameters);
@@ -37,7 +40,35 @@ class Field extends BaseModel implements FieldContract
 
     public static function getDtoClass(): string
     {
-        return FieldDto::class;
+        return PropertyTypeDto::class;
     }
     //endregion Dto
+
+    //region Scope(s)
+    public function scopeByGroup($query, string $group)
+    {
+        return $query->whereHas('group', fn ($q) => $q->where('name', $group)->whereActive());
+    }
+
+    public function scopeWithGroupName($query)
+    {
+        $as = 'group';
+
+        $column = 'name';
+
+        static::joinGroupAs($query, $as);
+
+        $query->addSelect("{$as}.{$column} as group_name");
+
+        return $query;
+    }
+
+    protected static function joinGroupAs(&$query, $as, $joinType = 'leftJoin')
+    {
+        $relationName = 'group';
+
+        return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
+    }
+    //endregion Scope(s)
+    
 }

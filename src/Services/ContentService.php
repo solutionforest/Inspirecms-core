@@ -23,20 +23,52 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
         return $this->getQuery()->where('slug', $slug)->first();
     }
 
-    public function findPage(string $fullSlug)
+    public function findContent(string $fullSlug)
     {
-        $content = $this->searchOne($fullSlug);
+        $relations  =[
+            // 'documentType.fieldGroups.fields.group',
+            'documentType.templates',
+            'webSetting',
+            'publishedVersions',
+            'templates',
+        ];
+
+        $content = $this->searchOne($fullSlug, fn ($q) => $q
+            ->with($relations)
+        );
 
         if ($content) {
 
-            $content->loadMissing([
-                'documentType.fieldGroups.fields',
-                'documentType.templates',
-                'webSetting',
-                'publishedVersions',
-                'templates',
-                'children',
-            ]);
+            //todo: handle dynamic relationship
+            if ($documentType = $content->documentType) {
+                $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+            }
+        }
+
+        return $content;
+    }
+
+    public function findPublishedContent(string $fullSlug)
+    {
+        $relations  =[
+            // 'documentType.fieldGroups.fields.group',
+            'documentType.templates',
+            'webSetting',
+            'publishedVersions',
+            'templates',
+        ];
+
+        $content = $this->searchOne($fullSlug, fn ($q) => $q
+            ->with($relations)
+            ->whereIsPublished()
+        );
+
+        if ($content) {
+
+            //todo: handle dynamic relationship
+            if ($documentType = $content->documentType) {
+                $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+            }
         }
 
         return $content;

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Closure;
 use Laravel\Scout\Searchable;
 use SolutionForest\InspireCms\Base\Services\BaseModelSerivce;
 
@@ -12,18 +13,30 @@ abstract class IndexSearchService extends BaseModelSerivce implements IndexSearc
         parent::__construct($modelClass);
     }
 
-    public function searchOne(string $keyword)
+    public function searchOne(string $keyword, ?Closure $queryBuilder = null)
     {
         $this->guardAgainstNonSearchableModel();
 
-        return $this->model::search($keyword)->first();
+        $builder = $this->model::search($keyword);
+        
+        if ($queryBuilder) {
+            $builder->query(fn ($query) => $queryBuilder($query));
+        }
+        
+        return $builder->first();
     }
 
-    public function search(string $keyword)
+    public function search(string $keyword, ?Closure $queryBuilder = null)
     {
         $this->guardAgainstNonSearchableModel();
 
-        return $this->model::search($keyword)->get();
+        $builder = $this->model::search($keyword);
+        
+        if ($queryBuilder) {
+            $builder->query(fn ($query) => $queryBuilder($query));
+        }
+        
+        return $builder->get();
     }
 
     protected function modelIsSearchable(): bool

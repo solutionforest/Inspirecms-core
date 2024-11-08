@@ -269,7 +269,7 @@ class Content extends BaseModel implements ContentContract
 
         $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
 
-        $dtoParameters = static::prepareDtoParameters($this, $propertyData, $locale, $fallbackLocale);
+        $dtoParameters = static::prepareDtoParameters($this, $propertyData);
 
         return $dtoClass::fromTranslatableArray(
             $dtoParameters,
@@ -298,9 +298,14 @@ class Content extends BaseModel implements ContentContract
 
             // Is preview while creating a new record
 
+            //todo: load the document type dynamic fields
+            if ($documentType && !$documentType->relationLoaded('fields')) {
+                $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+            }
+            
             $dtoParameters = $record;
 
-            $dtoParameters['documentType'] = $documentType?->toDto();
+            $dtoParameters['propertyTypes'] = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
 
             $dtoParameters['propertyData'] = $propertyData;
 
@@ -315,27 +320,36 @@ class Content extends BaseModel implements ContentContract
 
         } else {
 
-            $dtoParameters = static::prepareDtoParameters($record, $propertyData, $locale, $fallbackLocale, $documentType);
+            $dtoParameters = static::prepareDtoParameters($record, $propertyData,$documentType);
 
         }
 
         return $dtoClass::fromTranslatableArray(
             $dtoParameters,
-            $locale,
-            $fallbackLocale,
             $availableLocales,
         );
     }
 
-    private static function prepareDtoParameters(Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null): array
+    private static function prepareDtoParameters(Model $record, array $propertyData, ?Contracts\DocumentType $documentType = null): array
     {
         $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
 
+        //region Load the necessary relations
         $record->loadMissing([
-            'documentType',
+            // 'documentType.fieldGroups.fields.group',
             'webSetting',
-            'children',
+            'publishedVersions',
         ]);
+
+        if (is_null($documentType)) {
+            $record->loadMissing('documentType');
+            $documentType ??= $record->documentType;
+        }
+        if ($documentType && !$documentType->relationLoaded('fields')) {
+            $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+        }
+        //endregion Load the necessary relations
+
         $dtoParameters = $record->toArray();
 
         $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
@@ -346,23 +360,20 @@ class Content extends BaseModel implements ContentContract
             $locale => $record->getUrl($locale),
         ])->all();
 
-        $dtoParameters['documentType'] = ($documentType ?? $record->documentType)?->toDto();
+        $dtoParameters['propertyTypes'] = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
 
         $dtoParameters['propertyData'] = $propertyData;
 
-        $dtoParameters['children'] = collect($record->children)
-            ->map(fn ($child) => static::toPreviewDto($child, [], $locale, $fallbackLocale))
-            ->all();
-
         return $dtoParameters;
     }
+
     //endregion Dto
 
     //region Scope(s)
     /**
      * Determine if this content is already published.
      */
-    public function scopeWhereIsPublished(Builder $query, bool $condition = true): void
+    public function scopeWhereIsPublished(Builder $query, bool $condition = true)
     {
         $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
         if (is_null($unpublishOption)) {
@@ -392,11 +403,13 @@ class Content extends BaseModel implements ContentContract
 
         }
 
+        return $query;
+
     }
 
-    public function scopeIsWebPage(Builder $query): void
+    public function scopeIsWebPage(Builder $query)
     {
-        $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
+        return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }
 
     //endregion Scope(s)

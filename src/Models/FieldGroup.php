@@ -80,6 +80,13 @@ class FieldGroup extends BaseModel implements FieldGroupContract
             ->schema($schema);
     }
 
+    //region Scopes
+    public function scopeWhereActive($query, bool $condition = true)
+    {
+        return $query->where('active', $condition);
+    }
+    //endregion Scopes
+
     public static function booting()
     {
         // Do before parent::boot()

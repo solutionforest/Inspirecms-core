@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection as SupportCollection;
+use SolutionForest\InspireCms\Dtos\PropertyDataDto;
+use SolutionForest\InspireCms\Dtos\PropertyDataGroupDto;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableDto;
 
@@ -29,9 +31,9 @@ class ContentDto extends BaseTranslatableDto
     public $urls;
 
     /**
-     * @var DocumentTypeDto
+     * @var SupportCollection<PropertyTypeDto>
      */
-    public $documentType;
+    public $propertyTypes;
 
     /**
      * @var SupportCollection<PropertyDataGroupDto>
@@ -42,11 +44,6 @@ class ContentDto extends BaseTranslatableDto
      * @var SupportCollection<string,SeoDto>
      */
     public $seo;
-
-    /**
-     * @var SupportCollection<CotnentDto>
-     */
-    public $children;
 
     protected array $translatableAttributes = ['title'];
 
@@ -61,32 +58,49 @@ class ContentDto extends BaseTranslatableDto
     }
 
     /**
-     * @return ?PropertyDataGroupDto
-     */
-    public function getPropertyGroup(string $name)
-    {
-        return $this->propertyData->first(fn (PropertyDataGroupDto $propertyData) => $propertyData->name === $name);
-    }
-
-    /**
      * @return SupportCollection<ContentDto>
      */
     public function getChildren()
     {
-        return $this->children ?? collect();
+        // todo: implement this method
+        return collect();
     }
 
     /**
-     * @param  mixed  $locale
-     * @return SupportCollection<PropertyDataDto>
+     * Retrieves the property group associated with the given key.
+     *
+     * @param string $key The key identifying the property group.
+     * @return ?PropertyDataGroupDto
      */
-    public function getPropertyData(string $name, ?string $locale = null)
+    public function getPropertyGroup(string $key)
     {
-        $groups = $this->propertyData->filter(fn (PropertyDataGroupDto $propertyData) => $propertyData->data?->contains('propertyKey', $name));
+        return collect($this->propertyData)->first(fn (PropertyDataGroupDto $p) => $p->key === $key);
+    }
+
+    /**
+     * Retrieve the property data associated with a specific property key.
+     *
+     * @param string $key The key of the property to retrieve data for.
+     * @return SupportCollection<string,PropertyDataDto>
+     */
+    public function getPropertyData(string $key)
+    {
         $result = collect();
 
-        foreach ($groups as $group) {
-            $result = $result->put($group->name, $group->getPropertyData($name, $locale));
+        foreach ($this->propertyData ?? [] as $group) {
+
+            if (! $group instanceof PropertyDataGroupDto) {
+                continue;
+            }
+
+            // Determine the property group contains the property
+            $propertyData = collect($group->data)->first(fn (PropertyDataDto $d) => $d->key === $key);
+
+            if (! $propertyData) {
+                continue;
+            }
+            
+            $result = $result->put($group->key, $propertyData);
         }
 
         return $result;
@@ -120,37 +134,74 @@ class ContentDto extends BaseTranslatableDto
     {
         [$locale, $fallbackLocale, $availableLocales] = $configs;
 
-        $parameters['propertyData'] = static::mutuatePropertyData($parameters['propertyData'] ?? [], $parameters['documentType'] ?? null, $fallbackLocale);
+        $propertyTypes = collect($parameters['propertyTypes'] ?? [])
+            ->map(fn ($propertyType) => is_array($propertyType) ? PropertyTypeDto::fromArray($propertyType) : $propertyType)
+            ->where(fn ($propertyType) => $propertyType instanceof PropertyTypeDto)
+            ->values()
+            ->toArray();
+
+        $parameters['propertyData'] = static::mutuatePropertyData($parameters['propertyData'] ?? [], $propertyTypes, $fallbackLocale);
         $parameters['seo'] = static::mutuateSeoData($parameters['seo'] ?? []);
+
+        // Ensure is a collection
+        $parameters['propertyTypes'] = collect($propertyTypes);
+        $parameters['propertyData'] = collect($parameters['propertyData'] ?? []);
+        $parameters['seo'] = collect($parameters['seo'] ?? []);
 
         return $parameters;
     }
 
     /**
-     * @param  ?DocumentTypeDto  $documentTypes
+     * Mutates the property data based on the provided property types and optional fallback locale.
+     *
+     * @param array $propertyData The property data to be mutated.
+     * @param array $propertyTypes The types of properties to be used for mutation.
+     * @param string|null $fallbackLocale The optional fallback locale to be used if necessary.
+     *
      * @return array
      */
-    protected static function mutuatePropertyData(array $propertyData, $documentType, $fallbackLocale)
+    protected static function mutuatePropertyData(array $propertyData, array $propertyTypes, $fallbackLocale = null)
     {
-        return collect($propertyData)->map(function ($arr, $groupName) use ($documentType, $fallbackLocale): PropertyDataGroupDto {
+        $result = [];
 
-            $data = collect($arr)->map(
-                fn ($value, $key) => PropertyDataDto::fromArray([
-                    'propertyKey' => $key,
-                    'propertyValue' => $value,
-                    'config' => $documentType?->getField($key)?->config,
-                ])
-            )
-                ->values();
+        foreach ($propertyData as $groupName => $item) {
 
-            return PropertyDataGroupDto::fromArray([
-                'name' => $groupName,
-                'data' => $data,
-            ])->setFallbackLocale($fallbackLocale);
+            $propertyDataItems = [];
 
-        })->values();
+            $groupPropertyTypes = collect($propertyTypes)->where(fn (PropertyTypeDto $p) => $p->group === $groupName)->values();
+
+            foreach ($item as $key => $value) {
+
+                $propertyType = collect($groupPropertyTypes)->first(fn (PropertyTypeDto $p) => $p->key === $key);
+
+                /** @var PropertyDataDto */
+                $propertyDataItem = PropertyDataDto::fromArray([
+                    'key' => $key,
+                    'value' => $value,
+                    'propertyType' => $propertyType,
+                ]);
+
+                $propertyDataItem->setFallbackLocale($fallbackLocale);
+
+                $propertyDataItems[] = $propertyDataItem;
+            }
+
+            $result[] = PropertyDataGroupDto::fromArray([
+                'key' => $groupName,
+                'data' => $propertyDataItems,
+                'propertyTypes' => $groupPropertyTypes,
+            ]);
+        }
+
+        return $result;
     }
 
+    /**
+     * Mutates the given SEO data array.
+     *
+     * @param array $seoData The SEO data to be mutated.
+     * @return array
+     */
     protected static function mutuateSeoData(array $seoData)
     {
         $result = [];
@@ -177,7 +228,7 @@ class ContentDto extends BaseTranslatableDto
             $result[$locale] = SeoDto::fromArray($data);
         }
 
-        return collect($result);
+        return $result;
     }
     //endregion Helpers
 }

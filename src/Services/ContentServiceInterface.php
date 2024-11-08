@@ -29,10 +29,18 @@ interface ContentServiceInterface extends IndexSearchServiceInterface
     public function findBySlug(string $slug);
 
     /**
-     * Finds a page by its full slug.
+     * Finds a content by its full slug.
      *
      * @param  string  $fullSlug  The full slug of the page to find.
-     * @return mixed The page object if found, or null if not found.
+     * @return null|Model|Content The content if found, or null if not found.
      */
-    public function findPage(string $fullSlug);
+    public function findContent(string $fullSlug);
+
+    /**
+     * Finds a publish content by its full slug.
+     *
+     * @param  string  $fullSlug  The full slug of the page to find.
+     * @return null|Model|Content The content if found, or null if not found.
+     */
+    public function findPublishedContent(string $fullSlug);
 }
