@@ -18,7 +18,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\BelongsToParentSelect;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldResource extends Resource implements ClusterSectionResource
 {

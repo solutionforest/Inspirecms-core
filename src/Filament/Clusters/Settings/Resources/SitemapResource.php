@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class SitemapResource extends Resource implements ClusterSectionResource
 {

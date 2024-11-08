@@ -3,17 +3,16 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
 #[ObservedBy(DocumentTypeObserver::class)]
@@ -30,7 +29,6 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function getFieldsThroughQuery()
     {
-        /** @var Model */
         $fieldModel = app(InspireCmsConfig::getFieldModelClass());
         $fieldGroupModel = $this->fieldGroups()->getRelated();
 

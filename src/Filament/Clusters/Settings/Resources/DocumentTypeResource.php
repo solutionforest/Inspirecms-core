@@ -25,8 +25,8 @@ use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class DocumentTypeResource extends Resource implements ClusterSectionResource
 {

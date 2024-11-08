@@ -7,10 +7,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Database\Factories\ContentVersionFactory;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Observers\ContentVersionObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
 #[ObservedBy(ContentVersionObserver::class)]

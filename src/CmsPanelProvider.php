@@ -24,7 +24,7 @@ use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middlewares\UserPreference;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CmsPanelProvider extends PanelProvider
 {

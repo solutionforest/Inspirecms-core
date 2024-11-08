@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasTemplates
 {

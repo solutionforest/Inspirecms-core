@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 

@@ -24,7 +24,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource implements ClusterSectionResource
 {

@@ -12,7 +12,7 @@ use Filament\Support\Enums\ActionSize;
 use Filament\Support\Services\RelationshipJoiner;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class UserRolePicker extends Repeater
 {

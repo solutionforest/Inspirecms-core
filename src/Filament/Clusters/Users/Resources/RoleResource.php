@@ -15,7 +15,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pag
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Contracts\Role as RoleContract;
 use Spatie\Permission\Models\Role;
 

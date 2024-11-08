@@ -17,8 +17,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationRes
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class NavigationResource extends Resource implements ClusterSectionResource
 {

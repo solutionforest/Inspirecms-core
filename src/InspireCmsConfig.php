@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Support;
+namespace SolutionForest\InspireCms;
 
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models;

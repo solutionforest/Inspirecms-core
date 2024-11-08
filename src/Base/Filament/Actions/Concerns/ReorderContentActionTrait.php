@@ -7,7 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 

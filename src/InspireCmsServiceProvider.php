@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;

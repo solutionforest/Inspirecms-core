@@ -19,8 +19,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pag
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\User;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class UserResource extends Resource implements ClusterSectionResource
 {

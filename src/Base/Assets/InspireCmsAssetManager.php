@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Base\Assets;
 
 use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
 {

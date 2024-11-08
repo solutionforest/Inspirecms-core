@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class SitemapController extends Controller
 {

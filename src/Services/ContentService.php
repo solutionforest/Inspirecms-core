@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ContentService extends IndexSearchService implements ContentServiceInterface
 {

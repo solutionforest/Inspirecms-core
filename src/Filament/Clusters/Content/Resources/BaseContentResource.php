@@ -34,8 +34,8 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 abstract class BaseContentResource extends Resource implements ClusterSectionResource
 {

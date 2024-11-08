@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;
 
 class Install extends BasePage

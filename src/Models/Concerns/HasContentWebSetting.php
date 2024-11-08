@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Helpers\KeyHelper;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait HasContentWebSetting
 {

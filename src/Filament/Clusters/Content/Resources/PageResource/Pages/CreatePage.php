@@ -8,7 +8,7 @@ use Livewire\Attributes\Locked;
 use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 use function Filament\Support\is_app_url;
 

@@ -9,7 +9,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponen
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker as ContentPickerComponent;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 #[ConfigName('contentPicker', 'Content Picker', 'Picker', 'heroicon-o-pencil')]
 #[FormComponent(ContentPickerComponent::class)]

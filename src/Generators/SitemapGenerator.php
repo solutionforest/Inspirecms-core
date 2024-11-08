@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Generators;
 
 use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class SitemapGenerator implements SitemapGeneratorInterface
 {

@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:cleanup-content-version')]

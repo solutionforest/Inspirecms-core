@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupsRelationManager extends RelationManager
 {

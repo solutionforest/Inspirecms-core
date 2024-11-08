@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
 use SolutionForest\InspireCms\Observers\FieldGroupableObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseMorphPivotModel;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\EloquentSortable\SortableTrait;
 
 #[ObservedBy(FieldGroupableObserver::class)]

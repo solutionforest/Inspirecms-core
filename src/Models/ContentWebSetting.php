@@ -5,9 +5,9 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Dtos\SeoDto;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentWebSetting as ContentWebSettingContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class ContentWebSetting extends BaseModel implements ContentWebSettingContract
 {

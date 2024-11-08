@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup as FieldGroupContract;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class FieldGroup extends BaseModel implements FieldGroupContract
 {

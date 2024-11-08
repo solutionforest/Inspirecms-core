@@ -5,9 +5,9 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Database\Factories\ContentPublishVersionFactory;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion as ContentPublishVersionContract;
 use SolutionForest\InspireCms\Support\Base\Models\BasePivotModel;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 class ContentPublishVersion extends BasePivotModel implements ContentPublishVersionContract
 {

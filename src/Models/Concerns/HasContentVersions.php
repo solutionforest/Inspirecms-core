@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
-use SolutionForest\InspireCms\Support\InspireCmsConfig;
 
 trait HasContentVersions
 {
