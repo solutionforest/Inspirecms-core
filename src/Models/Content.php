@@ -299,10 +299,10 @@ class Content extends BaseModel implements ContentContract
             // Is preview while creating a new record
 
             //todo: load the document type dynamic fields
-            if ($documentType && !$documentType->relationLoaded('fields')) {
+            if ($documentType && ! $documentType->relationLoaded('fields')) {
                 $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
             }
-            
+
             $dtoParameters = $record;
 
             $dtoParameters['propertyTypes'] = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
@@ -320,7 +320,7 @@ class Content extends BaseModel implements ContentContract
 
         } else {
 
-            $dtoParameters = static::prepareDtoParameters($record, $propertyData,$documentType);
+            $dtoParameters = static::prepareDtoParameters($record, $propertyData, $documentType);
 
         }
 
@@ -345,7 +345,7 @@ class Content extends BaseModel implements ContentContract
             $record->loadMissing('documentType');
             $documentType ??= $record->documentType;
         }
-        if ($documentType && !$documentType->relationLoaded('fields')) {
+        if ($documentType && ! $documentType->relationLoaded('fields')) {
             $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
         }
         //endregion Load the necessary relations

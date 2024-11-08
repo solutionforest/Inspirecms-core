@@ -30,7 +30,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function getFieldsThroughQuery()
     {
-        /** @var Model*/
+        /** @var Model */
         $fieldModel = app(InspireCmsConfig::getFieldModelClass());
         $fieldGroupModel = $this->fieldGroups()->getRelated();
 

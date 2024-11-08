@@ -18,11 +18,11 @@ abstract class IndexSearchService extends BaseModelSerivce implements IndexSearc
         $this->guardAgainstNonSearchableModel();
 
         $builder = $this->model::search($keyword);
-        
+
         if ($queryBuilder) {
             $builder->query(fn ($query) => $queryBuilder($query));
         }
-        
+
         return $builder->first();
     }
 
@@ -31,11 +31,11 @@ abstract class IndexSearchService extends BaseModelSerivce implements IndexSearc
         $this->guardAgainstNonSearchableModel();
 
         $builder = $this->model::search($keyword);
-        
+
         if ($queryBuilder) {
             $builder->query(fn ($query) => $queryBuilder($query));
         }
-        
+
         return $builder->get();
     }
 

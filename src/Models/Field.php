@@ -30,7 +30,7 @@ class Field extends BaseModel implements FieldContract
     public function toDto(...$args)
     {
         $dtoClass = static::getDtoClass();
-        
+
         $dtoParameters['key'] = $this->name;
         $dtoParameters['group'] = $this->group_name ?? $this->group?->name;
         $dtoParameters['config'] = FilamentFieldGroup::getFieldTypeConfig($this->type, $this->config ?? []);
@@ -70,5 +70,5 @@ class Field extends BaseModel implements FieldContract
         return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
     //endregion Scope(s)
-    
+
 }

@@ -25,7 +25,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
 
     public function findContent(string $fullSlug)
     {
-        $relations  =[
+        $relations = [
             // 'documentType.fieldGroups.fields.group',
             'documentType.templates',
             'webSetting',
@@ -33,8 +33,10 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'templates',
         ];
 
-        $content = $this->searchOne($fullSlug, fn ($q) => $q
-            ->with($relations)
+        $content = $this->searchOne(
+            $fullSlug,
+            fn ($q) => $q
+                ->with($relations)
         );
 
         if ($content) {
@@ -50,7 +52,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
 
     public function findPublishedContent(string $fullSlug)
     {
-        $relations  =[
+        $relations = [
             // 'documentType.fieldGroups.fields.group',
             'documentType.templates',
             'webSetting',
@@ -58,9 +60,11 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'templates',
         ];
 
-        $content = $this->searchOne($fullSlug, fn ($q) => $q
-            ->with($relations)
-            ->whereIsPublished()
+        $content = $this->searchOne(
+            $fullSlug,
+            fn ($q) => $q
+                ->with($relations)
+                ->whereIsPublished()
         );
 
         if ($content) {

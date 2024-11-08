@@ -3,8 +3,6 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Support\Collection as SupportCollection;
-use SolutionForest\InspireCms\Dtos\PropertyDataDto;
-use SolutionForest\InspireCms\Dtos\PropertyDataGroupDto;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableDto;
 
@@ -69,7 +67,7 @@ class ContentDto extends BaseTranslatableDto
     /**
      * Retrieves the property group associated with the given key.
      *
-     * @param string $key The key identifying the property group.
+     * @param  string  $key  The key identifying the property group.
      * @return ?PropertyDataGroupDto
      */
     public function getPropertyGroup(string $key)
@@ -80,7 +78,7 @@ class ContentDto extends BaseTranslatableDto
     /**
      * Retrieve the property data associated with a specific property key.
      *
-     * @param string $key The key of the property to retrieve data for.
+     * @param  string  $key  The key of the property to retrieve data for.
      * @return SupportCollection<string,PropertyDataDto>
      */
     public function getPropertyData(string $key)
@@ -99,7 +97,7 @@ class ContentDto extends BaseTranslatableDto
             if (! $propertyData) {
                 continue;
             }
-            
+
             $result = $result->put($group->key, $propertyData);
         }
 
@@ -154,10 +152,9 @@ class ContentDto extends BaseTranslatableDto
     /**
      * Mutates the property data based on the provided property types and optional fallback locale.
      *
-     * @param array $propertyData The property data to be mutated.
-     * @param array $propertyTypes The types of properties to be used for mutation.
-     * @param string|null $fallbackLocale The optional fallback locale to be used if necessary.
-     *
+     * @param  array  $propertyData  The property data to be mutated.
+     * @param  array  $propertyTypes  The types of properties to be used for mutation.
+     * @param  string|null  $fallbackLocale  The optional fallback locale to be used if necessary.
      * @return array
      */
     protected static function mutuatePropertyData(array $propertyData, array $propertyTypes, $fallbackLocale = null)
@@ -199,7 +196,7 @@ class ContentDto extends BaseTranslatableDto
     /**
      * Mutates the given SEO data array.
      *
-     * @param array $seoData The SEO data to be mutated.
+     * @param  array  $seoData  The SEO data to be mutated.
      * @return array
      */
     protected static function mutuateSeoData(array $seoData)
