@@ -71,7 +71,7 @@ abstract class TestCase extends Orchestra
         \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
 
         \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
-        //endregion inspirecms
+        //endregion inspirecms support
 
         $migrations = [
             __DIR__ . '/../database/migrations/create_inspire-cms-core_table.php.stub',
