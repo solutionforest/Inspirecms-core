@@ -5,10 +5,10 @@ namespace SolutionForest\InspireCms\Models\Polymorphic;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
 use SolutionForest\InspireCms\Observers\FieldGroupableObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseMorphPivotModel;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\EloquentSortable\SortableTrait;
 
 #[ObservedBy(FieldGroupableObserver::class)]

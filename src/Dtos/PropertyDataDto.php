@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
-use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Fields\Dtos\FileDto;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
@@ -85,27 +84,27 @@ class PropertyDataDto extends BaseDto
                         'directory' => $directory,
                     ]))->values()->all();
 
-            // case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker:
+                // case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker:
 
-            //     $mediaAssets = inspirecms_asset()->findByKeys($sourceValue);
+                //     $mediaAssets = inspirecms_asset()->findByKeys($sourceValue);
 
-            //     return collect($mediaAssets)
-            //         ->whereInstanceOf(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class)
-            //         ->filter()
-            //         ->map(fn ($m) => $m->toDto())
-            //         ->values()
-            //         ->all();
+                //     return collect($mediaAssets)
+                //         ->whereInstanceOf(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class)
+                //         ->filter()
+                //         ->map(fn ($m) => $m->toDto())
+                //         ->values()
+                //         ->all();
 
-            // case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
+                // case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
-            //     //todo: improve performance
-            //     $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
+                //     //todo: improve performance
+                //     $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
 
-            //     // sort the content based on the source value
-            //     return collect($sourceValue)
-            //         ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
-            //         ->values()
-            //         ->all();
+                //     // sort the content based on the source value
+                //     return collect($sourceValue)
+                //         ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
+                //         ->values()
+                //         ->all();
 
             default:
                 return $sourceValue;
