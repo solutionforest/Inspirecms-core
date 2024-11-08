@@ -45,9 +45,9 @@ class CmsPanelProvider extends PanelProvider
                     ->enablePlugin()
                     ->overrideResources([])
                     ->fieldTypeConfigs([
-                        \SolutionForest\InspireCms\FieldTypes\Configs\Translate::class,
-                        \SolutionForest\InspireCms\FieldTypes\Configs\ContentPicker::class,
-                        \SolutionForest\InspireCms\FieldTypes\Configs\MediaPicker::class,
+                        \SolutionForest\InspireCms\Fields\Configs\Translate::class,
+                        \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
+                        \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
                     ], false),
                 FilamentPeekPlugin::make(),
                 \Filament\SpatieLaravelTranslatablePlugin::make(),

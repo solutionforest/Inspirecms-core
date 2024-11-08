@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\FieldTypes\Configs;
+namespace SolutionForest\InspireCms\Fields\Configs;
 
 use Filament\Forms;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;

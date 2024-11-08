@@ -51,7 +51,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
 
                 } else {
 
-                    if ($fiFormConfig instanceof \SolutionForest\InspireCms\FieldTypes\Configs\Translate) {
+                    if ($fiFormConfig instanceof \SolutionForest\InspireCms\Fields\Configs\Translate) {
                         $fiFormConfig->setFieldVariable([
                             'name' => $fieldName,
                             'label' => $field->label,

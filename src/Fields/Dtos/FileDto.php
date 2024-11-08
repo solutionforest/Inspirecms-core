@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Dtos\Assets;
+namespace SolutionForest\InspireCms\Fields\Dtos;
 
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
