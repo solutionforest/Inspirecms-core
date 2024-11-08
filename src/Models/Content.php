@@ -30,26 +30,26 @@ use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 #[ObservedBy(ContentObserver::class)]
 class Content extends BaseModel implements ContentContract
 {
-    use HasUuids;
-    use HasAuthor;
-    use NestableTrait;
     use BelongsToNestableTree;
-    use Concerns\HasTranslations {
-        setTranslation as protected traitSetTranslation;
-        getTranslation as protected traitGetTranslation;
-        getTranslations as protected traitGetTranslations;
-    }
     use Concerns\HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
     use Concerns\HasContentWebSetting;
     use Concerns\HasTemplates;
+    use Concerns\HasTranslations {
+        setTranslation as protected traitSetTranslation;
+        getTranslation as protected traitGetTranslation;
+        getTranslations as protected traitGetTranslations;
+    }
+    use HasAuthor;
+    use HasFactory;
+    use HasUuids;
+    use NestableTrait;
     use Searchable {
         queueMakeSearchable as protected traitQueueMakeSearchable;
         queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
     }
     use SoftDeletes;
-    use HasFactory;
 
     protected $guarded = ['id'];
 
