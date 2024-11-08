@@ -326,6 +326,8 @@ class Content extends BaseModel implements ContentContract
 
         return $dtoClass::fromTranslatableArray(
             $dtoParameters,
+            $locale,
+            $fallbackLocale,
             $availableLocales,
         );
     }
