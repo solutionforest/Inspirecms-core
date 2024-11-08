@@ -99,8 +99,6 @@ trait ContentPageTrait
             ->actions([
                 CreateContentItemAction::make(),
                 ActionGroup::make([
-                    // Some logic change (documentType also is nestable now)
-                    // LinkContentItemToParentAction::make('item_link_to_parent'),
                     ReorderContentItemAction::make('reorder_content_item'),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),

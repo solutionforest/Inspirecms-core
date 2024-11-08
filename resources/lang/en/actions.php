@@ -192,19 +192,6 @@ return [
 
     ],
 
-    'link_to_parent' => [
-
-        'label' => 'Link to parent',
-
-        'notifications' => [
-            'success' => [
-                'title' => 'Link to parent successful',
-            ],
-        ],
-
-        'permission_display_name' => 'Link to parent',
-    ],
-
     'reorder_content' => [
 
         'label' => 'Reorder content',

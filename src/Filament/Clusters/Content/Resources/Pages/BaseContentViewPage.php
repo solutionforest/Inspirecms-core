@@ -14,7 +14,6 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
-use SolutionForest\InspireCms\Filament\Actions\LinkContentToParentAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
@@ -64,8 +63,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 ])->dropdown(false),
                 Actions\ActionGroup::make([
                     ContentHistoryAction::make(),
-                    // Some logic change (documentType also is nestable now)
-                    // LinkContentToParentAction::make(),
                     ReorderContentAction::make(),
                 ])->dropdown(false),
             ]),
@@ -88,7 +85,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
 
                 break;
             case $action instanceof Actions\EditAction:
-            case $action instanceof LinkContentToParentAction:
                 $action
                     ->hidden(fn ($record) => $record->trashed());
 

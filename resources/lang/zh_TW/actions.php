@@ -192,19 +192,6 @@ return [
 
     ],
 
-    'link_to_parent' => [
-
-        'label' => '鏈接到父項',
-
-        'notifications' => [
-            'success' => [
-                'title' => '鏈接到父項成功',
-            ],
-        ],
-
-        'permission_display_name' => '鏈接到父項',
-    ],
-
     'reorder_content' => [
 
         'label' => '重新排序內容',
