@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 trait HasContentWebSetting
 {

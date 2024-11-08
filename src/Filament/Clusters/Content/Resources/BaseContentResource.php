@@ -31,11 +31,11 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 abstract class BaseContentResource extends Resource implements ClusterSectionResource
 {

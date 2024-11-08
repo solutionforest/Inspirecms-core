@@ -10,11 +10,11 @@ use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as Navigation
 use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
 use SolutionForest\InspireCms\Observers\NavigationObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 #[ObservedBy(NavigationObserver::class)]
 class Navigation extends BaseModel implements NavigationContract

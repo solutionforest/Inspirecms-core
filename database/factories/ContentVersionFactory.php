@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\ContentVersion;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class ContentVersionFactory extends Factory
 {

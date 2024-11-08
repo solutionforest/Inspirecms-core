@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use SolutionForest\InspireCms\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Models\Content;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class ContentFactory extends Factory
 {
