@@ -26,7 +26,7 @@ return new class extends BaseMigration
 
             $table->index('document_type_id');
             $table->index('status');
-            $table->index(['slug', 'parent_id']);
+            $table->unique(['slug', 'parent_id']);
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
