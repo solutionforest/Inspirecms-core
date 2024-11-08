@@ -65,7 +65,7 @@ trait ContentPageTrait
             )
             ->determineRecordLabelUsing(fn ($record) => $record->title)
             ->determineRecordHasChildrenUsing(function ($record) {
-                if ($record->documentType->isShowChildrenAsTable()) {
+                if ($record->documentType?->isShowChildrenAsTable()) {
                     return false;
                 }
 
