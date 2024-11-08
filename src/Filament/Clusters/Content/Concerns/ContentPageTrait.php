@@ -31,6 +31,8 @@ trait ContentPageTrait
 
     public array $expandedModelExplorerItems = [];
 
+    public array $cachedModelExplorerRecords = [];
+
     public function mountContentPageTrait()
     {
         if (! $this instanceof ListRecords) {
@@ -139,7 +141,11 @@ trait ContentPageTrait
             return null;
         }
 
-        return $this->getModelExplorer()->findRecord($key);
+        if (isset($this->cachedModelExplorerRecords[$key])) {
+            return $this->cachedModelExplorerRecords[$key];
+        }
+
+        return $this->cachedModelExplorerRecords[$key] = $this->getModelExplorer()->findRecord($key);
     }
 
     protected function configureSelectedModelItemFormAction(Actions\Action | TreeNodeAction $action): void

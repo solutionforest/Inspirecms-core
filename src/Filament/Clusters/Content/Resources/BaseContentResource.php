@@ -296,7 +296,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return parent::getEloquentQuery()->with([
             'publishedVersions', // To get published version, and determine is published
-            'documentType', // For template use
+            'documentType.templates', // For template use
             'parent', // To get parent title
         ]);
     }
@@ -304,9 +304,16 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function resolveRecordRouteBinding(int | string $key): ?Model
     {
         return app(static::getModel())
-            ->resolveRouteBindingQuery(static::getEloquentQuery()->withoutGlobalScopes([
-                SoftDeletingScope::class,
-            ]), $key, static::getRecordRouteKeyName())
+            ->resolveRouteBindingQuery(static::getEloquentQuery()
+                ->with([
+                    'documentType.fieldGroups.fields.group',
+                ])
+                ->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ]), 
+                $key, 
+                static::getRecordRouteKeyName()
+            )
             ->first();
     }
 
@@ -498,7 +505,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             } else {
 
                 $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
-                    ->with(['fieldGroups'])
+                    ->with(['fieldGroups.fields'])
                     ->whereHas('fieldGroups')
                     ->find($documentType);
 

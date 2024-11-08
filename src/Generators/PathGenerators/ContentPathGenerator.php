@@ -18,6 +18,7 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
 
     public function getFullPath(Content $content): string
     {
+        // dd($content->order, $content);
         $ancestors = $content->ancestors();
         $slugs = [];
         foreach ($ancestors as $ancestor) {
