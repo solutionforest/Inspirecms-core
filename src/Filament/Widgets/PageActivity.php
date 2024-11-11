@@ -59,9 +59,13 @@ class PageActivity extends BaseWidget
 
     protected function getLatestUpdatePagesQuery(): Builder
     {
-        $query = InspireCmsConfig::getContentModelClass()::query();
+        $query = InspireCmsConfig::getContentModelClass()::with([
+            'publishedVersions',
+        ])->withoutGlobalScopes([
+            'nestableTreeDetail',
+        ]);
 
-        return $query->with(['publishedVersions'])->orderByDesc('updated_at')->take(static::$totalTakeLatest);
+        return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
     }
 
     //region Table Configuration
