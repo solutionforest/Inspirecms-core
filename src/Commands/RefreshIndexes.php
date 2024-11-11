@@ -44,6 +44,6 @@ class RefreshIndexes extends Command
     {
         return array_filter([
             ModelManifest::get(Content::class),
-        ], fn ($model) => !is_null($model) && class_exists($model));
+        ], fn ($model) => ! is_null($model) && class_exists($model));
     }
 }

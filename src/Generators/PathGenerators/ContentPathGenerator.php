@@ -24,7 +24,7 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
         $slugs = [];
 
         foreach ($ancestorsAndSelf as $item) {
-            
+
             $itemOrder = $item->nestable_order;
 
             if (is_null($itemOrder)) {
