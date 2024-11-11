@@ -7,8 +7,8 @@
         "build:styles": "npx tailwindcss -i ./resources/css/index.css -o ./resources/dist/inspirecms.css --postcss --minify",
         "build:scripts": "node ./bin/build.js",
         "purge": "filament-purge -i resources/dist/inspirecms.css -o resources/dist/inspirecms.css -v 3.x",
-        "dev": "npm-run-all --parallel dev:*",
-        "build": "npm-run-all build:*"
+        "dev": "npm run dev:styles && npm run dev:scripts",
+        "build": "npm run build:styles && npm run build:scripts"
     },
     "devDependencies": {
         "@awcodes/filament-plugin-purge": "^1.1.1",
