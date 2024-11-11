@@ -11,6 +11,7 @@ class Settings extends Cluster implements ClusterSection
     use ClusterSectionTrait;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog-6-tooth';
+    protected static ?int $navigationSort = -8;
 
     public static function getNavigationLabel(): string
     {

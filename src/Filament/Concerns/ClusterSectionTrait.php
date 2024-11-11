@@ -18,10 +18,11 @@ trait ClusterSectionTrait
 
     public static function getNavigationItems(): array
     {
-        if (config('inspirecms.filament.enable_cluster_navigation')) {
-            return parent::getNavigationItems();
-        }
         $items = parent::getNavigationItems();
+
+        if (config('inspirecms.filament.enable_cluster_navigation')) {
+            return $items;
+        }
         if (count($items) == 1) {
             $item = $items[0];
             if ($item instanceof NavigationItem && ! $item->getGroup()) {
