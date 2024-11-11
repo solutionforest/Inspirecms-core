@@ -55,7 +55,6 @@ trait ContentPageTrait
             ->modifyQueryUsing(
                 fn ($query) => $query
                     ->sortedByTree()
-                    ->withNestableTreeParentId()
                     ->withCount([
                         'children',
                     ])
