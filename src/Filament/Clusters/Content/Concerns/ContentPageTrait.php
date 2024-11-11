@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
-use SolutionForest\InspireCms\Filament\TreeNode\Actions\LinkContentItemToParentAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -187,13 +186,6 @@ trait ContentPageTrait
 
                 break;
 
-            case $action instanceof LinkContentItemToParentAction:
-
-                $action;
-                // ->record(fn (array $arguments) => isset($arguments['key']) ? $this->resolveSelectedModelItem($arguments['key']) : null)
-                // ->hidden(fn (array $arguments) => (isset($arguments['key']) && $arguments['key'] === 'root') || ! isset($arguments['key']))
-
-                break;
             case $action instanceof ReorderContentItemAction:
 
                 $action
