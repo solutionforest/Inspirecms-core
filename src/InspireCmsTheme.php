@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms;
 
 use Filament\Contracts\Plugin;
 use Filament\Panel;
+use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
 use Filament\Support\Colors\Color;
 use Filament\Support\Facades\FilamentAsset;
@@ -19,6 +20,7 @@ class InspireCmsTheme implements Plugin
     {
         FilamentAsset::register([
             Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
+            Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
         ]);
 
         $panel
