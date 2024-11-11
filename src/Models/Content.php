@@ -44,7 +44,9 @@ class Content extends BaseModel implements ContentContract
     use HasAuthor;
     use HasFactory;
     use HasUuids;
-    use NestableTrait;
+    use NestableTrait {
+        parent as protected traitParent;
+    }
     use Searchable {
         queueMakeSearchable as protected traitQueueMakeSearchable;
         queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
@@ -79,6 +81,12 @@ class Content extends BaseModel implements ContentContract
     public function sitemap(): MorphOne
     {
         return $this->morphOne(InspireCmsConfig::getSitemapModelClass(), 'model');
+    }
+
+    public function parent(): BelongsTo
+    {
+        // With nestable tree
+        return $this->belongsTo(static::class, $this->getNestableParentIdName());
     }
 
     public function trashedParent(): BelongsTo

@@ -39,8 +39,7 @@ class ContentController extends Controller
 
         // Is index page
         if (blank($slug)) {
-            // todo: add index page setting
-            $slug = 'home';
+            $slug = '/';
         }
 
         $content = $this->findContent($slug);

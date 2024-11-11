@@ -18,13 +18,26 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
 
     public function getFullPath(Content $content): string
     {
-        // dd($content->order, $content);
+
         $ancestors = $content->ancestors();
+        $ancestorsAndSelf = $ancestors->push($content);
         $slugs = [];
-        foreach ($ancestors as $ancestor) {
-            $slugs[] = $ancestor->slug;
+
+        foreach ($ancestorsAndSelf as $item) {
+            
+            $itemOrder = $item->nestable_order;
+
+            if (is_null($itemOrder)) {
+                $item->loadMissing('nestableTree');
+                $itemOrder = $item->nestableTree?->order ?? 0;
+            }
+
+            if ($item->isRoot() && $itemOrder == 1) {
+                continue;
+            }
+
+            $slugs[] = $item->slug;
         }
-        $slugs[] = $content->slug;
 
         return implode('/', $slugs);
     }
