@@ -10,9 +10,11 @@ class Dashboard extends Page
 {
     protected static string $routePath = '/';
 
-    protected static ?int $navigationSort = -2;
+    protected static ?int $navigationSort = -999;
+    
+    protected static ?string $navigationIcon = 'heroicon-s-home';
 
-    protected static bool $shouldRegisterNavigation = false;
+    protected static bool $shouldRegisterNavigation = true;
 
     public static string $view = 'inspirecms::filament.pages.dashboard';
 
