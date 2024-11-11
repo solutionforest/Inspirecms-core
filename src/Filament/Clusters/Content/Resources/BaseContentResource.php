@@ -304,14 +304,15 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function resolveRecordRouteBinding(int | string $key): ?Model
     {
         return app(static::getModel())
-            ->resolveRouteBindingQuery(static::getEloquentQuery()
-                ->with([
-                    'documentType.fieldGroups.fields.group',
-                ])
-                ->withoutGlobalScopes([
-                    SoftDeletingScope::class,
-                ]), 
-                $key, 
+            ->resolveRouteBindingQuery(
+                static::getEloquentQuery()
+                    ->with([
+                        'documentType.fieldGroups.fields.group',
+                    ])
+                    ->withoutGlobalScopes([
+                        SoftDeletingScope::class,
+                    ]),
+                $key,
                 static::getRecordRouteKeyName()
             )
             ->first();
