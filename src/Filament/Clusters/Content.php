@@ -11,6 +11,7 @@ class Content extends Cluster implements ClusterSection
     use ClusterSectionTrait;
 
     protected static ?string $navigationIcon = 'heroicon-o-folder';
+
     protected static ?int $navigationSort = -10;
 
     public static function getNavigationLabel(): string

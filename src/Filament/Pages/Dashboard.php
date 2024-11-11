@@ -11,7 +11,7 @@ class Dashboard extends Page
     protected static string $routePath = '/';
 
     protected static ?int $navigationSort = -999;
-    
+
     protected static ?string $navigationIcon = 'heroicon-s-home';
 
     protected static bool $shouldRegisterNavigation = true;

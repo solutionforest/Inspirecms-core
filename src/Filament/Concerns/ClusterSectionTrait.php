@@ -31,7 +31,7 @@ trait ClusterSectionTrait
                 if (empty($childComponents)) {
                     return [$item->group($item->getLabel())];
                 }
-                
+
                 $newItems = collect($childComponents)
                     ->flatMap(function ($fqcn) {
                         if (is_subclass_of($fqcn, \Filament\Resources\Resource::class)) {
