@@ -317,6 +317,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->first();
     }
 
+    public static function getRecordRouteKeyName(): ?string
+    {
+        return app(static::getModel())->getQualifiedKeyName();
+    }
+
     //region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
