@@ -125,6 +125,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
 
         $record->fill(Arr::except($data, $translatableAttributes));
 
+        // handle 'Property Data' translation here
+        $record->setTranslation('propertyData', '', $data['propertyData'] ?? []);
+
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
             $record->setTranslation($key, $this->activeLocale, $value);
         }
@@ -145,7 +148,11 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 ...$localeData,
             ];
 
+            // Since the "propertyData" field is not translatable and already validated before, we skip this.
+            unset($this->data['propertyData']);
+
             try {
+                // Validataion for the current locale
                 $this->form->validate();
             } catch (ValidationException $exception) {
                 if (! array_key_exists($locale, $existingLocales)) {
@@ -163,9 +170,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 $record->setTranslation($key, $locale, $value);
             }
         }
-
-        // handle 'Property Data' translation here
-        $record->setTranslation('propertyData', '', $data['propertyData'] ?? []);
 
         $this->data = $originalData;
 
