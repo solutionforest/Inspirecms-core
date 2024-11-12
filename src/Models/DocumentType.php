@@ -49,17 +49,17 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             'id',
             'field_group_id',
         )
-        ->where($fieldGroupableModel->qualifyColumn('groupabled_type'), $this->getMorphClass())
-        ->whereExists(function ($query) use ($fieldGroupModel, $fieldModel) {
-            $query
-                ->from($fieldGroupModel->getTable())
-                ->whereColumn(
-                    $fieldGroupModel->qualifyColumn('id'),
-                    $fieldModel->qualifyColumn('group_id')
-                );
-        })
-        ->orderBy($fieldGroupableModel->qualifyColumn($fieldGroupableModel->determineOrderColumnName()))
-        ->orderBy($fieldModel->qualifyColumn($fieldModel->determineOrderColumnName()));
+            ->where($fieldGroupableModel->qualifyColumn('groupabled_type'), $this->getMorphClass())
+            ->whereExists(function ($query) use ($fieldGroupModel, $fieldModel) {
+                $query
+                    ->from($fieldGroupModel->getTable())
+                    ->whereColumn(
+                        $fieldGroupModel->qualifyColumn('id'),
+                        $fieldModel->qualifyColumn('group_id')
+                    );
+            })
+            ->orderBy($fieldGroupableModel->qualifyColumn($fieldGroupableModel->determineOrderColumnName()))
+            ->orderBy($fieldModel->qualifyColumn($fieldModel->determineOrderColumnName()));
     }
 
     public function fieldGroups(): MorphToMany

@@ -12,8 +12,6 @@ interface DocumentType extends Base\HasTemplates
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function fields(): HasManyThrough;
 

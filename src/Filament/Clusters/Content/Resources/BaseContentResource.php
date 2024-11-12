@@ -508,7 +508,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                 $documentType->loadMissing('fieldGroups.fields');
 
-            } else if (! is_null($documentType)) {
+            } elseif (! is_null($documentType)) {
 
                 $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
                     ->with(['fieldGroups.fields']) // build filament fields
