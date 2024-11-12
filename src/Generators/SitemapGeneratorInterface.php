@@ -24,9 +24,8 @@ interface SitemapGeneratorInterface
     /**
      * Sends a notification when a process fails.
      *
-     * @param \Throwable $exception The exception that caused the failure.
-     * @param Model|Authenticatable|Collection|array $notifiables
-     * @return void
+     * @param  \Throwable  $exception  The exception that caused the failure.
+     * @param  Model|Authenticatable|Collection|array  $notifiables
      */
     public function sendFailedNotification(\Throwable $exception, $notifiables = []): void;
 }
