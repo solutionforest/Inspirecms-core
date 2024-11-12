@@ -2,12 +2,10 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
 use SolutionForest\InspireCms\Observers\LanguageObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
-#[ObservedBy(LanguageObserver::class)]
 class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
@@ -49,5 +47,12 @@ class Language extends BaseModel implements LanguageContract
         );
 
         return $result;
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(LanguageObserver::class);
     }
 }

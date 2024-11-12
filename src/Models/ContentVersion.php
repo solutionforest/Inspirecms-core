@@ -2,22 +2,17 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use SolutionForest\InspireCms\Database\Factories\ContentVersionFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Observers\ContentVersionObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
-#[ObservedBy(ContentVersionObserver::class)]
 class ContentVersion extends BaseModel implements ContentVersionContract
 {
     use HasAuthor;
-    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -79,10 +74,10 @@ class ContentVersion extends BaseModel implements ContentVersionContract
     }
     //endregion Scopes
 
-    //region Factory
-    protected static function newFactory()
+    public static function boot()
     {
-        return ContentVersionFactory::new();
+        parent::boot();
+
+        static::observe(ContentVersionObserver::class);
     }
-    //endregion Factory
 }

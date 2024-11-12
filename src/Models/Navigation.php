@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
@@ -16,7 +15,6 @@ use SolutionForest\InspireCms\Observers\NavigationObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
-#[ObservedBy(NavigationObserver::class)]
 class Navigation extends BaseModel implements NavigationContract
 {
     use Concerns\HasTranslations;
@@ -137,5 +135,12 @@ class Navigation extends BaseModel implements NavigationContract
         if ($save) {
             $this->save();
         }
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(NavigationObserver::class);
     }
 }

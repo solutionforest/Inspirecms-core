@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -10,7 +9,6 @@ use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
 use SolutionForest\InspireCms\Observers\TemplateObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
-#[ObservedBy(TemplateObserver::class)]
 class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
@@ -92,5 +90,12 @@ class Template extends BaseModel implements TemplateContract
     protected function getTemplateDirectory(): string
     {
         return config('inspirecms.template.path');
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(TemplateObserver::class);
     }
 }

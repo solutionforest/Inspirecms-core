@@ -2,18 +2,15 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Scout\Searchable;
-use SolutionForest\InspireCms\Database\Factories\ContentFactory;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Events;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
@@ -27,7 +24,6 @@ use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
-#[ObservedBy(ContentObserver::class)]
 class Content extends BaseModel implements ContentContract
 {
     use BelongsToNestableTree;
@@ -42,7 +38,6 @@ class Content extends BaseModel implements ContentContract
         getTranslations as protected traitGetTranslations;
     }
     use HasAuthor;
-    use HasFactory;
     use HasUuids;
     use NestableTrait {
         parent as protected traitParent;
@@ -439,13 +434,6 @@ class Content extends BaseModel implements ContentContract
     }
     //endregion Nestable
 
-    //region Factory
-    protected static function newFactory()
-    {
-        return ContentFactory::new();
-    }
-    //endregion Factory
-
     //region ContentVersion
     protected function prepareContentVersionData(): array
     {
@@ -497,4 +485,11 @@ class Content extends BaseModel implements ContentContract
         ];
     }
     //endregion ContentVersion
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(ContentObserver::class);
+    }
 }

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -16,7 +15,6 @@ use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 
-#[ObservedBy(DocumentTypeObserver::class)]
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
@@ -227,10 +225,10 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->exists && $this->isWebPageType();
     }
 
-    //region Factory
-    protected static function newFactory()
+    public static function boot()
     {
-        return \SolutionForest\InspireCms\Database\Factories\DocumentTypeFactory::new();
+        parent::boot();
+        
+        static::observe(DocumentTypeObserver::class);
     }
-    //endregion Factory
 }

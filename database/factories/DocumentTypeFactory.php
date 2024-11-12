@@ -3,12 +3,9 @@
 namespace SolutionForest\InspireCms\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use SolutionForest\InspireCms\Models\DocumentType;
 
 class DocumentTypeFactory extends Factory
 {
-    protected $model = DocumentType::class;
-
     public function definition()
     {
         return [

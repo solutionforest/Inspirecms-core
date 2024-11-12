@@ -1,19 +1,17 @@
 <?php
 
-namespace SolutionForest\InspireCms\Tests\ContentVersions\Commands;
+namespace SolutionForest\InspireCms\Tests\Commands;
 
 use SolutionForest\InspireCms\Commands\CleanupContentVersion;
 use SolutionForest\InspireCms\Tests\TestCase;
+use SolutionForest\InspireCms\Tests\TestModels\ContentPublishVersion;
+use SolutionForest\InspireCms\Tests\TestModels\ContentVersion;
 
-// use RefreshDatabase;
-
-class CleanCommandTest extends TestCase
+class CleanContentVersionCommandTest extends TestCase
 {
     public function test_handle_no_versions_to_cleanup()
     {
-        $modelClass = $this->getModel('contentVersion');
-
-        $model = $modelClass::factory()->avoidToClean(false)->create();
+        $model = ContentVersion::factory()->avoidToClean(false)->create();
 
         // Run the command
         $this->artisan('inspirecms:cleanup-content-version')
@@ -24,7 +22,7 @@ class CleanCommandTest extends TestCase
     public function test_handle_cleanup_versions()
     {
         // Create some versions to cleanup
-        $modelClass = $this->getModel('contentVersion');
+        $modelClass = ContentVersion::class;
 
         $model = new $modelClass;
 
@@ -49,7 +47,7 @@ class CleanCommandTest extends TestCase
     public function test_handle_cleanup_versions_with_avoid_to_clean()
     {
         // Create some versions to cleanup
-        $modelClass = $this->getModel('contentVersion');
+        $modelClass = ContentVersion::class;
 
         $model = new $modelClass;
 
@@ -74,8 +72,8 @@ class CleanCommandTest extends TestCase
     public function test_handle_cleanup_versions_with_publish_log()
     {
         // Create some versions to cleanup
-        $modelClass = $this->getModel('contentVersion');
-        $publishVerionModelClass = $this->getModel('ContentPublishVersion');
+        $modelClass = ContentVersion::class;
+        $publishVerionModelClass = ContentPublishVersion::class;
 
         $model = new $modelClass;
         $publishVersionModel = new $publishVerionModelClass;

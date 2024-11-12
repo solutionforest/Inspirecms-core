@@ -113,6 +113,11 @@ class ModelManifest implements ModelManifestInterface
         $shortName = $class->getShortName();
         $namespace = str($class->getNamespaceName());
 
+        // For test models, remove the 'Tests\TestModels' namespace.
+        if (str($namespace)->contains('Tests\\TestModels')) {
+            $namespace = (string) str($namespace)->replace('Tests\\TestModels', 'Models');
+        }
+
         if (str($namespace)->startsWith('SolutionForest\\InspireCms\\Models')) {
             $namespace = 'SolutionForest\\InspireCms\\Models';
         } elseif (str($namespace)->startsWith('SolutionForest\\InspireCms\\Support\\Models')) {

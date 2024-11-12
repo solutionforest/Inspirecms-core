@@ -2,17 +2,13 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use SolutionForest\InspireCms\Database\Factories\ContentPublishVersionFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion as ContentPublishVersionContract;
 use SolutionForest\InspireCms\Support\Base\Models\BasePivotModel;
 
 class ContentPublishVersion extends BasePivotModel implements ContentPublishVersionContract
 {
-    use HasFactory;
-
     public $timestamps = false;
 
     protected $guarded = ['id'];
@@ -37,11 +33,4 @@ class ContentPublishVersion extends BasePivotModel implements ContentPublishVers
         return $query->where('published_at', '<', now());
     }
     //endregion Scope(s)
-
-    //region Factory
-    protected static function newFactory()
-    {
-        return ContentPublishVersionFactory::new();
-    }
-    //endregion Factory
 }

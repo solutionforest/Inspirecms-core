@@ -29,6 +29,9 @@ abstract class TestCase extends Orchestra
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'SolutionForest\\InspireCms\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
+        Factory::guessModelNamesUsing(
+            fn ($factory) => 'SolutionForest\\InspireCms\\Tests\\TestModels\\' . str_replace('Factory', '', class_basename($factory))
+        );
     }
 
     protected function getPackageProviders($app)
@@ -61,6 +64,7 @@ abstract class TestCase extends Orchestra
         config()->set('database.default', 'testing');
 
         //region inspirecms
+        static::registerTestModels();
         //endregion inspirecms
 
         //region inspirecms support
@@ -86,21 +90,28 @@ abstract class TestCase extends Orchestra
         }
     }
 
-    public function getModel(string $name)
+    protected static function registerTestModels()
     {
-        $guessName = (string) str($name)->studly()->replace(' ', '');
+        include_once __DIR__ . '/../vendor/solution-forest/inspirecms-support/tests/TestModels/MediaAsset.php';
+        include_once __DIR__ . '/../vendor/solution-forest/inspirecms-support/tests/TestModels/NestableTree.php';
 
-        try {
-            $model = match ($guessName) {
-                'Field' => \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::getFieldModelClass(),
-                'FieldGroup' => \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::getFieldGroupModelClass(),
-                'MediaAsset' => \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::getModel(),
-                default => \SolutionForest\InspireCms\Facades\ModelManifest::get("SolutionForest\\InspireCms\\Models\\Contracts\\{$guessName}"),
-            };
-        } catch (\Throwable $th) {
-            $model = null;
+        foreach (array_keys(config('inspirecms.models.fqcn')) as $key) {
+
+            $guessName = (string) str($key)->studly()->replace(' ', '');
+
+            $testModel = "SolutionForest\\InspireCms\\Tests\\TestModels\\{$guessName}";
+
+            if (in_array($key, ['media_asset', 'nestable_tree'])) {
+                $testModel = "SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\{$guessName}";
+            }
+
+            if (!class_exists($testModel)) {
+                continue;
+            }
+
+            config()->set("inspirecms.models.fqcn.{$key}", $testModel);
         }
 
-        return $model ?? "SolutionForest\\InspireCms\\Models\\{$guessName}";
+        \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }
 }

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -10,7 +9,6 @@ use SolutionForest\InspireCms\Models\Contracts\Sitemap as SitemapContract;
 use SolutionForest\InspireCms\Observers\SitemapObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
-#[ObservedBy(SitemapObserver::class)]
 class Sitemap extends BaseModel implements SitemapContract
 {
     protected $guarded = ['id'];
@@ -128,5 +126,12 @@ class Sitemap extends BaseModel implements SitemapContract
         if ($save) {
             $this->save();
         }
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(SitemapObserver::class);
     }
 }

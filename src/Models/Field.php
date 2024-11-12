@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Models\Field as BaseModel;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
@@ -11,7 +10,6 @@ use SolutionForest\InspireCms\Models\Contracts\Field as FieldContract;
 use SolutionForest\InspireCms\Observers\FieldObserver;
 use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 
-#[ObservedBy(FieldObserver::class)]
 class Field extends BaseModel implements FieldContract
 {
     public function getStatePathWithGroup(): string
@@ -70,5 +68,12 @@ class Field extends BaseModel implements FieldContract
         return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
     //endregion Scope(s)
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(FieldObserver::class);
+    }
 
 }
