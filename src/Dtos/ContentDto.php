@@ -51,9 +51,8 @@ class ContentDto extends BaseTranslatableModelDto
     protected array $translatableAttributes = ['title'];
 
     /**
-     * @param Content $model
-     * @param array $propertyData
-     * @param string $locale
+     * @param  Content  $model
+     * @param  string  $locale
      */
     public static function make($model, array $propertyData, $locale)
     {
@@ -87,7 +86,7 @@ class ContentDto extends BaseTranslatableModelDto
             $children = collect();
         }
 
-        if (!$model?->relationLoaded('children')) {
+        if (! $model?->relationLoaded('children')) {
             $children = $model->children()->with([
                 'webSetting',
                 'publishedVersions',
