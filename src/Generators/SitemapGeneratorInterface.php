@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Generators;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+
 interface SitemapGeneratorInterface
 {
     /**
@@ -11,4 +15,18 @@ interface SitemapGeneratorInterface
      * which is used by search engines to index the website's pages.
      */
     public function generateSitemapFile(): void;
+
+    /**
+     * @return \Illuminate\Notifications\Notification|\Filament\Notifications\Notification
+     */
+    public function createFailedNotification();
+
+    /**
+     * Sends a notification when a process fails.
+     *
+     * @param \Throwable $exception The exception that caused the failure.
+     * @param Model|Authenticatable|Collection|array $notifiables
+     * @return void
+     */
+    public function sendFailedNotification(\Throwable $exception, $notifiables = []): void;
 }
