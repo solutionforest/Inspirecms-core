@@ -44,4 +44,9 @@ class Trashes extends BaseContentListTrashPage
     {
         return __('inspirecms::inspirecms.trash');
     }
+    
+    public function getTitle(): string
+    {
+        return __('inspirecms::inspirecms.trash');
+    }
 }
