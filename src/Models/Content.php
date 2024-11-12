@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
 use Laravel\Scout\Searchable;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Events;
@@ -282,91 +283,50 @@ class Content extends BaseModel implements ContentContract
         );
     }
 
-    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?Contracts\DocumentType $documentType = null)
+    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?Contracts\DocumentType $documentType = null)
     {
         $dtoClass = static::getDtoClass();
 
-        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
-
+        // create/edit form
         if (is_array($record)) {
 
-            $id = $record['id'] ?? null;
-
-            if (isset($record['id'])) {
-
-                $record = static::query()->findOrFail($id);
-
-                return static::toPreviewDto($record, $propertyData, $locale, $fallbackLocale, $documentType);
-            }
-
-            // Is preview while creating a new record
-
-            if ($documentType && ! $documentType->relationLoaded('fields')) {
-                $documentType->loadMissing('fields.group');
-            }
-
-            $dtoParameters = $record;
-
-            $dtoParameters['propertyTypes'] = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
-
-            $dtoParameters['propertyData'] = $propertyData;
-
-            $seoData = [
-                ...($record['webSetting']['seo'] ?? []),
-                ...($record['webSetting']['robots'] ?? []),
+            $relationships = [
+                'webSetting',
+                'children',
             ];
+            
+            $tmpModel = new static([
+                ...Arr::except($record, $relationships),
+            ]);
 
-            $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-                $locale => $seoData,
-            ])->all();
+            $tmpModel->setRelation('documentType', $documentType);
 
-        } else {
+            foreach ($relationships as $relationship) {
+                $relationshipData = $record[$relationship] ?? [];
+                switch ($relationship) {
+                    case 'children':
+                        // fetch key from create/edit form
+                        $relationshipModel = static::query()->findMany($relationshipData);
+                        break;
+                    default:
+                        $relationshipModel = app(static::class)->{$relationship}()->getRelated()->make($relationshipData);
+                        break;
+                }
+                $tmpModel->setRelation($relationship, $relationshipModel);
+            }
 
-            $dtoParameters = static::prepareDtoParameters($record, $propertyData, $documentType);
+            return $dtoClass::make(
+                $tmpModel,
+                $propertyData,
+                $locale,
+            );
+        } 
 
-        }
-
-        return $dtoClass::fromTranslatableArray(
-            $dtoParameters,
+        return $dtoClass::make(
+            $record,
+            $propertyData,
             $locale,
-            $fallbackLocale,
-            $availableLocales,
         );
-    }
-
-    private static function prepareDtoParameters(Model $record, array $propertyData, ?Contracts\DocumentType $documentType = null): array
-    {
-        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
-
-        // Load the necessary relations
-        $record->loadMissing([
-            'webSetting',
-            'publishedVersions',
-        ]);
-
-        if (is_null($documentType)) {
-            $record->loadMissing('documentType');
-            $documentType ??= $record->documentType;
-        }
-        if ($documentType && ! $documentType->relationLoaded('fields')) {
-            $documentType->loadMissing('fields.group');
-        }
-
-        $dtoParameters = $record->toArray();
-
-        $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-            $locale => $record->webSetting->toDto($locale),
-        ])->all();
-
-        $dtoParameters['urls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-            $locale => $record->getUrl($locale),
-        ])->all();
-
-        $dtoParameters['propertyTypes'] = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
-
-        $dtoParameters['propertyData'] = $propertyData;
-
-        return $dtoParameters;
     }
 
     //endregion Dto
@@ -420,7 +380,7 @@ class Content extends BaseModel implements ContentContract
     public function displayStatus(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => inspirecms_content_statuses()->getOption($this->status),
+            get: fn ($value) => $this->status ? inspirecms_content_statuses()->getOption($this->status) : null,
         );
     }
     //endregion Attribute(s)

@@ -158,7 +158,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                 $content,
                 $content->getLatestPublishedPropertyData(),
                 $this->getActiveFormsLocale(),
-                inspirecms()->getFallbackLanguage()?->code ?? app()->getLocale(),
                 $content->documentType,
             );
         }

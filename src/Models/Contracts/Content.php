@@ -32,7 +32,7 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
 
     public function navigation(): HasOne;
 
-    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?string $fallbackLocale = null, ?DocumentType $documentType = null);
+    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?DocumentType $documentType = null);
 
     /**
      * Generate a full slug base on parent.

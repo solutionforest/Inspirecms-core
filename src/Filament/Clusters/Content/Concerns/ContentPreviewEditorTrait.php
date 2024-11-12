@@ -52,11 +52,13 @@ trait ContentPreviewEditorTrait
         if ($this instanceof CreateRecord) {
             $editorData['operation'] = 'create';
             $editorData['contentData'] = $this->data;
-            $editorData['fallbackLocale'] = (new ($contentModel))->getFallbackLocale();
+            $editorData['contentData']['children'] = [];
         } else {
             $editorData['operation'] = 'edit';
 
             $content = $this->getRecord();
+            $editorData['contentData'] = $this->data;
+            $editorData['contentData']['children'] = $content->children()->pluck($content->getKeyName())->toArray();
             $editorData['contentKey'] = $content->getKey();
 
         }
@@ -72,22 +74,13 @@ trait ContentPreviewEditorTrait
             throw new \Exception('Model must implement ' . Content::class);
         }
 
-        if ($editorData['operation'] === 'create') {
-
-            $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($editorData['documentType']);
-
-        } else {
-
-            $contentKey = $editorData['contentKey'];
-            $content = static::getResource()::resolveRecordRouteBinding($contentKey);
-        }
+        $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($editorData['documentType']);
 
         $contentDto = $contentModel::toPreviewDto(
-            record: $editorData['operation'] === 'create' ? $editorData['contentData'] : $content,
+            record: $editorData['contentData'],
             propertyData: $editorData['propertyData'] ?? [],
             locale: $editorData['activeLocale'],
-            fallbackLocale: $editorData['operation'] === 'create' ? $editorData['fallbackLocale'] : $content->getFallbackLocale(),
-            documentType: $editorData['operation'] === 'create' ? $documentType : $content->documentType
+            documentType: $documentType,
         );
 
         $previewData['content'] = $contentDto;

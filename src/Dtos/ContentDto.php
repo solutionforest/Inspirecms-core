@@ -2,17 +2,17 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
-use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableDto;
+use SolutionForest\InspireCms\Models\Content;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 
-class ContentDto extends BaseTranslatableDto
+/**
+ * @extends BaseTranslatableModelDto<Content>
+ */
+class ContentDto extends BaseTranslatableModelDto
 {
-    /**
-     * @var int|string
-     */
-    public $id;
-
     /**
      * @var array<string,string>
      */
@@ -43,16 +43,34 @@ class ContentDto extends BaseTranslatableDto
      */
     public $seo;
 
+    /**
+     * @var ?SupportCollection<ContentDto>
+     */
+    public $children = null;
+
     protected array $translatableAttributes = ['title'];
 
-    public static function fromTranslatableArray(array $parameters, $locale, $fallbackLocale, $availableLocales = [])
+    /**
+     * @param Content $model
+     * @param array $propertyData
+     * @param string $locale
+     */
+    public static function make($model, array $propertyData, $locale)
     {
-        return parent::fromTranslatableArray(
-            static::mutuateParameters($parameters, [$locale, $fallbackLocale, $availableLocales]),
-            $locale,
-            $fallbackLocale,
-            $availableLocales
-        );
+        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
+
+        $parameters = static::prepareDtoParameters($model, $propertyData, $availableLocales);
+
+        $fallbackLocale = $model->getFallbackLocale() ?? 'en';
+
+        $dto = parent::fromArray($parameters);
+
+        $dto->setModel($model);
+        $dto->setLocale($locale);
+        $dto->setFallbackLocale($fallbackLocale);
+        $dto->setAvailableLocales($availableLocales);
+
+        return $dto;
     }
 
     /**
@@ -60,8 +78,31 @@ class ContentDto extends BaseTranslatableDto
      */
     public function getChildren()
     {
-        // todo: implement this method
-        return collect();
+        if ($this->children != null) {
+            return $this->children;
+        }
+
+        $model = $this->getModel();
+        if (is_null($model)) {
+            $children = collect();
+        }
+
+        if (!$model?->relationLoaded('children')) {
+            $children = $model->children()->with([
+                'webSetting',
+                'publishedVersions',
+                'documentType.fields.group',
+            ])->get() ?? collect();
+        } else {
+            $children = $model->children ?? collect();
+        }
+        $result = collect();
+        foreach ($children as $child) {
+            $propertyData = $child->getLatestPublishedPropertyData();
+            $result->push(static::make($child, $propertyData, $this->getLocale()));
+        }
+
+        return $this->children = $result;
     }
 
     /**
@@ -124,13 +165,42 @@ class ContentDto extends BaseTranslatableDto
 
     public function getSeo(?string $locale = null)
     {
-        return $this->seo->get($locale ?? $this->getLocale()) ?? $this->seo->get($this->getFallbackLocale());
+        return collect($this->seo)->get($locale ?? $this->getLocale()) ?? $this->seo->get($this->getFallbackLocale());
     }
 
     //region Helpers
+
+    protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLocales): array
+    {
+        // Load the necessary relations
+        $record->loadMissing([
+            'webSetting',
+            'publishedVersions',
+            'documentType.fields.group',
+        ]);
+
+        $dtoParameters = $record->toArray();
+
+        $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+            $locale => $record->webSetting->toDto($locale),
+        ])->all();
+
+        $dtoParameters['urls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+            $locale => $record->getUrl($locale),
+        ])->all();
+
+        $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
+
+        $dtoParameters['propertyData'] = $propertyData;
+
+        unset($dtoParameters['children']);  // Get by model
+
+        return static::mutuateParameters($dtoParameters, [$record->getFallbackLocale(), $availableLocales]);
+    }
+
     protected static function mutuateParameters(array $parameters, array $configs): array
     {
-        [$locale, $fallbackLocale, $availableLocales] = $configs;
+        [$fallbackLocale, $availableLocales] = $configs;
 
         $propertyTypes = collect($parameters['propertyTypes'] ?? [])
             ->map(fn ($propertyType) => is_array($propertyType) ? PropertyTypeDto::fromArray($propertyType) : $propertyType)
