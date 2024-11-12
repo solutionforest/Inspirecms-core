@@ -75,5 +75,4 @@ class Field extends BaseModel implements FieldContract
 
         static::observe(FieldObserver::class);
     }
-
 }

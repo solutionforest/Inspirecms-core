@@ -19,19 +19,19 @@ class DocumentTypeTest extends TestCase
             // ->has(Content::factory()->count(3), 'content')
             ->create();
 
-            try {
-        $content = new Content([
-            'title' => ['en' => 1],
-            'slug' => '1',
-            'status' => 0,
-            'parent_id' => KeyHelper::generateMinUuid(),
-            'document_type_id' => $documentType->getKey(),
-        ]);
-        $content->preloadContentVersionData();
-        $content->save();
-    } catch (\Exception $e) {
-        dd($e, $content ?? 'a');
-    }
+        try {
+            $content = new Content([
+                'title' => ['en' => 1],
+                'slug' => '1',
+                'status' => 0,
+                'parent_id' => KeyHelper::generateMinUuid(),
+                'document_type_id' => $documentType->getKey(),
+            ]);
+            $content->preloadContentVersionData();
+            $content->save();
+        } catch (\Exception $e) {
+            dd($e, $content ?? 'a');
+        }
 
         $documentType->delete();
     }

@@ -105,7 +105,7 @@ abstract class TestCase extends Orchestra
                 $testModel = "SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\{$guessName}";
             }
 
-            if (!class_exists($testModel)) {
+            if (! class_exists($testModel)) {
                 continue;
             }
 

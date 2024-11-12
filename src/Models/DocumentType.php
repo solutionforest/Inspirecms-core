@@ -228,7 +228,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     public static function boot()
     {
         parent::boot();
-        
+
         static::observe(DocumentTypeObserver::class);
     }
 }
