@@ -62,7 +62,7 @@ class PageActivity extends BaseWidget
         $query = InspireCmsConfig::getContentModelClass()::with([
             'publishedVersions',
         ])->withoutGlobalScopes([
-            'nestableTreeDetail',
+            \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
         ]);
 
         return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
