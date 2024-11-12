@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
@@ -20,6 +21,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
     use NestableTrait;
+    use HasFactory;
 
     protected $guarded = ['id'];
 
@@ -224,4 +226,11 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->exists && $this->isWebPageType();
     }
+    
+    //region Factory
+    protected static function newFactory()
+    {
+        return \SolutionForest\InspireCms\Database\Factories\DocumentTypeFactory::new();
+    }
+    //endregion Factory
 }
