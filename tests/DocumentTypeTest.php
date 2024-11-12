@@ -2,13 +2,10 @@
 
 namespace SolutionForest\InspireCms\Tests\Observers;
 
-use SolutionForest\InspireCms\Models\Content;
-use SolutionForest\InspireCms\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\TestCase;
 
 class DocumentTypeTest extends TestCase
 {
-
     /** @test */
     public function test_deleting_document_type_with_content_throws_exception()
     {
@@ -19,7 +16,7 @@ class DocumentTypeTest extends TestCase
         $documentType = $documentTypeModel::factory()->create();
 
         $this->getModel('Content')::factory(3)->create([
-            'document_type_id' => $documentType->getKey()
+            'document_type_id' => $documentType->getKey(),
         ]);
 
         $documentType->delete();

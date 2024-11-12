@@ -20,8 +20,8 @@ use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
-    use NestableTrait;
     use HasFactory;
+    use NestableTrait;
 
     protected $guarded = ['id'];
 
@@ -226,7 +226,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->exists && $this->isWebPageType();
     }
-    
+
     //region Factory
     protected static function newFactory()
     {

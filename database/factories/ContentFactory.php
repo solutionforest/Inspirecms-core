@@ -25,7 +25,7 @@ class ContentFactory extends Factory
             'document_type_id' => 1,
         ];
     }
-    
+
     /**
      * Configure the model factory.
      *
@@ -39,11 +39,11 @@ class ContentFactory extends Factory
             })->afterCreating(function (Content $content) {
                 /** @var Model */
                 $nestableTree = app(NestableTreeContract::class) ?? app(NestableTree::class);
-                
+
                 /** @var Factory */
-                $nestableTreeFactory  = in_array(HasFactory::class, class_uses($nestableTree)) ?
+                $nestableTreeFactory = in_array(HasFactory::class, class_uses($nestableTree)) ?
                     $nestableTree->factory() :
-                    new NestableTreeFactory();
+                    new NestableTreeFactory;
 
                 $nestableTreeFactory->create([
                     'nestable_id' => $content->getKey(),
