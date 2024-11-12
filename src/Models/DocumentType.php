@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
@@ -27,23 +28,38 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         'show_children_as_table' => 'boolean',
     ];
 
-    public function getFieldsThroughQuery()
+    public function fields(): HasManyThrough
     {
-        $fieldModel = app(InspireCmsConfig::getFieldModelClass());
-        $fieldGroupModel = $this->fieldGroups()->getRelated();
+        // target model
+        $fieldModelClass = InspireCmsConfig::getFieldModelClass();
+        // check existance of the field model
+        $fieldGroupModelClass = InspireCmsConfig::getFieldGroupModelClass();
+        // through table
+        $fieldGroupableModelClass = InspireCmsConfig::getFieldGroupableModelClass();
 
-        $q = $fieldModel::query()
-            ->withGroupName()
-            ->whereExists(
-                $this->fieldGroups()->getBaseQuery()
-                    ->select($fieldGroupModel->getQualifiedKeyName())
-                    ->whereColumn(
-                        $fieldGroupModel->getQualifiedKeyName(),
-                        $fieldModel->qualifyColumn('group_id'),
-                    )
-            );
+        $fieldModel = app($fieldModelClass);
+        $fieldGroupModel = app($fieldGroupModelClass);
+        $fieldGroupableModel = app($fieldGroupableModelClass);
 
-        return $q;
+        return $this->hasManyThrough(
+            $fieldModelClass,
+            $fieldGroupableModelClass,
+            'groupabled_id',
+            'group_id',
+            'id',
+            'field_group_id',
+        )
+        ->where($fieldGroupableModel->qualifyColumn('groupabled_type'), $this->getMorphClass())
+        ->whereExists(function ($query) use ($fieldGroupModel, $fieldModel) {
+            $query
+                ->from($fieldGroupModel->getTable())
+                ->whereColumn(
+                    $fieldGroupModel->qualifyColumn('id'),
+                    $fieldModel->qualifyColumn('group_id')
+                );
+        })
+        ->orderBy($fieldGroupableModel->qualifyColumn($fieldGroupableModel->determineOrderColumnName()))
+        ->orderBy($fieldModel->qualifyColumn($fieldModel->determineOrderColumnName()));
     }
 
     public function fieldGroups(): MorphToMany

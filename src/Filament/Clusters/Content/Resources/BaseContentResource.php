@@ -307,7 +307,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->resolveRouteBindingQuery(
                 static::getEloquentQuery()
                     ->with([
-                        'documentType.fieldGroups.fields.group',
+                        'documentType',
                     ])
                     ->withoutGlobalScopes([
                         SoftDeletingScope::class,
@@ -506,29 +506,29 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
             if ($documentType instanceof Model) {
 
-            } elseif (is_null($documentType)) {
-                return collect();
-            } else {
+                $documentType->loadMissing('fieldGroups.fields');
+
+            } else if (! is_null($documentType)) {
 
                 $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
-                    ->with(['fieldGroups.fields'])
+                    ->with(['fieldGroups.fields']) // build filament fields
                     ->whereHas('fieldGroups')
                     ->find($documentType);
+            }
 
-                if (! $documentType) {
-                    return collect();
-                }
+            if (! $documentType) {
+                return collect();
             }
 
             return $documentType->fieldGroups ?? collect();
         };
 
         $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromDocumentType) {
-            if ($record) {
+            if ($record) { //edit/view page
                 $fieldGroups = $record->documentType->fieldGroups;
-            } elseif ($livewire instanceof ContentForm) {
+            } elseif ($livewire instanceof ContentForm) { // create
                 $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
-            } elseif ($livewire instanceof BuilderEditor) {
+            } elseif ($livewire instanceof BuilderEditor) { // preview builder
                 $fieldGroups = $getFieldGroupsFromDocumentType($livewire->editorData['documentType'] ?? null);
             } else {
                 $fieldGroups = collect();

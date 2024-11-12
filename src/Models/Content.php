@@ -301,9 +301,8 @@ class Content extends BaseModel implements ContentContract
 
             // Is preview while creating a new record
 
-            //todo: load the document type dynamic fields
             if ($documentType && ! $documentType->relationLoaded('fields')) {
-                $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+                $documentType->loadMissing('fields.group');
             }
 
             $dtoParameters = $record;
@@ -341,7 +340,6 @@ class Content extends BaseModel implements ContentContract
 
         // Load the necessary relations
         $record->loadMissing([
-            // 'documentType.fieldGroups.fields.group',
             'webSetting',
             'publishedVersions',
         ]);
@@ -351,7 +349,7 @@ class Content extends BaseModel implements ContentContract
             $documentType ??= $record->documentType;
         }
         if ($documentType && ! $documentType->relationLoaded('fields')) {
-            $documentType->setRelation('fields', $documentType->getFieldsThroughQuery()->get());
+            $documentType->loadMissing('fields.group');
         }
 
         $dtoParameters = $record->toArray();

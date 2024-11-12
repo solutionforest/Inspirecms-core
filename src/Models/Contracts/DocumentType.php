@@ -4,11 +4,19 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 
 interface DocumentType extends Base\HasTemplates
 {
+    /**
+     * Get the fields associated with the document type through fieldGroups and fieldGroupables.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     */
+    public function fields(): HasManyThrough;
+
     /**
      * Get the field groups associated with the document type.
      *
