@@ -102,6 +102,7 @@ class Content extends BaseModel implements ContentContract
 
     public function getUrl(?string $locale = null): string
     {
+        ray($this)->backtrace()->blue();
         return ContentUrlGeneratorFactory::create()->getUrl($this, $locale);
     }
 
@@ -195,8 +196,6 @@ class Content extends BaseModel implements ContentContract
             'title' => $this->documentType?->title,
             'slug' => $this->documentType?->slug,
         ];
-
-        ray($data);
 
         event(new Events\Indexes\IndexingModel($this, $data));
 
