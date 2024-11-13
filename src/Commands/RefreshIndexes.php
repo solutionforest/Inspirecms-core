@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -20,22 +21,25 @@ class RefreshIndexes extends Command
             return static::FAILURE;
         }
 
+        Artisan::call('scout:sync-index-settings', [], $this->getOutput());
+
+        $bar = $this->output->createProgressBar(count($models));
+        $barMsgStyle = 'info';
+        $bar->setFormat("<$barMsgStyle>%message%</$barMsgStyle>\n %current%/%max% [%bar%] %percent:3s%%");
+
         foreach ($models as $model) {
-            $this->info("Refreshing indexes for {$model}...");
 
-            $records = $model::all();
+            $bar->setMessage("Importing {$model} ...");
 
-            $bar = $this->output->createProgressBar($records->count());
+            Artisan::call("scout:import", [
+                'model' => $model,
+            ], $this->getOutput());
 
-            $records->each(function ($record) use ($bar) {
-                $record->searchable();
-                $bar->advance();
-            });
+            $bar->advance();
 
-            $bar->finish();
-
-            $this->info("Indexes refreshed for {$model}.");
         }
+
+        $bar->finish();
 
         return static::SUCCESS;
     }

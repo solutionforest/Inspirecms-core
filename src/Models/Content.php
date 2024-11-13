@@ -163,7 +163,6 @@ class Content extends BaseModel implements ContentContract
         $this->loadMissing([
             'documentType',
             'parent',
-            'webSetting',
         ]);
         $latestVersion = $this->getLatestPublishedContentVersion();
         $data = $this->makeHidden([
@@ -182,10 +181,10 @@ class Content extends BaseModel implements ContentContract
         );
 
         $data['title'] = $this->getTranslations('title');
-        $data['is_web'] = $this->documentType?->isWebPageType();
+        $data['is_web'] = intval($this->documentType?->isWebPageType() ?? false);
 
         $data['level'] = $this->getLevel();
-        $data['path'] = $this->getFullSlug();
+        $data['full_path'] = $this->getFullSlug();
 
         $data['published_at'] = $latestVersion?->pivot?->published_at?->toIso8601String();
         $data['created_at'] = $this->{$this->getCreatedAtColumn()}?->toIso8601String();
@@ -197,17 +196,16 @@ class Content extends BaseModel implements ContentContract
             'slug' => $this->documentType?->slug,
         ];
 
-        $data['web_setting'] = [
-            'seo' => $this->webSetting->seo ?? [],
-            'robots' => $this->webSetting->robots ?? [],
-            'redirect_type' => $this->webSetting->redirect_type ?? null,
-            'redirect_content_id' => $this->webSetting->redirect_content_id ?? null,
-            'redirect_path' => $this->webSetting->redirect_path ?? null,
-        ];
+        ray($data);
 
         event(new Events\Indexes\IndexingModel($this, $data));
 
         return $data;
+    }
+    
+    public function shouldBeSearchable(): bool
+    {
+        return $this->isPublished();
     }
 
     /**
