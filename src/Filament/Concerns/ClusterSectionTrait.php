@@ -16,13 +16,58 @@ trait ClusterSectionTrait
         return filament()->auth()->user()->can(static::getAccessRightPermissionName());
     }
 
+    protected static function getSectionKey(): string
+    {
+        return strtolower(trim(class_basename(static::class)));
+    }
+
+    /**
+     * @param \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem $navigationItem
+     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     */
+    public static function configureSectionKeyOnNavigationItem($navigationItem)
+    {
+        return $navigationItem->section(static::getSectionKey());
+    }
+
+    /**
+     * @param \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem $navigationItem
+     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     */
+    public static function configureResourceKeyOnNavigationItem($resourceFqcn, $navigationItem)
+    {
+        return $navigationItem
+            ->section(static::getSectionKey())
+            ->itemKey((string)str(class_basename($resourceFqcn))->trim()->beforeLast('Resource')->snake()->lower());
+    }
+
+    /**
+     * @param \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem $navigationItem
+     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     */
+    public static function configurePageKeyOnNavigationItem($pageFqcn, $navigationItem)
+    {
+        return $navigationItem
+            ->section(static::getSectionKey())
+            ->itemKey((string)str(class_basename($pageFqcn))->trim()->snake()->lower());
+    }
+
     public static function getNavigationItems(): array
     {
-        $items = parent::getNavigationItems();
+        $items = collect(parent::getNavigationItems())
+            ->map(function ($item) {
+                if ($item instanceof \Filament\Navigation\NavigationItem| $item instanceof \SolutionForest\InspireCms\Filament\Navigation\NavigationItem) {
+                    return static::configureSectionKeyOnNavigationItem($item);
+                }
+
+                return $item;
+            })
+            ->all();
 
         if (config('inspirecms.filament.enable_cluster_navigation')) {
             return $items;
         }
+
         if (count($items) == 1) {
             $item = $items[0];
             if ($item instanceof NavigationItem && ! $item->getGroup()) {
@@ -32,12 +77,12 @@ trait ClusterSectionTrait
                     return [$item->group($item->getLabel())];
                 }
 
-                $newItems = collect($childComponents)
+                return collect($childComponents)
                     ->flatMap(function ($fqcn) {
                         if (is_subclass_of($fqcn, \Filament\Resources\Resource::class)) {
-                            return $fqcn::getNavigationItems();
+                            return array_map(fn ($item) => static::configureResourceKeyOnNavigationItem($fqcn, $item), $fqcn::getNavigationItems());
                         } elseif (is_subclass_of($fqcn, \Filament\Pages\Page::class)) {
-                            return $fqcn::getNavigationItems();
+                            return array_map(fn ($item) => static::configurePageKeyOnNavigationItem($fqcn, $item), $fqcn::getNavigationItems());
                         } else {
                             return null;
                         }
@@ -48,8 +93,6 @@ trait ClusterSectionTrait
                             ->group($item->getLabel())
                     )
                     ->toArray();
-
-                return $newItems;
 
             }
         }

@@ -17,6 +17,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
@@ -106,11 +107,17 @@ class CmsPanelProvider extends PanelProvider
         return $panel
             ->topNavigation()
             ->navigationGroups([
-                NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
-                NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
-                NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
-                NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
-            ]);
+                'content' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
+                'media' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
+                'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
+                'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
+            ])
+            ->bootUsing(function () {
+                $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
+                Blade::component('filament-panels::topbar', \SolutionForest\InspireCms\View\Components\TopBar::class);
+                Blade::component('filament-panels::sidebar', \SolutionForest\InspireCms\View\Components\Sidebar::class);
+                Blade::component('filament-panels::sidebar.group', \SolutionForest\InspireCms\View\Components\SidebarGroup::class);
+            });
     }
 
     protected function configureNotification(Panel $panel): Panel
