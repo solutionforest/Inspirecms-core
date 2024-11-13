@@ -164,8 +164,6 @@ class Content extends BaseModel implements ContentContract
             'document_type_id',
         ])->toArray();
 
-        // dd($this->ancestorsAndSelf, $this->ancestorsAndSelf->pluck('depth','slug'), $this->descendantsAndSelf);
-
         $data['title'] = $this->getTranslations('title');
         $data['is_web'] = intval($this->documentType?->isWebPageType() ?? false);
 
