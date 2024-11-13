@@ -34,15 +34,14 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'ancestorsAndSelf', // for url (full path)
         ];
 
-        // ensure the format of full path 
+        // ensure the format of full path
         $fullPath = $this->ensureFormatOfFullPath($fullPath);
 
         $content = $this->searchOne(
             $fullPath,
             fn ($s) => $s
                 ->where('is_web', 1)
-                ->where('full_path', $fullPath)
-                ,
+                ->where('full_path', $fullPath),
             fn ($q) => $q
                 ->with($relations)
                 ->whereIsPublished()
@@ -54,7 +53,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
     /**
      * Ensures that the given full path is in the correct format.
      *
-     * @param string $fullPath The full path to be formatted.
+     * @param  string  $fullPath  The full path to be formatted.
      * @return string The formatted full path.
      */
     protected function ensureFormatOfFullPath(string $fullPath): string

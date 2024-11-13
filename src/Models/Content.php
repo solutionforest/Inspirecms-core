@@ -39,8 +39,8 @@ class Content extends BaseModel implements ContentContract
         getTranslations as protected traitGetTranslations;
     }
     use HasAuthor;
-    use HasUuids;
     use HasRecursiveRelationships;
+    use HasUuids;
     use Searchable {
         queueMakeSearchable as protected traitQueueMakeSearchable;
         queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
@@ -188,7 +188,7 @@ class Content extends BaseModel implements ContentContract
 
         return $data;
     }
-    
+
     public function shouldBeSearchable(): bool
     {
         return $this->isPublished();
@@ -380,7 +380,7 @@ class Content extends BaseModel implements ContentContract
             ],
         ];
     }
-    
+
     public function getPathSeparator(): string
     {
         return '/';

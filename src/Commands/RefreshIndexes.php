@@ -31,7 +31,7 @@ class RefreshIndexes extends Command
 
             $bar->setMessage("Importing {$model} ...");
 
-            Artisan::call("scout:import", [
+            Artisan::call('scout:import', [
                 'model' => $model,
             ], $this->getOutput());
 

@@ -8,10 +8,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, IndexableModel, HasRecursiveRelationshipsInterface
+interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasRecursiveRelationshipsInterface, IndexableModel
 {
     /**
      * Return the document type relation.
