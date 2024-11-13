@@ -31,7 +31,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'webSetting',
             'publishedVersions',
             'templates',
-            'descendantsAndSelf', // for url (full path)
+            'ancestorsAndSelf', // for url (full path)
         ];
 
         // ensure the format of full path 
