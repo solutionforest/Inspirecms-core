@@ -85,29 +85,29 @@ class PropertyDataDto extends BaseDto
                         'directory' => $directory,
                     ]))->values()->all();
 
-                case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker:
+            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker:
 
-                    //todo: improve performance
-                    $mediaAssets = inspirecms_asset()->findByKeys($sourceValue);
+                //todo: improve performance
+                $mediaAssets = inspirecms_asset()->findByKeys($sourceValue);
 
-                    // sort the content based on the source value
-                    return collect($sourceValue)
-                        ->map(fn ($id) => $mediaAssets->first(fn ($v) => $v->getKey() == $id))
-                        ->whereInstanceOf(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class)
-                        ->map(fn ($m) => $m->toDto($locale))
-                        ->values()
-                        ->all();
+                // sort the content based on the source value
+                return collect($sourceValue)
+                    ->map(fn ($id) => $mediaAssets->first(fn ($v) => $v->getKey() == $id))
+                    ->whereInstanceOf(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class)
+                    ->map(fn ($m) => $m->toDto($locale))
+                    ->values()
+                    ->all();
 
-                case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
+            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
-                    //todo: improve performance
-                    $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
+                //todo: improve performance
+                $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
 
-                    // sort the content based on the source value
-                    return collect($sourceValue)
-                        ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
-                        ->values()
-                        ->all();
+                // sort the content based on the source value
+                return collect($sourceValue)
+                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
+                    ->values()
+                    ->all();
 
             default:
                 return $sourceValue;
