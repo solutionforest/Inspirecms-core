@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
 class SeoDto extends BaseDto
@@ -240,6 +242,11 @@ class SeoDto extends BaseDto
         $dto = parent::fromArray($parameters);
 
         return $dto;
+    }
+
+    public function getHtml(): Htmlable
+    {
+        return new HtmlString($this->__toString());
     }
 
     public function __toString(): string
