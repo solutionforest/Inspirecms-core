@@ -51,9 +51,8 @@ class ContentDto extends BaseTranslatableModelDto
     protected array $translatableAttributes = ['title'];
 
     /**
-     * @param Content $model
-     * @param array $propertyData
-     * @param string $locale
+     * @param  Content  $model
+     * @param  string  $locale
      */
     public static function make($model, array $propertyData, $locale)
     {

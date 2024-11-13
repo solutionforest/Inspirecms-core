@@ -276,7 +276,7 @@ class Content extends BaseModel implements ContentContract
                 'webSetting',
                 'children',
             ];
-            
+
             $tmpModel = new static([
                 ...Arr::except($record, $relationships),
             ]);
@@ -289,9 +289,11 @@ class Content extends BaseModel implements ContentContract
                     case 'children':
                         // fetch key from create/edit form
                         $relationshipModel = static::query()->findMany($relationshipData);
+
                         break;
                     default:
                         $relationshipModel = app(static::class)->{$relationship}()->getRelated()->make($relationshipData);
+
                         break;
                 }
                 $tmpModel->setRelation($relationship, $relationshipModel);
@@ -302,7 +304,7 @@ class Content extends BaseModel implements ContentContract
                 $propertyData,
                 $locale,
             );
-        } 
+        }
 
         return $dtoClass::make(
             $record,
