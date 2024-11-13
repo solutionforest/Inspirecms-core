@@ -33,7 +33,7 @@ trait CreateContentPageTrait
 
         if ($record === null) {
             $model = new ($this->getModel());
-            if (method_exists($model, 'getNestableRootValue') && $model->getNestableRootValue() == $key) {
+            if (method_exists($model, 'getRootLevelParentId') && $model->getRootLevelParentId() == $key) {
                 return null;
             }
 

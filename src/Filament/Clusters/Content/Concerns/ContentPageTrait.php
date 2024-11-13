@@ -44,8 +44,8 @@ trait ContentPageTrait
     {
         $modelClass = $this->getModel();
         $model = new $modelClass;
-        $parentIdColumn = $model->getQualifiedNestableParentIdColumn();
-        $rootLevelKey = $model->getNestableRootValue();
+        $parentIdColumn = $model->getQualifiedParentKeyName();
+        $rootLevelKey = $model->getRootLevelParentId();
 
         return $modelExplorer
             ->model($modelClass)
@@ -236,11 +236,11 @@ trait ContentPageTrait
 
         $this->selectedModelItem($record);
 
-        $ancestors = collect($record->ancestors())->push($record);
-        foreach ($ancestors as $index => $ancestor) {
-            $this->cacheModelExplorerNodesOn($ancestor->parent_id, $index);
-            if ($ancestor->getKey() !== $record->getKey()) {
-                $this->expandedModelExplorerItems[] = $ancestor->getKey();
+        $ancestorsAndSelf = collect($record->ancestorsAndSelf)->reverse()->values();
+        foreach ($ancestorsAndSelf as $index => $item) {
+            $this->cacheModelExplorerNodesOn($item->getParentId(), $index);
+            if ($item->getKey() !== $record->getKey()) {
+                $this->expandedModelExplorerItems[] = $item->getKey();
             }
         }
     }

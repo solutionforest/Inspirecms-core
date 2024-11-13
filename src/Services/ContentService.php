@@ -31,7 +31,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'webSetting',
             'publishedVersions',
             'templates',
-            'parent',
+            'descendantsAndSelf', // for url (full path)
         ];
 
         // ensure the format of full path 
@@ -61,7 +61,6 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
     {
         return (string) str($fullPath)
             ->trim()
-            ->trim('/')
             ->prepend('/');
     }
 }

@@ -23,7 +23,7 @@ use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
-use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 
 class Content extends BaseModel implements ContentContract
 {
@@ -40,9 +40,7 @@ class Content extends BaseModel implements ContentContract
     }
     use HasAuthor;
     use HasUuids;
-    use NestableTrait {
-        parent as protected traitParent;
-    }
+    use HasRecursiveRelationships;
     use Searchable {
         queueMakeSearchable as protected traitQueueMakeSearchable;
         queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
@@ -79,12 +77,6 @@ class Content extends BaseModel implements ContentContract
         return $this->morphOne(InspireCmsConfig::getSitemapModelClass(), 'model');
     }
 
-    public function parent(): BelongsTo
-    {
-        // With nestable tree
-        return $this->belongsTo(static::class, $this->getNestableParentIdName());
-    }
-
     public function trashedParent(): BelongsTo
     {
         return $this->parent()->withTrashed();
@@ -102,7 +94,6 @@ class Content extends BaseModel implements ContentContract
 
     public function getUrl(?string $locale = null): string
     {
-        ray($this)->backtrace()->blue();
         return ContentUrlGeneratorFactory::create()->getUrl($this, $locale);
     }
 
@@ -163,28 +154,22 @@ class Content extends BaseModel implements ContentContract
     {
         $this->loadMissing([
             'documentType',
-            'parent',
+            'ancestorsAndSelf',
         ]);
         $latestVersion = $this->getLatestPublishedContentVersion();
-        $data = $this->makeHidden([
+        $data = $this->withoutRelations()->makeHidden([
             $this->getCreatedAtColumn(),
             $this->getUpdatedAtColumn(),
             $this->getDeletedAtColumn(),
-            'document_type',
+            'document_type_id',
         ])->toArray();
 
-        unset(
-            $data['document_type_id'],
-            $data['document_type'],
-            $data['published_versions'],
-            $data['parent'],
-            $data['web_setting'],
-        );
+        // dd($this->ancestorsAndSelf, $this->ancestorsAndSelf->pluck('depth','slug'), $this->descendantsAndSelf);
 
         $data['title'] = $this->getTranslations('title');
         $data['is_web'] = intval($this->documentType?->isWebPageType() ?? false);
 
-        $data['level'] = $this->getLevel();
+        $data['level'] = collect($this->ancestorsAndSelf)->pluck('depth')->first();
         $data['full_path'] = $this->getFullSlug();
 
         $data['published_at'] = $latestVersion?->pivot?->published_at?->toIso8601String();
@@ -198,6 +183,8 @@ class Content extends BaseModel implements ContentContract
         ];
 
         event(new Events\Indexes\IndexingModel($this, $data));
+
+        ray($data)->red();
 
         return $data;
     }
@@ -243,7 +230,10 @@ class Content extends BaseModel implements ContentContract
         foreach ($models as $model) {
             // affecting the "full path" of the model
             if ($model instanceof ContentContract) {
-                $result = $result->merge($model->descendants());
+                $result = $result
+                    ->push($model)
+                    ->concat($model->children()->get())
+                    ->unique($this->getKeyName());
 
             } else {
                 $result->push($model);
@@ -377,12 +367,33 @@ class Content extends BaseModel implements ContentContract
     }
     //endregion Attribute(s)
 
-    //region Nestable
-    public function getNestableRootValue(): int | string
+    //region HasRecursiveRelationships
+    public function getCustomPaths()
+    {
+        return [
+            [
+                'name' => 'slug_path',
+                'column' => 'slug',
+                'separator' => '/',
+            ],
+        ];
+    }
+    
+    public function getPathSeparator(): string
+    {
+        return '/';
+    }
+
+    public function getParentKeyName()
+    {
+        return 'parent_id';
+    }
+
+    public function getRootLevelParentId()
     {
         return KeyHelper::generateMinUuid();
     }
-    //endregion Nestable
+    //endregion HasRecursiveRelationships
 
     //region ContentVersion
     protected function prepareContentVersionData(): array

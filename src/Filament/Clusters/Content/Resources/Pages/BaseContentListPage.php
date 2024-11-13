@@ -53,7 +53,7 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
     {
         $model = new ($this->getModel())();
 
-        return $model->getNestableRootValue();
+        return $model->getRootLevelParentId();
     }
 
     public function isDisplayTable(): bool

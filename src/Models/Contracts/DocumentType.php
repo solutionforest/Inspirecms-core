@@ -7,8 +7,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 
-interface DocumentType extends Base\HasTemplates
+interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInterface
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.

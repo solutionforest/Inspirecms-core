@@ -14,13 +14,13 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\Models\Concerns\NestableTrait;
+use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
     use HasFactory;
-    use NestableTrait;
+    use HasRecursiveRelationships;
 
     protected $guarded = ['id'];
 
