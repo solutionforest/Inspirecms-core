@@ -57,6 +57,7 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public static function make($model, array $propertyData, $locale)
     {
+        
         $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
 
         $parameters = static::prepareDtoParameters($model, $propertyData, $availableLocales);
@@ -88,11 +89,7 @@ class ContentDto extends BaseTranslatableModelDto
         }
 
         if (!$model?->relationLoaded('children')) {
-            $children = $model->children()->with([
-                'webSetting',
-                'publishedVersions',
-                'documentType.fields.group',
-            ])->get() ?? collect();
+            $children = $model->children()->with(static::getNecessaryRelationships())->get() ?? collect();
         } else {
             $children = $model->children ?? collect();
         }
@@ -172,17 +169,12 @@ class ContentDto extends BaseTranslatableModelDto
 
     protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLocales): array
     {
-        // Load the necessary relations
-        $record->loadMissing([
-            'webSetting',
-            'publishedVersions',
-            'documentType.fields.group',
-        ]);
+        $record->loadMissing(static::getNecessaryRelationships());
 
         $dtoParameters = $record->toArray();
 
         $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-            $locale => $record->webSetting->toDto($locale),
+            $locale => $record->webSetting?->toDto($locale),
         ])->all();
 
         $dtoParameters['urls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
@@ -296,6 +288,16 @@ class ContentDto extends BaseTranslatableModelDto
         }
 
         return $result;
+    }
+
+    protected static function getNecessaryRelationships(): array
+    {
+        return [
+            'webSetting',
+            'publishedVersions',
+            'documentType.fields.group',
+            'ancestorsAndSelf', // for generate url
+        ];
     }
     //endregion Helpers
 }
