@@ -17,8 +17,14 @@ class BelongsToParentSelect extends Select
             // Skip its children
             if ($record && $record instanceof HasRecursiveRelationshipsInterface) {
                 // Exclude the current record and all its descendants
-                $descendantIds = $record->descendants()->map(fn ($item) => $item->getKey())->toArray();
-                $query->whereKeyNotIn($descendantIds);
+                $descendantIds = $record->descendants()->get()->map(fn ($item) => $item->getKey())->toArray();
+
+                $baseQuery = $query;
+                if ($query instanceof \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder) {
+                    $query->whereNot(fn ($q) => $q->whereKey($descendantIds));
+                } else {
+                    $baseQuery->whereKeyNotIn($descendantIds);
+                }
             }
 
             return $query;
