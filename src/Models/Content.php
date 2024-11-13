@@ -269,15 +269,10 @@ class Content extends BaseModel implements ContentContract
 
         $dtoClass = static::getDtoClass();
 
-        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
-
-        $dtoParameters = static::prepareDtoParameters($this, $propertyData);
-
-        return $dtoClass::fromTranslatableArray(
-            $dtoParameters,
+        return $dtoClass::make(
+            $this,
+            $propertyData,
             $locale,
-            $fallbackLocale,
-            $availableLocales,
         );
     }
 

@@ -18,7 +18,7 @@ interface IndexSearchServiceInterface
      * @param  string  $keyword  The keyword to search for.
      * @return ?T The result of the search, or null if no match is found.
      */
-    public function searchOne(string $keyword, ?Closure $queryBuilder = null);
+    public function searchOne(string $keyword, ?Closure $searchBuilder = null, ?Closure $queryBuilder = null);
 
     /**
      * Searches for the given keyword.
@@ -26,5 +26,5 @@ interface IndexSearchServiceInterface
      * @param  string  $keyword  The keyword to search for.
      * @return Collection<T> The result of the search operation.
      */
-    public function search(string $keyword, ?Closure $queryBuilder = null);
+    public function search(string $keyword, ?Closure $searchBuilder = null, ?Closure $queryBuilder = null);
 }

@@ -23,7 +23,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
         return $this->getQuery()->where('slug', $slug)->first();
     }
 
-    public function findContent(string $fullSlug)
+    public function findPublishedContentByFullPath(string $fullPath)
     {
         $relations = [
             'documentType.fields.group',
@@ -33,32 +33,34 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             'templates',
         ];
 
-        $content = $this->searchOne(
-            $fullSlug,
-            fn ($q) => $q
-                ->with($relations)
-        );
-
-        return $content;
-    }
-
-    public function findPublishedContent(string $fullSlug)
-    {
-        $relations = [
-            'documentType.fields.group',
-            'documentType.templates',
-            'webSetting',
-            'publishedVersions',
-            'templates',
-        ];
+        // ensure the format of full path 
+        $fullPath = $this->ensureFormatOfFullPath($fullPath);
 
         $content = $this->searchOne(
-            $fullSlug,
+            $fullPath,
+            fn ($s) => $s
+                ->where('is_web', 1)
+                ->where('full_path', $fullPath)
+                ,
             fn ($q) => $q
                 ->with($relations)
                 ->whereIsPublished()
         );
 
         return $content;
+    }
+
+    /**
+     * Ensures that the given full path is in the correct format.
+     *
+     * @param string $fullPath The full path to be formatted.
+     * @return string The formatted full path.
+     */
+    protected function ensureFormatOfFullPath(string $fullPath): string
+    {
+        return (string) str($fullPath)
+            ->trim()
+            ->trim('/')
+            ->prepend('/');
     }
 }

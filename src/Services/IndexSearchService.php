@@ -13,11 +13,15 @@ abstract class IndexSearchService extends BaseModelSerivce implements IndexSearc
         parent::__construct($modelClass);
     }
 
-    public function searchOne(string $keyword, ?Closure $queryBuilder = null)
+    public function searchOne(string $keyword, ?Closure $searchBuilder = null, ?Closure $queryBuilder = null)
     {
         $this->guardAgainstNonSearchableModel();
 
         $builder = $this->model::search($keyword);
+
+        if ($searchBuilder) {
+            $builder = $searchBuilder($builder);
+        }
 
         if ($queryBuilder) {
             $builder->query(fn ($query) => $queryBuilder($query));
@@ -26,11 +30,15 @@ abstract class IndexSearchService extends BaseModelSerivce implements IndexSearc
         return $builder->first();
     }
 
-    public function search(string $keyword, ?Closure $queryBuilder = null)
+    public function search(string $keyword, ?Closure $searchBuilder = null, ?Closure $queryBuilder = null)
     {
         $this->guardAgainstNonSearchableModel();
 
         $builder = $this->model::search($keyword);
+
+        if ($searchBuilder) {
+            $builder = $searchBuilder($builder);
+        }
 
         if ($queryBuilder) {
             $builder->query(fn ($query) => $queryBuilder($query));
