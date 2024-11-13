@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -19,7 +18,6 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
-    use HasFactory;
     use HasRecursiveRelationships;
 
     protected $guarded = ['id'];
