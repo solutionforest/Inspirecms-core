@@ -184,8 +184,6 @@ class Content extends BaseModel implements ContentContract
 
         event(new Events\Indexes\IndexingModel($this, $data));
 
-        ray($data)->red();
-
         return $data;
     }
 
