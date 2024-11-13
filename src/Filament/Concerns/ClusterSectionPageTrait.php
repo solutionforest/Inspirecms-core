@@ -53,22 +53,21 @@ trait ClusterSectionPageTrait
 
         return parent::canAccess();
     }
-    
-    
+
     public static function getNavigationItems(): array
     {
         $items = parent::getNavigationItems();
 
         return array_map(fn ($item) => static::configurePageKeyOnNavigationItem($item), $items);
     }
-    
+
     /**
-     * @param \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem $navigationItem
+     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
      * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
      */
     public static function configurePageKeyOnNavigationItem($navigationItem)
     {
-        $section  = static::getClusterSection();
+        $section = static::getClusterSection();
 
         return $section::configurePageKeyOnNavigationItem(static::class, $navigationItem);
     }
