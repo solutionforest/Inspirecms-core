@@ -1,7 +1,7 @@
 import { Boarding } from "boarding.js";
 
-
 document.addEventListener('alpine:init', () => {
+
   window.addEventListener('tour-guide-reset', () => {
     window.Alpine.store('tourGuide').reset();
   });
@@ -41,6 +41,9 @@ document.addEventListener('alpine:init', () => {
       this.boarding = this.initBoarding();
       this.boarding.start(this.getCurrentSubStep());
     },
+    skip() {
+      this.jumpToStep(-1);
+    },
     init() {
 
       this.ensureStepBeforeInitBoarding();
@@ -58,7 +61,7 @@ document.addEventListener('alpine:init', () => {
         overlayClickNext: true, // Whether the click on overlay should move next
         overlayColor: "rgb(0,0,0)", // Fill color for the overlay
         // doneBtnText: "Done", // Text on the final button
-        // closeBtnText: "Close", // Text on the close button for this step
+        closeBtnText: "Skip the tour guide", // Text on the close button for this step
         // nextBtnText: "Next", // Next button text for this step
         // prevBtnText: "Previous", // Previous button text for this step
         showButtons: true, // Do not show control buttons in footer
@@ -70,8 +73,12 @@ document.addEventListener('alpine:init', () => {
         onHighlighted: (HighlightElement) => {}, // Called when element is fully highlighted
         onDeselected: (HighlightElement) => { // Called when element has been deselected
         },
-        onReset: (HighlightElement) => { // Called when overlay is about to be cleared
-          this.nextStep();
+        onReset: (HighlightElement, reason) => { // Called when overlay is about to be cleared
+          if (reason === 'cancel') {
+            this.skip();
+          } else {
+            this.nextStep();
+          }
         }, 
         onStart: (HighlightElement) => {}, // Called when `boarding.start()` was called
         onNext: (HighlightElement) => { // Called when m+oving to next step on any step
@@ -89,7 +96,7 @@ document.addEventListener('alpine:init', () => {
         strictClickHandling: true, // Can also be `"block-all"` or if not wanted at all, `false`. Either block ALL pointer events, or isolate pointer-events to only allow on the highlighted element (`true`). Popover and overlay pointer-events are of course always allowed to be clicked
         // Make changes to the actual popoverElements once they get rendered.
         onPopoverRender: (el) => {
-          // ...
+          //
         },
       });
       
@@ -164,7 +171,6 @@ document.addEventListener('alpine:init', () => {
     allBoardingSteps() {
 
       const generalPopoverOptions = {
-        closeBtnText: " ", // Text on the close button
         alignment: "start",
         preferredSide: "top",
       };
@@ -177,7 +183,6 @@ document.addEventListener('alpine:init', () => {
             popover: {
               ...generalPopoverOptions,
               title: "Go to Settings",
-              showButtons: false, 
             },
           }
         ],

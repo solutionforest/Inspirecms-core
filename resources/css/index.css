@@ -9,25 +9,26 @@
 
 .boarding-popover-ctn {
 
-    @apply min-w-52 max-w-60;
+    @apply min-w-52 max-w-60 !pb-5;
     
-    .boarding-close-btn {
-        @apply absolute top-0 right-0 after:content-close w-5 h-5;
-    }
-
     .boarding-popover-description {
         @apply text-sm text-gray-500;
     }
 
     .boarding-popover-footer {
-        @apply pt-2;
+        @apply py-2;
 
         .boarding-btn-group {
             @apply flex justify-between;
         }
+    }
 
-    }
     .boarding-prev-btn, .boarding-next-btn {
-        @apply text-xs text-gray-500;
+        @apply text-sm text-gray-500;
     }
+
+    .boarding-close-btn {
+        @apply absolute bottom-0.5 right-0.5 text-danger-500 text-xs font-bold;
+    }
+
 }
