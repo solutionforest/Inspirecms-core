@@ -33,27 +33,27 @@ trait ClusterSectionResourceTrait
     {
         if (config('inspirecms.filament.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
             $items = $page->generateNavigationItems($cluster::getClusteredComponents());
-        
+
             return array_map(fn ($item) => static::configureResourceKeyOnNavigationItem($item), $items);
         }
 
         return [];
     }
-    
+
     public static function getNavigationItems(): array
     {
         $items = parent::getNavigationItems();
-        
+
         return array_map(fn ($item) => static::configureResourceKeyOnNavigationItem($item), $items);
     }
-    
+
     /**
-     * @param \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem $navigationItem
+     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
      * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
      */
     public static function configureResourceKeyOnNavigationItem($navigationItem)
     {
-        $section  = static::getClusterSection();
+        $section = static::getClusterSection();
 
         return $section::configureResourceKeyOnNavigationItem(static::class, $navigationItem);
     }
