@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:cleanup-content-version')]
+#[AsCommand(name: 'inspirecms:cleanup-content-version', description: 'Cleanup content versions for InspireCMS')]
 class CleanupContentVersion extends Command
 {
     public function handle(): int

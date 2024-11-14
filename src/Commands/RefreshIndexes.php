@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:refresh-indexes')]
+#[AsCommand(name: 'inspirecms:refresh-indexes', description: 'Refresh indexes (e.g. Content)')]
 class RefreshIndexes extends Command
 {
     public function handle(): int

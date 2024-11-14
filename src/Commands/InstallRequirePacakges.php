@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:install-require-packages')]
+#[AsCommand(name: 'inspirecms:install-require-packages', description: 'Install required packages for InspireCMS')]
 class InstallRequirePacakges extends Command
 {
     public function handle(): int

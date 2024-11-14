@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:import-default-data')]
+#[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
 class ImportDefaultData extends Command
 {
     public function handle(): int
