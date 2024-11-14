@@ -141,11 +141,13 @@ class CmsPanelProvider extends PanelProvider
                 \Filament\Navigation\NavigationItem::macro('section', function ($section) {
                     $cast = $this->cloneAsCustom();
                     $cast->section = $section;
+
                     return $cast;
                 });
                 \Filament\Navigation\NavigationItem::macro('itemKey', function ($itemKey) {
                     $cast = $this->cloneAsCustom();
                     $cast->itemKey = $itemKey;
+
                     return $cast;
                 });
                 \Filament\Navigation\NavigationItem::macro('cloneAsCustom', function ($fqcn = \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class) {
@@ -165,6 +167,7 @@ class CmsPanelProvider extends PanelProvider
                     $tmp->isHidden = $this->isHidden;
                     $tmp->isVisible = $this->isVisible;
                     $tmp->childItems = $this->childItems;
+
                     return $tmp;
                 });
 

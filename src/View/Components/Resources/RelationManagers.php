@@ -16,7 +16,7 @@ class RelationManagers extends Component
         public $contentTabLabel = null,
         public $contentTabIcon = null,
         public $contentTabPosition = null,
-    ) { }
+    ) {}
 
     public function render()
     {
