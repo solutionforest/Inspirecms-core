@@ -188,7 +188,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\DocumentTypesRelationManager::class,
+            'document_type' => RelationManagers\DocumentTypesRelationManager::class,
         ];
     }
 

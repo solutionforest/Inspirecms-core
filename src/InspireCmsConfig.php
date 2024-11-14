@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Composer\InstalledVersions;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Support\Facades\InspireCmsSupport;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -12,6 +13,11 @@ class InspireCmsConfig
     public static function get(string $key, mixed $default = null): mixed
     {
         return config("inspirecms.{$key}", $default);
+    }
+
+    public static function getVersion(): string
+    {
+        return InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core');
     }
 
     public static function getGuardName(): string

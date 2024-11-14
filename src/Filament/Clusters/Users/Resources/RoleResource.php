@@ -140,7 +140,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            RelationManagers\UsersRelationManager::class,
+            'users' => RelationManagers\UsersRelationManager::class,
         ];
     }
 

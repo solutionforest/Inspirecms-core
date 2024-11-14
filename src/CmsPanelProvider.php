@@ -97,6 +97,7 @@ class CmsPanelProvider extends PanelProvider
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
         $this->configureFilamentActions($panel);
+        $this->configureTourGuideElements($panel);
         $this->registerLivewireComponents($panel);
 
         return $panel;
@@ -111,12 +112,75 @@ class CmsPanelProvider extends PanelProvider
                 'media' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
+            ]);
+    }
+
+    protected function configureTourGuideElements(Panel $panel): Panel
+    {
+        return $panel
+            ->userMenuItems([
+                \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
+                    ->label('Reset Tour Guide')
+                    ->icon('heroicon-s-arrow-path')
+                    ->button()
+                    ->extraAttributes([
+                        'class' => 'tour-guide-reset-btn',
+                        'aria-label' => 'Reset Tour Guide',
+                    ], true),
+                \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
+                    ->label('Version: ' . InspireCmsConfig::getVersion())
+                    ->icon('heroicon-s-information-circle')
+                    ->url('#')
+                    ->extraAttributes([
+                        'class' => 'text-xs',
+                        'aria-label' => 'Version',
+                    ], true),
             ])
             ->bootUsing(function () {
                 $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
+                \Filament\Navigation\NavigationItem::macro('section', function ($section) {
+                    $cast = $this->cloneAsCustom();
+                    $cast->section = $section;
+                    return $cast;
+                });
+                \Filament\Navigation\NavigationItem::macro('itemKey', function ($itemKey) {
+                    $cast = $this->cloneAsCustom();
+                    $cast->itemKey = $itemKey;
+                    return $cast;
+                });
+                \Filament\Navigation\NavigationItem::macro('cloneAsCustom', function ($fqcn = \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class) {
+                    $tmp = new $fqcn;
+                    $tmp->label = $this->label;
+                    $tmp->group = $this->group;
+                    $tmp->parentItem = $this->parentItem;
+                    $tmp->isActive = $this->isActive;
+                    $tmp->icon = $this->icon;
+                    $tmp->activeIcon = $this->activeIcon;
+                    $tmp->badge = $this->badge;
+                    $tmp->badgeColor = $this->badgeColor;
+                    $tmp->badgeTooltip = $this->badgeTooltip;
+                    $tmp->shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab;
+                    $tmp->sort = $this->sort;
+                    $tmp->url = $this->url;
+                    $tmp->isHidden = $this->isHidden;
+                    $tmp->isVisible = $this->isVisible;
+                    $tmp->childItems = $this->childItems;
+                    return $tmp;
+                });
+
                 Blade::component('filament-panels::topbar', \SolutionForest\InspireCms\View\Components\TopBar::class);
                 Blade::component('filament-panels::sidebar', \SolutionForest\InspireCms\View\Components\Sidebar::class);
                 Blade::component('filament-panels::sidebar.group', \SolutionForest\InspireCms\View\Components\SidebarGroup::class);
+
+                Blade::component('filament-panels::user-menu', \SolutionForest\InspireCms\View\Components\UserMenu::class);
+
+                Blade::component('filament-panels::resources.relation-managers', \SolutionForest\InspireCms\View\Components\Resources\RelationManagers::class);
+
+                \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
+                    $action->extraAttributes([
+                        'data-action-name' => $action->getName(),
+                    ], true);
+                });
             });
     }
 

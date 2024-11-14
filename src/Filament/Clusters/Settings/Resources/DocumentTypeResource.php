@@ -206,7 +206,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.label'), [
+            'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.label'), [
                 RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
             ])->badge(function ($ownerRecord) {
@@ -216,9 +216,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                 return $ownerRecord->field_groups_count;
             }),
-            RelationManagers\ChildrenRelationManager::class,
-            RelationManagers\TemplatesRelationManager::class,
-            RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
+            'children' => RelationManagers\ChildrenRelationManager::class,
+            'templates' => RelationManagers\TemplatesRelationManager::class,
+            'referenced_by' => RelationGroup::make(fn () => __('inspirecms::inspirecms.referenced_by'), [
                 RelationManagers\ContentRelationManager::class,
                 RelationManagers\InheritingDocumentTypesRelationManager::class,
             ]),
