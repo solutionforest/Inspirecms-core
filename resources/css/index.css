@@ -32,3 +32,7 @@
     }
 
 }
+
+.fi-page-sub-navigation-sidebar-ctn {
+    @apply w-48 !important;
+}
