@@ -494,21 +494,21 @@ class ImportSampleData extends Command
             return;
         }
 
-        // homepage
-        $homepage = $this->makeContent([
+        // home
+        $home = $this->makeContent([
             'document_type_id' => $this->documentTypes['homepage']->getKey(),
             'title' => ['en' => 'Homepage', 'id' => 'Beranda'],
             'slug' => 'home',
         ]);
-        $this->saveContentIfNotExists($homepage);
-        $this->content['home'] = $homepage;
+        $this->saveContentIfNotExists($home);
+        $this->content['home'] = $home;
 
         // about
         $about = $this->makeContent([
             'document_type_id' => $this->documentTypes['about']->getKey(),
             'title' => ['en' => 'About', 'id' => 'Tentang'],
             'slug' => 'about',
-            'parent_id' => $homepage->getKey(),
+            'parent_id' => $home->getKey(),
         ]);
         $this->saveContentIfNotExists($about);
         $this->content['about'] = $about;
@@ -518,7 +518,7 @@ class ImportSampleData extends Command
             'document_type_id' => $this->documentTypes['articles']->getKey(),
             'title' => ['en' => 'Articles', 'id' => 'Artikel'],
             'slug' => 'articles',
-            'parent_id' => $homepage->getKey(),
+            'parent_id' => $home->getKey(),
         ]);
         $this->saveContentIfNotExists($articles);
         $this->content['articles'] = $articles;
@@ -543,13 +543,13 @@ class ImportSampleData extends Command
             'document_type_id' => $this->documentTypes['projects']->getKey(),
             'title' => ['en' => 'Projects', 'id' => 'Proyek'],
             'slug' => 'projects',
-            'parent_id' => $homepage->getKey(),
+            'parent_id' => $home->getKey(),
         ]);
         $this->saveContentIfNotExists($projects);
         $this->content['projects'] = $projects;
 
         $contentPropertyData = [
-            'homepage' => [
+            'home' => [
                 'image_slider' => [
                     'image' => collect(array_rand($this->mediaAssets, 3))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
                 ],
