@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -81,21 +81,13 @@ class ImportDefaultData extends Command
         ]);
     }
 
-    /**
-     * Check if the table exists, if not, display error message.
-     */
     protected function isTableExists(string $tableName): bool
     {
-        // is class name
-        if (class_exists($tableName)) {
-            $tableName = (new $tableName)->getTable();
-        }
-
-        $exist = Schema::hasTable($tableName);
-        if (! $exist) {
+        if (! ModelHelper::isTableExists($tableName)) {
             $this->error("Table $tableName does not exist, please run migration first.");
+            return false;
         }
 
-        return $exist;
+        return true;
     }
 }
