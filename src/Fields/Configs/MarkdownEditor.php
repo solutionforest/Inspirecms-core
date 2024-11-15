@@ -53,7 +53,6 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function applyConfig(Forms\Components\Component $component): void
     {
-        ray($this);
         if ($component instanceof Forms\Components\MarkdownEditor) {
             $component->toolbarButtons($this->toolbarButtons);
             if (filled($this->fileAttachmentsDisk)) {
