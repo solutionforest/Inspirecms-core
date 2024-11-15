@@ -70,7 +70,9 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
             
             $components = [];
 
-            foreach ($this->fields as $data) {
+            // $groupName = $component->getName();
+
+            foreach ($this->fields as $index => $data) {
                 if (!isset($data['field']) || blank($data['field'])) {
                     throw new \Exception('The field type is required.');
                 }
@@ -80,22 +82,44 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
                 $components[] = FieldTypeHelper::performFormFieldFromConfig(
                     $data['field'],
-                    function ($fiFormConfig, $fiFormComponentFQCN) use ($data) {
+                    function ($fiFormConfig, $fiFormComponentFQCN) use ($data, $index) {
 
-                        if (! isset($data['name']) || blank($data['name'])) {
-                            throw new \Exception('The field variable name is required.');
+                        $fieldName = $data['name'];
+                        $label = $data['label'] ?? null;
+                        $helperText = $data['helperText'] ?? null;
+                        $mandatory = $data['isRequired'] ?? false;
+
+                        if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+                            $fiFormComponent = $fiFormComponentFQCN::make($fieldName);
+        
+                            $fiFormComponent->label($label);
+                            $fiFormComponent->helperText($helperText);
+                            $fiFormComponent->required($mandatory);
+                            
+        
+                        } else {
+        
+                            $fiFormComponent = null;
                         }
-
-                        return $fiFormComponentFQCN::make($data['name'])
-                            ->label($data['label'])
-                            ->helperText($data['helperText'])
-                            ->required($data['isRequired']);
-
+        
+                        if (in_array(\SolutionForest\InspireCms\Fields\Configs\Concerns\HasInnerField::class, class_uses($fiFormConfig))) {
+        
+                            $fiFormConfig->setFieldVariable([
+                                'name' => $fieldName,
+                                'label' => $label,
+                                'helperText' => $helperText,
+                                'required' => $mandatory,
+                            ]);
+        
+                            $fiFormComponent = $fiFormComponentFQCN::make();
+                        }
+        
+                        return $fiFormComponent;
                     },
-                    $data['fieldConfig']
+                    $data['fieldConfig'] ?? []
                 );
             }
-            $component->schema($components);
+            $component->schema(array_filter($components));
         }
     }
 }

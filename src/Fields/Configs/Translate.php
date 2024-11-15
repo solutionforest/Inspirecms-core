@@ -82,11 +82,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                 $this->fieldConfig
             );
 
-            $groupName = isset($this->fieldVariable['group']) ? $this->fieldVariable['group'] : (explode('.', $this->fieldVariable['statePath'])[0] ?? null);
-
-            if (blank($groupName)) {
-                throw new \Exception('The field group name is required.');
-            }
+            $groupName = isset($this->fieldVariable['group']) ? $this->fieldVariable['group'] : (explode('.', $this->fieldVariable['statePath'] ?? null)[0] ?? null);
 
             $component
                 ->schema([$fiFormComponent])
