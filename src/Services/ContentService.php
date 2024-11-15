@@ -37,17 +37,24 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
         // ensure the format of full path
         $fullPath = $this->ensureFormatOfFullPath($fullPath);
 
-        $content = $this->searchOne(
+        if ($fullPath === '/') {
+            return $this->getQuery()
+                ->with($relations)
+                ->whereIsIndexPage()
+                ->whereIsPublished()
+                ->first();
+        }
+
+        return $this->searchOne(
             $fullPath,
             fn ($s) => $s
                 ->where('is_web', 1)
-                ->where('full_path', $fullPath),
+                ->where('full_path', $fullPath)
+                ,
             fn ($q) => $q
                 ->with($relations)
                 ->whereIsPublished()
         );
-
-        return $content;
     }
 
     /**

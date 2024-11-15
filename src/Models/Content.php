@@ -354,6 +354,13 @@ class Content extends BaseModel implements ContentContract
         return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }
 
+    public function scopeWhereIsIndexPage(Builder $query)
+    {
+        return $query
+            ->where('nestable_tree_order', 1)
+            ->where('nestable_tree_parent_id', 0);
+    }
+
     //endregion Scope(s)
 
     //region Attribute(s)
