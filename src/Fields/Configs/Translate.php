@@ -9,6 +9,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Concerns\HasInnerField;
 use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
@@ -18,6 +19,8 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 #[DbType('sqlite', 'text')]
 class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 {
+    use HasInnerField;
+    
     public ?string $field = null;
 
     public array $fieldConfig = [];
@@ -90,12 +93,5 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                 // also set the state path for this component
                 ->groupName($groupName);
         }
-    }
-
-    public function setFieldVariable(array $variable): static
-    {
-        $this->fieldVariable = $variable;
-
-        return $this;
     }
 }

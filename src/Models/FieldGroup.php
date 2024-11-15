@@ -51,16 +51,19 @@ class FieldGroup extends BaseModel implements FieldGroupContract
 
                 } else {
 
-                    if ($fiFormConfig instanceof \SolutionForest\InspireCms\Fields\Configs\Translate) {
-                        $fiFormConfig->setFieldVariable([
-                            'name' => $fieldName,
-                            'label' => $field->label,
-                            'helperText' => $field->instructions,
-                            'required' => $field->mandatory,
-                            'statePath' => $statePath,
-                            'group' => $groupName,
-                        ]);
-                    }
+                    $fiFormComponent = null;
+                }
+
+                if (in_array(\SolutionForest\InspireCms\Fields\Configs\Concerns\HasInnerField::class, class_uses($fiFormConfig))) {
+
+                    $fiFormConfig->setFieldVariable([
+                        'name' => $fieldName,
+                        'label' => $field->label,
+                        'helperText' => $field->instructions,
+                        'required' => $field->mandatory,
+                        'statePath' => $statePath,
+                        'group' => $groupName,
+                    ]);
 
                     $fiFormComponent = $fiFormComponentFQCN::make();
                 }
