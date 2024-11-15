@@ -56,7 +56,7 @@ class FieldResource extends Resource implements ClusterSectionResource
                         static::getMandatoryFormComponent()->columnSpanFull(),
                     ])
                     ->columnSpan(1),
-                static::getConfigFormComponent(),
+                static::getConfigFormComponent()->columnSpanFull(),
             ]);
     }
 
