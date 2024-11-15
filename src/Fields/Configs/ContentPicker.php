@@ -25,8 +25,6 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public ?string $documentType = null;
 
-    public ?string $template = null;
-
     public function getFormSchema(): array
     {
         $documentTypeOptions = function ($component, $search) {
@@ -41,24 +39,6 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->mapWithKeys(fn ($model) => [
                     $model->getKey() => "<span class=\"font-bold\">{$model->title}</span><br/><span class=\"font-light\">{$model->slug}</span>",
                 ]);
-        };
-        $templateOptions = function ($documentTypeId) {
-            $model = InspireCmsConfig::getTemplateModelClass();
-
-            if (! $documentTypeId) {
-                return [];
-            }
-
-            return $model::query()
-                ->whereHas(
-                    'documentTypes',
-                    fn ($q) => $q->whereKey($documentTypeId)
-                )
-                ->get()
-                ->mapWithKeys(fn ($model) => [
-                    $model->getKey() => "<span class=\"font-bold\">{$model->slug}</span><br/><span class=\"font-light\">{$model->path}</span>",
-                ]);
-
         };
 
         return [
@@ -81,11 +61,6 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
                                 ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search))
                                 ->live(),
-                            Forms\Components\Select::make('template')
-                                ->inlineLabel()
-                                ->searchable()
-                                ->options(fn (Forms\Get $get) => $templateOptions($get('documentType')))
-                                ->allowHtml(),
                         ]),
                 ]),
         ];
