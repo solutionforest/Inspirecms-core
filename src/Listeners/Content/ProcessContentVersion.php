@@ -62,6 +62,9 @@ class ProcessContentVersion
     {
         $data = $model->getPublishableData();
         $data['version_id'] = $contentVersion->getKey();
+        if (!isset($data['published_at'])) {
+            $data['published_at'] = now();
+        }
 
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.
         event(new CreatingPublishContentVersion($model->withoutRelations(), $contentVersion->withoutRelations(), $data, $statusOption));
