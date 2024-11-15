@@ -46,12 +46,12 @@ class CmsPanelProvider extends PanelProvider
                     ->overrideResources([])
                     ->fieldTypeConfigs([
                         \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-                        
+
                         \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
                         \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
 
                         \SolutionForest\InspireCms\Fields\Configs\Translate::class,
-                        
+
                         \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
                         \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
                     ], false),

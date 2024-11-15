@@ -33,7 +33,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                             // filter out the current field type
                             $configNames = $this->getConfigNames()[0];
                             unset($options[$configNames['group']]);
-        
+
                             return $options;
                         })
                         ->searchable()->allowHtml()
@@ -52,11 +52,11 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->key('fieldConfig')
                         ->statePath('fieldConfig')
                         ->schema(function (Forms\Get $get) {
-        
+
                             if ($field = $get('field')) {
                                 return FilamentFieldGroup::getFieldTypeConfigFormSchema($field);
                             }
-        
+
                             return [];
                         }),
                 ])
@@ -67,22 +67,22 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
     public function applyConfig(Forms\Components\Component $component): void
     {
         if ($component instanceof Forms\Components\Repeater) {
-            
+
             $components = [];
 
             // $groupName = $component->getName();
 
             foreach ($this->fields as $index => $data) {
-                if (!isset($data['field']) || blank($data['field'])) {
+                if (! isset($data['field']) || blank($data['field'])) {
                     throw new \Exception('The field type is required.');
                 }
-                if (!isset($data['name']) || blank($data['name'])) {
+                if (! isset($data['name']) || blank($data['name'])) {
                     throw new \Exception('The field name is required.');
                 }
 
                 $components[] = FieldTypeHelper::performFormFieldFromConfig(
                     $data['field'],
-                    function ($fiFormConfig, $fiFormComponentFQCN) use ($data, $index) {
+                    function ($fiFormConfig, $fiFormComponentFQCN) use ($data) {
 
                         $fieldName = $data['name'];
                         $label = $data['label'] ?? null;
@@ -91,29 +91,28 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
                         if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
                             $fiFormComponent = $fiFormComponentFQCN::make($fieldName);
-        
+
                             $fiFormComponent->label($label);
                             $fiFormComponent->helperText($helperText);
                             $fiFormComponent->required($mandatory);
-                            
-        
+
                         } else {
-        
+
                             $fiFormComponent = null;
                         }
-        
+
                         if (in_array(\SolutionForest\InspireCms\Fields\Configs\Concerns\HasInnerField::class, class_uses($fiFormConfig))) {
-        
+
                             $fiFormConfig->setFieldVariable([
                                 'name' => $fieldName,
                                 'label' => $label,
                                 'helperText' => $helperText,
                                 'required' => $mandatory,
                             ]);
-        
+
                             $fiFormComponent = $fiFormComponentFQCN::make();
                         }
-        
+
                         return $fiFormComponent;
                     },
                     $data['fieldConfig'] ?? []

@@ -133,7 +133,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     $file->getRealPath() => base_path("stubs/inspirecms/{$file->getFilename()}"),
                 ], 'inspirecms-stubs');
             }
-            
+
             foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleViews') as $file) {
 
                 $dir = collect(explode('/', $file->getRelativePath()))->map(fn ($path) => str($path)->kebab())->implode('/');
@@ -148,9 +148,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     $file->getRealPath() => $viewFullPath,
                 ], 'inspirecms-sample-views');
             }
-            
+
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/SampleTemplates') as $file) {
-                $templateFullPath =  (string) str(config('inspirecms.template.path'))
+                $templateFullPath = (string) str(config('inspirecms.template.path'))
                     ->finish('/')
                     ->finish(str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php'));
                 $this->publishes([

@@ -8,11 +8,11 @@ trait EditorBasicTrait
 {
     public array $toolbarButtons = [];
 
-    public ?string $fileAttachmentsDisk = null; 
+    public ?string $fileAttachmentsDisk = null;
 
-    public ?string $fileAttachmentsDirectory = null; 
+    public ?string $fileAttachmentsDirectory = null;
 
-    public ?string $fileAttachmentsVisibility = null; 
+    public ?string $fileAttachmentsVisibility = null;
 
     protected static function getEditorBasicTraitComponent($name)
     {
@@ -21,7 +21,7 @@ trait EditorBasicTrait
                 ->options(static::getAllAvailableToolbarButtons())
                 ->bulkToggleable()
                 ->columns(3),
-            
+
             'fileAttachmentsDisk' => Forms\Components\TextInput::make('fileAttachmentsDisk')->label('Disk'),
             'fileAttachmentsDirectory' => Forms\Components\TextInput::make('fileAttachmentsDirectory')->label('Directory'),
             'fileAttachmentsVisibility' => Forms\Components\TextInput::make('fileAttachmentsVisibility')->label('Visibility'),
@@ -31,7 +31,7 @@ trait EditorBasicTrait
 
     public static function getAllAvailableToolbarButtons(): array
     {
-        if (isset(static::$availableToolbarButtons) && is_array(static::$availableToolbarButtons) && !empty(static::$availableToolbarButtons)) {
+        if (isset(static::$availableToolbarButtons) && is_array(static::$availableToolbarButtons) && ! empty(static::$availableToolbarButtons)) {
             return collect(static::$availableToolbarButtons)
                 ->values()
                 ->mapWithKeys(fn ($button) => [$button => $button])

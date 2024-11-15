@@ -49,8 +49,7 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
             $fullPath,
             fn ($s) => $s
                 ->where('is_web', 1)
-                ->where('full_path', $fullPath)
-                ,
+                ->where('full_path', $fullPath),
             fn ($q) => $q
                 ->with($relations)
                 ->whereIsPublished()
