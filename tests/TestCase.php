@@ -114,12 +114,13 @@ abstract class TestCase extends Orchestra
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
     }
-    
+
     protected function getTable($table)
     {
         if ($table instanceof \Illuminate\Database\Eloquent\Model || is_string($table) && class_exists($table)) {
             return parent::getTable($table);
         }
+
         return config('inspirecms.models.table_name_prefix') . $table;
     }
 }

@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
  * @method static \Illuminate\Support\Collection all() Retrieves all available options from the manifest.
  * @method static void setDefaultValue(int $value)
  * @method static null | int getDefaultValue()
- * 
+ *
  * @see \SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest
  */
 class ContentStatusManifest extends Facade
