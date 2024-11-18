@@ -540,10 +540,10 @@ class ImportSampleData extends Command
         $articlesArr = [];
         foreach (range(1, 5) as $i) {
             $article = $this->makeContent([
-            'document_type_id' => $this->documentTypes['article']->getKey(),
-            'title' => ['en' => "Article $i", 'zh_Hants' => "文章 $i", 'zh_Hans' => "文章 $i"],
-            'slug' => "article-$i",
-            'parent_id' => $articles->getKey(),
+                'document_type_id' => $this->documentTypes['article']->getKey(),
+                'title' => ['en' => "Article $i", 'zh_Hants' => "文章 $i", 'zh_Hans' => "文章 $i"],
+                'slug' => "article-$i",
+                'parent_id' => $articles->getKey(),
             ]);
             $this->createContentIfNotExists($article);
             $this->content["article-$i"] = $article;
@@ -578,23 +578,23 @@ class ImportSampleData extends Command
                 ],
                 'general_page_banner' => [
                     'title' => [
-                        'en' => 'Welcome to our website', 
-                        'zh_Hants' => '歡迎來到我們的網站', 
-                        'zh_Hans' => '欢迎来到我们的网站'
+                        'en' => 'Welcome to our website',
+                        'zh_Hants' => '歡迎來到我們的網站',
+                        'zh_Hans' => '欢迎来到我们的网站',
                     ],
                     'description' => [
-                        'en' => 'We provide the best service for you', 
-                        'zh_Hants' => '我們為您提供最好的服務', 
-                        'zh_Hans' => '我们为您提供最好的服务'
+                        'en' => 'We provide the best service for you',
+                        'zh_Hants' => '我們為您提供最好的服務',
+                        'zh_Hans' => '我们为您提供最好的服务',
                     ],
                 ],
             ],
             'about' => [
                 'article_detail_content' => [
                     'title' => [
-                        'en' => 'About Us', 
-                        'zh_Hants' => '關於我們', 
-                        'zh_Hans' => '关于我们'
+                        'en' => 'About Us',
+                        'zh_Hants' => '關於我們',
+                        'zh_Hans' => '关于我们',
                     ],
                     'content' => [
                         'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
@@ -607,14 +607,14 @@ class ImportSampleData extends Command
             'articles' => [
                 'general_page_banner' => [
                     'title' => [
-                        'en' => 'Articles', 
-                        'zh_Hants' => '文章', 
-                        'zh_Hans' => '文章'
+                        'en' => 'Articles',
+                        'zh_Hants' => '文章',
+                        'zh_Hans' => '文章',
                     ],
                     'description' => [
-                        'en' => 'List of articles', 
-                        'zh_Hants' => '文章列表', 
-                        'zh_Hans' => '文章列表'
+                        'en' => 'List of articles',
+                        'zh_Hants' => '文章列表',
+                        'zh_Hans' => '文章列表',
                     ],
                 ],
                 'recently_articles' => [
@@ -624,56 +624,56 @@ class ImportSampleData extends Command
             'projects' => [
                 'general_page_banner' => [
                     'title' => [
-                        'en' => 'Projects', 
-                        'zh_Hants' => '項目', 
-                        'zh_Hans' => '项目'
+                        'en' => 'Projects',
+                        'zh_Hants' => '項目',
+                        'zh_Hans' => '项目',
                     ],
                     'description' => [
-                        'en' => 'List of projects', 
-                        'zh_Hants' => '項目列表', 
-                        'zh_Hans' => '项目列表'
+                        'en' => 'List of projects',
+                        'zh_Hants' => '項目列表',
+                        'zh_Hans' => '项目列表',
                     ],
                 ],
                 'projects' => [
                     'projects' => [
                         [
                             'title' => [
-                                'en' => 'Project 1', 
-                                'zh_Hants' => '項目 1', 
-                                'zh_Hans' => '项目 1'
+                                'en' => 'Project 1',
+                                'zh_Hants' => '項目 1',
+                                'zh_Hans' => '项目 1',
                             ],
                             'description' => [
-                                'en' => 'Description of project 1', 
-                                'zh_Hants' => '項目 1 的描述', 
-                                'zh_Hans' => '项目 1 的描述'
+                                'en' => 'Description of project 1',
+                                'zh_Hants' => '項目 1 的描述',
+                                'zh_Hans' => '项目 1 的描述',
                             ],
                             'link' => 'https://project1.com',
                             'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
                         [
                             'title' => [
-                                'en' => 'Project 2', 
-                                'zh_Hants' => '項目 2', 
-                                'zh_Hans' => '项目 2'
+                                'en' => 'Project 2',
+                                'zh_Hants' => '項目 2',
+                                'zh_Hans' => '项目 2',
                             ],
                             'description' => [
-                                'en' => 'Description of project 2', 
-                                'zh_Hants' => '項目 2 的描述', 
-                                'zh_Hans' => '项目 2 的描述'
+                                'en' => 'Description of project 2',
+                                'zh_Hants' => '項目 2 的描述',
+                                'zh_Hans' => '项目 2 的描述',
                             ],
                             'link' => 'https://project2.com',
                             'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
                         [
                             'title' => [
-                                'en' => 'Project 3', 
-                                'zh_Hants' => '項目 3', 
-                                'zh_Hans' => '项目 3'
+                                'en' => 'Project 3',
+                                'zh_Hants' => '項目 3',
+                                'zh_Hans' => '项目 3',
                             ],
                             'description' => [
-                                'en' => 'Description of project 3', 
-                                'zh_Hants' => '項目 3 的描述', 
-                                'zh_Hans' => '项目 3 的描述'
+                                'en' => 'Description of project 3',
+                                'zh_Hants' => '項目 3 的描述',
+                                'zh_Hans' => '项目 3 的描述',
                             ],
                             'link' => 'https://project3.com',
                             'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
@@ -713,9 +713,9 @@ class ImportSampleData extends Command
             $tmpContent->propertyData = json_encode([
                 'article_detail_content' => [
                     'title' => [
-                        'en' => $tmpContent->title, 
-                        'zh_Hants' => $tmpContent->title, 
-                        'zh_Hans' => $tmpContent->title
+                        'en' => $tmpContent->title,
+                        'zh_Hants' => $tmpContent->title,
+                        'zh_Hans' => $tmpContent->title,
                     ],
                     'content' => [
                         'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
