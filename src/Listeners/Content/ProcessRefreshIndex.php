@@ -10,7 +10,7 @@ use Spatie\EloquentSortable\EloquentModelSortedEvent;
 
 class ProcessRefreshIndex
 {
-    public function handle(DispatchIndexModel|EloquentModelSortedEvent $event)
+    public function handle(DispatchIndexModel | EloquentModelSortedEvent $event)
     {
         foreach ($this->getModels() as $modelClass) {
             $this->processChunkedModels($modelClass);
@@ -32,8 +32,8 @@ class ProcessRefreshIndex
     protected function processChunkedModels(string $modelClass)
     {
         $model = app($modelClass);
-            
-        if (!in_array(Searchable::class,  class_uses($model))) {
+
+        if (! in_array(Searchable::class, class_uses($model))) {
             return;
         }
 

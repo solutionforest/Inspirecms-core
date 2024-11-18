@@ -47,7 +47,7 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
      * @return bool True if the content is the first and root element, false otherwise.
      */
     public function isFirstAndRoot(): bool;
-    
+
     /**
      * Generate a full slug base on parent.
      */

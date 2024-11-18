@@ -180,7 +180,7 @@ class ContentDto extends BaseTranslatableModelDto
     {
         return ! is_null($this->redirectUrls);
     }
-    
+
     public function getRedirectUrl(?string $locale = null): ?string
     {
         $urls = collect($this->redirectUrls);
@@ -209,7 +209,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         if ($record->isRedirectable()) {
             $dtoParameters['redirectUrls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-                $locale => $record->getRedirectUrl($locale)
+                $locale => $record->getRedirectUrl($locale),
             ])->all();
             $dtoParameters['redirectType'] = $record->getRedirectType();
         }

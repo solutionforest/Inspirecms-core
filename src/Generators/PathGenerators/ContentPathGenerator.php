@@ -35,7 +35,6 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
             $slugs[] = $item->slug;
         }
 
-
         return implode('/', $slugs);
     }
 
