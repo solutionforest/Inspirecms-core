@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Illuminate\Support\HtmlString;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Fields\Dtos\FileDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
@@ -56,6 +57,10 @@ class PropertyDataDto extends BaseDto
     protected function processPropertyType($sourceValue, ?FieldTypeConfig $propertyType, ?string $locale)
     {
         switch (true) {
+
+            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
+            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:
+                return new HtmlString($sourceValue);
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Translate:
 
