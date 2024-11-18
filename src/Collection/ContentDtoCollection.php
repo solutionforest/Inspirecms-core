@@ -29,16 +29,17 @@ class ContentDtoCollection extends BaseCollection
      *
      * @throws \InvalidArgumentException
      */
-    public function paginate($perPage = null,  $pageName = 'page', $page = null)
+    public function paginate($perPage = null, $pageName = 'page', $page = null)
     {
         $page = $page ?: Paginator::resolveCurrentPage($pageName);
 
         $total = count($this->items);
 
-        $perPage = ($perPage instanceof Closure
+        $perPage = (
+            $perPage instanceof Closure
             ? $perPage($total)
             : $perPage
-        ) ?: 
+        ) ?:
         // Default per page
         10;
 
@@ -51,7 +52,7 @@ class ContentDtoCollection extends BaseCollection
             'pageName' => $pageName,
         ]);
     }
-    
+
     /**
      * Create a new length-aware paginator instance.
      *
@@ -65,7 +66,11 @@ class ContentDtoCollection extends BaseCollection
     protected function paginator($items, $total, $perPage, $currentPage, $options)
     {
         return \Illuminate\Container\Container::getInstance()->makeWith(LengthAwarePaginator::class, compact(
-            'items', 'total', 'perPage', 'currentPage', 'options'
+            'items',
+            'total',
+            'perPage',
+            'currentPage',
+            'options'
         ));
     }
 }

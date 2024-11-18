@@ -103,11 +103,12 @@ class ContentDto extends BaseTranslatableModelDto
         } else {
             $children = $model->children ?? collect();
         }
-        $result = new \SolutionForest\InspireCms\Collection\ContentDtoCollection();
+        $result = new \SolutionForest\InspireCms\Collection\ContentDtoCollection;
         foreach ($children as $child) {
             $propertyData = $child->getLatestPublishedPropertyData();
             $result->push(static::make($child, $propertyData, $this->getLocale()));
         }
+
         return $this->children = $result;
     }
 
