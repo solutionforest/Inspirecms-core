@@ -35,6 +35,20 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?DocumentType $documentType = null);
 
     /**
+     * Retrieve the segments of slug for the content.
+     *
+     * @return array An array of segments.
+     */
+    public function getSegments(): array;
+
+    /**
+     * Determine if the content is the first and root element.
+     *
+     * @return bool True if the content is the first and root element, false otherwise.
+     */
+    public function isFirstAndRoot(): bool;
+    
+    /**
      * Generate a full slug base on parent.
      */
     public function getFullSlug(?string $locale = null): string;

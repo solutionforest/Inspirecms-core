@@ -54,6 +54,17 @@ class ContentObserver
         $model->navigation?->setDisable();
     }
 
+    /**deleted
+     * Handle "deleting" event.
+     *
+     * @param  Content|Model  $model  The model instance being deleted.
+     * @return void
+     */
+    public function deleted(Content | Model $model)
+    {
+        $this->dispatchRefreshIndex($model);
+    }
+
     /**
      * Handle "forceDeleting" event.
      *
@@ -81,10 +92,28 @@ class ContentObserver
 
         $model->sitemap?->setEnable();
         $model->navigation?->setEnable();
+
+        $this->dispatchRefreshIndex($model);
+    }
+
+    /**
+     * Handle "restored" event.
+     *
+     * @param  Content|Model  $model  The model instance being restored.
+     * @return void
+     */
+    public function restored(Content | Model $model)
+    {
+        $this->dispatchRefreshIndex($model);
     }
 
     protected function clearCached()
     {
         InspireCms::forgetCachedNavigation();
+    }
+
+    protected function dispatchRefreshIndex(Content | Model $model)
+    {
+        event(new \SolutionForest\InspireCms\Events\Content\DispatchIndexModel(get_class($model)));
     }
 }

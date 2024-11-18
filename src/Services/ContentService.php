@@ -4,26 +4,53 @@ namespace SolutionForest\InspireCms\Services;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ContentService extends IndexSearchService implements ContentServiceInterface
+class ContentService implements ContentServiceInterface
 {
+    protected string $model;
+
     public function __construct()
     {
-        parent::__construct(InspireCmsConfig::getContentModelClass());
+        $this->model = InspireCmsConfig::getContentModelClass();
     }
 
-    public function findById(int $id)
+    public function findPublishedContentAndView(string $fullPath, ?string $locale)
     {
-        // Implement the logic to find content by ID
-        return $this->getQuery()->find($id);
+        $content = $this->findPublishedContentByFullPath($fullPath);
+
+        if (is_null($content)) {
+            return [null, null];
+        }
+
+        if (! $content->isPublished() || ! $content->isWebPage()) {
+            return [null, null];
+        }
+
+        $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
+
+        return [$content->toDto($locale), $template?->getViewFullName()];
     }
 
-    public function findBySlug(string $slug)
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function getQuery()
     {
-        // Implement the logic to find content by slug
-        return $this->getQuery()->where('slug', $slug)->first();
+        return $this->model::query();
     }
 
-    public function findPublishedContentByFullPath(string $fullPath)
+    /**
+     * @return \Laravel\Scout\Builder
+     */
+    protected function searchBuilder(string $keyword)
+    {
+        return $this->model::search($keyword);
+    }
+    
+    /**
+     * @param string $fullPath
+     * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
+     */
+    protected function findPublishedContentByFullPath(string $fullPath)
     {
         $relations = [
             'documentType.fields.group',
@@ -37,24 +64,22 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
         // ensure the format of full path
         $fullPath = $this->ensureFormatOfFullPath($fullPath);
 
-        if ($fullPath === '/') {
+        // if the full path is the root path, return the index page 
+        if (blank(trim($fullPath, '/'))) {
             return $this->getQuery()
                 ->with($relations)
-                ->whereIsIndexPage()
-                ->whereIsPublished()
+                ->whereHas('nestableTree', fn ($query) => $query->whereIsRoot())
+                ->orderBy('nestable_tree_order')
                 ->first();
         }
-
-        return $this->searchOne(
-            $fullPath,
-            fn ($s) => $s
-                ->where('is_web', 1)
-                ->where('full_path', $fullPath)
-                ,
-            fn ($q) => $q
+        return $this->searchBuilder($fullPath)
+            ->where('is_web', 1)
+            ->where('full_path', $fullPath) // Avoid searching same slug in different parent
+            ->where('__soft_deleted', 0)    // Avoid searching soft deleted content
+            ->query(fn ($query) => $query
                 ->with($relations)
-                ->whereIsPublished()
-        );
+            )
+            ->first();
     }
 
     /**
@@ -65,8 +90,6 @@ class ContentService extends IndexSearchService implements ContentServiceInterfa
      */
     protected function ensureFormatOfFullPath(string $fullPath): string
     {
-        return (string) str($fullPath)
-            ->trim()
-            ->prepend('/');
+        return (string) str($fullPath)->trim()->prepend('/');
     }
 }

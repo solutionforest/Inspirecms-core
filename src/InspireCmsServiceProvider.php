@@ -264,6 +264,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             }
 
             config()->set('scout.meilisearch.index-settings', $indexSettings);
+            config()->set('scout.soft_delete', true);
         }
     }
 
@@ -304,6 +305,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         //endregion User Auth Activity
 
         //region Content
+        Event::listen(Events\Content\DispatchIndexModel::class, Listeners\Content\ProcessRefreshIndex::class);
+        Event::listen(\Spatie\EloquentSortable\EloquentModelSortedEvent::class, Listeners\Content\ProcessRefreshIndex::class);
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
         Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
         //endregion Content

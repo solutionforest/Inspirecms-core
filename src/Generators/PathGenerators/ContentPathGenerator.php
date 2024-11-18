@@ -22,27 +22,19 @@ class ContentPathGenerator implements ContentPathGeneratorInterface
 
         $ancestorsAndSelf = collect($content->ancestorsAndSelf)->reverse()->values();
 
-        // dd($ancendantsAndSelf);
-
         $slugs = [];
 
         foreach ($ancestorsAndSelf as $index => $item) {
 
-            $itemOrder = $item->nestable_tree_order;
-
-            if (is_null($itemOrder)) {
-                $item->loadMissing('nestableTree');
-                $itemOrder = $item->nestableTree?->order ?? 0;
-            }
-
             // Skip the root item if it is the first item
             // e.g. format: "/" instead of "/home"
-            if ($index == 0 && $itemOrder == 1) {
+            if ($item->isFirstAndRoot()) {
                 continue;
             }
 
             $slugs[] = $item->slug;
         }
+
 
         return implode('/', $slugs);
     }

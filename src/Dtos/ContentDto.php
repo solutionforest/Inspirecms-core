@@ -48,6 +48,16 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public $children = null;
 
+    /**
+     * @var ?array<string,string>
+     */
+    public $redirectUrls;
+
+    /**
+     * @var ?int
+     */
+    public $redirectType;
+
     protected array $translatableAttributes = ['title'];
 
     /**
@@ -161,9 +171,22 @@ class ContentDto extends BaseTranslatableModelDto
 
     public function getSeo(?string $locale = null)
     {
-        return collect($this->seo)->get($locale ?? $this->getLocale()) ?? $this->seo->get($this->getFallbackLocale());
+        $seo = collect($this->seo);
+
+        return $seo->get($locale ?? $this->getLocale()) ?? $seo->get($this->getFallbackLocale());
     }
 
+    public function isRedirectable(): bool
+    {
+        return ! is_null($this->redirectUrls);
+    }
+    
+    public function getRedirectUrl(?string $locale = null): ?string
+    {
+        $urls = collect($this->redirectUrls);
+
+        return $urls->get($locale ?? $this->getLocale()) ?? $urls->get($this->getFallbackLocale());
+    }
     //region Helpers
 
     protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLocales): array
@@ -183,6 +206,13 @@ class ContentDto extends BaseTranslatableModelDto
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
 
         $dtoParameters['propertyData'] = $propertyData;
+
+        if ($record->isRedirectable()) {
+            $dtoParameters['redirectUrls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+                $locale => $record->getRedirectUrl($locale)
+            ])->all();
+            $dtoParameters['redirectType'] = $record->getRedirectType();
+        }
 
         unset($dtoParameters['children']);  // Get by model
 

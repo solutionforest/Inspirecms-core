@@ -97,6 +97,50 @@ class Content extends BaseModel implements ContentContract
         return ContentUrlGeneratorFactory::create()->getUrl($this, $locale);
     }
 
+    public function getSegments(): array
+    {
+        $this->loadMissing('ancestorsAndSelf');
+
+        $ancestorsAndSelf = collect($this->ancestorsAndSelf)->reverse()->values();
+
+        $slugs = [];
+
+        foreach ($ancestorsAndSelf as $index => $item) {
+            $slugs[] = $item->slug;
+        }
+
+        return $slugs;
+    }
+
+    public function isFirstAndRoot(): bool
+    {
+        $itemOrder = $this->nestable_tree_order;
+        $itemParentId = $this->nestable_tree_parent_id;
+
+        $orderColumn = $this->getNestableTreeOrderName();
+        $parentIdColumn = $this->getNestableTreeParentIdName();
+
+        $rootLevelParentId = $this->nestableTree()->getRelated()->getRootLevelParentId();
+
+        if (is_null($itemOrder) || is_null($itemParentId)) {
+            $this->loadMissing('nestableTree');
+            $itemOrder ??= $this->nestableTree?->{$orderColumn} ?? 0;
+            $itemParentId ??= $this->nestableTree?->{$parentIdColumn} ?? 0;
+        }
+
+        // not a root level item
+        if ($itemParentId != $rootLevelParentId) {
+            return false;
+        }
+
+        $firstOrder = $this->nestableTree()->getRelated()->newQuery()
+            ->whereHasMorph('nestable', [static::class])
+            ->where($parentIdColumn, $itemParentId)
+            ->min($orderColumn);
+
+        return $itemOrder == ($firstOrder ?? 1);
+    }
+
     public function isPublished(?\Closure $callback = null): bool
     {
         $publishedAt = $this->getPublishTime();
@@ -150,44 +194,33 @@ class Content extends BaseModel implements ContentContract
         return InspireCmsConfig::get('indexes.content.index_name', 'content_index');
     }
 
-    public function toSearchableArray(): array
+    public function toSearchableArray()
     {
         $this->loadMissing([
-            'documentType',
             'ancestorsAndSelf',
+            'documentType',
         ]);
         $latestVersion = $this->getLatestPublishedContentVersion();
-        $data = $this->withoutRelations()->makeHidden([
-            $this->getCreatedAtColumn(),
-            $this->getUpdatedAtColumn(),
-            $this->getDeletedAtColumn(),
-            'document_type_id',
-        ])->toArray();
+        $data = $this->withoutRelations()->only([
+            $this->getKeyName(),
+            $this->getParentKeyName(),
+        ]);
 
-        $data['title'] = $this->getTranslations('title');
         $data['is_web'] = intval($this->documentType?->isWebPageType() ?? false);
 
-        $data['level'] = collect($this->ancestorsAndSelf)->pluck('depth')->first();
         $data['full_path'] = $this->getFullSlug();
 
         $data['published_at'] = $latestVersion?->pivot?->published_at?->toIso8601String();
-        $data['created_at'] = $this->{$this->getCreatedAtColumn()}?->toIso8601String();
-        $data['updated_at'] = $this->{$this->getUpdatedAtColumn()}?->toIso8601String();
-        $data['deleted_at'] = $this->{$this->getDeletedAtColumn()}?->toIso8601String();
-
-        $data['document_type'] = [
-            'title' => $this->documentType?->title,
-            'slug' => $this->documentType?->slug,
-        ];
+        $data['__soft_deleted'] = intval($this->trashed());
 
         event(new Events\Indexes\IndexingModel($this, $data));
 
         return $data;
     }
 
-    public function shouldBeSearchable(): bool
+    public function getScoutKey(): mixed
     {
-        return $this->isPublished();
+        return $this->getKey();
     }
 
     /**
@@ -352,13 +385,6 @@ class Content extends BaseModel implements ContentContract
     public function scopeIsWebPage(Builder $query)
     {
         return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
-    }
-
-    public function scopeWhereIsIndexPage(Builder $query)
-    {
-        return $query
-            ->where('nestable_tree_order', 1)
-            ->where('nestable_tree_parent_id', 0);
     }
 
     //endregion Scope(s)

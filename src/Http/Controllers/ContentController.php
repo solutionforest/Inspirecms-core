@@ -8,7 +8,6 @@ use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGeneratorInterface;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
 
 class ContentController extends Controller
@@ -42,56 +41,27 @@ class ContentController extends Controller
             $slug = '/';
         }
 
-        $content = $this->findContent($slug);
+        [$contentDto, $view] = $this->contentService->findPublishedContentAndView($slug, $locale);
 
-        if ($content->isRedirectable()) {
+        if (is_null($contentDto) || is_null($view)) {
+            abort(404);
+        }
 
-            $redirectUrl = $content->getRedirectUrl($locale);
+        if ($contentDto->isRedirectable()) {
+
+            $redirectUrl = $contentDto->getRedirectUrl($locale);
 
             if (blank($redirectUrl)) {
                 abort(404);
             }
 
-            return redirect($redirectUrl, $content->getRedirectType());
+            return redirect($redirectUrl, $contentDto->redirectType ?? 302);
 
         }
-
-        $contentDto = $content->toDto($locale);
-
-        $view = $this->getTemplateView($content);
 
         return view($view, [
             'content' => $contentDto,
         ]);
-    }
-
-    protected function findContent(string $slug): Content
-    {
-        // Remove the leading and trailing slashes
-        $fullPath = trim($slug, '/');
-
-        $content = $this->contentService->findPublishedContentByFullPath($fullPath);
-
-        if (is_null($content) || ! $content instanceof Content) {
-            abort(404);
-        }
-
-        if (! $content->isPublished() || ! $content->isWebPage()) {
-            abort(404);
-        }
-
-        return $content;
-    }
-
-    protected function getTemplateView(Content $content)
-    {
-        $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
-
-        if (! $template) {
-            abort(404);
-        }
-
-        return $template->getViewFullName();
     }
 
     /**

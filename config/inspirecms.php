@@ -136,7 +136,7 @@ return [
             'enabled' => true,
             'index_name' => 'content_index',
             'index_settings' => [
-                'filterableAttributes' => ['slug', 'full_path', 'level', 'published_at', 'is_web'],
+                'filterableAttributes' => ['full_path', 'is_web', '__soft_deleted'],
                 'sortableAttributes' => ['level', 'published_at'],
             ],
         ],
