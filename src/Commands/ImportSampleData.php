@@ -81,7 +81,7 @@ class ImportSampleData extends Command
 
             // Random text
             $text = str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-            
+
             return "https://dummyimage.com/{$size}/{$backgroundColor}/{$foregroundColor}.{$format}&text={$text}";
 
         });
@@ -98,10 +98,9 @@ class ImportSampleData extends Command
             $mediaAsset->addMediaFromUrl($url)->toMediaCollection();
 
             $this->mediaAssets[] = $mediaAsset;
-            
 
         }, 'Creating media ...', 'Media created.');
-        
+
     }
 
     protected function makeSampleLanguages(): void
@@ -115,7 +114,7 @@ class ImportSampleData extends Command
         }
 
         $languagesData = [
-            'en' => [ 
+            'en' => [
                 'name' => 'English',
                 'is_default' => true,
             ],
@@ -179,20 +178,20 @@ class ImportSampleData extends Command
                     'config' => [
                         'field' => 'text',
                     ],
-                ], 
+                ],
                 'description' => [
                     'type' => 'translate',
                     'config' => [
                         'field' => 'text',
                     ],
-                ], 
+                ],
                 'image' => [
                     'type' => 'mediaPicker',
                     'config' => [
                         'mimeTypes' => ['image'],
                         'multiple' => false,
                     ],
-                ]
+                ],
             ],
             'recently_articles' => [
             ],
@@ -203,7 +202,7 @@ class ImportSampleData extends Command
                         'mimeTypes' => ['image'],
                         'multiple' => true,
                     ],
-                ]
+                ],
             ],
             'social_media' => [
                 'github' => [
@@ -220,7 +219,7 @@ class ImportSampleData extends Command
                 ],
                 'email' => [
                     'type' => 'text',
-                ]
+                ],
             ],
             'article_detail_content' => [
                 'title' => [
@@ -235,7 +234,7 @@ class ImportSampleData extends Command
                         'field' => 'richEditor',
                         'config' => [
                             'toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons()),
-                        ]
+                        ],
                     ],
                 ],
                 'image' => [
@@ -256,15 +255,15 @@ class ImportSampleData extends Command
                                 'name' => 'title',
                                 'fieldConfig' => [
                                     'field' => 'text',
-                                    'config' => []
+                                    'config' => [],
                                 ],
                             ], [
                                 'field' => 'translate',
                                 'name' => 'description',
                                 'fieldConfig' => [
                                     'field' => 'textArea',
-                                    'config' => []
-                                ]
+                                    'config' => [],
+                                ],
                             ], [
                                 'field' => 'text',
                                 'name' => 'link',
@@ -274,9 +273,9 @@ class ImportSampleData extends Command
                                 'fieldConfig' => [
                                     'mimeTypes' => ['image'],
                                     'multiple' => false,
-                                ]
-                            ]
-                        ]
+                                ],
+                            ],
+                        ],
                     ],
                 ],
             ],
@@ -288,7 +287,7 @@ class ImportSampleData extends Command
             $data['title'] = (string) str($name)->title()->replace('_', ' ');
 
             $fieldGroup = $model::firstOrCreate(
-                Arr::only($data, ['name']), 
+                Arr::only($data, ['name']),
                 Arr::except($data, ['name'])
             );
 
@@ -296,12 +295,12 @@ class ImportSampleData extends Command
 
                 $fieldData['name'] = $fieldName;
 
-                if (!isset($fieldGroup['label'])) {
+                if (! isset($fieldGroup['label'])) {
                     $fieldData['label'] = (string) str($fieldName)->title()->replace('_', ' ');
                 }
 
                 $field = $fieldGroup->fields()->firstOrCreate(
-                    Arr::only($fieldData, ['name']), 
+                    Arr::only($fieldData, ['name']),
                     Arr::except($fieldData, ['name'])
                 );
 
@@ -318,7 +317,7 @@ class ImportSampleData extends Command
         $this->comment("\nCreate sample document types ...");
 
         $model = InspireCmsConfig::getDocumentTypeModelClass();
-        
+
         if (! $this->isTableExists($model)) {
             return;
         }
@@ -409,7 +408,7 @@ class ImportSampleData extends Command
             $progress->setMessage("Creating document type: '$slug'");
 
             $documentTypeData = $data['data'];
-            if (!isset($documentTypeData['title'])) {
+            if (! isset($documentTypeData['title'])) {
                 $documentTypeData['title'] = (string) str($slug)->title()->replace('-', ' ');
             }
 
@@ -422,16 +421,16 @@ class ImportSampleData extends Command
                 $documentType->save();
             }
 
-            if (!empty($data['field_groups'])) {
+            if (! empty($data['field_groups'])) {
                 $fieldGroups = collect($this->fieldGroups)->where(fn ($v, $k) => in_array($k, $data['field_groups']))->map(fn ($v) => $v->getKey())->filter()->values();
                 $documentType->fieldGroups()->sync($fieldGroups);
             }
 
-            if (!empty($data['templates'])) {
+            if (! empty($data['templates'])) {
                 $templates = collect($this->templates)->where(fn ($v, $k) => in_array($k, $data['templates']))->map(fn ($v) => $v->getKey())->filter()->values();
                 $documentType->templates()->sync($templates);
             }
-            
+
             if (isset($data['default_template']) && $defaultTemplate = $this->templates[$data['default_template']] ?? null) {
                 $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
             }
@@ -464,7 +463,7 @@ class ImportSampleData extends Command
                         'multiple' => true,
                     ],
                 ],
-            ]
+            ],
         ];
 
         $this->withCustomProgressBar($fieldGroupData, function ($fields, $name, $progress) use ($model) {
@@ -475,12 +474,12 @@ class ImportSampleData extends Command
 
                 $fieldData['name'] = $fieldName;
 
-                if (!isset($fieldGroup['label'])) {
+                if (! isset($fieldGroup['label'])) {
                     $fieldData['label'] = (string) str($fieldName)->title()->replace('_', ' ');
                 }
 
                 $field = $fieldGroup->fields()->firstOrCreate(
-                    Arr::only($fieldData, ['name']), 
+                    Arr::only($fieldData, ['name']),
                     Arr::except($fieldData, ['name'])
                 );
 
@@ -620,7 +619,7 @@ class ImportSampleData extends Command
                             'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
                     ],
-                ]
+                ],
             ],
         ];
 
@@ -708,6 +707,7 @@ class ImportSampleData extends Command
     {
         if (! ModelHelper::isTableExists($tableName)) {
             $this->error("Table $tableName does not exist, please run migration first.");
+
             return false;
         }
 
@@ -720,7 +720,7 @@ class ImportSampleData extends Command
 
         $progress = $this->output->createProgressBar($total);
 
-        $progress->setFormat("%current%/%max% [%bar%] %percent:3s%% %message%");
+        $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %message%');
 
         $progress->setMessage($startMessage);
 

@@ -9,7 +9,7 @@ class ModelHelper
     /**
      * Check if a table exists in the database.
      *
-     * @param string $tableName The name of the table to check.
+     * @param  string  $tableName  The name of the table to check.
      * @return bool Returns true if the table exists, false otherwise.
      */
     public static function isTableExists(string &$tableName): bool

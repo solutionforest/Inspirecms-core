@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Fields\Dtos\FileDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
@@ -112,7 +111,7 @@ class PropertyDataDto extends BaseDto
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater:
 
-                return collect($sourceValue)->map(function ($data,$i)  use ($propertyType, $locale) {
+                return collect($sourceValue)->map(function ($data, $i) use ($propertyType, $locale) {
 
                     $result = [];
                     $propertyTypes = [];
@@ -120,7 +119,7 @@ class PropertyDataDto extends BaseDto
                     foreach ($data as $key => $value) {
                         $field = collect($propertyType->fields)->firstWhere('name', $key);
 
-                        if (is_null($field) || !isset($field['field']) || blank($field['field'])) {
+                        if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
                             return null;
                         }
 
@@ -141,7 +140,7 @@ class PropertyDataDto extends BaseDto
                                 'config' => $innerPropertyType,
                             ]),
                         ])->setFallbackLocale($this->fallbackLocale);
-                        
+
                         $propertyTypes[] = $innerPropertyType;
 
                     }
@@ -151,7 +150,7 @@ class PropertyDataDto extends BaseDto
                         'data' => $result,
                         'propertyTypes' => $propertyTypes,
                     ]);
-                    
+
                 })->toArray();
 
             default:

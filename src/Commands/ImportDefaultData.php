@@ -85,6 +85,7 @@ class ImportDefaultData extends Command
     {
         if (! ModelHelper::isTableExists($tableName)) {
             $this->error("Table $tableName does not exist, please run migration first.");
+
             return false;
         }
 

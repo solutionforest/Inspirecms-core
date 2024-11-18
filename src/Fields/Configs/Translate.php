@@ -20,7 +20,7 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     use HasInnerField;
-    
+
     public ?string $field = null;
 
     public array $fieldConfig = [];
