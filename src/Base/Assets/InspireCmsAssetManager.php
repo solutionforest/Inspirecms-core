@@ -31,6 +31,7 @@ class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
     public function findByKeys(...$keys)
     {
         $keys = Arr::flatten($keys);
+
         return InspireCmsConfig::getMediaAssetModelClass()::with('media')->findMany($keys);
     }
 

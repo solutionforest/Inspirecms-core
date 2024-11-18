@@ -45,9 +45,8 @@ class ContentService implements ContentServiceInterface
     {
         return $this->model::search($keyword);
     }
-    
+
     /**
-     * @param string $fullPath
      * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
      */
     protected function findPublishedContentByFullPath(string $fullPath)
@@ -64,7 +63,7 @@ class ContentService implements ContentServiceInterface
         // ensure the format of full path
         $fullPath = $this->ensureFormatOfFullPath($fullPath);
 
-        // if the full path is the root path, return the index page 
+        // if the full path is the root path, return the index page
         if (blank(trim($fullPath, '/'))) {
             return $this->getQuery()
                 ->with($relations)
@@ -72,12 +71,14 @@ class ContentService implements ContentServiceInterface
                 ->orderBy('nestable_tree_order')
                 ->first();
         }
+
         return $this->searchBuilder($fullPath)
             ->where('is_web', 1)
             ->where('full_path', $fullPath) // Avoid searching same slug in different parent
             ->where('__soft_deleted', 0)    // Avoid searching soft deleted content
-            ->query(fn ($query) => $query
-                ->with($relations)
+            ->query(
+                fn ($query) => $query
+                    ->with($relations)
             )
             ->first();
     }

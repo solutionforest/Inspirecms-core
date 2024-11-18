@@ -243,7 +243,7 @@ class ImportSampleData extends Command
                         'mimeTypes' => ['image'],
                         'multiple' => false,
                     ],
-                ]
+                ],
             ],
             'projects' => [
                 'projects' => [
