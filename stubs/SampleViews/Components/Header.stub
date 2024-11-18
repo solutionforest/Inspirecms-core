@@ -1,6 +1,9 @@
 @php
     $locale = request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);
+    $allLocales = collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(function ($item) {
+        return [$item->locale => $item->name];
+    })->all();
 @endphp
 <!-- Header -->
 <header class="pointer-events-none relative z-50 flex flex-none flex-col" style="height:var(--header-height);margin-bottom:var(--header-mb)">
@@ -58,6 +61,21 @@
                     <svg class="w-5 h-5" viewBox="0 0 24 24" id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><defs><style>.cls-1{fill:none;stroke:currentColor;stroke-miterlimit:10;stroke-width:1.91px;}</style></defs><circle class="cls-1" cx="12" cy="12" r="10.5"></circle><path class="cls-1" d="M8.66,22A10.51,10.51,0,0,0,8.66,2"></path></g></svg>
                   </button>
                 </div>
+              </div>
+              <div class="pointer-events-auto flex gap-x-0.5 items-center jusdify-center">
+                @foreach ($allLocales as $locale => $item)
+                  @php
+                      $localeUrl = "/$locale";
+                  @endphp
+                  <a href="{{$localeUrl}}" @class([
+                    'transition text-indigo-800 hover:text-indigo-500 dark:hover:text-indigo-400',
+                  ])>
+                    <span class="text-xs">{{$item}}</span>
+                    @if (!$loop->last)
+                      <span class="text-xs">/</span>
+                    @endif
+                  </a>
+                @endforeach
               </div>
             </div>
           </div>
