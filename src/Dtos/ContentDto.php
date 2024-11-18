@@ -44,7 +44,7 @@ class ContentDto extends BaseTranslatableModelDto
     public $seo;
 
     /**
-     * @var ?SupportCollection<ContentDto>
+     * @var null|SupportCollection<ContentDto>|\SolutionForest\InspireCms\Collection\ContentDtoCollection
      */
     public $children = null;
 
@@ -85,7 +85,7 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @return SupportCollection<ContentDto>
+     * @return SupportCollection<ContentDto>|\SolutionForest\InspireCms\Collection\ContentDtoCollection
      */
     public function getChildren()
     {
@@ -103,12 +103,11 @@ class ContentDto extends BaseTranslatableModelDto
         } else {
             $children = $model->children ?? collect();
         }
-        $result = collect();
+        $result = new \SolutionForest\InspireCms\Collection\ContentDtoCollection();
         foreach ($children as $child) {
             $propertyData = $child->getLatestPublishedPropertyData();
             $result->push(static::make($child, $propertyData, $this->getLocale()));
         }
-
         return $this->children = $result;
     }
 

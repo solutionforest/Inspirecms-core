@@ -371,7 +371,6 @@ class ImportSampleData extends Command
             ],
             'articles' => [
                 'field_groups' => [
-                    'recently_articles',
                 ],
                 'templates' => [
                     'articles',
@@ -629,9 +628,6 @@ class ImportSampleData extends Command
                         'zh_Hant' => '文章列表',
                         'zh_Hans' => '文章列表',
                     ],
-                ],
-                'recently_articles' => [
-                    'articles' => collect(array_rand($articlesArr, 3))->map(fn ($i) => $articlesArr[$i]?->getKey())->filter()->all(),
                 ],
             ],
             'projects' => [

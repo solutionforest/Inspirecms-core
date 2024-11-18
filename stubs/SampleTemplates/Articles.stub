@@ -4,9 +4,8 @@
     $general_page_banner = $content->getPropertyGroup('general_page_banner');
     $general_page_banner_title = $general_page_banner?->getPropertyData('title')?->getValue($locale);
     $general_page_banner_description = $general_page_banner?->getPropertyData('description')?->getValue($locale);
-    
-    $recently_articles = $content->getPropertyGroup('recently_articles');
-    $recently_articles_articles = $recently_articles?->getPropertyData('articles')?->getValue() ?? [];
+
+    $articles = $content->getChildren()->paginate(3);
 @endphp
 <x-page :content="$content">
     <main class="flex-auto">
@@ -21,7 +20,7 @@
                 <div class="mt-16 sm:mt-20">
                   <div class="md:border-l md:border-cyan-100 md:pl-6 md:dark:border-cyan-700/40">
                     <div class="flex max-w-3xl flex-col space-y-16">
-                        @foreach ($recently_articles_articles as $item)
+                        @foreach ($articles as $item)
                             @php
                                 $article_detail_content = $item->getPropertyGroup('article_detail_content');
                                 $article_detail_content_title = $article_detail_content?->getPropertyData('title')?->getValue($locale);
@@ -44,6 +43,7 @@
                                 </div>
                             </article>
                         @endforeach
+                        {{ $articles }}
                     </div>
                   </div>
                 </div>

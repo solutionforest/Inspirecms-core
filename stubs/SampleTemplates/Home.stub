@@ -69,7 +69,9 @@
       <div class="mt-6 grid grid-cols-5 gap-y-6 sm:gap-x-6 lg:gap-8">
         @foreach ($image_slider_image as $item)
           <div @class([
-            'group relative aspect-[2/1] overflow-hidden rounded-lg sm:aspect-auto',
+            'group relative overflow-hidden rounded-lg sm:aspect-auto',
+            'rotate-2' => $loop->even,
+            '-rotate-2' => $loop->odd,
           ])>
             <img alt="" loading="lazy" decoding="async" class="h-96 w-full rounded-lg object-cover sm:aspect-[2/3] sm:h-auto" srcset="{{$item->getUrl()}}" >
           </div>

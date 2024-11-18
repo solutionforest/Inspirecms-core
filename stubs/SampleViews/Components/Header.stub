@@ -29,6 +29,7 @@
                 <div 
                   x-show="show"
                   @class([
+                    'pointer-events-auto',
                     'md:hidden fixed inset-x-4 top-8 z-50 origin-top rounded-3xl bg-white p-8 ring-1 ring-cyan-900/5 duration-150 data-[closed]:scale-95 data-[closed]:opacity-0 data-[enter]:ease-out data-[leave]:ease-in dark:bg-cyan-900 dark:ring-cyan-800'
                   ])>
                   <nav class="mt-6" @click.outside="show=false">
@@ -46,8 +47,8 @@
                 <nav class="pointer-events-auto hidden md:block">
                   <ul class="flex rounded-full bg-white/90 px-3 text-sm font-medium text-cyan-800 shadow-lg shadow-cyan-800/5 ring-1 ring-cyan-100 backdrop-blur dark:bg-cyan-200 dark:text-cyan-200 dark:ring-white">
                     @foreach ($nav as $item)
-                      <li>
-                        <a class="relative block px-3 py-2 transition dark:text-cyan-800 hover:text-cyan-500 dark:hover:text-cyan-400" href="{{ $item->getUrl() }}">
+                      <li class="w-15">
+                        <a class="truncate relative block px-3 py-2 transition dark:text-cyan-800 hover:text-cyan-500 dark:hover:text-cyan-400" href="{{ $item->getUrl() }}">
                           {{ $item->getTitle() }}
                         </a>
                       </li>
