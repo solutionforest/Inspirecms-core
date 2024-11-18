@@ -66,10 +66,11 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public static function make($model, array $propertyData, $locale)
     {
+        $availableLanguages = inspirecms()->getAllAvailableLanguages();
 
-        $availableLocales = array_keys(inspirecms()->getAllAvailableLanguages());
+        $availableLocales = collect($availableLanguages)->map(fn ($lang) => $lang->locale)->toArray();
 
-        $parameters = static::prepareDtoParameters($model, $propertyData, $availableLocales);
+        $parameters = static::prepareDtoParameters($model, $propertyData, $availableLanguages);
 
         $fallbackLocale = $model->getFallbackLocale() ?? 'en';
 
@@ -189,18 +190,18 @@ class ContentDto extends BaseTranslatableModelDto
     }
     //region Helpers
 
-    protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLocales): array
+    protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLanguages): array
     {
         $record->loadMissing(static::getNecessaryRelationships());
 
         $dtoParameters = $record->toArray();
 
-        $dtoParameters['seo'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
+        $dtoParameters['seo'] = collect($availableLanguages)->keys()->mapWithKeys(fn ($locale) => [
             $locale => $record->webSetting?->toDto($locale),
         ])->all();
 
-        $dtoParameters['urls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-            $locale => $record->getUrl($locale),
+        $dtoParameters['urls'] = collect($availableLanguages)->mapWithKeys(fn (LanguageDto $lang) => [
+            $lang->code => $record->getUrl($lang->locale),
         ])->all();
 
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
@@ -208,20 +209,20 @@ class ContentDto extends BaseTranslatableModelDto
         $dtoParameters['propertyData'] = $propertyData;
 
         if ($record->isRedirectable()) {
-            $dtoParameters['redirectUrls'] = collect($availableLocales)->mapWithKeys(fn ($locale) => [
-                $locale => $record->getRedirectUrl($locale),
+            $dtoParameters['redirectUrls'] = collect($availableLanguages)->mapWithKeys(fn (LanguageDto $lang) => [
+                $lang->code => $record->getRedirectUrl($lang->locale),
             ])->all();
             $dtoParameters['redirectType'] = $record->getRedirectType();
         }
 
         unset($dtoParameters['children']);  // Get by model
 
-        return static::mutuateParameters($dtoParameters, [$record->getFallbackLocale(), $availableLocales]);
+        return static::mutuateParameters($dtoParameters, [$record->getFallbackLocale(), $availableLanguages]);
     }
 
     protected static function mutuateParameters(array $parameters, array $configs): array
     {
-        [$fallbackLocale, $availableLocales] = $configs;
+        [$fallbackLocale, $availableLanguages] = $configs;
 
         $propertyTypes = collect($parameters['propertyTypes'] ?? [])
             ->map(fn ($propertyType) => is_array($propertyType) ? PropertyTypeDto::fromArray($propertyType) : $propertyType)
