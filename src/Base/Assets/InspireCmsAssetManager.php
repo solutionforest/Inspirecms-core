@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Base\Assets;
 
 use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
@@ -29,6 +30,7 @@ class InspireCmsAssetManager implements InspireCmsAssetManagerInterface
      */
     public function findByKeys(...$keys)
     {
+        $keys = Arr::flatten($keys);
         return InspireCmsConfig::getMediaAssetModelClass()::with('media')->findMany($keys);
     }
 
