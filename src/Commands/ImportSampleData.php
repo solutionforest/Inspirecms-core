@@ -557,7 +557,7 @@ class ImportSampleData extends Command
         $contentPropertyData = [
             'home' => [
                 'image_slider' => [
-                    'image' => collect(array_rand($this->mediaAssets, 3))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
+                    'image' => collect(array_rand($this->mediaAssets, 5))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
                 ],
                 'recently_articles' => [
                     'articles' => collect(array_rand($articlesArr, 3))->map(fn ($i) => $articlesArr[$i]?->getKey())->filter()->all(),
