@@ -22,7 +22,7 @@
               </div>
               <div class="flex flex-1 justify-end md:justify-center" x-data="{show: false}">
                 <div class="pointer-events-auto md:hidden" data-headlessui-state="">
-                  <button @click="show = !show" class="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-cyan-800 shadow-lg shadow-cyan-800/5 ring-1 ring-cyan-100 backdrop-blur dark:bg-cyan-200 dark:text-cyan-200 dark:ring-white dark:hover:ring-white/20" type="button" aria-expanded="false" data-headlessui-state="" id="headlessui-popover-button-:Rbmiqja:" fdprocessedid="0ivgca">
+                  <button @click="show = !show" class="group flex items-center rounded-full bg-white/90 px-4 py-2 text-sm font-medium text-cyan-800 shadow-lg shadow-cyan-800/5 ring-1 ring-cyan-100 backdrop-blur dark:bg-cyan-200 dark:ring-white dark:hover:ring-white/20" type="button" aria-expanded="false" data-headlessui-state="" id="headlessui-popover-button-:Rbmiqja:" fdprocessedid="0ivgca">
                     Menu
                   </button>
                 </div>
