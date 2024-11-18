@@ -18,9 +18,18 @@ composer require solution-forest/inspirecms-core
 ```
 
 2. Run install command:
-
 ```bash
-php artisan solutionforest/inspirecms:install
+php artisan inspirecms:install
+```
+
+Optional: Install required default data:
+```bash
+php artisan inspirecms:import-default-data
+```
+
+Optional: Install sample data and views:
+```bash
+php artisan inspirecms:import-sample-data
 ```
 
 ## Configuration
