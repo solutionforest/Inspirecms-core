@@ -238,6 +238,13 @@ class ImportSampleData extends Command
                         ]
                     ],
                 ],
+                'image' => [
+                    'type' => 'mediaPicker',
+                    'config' => [
+                        'mimeTypes' => ['image'],
+                        'multiple' => false,
+                    ],
+                ]
             ],
             'projects' => [
                 'projects' => [
@@ -575,6 +582,7 @@ class ImportSampleData extends Command
                         'en' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)',
                         'id' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)',
                     ],
+                    'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                 ],
             ],
             'articles' => [
