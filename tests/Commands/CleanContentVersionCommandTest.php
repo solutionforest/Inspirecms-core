@@ -40,8 +40,8 @@ class CleanContentVersionCommandTest extends TestCase
             ->assertExitCode(CleanupContentVersion::SUCCESS);
 
         // Assert the old version is deleted and the new one is not
-        $this->assertDatabaseMissing($model->getTable(), ['id' => $oldVersion->id]);
-        $this->assertDatabaseHas($model->getTable(), ['id' => $newVersion->id]);
+        $this->assertDatabaseMissing($model, ['id' => $oldVersion->id]);
+        $this->assertDatabaseHas($model, ['id' => $newVersion->id]);
     }
 
     public function test_handle_cleanup_versions_with_avoid_to_clean()
@@ -65,8 +65,8 @@ class CleanContentVersionCommandTest extends TestCase
             ->assertExitCode(CleanupContentVersion::SUCCESS);
 
         // Assert the old version is deleted and the new one is not
-        $this->assertDatabaseHas($model->getTable(), ['id' => $oldVersion->id]);
-        $this->assertDatabaseHas($model->getTable(), ['id' => $newVersion->id]);
+        $this->assertDatabaseHas($model, ['id' => $oldVersion->id]);
+        $this->assertDatabaseHas($model, ['id' => $newVersion->id]);
     }
 
     public function test_handle_cleanup_versions_with_publish_log()
@@ -92,10 +92,10 @@ class CleanContentVersionCommandTest extends TestCase
             ->assertExitCode(CleanupContentVersion::SUCCESS);
 
         // Assert the old version is deleted and the new one is not
-        $this->assertDatabaseMissing($model->getTable(), ['id' => $oldVersion->id]);
-        $this->assertDatabaseHas($model->getTable(), ['id' => $newVersion->id]);
+        $this->assertDatabaseMissing($model, ['id' => $oldVersion->id]);
+        $this->assertDatabaseHas($model, ['id' => $newVersion->id]);
 
-        $this->assertDatabaseMissing($publishVersionModel->getTable(), ['version_id' => $oldVersion->id]);
-        $this->assertDatabaseHas($publishVersionModel->getTable(), ['version_id' => $newVersion->id]);
+        $this->assertDatabaseMissing($publishVersionModel, ['version_id' => $oldVersion->id]);
+        $this->assertDatabaseHas($publishVersionModel, ['version_id' => $newVersion->id]);
     }
 }
