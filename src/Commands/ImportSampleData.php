@@ -10,6 +10,7 @@ use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -506,7 +507,7 @@ class ImportSampleData extends Command
             'title' => ['en' => 'Homepage', 'id' => 'Beranda'],
             'slug' => 'home',
         ]);
-        $this->saveContentIfNotExists($home);
+        $this->createContentIfNotExists($home);
         $this->content['home'] = $home;
 
         // about
@@ -516,7 +517,7 @@ class ImportSampleData extends Command
             'slug' => 'about',
             'parent_id' => $home->getKey(),
         ]);
-        $this->saveContentIfNotExists($about);
+        $this->createContentIfNotExists($about);
         $this->content['about'] = $about;
 
         // articles
@@ -526,7 +527,7 @@ class ImportSampleData extends Command
             'slug' => 'articles',
             'parent_id' => $home->getKey(),
         ]);
-        $this->saveContentIfNotExists($articles);
+        $this->createContentIfNotExists($articles);
         $this->content['articles'] = $articles;
 
         // article
@@ -538,7 +539,7 @@ class ImportSampleData extends Command
                 'slug' => "article-$i",
                 'parent_id' => $articles->getKey(),
             ]);
-            $this->saveContentIfNotExists($article);
+            $this->createContentIfNotExists($article);
             $this->content["article-$i"] = $article;
 
             $articlesArr[] = $article;
@@ -551,7 +552,7 @@ class ImportSampleData extends Command
             'slug' => 'projects',
             'parent_id' => $home->getKey(),
         ]);
-        $this->saveContentIfNotExists($projects);
+        $this->createContentIfNotExists($projects);
         $this->content['projects'] = $projects;
 
         $contentPropertyData = [
@@ -744,13 +745,42 @@ class ImportSampleData extends Command
         return $model;
     }
 
-    protected function saveContentIfNotExists(Content $content, $state = 'draft'): void
+    protected function createContentIfNotExists(Content $content, $state = 'draft'): void
     {
         $model = InspireCmsConfig::getContentModelClass();
 
         if ($model::where('slug', $content->slug)->doesntExist()) {
             $content->setPublishableState($state);
             $content->save();
+
+            $this->createContentRelatedModels($content->getKey());
+        }
+    }
+
+    protected function createContentRelatedModels($contentId)
+    {
+        /**
+         * @var ?Content
+         */
+        $content = InspireCmsConfig::getContentModelClass()::find($contentId);
+
+        if ($content) {
+            $content->sitemap()->create([
+                'change_frequency' => \SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency::Monthly->value,
+                'enable' => true,
+                'priority' => 0.5,
+            ]);
+            $content->webSetting()->create([
+                'seo' => [
+                    'meta_title' => $content->getTranslations('title'),
+                ],
+                'robots' => [
+                    'index' => true,
+                    'follow' => true,
+                ],
+                'redirect_path' => null,
+                'redirect_content_id' => KeyHelper::generateMinUuid(),  // must
+            ]);
         }
     }
 }
