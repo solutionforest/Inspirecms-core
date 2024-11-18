@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use SolutionForest\InspireCms\Dtos\LanguageDto;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ContentService implements ContentServiceInterface
@@ -27,7 +29,9 @@ class ContentService implements ContentServiceInterface
 
         $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
 
-        return [$content->toDto($locale), $template?->getViewFullName()];
+        $lang = collect(InspireCms::getAllAvailableLanguages())->first(fn (LanguageDto $languageDto) => $languageDto->locale == $locale);
+
+        return [$content->toDto($lang->code), $template?->getViewFullName()];
     }
 
     /**
