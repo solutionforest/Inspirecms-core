@@ -16,13 +16,13 @@
                 <div class="lg:pl-20">
                 <div class="max-w-xs px-2.5 lg:max-w-none">
                     @if ($article_detail_content_image)
-                        <img alt="" loading="lazy" width="800" height="800" decoding="async" data-nimg="1" class="aspect-square rotate-3 rounded-2xl bg-zinc-100 object-cover dark:bg-zinc-800" sizes="(min-width: 1024px) 32rem, 20rem" srcset="{{ $article_detail_content_image->getUrl() }}" style="color: transparent;">
+                        <img alt="" loading="lazy" width="800" height="800" decoding="async" data-nimg="1" class="aspect-square rotate-3 rounded-2xl bg-cyan-100 object-cover dark:bg-cyan-800" sizes="(min-width: 1024px) 32rem, 20rem" srcset="{{ $article_detail_content_image->getUrl() }}" style="color: transparent;">
                     @endif
                 </div>
                 </div>
                 <div class="lg:order-first lg:row-span-2">
-                <h1 class="text-4xl font-bold tracking-tight text-zinc-800 sm:text-5xl dark:text-zinc-100">{{ $article_detail_content_title }}</h1>
-                <div class="mt-6 space-y-7 text-base text-zinc-600 dark:text-zinc-400">
+                <h1 class="text-4xl font-bold tracking-tight text-cyan-800 sm:text-5xl dark:text-cyan-100">{{ $article_detail_content_title }}</h1>
+                <div class="mt-6 space-y-7 text-base text-cyan-600 dark:text-cyan-400">
                     <p>{{ $article_detail_content_content }} </p>
                 </div>
                 </div>
