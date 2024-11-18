@@ -19,10 +19,6 @@
                     <article>
                       <header class="flex flex-col">
                         <h1 class="mt-6 text-4xl font-bold tracking-tight text-indigo-800 sm:text-5xl dark:text-indigo-100">{{$article_detail_content_title}}</h1>
-                        <time datetime="2022-07-14" class="order-first flex items-center text-base text-indigo-400 dark:text-indigo-500">
-                          <span class="h-4 w-0.5 rounded-full bg-indigo-200 dark:bg-indigo-500"></span>
-                          <span class="ml-3">July 14, 2022</span>
-                        </time>
                       </header>
                       <div class="mt-8 prose dark:prose-invert" data-mdx-content="true">
                         <p>{{$article_detail_content_description}}</p>
