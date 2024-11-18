@@ -561,6 +561,19 @@ class ImportSampleData extends Command
         $this->createContentIfNotExists($projects);
         $this->content['projects'] = $projects;
 
+        // redirect page
+        $redirectPage = $this->makeContent([
+            'document_type_id' => $this->documentTypes['projects']->getKey(),
+            'title' => ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
+            'slug' => 'redirect-page',
+            'parent_id' => $home->getKey(),
+        ]);
+        $this->createContentIfNotExists($redirectPage, 'publish');
+        $this->content['redirect-page'] = $redirectPage;
+        InspireCmsConfig::getContentModelClass()::find($redirectPage->getKey())?->webSetting?->update([
+            'redirect_path' => '/',
+        ]);
+
         $contentPropertyData = [
             'home' => [
                 'image_slider' => [
@@ -756,6 +769,11 @@ class ImportSampleData extends Command
                 'content_id' => $this->content['projects']->getKey(),
                 'type' => 'content',
             ],
+            [
+                'title' => ['en' => 'Redirect to home page', 'zh_Hant' => '重定向到首頁', 'zh_Hans' => '重定向到首页'],
+                'content_id' => $this->content['redirect-page']->getKey(),
+                'type' => 'content',
+            ]
         ];
 
         $this->withCustomProgressBar($navigationData, function ($data, $slug, $progress) use ($model) {
