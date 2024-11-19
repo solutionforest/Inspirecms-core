@@ -11,6 +11,16 @@ use Illuminate\Auth\Events as AuthEvents;
 
 class Login extends BasePage
 {
+    /**
+     * @var view-string
+     */
+    protected static string $view = 'inspirecms::filament.pages.auth.login';
+
+    /**
+     * @var view-string
+     */
+    protected static string $layout = 'inspirecms::components.layout.split-image-form';
+
     public function mount(): void
     {
         $installUrl = inspirecms()->getInstallUrl();

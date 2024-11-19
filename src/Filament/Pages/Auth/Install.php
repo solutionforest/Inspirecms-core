@@ -26,6 +26,11 @@ class Install extends BasePage
      */
     protected static string $view = 'inspirecms::filament.pages.auth.install';
 
+    /**
+     * @var view-string
+     */
+    protected static string $layout = 'inspirecms::components.layout.split-image-form';
+
     protected static string $slug = 'install';
 
     public function boot()

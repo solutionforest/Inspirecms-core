@@ -1,7 +1,7 @@
 <svg
     viewBox="0 0 140 26"
     xmlns="http://www.w3.org/2000/svg"
-    class="h-full text-custom-500 dark:text-custom-400 inspirecms-logo"
+    class="h-full text-custom-500 dark:text-custom-400 inspirecms-logo font-mono font-bold tracking-wide"
     @style([
         \Filament\Support\get_color_css_variables(
             'primary',
@@ -16,5 +16,5 @@
         </linearGradient>
     </defs>
     <circle cx="10" cy="13" r="10" fill="url(#grad1)" />
-    <text x="30" y="20" font-family="Arial" font-size="20" fill="currentColor">InspireCms</text>
+    <text x="30" y="20" font-size="18" fill="currentColor">InspireCms</text>
 </svg>
