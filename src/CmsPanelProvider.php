@@ -9,6 +9,7 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -40,6 +41,21 @@ class CmsPanelProvider extends PanelProvider
             ->profile(Pages\Auth\EditProfile::class)
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
+            ->theme('inspirecms')
+            ->font('DM Sans')
+            ->colors([
+                'danger' => Color::hex('#f44336'),
+                'gray' => Color::hex('#5e5e5e'),
+                'info' => Color::hex('#88B0BA'),
+                'primary' => Color::hex('#B5834A'),
+                'secondary' => Color::hex('#d2b492'),
+                'success' => Color::hex('#76ae51'),
+                'warning' => Color::hex('#f39e19'),
+
+                'zinc' => Color::Zinc,
+                'lime' => Color::Lime,
+            ])
+            ->maxContentWidth('full')
             ->plugins([
                 FilamentFieldGroupPlugin::make()
                     ->enablePlugin()
@@ -57,7 +73,6 @@ class CmsPanelProvider extends PanelProvider
                     ], false),
                 FilamentPeekPlugin::make(),
                 \Filament\SpatieLaravelTranslatablePlugin::make(),
-                new InspireCmsTheme,
             ])
             ->resources(config('inspirecms.filament.resources'))
             ->pages([

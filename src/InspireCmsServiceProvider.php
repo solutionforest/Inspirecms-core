@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms;
 
 use Filament\Support\Assets\Asset;
+use Filament\Support\Assets\Js;
+use Filament\Support\Assets\Theme;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
@@ -173,7 +175,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getAssets(): array
     {
-        return [];
+        return [
+            Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
+            Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
+        ];
     }
 
     /**
