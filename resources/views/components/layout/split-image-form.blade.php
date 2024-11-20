@@ -10,12 +10,6 @@
     ])
 
     <div class="fi-simple-layout flex min-h-screen flex-col items-center bg-primary-500/20">
-        
-        @if ($livewire->hasLogo())
-            <div class="absolute sm:left-0 sm:top-0 m-3">
-                <x-filament-panels::logo class="w-64 sm:w-52 !h-auto"/>
-            </div>
-        @endif
 
         @if (($hasTopbar ?? true) && filament()->auth()->check())
             <div
@@ -36,7 +30,7 @@
         >
             <main
                 @class([
-                    'split-image-main w-full bg-white px-6 py-12 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 sm:rounded-xl sm:px-12',
+                    'split-image-main w-full bg-white px-6 py-12 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 sm:px-12',
                     match ($maxWidth ?? null) {
                         MaxWidth::ExtraSmall, 'xs' => 'sm:max-w-xs',
                         MaxWidth::Small, 'sm' => 'sm:max-w-sm',

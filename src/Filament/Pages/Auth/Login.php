@@ -20,6 +20,8 @@ class Login extends BasePage
      * @var view-string
      */
     protected static string $layout = 'inspirecms::components.layout.split-image-form';
+    
+    protected ?string $maxWidth = '4xl';
 
     public function mount(): void
     {

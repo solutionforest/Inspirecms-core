@@ -33,6 +33,8 @@ class Install extends BasePage
 
     protected static string $slug = 'install';
 
+    protected ?string $maxWidth = '4xl';
+
     public function boot()
     {
         try {
