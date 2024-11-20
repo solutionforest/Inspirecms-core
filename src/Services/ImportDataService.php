@@ -19,8 +19,8 @@ class ImportDataService implements ImportDataServiceInterface
     protected array $pendingData = [];
 
     /**
-     * @var array $finished
-     * 
+     * @var array
+     *
      * An array to keep track of the finished import data processes.
      */
     protected array $finished = [];
@@ -28,15 +28,15 @@ class ImportDataService implements ImportDataServiceInterface
     protected ?string $nextProcess = null;
 
     /**
-     * @var array $processErrors
-     * 
+     * @var array
+     *
      * An array to store errors encountered during the data import process.
      */
     protected array $processErrors = [];
 
     /**
-     * @var array $tempModels
-     * 
+     * @var array
+     *
      * An array to temporarily store models during the import process.
      */
     protected array $tempModels = [];
@@ -52,10 +52,10 @@ class ImportDataService implements ImportDataServiceInterface
 
     public function __construct(
         protected ContentServiceInterface $contentService
-    ) { }
+    ) {}
 
-    /** @inheritDoc */
-    public function addDocumentType(string $name, array $fieldGroups, array|string $templates, array|string|null $inheritanceDocumentTypes, bool $childrenAsTable, string $category, ?string $title = null, ?string $parent = null)
+    /** {@inheritDoc} */
+    public function addDocumentType(string $name, array $fieldGroups, array | string $templates, array | string | null $inheritanceDocumentTypes, bool $childrenAsTable, string $category, ?string $title = null, ?string $parent = null)
     {
         foreach ($fieldGroups as $fieldGroupName => $fields) {
             $this->addFieldGroup($fieldGroupName, $fields);
@@ -78,11 +78,11 @@ class ImportDataService implements ImportDataServiceInterface
                 'show_children_as_table' => $childrenAsTable,
                 'category' => $category,
                 'title' => $title ?? (string) str($name)->title()->replace('_', ' '),
-            ]
+            ],
         ];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function addFieldGroup(string $name, array $fields, ?string $title = null)
     {
         $this->pendingData['fieldGroups'][$name] = [
@@ -95,7 +95,7 @@ class ImportDataService implements ImportDataServiceInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function addField(string $name, string $group, array $data, ?string $label = null)
     {
         $fieldKey = $group . '.' . $name;
@@ -106,16 +106,16 @@ class ImportDataService implements ImportDataServiceInterface
         $this->pendingData['fields'][$fieldKey] = $data;
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function addTemplate(string $slug, $content = null)
     {
         $this->pendingData['templates'][$slug]['slug'] = $slug;
-        if (!isset($this->pendingData['templates'][$slug]['content'])) {
+        if (! isset($this->pendingData['templates'][$slug]['content'])) {
             $this->pendingData['templates'][$slug]['content'] = $content;
         }
     }
-    
-    /** @inheritDoc */
+
+    /** {@inheritDoc} */
     public function addContent(string $slug, $title, string $documentType, array $propertyData, string $publishState, array $sitemap = [], array $webSetting = [], ?string $parent = null, ?string $template = null)
     {
         $contentKey = ($parent ?? '__root__') . '/' . $slug;
@@ -159,7 +159,7 @@ class ImportDataService implements ImportDataServiceInterface
         ];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function addNavigation(string $category, string $type, $title, ?string $contentFullSlug = null, ?string $url = null, ?string $target = null)
     {
         $this->pendingData['navigation'][] = [
@@ -174,7 +174,7 @@ class ImportDataService implements ImportDataServiceInterface
         ];
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function run()
     {
         if ($this->isAllDone()) {
@@ -185,17 +185,17 @@ class ImportDataService implements ImportDataServiceInterface
 
         try {
             while ($this->haveNextProcess()) {
-    
+
                 $process = $this->getNextProcess();
-    
+
                 $this->runProcess($process);
             }
         } catch (\Throwable $th) {
             $this->processErrors['__process__']['__error__'] = $th->getMessage();
-        } 
+        }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function reset()
     {
         $this->pendingData = [];
@@ -225,7 +225,7 @@ class ImportDataService implements ImportDataServiceInterface
             try {
 
                 $template = $this->findTemplates($slug)->first();
-    
+
                 if (! $template) {
                     $template = new $model(Arr::except($data, 'content'));
                     if (isset($data['content']) && filled($data['content'])) {
@@ -234,7 +234,7 @@ class ImportDataService implements ImportDataServiceInterface
                     $template->save();
                     $template->refresh();
                 }
-    
+
                 $this->finished['templates'][$slug] = $template;
 
             } catch (\Throwable $e) {
@@ -248,16 +248,16 @@ class ImportDataService implements ImportDataServiceInterface
         $model = InspireCmsConfig::getFieldGroupModelClass();
 
         $this->guardAgaintsTableExist($model);
-        
+
         foreach ($this->pendingData['fieldGroups'] ?? [] as $name => $data) {
             try {
 
                 $fieldGroup = $this->findFieldGroups($name)->first();
-    
+
                 if (! $fieldGroup) {
                     $fieldGroup = $model::create($data);
                 }
-    
+
                 $this->finished['fieldGroups'][$name] = $fieldGroup;
 
             } catch (\Throwable $th) {
@@ -281,33 +281,33 @@ class ImportDataService implements ImportDataServiceInterface
                 $documentTypeData = $data['data'];
                 $documentTypeData['slug'] = $slug;
                 $documentType = $this->findDocumentTypes($slug)->first();
-    
+
                 if (! $documentType) {
                     $documentType = $model::create($documentTypeData);
                 }
-    
+
                 if (isset($data['parent'])) {
-    
+
                     $parentDocumentType = $this->findDocumentTypes($data['parent'])->first();
-    
+
                     if (! $parentDocumentType) {
                         throw new \Exception("Parent document type '{$data['parent']}' not found.");
                     }
-    
+
                     $documentType->parent()->associate($parentDocumentType);
                     $documentType->save();
                 }
-    
+
                 if (! empty($data['fieldGroups'])) {
                     $fieldGroupKeys = $this->findFieldGroups($data['fieldGroups'])->map(fn ($i) => $i->getKey())->filter()->values();
                     $documentType->fieldGroups()->sync($fieldGroupKeys);
                 }
-    
+
                 if (! empty($data['templates'])) {
                     $templateKeys = $this->findTemplates($data['templates'])->map(fn ($i) => $i->getKey())->filter()->values();
                     $documentType->templates()->sync($templateKeys);
                 }
-    
+
                 if (isset($data['defaultTemplate'])) {
                     $defaultTemplate = $this->findTemplates($data['defaultTemplate'])->first();
                     if (! $defaultTemplate) {
@@ -315,7 +315,7 @@ class ImportDataService implements ImportDataServiceInterface
                     }
                     $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
                 }
-    
+
                 foreach ($data['inheritance'] ?? [] as $inheritance) {
                     $inheritanceDocumentType = $this->findDocumentTypes($inheritance)->first();
                     if (! $inheritanceDocumentType) {
@@ -323,7 +323,7 @@ class ImportDataService implements ImportDataServiceInterface
                     }
                     $documentType->inheritDocumentType($inheritanceDocumentType);
                 }
-    
+
                 $this->finished['documentTypes'][$slug] = $documentType;
 
             } catch (\Throwable $th) {
@@ -343,15 +343,15 @@ class ImportDataService implements ImportDataServiceInterface
             try {
 
                 [$group, $name] = explode('.', $fieldKey);
-    
+
                 $fieldGroup = $this->findFieldGroups($group)->first();
-    
+
                 if (! $fieldGroup) {
                     throw new \Exception("Field group {$group} does not exist.");
                 }
-    
+
                 $field = $fieldGroup->fields()->where('name', $name)->first();
-                
+
                 if (! $field) {
                     $data = $this->mutateFieldData($data);
                     $field = $fieldGroup->fields()->create($data);
@@ -371,9 +371,8 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-
         foreach ($this->pendingData['content'] ?? [] as $contentKey => $data) {
-            
+
             try {
 
                 [$parentSlug, $slug] = [Str::beforeLast($contentKey, '/'), Str::afterLast($contentKey, '/')];
@@ -448,12 +447,12 @@ class ImportDataService implements ImportDataServiceInterface
     /**
      * Executes the specified process.
      *
-     * @param string $process The name or identifier of the process to run.
+     * @param  string  $process  The name or identifier of the process to run.
      * @return void
      */
     protected function runProcess(string $process)
     {
-        if (!$this->isWaitingFor($process)) {
+        if (! $this->isWaitingFor($process)) {
             throw new \Exception('Invalid process.');
         }
 
@@ -490,7 +489,7 @@ class ImportDataService implements ImportDataServiceInterface
     /**
      * Checks if the specified process is currently waiting.
      *
-     * @param string $process The name of the process to check.
+     * @param  string  $process  The name of the process to check.
      * @return bool Returns true if the process is waiting, false otherwise.
      */
     protected function isWaitingFor(string $process)
@@ -513,13 +512,13 @@ class ImportDataService implements ImportDataServiceInterface
     /**
      * Sets the next process to be executed.
      *
-     * @param string $process The name of the next process.
+     * @param  string  $process  The name of the next process.
      * @return void
      */
     protected function setNextProcessFor(string $process)
     {
         $this->guardAgainstProcess($process);
-        
+
         $all = static::PROCESS_ORDER;
 
         $key = array_search($process, $all);
@@ -575,9 +574,10 @@ class ImportDataService implements ImportDataServiceInterface
      *
      * This method checks and prevents the execution of the given process.
      *
-     * @param string $process The name of the process to guard against.
-     * @throws \Exception If the process is invalid.
+     * @param  string  $process  The name of the process to guard against.
      * @return void
+     *
+     * @throws \Exception If the process is invalid.
      */
     protected function guardAgainstProcess(string $process)
     {
@@ -592,9 +592,10 @@ class ImportDataService implements ImportDataServiceInterface
      * This method checks if the specified table exists and performs necessary actions
      * to handle the case where the table is already present.
      *
-     * @param string $table The name of the table to check.
-     * @throws \Exception If the table does not exist.
+     * @param  string  $table  The name of the table to check.
      * @return void
+     *
+     * @throws \Exception If the table does not exist.
      */
     protected function guardAgaintsTableExist($table)
     {
@@ -605,44 +606,44 @@ class ImportDataService implements ImportDataServiceInterface
 
     /**
      * Find field groups by name.
-     * 
-     * @param string[]|string $names The names of the field groups to find.
+     *
+     * @param  string[]|string  $names  The names of the field groups to find.
      * @return Collection<FieldGroup|Model>
      */
-    protected function findFieldGroups(... $names)
+    protected function findFieldGroups(...$names)
     {
         return $this->findFromTempModels('fieldGroups', $names);
     }
 
     /**
      * Find templates by slug.
-     * 
-     * @param string[]|string $slugs The slugs of the templates to find.
+     *
+     * @param  string[]|string  $slugs  The slugs of the templates to find.
      * @return Collection<Template|Model>
      */
-    protected function findTemplates(... $slugs)
+    protected function findTemplates(...$slugs)
     {
         return $this->findFromTempModels('templates', $slugs);
     }
 
     /**
      * Find document types by slug.
-     * 
-     * @param string[]|string $slugs The slugs of the document types to find.
+     *
+     * @param  string[]|string  $slugs  The slugs of the document types to find.
      * @return Collection<DocumentType|Model>
      */
-    protected function findDocumentTypes(... $slugs)
+    protected function findDocumentTypes(...$slugs)
     {
         return $this->findFromTempModels('documentTypes', $slugs);
     }
 
     /**
      * Find content by slug.
-     * 
-     * @param string[]|string $slugs The slugs of the content to find.
+     *
+     * @param  string[]|string  $slugs  The slugs of the content to find.
      * @return Collection<Content|Model>
      */
-    protected function findContent(... $slugs)
+    protected function findContent(...$slugs)
     {
         $type = 'content';
 
@@ -699,7 +700,7 @@ class ImportDataService implements ImportDataServiceInterface
             if (! $model) {
                 throw new \Exception("Model for type '{$type}' not found.");
             }
-    
+
             $this->guardAgaintsTableExist($model);
 
             $found = $model::whereIn($key, $missing)->get();
@@ -707,7 +708,7 @@ class ImportDataService implements ImportDataServiceInterface
             if ($found->isNotEmpty()) {
 
                 $existing = $existing->merge($found);
-    
+
                 $this->tempModels[$type] = $existing;
             }
         }
@@ -723,7 +724,7 @@ class ImportDataService implements ImportDataServiceInterface
                 // If it's a string and not a uuid, it's a document type slug
                 if (is_string($targetDocumentType) && ! Str::isUuid($targetDocumentType)) {
                     $data['config']['documentType'] = $this->findDocumentTypes($targetDocumentType)->first()?->getKey();
-                } 
+                }
             }
         }
 

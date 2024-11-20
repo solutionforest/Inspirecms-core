@@ -9,7 +9,7 @@ class PageService implements PageServiceInterface
 {
     public function __construct(
         protected ContentServiceInterface $contentService
-    ) { }
+    ) {}
 
     public function findPublishedContentAndView(string $fullPath, ?string $locale)
     {
@@ -52,7 +52,7 @@ class PageService implements PageServiceInterface
             $content = $this->contentService->findIndexWebPage();
         } else {
             $content = $this->contentService->searchOne(
-                $fullPath, 
+                $fullPath,
                 fn (\Laravel\Scout\Builder $builder) => $builder
                     ->where('is_web', 1)
                     ->where('full_path', $fullPath) // Avoid searching same slug in different parent

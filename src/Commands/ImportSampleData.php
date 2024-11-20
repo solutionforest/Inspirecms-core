@@ -63,7 +63,6 @@ class ImportSampleData extends Command
 
         $this->info("\nSample data imported.");
 
-
         return static::SUCCESS;
     }
 
@@ -587,7 +586,6 @@ Html;
 
         $this->importDataService->addContent('articles', ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'], 'articles', [], 'publish', [], [], 'home');
 
-        
         foreach (range(1, 5) as $i) {
 
             $this->importDataService->addContent(

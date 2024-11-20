@@ -18,7 +18,7 @@ class ContentService implements ContentServiceInterface
         $this->contentModel = InspireCmsConfig::getContentModelClass();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function search($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
     {
         $builder = $this->contentSearchBuilder($keyword);
@@ -28,7 +28,7 @@ class ContentService implements ContentServiceInterface
         return $builder->get();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function searchOne($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
     {
         $builder = $this->contentSearchBuilder($keyword);
@@ -38,7 +38,7 @@ class ContentService implements ContentServiceInterface
         return $builder->first();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function findIndexWebPage()
     {
         return $this->getContentQuery()
@@ -48,7 +48,7 @@ class ContentService implements ContentServiceInterface
             ->first();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getBySlugPath(string $slugPath)
     {
         $trueSlug = Str::afterLast($slugPath, '/');
@@ -57,7 +57,7 @@ class ContentService implements ContentServiceInterface
 
         return collect($content)
             ->map(function ($item) {
-                
+
                 // Get the root content
                 $root = collect($item->ancestorsAndSelf)->sortBy('depth')->first();
                 $slugPathForContent = $root?->reverse_slug_path;
@@ -91,10 +91,9 @@ class ContentService implements ContentServiceInterface
     /**
      * Apply the provided callbacks to the search builder.
      *
-     * @param \Laravel\Scout\Builder $builder The search builder instance.
-     * @param callable|null $builderCallback The callback to modify the builder.
-     * @param callable|null $queryCallback The callback to modify the query.
-     *
+     * @param  \Laravel\Scout\Builder  $builder  The search builder instance.
+     * @param  callable|null  $builderCallback  The callback to modify the builder.
+     * @param  callable|null  $queryCallback  The callback to modify the query.
      * @return \Laravel\Scout\Builder
      */
     protected function applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback)
