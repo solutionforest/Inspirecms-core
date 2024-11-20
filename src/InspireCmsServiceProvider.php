@@ -87,7 +87,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
 
-
         Facades\ModelManifest::register();
         $supportModels = $this->getConfigSupoortModels();
         Facades\ModelManifest::replace(

@@ -412,7 +412,7 @@ class Content extends BaseModel implements ContentContract
                 'column' => 'slug',
                 'separator' => '/',
                 'reverse' => true,
-            ]
+            ],
         ];
     }
 

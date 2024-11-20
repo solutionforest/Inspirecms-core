@@ -41,7 +41,7 @@ interface Template
      *
      * This method is used to set up the initial content for a template before it is created.
      *
-     * @param string $content The content to preload into the template.
+     * @param  string  $content  The content to preload into the template.
      * @return self
      */
     public function preloadTemplateContentBeforeCreate(string $content);
