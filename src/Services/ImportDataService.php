@@ -1,0 +1,732 @@
+<?php
+
+namespace SolutionForest\InspireCms\Services;
+
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
+
+class ImportDataService implements ImportDataServiceInterface
+{
+    protected array $pendingData = [];
+
+    /**
+     * @var array $finished
+     * 
+     * An array to keep track of the finished import data processes.
+     */
+    protected array $finished = [];
+
+    protected ?string $nextProcess = null;
+
+    /**
+     * @var array $processErrors
+     * 
+     * An array to store errors encountered during the data import process.
+     */
+    protected array $processErrors = [];
+
+    /**
+     * @var array $tempModels
+     * 
+     * An array to temporarily store models during the import process.
+     */
+    protected array $tempModels = [];
+
+    const PROCESS_ORDER = [
+        'templates',
+        'fieldGroups',
+        'documentTypes',
+        'fields',
+        'content',
+        'navigation',
+    ];
+
+    public function __construct(
+        protected ContentServiceInterface $contentService
+    ) { }
+
+    /** @inheritDoc */
+    public function addDocumentType(string $name, array $fieldGroups, array|string $templates, array|string|null $inheritanceDocumentTypes, bool $childrenAsTable, string $category, ?string $title = null, ?string $parent = null)
+    {
+        foreach ($fieldGroups as $fieldGroupName => $fields) {
+            $this->addFieldGroup($fieldGroupName, $fields);
+        }
+
+        $templates = is_array($templates) ? $templates : (filled($templates) ? [$templates => null] : []);
+        $defaultTemplate = array_key_first($templates);
+
+        foreach ($templates as $template => $templateContent) {
+            $this->addTemplate($template, $templateContent);
+        }
+
+        $this->pendingData['documentTypes'][$name] = [
+            'fieldGroups' => array_keys($fieldGroups),
+            'templates' => array_keys($templates),
+            'defaultTemplate' => $defaultTemplate,
+            'inheritance' => is_array($inheritanceDocumentTypes) ? $inheritanceDocumentTypes : array_filter([$inheritanceDocumentTypes]),
+            'parent' => $parent,
+            'data' => [
+                'show_children_as_table' => $childrenAsTable,
+                'category' => $category,
+                'title' => $title ?? (string) str($name)->title()->replace('_', ' '),
+            ]
+        ];
+    }
+
+    /** @inheritDoc */
+    public function addFieldGroup(string $name, array $fields, ?string $title = null)
+    {
+        $this->pendingData['fieldGroups'][$name] = [
+            'name' => $name,
+            'title' => $title ?? (string) str($name)->title()->replace('_', ' '),
+        ];
+
+        foreach ($fields as $fieldName => $fieldData) {
+            $this->addField($fieldName, $name, $fieldData);
+        }
+    }
+
+    /** @inheritDoc */
+    public function addField(string $name, string $group, array $data, ?string $label = null)
+    {
+        $fieldKey = $group . '.' . $name;
+
+        $data['name'] = $name;
+        $data['label'] = $label ?? (string) str($name)->title()->replace('_', ' ');
+
+        $this->pendingData['fields'][$fieldKey] = $data;
+    }
+
+    /** @inheritDoc */
+    public function addTemplate(string $slug, $content = null)
+    {
+        $this->pendingData['templates'][$slug]['slug'] = $slug;
+        if (!isset($this->pendingData['templates'][$slug]['content'])) {
+            $this->pendingData['templates'][$slug]['content'] = $content;
+        }
+    }
+    
+    /** @inheritDoc */
+    public function addContent(string $slug, $title, string $documentType, array $propertyData, string $publishState, array $sitemap = [], array $webSetting = [], ?string $parent = null, ?string $template = null)
+    {
+        $contentKey = ($parent ?? '__root__') . '/' . $slug;
+
+        $sitemap = array_merge([
+            'priority' => 0.5,
+            'change_frequency' => 'monthly',
+            'enable' => true,
+        ], $sitemap);
+
+        $webSetting = array_merge([
+            'seo' => [
+                'meta_title' => $title,
+                'meta_description' => [],
+                'meta_keywords' => [],
+                'og_title' => $title,
+                'og_description' => [],
+                'og_image' => [],
+            ],
+            'robots' => [
+                'index' => true,
+                'follow' => true,
+            ],
+            'redirect_path' => null,
+            'redirect_content_id' => KeyHelper::generateMinUuid(),
+            'redirect_type' => null,
+        ], $webSetting);
+
+        $this->pendingData['content'][$contentKey] = [
+            'sitemap' => $sitemap,
+            'webSetting' => $webSetting,
+            'propertyData' => $propertyData,
+            'documentType' => $documentType,
+            'parent' => $parent,
+            'publishState' => $publishState,
+            'template' => $template,
+            'data' => [
+                'slug' => $slug,
+                'title' => $title,
+            ],
+        ];
+    }
+
+    /** @inheritDoc */
+    public function addNavigation(string $category, string $type, $title, ?string $contentFullSlug = null, ?string $url = null, ?string $target = null)
+    {
+        $this->pendingData['navigation'][] = [
+            'data' => [
+                'category' => $category,
+                'type' => $type,
+                'url' => $url,
+                'target' => $target,
+                'title' => $title,
+            ],
+            'content' => $contentFullSlug,
+        ];
+    }
+
+    /** @inheritDoc */
+    public function run()
+    {
+        if ($this->isAllDone()) {
+            return;
+        }
+
+        $this->initProcess();
+
+        try {
+            while ($this->haveNextProcess()) {
+    
+                $process = $this->getNextProcess();
+    
+                $this->runProcess($process);
+            }
+        } catch (\Throwable $th) {
+            $this->processErrors['__process__']['__error__'] = $th->getMessage();
+        } 
+    }
+
+    /** @inheritDoc */
+    public function reset()
+    {
+        $this->pendingData = [];
+        $this->finished = [];
+        $this->tempModels = [];
+        $this->resetProcess();
+    }
+
+    public function hasErrors(): bool
+    {
+        return ! empty($this->processErrors);
+    }
+
+    public function getErrors(): array
+    {
+        return $this->processErrors;
+    }
+
+    protected function processForTemplates()
+    {
+        $model = InspireCmsConfig::getTemplateModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        foreach ($this->pendingData['templates'] ?? [] as $slug => $data) {
+
+            try {
+
+                $template = $this->findTemplates($slug)->first();
+    
+                if (! $template) {
+                    $template = new $model(Arr::except($data, 'content'));
+                    if (isset($data['content']) && filled($data['content'])) {
+                        $template->preloadTemplateContentBeforeCreate($data['content']);
+                    }
+                    $template->save();
+                    $template->refresh();
+                }
+    
+                $this->finished['templates'][$slug] = $template;
+
+            } catch (\Throwable $e) {
+                $this->processErrors['templates'][$slug] = $e->getMessage();
+            }
+        }
+    }
+
+    protected function processForFieldGroups()
+    {
+        $model = InspireCmsConfig::getFieldGroupModelClass();
+
+        $this->guardAgaintsTableExist($model);
+        
+        foreach ($this->pendingData['fieldGroups'] ?? [] as $name => $data) {
+            try {
+
+                $fieldGroup = $this->findFieldGroups($name)->first();
+    
+                if (! $fieldGroup) {
+                    $fieldGroup = $model::create($data);
+                }
+    
+                $this->finished['fieldGroups'][$name] = $fieldGroup;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['fieldGroups'][$name] = $th->getMessage();
+            }
+        }
+    }
+
+    protected function processForDocumentTypes()
+    {
+        $model = InspireCmsConfig::getDocumentTypeModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        // Reorder the document types so that parents are created before children
+        $this->pendingData['documentTypes'] = collect($this->pendingData['documentTypes'] ?? [])->sortBy(fn ($v, $k) => $v['parent'] ? 1 : 0)->toArray();
+
+        foreach ($this->pendingData['documentTypes'] as $slug => $data) {
+
+            try {
+                $documentTypeData = $data['data'];
+                $documentTypeData['slug'] = $slug;
+                $documentType = $this->findDocumentTypes($slug)->first();
+    
+                if (! $documentType) {
+                    $documentType = $model::create($documentTypeData);
+                }
+    
+                if (isset($data['parent'])) {
+    
+                    $parentDocumentType = $this->findDocumentTypes($data['parent'])->first();
+    
+                    if (! $parentDocumentType) {
+                        throw new \Exception("Parent document type '{$data['parent']}' not found.");
+                    }
+    
+                    $documentType->parent()->associate($parentDocumentType);
+                    $documentType->save();
+                }
+    
+                if (! empty($data['fieldGroups'])) {
+                    $fieldGroupKeys = $this->findFieldGroups($data['fieldGroups'])->map(fn ($i) => $i->getKey())->filter()->values();
+                    $documentType->fieldGroups()->sync($fieldGroupKeys);
+                }
+    
+                if (! empty($data['templates'])) {
+                    $templateKeys = $this->findTemplates($data['templates'])->map(fn ($i) => $i->getKey())->filter()->values();
+                    $documentType->templates()->sync($templateKeys);
+                }
+    
+                if (isset($data['defaultTemplate'])) {
+                    $defaultTemplate = $this->findTemplates($data['defaultTemplate'])->first();
+                    if (! $defaultTemplate) {
+                        throw new \Exception("Default template '{$data['default_template']}' not found.");
+                    }
+                    $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
+                }
+    
+                foreach ($data['inheritance'] ?? [] as $inheritance) {
+                    $inheritanceDocumentType = $this->findDocumentTypes($inheritance)->first();
+                    if (! $inheritanceDocumentType) {
+                        throw new \Exception("Inheritance document type '{$inheritance}' not found.");
+                    }
+                    $documentType->inheritDocumentType($inheritanceDocumentType);
+                }
+    
+                $this->finished['documentTypes'][$slug] = $documentType;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['documentTypes'][$slug] = $th->getMessage();
+            }
+        }
+    }
+
+    protected function processForFields()
+    {
+        $model = InspireCmsConfig::getFieldModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        foreach ($this->pendingData['fields'] ?? [] as $fieldKey => $data) {
+
+            try {
+
+                [$group, $name] = explode('.', $fieldKey);
+    
+                $fieldGroup = $this->findFieldGroups($group)->first();
+    
+                if (! $fieldGroup) {
+                    throw new \Exception("Field group {$group} does not exist.");
+                }
+    
+                $field = $fieldGroup->fields()->where('name', $name)->first();
+                
+                if (! $field) {
+                    $data = $this->mutateFieldData($data);
+                    $field = $fieldGroup->fields()->create($data);
+                }
+
+                $this->finished['fields'][$fieldKey] = $field;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['fields'][$fieldKey] = $th->getMessage();
+            }
+        }
+    }
+
+    protected function processForContent()
+    {
+        $model = InspireCmsConfig::getContentModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+
+        foreach ($this->pendingData['content'] ?? [] as $contentKey => $data) {
+            
+            try {
+
+                [$parentSlug, $slug] = [Str::beforeLast($contentKey, '/'), Str::afterLast($contentKey, '/')];
+
+                $parent = $parentSlug === '__root__' ? null : $this->findContent($parentSlug)->first();
+
+                $documentType = $this->findDocumentTypes($data['documentType'])->first();
+
+                if (! $documentType) {
+                    throw new \Exception("Document type '{$data['documentType']}' not found.");
+                }
+
+                $contentData = $data['data'];
+                $contentData['document_type_id'] = $documentType->getKey();
+                $contentData['parent_id'] = $parent?->getKey();
+
+                $content = $model::where('slug', $slug)
+                    ->when($parent, fn ($q) => $q->whereParent($parent->getKey()), fn ($q) => $q->isRoot())
+                    ->first();
+
+                if (! $content) {
+                    $content = new $model($contentData);
+                    $content->propertyData = json_encode($data['propertyData']);
+                    $content->setPublishableState($data['publishState'] ?? 'draft');
+                    $content->save();
+                    $content->refresh();
+                }
+
+                $content->webSetting()->updateOrCreate([], $data['webSetting']);
+                $content->sitemap()->updateOrCreate([], $data['sitemap']);
+
+                if (isset($data['template']) && filled($data['template'])) {
+                    $template = $this->findTemplates($data['template'])->first();
+                    if (! $template) {
+                        throw new \Exception("Template '{$data['template']}' not found.");
+                    }
+                    $content->templates()->sync([$template->getKey()]);
+                    $content->setAsDefaultTemplate($template);
+                }
+
+                $this->finished['content'][$contentKey] = $content;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['content'][$contentKey] = $th->getMessage();
+            }
+        }
+    }
+
+    protected function processForNavigation()
+    {
+        $model = InspireCmsConfig::getNavigationModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        foreach ($this->pendingData['navigation'] ?? [] as $data) {
+            try {
+
+                $content = $data['content'] ? $this->findContent($data['content'])->first() : null;
+
+                $navigationData = $data['data'];
+                $navigationData['content_id'] = $content?->getKey() ?? null;
+                $navigation = $model::create($navigationData);
+
+                $this->finished['navigation'][] = $navigation;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['navigation'][] = $th->getMessage();
+            }
+        }
+    }
+
+    /**
+     * Executes the specified process.
+     *
+     * @param string $process The name or identifier of the process to run.
+     * @return void
+     */
+    protected function runProcess(string $process)
+    {
+        if (!$this->isWaitingFor($process)) {
+            throw new \Exception('Invalid process.');
+        }
+
+        $method = (string) str($process)->studly()->prepend('processFor');
+
+        if (! method_exists($this, $method)) {
+            throw new \Exception("Method '{$method}' not found.");
+        }
+
+        $this->guardAgainstProcess($process);
+
+        try {
+
+            $this->{$method}();
+
+        } catch (\Throwable $th) {
+
+            $this->processErrors['__process__'][$process] = $th->getMessage();
+
+        } finally {
+
+            $this->setNextProcessFor($process);
+        }
+    }
+
+    protected function initProcess()
+    {
+        if ($this->nextProcess || $this->isAllDone()) {
+            return;
+        }
+        $this->nextProcess = static::PROCESS_ORDER[0] ?? null;
+    }
+
+    /**
+     * Checks if the specified process is currently waiting.
+     *
+     * @param string $process The name of the process to check.
+     * @return bool Returns true if the process is waiting, false otherwise.
+     */
+    protected function isWaitingFor(string $process)
+    {
+        $this->guardAgainstProcess($process);
+
+        return $this->nextProcess === $process;
+    }
+
+    /**
+     * Checks if all tasks or processes are completed.
+     *
+     * @return bool Returns true if all tasks are done, otherwise false.
+     */
+    protected function isAllDone()
+    {
+        return $this->nextProcess === '__done__';
+    }
+
+    /**
+     * Sets the next process to be executed.
+     *
+     * @param string $process The name of the next process.
+     * @return void
+     */
+    protected function setNextProcessFor(string $process)
+    {
+        $this->guardAgainstProcess($process);
+        
+        $all = static::PROCESS_ORDER;
+
+        $key = array_search($process, $all);
+
+        if ($key === false) {
+            throw new \Exception('Invalid process.');
+        }
+
+        $next = $all[$key + 1] ?? '__done__';
+
+        $this->nextProcess = $next;
+    }
+
+    /**
+     * Determine if there is a next process to be executed.
+     *
+     * @return bool True if there is a next process, false otherwise.
+     */
+    protected function haveNextProcess()
+    {
+        return $this->nextProcess !== '__done__';
+    }
+
+    /**
+     * Retrieve the next process to be executed.
+     *
+     * This method determines and returns the next process that should be
+     * executed in the import data service workflow.
+     *
+     * @return ?string The next process to be executed.
+     */
+    protected function getNextProcess()
+    {
+        return $this->nextProcess;
+    }
+
+    /**
+     * Initialize the data import process.
+     *
+     * This method sets up the necessary configurations and preconditions
+     * required to start the data import process.
+     *
+     * @return void
+     */
+    protected function resetProcess()
+    {
+        $this->nextProcess = null;
+        $this->processErrors = [];
+    }
+
+    /**
+     * Guard against a specific process.
+     *
+     * This method checks and prevents the execution of the given process.
+     *
+     * @param string $process The name of the process to guard against.
+     * @throws \Exception If the process is invalid.
+     * @return void
+     */
+    protected function guardAgainstProcess(string $process)
+    {
+        if (! in_array($process, static::PROCESS_ORDER)) {
+            throw new \Exception('Invalid process.');
+        }
+    }
+
+    /**
+     * Guard against the existence of a table.
+     *
+     * This method checks if the specified table exists and performs necessary actions
+     * to handle the case where the table is already present.
+     *
+     * @param string $table The name of the table to check.
+     * @throws \Exception If the table does not exist.
+     * @return void
+     */
+    protected function guardAgaintsTableExist($table)
+    {
+        if (! ModelHelper::isTableExists($table)) {
+            throw new \Exception("Table {$table} does not exist.");
+        }
+    }
+
+    /**
+     * Find field groups by name.
+     * 
+     * @param string[]|string $names The names of the field groups to find.
+     * @return Collection<FieldGroup|Model>
+     */
+    protected function findFieldGroups(... $names)
+    {
+        return $this->findFromTempModels('fieldGroups', $names);
+    }
+
+    /**
+     * Find templates by slug.
+     * 
+     * @param string[]|string $slugs The slugs of the templates to find.
+     * @return Collection<Template|Model>
+     */
+    protected function findTemplates(... $slugs)
+    {
+        return $this->findFromTempModels('templates', $slugs);
+    }
+
+    /**
+     * Find document types by slug.
+     * 
+     * @param string[]|string $slugs The slugs of the document types to find.
+     * @return Collection<DocumentType|Model>
+     */
+    protected function findDocumentTypes(... $slugs)
+    {
+        return $this->findFromTempModels('documentTypes', $slugs);
+    }
+
+    /**
+     * Find content by slug.
+     * 
+     * @param string[]|string $slugs The slugs of the content to find.
+     * @return Collection<Content|Model>
+     */
+    protected function findContent(... $slugs)
+    {
+        $type = 'content';
+
+        $existing = $this->tempModels[$type] ?? collect();
+
+        $slugs = Arr::flatten($slugs);
+
+        $missing = array_diff($slugs, $existing->keys()->toArray());
+
+        if (! empty($missing)) {
+
+            $model = InspireCmsConfig::getContentModelClass();
+
+            $this->guardAgaintsTableExist($model);
+
+            foreach ($missing as $slugPathToFind) {
+
+                $found = $this->contentService->getBySlugPath($slugPathToFind);
+
+                if ($found->isNotEmpty()) {
+
+                    $existing = $existing->merge($found);
+
+                    $this->tempModels[$type] = $existing;
+                }
+            }
+        }
+
+        return collect($existing)->where(fn ($v, $k) => in_array($k, $slugs));
+    }
+
+    protected function findFromTempModels(string $type, ...$keys)
+    {
+        $existing = $this->tempModels[$type] ?? collect();
+
+        $keys = Arr::flatten($keys);
+
+        $key = match ($type) {
+            'fieldGroups' => 'name',
+            default => 'slug',
+        };
+
+        $missing = array_diff($keys, $existing->pluck($key)->toArray());
+
+        if (! empty($missing)) {
+
+            $model = match ($type) {
+                'fieldGroups' => InspireCmsConfig::getFieldGroupModelClass(),
+                'templates' => InspireCmsConfig::getTemplateModelClass(),
+                'documentTypes' => InspireCmsConfig::getDocumentTypeModelClass(),
+                default => null,
+            };
+
+            if (! $model) {
+                throw new \Exception("Model for type '{$type}' not found.");
+            }
+    
+            $this->guardAgaintsTableExist($model);
+
+            $found = $model::whereIn($key, $missing)->get();
+
+            if ($found->isNotEmpty()) {
+
+                $existing = $existing->merge($found);
+    
+                $this->tempModels[$type] = $existing;
+            }
+        }
+
+        return $existing->whereIn($key, $keys);
+    }
+
+    protected function mutateFieldData(array $data): array
+    {
+        if (isset($data['type'])) {
+            if ($data['type'] == 'contentPicker' && isset($data['config']['documentType'])) {
+                $targetDocumentType = $data['config']['documentType'];
+                // If it's a string and not a uuid, it's a document type slug
+                if (is_string($targetDocumentType) && ! Str::isUuid($targetDocumentType)) {
+                    $data['config']['documentType'] = $this->findDocumentTypes($targetDocumentType)->first()?->getKey();
+                } 
+            }
+        }
+
+        return $data;
+    }
+}

@@ -2,99 +2,112 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Facades\InspireCms;
+use Closure;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
+/**
+ * @implements ContentServiceInterface<\SolutionForest\InspireCms\Models\Content>
+ */
 class ContentService implements ContentServiceInterface
 {
-    protected string $model;
+    protected string $contentModel;
 
     public function __construct()
     {
-        $this->model = InspireCmsConfig::getContentModelClass();
+        $this->contentModel = InspireCmsConfig::getContentModelClass();
     }
 
-    public function findPublishedContentAndView(string $fullPath, ?string $locale)
+    /** @inheritDoc */
+    public function search($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
     {
-        $content = $this->findPublishedContentByFullPath($fullPath);
+        $builder = $this->contentSearchBuilder($keyword);
 
-        if (is_null($content)) {
-            return [null, null];
-        }
+        $builder = $this->applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback);
 
-        if (! $content->isPublished() || ! $content->isWebPage()) {
-            return [null, null];
-        }
-
-        $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
-
-        $lang = collect(InspireCms::getAllAvailableLanguages())->first(fn (LanguageDto $languageDto) => $languageDto->locale == $locale);
-
-        return [$content->toDto($lang->code), $template?->getViewFullName()];
+        return $builder->get();
     }
 
+    /** @inheritDoc */
+    public function searchOne($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
+    {
+        $builder = $this->contentSearchBuilder($keyword);
+
+        $builder = $this->applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback);
+
+        return $builder->first();
+    }
+
+    /** @inheritDoc */
+    public function findIndexWebPage()
+    {
+        return $this->getContentQuery()
+            ->whereHas('nestableTree', fn ($query) => $query->whereIsRoot())
+            ->whereIsWebPage()
+            ->orderBy('nestable_tree_order')
+            ->first();
+    }
+
+    /** @inheritDoc */
+    public function getBySlugPath(string $slugPath)
+    {
+        $trueSlug = Str::afterLast($slugPath, '/');
+
+        $content = $this->getContentQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
+
+        return collect($content)
+            ->map(function ($item) {
+                
+                // Get the root content
+                $root = collect($item->ancestorsAndSelf)->sortBy('depth')->first();
+                $slugPathForContent = $root?->reverse_slug_path;
+
+                return [
+                    'item' => $item,
+                    'slugPath' => $slugPathForContent,
+                ];
+            })
+            ->filter(fn ($arr) => isset($arr['slugPath']) && filled($arr['slugPath']))
+            ->pluck('item', 'slugPath');
+    }
+
+    //region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getQuery()
+    protected function getContentQuery()
     {
-        return $this->model::query();
+        return $this->contentModel::query();
     }
 
     /**
      * @return \Laravel\Scout\Builder
      */
-    protected function searchBuilder(string $keyword)
+    protected function contentSearchBuilder(string $keyword)
     {
-        return $this->model::search($keyword);
+        return $this->contentModel::search($keyword);
     }
 
     /**
-     * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
+     * Apply the provided callbacks to the search builder.
+     *
+     * @param \Laravel\Scout\Builder $builder The search builder instance.
+     * @param callable|null $builderCallback The callback to modify the builder.
+     * @param callable|null $queryCallback The callback to modify the query.
+     *
+     * @return \Laravel\Scout\Builder
      */
-    protected function findPublishedContentByFullPath(string $fullPath)
+    protected function applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback)
     {
-        $relations = [
-            'documentType.fields.group',
-            'documentType.templates',
-            'webSetting',
-            'publishedVersions',
-            'templates',
-            'ancestorsAndSelf', // for url (full path)
-        ];
-
-        // ensure the format of full path
-        $fullPath = $this->ensureFormatOfFullPath($fullPath);
-
-        // if the full path is the root path, return the index page
-        if (blank(trim($fullPath, '/'))) {
-            return $this->getQuery()
-                ->with($relations)
-                ->whereHas('nestableTree', fn ($query) => $query->whereIsRoot())
-                ->orderBy('nestable_tree_order')
-                ->first();
+        if ($builderCallback) {
+            $builder = $builderCallback($builder);
         }
 
-        return $this->searchBuilder($fullPath)
-            ->where('is_web', 1)
-            ->where('full_path', $fullPath) // Avoid searching same slug in different parent
-            ->where('__soft_deleted', 0)    // Avoid searching soft deleted content
-            ->query(
-                fn ($query) => $query
-                    ->with($relations)
-            )
-            ->first();
-    }
+        if ($queryCallback) {
+            $builder = $builder->query($queryCallback);
+        }
 
-    /**
-     * Ensures that the given full path is in the correct format.
-     *
-     * @param  string  $fullPath  The full path to be formatted.
-     * @return string The formatted full path.
-     */
-    protected function ensureFormatOfFullPath(string $fullPath): string
-    {
-        return (string) str($fullPath)->trim()->prepend('/');
+        return $builder;
     }
+    //endregion Helpers
 }

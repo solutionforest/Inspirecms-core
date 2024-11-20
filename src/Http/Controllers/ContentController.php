@@ -8,19 +8,19 @@ use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGeneratorInterface;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
-use SolutionForest\InspireCms\Services\ContentServiceInterface;
+use SolutionForest\InspireCms\Services\PageServiceInterface;
 
 class ContentController extends Controller
 {
-    protected ContentServiceInterface $contentService;
+    protected PageServiceInterface $pageService;
 
     protected ContentPathGeneratorInterface $pathGenerator;
 
     protected ContentUrlGeneratorInterface $urlGenerator;
 
-    public function __construct(ContentServiceInterface $contentService)
+    public function __construct(PageServiceInterface $pageService)
     {
-        $this->contentService = $contentService;
+        $this->pageService = $pageService;
 
         $this->pathGenerator = ContentPathGeneratorFactory::create();
         $this->urlGenerator = ContentUrlGeneratorFactory::create();
@@ -41,7 +41,7 @@ class ContentController extends Controller
             $slug = '/';
         }
 
-        [$contentDto, $view] = $this->contentService->findPublishedContentAndView($slug, $locale);
+        [$contentDto, $view] = $this->pageService->findPublishedContentAndView($slug, $locale);
 
         if (is_null($contentDto) || is_null($view)) {
             abort(404);

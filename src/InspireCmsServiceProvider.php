@@ -84,6 +84,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
 
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
+        $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
+        $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
+
 
         Facades\ModelManifest::register();
         $supportModels = $this->getConfigSupoortModels();
@@ -149,15 +152,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $this->publishes([
                     $file->getRealPath() => $viewFullPath,
                 ], 'inspirecms-sample-views');
-            }
-
-            foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/SampleTemplates') as $file) {
-                $templateFullPath = (string) str(config('inspirecms.template.path'))
-                    ->finish('/')
-                    ->finish(str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php'));
-                $this->publishes([
-                    $file->getRealPath() => $templateFullPath,
-                ], 'inspirecms-sample-templates');
             }
         }
 

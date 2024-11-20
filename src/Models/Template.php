@@ -13,6 +13,8 @@ class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
 
+    protected ?string $preloadTemplateContent = null;
+
     public function templateable(): HasMany
     {
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
@@ -41,7 +43,12 @@ class Template extends BaseModel implements TemplateContract
 
         // Create file if not exists
         if (! file_exists($fullpath)) {
-            file_put_contents($fullpath, '<div>Template file</div>');
+
+            $content = $this->preloadTemplateContent;
+            if (blank($content)) {
+                $content = '<div>Template content</div>';
+            }
+            file_put_contents($fullpath, $content);
         }
     }
 
@@ -75,6 +82,13 @@ class Template extends BaseModel implements TemplateContract
             ->trim('.')
             ->finish('.blade.php')
             ->toString();
+    }
+
+    public function preloadTemplateContentBeforeCreate(string $content)
+    {
+        $this->preloadTemplateContent = $content;
+
+        return $this;
     }
 
     protected function ensureDirectoryExists(string $dir): string

@@ -35,4 +35,14 @@ interface Template
     public function getViewFullName(): string;
 
     public function performTemplatePath(): string;
+
+    /**
+     * Preloads the template content before creating a new template.
+     *
+     * This method is used to set up the initial content for a template before it is created.
+     *
+     * @param string $content The content to preload into the template.
+     * @return self
+     */
+    public function preloadTemplateContentBeforeCreate(string $content);
 }
