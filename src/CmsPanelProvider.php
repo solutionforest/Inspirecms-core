@@ -33,7 +33,7 @@ class CmsPanelProvider extends PanelProvider
     {
         $panel = $panel
             ->id(config('insiprecms.filament.panel_id', 'cms'))
-            ->path('cms')
+            ->path(config('insiprecms.filament.path', 'cms'))
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->authGuard(InspireCmsConfig::getGuardName())

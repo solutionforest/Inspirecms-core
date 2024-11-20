@@ -43,6 +43,7 @@ return [
     'filament' => [
         'enable_cluster_navigation' => true,
         'panel_id' => 'cms',
+        'path' => 'cms',
         'database_notification' => [
             'enabled' => true,
             'polling_interval' => '30s',
