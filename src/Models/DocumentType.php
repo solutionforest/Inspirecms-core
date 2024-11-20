@@ -94,7 +94,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $query->where('category', static::getCategoryEnumClass()::allCanBeInherited());
     }
 
-    public function scopeIsWebPage($query)
+    public function scopeWhereIsWebPage($query)
     {
         return $query->where('category', static::getCategoryEnumClass()::Web->value);
     }
