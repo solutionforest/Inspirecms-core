@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -15,6 +16,7 @@ class InstallRequirePacakges extends Command
         $this->installSpatieLaravelPermissionPackage();
         $this->installSupportPackage();
         $this->installSpatieLaravelMediaLibraryPackage();
+        $this->publishNotificationDataTable();
 
         return static::SUCCESS;
     }
@@ -65,5 +67,20 @@ class InstallRequirePacakges extends Command
         ]);
 
         $this->components->info('Spatie\\MediaLibrary package installed successfully.');
+    }
+
+    protected function publishNotificationDataTable()
+    {
+        $this->components->info('Publishing notification data table...');
+
+        $isLaravel11OrHigher = version_compare(App::version(), '11.0', '>=');
+
+        if ($isLaravel11OrHigher) {
+            Artisan::call('make:notifications-table');
+        } else {
+            Artisan::call('notifications:table');
+        }
+
+        $this->components->info('Notification data table published successfully.');
     }
 }
