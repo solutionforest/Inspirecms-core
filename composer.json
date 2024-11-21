@@ -47,7 +47,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "git@github.com:solutionforest/inspirecms-support.git"
+            "url": "https://github.com/solutionforest/inspirecms-support.git"
         }
     ],
     "autoload": {
