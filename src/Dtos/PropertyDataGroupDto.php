@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Dtos;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
+/**
+ * @extends BaseDto<PropertyDataGroupDto>
+ */
 class PropertyDataGroupDto extends BaseDto
 {
     /**
@@ -22,9 +25,6 @@ class PropertyDataGroupDto extends BaseDto
      */
     public $propertyTypes;
 
-    /**
-     * @return self
-     */
     public static function fromArray(array $parameters)
     {
         $dto = parent::fromArray($parameters);

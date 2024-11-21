@@ -10,6 +10,9 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
 
+/**
+ * @extends BaseDto<PropertyDataDto>
+ */
 class PropertyDataDto extends BaseDto
 {
     /**

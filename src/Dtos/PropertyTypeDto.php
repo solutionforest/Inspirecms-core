@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Dtos;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
+/**
+ * @extends BaseDto<PropertyTypeDto>
+ */
 class PropertyTypeDto extends BaseDto
 {
     /**

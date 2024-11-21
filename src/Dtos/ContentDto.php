@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Models\Content;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 
 /**
- * @extends BaseTranslatableModelDto<Content>
+ * @extends BaseTranslatableModelDto<Content,ContentDto>
  */
 class ContentDto extends BaseTranslatableModelDto
 {

@@ -5,6 +5,9 @@ namespace SolutionForest\InspireCms\Dtos;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableDto;
 
+/**
+ * @extends BaseTranslatableDto<NavigationDto>
+ */
 class NavigationDto extends BaseTranslatableDto
 {
     /**

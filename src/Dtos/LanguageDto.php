@@ -4,6 +4,9 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
+/**
+ * @extends BaseDto<LanguageDto>
+ */
 class LanguageDto extends BaseDto
 {
     /**
@@ -26,7 +29,7 @@ class LanguageDto extends BaseDto
      */
     public $isDefault;
 
-    public static function fromArray(array $parameters): self
+    public static function fromArray(array $parameters)
     {
         if (! isset($parameters['label'])) {
             $parameters['label'] = $parameters['code'];
