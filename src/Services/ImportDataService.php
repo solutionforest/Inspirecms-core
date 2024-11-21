@@ -147,12 +147,13 @@ class ImportDataService implements ImportDataServiceInterface
         $this->resetTempModels();
         $this->resetProcess();
     }
-    
+
     /** {@inheritDoc} */
     public function validateBeforeRun(): bool
     {
         if (empty($this->pendingData)) {
             $this->processErrors['__process__']['__error__'] = 'No data to import.';
+
             return false;
         }
 
@@ -208,6 +209,7 @@ class ImportDataService implements ImportDataServiceInterface
                             $data->slug,
                             $data
                         );
+
                         break;
                     case 'fieldGroups':
                         $data = Entities\FieldGroup::fromArray(Arr::except($item, 'fields'));
@@ -217,6 +219,7 @@ class ImportDataService implements ImportDataServiceInterface
                             $data,
                             $fields
                         );
+
                         break;
                     case 'templates':
                         $data = Entities\Template::fromArray($item);
@@ -224,6 +227,7 @@ class ImportDataService implements ImportDataServiceInterface
                             $data->slug,
                             $data
                         );
+
                         break;
                     case 'content':
                         $data = Entities\Content::fromArray($item);
@@ -232,10 +236,12 @@ class ImportDataService implements ImportDataServiceInterface
                             $data->parent,
                             $data
                         );
+
                         break;
                     case 'navigation':
                         $data = Entities\Navigation::fromArray($item);
                         $this->addNavigation($data);
+
                         break;
                 }
             }
@@ -251,7 +257,7 @@ class ImportDataService implements ImportDataServiceInterface
         foreach ($this->pendingData['templates'] ?? [] as $slug => $item) {
 
             try {
-                
+
                 $item->validate();
 
                 $template = $this->findTemplates($slug)->first();
@@ -305,8 +311,8 @@ class ImportDataService implements ImportDataServiceInterface
         $this->guardAgaintsTableExist($model);
 
         $reorderDocumentTypes = function ($collection) {
-            $higherOrder = $collection->filter(fn ($i) => 
-                !(is_array($i->inheritance) && count($i->inheritance ?? []) > 0) &&
+            $higherOrder = $collection->filter(
+                fn ($i) => ! (is_array($i->inheritance) && count($i->inheritance ?? []) > 0) &&
                 empty($i->parent)
             );
 
@@ -323,6 +329,7 @@ class ImportDataService implements ImportDataServiceInterface
                 if (in_array($i->parent, $withParentKeys)) {
                     return 2;
                 }
+
                 return 1;
             })->all();
 
@@ -335,6 +342,7 @@ class ImportDataService implements ImportDataServiceInterface
                 if (array_key_exists($i->slug, $withParentOrder)) {
                     return $withParentOrder[$i->slug] + 1;
                 }
+
                 // Default Order
                 return 0;
             });
@@ -410,7 +418,7 @@ class ImportDataService implements ImportDataServiceInterface
         foreach ($this->pendingData['fields'] ?? [] as $fieldKey => $item) {
 
             try {
-                
+
                 $item->validate();
 
                 [$group, $name] = explode('.', $fieldKey);
@@ -445,7 +453,7 @@ class ImportDataService implements ImportDataServiceInterface
         foreach ($this->pendingData['content'] ?? [] as $contentKey => $item) {
 
             try {
-                
+
                 $item->validate();
 
                 [$parentSlug, $slug] = [Str::beforeLast($contentKey, '/'), Str::afterLast($contentKey, '/')];
@@ -502,7 +510,7 @@ class ImportDataService implements ImportDataServiceInterface
 
         foreach ($this->pendingData['navigation'] ?? [] as $item) {
             try {
-                
+
                 $item->validate();
 
                 $navigationData = $this->mutateNavigationData($item);
@@ -828,7 +836,7 @@ class ImportDataService implements ImportDataServiceInterface
             $data['content_id'] = null;
         }
 
-        if (!empty($item->children) && $item->type === 'group') {
+        if (! empty($item->children) && $item->type === 'group') {
             $children = collect($item->children)->map(fn ($child) => $this->mutateNavigationData($child));
             $data['children'] = $children->toArray();
         } else {

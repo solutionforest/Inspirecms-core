@@ -33,7 +33,7 @@ class Navigation extends BaseEntity
         public $type,
         /**
          * The title of the navigation item.
-         * 
+         *
          * @var array<string,string>
          */
         public $title,
@@ -54,14 +54,14 @@ class Navigation extends BaseEntity
          *
          * @var string|null
          */
-        public  $contentSlugPath = null,
+        public $contentSlugPath = null,
         /**
          * The children of the navigation item.
-         * 
+         *
          * @var Navigation[]
          */
         public array $children = [],
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {

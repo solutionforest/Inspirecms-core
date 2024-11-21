@@ -3,13 +3,12 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Closure;
-use Filament\Actions\Imports\Models\Import;
 use Illuminate\Console\Command;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
-use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -413,52 +412,52 @@ Html;
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('general_page_banner'),
             'fields' => [
-              new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
-              new ImportDataEntities\Field('description', 'translate', ['field' => 'text']),
-              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
+                new ImportDataEntities\Field('description', 'translate', ['field' => 'text']),
+                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('recently_articles'),
             'fields' => [
-              new ImportDataEntities\Field('articles', 'contentPicker', ['documentType' => 'article', 'multiple' => true]),
+                new ImportDataEntities\Field('articles', 'contentPicker', ['documentType' => 'article', 'multiple' => true]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('image_slider'),
             'fields' => [
-              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => true]),
+                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => true]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('social_media'),
             'fields' => [
-              new ImportDataEntities\Field('github', 'text'),
-              new ImportDataEntities\Field('twitter', 'text'),
-              new ImportDataEntities\Field('instagram', 'text'),
-              new ImportDataEntities\Field('linkedin', 'text'),
-              new ImportDataEntities\Field('email', 'text'),
+                new ImportDataEntities\Field('github', 'text'),
+                new ImportDataEntities\Field('twitter', 'text'),
+                new ImportDataEntities\Field('instagram', 'text'),
+                new ImportDataEntities\Field('linkedin', 'text'),
+                new ImportDataEntities\Field('email', 'text'),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('article_detail_content'),
             'fields' => [
-              new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
-              new ImportDataEntities\Field('content', 'translate', ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
-              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
+                new ImportDataEntities\Field('content', 'translate', ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
+                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup('projects'),
             'fields' => [
-              new ImportDataEntities\Field('projects', 'repeater', [
-                'fields' => [
-                  new ImportDataEntities\Field('translate', 'title', ['field' => 'text']),
-                  new ImportDataEntities\Field('translate', 'description', ['field' => 'textArea']),
-                  new ImportDataEntities\Field('link', 'text'),
-                  new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
-                ],
-              ]),
+                new ImportDataEntities\Field('projects', 'repeater', [
+                    'fields' => [
+                        new ImportDataEntities\Field('translate', 'title', ['field' => 'text']),
+                        new ImportDataEntities\Field('translate', 'description', ['field' => 'textArea']),
+                        new ImportDataEntities\Field('link', 'text'),
+                        new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                    ],
+                ]),
             ],
         ];
         foreach ($items as $item) {
@@ -470,77 +469,77 @@ Html;
     protected function addSampleDocumentTypes(): void
     {
         $items[] = new ImportDataEntities\DocumentType(
-          'general-page-banner', 
-          false,
-          'inheritance',
-          'Page Banner', 
-          [
-            'general_page_banner',
-          ]
+            'general-page-banner',
+            false,
+            'inheritance',
+            'Page Banner',
+            [
+                'general_page_banner',
+            ]
         );
         $items[] = new ImportDataEntities\DocumentType(
-          'homepage', 
-          false,
-          'web',
-          'Homepage', 
-          [
-            'image_slider',
-            'recently_articles',
-            'social_media',
-          ],
-          ['home'],
-          'home',
-          ['general-page-banner'],
+            'homepage',
+            false,
+            'web',
+            'Homepage',
+            [
+                'image_slider',
+                'recently_articles',
+                'social_media',
+            ],
+            ['home'],
+            'home',
+            ['general-page-banner'],
         );
         $items[] = new ImportDataEntities\DocumentType(
-          'about', 
-          false,
-          'web',
-          'About', 
-          [
-            'article_detail_content',
-          ],
-          ['about'],
-          'about',
-          ['general-page-banner'],
-          'homepage',
+            'about',
+            false,
+            'web',
+            'About',
+            [
+                'article_detail_content',
+            ],
+            ['about'],
+            'about',
+            ['general-page-banner'],
+            'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-          'articles', 
-          true,
-          'web',
-          'Articles', 
-          [],
-          ['articles'],
-          'articles',
-          ['general-page-banner'],
-          'homepage',
+            'articles',
+            true,
+            'web',
+            'Articles',
+            [],
+            ['articles'],
+            'articles',
+            ['general-page-banner'],
+            'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-          'article', 
-          false,
-          'web',
-          'Article', 
-          [
-            'article_detail_content',
-          ],
-          ['article'],
-          'article',
-          [],
-          'articles',
+            'article',
+            false,
+            'web',
+            'Article',
+            [
+                'article_detail_content',
+            ],
+            ['article'],
+            'article',
+            [],
+            'articles',
         );
         $items[] = new ImportDataEntities\DocumentType(
-          'projects', 
-          false,
-          'web',
-          'Projects', 
-          [
             'projects',
-          ],
-          ['projects'],
-          'projects',
-         [ 'general-page-banner'],
-          'homepage',
+            false,
+            'web',
+            'Projects',
+            [
+                'projects',
+            ],
+            ['projects'],
+            'projects',
+            ['general-page-banner'],
+            'homepage',
         );
         foreach ($items as $item) {
             $this->importDataService->addDocumentType($item->slug, $item);
@@ -551,176 +550,176 @@ Html;
     protected function addSampleContent(): void
     {
         $items[] = new ImportDataEntities\Content(
-          'home',
-          ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
-          'homepage',
-          [
-            'image_slider' => [
-                'image' => collect(array_rand($this->mediaAssets, 5))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
-            ],
-            'recently_articles' => [],
-            'social_media' => [
-                'github' => 'https://github.com',
-                'twitter' => 'https://twitter.com',
-                'instagram' => 'https://instagram.com',
-                'linkedin' => 'https://linkedin.com',
-                'email' => 'test@example.com',
-            ],
-            'general_page_banner' => [
-                'title' => [
-                    'en' => 'Welcome to our website',
-                    'zh_Hant' => '歡迎來到我們的網站',
-                    'zh_Hans' => '欢迎来到我们的网站',
-                ],
-                'description' => [
-                    'en' => 'We provide the best service for you',
-                    'zh_Hant' => '我們為您提供最好的服務',
-                    'zh_Hans' => '我们为您提供最好的服务',
-                ],
-            ],
-          ],
-          'publish'
-        );
-        $items[] = new ImportDataEntities\Content(
-          'about',
-          ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
-          'about',
-          [
-            'article_detail_content' => [
-                'title' => [
-                    'en' => 'About Us',
-                    'zh_Hant' => '關於我們',
-                    'zh_Hans' => '关于我们',
-                ],
-                'content' => [
-                    'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                    'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                    'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                ],
-                'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-            ],
-          ],
-          'publish',
-          [],
-          [],
-          'home',
-        );
-        $items[] = new ImportDataEntities\Content(
-          'articles',
-          ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
-          'articles',
-          [],
-          'publish',
-          [],
-          [],
-          'home',
-        );
-
-        foreach (range(1, 5) as $i) {
-
-          $items[] = new ImportDataEntities\Content(
-            "article-$i",
-            ['en' => "Article $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
-            'article',
+            'home',
+            ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
+            'homepage',
             [
-              'article_detail_content' => [
-                'title' => [
-                  'en' => "Article $i",
-                  'zh_Hant' => "文章 $i",
-                  'zh_Hans' => "文章 $i",
+                'image_slider' => [
+                    'image' => collect(array_rand($this->mediaAssets, 5))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
                 ],
-                'content' => [
-                  'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                  'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                  'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                'recently_articles' => [],
+                'social_media' => [
+                    'github' => 'https://github.com',
+                    'twitter' => 'https://twitter.com',
+                    'instagram' => 'https://instagram.com',
+                    'linkedin' => 'https://linkedin.com',
+                    'email' => 'test@example.com',
                 ],
-                'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-              ],
+                'general_page_banner' => [
+                    'title' => [
+                        'en' => 'Welcome to our website',
+                        'zh_Hant' => '歡迎來到我們的網站',
+                        'zh_Hans' => '欢迎来到我们的网站',
+                    ],
+                    'description' => [
+                        'en' => 'We provide the best service for you',
+                        'zh_Hant' => '我們為您提供最好的服務',
+                        'zh_Hans' => '我们为您提供最好的服务',
+                    ],
+                ],
+            ],
+            'publish'
+        );
+        $items[] = new ImportDataEntities\Content(
+            'about',
+            ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
+            'about',
+            [
+                'article_detail_content' => [
+                    'title' => [
+                        'en' => 'About Us',
+                        'zh_Hant' => '關於我們',
+                        'zh_Hans' => '关于我们',
+                    ],
+                    'content' => [
+                        'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                        'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                        'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla nec purus feugiat, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                    ],
+                    'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+                ],
             ],
             'publish',
             [],
             [],
-            'home/articles',
-          );
+            'home',
+        );
+        $items[] = new ImportDataEntities\Content(
+            'articles',
+            ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
+            'articles',
+            [],
+            'publish',
+            [],
+            [],
+            'home',
+        );
+
+        foreach (range(1, 5) as $i) {
+
+            $items[] = new ImportDataEntities\Content(
+                "article-$i",
+                ['en' => "Article $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
+                'article',
+                [
+                    'article_detail_content' => [
+                        'title' => [
+                            'en' => "Article $i",
+                            'zh_Hant' => "文章 $i",
+                            'zh_Hans' => "文章 $i",
+                        ],
+                        'content' => [
+                            'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                            'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                            'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                        ],
+                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+                    ],
+                ],
+                'publish',
+                [],
+                [],
+                'home/articles',
+            );
         }
 
         $items[] = new ImportDataEntities\Content(
-          'projects',
-          ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
-          'projects',
-          [
-            'general_page_banner' => [
-                'title' => [
-                    'en' => 'Projects',
-                    'zh_Hant' => '項目',
-                    'zh_Hans' => '项目',
+            'projects',
+            ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
+            'projects',
+            [
+                'general_page_banner' => [
+                    'title' => [
+                        'en' => 'Projects',
+                        'zh_Hant' => '項目',
+                        'zh_Hans' => '项目',
+                    ],
+                    'description' => [
+                        'en' => 'List of projects',
+                        'zh_Hant' => '項目列表',
+                        'zh_Hans' => '项目列表',
+                    ],
                 ],
-                'description' => [
-                    'en' => 'List of projects',
-                    'zh_Hant' => '項目列表',
-                    'zh_Hans' => '项目列表',
+                'projects' => [
+                    [
+                        'title' => [
+                            'en' => 'Project 1',
+                            'zh_Hant' => '項目 1',
+                            'zh_Hans' => '项目 1',
+                        ],
+                        'description' => [
+                            'en' => 'Description of project 1',
+                            'zh_Hant' => '項目 1 的描述',
+                            'zh_Hans' => '项目 1 的描述',
+                        ],
+                        'link' => 'https://project1.com',
+                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+                    ],
+                    [
+                        'title' => [
+                            'en' => 'Project 2',
+                            'zh_Hant' => '項目 2',
+                            'zh_Hans' => '项目 2',
+                        ],
+                        'description' => [
+                            'en' => 'Description of project 2',
+                            'zh_Hant' => '項目 2 的描述',
+                            'zh_Hans' => '项目 2 的描述',
+                        ],
+                        'link' => 'https://project2.com',
+                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+                    ],
+                    [
+                        'title' => [
+                            'en' => 'Project 3',
+                            'zh_Hant' => '項目 3',
+                            'zh_Hans' => '项目 3',
+                        ],
+                        'description' => [
+                            'en' => 'Description of project 3',
+                            'zh_Hant' => '項目 3 的描述',
+                            'zh_Hans' => '项目 3 的描述',
+                        ],
+                        'link' => 'https://project3.com',
+                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+                    ],
                 ],
             ],
-            'projects' => [
-                [
-                    'title' => [
-                        'en' => 'Project 1',
-                        'zh_Hant' => '項目 1',
-                        'zh_Hans' => '项目 1',
-                    ],
-                    'description' => [
-                        'en' => 'Description of project 1',
-                        'zh_Hant' => '項目 1 的描述',
-                        'zh_Hans' => '项目 1 的描述',
-                    ],
-                    'link' => 'https://project1.com',
-                    'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                ],
-                [
-                    'title' => [
-                        'en' => 'Project 2',
-                        'zh_Hant' => '項目 2',
-                        'zh_Hans' => '项目 2',
-                    ],
-                    'description' => [
-                        'en' => 'Description of project 2',
-                        'zh_Hant' => '項目 2 的描述',
-                        'zh_Hans' => '项目 2 的描述',
-                    ],
-                    'link' => 'https://project2.com',
-                    'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                ],
-                [
-                    'title' => [
-                        'en' => 'Project 3',
-                        'zh_Hant' => '項目 3',
-                        'zh_Hans' => '项目 3',
-                    ],
-                    'description' => [
-                        'en' => 'Description of project 3',
-                        'zh_Hant' => '項目 3 的描述',
-                        'zh_Hans' => '项目 3 的描述',
-                    ],
-                    'link' => 'https://project3.com',
-                    'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                ],
-            ],
-          ],
-          'publish',
-          [],
-          [],
-          'home',
+            'publish',
+            [],
+            [],
+            'home',
         );
 
         $items[] = new ImportDataEntities\Content(
-          'redirect-page',
-          ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
-          'projects',
-          [],
-          'publish',
-          [],
-          ['redirect_path' => '/'],
-          'home',
+            'redirect-page',
+            ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
+            'projects',
+            [],
+            'publish',
+            [],
+            ['redirect_path' => '/'],
+            'home',
         );
 
         foreach ($items as $item) {
@@ -755,10 +754,10 @@ Html;
         foreach ($navigationData as $data) {
 
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
-              'category' => 'main',
+                'category' => 'main',
             ])));
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
-              'category' => 'footer',
+                'category' => 'footer',
             ])));
         }
     }

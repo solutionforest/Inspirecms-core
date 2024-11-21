@@ -6,9 +6,9 @@ use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
 /**
  * Class BaseEntity
- * 
+ *
  * @template TEntity of BaseEntity
- * 
+ *
  * @extends BaseDto<TEntity>
  */
 abstract class BaseEntity extends BaseDto
@@ -16,7 +16,6 @@ abstract class BaseEntity extends BaseDto
     protected static array $rules = [];
 
     abstract public function getDataForModel(): array;
-
 
     /**
      * Validates the entity data.
@@ -41,7 +40,6 @@ abstract class BaseEntity extends BaseDto
 
         return true;
     }
-
 
     protected function getValidationRules(): array
     {

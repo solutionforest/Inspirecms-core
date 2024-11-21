@@ -29,7 +29,7 @@ class DocumentType extends BaseEntity
         /**
          * Whether the children should be displayed as a table.
          *
-         * @var boolean
+         * @var bool
          */
         public $childrenAsTable,
         /**
@@ -74,7 +74,7 @@ class DocumentType extends BaseEntity
          * @var string|null
          */
         public $parent = null,
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {

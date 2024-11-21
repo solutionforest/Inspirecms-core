@@ -10,8 +10,8 @@ interface ImportDataServiceInterface
     /**
      * Adds a new document type.
      *
-     * @param string $slug The slug identifier for the document type.
-     * @param Entities\DocumentType $data The document type data to be added.
+     * @param  string  $slug  The slug identifier for the document type.
+     * @param  Entities\DocumentType  $data  The document type data to be added.
      * @return void
      */
     public function addDocumentType(string $slug, Entities\DocumentType $data);
@@ -19,9 +19,9 @@ interface ImportDataServiceInterface
     /**
      * Adds a field group to the system.
      *
-     * @param string $slug The unique identifier for the field group.
-     * @param Entities\FieldGroup $data The field group entity containing the data.
-     * @param Entities\Field[] $fields An array of fields associated with the field group.
+     * @param  string  $slug  The unique identifier for the field group.
+     * @param  Entities\FieldGroup  $data  The field group entity containing the data.
+     * @param  Entities\Field[]  $fields  An array of fields associated with the field group.
      * @return void
      */
     public function addFieldGroup(string $slug, Entities\FieldGroup $data, array $fields);
@@ -29,9 +29,8 @@ interface ImportDataServiceInterface
     /**
      * Adds a template to the system.
      *
-     * @param string $slug The unique identifier for the template.
-     * @param Entities\Template $data The template data to be added.
-     *
+     * @param  string  $slug  The unique identifier for the template.
+     * @param  Entities\Template  $data  The template data to be added.
      * @return void
      */
     public function addTemplate(string $slug, Entities\Template $data);
@@ -39,10 +38,9 @@ interface ImportDataServiceInterface
     /**
      * Adds content to the system.
      *
-     * @param string $slug The unique identifier for the content.
-     * @param string|null $parent The parent content identifier, if any.
-     * @param Entities\Content $data The content data to be added.
-     *
+     * @param  string  $slug  The unique identifier for the content.
+     * @param  string|null  $parent  The parent content identifier, if any.
+     * @param  Entities\Content  $data  The content data to be added.
      * @return void
      */
     public function addContent(string $slug, ?string $parent, Entities\Content $data);
@@ -50,10 +48,9 @@ interface ImportDataServiceInterface
     /**
      * Adds a navigation entity to the system.
      *
-     * @param Entities\Navigation $data The navigation entity to be added.
+     * @param  Entities\Navigation  $data  The navigation entity to be added.
      * @return void
      */
-
     public function addNavigation(Entities\Navigation $data);
 
     /**

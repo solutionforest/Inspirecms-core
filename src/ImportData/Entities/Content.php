@@ -30,7 +30,7 @@ class Content extends BaseEntity
         public $slug,
         /**
          * The title of the content.
-         * 
+         *
          * @var array<string,string>
          */
         public $title,
@@ -42,7 +42,7 @@ class Content extends BaseEntity
         public $documentType,
         /**
          * An array of properties associated with the content.
-         * 
+         *
          * @var array<string,mixed>
          */
         public $properties = [],
@@ -76,7 +76,7 @@ class Content extends BaseEntity
          * @var string|null
          */
         public $template = null,
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {

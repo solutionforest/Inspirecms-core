@@ -9,7 +9,7 @@ class JsonFileReader
 {
     public function readFromPath(string $filePath): array
     {
-        if (!File::exists($filePath)) {
+        if (! File::exists($filePath)) {
             throw new \Exception("File not found: {$filePath}");
         }
 
@@ -27,13 +27,13 @@ class JsonFileReader
     {
         //check if the file is a json file
         if ($file->getMimeType() !== 'application/json') {
-            throw new \Exception("Invalid file type. Only JSON files are allowed");
+            throw new \Exception('Invalid file type. Only JSON files are allowed');
         }
 
         $data = json_decode($file->getContent(), true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \Exception("Invalid JSON in file");
+            throw new \Exception('Invalid JSON in file');
         }
 
         return $data;

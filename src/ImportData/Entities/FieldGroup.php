@@ -25,7 +25,7 @@ class FieldGroup extends BaseEntity
          * @var string|null
          */
         public $title = null,
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {

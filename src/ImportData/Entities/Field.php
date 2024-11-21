@@ -39,7 +39,7 @@ class Field extends BaseEntity
          * @var string|null
          */
         public $label = null,
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {
