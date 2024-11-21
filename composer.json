@@ -44,12 +44,6 @@
         "pestphp/pest-plugin-laravel": "^2.0",
         "spatie/laravel-ray": "^1.26"
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/solutionforest/inspirecms-support.git"
-        }
-    ],
     "autoload": {
         "files": [
             "src/helpers.php"
