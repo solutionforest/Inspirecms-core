@@ -65,29 +65,6 @@ class ContentTest extends TestCase
         $this->assertSoftDeleted('content', ['id' => $child->id]);
     }
 
-    // /** @test */
-    // public function restore_parent_if_child_is_restored()
-    // {
-    //     // Arrange
-    //     $parent = Content::factory()->create([
-    //         'slug' => 'test-restore-parent'
-    //     ]);
-    //     $parent->refresh();
-    //     $child = Content::factory()->create([
-    //         'slug' => 'test-restore-child',
-    //         'parent_id' => $parent->id,
-    //     ]);
-
-    //     ray($child, $parent);
-    //     $child->delete();
-
-    //     // Act
-    //     $child->restore();
-
-    //     // Assert
-    //     $this->assertDatabaseHas('content', ['id' => $parent->id]);
-    // }
-
     /** @test */
     public function delete_content_versions_and_nestable_tree_if_content_is_deleted()
     {
