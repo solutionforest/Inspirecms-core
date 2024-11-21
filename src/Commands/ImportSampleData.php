@@ -43,6 +43,8 @@ class ImportSampleData extends Command
             '--force' => true,
         ]);
 
+        $this->callSilent('scout:sync-index-settings');
+
         $this->makeSampleMedia();
 
         $this->makeSampleLanguages();
