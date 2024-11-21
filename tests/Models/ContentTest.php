@@ -13,7 +13,7 @@ class ContentTest extends TestCase
     {
         // Act
         $content = Content::factory()->havePropertyData([
-            'test' => 'test'
+            'test' => 'test',
         ])->create([
             'title' => 'Test Content',
             'slug' => 'test-content',
@@ -26,7 +26,6 @@ class ContentTest extends TestCase
         $this->assertDatabaseHas('content', ['id' => $contentKey]);
         $this->assertDatabaseHas('content_versions', ['content_id' => $contentKey]);
         $this->assertDatabaseHas('nestable_trees', ['nestable_id' => $contentKey, 'nestable_type' => $content->getMorphClass()]);
-
 
         // Create publish version
         $status = ContentStatusManifest::getOption('publish');
@@ -49,7 +48,7 @@ class ContentTest extends TestCase
     {
         // Arrange
         $parent = Content::factory()->create([
-            'slug' => 'test-delete-children'
+            'slug' => 'test-delete-children',
         ]);
         $parent->refresh();
         $child = Content::factory()->create([
@@ -70,7 +69,7 @@ class ContentTest extends TestCase
     {
         // Arrange
         $content = Content::factory()->havePropertyData([
-            'test' => 'test'
+            'test' => 'test',
         ])->create(['slug' => 'test-force-delete']);
         $content->refresh();
 
