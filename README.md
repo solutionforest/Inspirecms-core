@@ -68,6 +68,24 @@ config on `inspirecms.php` config file:
 composer test
 ```
 
+## Development
+### Build js and css
+
+1. Install composer dependencies:
+```bash
+composer install
+```
+
+2. Install npm dependencies:
+```bash
+npm i 
+```
+
+3. Build assets:
+```bash
+npm run build
+```
+
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
