@@ -42,7 +42,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->askToRunMigrations()
-                    ->askToStarRepoOnGitHub('solutionforest/inspirecms')
+                    ->askToStarRepoOnGitHub('solution-forest/inspirecms')
                     ->startWith(function (InstallCommand $command) {
                         $command->call(Commands\InstallRequirePacakges::class);
                     })

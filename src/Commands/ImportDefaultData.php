@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -14,6 +16,8 @@ class ImportDefaultData extends Command
 {
     public function handle(): int
     {
+        $this->publishRotueDefinition();
+
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
@@ -81,6 +85,19 @@ class ImportDefaultData extends Command
         ]);
     }
 
+    protected function publishRotueDefinition(): void
+    {
+        // Copy routes to user's routes/web.php
+
+        $this->info('Publishing route definition ...');
+
+        $destination = base_path('routes/web.php');
+
+        if (! Str::contains(file_get_contents($destination), "InspireCms::routes()")) {
+            (new Filesystem)->append($destination, $this->cmsRotueDefinition());
+        }
+    }
+
     protected function isTableExists(string $tableName): bool
     {
         if (! ModelHelper::isTableExists($tableName)) {
@@ -90,5 +107,15 @@ class ImportDefaultData extends Command
         }
 
         return true;
+    }
+
+    protected function cmsRotueDefinition(): string
+    {
+        return <<<PHP
+
+// InspireCMS routes
+\SolutionForest\InspireCms\Facades\InspireCms::routes();
+
+PHP;
     }
 }
