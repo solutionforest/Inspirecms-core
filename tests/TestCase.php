@@ -92,9 +92,6 @@ abstract class TestCase extends Orchestra
 
     protected static function registerTestModels()
     {
-        include_once __DIR__ . '/../vendor/solution-forest/inspirecms-support/tests/TestModels/MediaAsset.php';
-        include_once __DIR__ . '/../vendor/solution-forest/inspirecms-support/tests/TestModels/NestableTree.php';
-
         foreach (array_keys(config('inspirecms.models.fqcn')) as $key) {
 
             $guessName = (string) str($key)->studly()->replace(' ', '');
