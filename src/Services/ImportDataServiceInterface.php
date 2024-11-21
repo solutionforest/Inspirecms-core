@@ -2,81 +2,59 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
+use SolutionForest\InspireCms\ImportData\Entities;
+
 interface ImportDataServiceInterface
 {
     /**
-     * Adds a new document type to the system.
+     * Adds a new document type.
      *
-     * @param  string  $name  The name of the document type.
-     * @param  array<string,array>  $fieldGroups  The field groups associated with the document type.
-     * @param  array<string,?string>|string  $templates  The templates associated with the document type.
-     * @param  string[]|string|null  $inheritanceDocumentTypes  The document types from which this document type inherits.
-     * @param  bool  $childrenAsTable  Whether the children should be displayed as a table.
-     * @param  string  $category  The category of the document type.
-     * @param  string|null  $title  The title of the document type (optional).
-     * @param  string|null  $parent  The parent document type (optional).
+     * @param string $slug The slug identifier for the document type.
+     * @param Entities\DocumentType $data The document type data to be added.
      * @return void
      */
-    public function addDocumentType(string $name, array $fieldGroups, array | string $templates, array | string | null $inheritanceDocumentTypes, bool $childrenAsTable, string $category, ?string $title = null, ?string $parent = null);
+    public function addDocumentType(string $slug, Entities\DocumentType $data);
 
     /**
      * Adds a field group to the system.
      *
-     * @param  string  $name  The name of the field group.
-     * @param  array<string,array>  $fields  An array of fields to be included in the group.
-     * @param  string|null  $title  An optional title for the field group.
+     * @param string $slug The unique identifier for the field group.
+     * @param Entities\FieldGroup $data The field group entity containing the data.
+     * @param Entities\Field[] $fields An array of fields associated with the field group.
      * @return void
      */
-    public function addFieldGroup(string $name, array $fields, ?string $title = null);
+    public function addFieldGroup(string $slug, Entities\FieldGroup $data, array $fields);
 
     /**
-     * Adds a field to the system.
+     * Adds a template to the system.
      *
-     * @param  string  $name  The name of the field.
-     * @param  string  $group  The group to which the field belongs.
-     * @param  array  $data  The data associated with the field.
-     * @param  string|null  $label  An optional label for the field.
+     * @param string $slug The unique identifier for the template.
+     * @param Entities\Template $data The template data to be added.
+     *
      * @return void
      */
-    public function addField(string $name, string $group, array $data, ?string $label = null);
-
-    /**
-     * Adds a template with the specified slug and content.
-     *
-     * @param  string  $slug  The unique identifier for the template.
-     * @param  ?string  $content  The content of the template. Default is null.
-     * @return void
-     */
-    public function addTemplate(string $slug, $content = null);
+    public function addTemplate(string $slug, Entities\Template $data);
 
     /**
      * Adds content to the system.
      *
-     * @param  string  $slug  The unique identifier for the content.
-     * @param  array<string,string>  $title  The title of the content.
-     * @param  string  $documentType  The type of document.
-     * @param  array<string,mixed>  $propertyData  An array of properties associated with the content.
-     * @param  string  $publishState  The publish state of the content.
-     * @param  array  $sitemap  An optional array for sitemap settings.
-     * @param  array  $webSetting  An optional array for web settings.
-     * @param  string|null  $parent  An optional parent identifier.
-     * @param  string|null  $template  An optional template identifier.
+     * @param string $slug The unique identifier for the content.
+     * @param string|null $parent The parent content identifier, if any.
+     * @param Entities\Content $data The content data to be added.
+     *
      * @return void
      */
-    public function addContent(string $slug, $title, string $documentType, array $propertyData, string $publishState, array $sitemap = [], array $webSetting = [], ?string $parent = null, ?string $template = null);
+    public function addContent(string $slug, ?string $parent, Entities\Content $data);
 
     /**
-     * Adds a navigation item to the system.
+     * Adds a navigation entity to the system.
      *
-     * @param  string  $category  The category of the navigation item.
-     * @param  string  $type  The type of the navigation item.
-     * @param  array<string,string>  $title  The title of the navigation item.
-     * @param  string|null  $contentFullSlug  The full slug of the content, if applicable.
-     * @param  string|null  $url  The URL of the navigation item, if applicable.
-     * @param  string|null  $target  The target attribute specifying where to open the linked document, if applicable.
+     * @param Entities\Navigation $data The navigation entity to be added.
      * @return void
      */
-    public function addNavigation(string $category, string $type, $title, ?string $contentFullSlug = null, ?string $url = null, ?string $target = null);
+
+    public function addNavigation(Entities\Navigation $data);
 
     /**
      * Executes the import data service.
@@ -96,7 +74,33 @@ interface ImportDataServiceInterface
      */
     public function reset();
 
+    public function importFromFile(TemporaryUploadedFile $file): array;
+
+    /**
+     * Checks if there are any errors.
+     *
+     * @return bool True if there are errors, false otherwise.
+     */
     public function hasErrors(): bool;
 
+    /**
+     * Retrieve an array of errors.
+     *
+     * @return array An array containing error messages.
+     */
     public function getErrors(): array;
+
+    /**
+     * Retrieve the validation errors.
+     *
+     * @return array An array of validation error messages.
+     */
+    public function getValidationErrors(): array;
+
+    /**
+     * Validates the necessary conditions before running the import data service.
+     *
+     * @return bool Returns true if the validation is successful, otherwise false.
+     */
+    public function validateBeforeRun(): bool;
 }

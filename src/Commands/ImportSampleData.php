@@ -3,11 +3,13 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Closure;
+use Filament\Actions\Imports\Models\Import;
 use Illuminate\Console\Command;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -57,6 +59,10 @@ class ImportSampleData extends Command
 
         if ($this->importDataService->hasErrors()) {
             $this->error("\nErrors occurred while importing sample data.");
+
+            collect($this->importDataService->getErrors())->flatten()->each(function ($error) {
+                $this->error($error);
+            });
 
             return static::FAILURE;
         }
@@ -390,159 +396,165 @@ Html;
 </x-page>   
 Html;
 
-        $this->importDataService->addTemplate('home', $home);
-        $this->importDataService->addTemplate('about', $about);
-        $this->importDataService->addTemplate('article', $article);
-        $this->importDataService->addTemplate('articles', $articles);
-        $this->importDataService->addTemplate('projects', $projects);
+        $items = [
+            'home' => $home,
+            'about' => $about,
+            'article' => $article,
+            'articles' => $articles,
+            'projects' => $projects,
+        ];
+        foreach ($items as $slug => $content) {
+            $this->importDataService->addTemplate($slug, new ImportDataEntities\Template($slug, $content));
+        }
     }
 
     protected function addSampleFields(): void
     {
-        $this->importDataService->addFieldGroup('general_page_banner', [
-            'title' => [
-                'type' => 'translate',
-                'config' => [
-                    'field' => 'text',
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('general_page_banner'),
+            'fields' => [
+              new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
+              new ImportDataEntities\Field('description', 'translate', ['field' => 'text']),
+              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+            ],
+        ];
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('recently_articles'),
+            'fields' => [
+              new ImportDataEntities\Field('articles', 'contentPicker', ['documentType' => 'article', 'multiple' => true]),
+            ],
+        ];
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('image_slider'),
+            'fields' => [
+              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => true]),
+            ],
+        ];
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('social_media'),
+            'fields' => [
+              new ImportDataEntities\Field('github', 'text'),
+              new ImportDataEntities\Field('twitter', 'text'),
+              new ImportDataEntities\Field('instagram', 'text'),
+              new ImportDataEntities\Field('linkedin', 'text'),
+              new ImportDataEntities\Field('email', 'text'),
+            ],
+        ];
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('article_detail_content'),
+            'fields' => [
+              new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
+              new ImportDataEntities\Field('content', 'translate', ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
+              new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+            ],
+        ];
+        $items[] = [
+            'data' => new ImportDataEntities\FieldGroup('projects'),
+            'fields' => [
+              new ImportDataEntities\Field('projects', 'repeater', [
+                'fields' => [
+                  new ImportDataEntities\Field('translate', 'title', ['field' => 'text']),
+                  new ImportDataEntities\Field('translate', 'description', ['field' => 'textArea']),
+                  new ImportDataEntities\Field('link', 'text'),
+                  new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
                 ],
+              ]),
             ],
-            'description' => [
-                'type' => 'translate',
-                'config' => [
-                    'field' => 'text',
-                ],
-            ],
-            'image' => [
-                'type' => 'mediaPicker',
-                'config' => [
-                    'mimeTypes' => ['image'],
-                    'multiple' => false,
-                ],
-            ],
-        ]);
-        $this->importDataService->addFieldGroup('recently_articles', [
-            'articles' => [
-                'type' => 'contentPicker',
-                'config' => [
-                    'documentType' => 'article',
-                    'multiple' => true,
-                ],
-            ],
-        ]);
-        $this->importDataService->addFieldGroup('image_slider', [
-            'image' => [
-                'type' => 'mediaPicker',
-                'config' => [
-                    'mimeTypes' => ['image'],
-                    'multiple' => true,
-                ],
-            ],
-        ]);
-        $this->importDataService->addFieldGroup('social_media', [
-            'github' => [
-                'type' => 'text',
-            ],
-            'twitter' => [
-                'type' => 'text',
-            ],
-            'instagram' => [
-                'type' => 'text',
-            ],
-            'linkedin' => [
-                'type' => 'text',
-            ],
-            'email' => [
-                'type' => 'text',
-            ],
-        ]);
-        $this->importDataService->addFieldGroup('article_detail_content', [
-            'title' => [
-                'type' => 'translate',
-                'config' => [
-                    'field' => 'text',
-                ],
-            ],
-            'content' => [
-                'type' => 'translate',
-                'config' => [
-                    'field' => 'richEditor',
-                    'fieldConfig' => [
-                        'toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons()),
-                    ],
-                ],
-            ],
-            'image' => [
-                'type' => 'mediaPicker',
-                'config' => [
-                    'mimeTypes' => ['image'],
-                    'multiple' => false,
-                ],
-            ],
-        ]);
-        $this->importDataService->addFieldGroup('projects', [
-            'projects' => [
-                'type' => 'repeater',
-                'config' => [
-                    'fields' => [
-                        [
-                            'field' => 'translate',
-                            'name' => 'title',
-                            'fieldConfig' => [
-                                'field' => 'text',
-                                'config' => [],
-                            ],
-                        ], [
-                            'field' => 'translate',
-                            'name' => 'description',
-                            'fieldConfig' => [
-                                'field' => 'textArea',
-                                'config' => [],
-                            ],
-                        ], [
-                            'field' => 'text',
-                            'name' => 'link',
-                        ], [
-                            'field' => 'mediaPicker',
-                            'name' => 'image',
-                            'fieldConfig' => [
-                                'mimeTypes' => ['image'],
-                                'multiple' => false,
-                            ],
-                        ],
-                    ],
-                ],
-            ],
-        ]);
+        ];
+        foreach ($items as $item) {
+            $group = $item['data'];
+            $this->importDataService->addFieldGroup($group->slug, $group, $item['fields']);
+        }
     }
 
     protected function addSampleDocumentTypes(): void
     {
-        $this->importDataService->addDocumentType('general-page-banner', [
-            'general_page_banner' => [],
-        ], [], null, false, 'inheritance', 'Page Banner');
-
-        $this->importDataService->addDocumentType('homepage', [
-            'image_slider' => [],
-            'recently_articles' => [],
-            'social_media' => [],
-        ], 'home', 'general-page-banner', false, 'web');
-
-        $this->importDataService->addDocumentType('about', [
-            'article_detail_content' => [],
-        ], 'about', null, false, 'web', null, 'homepage');
-        $this->importDataService->addDocumentType('articles', [], 'articles', 'general-page-banner', true, 'web', null, 'homepage');
-        $this->importDataService->addDocumentType('article', [
-            'article_detail_content' => [],
-        ], 'article', null, false, 'web', null, 'articles');
-        $this->importDataService->addDocumentType('projects', [
-            'projects' => [],
-        ], 'projects', 'general-page-banner', false, 'web', null, 'homepage');
+        $items[] = new ImportDataEntities\DocumentType(
+          'general-page-banner', 
+          false,
+          'inheritance',
+          'Page Banner', 
+          [
+            'general_page_banner',
+          ]
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+          'homepage', 
+          false,
+          'web',
+          'Homepage', 
+          [
+            'image_slider',
+            'recently_articles',
+            'social_media',
+          ],
+          ['home'],
+          'home',
+          ['general-page-banner'],
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+          'about', 
+          false,
+          'web',
+          'About', 
+          [
+            'article_detail_content',
+          ],
+          ['about'],
+          'about',
+          ['general-page-banner'],
+          'homepage',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+          'articles', 
+          true,
+          'web',
+          'Articles', 
+          [],
+          ['articles'],
+          'articles',
+          ['general-page-banner'],
+          'homepage',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+          'article', 
+          false,
+          'web',
+          'Article', 
+          [
+            'article_detail_content',
+          ],
+          ['article'],
+          'article',
+          [],
+          'articles',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+          'projects', 
+          false,
+          'web',
+          'Projects', 
+          [
+            'projects',
+          ],
+          ['projects'],
+          'projects',
+         [ 'general-page-banner'],
+          'homepage',
+        );
+        foreach ($items as $item) {
+            $this->importDataService->addDocumentType($item->slug, $item);
+        }
 
     }
 
     protected function addSampleContent(): void
     {
-        $this->importDataService->addContent('home', ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'], 'homepage', [
+        $items[] = new ImportDataEntities\Content(
+          'home',
+          ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
+          'homepage',
+          [
             'image_slider' => [
                 'image' => collect(array_rand($this->mediaAssets, 5))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
             ],
@@ -566,9 +578,14 @@ Html;
                     'zh_Hans' => '我们为您提供最好的服务',
                 ],
             ],
-        ], 'publish');
-
-        $this->importDataService->addContent('about', ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'], 'about', [
+          ],
+          'publish'
+        );
+        $items[] = new ImportDataEntities\Content(
+          'about',
+          ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
+          'about',
+          [
             'article_detail_content' => [
                 'title' => [
                     'en' => 'About Us',
@@ -582,38 +599,56 @@ Html;
                 ],
                 'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
             ],
-        ], 'publish', [], [], 'home');
-
-        $this->importDataService->addContent('articles', ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'], 'articles', [], 'publish', [], [], 'home');
+          ],
+          'publish',
+          [],
+          [],
+          'home',
+        );
+        $items[] = new ImportDataEntities\Content(
+          'articles',
+          ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
+          'articles',
+          [],
+          'publish',
+          [],
+          [],
+          'home',
+        );
 
         foreach (range(1, 5) as $i) {
 
-            $this->importDataService->addContent(
-                "article-$i",
-                ['en' => "Article $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
-                'article',
-                [
-                    'article_detail_content' => [
-                        'title' => [
-                            'en' => "Article $i",
-                            'zh_Hant' => "文章 $i",
-                            'zh_Hans' => "文章 $i",
-                        ],
-                        'content' => [
-                            'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                            'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                            'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                        ],
-                    ],
+          $items[] = new ImportDataEntities\Content(
+            "article-$i",
+            ['en' => "Article $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
+            'article',
+            [
+              'article_detail_content' => [
+                'title' => [
+                  'en' => "Article $i",
+                  'zh_Hant' => "文章 $i",
+                  'zh_Hans' => "文章 $i",
                 ],
-                'publish',
-                [],
-                [],
-                'home/articles'
-            );
+                'content' => [
+                  'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                  'zh_Hant' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                  'zh_Hans' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                ],
+                'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
+              ],
+            ],
+            'publish',
+            [],
+            [],
+            'home/articles',
+          );
         }
 
-        $this->importDataService->addContent('projects', ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'], 'projects', [
+        $items[] = new ImportDataEntities\Content(
+          'projects',
+          ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
+          'projects',
+          [
             'general_page_banner' => [
                 'title' => [
                     'en' => 'Projects',
@@ -670,9 +705,27 @@ Html;
                     'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                 ],
             ],
-        ], 'publish', [], [], 'home');
+          ],
+          'publish',
+          [],
+          [],
+          'home',
+        );
 
-        $this->importDataService->addContent('redirect-page', ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'], 'projects', [], 'publish', [], ['redirect_path' => '/'], 'home');
+        $items[] = new ImportDataEntities\Content(
+          'redirect-page',
+          ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
+          'projects',
+          [],
+          'publish',
+          [],
+          ['redirect_path' => '/'],
+          'home',
+        );
+
+        foreach ($items as $item) {
+            $this->importDataService->addContent($item->slug, $item->parent, $item);
+        }
     }
 
     protected function addSampleNavigation(): void
@@ -680,12 +733,12 @@ Html;
         $navigationData = [
             [
                 'title' => ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
-                'conten' => 'home/about',
+                'contentSlugPath' => 'home/about',
                 'type' => 'content',
             ],
             [
                 'title' => ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
-                'conten' => 'home/articles',
+                'contentSlugPath' => 'home/articles',
                 'type' => 'content',
             ],
             [
@@ -695,13 +748,18 @@ Html;
             ],
             [
                 'title' => ['en' => 'Redirect to home page', 'zh_Hant' => '重定向到首頁', 'zh_Hans' => '重定向到首页'],
-                'conten' => 'home/redirect-page',
+                'contentSlugPath' => 'home/redirect-page',
                 'type' => 'content',
             ],
         ];
         foreach ($navigationData as $data) {
-            $this->importDataService->addNavigation('main', $data['type'], $data['title'], $data['conten'], $data['url'] ?? null, $data['target'] ?? null);
-            $this->importDataService->addNavigation('footer', $data['type'], $data['title'], $data['conten'], $data['url'] ?? null, $data['target'] ?? null);
+
+            $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
+              'category' => 'main',
+            ])));
+            $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
+              'category' => 'footer',
+            ])));
         }
     }
 

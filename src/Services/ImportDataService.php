@@ -6,16 +6,21 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\ImportData\Entities;
+use SolutionForest\InspireCms\ImportData\JsonFileReader;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Template;
-use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class ImportDataService implements ImportDataServiceInterface
 {
+    /**
+     * @var array{documentTypes: array<string,Entities\DocumentType>, fieldGroups: array<string,Entities\FieldGroup>, templates: array<string,Entities\Template>, fields: array<string,Entities\Field>, content: array<string,Entities\Content>, navigation: array<string,Entities\Navigation>}
+     */
     protected array $pendingData = [];
 
     /**
@@ -51,127 +56,66 @@ class ImportDataService implements ImportDataServiceInterface
     ];
 
     public function __construct(
-        protected ContentServiceInterface $contentService
+        protected ContentServiceInterface $contentService,
+        protected JsonFileReader $jsonFileReader,
     ) {}
 
     /** {@inheritDoc} */
-    public function addDocumentType(string $name, array $fieldGroups, array | string $templates, array | string | null $inheritanceDocumentTypes, bool $childrenAsTable, string $category, ?string $title = null, ?string $parent = null)
+    public function addDocumentType(string $slug, Entities\DocumentType $data)
     {
-        foreach ($fieldGroups as $fieldGroupName => $fields) {
-            $this->addFieldGroup($fieldGroupName, $fields);
+        if (isset($this->pendingData['documentTypes'][$slug])) {
+            return;
         }
-
-        $templates = is_array($templates) ? $templates : (filled($templates) ? [$templates => null] : []);
-        $defaultTemplate = array_key_first($templates);
-
-        foreach ($templates as $template => $templateContent) {
-            $this->addTemplate($template, $templateContent);
-        }
-
-        $this->pendingData['documentTypes'][$name] = [
-            'fieldGroups' => array_keys($fieldGroups),
-            'templates' => array_keys($templates),
-            'defaultTemplate' => $defaultTemplate,
-            'inheritance' => is_array($inheritanceDocumentTypes) ? $inheritanceDocumentTypes : array_filter([$inheritanceDocumentTypes]),
-            'parent' => $parent,
-            'data' => [
-                'show_children_as_table' => $childrenAsTable,
-                'category' => $category,
-                'title' => $title ?? (string) str($name)->title()->replace('_', ' '),
-            ],
-        ];
+        $this->pendingData['documentTypes'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addFieldGroup(string $name, array $fields, ?string $title = null)
+    public function addFieldGroup(string $slug, Entities\FieldGroup $data, array $fields)
     {
-        $this->pendingData['fieldGroups'][$name] = [
-            'name' => $name,
-            'title' => $title ?? (string) str($name)->title()->replace('_', ' '),
-        ];
+        if (isset($this->pendingData['fieldGroups'][$slug])) {
+            return;
+        }
 
-        foreach ($fields as $fieldName => $fieldData) {
-            $this->addField($fieldName, $name, $fieldData);
+        $this->pendingData['fieldGroups'][$slug] = $data;
+
+        foreach ($fields as $item) {
+
+            $fieldKey = $data->slug . '.' . $item->slug;
+
+            if (isset($this->pendingData['fields'][$fieldKey])) {
+                continue;
+            }
+
+            $this->pendingData['fields'][$fieldKey] = $item;
         }
     }
 
     /** {@inheritDoc} */
-    public function addField(string $name, string $group, array $data, ?string $label = null)
+    public function addTemplate(string $slug, Entities\Template $data)
     {
-        $fieldKey = $group . '.' . $name;
-
-        $data['name'] = $name;
-        $data['label'] = $label ?? (string) str($name)->title()->replace('_', ' ');
-
-        $this->pendingData['fields'][$fieldKey] = $data;
-    }
-
-    /** {@inheritDoc} */
-    public function addTemplate(string $slug, $content = null)
-    {
-        $this->pendingData['templates'][$slug]['slug'] = $slug;
-        if (! isset($this->pendingData['templates'][$slug]['content'])) {
-            $this->pendingData['templates'][$slug]['content'] = $content;
+        if (isset($this->pendingData['templates'][$slug])) {
+            return;
         }
+
+        $this->pendingData['templates'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addContent(string $slug, $title, string $documentType, array $propertyData, string $publishState, array $sitemap = [], array $webSetting = [], ?string $parent = null, ?string $template = null)
+    public function addContent(string $slug, ?string $parent, Entities\Content $data)
     {
         $contentKey = ($parent ?? '__root__') . '/' . $slug;
 
-        $sitemap = array_merge([
-            'priority' => 0.5,
-            'change_frequency' => 'monthly',
-            'enable' => true,
-        ], $sitemap);
+        if (isset($this->pendingData['content'][$contentKey])) {
+            return;
+        }
 
-        $webSetting = array_merge([
-            'seo' => [
-                'meta_title' => $title,
-                'meta_description' => [],
-                'meta_keywords' => [],
-                'og_title' => $title,
-                'og_description' => [],
-                'og_image' => [],
-            ],
-            'robots' => [
-                'index' => true,
-                'follow' => true,
-            ],
-            'redirect_path' => null,
-            'redirect_content_id' => KeyHelper::generateMinUuid(),
-            'redirect_type' => null,
-        ], $webSetting);
-
-        $this->pendingData['content'][$contentKey] = [
-            'sitemap' => $sitemap,
-            'webSetting' => $webSetting,
-            'propertyData' => $propertyData,
-            'documentType' => $documentType,
-            'parent' => $parent,
-            'publishState' => $publishState,
-            'template' => $template,
-            'data' => [
-                'slug' => $slug,
-                'title' => $title,
-            ],
-        ];
+        $this->pendingData['content'][$contentKey] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addNavigation(string $category, string $type, $title, ?string $contentFullSlug = null, ?string $url = null, ?string $target = null)
+    public function addNavigation(Entities\Navigation $data)
     {
-        $this->pendingData['navigation'][] = [
-            'data' => [
-                'category' => $category,
-                'type' => $type,
-                'url' => $url,
-                'target' => $target,
-                'title' => $title,
-            ],
-            'content' => $contentFullSlug,
-        ];
+        $this->pendingData['navigation'][] = $data;
     }
 
     /** {@inheritDoc} */
@@ -200,18 +144,102 @@ class ImportDataService implements ImportDataServiceInterface
     {
         $this->pendingData = [];
         $this->finished = [];
-        $this->tempModels = [];
+        $this->resetTempModels();
         $this->resetProcess();
     }
+    
+    /** {@inheritDoc} */
+    public function validateBeforeRun(): bool
+    {
+        if (empty($this->pendingData)) {
+            $this->processErrors['__process__']['__error__'] = 'No data to import.';
+            return false;
+        }
 
+        foreach ($this->pendingData as $type => $items) {
+            foreach ($items as $item) {
+                try {
+                    $item->validate();
+                } catch (\Throwable $th) {
+                    $this->processErrors['__validation__'][$type][] = $th->getMessage();
+                }
+            }
+        }
+
+        return empty($this->processErrors['__validation__']);
+    }
+
+    /** {@inheritDoc} */
     public function hasErrors(): bool
     {
         return ! empty($this->processErrors);
     }
 
+    /** {@inheritDoc} */
     public function getErrors(): array
     {
         return $this->processErrors;
+    }
+
+    /** {@inheritDoc} */
+    public function getValidationErrors(): array
+    {
+        return $this->processErrors['__validation__'] ?? [];
+    }
+
+    /** {@inheritDoc} */
+    public function importFromFile(TemporaryUploadedFile $file): array
+    {
+        $data = $this->jsonFileReader->readFromFile($file);
+
+        $this->handleFromUploadData($data);
+
+        return $data;
+    }
+
+    protected function handleFromUploadData(array $data): void
+    {
+        foreach ($data as $type => $items) {
+            foreach ($items as $item) {
+                switch ($type) {
+                    case 'documentTypes':
+                        $data = Entities\DocumentType::fromArray($item);
+                        $this->addDocumentType(
+                            $data->slug,
+                            $data
+                        );
+                        break;
+                    case 'fieldGroups':
+                        $data = Entities\FieldGroup::fromArray(Arr::except($item, 'fields'));
+                        $fields = Arr::map($item['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
+                        $this->addFieldGroup(
+                            $data->slug,
+                            $data,
+                            $fields
+                        );
+                        break;
+                    case 'templates':
+                        $data = Entities\Template::fromArray($item);
+                        $this->addTemplate(
+                            $data->slug,
+                            $data
+                        );
+                        break;
+                    case 'content':
+                        $data = Entities\Content::fromArray($item);
+                        $this->addContent(
+                            $data->slug,
+                            $data->parent,
+                            $data
+                        );
+                        break;
+                    case 'navigation':
+                        $data = Entities\Navigation::fromArray($item);
+                        $this->addNavigation($data);
+                        break;
+                }
+            }
+        }
     }
 
     protected function processForTemplates()
@@ -220,16 +248,18 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['templates'] ?? [] as $slug => $data) {
+        foreach ($this->pendingData['templates'] ?? [] as $slug => $item) {
 
             try {
+                
+                $item->validate();
 
                 $template = $this->findTemplates($slug)->first();
 
                 if (! $template) {
-                    $template = new $model(Arr::except($data, 'content'));
-                    if (isset($data['content']) && filled($data['content'])) {
-                        $template->preloadTemplateContentBeforeCreate($data['content']);
+                    $template = new $model($item->getDataForModel());
+                    if (filled($item->content)) {
+                        $template->preloadTemplateContentBeforeCreate($item->content);
                     }
                     $template->save();
                     $template->refresh();
@@ -249,13 +279,15 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['fieldGroups'] ?? [] as $name => $data) {
+        foreach ($this->pendingData['fieldGroups'] ?? [] as $name => $item) {
             try {
+
+                $item->validate();
 
                 $fieldGroup = $this->findFieldGroups($name)->first();
 
                 if (! $fieldGroup) {
-                    $fieldGroup = $model::create($data);
+                    $fieldGroup = $model::create($item->getDataForModel());
                 }
 
                 $this->finished['fieldGroups'][$name] = $fieldGroup;
@@ -272,51 +304,88 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        // Reorder the document types so that parents are created before children
-        $this->pendingData['documentTypes'] = collect($this->pendingData['documentTypes'] ?? [])->sortBy(fn ($v, $k) => $v['parent'] ? 1 : 0)->toArray();
+        $reorderDocumentTypes = function ($collection) {
+            $higherOrder = $collection->filter(fn ($i) => 
+                !(is_array($i->inheritance) && count($i->inheritance ?? []) > 0) &&
+                empty($i->parent)
+            );
 
-        foreach ($this->pendingData['documentTypes'] as $slug => $data) {
+            $noParent = $collection->filter(fn ($i) => empty($i->parent));
+            $withParent = $collection->filter(fn ($i) => ! empty($i->parent));
+
+            // Sort the document types so that parents are created before children
+            $noParentKeys = $noParent->keys()->all();
+            $withParentKeys = $withParent->keys()->all();
+            $withParentOrder = $withParent->map(function ($i) use ($noParentKeys, $withParentKeys) {
+                if (in_array($i->parent, $noParentKeys)) {
+                    return 0;
+                }
+                if (in_array($i->parent, $withParentKeys)) {
+                    return 2;
+                }
+                return 1;
+            })->all();
+
+            return $collection->sortBy(function ($i) use ($higherOrder, $withParentOrder) {
+                // Higher Order
+                if ($higherOrder->has($i->slug)) {
+                    return -1;
+                }
+                // With Parent Order
+                if (array_key_exists($i->slug, $withParentOrder)) {
+                    return $withParentOrder[$i->slug] + 1;
+                }
+                // Default Order
+                return 0;
+            });
+        };
+
+        $this->pendingData['documentTypes'] = $reorderDocumentTypes(collect($this->pendingData['documentTypes'] ?? []))->toArray();
+
+        foreach ($this->pendingData['documentTypes'] as $slug => $item) {
 
             try {
-                $documentTypeData = $data['data'];
-                $documentTypeData['slug'] = $slug;
+
+                $item->validate();
+
+                $documentTypeData = $item->getDataForModel();
                 $documentType = $this->findDocumentTypes($slug)->first();
 
                 if (! $documentType) {
                     $documentType = $model::create($documentTypeData);
                 }
 
-                if (isset($data['parent'])) {
+                if (filled($item->parent)) {
 
-                    $parentDocumentType = $this->findDocumentTypes($data['parent'])->first();
+                    $parentDocumentType = $this->findDocumentTypes($item->parent)->first();
 
                     if (! $parentDocumentType) {
-                        throw new \Exception("Parent document type '{$data['parent']}' not found.");
+                        throw new \Exception("Parent document type '{$item->parent}' not found.");
                     }
 
                     $documentType->parent()->associate($parentDocumentType);
                     $documentType->save();
                 }
 
-                if (! empty($data['fieldGroups'])) {
-                    $fieldGroupKeys = $this->findFieldGroups($data['fieldGroups'])->map(fn ($i) => $i->getKey())->filter()->values();
+                if (! empty($item->fieldGroups)) {
+                    $fieldGroupKeys = $this->findFieldGroups($item->fieldGroups)->map(fn ($i) => $i->getKey())->filter()->values();
                     $documentType->fieldGroups()->sync($fieldGroupKeys);
                 }
 
-                if (! empty($data['templates'])) {
-                    $templateKeys = $this->findTemplates($data['templates'])->map(fn ($i) => $i->getKey())->filter()->values();
+                if (! empty($item->templates)) {
+                    $templateKeys = $this->findTemplates($item->templates)->map(fn ($i) => $i->getKey())->filter()->values();
                     $documentType->templates()->sync($templateKeys);
                 }
 
-                if (isset($data['defaultTemplate'])) {
-                    $defaultTemplate = $this->findTemplates($data['defaultTemplate'])->first();
+                if (filled($item->defaultTemplate)) {
+                    $defaultTemplate = $this->findTemplates($item->defaultTemplate)->first();
                     if (! $defaultTemplate) {
-                        throw new \Exception("Default template '{$data['default_template']}' not found.");
+                        throw new \Exception("Default template '{$item->defaultTemplate}' not found.");
                     }
                     $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
                 }
 
-                foreach ($data['inheritance'] ?? [] as $inheritance) {
+                foreach ($item->inheritance ?? [] as $inheritance) {
                     $inheritanceDocumentType = $this->findDocumentTypes($inheritance)->first();
                     if (! $inheritanceDocumentType) {
                         throw new \Exception("Inheritance document type '{$inheritance}' not found.");
@@ -338,9 +407,11 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['fields'] ?? [] as $fieldKey => $data) {
+        foreach ($this->pendingData['fields'] ?? [] as $fieldKey => $item) {
 
             try {
+                
+                $item->validate();
 
                 [$group, $name] = explode('.', $fieldKey);
 
@@ -353,7 +424,7 @@ class ImportDataService implements ImportDataServiceInterface
                 $field = $fieldGroup->fields()->where('name', $name)->first();
 
                 if (! $field) {
-                    $data = $this->mutateFieldData($data);
+                    $data = $this->mutateFieldData($item->getDataForModel());
                     $field = $fieldGroup->fields()->create($data);
                 }
 
@@ -371,21 +442,23 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['content'] ?? [] as $contentKey => $data) {
+        foreach ($this->pendingData['content'] ?? [] as $contentKey => $item) {
 
             try {
+                
+                $item->validate();
 
                 [$parentSlug, $slug] = [Str::beforeLast($contentKey, '/'), Str::afterLast($contentKey, '/')];
 
                 $parent = $parentSlug === '__root__' ? null : $this->findContent($parentSlug)->first();
 
-                $documentType = $this->findDocumentTypes($data['documentType'])->first();
+                $documentType = $this->findDocumentTypes($item->documentType)->first();
 
                 if (! $documentType) {
-                    throw new \Exception("Document type '{$data['documentType']}' not found.");
+                    throw new \Exception("Document type '{$item->documentType}' not found.");
                 }
 
-                $contentData = $data['data'];
+                $contentData = $item->getDataForModel();
                 $contentData['document_type_id'] = $documentType->getKey();
                 $contentData['parent_id'] = $parent?->getKey();
 
@@ -395,19 +468,19 @@ class ImportDataService implements ImportDataServiceInterface
 
                 if (! $content) {
                     $content = new $model($contentData);
-                    $content->propertyData = json_encode($data['propertyData']);
-                    $content->setPublishableState($data['publishState'] ?? 'draft');
+                    $content->propertyData = json_encode($item->properties);
+                    $content->setPublishableState($item->publishState);
                     $content->save();
                     $content->refresh();
                 }
 
-                $content->webSetting()->updateOrCreate([], $data['webSetting']);
-                $content->sitemap()->updateOrCreate([], $data['sitemap']);
+                $content->webSetting()->updateOrCreate([], $item->getWebSettingData());
+                $content->sitemap()->updateOrCreate([], $item->getSitemapData());
 
-                if (isset($data['template']) && filled($data['template'])) {
-                    $template = $this->findTemplates($data['template'])->first();
+                if (filled($item->template)) {
+                    $template = $this->findTemplates($item->template)->first();
                     if (! $template) {
-                        throw new \Exception("Template '{$data['template']}' not found.");
+                        throw new \Exception("Template '{$item->template}' not found.");
                     }
                     $content->templates()->sync([$template->getKey()]);
                     $content->setAsDefaultTemplate($template);
@@ -427,13 +500,12 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['navigation'] ?? [] as $data) {
+        foreach ($this->pendingData['navigation'] ?? [] as $item) {
             try {
+                
+                $item->validate();
 
-                $content = $data['content'] ? $this->findContent($data['content'])->first() : null;
-
-                $navigationData = $data['data'];
-                $navigationData['content_id'] = $content?->getKey() ?? null;
+                $navigationData = $this->mutateNavigationData($item);
                 $navigation = $model::create($navigationData);
 
                 $this->finished['navigation'][] = $navigation;
@@ -567,6 +639,20 @@ class ImportDataService implements ImportDataServiceInterface
     {
         $this->nextProcess = null;
         $this->processErrors = [];
+    }
+
+    /**
+     * Resets the temporary models used during the import process.
+     *
+     * This method is responsible for clearing or reinitializing any temporary
+     * models that are used to store data during the import process. It ensures
+     * that the temporary models are in a clean state before starting a new import.
+     *
+     * @return void
+     */
+    protected function resetTempModels()
+    {
+        $this->tempModels = [];
     }
 
     /**
@@ -726,6 +812,27 @@ class ImportDataService implements ImportDataServiceInterface
                     $data['config']['documentType'] = $this->findDocumentTypes($targetDocumentType)->first()?->getKey();
                 }
             }
+        }
+
+        return $data;
+    }
+
+    protected function mutateNavigationData(Entities\Navigation $item): array
+    {
+        $data = $item->getDataForModel();
+
+        if (filled($item->contentSlugPath)) {
+            $content = $this->findContent($item->contentSlugPath)->first();
+            $data['content_id'] = $content?->getKey();
+        } else {
+            $data['content_id'] = null;
+        }
+
+        if (!empty($item->children) && $item->type === 'group') {
+            $children = collect($item->children)->map(fn ($child) => $this->mutateNavigationData($child));
+            $data['children'] = $children->toArray();
+        } else {
+            $data['children'] = [];
         }
 
         return $data;
