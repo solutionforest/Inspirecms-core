@@ -17,4 +17,13 @@ class ContentFactory extends Factory
             'document_type_id' => 1,
         ];
     }
+
+    public function havePropertyData(array $data)
+    {
+        return $this->state(function (array $attributes) use ($data) {
+            return [
+                'propertyData' => json_encode($data),
+            ];
+        });
+    }
 }
