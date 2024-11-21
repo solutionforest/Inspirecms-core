@@ -123,7 +123,7 @@ trait CreateContentActionTrait
      */
     protected function getAvailableDocumentTypes()
     {
-        $query = InspireCmsConfig::getDocumentTypeModelClass()::isWebPage();
+        $query = InspireCmsConfig::getDocumentTypeModelClass()::whereIsWebPage();
 
         if (($parentDocumentType = $this->getParentDocumentType()) !== null) {
             $query->whereParent($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType);
