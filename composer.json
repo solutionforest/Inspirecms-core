@@ -58,12 +58,6 @@
             "SolutionForest\\InspireCms\\Tests\\": "tests/"
         }
     },
-    "repositories": [
-        {
-            "type": "path",
-            "url": "~/html/packages/*"
-        }
-    ],
     "scripts": {
         "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
         "analyse": "vendor/bin/phpstan analyse",
