@@ -32,6 +32,19 @@ Optional: Install sample data and views:
 php artisan inspirecms:import-sample-data
 ```
 
+3. Add routes to you web.php
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+\SolutionForest\InspireCms\Facades\InspireCms::routes();
+```
+
 ## Configuration
 
 ## Extending
