@@ -93,7 +93,7 @@ class ImportDefaultData extends Command
 
         $destination = base_path('routes/web.php');
 
-        if (! Str::contains(file_get_contents($destination), "InspireCms::routes()")) {
+        if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
             (new Filesystem)->append($destination, $this->cmsRotueDefinition());
         }
     }
