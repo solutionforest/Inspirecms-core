@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Pages;
 
-use Filament\Actions\Action;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
@@ -26,7 +25,7 @@ class ImportData extends Page implements ClusterSectionPage
     protected static string $view = 'inspirecms::filament.pages.import-data';
 
     protected static ?string $slug = 'import';
-    
+
     protected static ?string $navigationIcon = 'heroicon-c-arrow-up-tray';
 
     protected static ?string $cluster = Settings::class;
@@ -59,7 +58,7 @@ class ImportData extends Page implements ClusterSectionPage
                                 ->storeFiles(false),
                         ]),
                 ])
-                ->submitAction(new HtmlString(Blade::render(<<<BLADE
+                    ->submitAction(new HtmlString(Blade::render(<<<'BLADE'
                     <x-filament::button
                         type="submit"
                         size="md"
@@ -81,19 +80,20 @@ class ImportData extends Page implements ClusterSectionPage
         }
 
         $data = $this->importDataService->importFromFile($file);
-        
+
         if (! $this->importDataService->validateBeforeRun()) {
             $this->getValidationErrorNotification($this->importDataService->getValidationErrors())->send();
             $this->resetAll();
+
             return;
         }
 
         try {
-            
+
             $this->importDataService->run();
 
             if ($this->importDataService->hasErrors()) {
-                
+
                 $this->getErrorNotificationAfterProcess($this->importDataService->getErrors())->send();
 
             } else {
@@ -101,17 +101,15 @@ class ImportData extends Page implements ClusterSectionPage
                 $this->getSuccessNotification()->send();
             }
 
-
         } catch (\Throwable $th) {
 
             $this->getErrorNotification()->send();
-            
+
         } finally {
             $this->resetAll();
         }
     }
 
-    
     protected function refreshForm()
     {
         $this->form->fill([]);
@@ -146,14 +144,16 @@ class ImportData extends Page implements ClusterSectionPage
             $html = "<strong>{$type}</strong><br/>";
 
             if (is_array($typeErrors)) {
-                $html .= "<ul>";
+                $html .= '<ul>';
                 $html .= collect($typeErrors)->map(fn ($error) => "<li>{$error}</li>")->implode('');
-                $html .= "</ul>";
+                $html .= '</ul>';
             } else {
                 $html .= ": {$typeErrors}";
             }
+
             return $html;
         })->implode('');
+
         return Notification::make()
             ->danger()
             ->title(__('inspirecms::pages/import-data.notification.validation.title'))
@@ -166,6 +166,7 @@ class ImportData extends Page implements ClusterSectionPage
         $errors = collect($errors)->except('__validation__')->flatten()->map(function ($error) {
             return "<li>{$error}</li>";
         })->implode('');
+
         return Notification::make()
             ->danger()
             ->title(__('inspirecms::pages/import-data.notification.error-after-process.title'))
