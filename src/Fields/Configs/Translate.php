@@ -30,34 +30,40 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Select::make('field')
-                ->options(function () {
-                    $options = FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions();
-                    // filter out the current field type
-                    $configNames = $this->getConfigNames()[0];
-                    unset($options[$configNames['group']]);
-
-                    return $options;
-                })
-                ->searchable()->allowHtml()
-                ->required()
-                ->live(debounce: 500)
-                ->afterStateUpdated(fn (Forms\Components\Select $component) => $component
-                    ->getContainer()
-                    ->getComponent('fieldConfig')
-                    ?->getChildComponentContainer()
-                    ?->fill()),
-            Forms\Components\Group::make()
-                ->key('fieldConfig')
-                ->statePath('fieldConfig')
-                ->schema(function (Forms\Get $get) {
-
-                    if ($field = $get('field')) {
-                        return FilamentFieldGroup::getFieldTypeConfigFormSchema($field);
-                    }
-
-                    return [];
-                }),
+            
+            Forms\Components\Section::make()
+                ->heading('Field Configuration')
+                ->compact()
+                ->schema([
+                    Forms\Components\Select::make('field')
+                        ->options(function () {
+                            $options = FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions();
+                            // filter out the current field type
+                            $configNames = $this->getConfigNames()[0];
+                            unset($options[$configNames['group']]);
+        
+                            return $options;
+                        })
+                        ->searchable()->allowHtml()
+                        ->required()
+                        ->live(debounce: 500)
+                        ->afterStateUpdated(fn (Forms\Components\Select $component) => $component
+                            ->getContainer()
+                            ->getComponent('fieldConfig')
+                            ?->getChildComponentContainer()
+                            ?->fill()),
+                    Forms\Components\Group::make()
+                        ->key('fieldConfig')
+                        ->statePath('fieldConfig')
+                        ->schema(function (Forms\Get $get) {
+        
+                            if ($field = $get('field')) {
+                                return FilamentFieldGroup::getFieldTypeConfigFormSchema($field);
+                            }
+        
+                            return [];
+                        }),
+                ]),
         ];
     }
 
