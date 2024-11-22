@@ -43,29 +43,30 @@ class RoleResource extends Resource implements ClusterSectionResource
                     ->columnSpanFull()->columns(1)
                     ->schema([
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::permissions.assign_access.label'))
+                            ->heading(__('inspirecms::resources/role.cluster_section_access.label'))
+                            ->description(__('inspirecms::resources/role.cluster_section_access.instructions'))
                             ->collapsible()
-                            ->schema([
-                                static::getFormComponentForClusterSection(),
-                            ]),
+                            ->statePath('cluster_section_access')
+                            ->columns(2)
+                            ->schema(static::getFormComponentsForClusterSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::permissions.action_permissions.label'))
+                            ->heading(__('inspirecms::resources/role.action_permissions.label'))
+                            ->description(__('inspirecms::resources/role.action_permissions.instructions'))
                             ->collapsible()
-                            ->schema([
-                                static::getFormComponentForActionPermissionsSection(),
-                            ]),
+                            ->statePath('action_permissions')
+                            ->schema(static::getFormComponentsForActionPermissionsSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::permissions.page_permissions.label'))
+                            ->heading(__('inspirecms::resources/role.page_permissions.label'))
+                            ->description(__('inspirecms::resources/role.page_permissions.instructions'))
                             ->collapsible()
-                            ->schema([
-                                static::getFormComponentForPagePermissionsSection(),
-                            ]),
+                            ->statePath('page_permissions')
+                            ->schema(static::getFormComponentsForPagePermissionsSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::permissions.default_permissions.label'))
+                            ->heading(__('inspirecms::resources/role.resource_permissions.label'))
+                            ->description(__('inspirecms::resources/role.resource_permissions.instructions'))
                             ->collapsible()
-                            ->schema([
-                                static::getFormComponentForDefaultPermissionsSection(),
-                            ]),
+                            ->statePath('resource_permissions')
+                            ->schema(static::getFormComponentForResourcePermissionsSection()),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
                         if (is_null($record)) {
@@ -102,7 +103,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                             }
 
                             if (array_key_exists($permissionName, $resourcePermissions)) {
-                                $state['default_permissions'][$permissionName] = true;
+                                $state['resource_permissions'][$permissionName] = true;
 
                                 continue;
                             }
@@ -189,7 +190,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     protected static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::inspirecms.name'))
+            ->label(__('inspirecms::resources/role.name.label'))
             ->unique(table: static::getModel(), column: 'name', ignoreRecord: true, modifyRuleUsing: function (Unique $rule) {
                 return $rule->where('guard_name', InspireCmsConfig::getGuardName());
             })
@@ -207,28 +208,19 @@ class RoleResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return array
      */
-    protected static function getFormComponentForClusterSection()
+    protected static function getFormComponentsForClusterSection()
     {
-        return Forms\Components\Section::make()
-            ->heading(__('inspirecms::permissions.cluster_section_access.label'))
-            ->description(__('inspirecms::permissions.cluster_section_access.helper_text'))
-            ->statePath('cluster_section_access')
-            ->schema(
-                collect(PermissionManifest::getClusterSectionPermissions())
-                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                    ->all()
-            )
-            ->compact()
-            ->aside()
-            ->columnSpanFull()->columns(1);
+        return collect(PermissionManifest::getClusterSectionPermissions())
+            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+            ->all();
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return array
      */
-    protected static function getFormComponentForDefaultPermissionsSection()
+    protected static function getFormComponentForResourcePermissionsSection()
     {
         $modelPermissions = PermissionManifest::getClusterSectionResourceModelPermissions();
 
@@ -252,39 +244,27 @@ class RoleResource extends Resource implements ClusterSectionResource
 
         }
 
-        return Forms\Components\Group::make()
-            ->statePath('default_permissions')
-            ->schema($components);
+        return $components;
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return array
      */
-    protected static function getFormComponentForActionPermissionsSection()
+    protected static function getFormComponentsForActionPermissionsSection()
     {
-        return Forms\Components\Group::make()
-            ->statePath('action_permissions')
-            ->schema(
-                collect(PermissionManifest::getActionPermissions())
-                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                    ->all()
-            )
-            ->columnSpanFull()->columns(1);
+        return collect(PermissionManifest::getActionPermissions())
+            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+            ->all();
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return array
      */
-    protected static function getFormComponentForPagePermissionsSection()
+    protected static function getFormComponentsForPagePermissionsSection()
     {
-        return Forms\Components\Group::make()
-            ->statePath('page_permissions')
-            ->schema(
-                collect(PermissionManifest::getPagePermissions())
-                    ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                    ->all()
-            )
-            ->columnSpanFull()->columns(1);
+        return collect(PermissionManifest::getPagePermissions())
+            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
+            ->all();
     }
     //endregion Form field(s)/component(s)
 }
