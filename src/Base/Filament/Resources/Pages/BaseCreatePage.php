@@ -33,7 +33,7 @@ class BaseCreatePage extends CreateRecord
 
         // Order: edit, view, index
         if (! $this->redirectToIndex()) {
-    
+
             if ($resource::hasPage('edit') && $resource::canEdit($this->getRecord())) {
                 return $resource::getUrl('edit', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
             }
