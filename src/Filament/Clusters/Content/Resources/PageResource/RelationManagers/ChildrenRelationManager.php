@@ -7,14 +7,14 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Reactive;
-use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseContentChildrenRelationManager;
+use SolutionForest\InspireCms\Base\Filament\RelationManagers\BaseChildrenRelationManager;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
-class ChildrenRelationManager extends BaseContentChildrenRelationManager implements ContentForm
+class ChildrenRelationManager extends BaseChildrenRelationManager implements ContentForm
 {
     use ContentFormTrait;
     use Translatable;

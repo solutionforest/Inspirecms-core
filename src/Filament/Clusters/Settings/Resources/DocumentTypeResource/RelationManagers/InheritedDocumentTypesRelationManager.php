@@ -43,6 +43,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
+            ->openRecordUrlInNewTab()
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()

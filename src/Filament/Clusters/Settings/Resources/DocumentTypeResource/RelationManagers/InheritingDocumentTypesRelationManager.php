@@ -36,6 +36,7 @@ class InheritingDocumentTypesRelationManager extends RelationManager
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
+            ->openRecordUrlInNewTab()
             ->description(fn () => __('inspirecms::resources/document-type.inheriting.description'))
             ->actions([
                 Tables\Actions\Action::make('open')

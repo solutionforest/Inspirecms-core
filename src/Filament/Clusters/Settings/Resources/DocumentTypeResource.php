@@ -15,7 +15,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets;
@@ -80,6 +79,37 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->columnSpan(1)
                     ->schema([
                         static::getTypeFormComponent(),
+                        static::getShowChildAsTableFormComponent(),
+                        static::getTimestampsGroupedFormComponent(),
+                    ]),
+            ]);
+    }
+
+    /**
+     * Used to define the form for the children relation manager.
+     */
+    public static function childrenForm(Form $form, $parent): Form
+    {
+        return $form
+            ->columns(3)
+            ->schema([
+
+                Forms\Components\Group::make()
+                    ->columns(1)
+                    ->columnSpan(2)
+                    ->schema([
+                        Forms\Components\Section::make()
+                            ->schema([
+                                static::getParentIdFormComponent($parent),
+                                static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
+                                static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
+                            ]),
+                    ]),
+                Forms\Components\Section::make()
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->schema([
+                        static::getTypeFormComponent($parent),
                         static::getShowChildAsTableFormComponent(),
                         static::getTimestampsGroupedFormComponent(),
                     ]),
@@ -270,12 +300,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                 return $record?->canHaveParent() ?? false;
             })
-            ->content(function ($livewire, $record) {
-                if ($livewire instanceof DocumentTypeForm) {
-                    $parent = $livewire->getParent();
-                } else {
-                    $parent = $record?->parent;
-                }
+            ->content(function ( $record) {
+                
+                $parent = $record?->parent;
 
                 if (! $parent) {
                     return null;
@@ -326,20 +353,26 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
+     * @param DocumentType|Model|null $parent
+     * 
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getTypeFormComponent()
+    protected static function getTypeFormComponent($parent = null)
     {
         return Forms\Components\Select::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
             ->options(static::getModel()::getCategoryEnumClass())
             ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
-            ->disabled(function ($operation, $livewire) {
+            ->disabled(function ($operation) use ($parent) {
                 if ($operation === 'edit') {
                     return true;
-                } elseif ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
 
-                    return $livewire->canBeParent($livewire->getParentKey());
+                } 
+                // If create with parent and parent can have children, disable this field
+                elseif ($operation === 'create' && !is_null($parent) && $parent->canBeParent()) {
+
+                    return true;
+
                 }
 
                 return false;
@@ -383,18 +416,20 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
+     * @param DocumentType|Model|null $parent
+     * 
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getParentIdFormComponent()
+    protected static function getParentIdFormComponent($parent = null)
     {
         return Forms\Components\Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->afterStateHydrated(function ($operation, $livewire, $state, $component) {
-                if ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
-                    $parentKey = $livewire->getParentKey();
+            ->afterStateHydrated(function ($operation, $state, $component)  use ($parent) {
 
-                    if ($livewire->canBeParent($parentKey)) {
-                        $component->state($parentKey);
+                if ($operation === 'create') {
+
+                    if ($parent?->canBeParent() ?? false) {
+                        $component->state($parent->getKey());
 
                         return;
                     }

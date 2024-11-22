@@ -9,7 +9,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
-class BaseContentChildrenRelationManager extends RelationManager
+class BaseChildrenRelationManager extends RelationManager
 {
     protected static string $relationship = 'children';
 
@@ -44,14 +44,18 @@ class BaseContentChildrenRelationManager extends RelationManager
     {
         parent::configureCreateAction($action);
 
-        $resource = $this->getPageClass()::getResource();
+        if ($this->isRedirectToCreatePage()) {
 
-        $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
+            $resource = $this->getPageClass()::getResource();
 
-        $url = FilamentResourceHelper::attemptToGetUrl($resource, ['create'], $parameters, false);
+            $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
+    
+            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['create'], $parameters, false);
+    
+            if ($url) {
+                $action->url($url);
+            }
 
-        if ($url) {
-            $action->url($url);
         }
 
         $action
@@ -79,5 +83,10 @@ class BaseContentChildrenRelationManager extends RelationManager
     protected function isRedirectToDetailPage(): bool
     {
         return false;
+    }
+
+    protected function isRedirectToCreatePage(): bool
+    {
+        return true;
     }
 }

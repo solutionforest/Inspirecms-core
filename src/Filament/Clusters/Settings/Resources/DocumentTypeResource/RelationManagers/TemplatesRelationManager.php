@@ -71,7 +71,8 @@ class TemplatesRelationManager extends RelationManager
                     ->theme('github')
                     ->darkTheme('dracula')
                     ->afterStateHydrated(fn ($component, Template $record) => $component->state(file_get_contents($record->getFileFullPath())))
-                    ->dehydrateStateUsing(fn ($state, Template $record) => file_put_contents($record->getFileFullPath(), $state)),
+                    ->dehydrateStateUsing(fn ($state, Template $record) => file_put_contents($record->getFileFullPath(), $state))
+                    ->height('64rem'),
             ]);
     }
 
