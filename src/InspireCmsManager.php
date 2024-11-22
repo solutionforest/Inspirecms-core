@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class InspireCmsManager
 {
@@ -57,6 +58,15 @@ class InspireCmsManager
     public function getInstallUrl(): ?string
     {
         return Filament::getPanel(config('insiprecms.filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
+    }
+
+    public function getImportDataUrl(): ?string
+    {
+        try {
+            return \SolutionForest\InspireCms\Filament\Pages\ImportData::getUrl(panel: config('inspirecms.filament.panel_id', 'cms'));
+        } catch (RouteNotFoundException $th) {
+            return null;
+        }
     }
 
     /**

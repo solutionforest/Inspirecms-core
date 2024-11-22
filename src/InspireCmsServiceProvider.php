@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -86,6 +88,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
+
+        $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
         Facades\ModelManifest::register();
         $supportModels = $this->getConfigSupoortModels();

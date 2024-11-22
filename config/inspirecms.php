@@ -63,6 +63,7 @@ return [
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
             'health' => \SolutionForest\InspireCms\Filament\Pages\Health::class,
+            'import' => \SolutionForest\InspireCms\Filament\Pages\ImportData::class,
         ],
         'clusters' => [
             'content' => \SolutionForest\InspireCms\Filament\Clusters\Content::class,
