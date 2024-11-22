@@ -110,44 +110,6 @@ return [
 
     ],
 
-    'quick_create' => [
-
-        'label' => '快速創建',
-
-        'modal' => [
-
-            'heading' => '快速創建 :label',
-
-            'actions' => [
-
-                'create' => [
-
-                    'label' => '創建',
-
-                ],
-            ],
-        ],
-    ],
-
-    'quick_edit' => [
-
-        'label' => '快速編輯',
-
-        'modal' => [
-
-            'heading' => '快速編輯 :label',
-
-            'actions' => [
-
-                'save' => [
-
-                    'label' => '保存',
-
-                ],
-            ],
-        ],
-    ],
-
     'save' => [
 
         'label' => '保存',

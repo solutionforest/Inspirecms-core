@@ -22,7 +22,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
-use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -84,19 +83,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         static::getShowChildAsTableFormComponent(),
                         static::getTimestampsGroupedFormComponent(),
                     ]),
-            ]);
-    }
-
-    public static function quickForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                static::getDisplayIdFormComponent()->inlineLabel(),
-                static::getDisplayParentFormComponent()->inlineLabel(),
-                static::getTitleFormComponent()->inlineLabel(),
-                static::getSlugFormComponent()->inlineLabel(),
-                static::getTypeFormComponent()->inlineLabel(),
-                static::getShowChildAsTableFormComponent(),
             ]);
     }
 
@@ -171,9 +157,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\ActionGroup::make([
-                    QuickEditAction::make(),
-                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -269,7 +252,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Placeholder::make('display_id')
             ->label(__('inspirecms::inspirecms.id'))
-            ->hiddenOn(['create', 'quick_create'])
+            ->hiddenOn(['create'])
             ->content(fn ($record) => $record?->getKey());
     }
 
@@ -281,7 +264,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\Placeholder::make('display_parent')
             ->label(__('inspirecms::inspirecms.parent'))
             ->visible(function ($operation, ?DocumentType $record) {
-                if ($operation === 'create' || $operation === 'quick_create') {
+                if ($operation === 'create') {
                     return false;
                 }
 
@@ -322,7 +305,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::resources/document-type.title.label'))
             ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
                 // Fill slug if empty / operation is create
-                if ($operation === 'create' || $operation === 'quick_create' || empty($get('slug'))) {
+                if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', Str::slug($state));
                 }
             })
@@ -352,7 +335,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->options(static::getModel()::getCategoryEnumClass())
             ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
             ->disabled(function ($operation, $livewire) {
-                if ($operation === 'edit' || $operation === 'quick_edit') {
+                if ($operation === 'edit') {
                     return true;
                 } elseif ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
 

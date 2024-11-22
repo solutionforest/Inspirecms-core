@@ -53,7 +53,6 @@ class CmsPanelProvider extends PanelProvider
                 'warning' => Color::hex('#f39e19'),
 
                 'zinc' => Color::Zinc,
-                'lime' => Color::Lime,
             ])
             ->maxContentWidth('full')
             ->plugins([

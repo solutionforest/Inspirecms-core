@@ -23,7 +23,6 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
-use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource implements ClusterSectionResource
@@ -90,16 +89,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ]);
     }
 
-    public static function quickForm(Form $form): Form
-    {
-        return $form
-            ->schema([
-                static::getTitleFormComponent()->inlineLabel(),
-                static::getNameFormComponent()->inlineLabel(),
-                static::getActiveFormComponent(),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return parent::table($table)
@@ -140,8 +129,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
-
-                    QuickEditAction::make(),
 
                     CloneAction::make()
                         ->recordTitleAttribute('title')

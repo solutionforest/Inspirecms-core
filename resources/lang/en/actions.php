@@ -110,44 +110,6 @@ return [
 
     ],
 
-    'quick_create' => [
-
-        'label' => 'Quick create',
-
-        'modal' => [
-
-            'heading' => 'Quick create :label',
-
-            'actions' => [
-
-                'create' => [
-
-                    'label' => 'Create',
-
-                ],
-            ],
-        ],
-    ],
-
-    'quick_edit' => [
-
-        'label' => 'Quick edit',
-
-        'modal' => [
-
-            'heading' => 'Quick edit :label',
-
-            'actions' => [
-
-                'save' => [
-
-                    'label' => 'Save',
-
-                ],
-            ],
-        ],
-    ],
-
     'save' => [
 
         'label' => 'Save',
