@@ -36,7 +36,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager
         return parent::table($table)
             ->openRecordUrlInNewTab();
     }
-    
+
     public static function getBadge(Model $ownerRecord, string $pageClass): ?string
     {
         if (is_null($ownerRecord->children_count)) {

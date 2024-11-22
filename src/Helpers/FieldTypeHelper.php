@@ -43,7 +43,7 @@ class FieldTypeHelper
 
         if (filled($search) && ! is_null($search)) {
             $options = Arr::where(
-                $options, 
+                $options,
                 fn ($item) => str_contains($item['name'], $search)
             );
         }
@@ -51,7 +51,7 @@ class FieldTypeHelper
         return collect($options)
             ->groupBy('group')
             ->map(fn ($collection) => collect($collection)->mapWithKeys(function ($item) {
-                
+
                 $icon = $item['icon'] ?? null;
                 $label = $item['display'] ?? $item['name'] ?? '';
 

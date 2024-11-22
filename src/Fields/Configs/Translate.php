@@ -30,7 +30,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            
+
             Forms\Components\Section::make()
                 ->heading('Field Configuration')
                 ->compact()
@@ -41,7 +41,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                             // filter out the current field type
                             $configNames = $this->getConfigNames()[0];
                             unset($options[$configNames['group']]);
-        
+
                             return $options;
                         })
                         ->searchable()->allowHtml()
@@ -56,11 +56,11 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->key('fieldConfig')
                         ->statePath('fieldConfig')
                         ->schema(function (Forms\Get $get) {
-        
+
                             if ($field = $get('field')) {
                                 return FilamentFieldGroup::getFieldTypeConfigFormSchema($field);
                             }
-        
+
                             return [];
                         }),
                 ]),

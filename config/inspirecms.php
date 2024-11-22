@@ -3,7 +3,6 @@
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;

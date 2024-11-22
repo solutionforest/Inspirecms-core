@@ -300,8 +300,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                 return $record?->canHaveParent() ?? false;
             })
-            ->content(function ( $record) {
-                
+            ->content(function ($record) {
+
                 $parent = $record?->parent;
 
                 if (! $parent) {
@@ -353,8 +353,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @param DocumentType|Model|null $parent
-     * 
+     * @param  DocumentType|Model|null  $parent
      * @return Forms\Components\Field | Forms\Components\Component
      */
     protected static function getTypeFormComponent($parent = null)
@@ -367,9 +366,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 if ($operation === 'edit') {
                     return true;
 
-                } 
+                }
                 // If create with parent and parent can have children, disable this field
-                elseif ($operation === 'create' && !is_null($parent) && $parent->canBeParent()) {
+                elseif ($operation === 'create' && ! is_null($parent) && $parent->canBeParent()) {
 
                     return true;
 
@@ -416,15 +415,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @param DocumentType|Model|null $parent
-     * 
+     * @param  DocumentType|Model|null  $parent
      * @return Forms\Components\Field | Forms\Components\Component
      */
     protected static function getParentIdFormComponent($parent = null)
     {
         return Forms\Components\Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->afterStateHydrated(function ($operation, $state, $component)  use ($parent) {
+            ->afterStateHydrated(function ($operation, $state, $component) use ($parent) {
 
                 if ($operation === 'create') {
 

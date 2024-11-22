@@ -7,7 +7,6 @@ use Filament\Forms\Form;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResourceHelper
@@ -91,8 +90,8 @@ class FieldGroupResourceHelper
             ->extraItemActions([
                 static::configureFieldsEditActionOnRepeater(
                     Forms\Components\Actions\Action::make('edit')
-                    ->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
-                    ->label(__('filament-actions::edit.single.label'))
+                        ->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
+                        ->label(__('filament-actions::edit.single.label'))
                 ),
             ])
             ->schema(static::getFieldsRepeaterSchema());
