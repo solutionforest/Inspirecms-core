@@ -43,7 +43,8 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                     AceEditor::make('content')
                         ->mode('php')
                         ->theme('github')
-                        ->darkTheme('dracula'),
+                        ->darkTheme('dracula')
+                        ->height('56rem'),
                 ])
                 ->slideOver()
                 ->modalWidth('7xl')
