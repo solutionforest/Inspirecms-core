@@ -2,14 +2,17 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 
+use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -27,6 +30,13 @@ class FieldGroupsRelationManager extends RelationManager
         'refreshFieldGroups' => '$refresh',
     ];
 
+    public function form(Form $form): Form
+    {
+        $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
+
+        return $resource::form($form);
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -34,8 +44,8 @@ class FieldGroupsRelationManager extends RelationManager
             ->reorderable('order')
             ->defaultSort('order')
             ->modifyQueryUsing(fn ($query) => $query->withCount('fields'))
-            ->modelLabel(fn () => __('inspirecms::resources/document-type.field_groups.singular'))
-            ->pluralModelLabel(fn () => __('inspirecms::resources/document-type.field_groups.plural'))
+            ->modelLabel(fn () => Str::lower(__('inspirecms::resources/document-type.field_groups.singular')))
+            ->pluralModelLabel(fn () => Str::lower(__('inspirecms::resources/document-type.field_groups.plural')))
             ->description(fn () => __('inspirecms::resources/document-type.field_groups.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
@@ -69,15 +79,7 @@ class FieldGroupsRelationManager extends RelationManager
                     ->sortable(),
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make()
-                    ->url(function () {
-                        $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
-
-                        return FilamentResourceHelper::attemptToGetUrl($resource, 'create', [], true);
-                    }, true)
-                    ->visible(function (Tables\Actions\Action $action) {
-                        return filled($action->getUrl());
-                    }),
+                Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['title', 'name']),
@@ -140,13 +142,28 @@ class FieldGroupsRelationManager extends RelationManager
         return __('inspirecms::resources/document-type.field_groups.label');
     }
 
+    protected function configureCreateAction(CreateAction $action): void
+    {
+        parent::configureCreateAction($action);
+
+        $action
+            ->slideOver()
+            ->modalWidth('7xl')
+            ->after(function (Model $record) {
+                $this->dispatch('refreshAlerts');
+            });
+    }
+
     protected function configureAttachAction(Tables\Actions\AttachAction $action): void
     {
         parent::configureAttachAction($action);
 
-        $action->after(function (array $data) {
-            $this->dispatch('refreshAlerts');
-        });
+        $action
+            ->slideOver()
+            ->modalWidth('lg')
+            ->after(function (array $data) {
+                $this->dispatch('refreshAlerts');
+            });
     }
 
     protected function configureDetachAction(Tables\Actions\DetachAction $action): void

@@ -27,9 +27,9 @@ return [
         'hint' => 'Create a template to display this document type.',
     ],
     'field_groups' => [
-        'label' => 'Field Groups',
-        'singular' => 'Field Group',
-        'plural' => 'Field Groups',
+        'label' => 'Field groups',
+        'singular' => 'Field group',
+        'plural' => 'Field groups',
         'description' => 'The field groups to use when creating a document of this type.',
         'hint' => 'Create a field group to use with this document type.',
     ],
