@@ -65,13 +65,9 @@ interface HasContentVersions
     /**
      * Determine if this content is already published.
      *
-     * This method checks if the content has been published,
-     * optionally allowing a callback for additional checks.
-     *
-     * @param  \Closure|null  $callback  Optional callback for additional checks.
      * @return bool True if published, false otherwise.
      */
-    public function isPublished(?\Closure $callback = null): bool;
+    public function isPublished(): bool;
 
     /**
      * Get the publish time of the content.

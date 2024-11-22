@@ -141,7 +141,7 @@ class Content extends BaseModel implements ContentContract
         return $itemOrder == ($firstOrder ?? 1);
     }
 
-    public function isPublished(?\Closure $callback = null): bool
+    public function isPublished(): bool
     {
         $publishedAt = $this->getPublishTime();
         $status = $this->status;
@@ -156,17 +156,11 @@ class Content extends BaseModel implements ContentContract
             throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
 
-        switch ($status) {
-
-            case $unpublishOption->getValue():
-                return false;
+        if ($status == $unpublishOption->getValue()) {
+            return false;
         }
 
-        if ($callback) {
-            return $callback($this, inspirecms_content_statuses()->getOption($status));
-        }
-
-        return true;
+        return $publishedAt->isPast();
     }
 
     public function getPublishTime(): ?\Carbon\Carbon
