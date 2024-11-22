@@ -124,11 +124,11 @@ class FieldGroupsRelationManager extends RelationManager
                             ->icon(fn ($record) => $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle'),
                         Infolists\Components\Group::make([
                             Infolists\Components\TextEntry::make('label')
-                                ->label(__('inspirecms::resources/field.label.label'))
+                                ->label(__('inspirecms::forms/fields/field.label.label'))
                                 ->inlineLabel(),
 
                             Infolists\Components\TextEntry::make('name')
-                                ->label(__('inspirecms::resources/field.name.label'))
+                                ->label(__('inspirecms::forms/fields/field.name.label'))
                                 ->inlineLabel()
                                 ->badge(),
 
