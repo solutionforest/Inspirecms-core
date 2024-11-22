@@ -85,9 +85,6 @@ return [
         'publish' => [
             'label' => '發布',
         ],
-        'private' => [
-            'label' => '私人',
-        ],
         'unpublish' => [
             'label' => '取消發布',
         ],

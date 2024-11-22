@@ -81,7 +81,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 ->color('gray')
                 ->actions(array_filter([
                     inspirecms_content_statuses()->getOption('unpublish')->getFormAction(),
-                    inspirecms_content_statuses()->getOption('private')->getFormAction(),
                 ])),
             $this->getCancelFormAction(),
         ];

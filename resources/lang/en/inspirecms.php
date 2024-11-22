@@ -85,9 +85,6 @@ return [
         'publish' => [
             'label' => 'Publish',
         ],
-        'private' => [
-            'label' => 'Private',
-        ],
         'unpublish' => [
             'label' => 'Unpublish',
         ],
