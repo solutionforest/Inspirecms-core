@@ -52,7 +52,7 @@ class ImportDefaultData extends Command
         }
 
         // Reset cached roles and permissions
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+        app(PermissionRegistrar::class)->forgetCachedPermissions();
 
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
         $rolClass = InspireCmsConfig::getRoleModelClass();

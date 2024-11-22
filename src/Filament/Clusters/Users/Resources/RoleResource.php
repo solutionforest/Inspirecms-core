@@ -78,11 +78,25 @@ class RoleResource extends Resource implements ClusterSectionResource
                         $state = [];
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
                         $resourcePermissions = collect(PermissionManifest::getClusterSectionResourceModelPermissions())->collapse()->all();
+                        $actionPermissions = PermissionManifest::getActionPermissions();
+                        $pagePermissions = PermissionManifest::getPagePermissions();
 
                         foreach ($permissionNames as $permissionName) {
 
                             if (array_key_exists($permissionName, $clusterSectionPermissions)) {
                                 $state['cluster_section_access'][$permissionName] = true;
+
+                                continue;
+                            }
+
+                            if (array_key_exists($permissionName, $actionPermissions)) {
+                                $state['action_permissions'][$permissionName] = true;
+
+                                continue;
+                            }
+
+                            if (array_key_exists($permissionName, $pagePermissions)) {
+                                $state['page_permissions'][$permissionName] = true;
 
                                 continue;
                             }
@@ -229,13 +243,11 @@ class RoleResource extends Resource implements ClusterSectionResource
                         ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
                         ->all()
                 )
-                ->compact()
                 ->aside()
                 ->columnSpanFull()->columns([
                     'default' => 2,
                     'md' => 2,
                     'lg' => 3,
-                    'xl' => 4,
                 ]);
 
         }
