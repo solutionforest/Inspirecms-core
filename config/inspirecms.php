@@ -52,7 +52,6 @@ return [
             'page' => PageResource::class,
             'document_type' => DocumentTypeResource::class,
             'field_group' => FieldGroupResource::class,
-            'field' => FieldResource::class,
             'language' => LanguageResource::class,
             'template' => TemplateResource::class,
             'user' => UserResource::class,

@@ -36,4 +36,29 @@ class FieldTypeHelper
     {
         return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
     }
+
+    public static function getFieldTypeOptions(?string $search = null): array
+    {
+        $options = FilamentFieldGroup::getFieldTypeOptions();
+
+        if (filled($search) && ! is_null($search)) {
+            $options = Arr::where(
+                $options, 
+                fn ($item) => str_contains($item['name'], $search)
+            );
+        }
+
+        return collect($options)
+            ->groupBy('group')
+            ->map(fn ($collection) => collect($collection)->mapWithKeys(function ($item) {
+                
+                $icon = $item['icon'] ?? null;
+                $label = $item['display'] ?? $item['name'] ?? '';
+
+                $textWithIconHtml = UIHelper::generateTextWithIcon($label, $icon, 'gray');
+
+                return [$item['name'] => $textWithIconHtml->toHtml()];
+            }))
+            ->toArray();
+    }
 }
