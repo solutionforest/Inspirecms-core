@@ -49,12 +49,6 @@ class RoleResource extends Resource implements ClusterSectionResource
                                 static::getFormComponentForClusterSection(),
                             ]),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::permissions.default_permissions.label'))
-                            ->collapsible()
-                            ->schema([
-                                static::getFormComponentForDefaultPermissionsSection(),
-                            ]),
-                        Forms\Components\Section::make()
                             ->heading(__('inspirecms::permissions.action_permissions.label'))
                             ->collapsible()
                             ->schema([
@@ -65,6 +59,12 @@ class RoleResource extends Resource implements ClusterSectionResource
                             ->collapsible()
                             ->schema([
                                 static::getFormComponentForPagePermissionsSection(),
+                            ]),
+                        Forms\Components\Section::make()
+                            ->heading(__('inspirecms::permissions.default_permissions.label'))
+                            ->collapsible()
+                            ->schema([
+                                static::getFormComponentForDefaultPermissionsSection(),
                             ]),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
