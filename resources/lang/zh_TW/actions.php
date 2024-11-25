@@ -48,6 +48,8 @@ return [
 
         ],
 
+        'empty_state' => '沒有可用的文檔類型。請先創建一個文檔類型。',
+
     ],
 
     'content_history' => [

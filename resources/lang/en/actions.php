@@ -48,6 +48,8 @@ return [
 
         ],
 
+        'empty_state' => 'No document types available. Please create a document type first.',
+
     ],
 
     'content_history' => [
@@ -188,6 +190,6 @@ return [
 
             ],
         ],
-        
+
     ],
 ];
