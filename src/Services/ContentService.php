@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use Closure;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -19,32 +18,29 @@ class ContentService implements ContentServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function search($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
-    {
-        $builder = $this->contentSearchBuilder($keyword);
-
-        $builder = $this->applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback);
-
-        return $builder->get();
-    }
-
-    /** {@inheritDoc} */
-    public function searchOne($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null)
-    {
-        $builder = $this->contentSearchBuilder($keyword);
-
-        $builder = $this->applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback);
-
-        return $builder->first();
-    }
-
-    /** {@inheritDoc} */
-    public function findIndexWebPage()
+    public function findPublishedWebPageById($id)
     {
         return $this->getContentQuery()
-            ->whereHas('nestableTree', fn ($query) => $query->whereIsRoot())
             ->whereIsWebPage()
-            ->orderBy('nestable_tree_order')
+            ->whereIsPublished()
+            ->find($id);
+    }
+
+    /** {@inheritDoc} */
+    public function findDefaultWebPage()
+    {
+        return $this->getContentQuery()
+            ->where('is_default', true)
+            ->whereIsWebPage()
+            ->first();
+    }
+
+    /** {@inheritDoc} */
+    public function findWebPageBySlugPath(string $slugPath)
+    {
+        return $this->getContentQuery()
+            ->whereHas('path', fn ($q) => $q->where('slug_path', $slugPath))
+            ->whereIsWebPage()
             ->first();
     }
 
@@ -78,14 +74,6 @@ class ContentService implements ContentServiceInterface
     protected function getContentQuery()
     {
         return $this->contentModel::query();
-    }
-
-    /**
-     * @return \Laravel\Scout\Builder
-     */
-    protected function contentSearchBuilder(string $keyword)
-    {
-        return $this->contentModel::search($keyword);
     }
 
     /**

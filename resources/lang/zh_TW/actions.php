@@ -173,4 +173,21 @@ return [
         'permission_display_name' => '重新排序內容',
 
     ],
+
+    'set_default_content_page' => [
+
+        'label' => '設為默認內容頁',
+
+        'permission_display_name' => '設為默認內容頁',
+
+        'notifications' => [
+
+            'success' => [
+
+                'title' => '設為默認內容頁成功',
+
+            ],
+        ],
+
+    ],
 ];

@@ -68,7 +68,7 @@ class ContentDto extends BaseTranslatableModelDto
     {
         $availableLanguages = inspirecms()->getAllAvailableLanguages();
 
-        $availableLocales = collect($availableLanguages)->map(fn ($lang) => $lang->locale)->toArray();
+        $availableLocales = collect($availableLanguages)->map(fn ($lang) => $lang->code)->toArray();
 
         $parameters = static::prepareDtoParameters($model, $propertyData, $availableLanguages);
 
@@ -201,7 +201,7 @@ class ContentDto extends BaseTranslatableModelDto
         ])->all();
 
         $dtoParameters['urls'] = collect($availableLanguages)->mapWithKeys(fn (LanguageDto $lang) => [
-            $lang->code => $record->getUrl($lang->locale),
+            $lang->code => $record->getUrl($lang),
         ])->all();
 
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
@@ -210,7 +210,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         if ($record->isRedirectable()) {
             $dtoParameters['redirectUrls'] = collect($availableLanguages)->mapWithKeys(fn (LanguageDto $lang) => [
-                $lang->code => $record->getRedirectUrl($lang->locale),
+                $lang->code => $record->getRedirectUrl($lang),
             ])->all();
             $dtoParameters['redirectType'] = $record->getRedirectType();
         }
@@ -326,7 +326,6 @@ class ContentDto extends BaseTranslatableModelDto
             'webSetting',
             'publishedVersions',
             'documentType.fields.group',
-            'ancestorsAndSelf', // for generate url
         ];
     }
     //endregion Helpers

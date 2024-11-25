@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 trait HasContentWebSetting
@@ -56,7 +57,7 @@ trait HasContentWebSetting
         return false;
     }
 
-    public function getRedirectUrl(?string $locale = null): ?string
+    public function getRedirectUrl($locale = null)
     {
         if (! $this->isRedirectable()) {
             return null;
@@ -68,7 +69,7 @@ trait HasContentWebSetting
 
         if (($redirectContentId = $this->webSetting?->redirect_content_id) && $redirectContentId !== $this->getKey() && $redirectContentId !== KeyHelper::generateMinUuid()) {
 
-            $content = $this->newQuery()->whereIsPublished()->find($redirectContentId);
+            $content = app(ContentServiceInterface::class)->findPublishedWebPageById($redirectContentId);
 
             if ($content) {
                 return $content->getUrl($locale);

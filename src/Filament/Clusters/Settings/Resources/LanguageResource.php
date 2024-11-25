@@ -43,7 +43,6 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->schema([
                 static::getCodeFormComponent(),
                 static::getNameFormComponent(),
-                static::getRoutePatternFormComponent(),
                 static::getIsDefaultFormComponent(),
             ]);
     }
@@ -55,9 +54,6 @@ class LanguageResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('code')
                     ->label(__('inspirecms::inspirecms.code'))
                     ->width('1%')->sortable(),
-                Tables\Columns\TextColumn::make('route_pattern')
-                    ->label(__('inspirecms::inspirecms.route_pattern'))
-                    ->width('1%'),
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name')),
                 Tables\Columns\CheckboxColumn::make('is_default')
@@ -131,17 +127,6 @@ class LanguageResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::inspirecms.name'))
             ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getRoutePatternFormComponent()
-    {
-        return Forms\Components\TextInput::make('route_pattern')
-            ->label(__('inspirecms::inspirecms.route_pattern'))
-            ->columnSpanFull()
-            ->dehydrateStateUsing(fn ($get, $state) => blank($state) ? $get('code') : $state);
     }
 
     /**

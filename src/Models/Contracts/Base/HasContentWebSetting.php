@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Contracts\Base;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 
 interface HasContentWebSetting
 {
@@ -35,10 +36,10 @@ interface HasContentWebSetting
     /**
      * Get the redirect URL for the given locale.
      *
-     * @param  string|null  $locale  The locale for which to get the redirect URL. If null, the default locale will be used.
+     * @param LanguageDto|string|null $locale
      * @return string|null The redirect URL for the specified locale, or null if no redirect URL is set.
      */
-    public function getRedirectUrl(?string $locale = null): ?string;
+    public function getRedirectUrl($locale = null);
 
     /**
      * Get the type of redirect.

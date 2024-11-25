@@ -18,9 +18,6 @@ class LanguageObserver
      */
     public function saving(Language | Model $model)
     {
-        if (blank($model->route_pattern)) {
-            $model->route_pattern = $model->code;
-        }
         // Set "is_default" of other languages as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
             DB::transaction(function () use ($model) {

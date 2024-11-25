@@ -1,20 +1,18 @@
 <?php
 
-namespace SolutionForest\InspireCms\Commands;
+namespace SolutionForest\InspireCms\Database\Seeders;
 
-use Closure;
-use Illuminate\Console\Command;
+use Illuminate\Database\Seeder;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
-use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:import-sample-data')]
-class ImportSampleData extends Command
+class SampleSeeder extends Seeder
 {
+    protected $importDataService;
+
     protected array $mediaAssets = [];
 
     protected array $language = [];
@@ -27,24 +25,13 @@ class ImportSampleData extends Command
 
     protected array $content = [];
 
-    protected ImportDataServiceInterface $importDataService;
-
-    public function handle(ImportDataServiceInterface $importDataService): int
+    public function __construct(ImportDataServiceInterface $importDataService)
     {
         $this->importDataService = $importDataService;
+    }
 
-        // Ensure the default data is imported
-        $this->call('inspirecms:import-default-data');
-
-        $this->comment("\nImporting sample data ...");
-
-        $this->call('vendor:publish', [
-            '--tag' => 'inspirecms-sample-views',
-            '--force' => true,
-        ]);
-
-        $this->callSilent('scout:sync-index-settings');
-
+    public function run()
+    {
         $this->makeSampleMedia();
 
         $this->makeSampleLanguages();
@@ -55,22 +42,8 @@ class ImportSampleData extends Command
         $this->addSampleNavigation();
         $this->addSampleTemplates();
 
-        $this->comment("\nImporting sample data ...");
         $this->importDataService->run();
-
-        if ($this->importDataService->hasErrors()) {
-            $this->error("\nErrors occurred while importing sample data.");
-
-            collect($this->importDataService->getErrors())->flatten()->each(function ($error) {
-                $this->error($error);
-            });
-
-            return static::FAILURE;
-        }
-
-        $this->info("\nSample data imported.");
-
-        return static::SUCCESS;
+        
     }
 
     protected function addSampleTemplates(): void
@@ -92,11 +65,6 @@ class ImportSampleData extends Command
     $social_media_github = $social_media?->getPropertyData('github')?->getValue();
     $social_media_email = $social_media?->getPropertyData('email')?->getValue();
 
-    $recently_articles = $content->getPropertyGroup('recently_articles');
-    $recently_articles_articles = $recently_articles?->getPropertyData('articles')?->getValue() ?? [];
-
-    $image_slider = $content->getPropertyGroup('image_slider');
-    $image_slider_image = $image_slider?->getPropertyData('image')?->getValue() ?? [];
 @endphp
 <x-page :content="$content">
   <main class="flex-auto">
@@ -137,65 +105,6 @@ class ImportSampleData extends Command
                     </svg>
                   </a>
                 @endif
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="mt-16 sm:mt-20" id="slider">
-      <div class="mt-6 grid grid-cols-5 gap-y-6 sm:gap-x-6 lg:gap-8">
-        @foreach ($image_slider_image as $item)
-          <div @class([
-            'group relative overflow-hidden rounded-lg sm:aspect-auto',
-            'rotate-2' => $loop->even,
-            '-rotate-2' => $loop->odd,
-          ])>
-            <img alt="" loading="lazy" decoding="async" class="h-96 w-full rounded-lg object-cover sm:aspect-[2/3] sm:h-auto" srcset="{{$item->getUrl()}}" >
-          </div>
-        @endforeach
-      </div>
-    </div>
-    <div class="sm:px-8 mt-24 md:mt-28">
-      <div class="mx-auto w-full max-w-7xl lg:px-8">
-        <div class="relative px-4 sm:px-8 lg:px-12">
-          <div class="mx-auto max-w-2xl lg:max-w-5xl">
-            <div class="mx-auto grid max-w-xl grid-cols-1 gap-y-20 lg:max-w-none lg:grid-cols-2">
-              <div class="flex flex-col gap-16">
-                @foreach ($recently_articles_articles as $item)
-                    @php
-                      $article_detail_content = $item->getPropertyGroup('article_detail_content');
-                      $article_detail_content_title = $article_detail_content?->getPropertyData('title')?->getValue($locale);
-                      $article_detail_content_content = $article_detail_content?->getPropertyData('content')?->getValue($locale);
-                      @endphp
-                    <article class="group relative flex flex-col items-start">
-                      <h2 class="text-base font-semibold tracking-tight text-cyan-800 dark:text-cyan-100">
-                        <div class="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-cyan-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-cyan-800/50"></div>
-                        <a  href="{{$item->getUrl($locale)}}">
-                          <span class="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl"></span>
-                          <span class="relative z-10">{{ $article_detail_content_title }}</span>
-                        </a>
-                      </h2>
-                      <div class="relative z-10 mt-2 text-sm text-cyan-600 dark:text-cyan-400">{{$article_detail_content_content}}</div>
-                      <div aria-hidden="true" class="relative z-10 mt-4 flex items-center text-sm font-medium text-cyan-500">Read article <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="ml-1 h-4 w-4 stroke-current">
-                          <path d="M6.75 5.75 9.25 8l-2.5 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                      </div>
-                    </article>
-                @endforeach
-              </div>
-              <div class="space-y-10 lg:pl-16 xl:pl-24">
-                <form action="/thank-you" class="rounded-2xl border border-cyan-100 p-6 dark:border-cyan-700/40">
-                  <h2 class="flex text-sm font-semibold text-cyan-900 dark:text-cyan-100">
-                    <svg viewBox="0 0 1024 1024" fill="currentColor" class="icon text-cyan-800 w-5 h-5" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M538.4 1017.6h-6.4c-80-4-112.8-72-118.4-107.2-2.4-14.4 7.2-28 21.6-29.6h4.8c12.8 0 23.2 8.8 25.6 21.6 0.8 6.4 12.8 60.8 69.6 64h4.8c53.6 0 66.4-61.6 66.4-64.8 2.4-12 12.8-20.8 25.6-20.8 1.6 0 3.2 0 5.6 0.8 6.4 1.6 12.8 5.6 16.8 11.2s5.6 12.8 4 19.2c-8.8 36-43.2 105.6-120 105.6z m-453.6-144c-24 0-43.2-7.2-55.2-20.8-10.4-12-13.6-28-12.8-38.4V784c-3.2-18.4 4-61.6 84-136 78.4-72.8 127.2-271.2 127.2-413.6C228.8 69.6 461.6 48.8 471.2 48h4.8V28C476 16 485.6 6.4 497.6 6.4h21.6c12 0 21.6 9.6 21.6 21.6V48h9.6c10.4 0.8 244.8 20 244.8 185.6 0 140.8 52.8 340.8 132 413.6 80 74.4 80 115.2 79.2 138.4v27.2c0.8 14.4-0.8 28-8.8 38.4-11.2 14.4-28.8 22.4-53.6 22.4H84.8z m-15.2-55.2c0.8 0.8 5.6 3.2 15.2 3.2h868.8l1.6-44.8v-2.4c0-5.6-4.8-32.8-64-87.2-92-86.4-148.8-302.4-148.8-452.8 0-115.2-192.8-133.6-194.4-133.6h-74.4c-20 2.4-192.8 23.2-192.8 133.6 0 132-44.8 360-143.2 452-60.8 56-67.2 84.8-68 90.4l0.8 1.6-0.8 40z" fill=""></path></g></svg>
-                    <span class="ml-3">Stay up to date</span>
-                  </h2>
-                  <p class="mt-2 text-sm text-cyan-600 dark:text-cyan-400">Get notified when I publish something new, and unsubscribe at any time.</p>
-                  <div class="mt-6 flex">
-                    <input placeholder="Email address" aria-label="Email address" required="" class="min-w-0 flex-auto appearance-none rounded-md border border-cyan-900/10 bg-white px-3 py-[calc(theme(spacing.2)-1px)] shadow-md shadow-cyan-800/5 placeholder:text-cyan-400 focus:border-teal-500 focus:outline-none focus:ring-4 focus:ring-teal-500/10 sm:text-sm dark:border-cyan-700 dark:bg-cyan-700/[0.15] dark:text-cyan-200 dark:placeholder:text-cyan-500 dark:focus:border-teal-400 dark:focus:ring-teal-400/10" type="email" fdprocessedid="szngue">
-                    <button class="inline-flex items-center gap-2 justify-center rounded-md py-2 px-3 text-sm outline-offset-2 transition active:transition-none bg-cyan-800 font-semibold text-cyan-100 hover:bg-cyan-700 active:bg-cyan-800 active:text-cyan-100/70 dark:bg-cyan-700 dark:hover:bg-cyan-600 dark:active:bg-cyan-700 dark:active:text-cyan-100/70 ml-4 flex-none" type="submit" fdprocessedid="mt9iq">Join</button>
-                  </div>
-                </form>
               </div>
             </div>
           </div>
@@ -271,10 +180,10 @@ Html;
 @php
     $locale = $content->getLocale();
 
-    $article_detail_content = $content->getPropertyGroup('article_detail_content');
-    $article_detail_content_title = $article_detail_content?->getPropertyData('title')?->getValue($locale);
-    $article_detail_content_content = $article_detail_content?->getPropertyData('content')?->getValue($locale);
-    $article_detail_content_image = collect($article_detail_content?->getPropertyData('image')?->getValue())->first();
+    $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
+    $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
+    $blog_detail_content_content = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
+    $blog_detail_content_image = collect($blog_detail_content?->getPropertyData('image')?->getValue())->first();
 @endphp
 <x-page :content="$content">
   <main class="flex-auto">
@@ -285,15 +194,15 @@ Html;
             <div class="grid grid-cols-1 gap-y-16 lg:grid-cols-2 lg:grid-rows-[auto_1fr] lg:gap-y-12">
                 <div class="lg:pl-20">
                 <div class="max-w-xs px-2.5 lg:max-w-none">
-                    @if ($article_detail_content_image)
-                        <img alt="" loading="lazy" width="800" height="800" decoding="async" data-nimg="1" class="aspect-square rotate-3 rounded-2xl bg-cyan-100 object-cover dark:bg-cyan-800" sizes="(min-width: 1024px) 32rem, 20rem" srcset="{{ $article_detail_content_image->getUrl() }}" style="color: transparent;">
+                    @if ($blog_detail_content_image)
+                        <img alt="" loading="lazy" width="800" height="800" decoding="async" data-nimg="1" class="aspect-square rotate-3 rounded-2xl bg-cyan-100 object-cover dark:bg-cyan-800" sizes="(min-width: 1024px) 32rem, 20rem" srcset="{{ $blog_detail_content_image->getUrl() }}" style="color: transparent;">
                     @endif
                 </div>
                 </div>
                 <div class="lg:order-first lg:row-span-2">
-                <h1 class="text-4xl font-bold tracking-tight text-cyan-800 sm:text-5xl dark:text-cyan-100">{{ $article_detail_content_title }}</h1>
+                <h1 class="text-4xl font-bold tracking-tight text-cyan-800 sm:text-5xl dark:text-cyan-100">{{ $blog_detail_content_title }}</h1>
                 <div class="mt-6 space-y-7 text-base text-cyan-600 dark:text-cyan-400">
-                    <p>{{ $article_detail_content_content }} </p>
+                    <p>{{ $blog_detail_content_content }} </p>
                 </div>
                 </div>
             </div>
@@ -303,7 +212,7 @@ Html;
   </main>
 </x-page>
 Html;
-        $articles = <<<'Html'
+        $blogs = <<<'Html'
 @php
     $locale = $content->getLocale();
 
@@ -311,7 +220,7 @@ Html;
     $general_page_banner_title = $general_page_banner?->getPropertyData('title')?->getValue($locale);
     $general_page_banner_description = $general_page_banner?->getPropertyData('description')?->getValue($locale);
 
-    $articles = $content->getChildren()->paginate(3);
+    $blogs = $content->getChildren()->paginate(3);
 @endphp
 <x-page :content="$content">
     <main class="flex-auto">
@@ -326,30 +235,30 @@ Html;
                 <div class="mt-16 sm:mt-20">
                   <div class="md:border-l md:border-cyan-100 md:pl-6 md:dark:border-cyan-700/40">
                     <div class="flex max-w-3xl flex-col space-y-16">
-                        @foreach ($articles as $item)
+                        @foreach ($blogs as $item)
                             @php
-                                $article_detail_content = $item->getPropertyGroup('article_detail_content');
-                                $article_detail_content_title = $article_detail_content?->getPropertyData('title')?->getValue($locale);
-                                $article_detail_content_content = $article_detail_content?->getPropertyData('content')?->getValue($locale);
+                                $blog_detail_content = $item->getPropertyGroup('blog_detail_content');
+                                $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
+                                $blog_detail_content_content = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
                             @endphp
-                            <article class="md:grid md:grid-cols-4 md:items-baseline">
+                            <blog class="md:grid md:grid-cols-4 md:items-baseline">
                                 <div class="md:col-span-3 group relative flex flex-col items-start">
                                     <h2 class="text-base font-semibold tracking-tight text-cyan-800 dark:text-cyan-100">
                                         <div class="absolute -inset-x-4 -inset-y-6 z-0 scale-95 bg-cyan-50 opacity-0 transition group-hover:scale-100 group-hover:opacity-100 sm:-inset-x-6 sm:rounded-2xl dark:bg-cyan-800/50"></div>
                                         <a href="{{$item->getUrl($locale)}}">
                                             <span class="absolute -inset-x-4 -inset-y-6 z-20 sm:-inset-x-6 sm:rounded-2xl"></span>
-                                            <span class="relative z-10">{{$article_detail_content_title}}</span>
+                                            <span class="relative z-10">{{$blog_detail_content_title}}</span>
                                         </a>
                                     </h2>
-                                    <div class="relative z-10 mt-2 text-sm text-cyan-600 dark:text-cyan-400">{{$article_detail_content_content}}</div>
-                                    <div aria-hidden="true" class="relative z-10 mt-4 flex items-center text-sm font-medium text-cyan-500">Read article <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="ml-1 h-4 w-4 stroke-current">
+                                    <div class="relative z-10 mt-2 text-sm text-cyan-600 dark:text-cyan-400">{{$blog_detail_content_content}}</div>
+                                    <div aria-hidden="true" class="relative z-10 mt-4 flex items-center text-sm font-medium text-cyan-500">Read blog <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" class="ml-1 h-4 w-4 stroke-current">
                                         <path d="M6.75 5.75 9.25 8l-2.5 2.25" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
                                         </svg>
                                     </div>
                                 </div>
-                            </article>
+                            </blog>
                         @endforeach
-                        {{ $articles }}
+                        {{ $blogs }}
                     </div>
                   </div>
                 </div>
@@ -360,13 +269,13 @@ Html;
       </main>
 </x-page>   
 Html;
-        $article = <<<'Html'
+        $blog = <<<'Html'
 @php
     $locale = $content->getLocale();
 
-    $article_detail_content = $content->getPropertyGroup('article_detail_content');
-    $article_detail_content_title = $article_detail_content?->getPropertyData('title')?->getValue($locale);
-    $article_detail_content_description = $article_detail_content?->getPropertyData('content')?->getValue($locale);
+    $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
+    $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
+    $blog_detail_content_description = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
 @endphp
 <x-page :content="$content">
     <main class="flex-auto">
@@ -376,17 +285,17 @@ Html;
               <div class="mx-auto max-w-2xl lg:max-w-5xl">
                 <div class="xl:relative">
                   <div class="mx-auto max-w-2xl">
-                    <button type="button" aria-label="Go back to articles" class="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-cyan-200 ring-1 ring-cyan-100 transition lg:absolute lg:-left-5 lg:-mt-2 lg:mb-0 xl:-top-1.5 xl:left-0 xl:mt-0 dark:border dark:border-cyan-700/50 dark:bg-cyan-800 dark:ring-0 dark:ring-white dark:hover:border-cyan-700 dark:hover:ring-white" fdprocessedid="saltk" onclick="history.back()">
+                    <button type="button" aria-label="Go back to blogs" class="group mb-8 flex h-10 w-10 items-center justify-center rounded-full bg-white shadow-md shadow-cyan-200 ring-1 ring-cyan-100 transition lg:absolute lg:-left-5 lg:-mt-2 lg:mb-0 xl:-top-1.5 xl:left-0 xl:mt-0 dark:border dark:border-cyan-700/50 dark:bg-cyan-800 dark:ring-0 dark:ring-white dark:hover:border-cyan-700 dark:hover:ring-white" fdprocessedid="saltk" onclick="history.back()">
                       <svg viewBox="0 0 1024 1024" fill="currentColor" class="icon text-cyan-400" version="1.1" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M669.6 849.6c8.8 8 22.4 7.2 30.4-1.6s7.2-22.4-1.6-30.4l-309.6-280c-8-7.2-8-17.6 0-24.8l309.6-270.4c8.8-8 9.6-21.6 2.4-30.4-8-8.8-21.6-9.6-30.4-2.4L360.8 480.8c-27.2 24-28 64-0.8 88.8l309.6 280z" fill=""></path></g></svg>
                     </button>
-                    <article>
+                    <blog>
                       <header class="flex flex-col">
-                        <h1 class="mt-6 text-4xl font-bold tracking-tight text-cyan-800 sm:text-5xl dark:text-cyan-100">{{$article_detail_content_title}}</h1>
+                        <h1 class="mt-6 text-4xl font-bold tracking-tight text-cyan-800 sm:text-5xl dark:text-cyan-100">{{$blog_detail_content_title}}</h1>
                       </header>
                       <div class="mt-8 text-cyan-800 dark:text-cyan-100">
-                        <p>{{$article_detail_content_description}}</p>
+                        <p>{{$blog_detail_content_description}}</p>
                       </div>
-                    </article>
+                    </blog>
                   </div>
                 </div>
               </div>
@@ -396,13 +305,25 @@ Html;
       </main>
 </x-page>   
 Html;
+        $blank_page = <<<'Html'
+<x-page :content="$content">
+
+</x-page>   
+Html;
+        $redirect_page = <<<'Html'
+<x-page :content="$content">
+    Redirecting...
+</x-page>   
+Html;
 
         $items = [
             'home' => $home,
             'about' => $about,
-            'article' => $article,
-            'articles' => $articles,
+            'blog' => $blog,
+            'blogs' => $blogs,
             'projects' => $projects,
+            'blank-page' => $blank_page,
+            'redirect-page' => $redirect_page,
         ];
         foreach ($items as $slug => $content) {
             $this->importDataService->addTemplate($slug, new ImportDataEntities\Template($slug, $content));
@@ -420,9 +341,9 @@ Html;
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('recently_articles'),
+            'data' => new ImportDataEntities\FieldGroup('recently_blogs'),
             'fields' => [
-                new ImportDataEntities\Field('articles', 'contentPicker', ['documentType' => 'article', 'multiple' => true]),
+                new ImportDataEntities\Field('blogs', 'contentPicker', ['documentType' => 'blog', 'multiple' => true]),
             ],
         ];
         $items[] = [
@@ -442,7 +363,7 @@ Html;
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('article_detail_content'),
+            'data' => new ImportDataEntities\FieldGroup('blog_detail_content'),
             'fields' => [
                 new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
                 new ImportDataEntities\Field('content', 'translate', ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
@@ -454,10 +375,30 @@ Html;
             'fields' => [
                 new ImportDataEntities\Field('projects', 'repeater', [
                     'fields' => [
-                        new ImportDataEntities\Field('translate', 'title', ['field' => 'text']),
-                        new ImportDataEntities\Field('translate', 'description', ['field' => 'textArea']),
-                        new ImportDataEntities\Field('link', 'text'),
-                        new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                        [
+                            'field' => 'translate',
+                            'name' => 'title',
+                            'fieldConfig' => [
+                                'field' => 'text',
+                            ],
+                        ],
+                        [
+                            'field' => 'translate',
+                            'name' => 'description',
+                            'fieldConfig' => [
+                                'field' => 'textArea',
+                            ],
+                        ],
+                        [
+                            'field' => 'text',
+                            'name' => 'link',
+                            'fieldConfig' => [],
+                        ],
+                        [
+                            'field' => 'mediaPicker',
+                            'name' => 'image',
+                            'fieldConfig' => ['mimeTypes' => ['image'], 'multiple' => false],
+                        ],
                     ],
                 ]),
             ],
@@ -485,8 +426,6 @@ Html;
             'web',
             'Homepage',
             [
-                'image_slider',
-                'recently_articles',
                 'social_media',
             ],
             ['home'],
@@ -499,7 +438,7 @@ Html;
             'web',
             'About',
             [
-                'article_detail_content',
+                'blog_detail_content',
             ],
             ['about'],
             'about',
@@ -507,28 +446,28 @@ Html;
             'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'articles',
+            'blogs',
             true,
             'web',
-            'Articles',
+            'Blogs',
             [],
-            ['articles'],
-            'articles',
+            ['blogs'],
+            'blogs',
             ['general-page-banner'],
             'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'article',
+            'blog',
             false,
             'web',
-            'Article',
+            'Blog',
             [
-                'article_detail_content',
+                'blog_detail_content',
             ],
-            ['article'],
-            'article',
+            ['blog'],
+            'blog',
             [],
-            'articles',
+            'blogs',
         );
         $items[] = new ImportDataEntities\DocumentType(
             'projects',
@@ -541,6 +480,17 @@ Html;
             ['projects'],
             'projects',
             ['general-page-banner'],
+            'homepage',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            'blank_page',
+            false,
+            'web',
+            'Blank Page',
+            [],
+            ['blank-page', 'redirect-page'],
+            'blank-page',
+            [],
             'homepage',
         );
         foreach ($items as $item) {
@@ -556,10 +506,6 @@ Html;
             ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
             'homepage',
             [
-                'image_slider' => [
-                    'image' => collect(array_rand($this->mediaAssets, 5))->map(fn ($i) => $this->mediaAssets[$i]?->getKey())->filter()->all(),
-                ],
-                'recently_articles' => [],
                 'social_media' => [
                     'github' => 'https://github.com',
                     'twitter' => 'https://twitter.com',
@@ -587,7 +533,7 @@ Html;
             ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
             'about',
             [
-                'article_detail_content' => [
+                'blog_detail_content' => [
                     'title' => [
                         'en' => 'About Us',
                         'zh_Hant' => '關於我們',
@@ -607,10 +553,23 @@ Html;
             'home',
         );
         $items[] = new ImportDataEntities\Content(
-            'articles',
-            ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
-            'articles',
-            [],
+            'blogs',
+            ['en' => 'Blogs', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
+            'blogs',
+            [
+                'general_page_banner' => [
+                    'title' => [
+                        'en' => 'Blogs',
+                        'zh_Hant' => '文章',
+                        'zh_Hans' => '文章',
+                    ],
+                    'description' => [
+                        'en' => 'List of blogs',
+                        'zh_Hant' => '文章列表',
+                        'zh_Hans' => '文章列表',
+                    ],
+                ]
+            ],
             'publish',
             [],
             [],
@@ -620,13 +579,13 @@ Html;
         foreach (range(1, 5) as $i) {
 
             $items[] = new ImportDataEntities\Content(
-                "article-$i",
-                ['en' => "Article $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
-                'article',
+                "blog-$i",
+                ['en' => "Blog $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
+                'blog',
                 [
-                    'article_detail_content' => [
+                    'blog_detail_content' => [
                         'title' => [
-                            'en' => "Article $i",
+                            'en' => "Blog $i",
                             'zh_Hant' => "文章 $i",
                             'zh_Hans' => "文章 $i",
                         ],
@@ -641,7 +600,7 @@ Html;
                 'publish',
                 [],
                 [],
-                'home/articles',
+                'home/blogs',
             );
         }
 
@@ -663,48 +622,50 @@ Html;
                     ],
                 ],
                 'projects' => [
-                    [
-                        'title' => [
-                            'en' => 'Project 1',
-                            'zh_Hant' => '項目 1',
-                            'zh_Hans' => '项目 1',
+                    'projects' => [
+                        [
+                            'title' => [
+                                'en' => 'Project 1',
+                                'zh_Hant' => '項目 1',
+                                'zh_Hans' => '项目 1',
+                            ],
+                            'description' => [
+                                'en' => 'Description of project 1',
+                                'zh_Hant' => '項目 1 的描述',
+                                'zh_Hans' => '项目 1 的描述',
+                            ],
+                            'link' => 'https://project1.com',
+                            'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
-                        'description' => [
-                            'en' => 'Description of project 1',
-                            'zh_Hant' => '項目 1 的描述',
-                            'zh_Hans' => '项目 1 的描述',
+                        [
+                            'title' => [
+                                'en' => 'Project 2',
+                                'zh_Hant' => '項目 2',
+                                'zh_Hans' => '项目 2',
+                            ],
+                            'description' => [
+                                'en' => 'Description of project 2',
+                                'zh_Hant' => '項目 2 的描述',
+                                'zh_Hans' => '项目 2 的描述',
+                            ],
+                            'link' => 'https://project2.com',
+                            'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
-                        'link' => 'https://project1.com',
-                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                    ],
-                    [
-                        'title' => [
-                            'en' => 'Project 2',
-                            'zh_Hant' => '項目 2',
-                            'zh_Hans' => '项目 2',
+                        [
+                            'title' => [
+                                'en' => 'Project 3',
+                                'zh_Hant' => '項目 3',
+                                'zh_Hans' => '项目 3',
+                            ],
+                            'description' => [
+                                'en' => 'Description of project 3',
+                                'zh_Hant' => '項目 3 的描述',
+                                'zh_Hans' => '项目 3 的描述',
+                            ],
+                            'link' => 'https://project3.com',
+                            'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
-                        'description' => [
-                            'en' => 'Description of project 2',
-                            'zh_Hant' => '項目 2 的描述',
-                            'zh_Hans' => '项目 2 的描述',
-                        ],
-                        'link' => 'https://project2.com',
-                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                    ],
-                    [
-                        'title' => [
-                            'en' => 'Project 3',
-                            'zh_Hant' => '項目 3',
-                            'zh_Hans' => '项目 3',
-                        ],
-                        'description' => [
-                            'en' => 'Description of project 3',
-                            'zh_Hant' => '項目 3 的描述',
-                            'zh_Hans' => '项目 3 的描述',
-                        ],
-                        'link' => 'https://project3.com',
-                        'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
-                    ],
+                    ]
                 ],
             ],
             'publish',
@@ -716,12 +677,13 @@ Html;
         $items[] = new ImportDataEntities\Content(
             'redirect-page',
             ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
-            'projects',
+            'blank_page',
             [],
             'publish',
             [],
             ['redirect_path' => '/'],
             'home',
+            'redirect-page',
         );
 
         foreach ($items as $item) {
@@ -738,13 +700,13 @@ Html;
                 'type' => 'content',
             ],
             [
-                'title' => ['en' => 'Articles', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
-                'contentSlugPath' => 'home/articles',
+                'title' => ['en' => 'Blogs', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
+                'contentSlugPath' => 'home/blogs',
                 'type' => 'content',
             ],
             [
                 'title' => ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
-                'conten' => 'home/projects',
+                'contentSlugPath' => 'home/projects',
                 'type' => 'content',
             ],
             [
@@ -766,10 +728,8 @@ Html;
 
     protected function makeSampleMedia(): void
     {
-        $this->comment("\nCreate sample media ...");
-
         $model = InspireCmsConfig::getMediaAssetModelClass();
-        $mediaModel = Media::class;
+        $mediaModel = config('media-library.media_model', \Spatie\MediaLibrary\MediaCollections\Models\Media::class);
 
         if (! $this->isTableExists($model) || ! $this->isTableExists($mediaModel)) {
             return;
@@ -790,9 +750,7 @@ Html;
 
         });
 
-        $this->withCustomProgressBar($mediaData, function ($url, $key, $progress) use ($model) {
-
-            $progress->setMessage("Creating media: '$url'");
+        foreach ($mediaData as $url) {
 
             /** @var MediaAsset */
             $mediaAsset = $model::create([
@@ -800,17 +758,15 @@ Html;
                 'is_folder' => false,
             ]);
             $mediaAsset->addMediaFromUrl($url)->toMediaCollection();
-
+    
             $this->mediaAssets[] = $mediaAsset;
+        }
 
-        }, 'Creating media ...', 'Media created.');
 
     }
 
     protected function makeSampleLanguages(): void
     {
-        $this->comment("\nCreate sample languages ...");
-
         $model = InspireCmsConfig::getLanguageModelClass();
 
         if (! $this->isTableExists($model)) {
@@ -820,59 +776,33 @@ Html;
         $languagesData = [
             'en' => [
                 'name' => 'English',
-                'is_default' => false,
+                'is_default' => true,
             ],
             'zh_Hant' => [
                 'name' => 'Traditional Chinese',
-                'route_pattern' => 'hk',
-                'is_default' => true,
+                'is_default' => false,
             ],
             'zh_Hans' => [
                 'name' => 'Simplified Chinese',
-                'route_pattern' => 'cn',
                 'is_default' => false,
             ],
         ];
 
-        $this->withCustomProgressBar($languagesData, function ($data, $code, $progress) use ($model) {
-
-            $progress->setMessage("Creating language: '$code'");
+        foreach ($languagesData as $code => $data) {
 
             $this->language[$code] = $model::firstOrCreate(['code' => $code], $data);
 
-        }, 'Creating languages ...', 'Languages created.');
+        }
 
     }
 
     protected function isTableExists(string $tableName): bool
     {
         if (! ModelHelper::isTableExists($tableName)) {
-            $this->error("Table $tableName does not exist, please run migration first.");
 
             return false;
         }
 
         return true;
-    }
-
-    protected function withCustomProgressBar($data, Closure $callback, $startMessage = 'Starting ...', $finishedMessage = 'Finished.'): void
-    {
-        $total = count($data);
-
-        $progress = $this->output->createProgressBar($total);
-
-        $progress->setFormat('%current%/%max% [%bar%] %percent:3s%% %message%');
-
-        $progress->setMessage($startMessage);
-
-        foreach ($data as $key => $value) {
-
-            $callback($value, $key, $progress);
-
-            $progress->advance();
-        }
-
-        $progress->setMessage($finishedMessage);
-        $progress->finish();
     }
 }

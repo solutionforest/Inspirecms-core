@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Route;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
-use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
+use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 
@@ -104,13 +104,13 @@ class InspireCmsManager
 
         Route::group(['middleware' => InspireCmsConfig::get('routes.middleware')], function () {
 
-            $contentPathGenerator = ContentPathGeneratorFactory::create();
+            $contentUrlGenerator = ContentUrlGeneratorFactory::create();
             $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;
 
             Route::name('inspirecms.content.index')
                 ->get('/', $controller);
-            Route::name($contentPathGenerator->getRouteName())
-                ->get($contentPathGenerator->getPathPattern(), $controller)
+            Route::name($contentUrlGenerator->getRouteName())
+                ->get($contentUrlGenerator->getPathPattern(), $controller)
                 ->where('slug', '.*');
         });
     }
@@ -194,7 +194,7 @@ class InspireCmsManager
     //region Helpers
     private function getSerializedLanguagesForCache(): array
     {
-        $attributes = ['code', 'name', 'is_default', 'route_pattern'];
+        $attributes = ['id', 'code', 'name', 'is_default'];
 
         $alias = $this->aliasModelFields($attributes);
 

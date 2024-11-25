@@ -73,6 +73,7 @@ return [
             \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
 
             \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
+            \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
         ],
     ],
 
@@ -92,6 +93,7 @@ return [
             'content' => Models\Content::class,
             'content_version' => Models\ContentVersion::class,
             'content_web_setting' => Models\ContentWebSetting::class,
+            'content_path' => Models\ContentPath::class,
             'document_type' => Models\DocumentType::class,
             'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
             'language' => Models\Language::class,
@@ -109,7 +111,6 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
-        'scout' => true,
     ],
 
     'permissions' => [
@@ -130,21 +131,9 @@ return [
         'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
     ],
 
-    'indexes' => [
-        'content' => [
-            'enabled' => true,
-            'index_name' => 'content_index',
-            'index_settings' => [
-                'filterableAttributes' => ['full_path', 'is_web', '__soft_deleted'],
-                'sortableAttributes' => ['level', 'published_at'],
-            ],
-        ],
-    ],
-
     'routes' => [
         'middleware' => [
             'web',
-            \SolutionForest\InspireCms\Http\Middlewares\ContentLocaleMiddleware::class,
         ],
         'sitemap' => [
             'file_path' => public_path('sitemap.xml'),

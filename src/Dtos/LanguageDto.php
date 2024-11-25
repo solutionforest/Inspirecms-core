@@ -10,14 +10,14 @@ use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 class LanguageDto extends BaseDto
 {
     /**
-     * @var string
+     * @var string|int
      */
-    public $code;
+    public $id;
 
     /**
      * @var string
      */
-    public $locale;
+    public $code;
 
     /**
      * @var string
@@ -39,12 +39,6 @@ class LanguageDto extends BaseDto
             $parameters['isDefault'] = (bool) $parameters['is_default'];
         } elseif (! isset($parameters['isDefault'])) {
             $parameters['isDefault'] = false;
-        }
-
-        if (isset($parameters['route_pattern'])) {
-            $parameters['locale'] = strtolower($parameters['route_pattern']);
-        } else {
-            $parameters['locale'] = strtolower($parameters['code']);
         }
 
         return parent::fromArray($parameters);

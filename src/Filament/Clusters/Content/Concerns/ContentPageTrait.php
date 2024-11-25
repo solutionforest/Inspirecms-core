@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseCont
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
@@ -90,6 +91,9 @@ trait ContentPageTrait
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');
                     $item['fallbackLabel'] = $record->getTranslation('title', $record->getFallbackLocale());
+                    if (blank($item['fallbackLabel'])) {
+                        $item['fallbackLabel'] = collect($record->getTranslations('title'))->filter()->first();
+                    }
                 }
 
                 $item['documentTypeKey'] = $record->document_type_id;
@@ -100,6 +104,7 @@ trait ContentPageTrait
                 CreateContentItemAction::make(),
                 ActionGroup::make([
                     ReorderContentItemAction::make('reorder_content_item'),
+                    SetDefaultContentPageAction::make(),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
@@ -179,6 +184,7 @@ trait ContentPageTrait
 
                 break;
             case $action instanceof DeleteContentItemAction:
+            case $action instanceof SetDefaultContentPageAction:
 
                 $action
                     ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))

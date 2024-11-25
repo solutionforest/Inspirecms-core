@@ -41,12 +41,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
-                    ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('solution-forest/inspirecms')
                     ->startWith(function (InstallCommand $command) {
                         $command->call(Commands\InstallRequirePacakges::class);
                     })
                     ->endWith(function (InstallCommand $command) {
+                        $command->call('migrate');
                         $command->call(Commands\PublishPanel::class);
                         $command->call(Commands\ImportDefaultData::class);
                     });
@@ -183,9 +183,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
-            Commands\ImportSampleData::class,
             Commands\CleanupContentVersion::class,
-            Commands\RefreshIndexes::class,
         ];
     }
 
@@ -252,18 +250,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
-
-        if (InspireCmsConfig::get('override_plugins.scout', true)) {
-
-            $indexSettings = config('scout.meilisearch.index-settings', []);
-
-            if (InspireCmsConfig::get('indexes.content.enabled', true)) {
-                $indexSettings[InspireCmsConfig::getContentModelClass()] = InspireCmsConfig::get('indexes.content.index_settings', []);
-            }
-
-            config()->set('scout.meilisearch.index-settings', $indexSettings);
-            config()->set('scout.soft_delete', true);
-        }
     }
 
     protected function registerAuthGuard(): void
@@ -303,8 +289,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         //endregion User Auth Activity
 
         //region Content
-        Event::listen(Events\Content\DispatchIndexModel::class, Listeners\Content\ProcessRefreshIndex::class);
-        Event::listen(\Spatie\EloquentSortable\EloquentModelSortedEvent::class, Listeners\Content\ProcessRefreshIndex::class);
+        Event::listen(
+            Events\Content\UpdatePath::class,
+            [Listeners\Content\ProcessContentPath::class, 'handleUpsert']
+        );
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
         Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
         //endregion Content

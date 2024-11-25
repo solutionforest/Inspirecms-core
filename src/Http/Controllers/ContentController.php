@@ -4,9 +4,7 @@ namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
-use SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGeneratorInterface;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
 use SolutionForest\InspireCms\Services\PageServiceInterface;
 
@@ -14,34 +12,26 @@ class ContentController extends Controller
 {
     protected PageServiceInterface $pageService;
 
-    protected ContentPathGeneratorInterface $pathGenerator;
-
     protected ContentUrlGeneratorInterface $urlGenerator;
 
     public function __construct(PageServiceInterface $pageService)
     {
         $this->pageService = $pageService;
 
-        $this->pathGenerator = ContentPathGeneratorFactory::create();
         $this->urlGenerator = ContentUrlGeneratorFactory::create();
     }
 
     public function __invoke()
     {
         $locale = $this->urlGenerator->getLocaleFromRequest(request());
-        $slug = $this->pathGenerator->getSlugFromRequest(request(), $locale);
+        $slug = $this->urlGenerator->getSlugFromRequest(request(), $locale);
 
         // Redirect to the localized URL if needed
         if (blank($locale)) {
             return $this->redirectToLocalizedUrl($slug ?? '', $this->getDefaultLocale());
         }
-
-        // Is index page
-        if (blank($slug)) {
-            $slug = '/';
-        }
-
-        [$contentDto, $view] = $this->pageService->findPublishedContentAndView($slug, $locale);
+        
+        [$contentDto, $view] = $this->pageService->findContentAndView($slug, $locale);
 
         if (is_null($contentDto) || is_null($view)) {
             abort(404);
@@ -80,6 +70,6 @@ class ContentController extends Controller
 
     protected function getDefaultLocale(): string
     {
-        return InspireCms::getFallbackLanguage()?->locale ?? app()->getLocale() ?? '';
+        return InspireCms::getFallbackLanguage()?->code ?? app()->getLocale();
     }
 }

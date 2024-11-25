@@ -5,30 +5,24 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Services\ImportDataService;
-use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
-use SolutionForest\InspireCms\ImportData\Entities;
 use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
 class ImportDefaultData extends Command
 {
-    protected ImportDataService $importDataService;
-
-    public function handle(ImportDataServiceInterface $importDataService): int
+    public function handle(): int
     {
-        $this->importDataService = $importDataService;
-
         $this->publishRotueDefinition();
 
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
-        $this->importDocumentType();
+        $this->importSampleData();
 
         return static::SUCCESS;
     }
@@ -78,16 +72,20 @@ class ImportDefaultData extends Command
 
     }
 
-    protected function importDocumentType(): void
+    protected function importSampleData(): void
     {
-        $this->components->task('Import document type data', function () {
-            $this->importDataService->addDocumentType(
-                'homepage',
-                new Entities\DocumentType(slug: 'homepage', title: 'Homepage', childrenAsTable: false, category: 'web')
-            );
-            $this->importDataService->run();
-            $this->importDataService->reset();
-        });
+        $this->components->info('Import sample data');
+
+        $this->call('vendor:publish', [
+            '--tag' => 'inspirecms-sample-views',
+            '--force' => true,
+        ]);
+
+        $this->call('db:seed', [
+            '--class' => SampleSeeder::class,
+        ]);
+
+        $this->components->info('Sample data imported successfully.');
     }
 
     protected function publishRotueDefinition(): void

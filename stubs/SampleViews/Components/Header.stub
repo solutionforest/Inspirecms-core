@@ -1,8 +1,8 @@
 @php
-    $locale = request()->getLocale();
+    $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);
     $allLocales = collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(function ($item) {
-        return [$item->locale => $item->name];
+        return [$item->code => $item->name];
     })->all();
 @endphp
 <!-- Header -->

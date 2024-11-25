@@ -173,4 +173,21 @@ return [
         'permission_display_name' => 'Reorder content',
 
     ],
+
+    'set_default_content_page' => [
+
+        'label' => 'Set default content page',
+
+        'permission_display_name' => 'Set default content page',
+
+        'notifications' => [
+
+            'success' => [
+
+                'title' => 'Set default content page successful',
+
+            ],
+        ],
+        
+    ],
 ];

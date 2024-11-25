@@ -15,11 +15,6 @@ class Language extends BaseModel implements LanguageContract
         return $this->code;
     }
 
-    public function routePattern(): string
-    {
-        return $this->route_pattern;
-    }
-
     public function getLabel(): string
     {
         return $this->name;

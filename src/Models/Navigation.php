@@ -48,7 +48,7 @@ class Navigation extends BaseModel implements NavigationContract
             case NavigationTypeEnum::Group->value:
                 return null;
             case NavigationTypeEnum::Content->value:
-                $locale = $locale instanceof LanguageDto ? $locale->locale : $locale;
+                $locale = $locale instanceof LanguageDto ? $locale->code : $locale;
 
                 return $this->content?->getUrl($locale);
             default:

@@ -141,6 +141,7 @@ class TemplatesRelationManager extends RelationManager
                 if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
                     $this->getOwnerRecord()->setAsDefaultTemplate($record);
                 }
+                $this->dispatch('refreshAlerts');
             });
     }
 

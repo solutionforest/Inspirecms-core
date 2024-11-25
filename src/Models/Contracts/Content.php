@@ -6,12 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
+use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\IndexableModel;
 
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasRecursiveRelationshipsInterface, IndexableModel
+interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasRecursiveRelationshipsInterface
 {
     /**
      * Return the document type relation.
@@ -32,6 +32,11 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
 
     public function navigation(): HasOne;
 
+    /**
+     * @return HasOne
+     */
+    public function path();
+
     public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?DocumentType $documentType = null);
 
     /**
@@ -42,21 +47,20 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     public function getSegments(): array;
 
     /**
-     * Determine if the content is the first and root element.
+     * Generate the full slug for the content.
      *
-     * @return bool True if the content is the first and root element, false otherwise.
+     * @return string The generated full slug.
      */
-    public function isFirstAndRoot(): bool;
-
-    /**
-     * Generate a full slug base on parent.
-     */
-    public function getFullSlug(?string $locale = null): string;
+    public function generateSlugPath();
 
     /**
      * Get the full URL of the content.
+     * 
+     * @param LanguageDto|string|null $locale
+     * 
+     * @return string
      */
-    public function getUrl(?string $locale = null): string;
+    public function getUrl($locale = null);
 
     /**
      * Determine if the content is a web page.

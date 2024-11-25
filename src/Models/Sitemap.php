@@ -33,7 +33,7 @@ class Sitemap extends BaseModel implements SitemapContract
     public function getUrl(?string $locale = null): string
     {
         if ($this->model && $this->model instanceof Contracts\Content) {
-            return $this->model->getUrl($locale);
+            return $this->model->getUrl($locale) ?? '';
         }
 
         return $this->url ?? '';
@@ -83,8 +83,7 @@ class Sitemap extends BaseModel implements SitemapContract
         $urls = collect($languages)->map(function ($language) {
             return [
                 'code' => $language->code,
-                'locale' => $language->locale,
-                'url' => $this->getUrl($language->locale),
+                'url' => $this->getUrl($language->code),
             ];
         })->values()->all();
 

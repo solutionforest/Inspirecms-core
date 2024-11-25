@@ -37,6 +37,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Content model');
     }
 
+    public static function getContentPathTableName(): string
+    {
+        return app(static::getContentPathModelClass())->getTable();
+    }
+
+    public static function getContentPathModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\ContentPath::class, Models\ContentPath::class);
+
+        return self::ensureClassExists($class, 'ContentPath model');
+    }
+
     public static function getFieldGroupableTableName(): string
     {
         return app(static::getFieldGroupableModelClass())->getTable();

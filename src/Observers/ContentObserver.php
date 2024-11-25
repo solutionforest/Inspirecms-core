@@ -3,12 +3,30 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Events\Content\ChangeStatus;
+use SolutionForest\InspireCms\Events\Content\UpdatePath;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentObserver
 {
+    public function creating(Content | Model $model)
+    {
+        // Set is default if the first created
+        $isDefaultCount = $model->query()->withoutGlobalScope(new SoftDeletingScope)->where('is_default', true)->count();
+
+        if ($isDefaultCount <= 0) {
+            $model->is_default = true;
+        }
+    }
+
+    public function created(Content | Model $model)
+    {
+        $this->createOrUpdateDefaultPath($model);
+    }
+
     /**
      * Handle "saving" event.
      *
@@ -20,23 +38,41 @@ class ContentObserver
         $this->clearCached();
     }
 
+    public function updating(Content | Model $model)
+    {
+        // Set "is_default" of other content as false if this model is changing to "default"
+        if ($model->isDirty(['is_default']) && $model->is_default) {
+            $original = $model->newQuery()->where('is_default', true)->whereKeyNot($model->getKey())->get();
+            $original->each(function ($item) {
+                $item->is_default = false;
+                $item->save();
+            });
+        }
+    }
+
     /**
      * Handle "updated" event.
      *
-     * @param  Content|Model  $model  The model instance being saving.
+     * @param  Content|Model  $model  The model instance being updated.
      * @return void
      */
     public function updated(Content | Model $model)
     {
-        $diff = [$model->getOriginal('status'), $model->getAttribute('status')];
+        $statusDiff = [$model->getOriginal('status'), $model->getAttribute('status')];
 
-        if ($diff[0] !== $diff[1]) {
+        if ($statusDiff[0] !== $statusDiff[1]) {
 
-            $oldStatus = inspirecms_content_statuses()->getOption($diff[0]);
-            $status = inspirecms_content_statuses()->getOption($diff[1]);
+            $oldStatus = inspirecms_content_statuses()->getOption($statusDiff[0]);
+            $status = inspirecms_content_statuses()->getOption($statusDiff[1]);
 
             // Unload the relations to prevent large amounts of unnecessary data from being serialized.
             event(new ChangeStatus($model->withoutRelations(), $oldStatus, $status));
+        }
+
+        $slugDiff = [$model->getOriginal('slug'), $model->getAttribute('slug')];
+        $isDefaultDiff = [$model->getOriginal('is_default'), $model->getAttribute('is_default')];
+        if ($slugDiff[0] !== $slugDiff[1] || $isDefaultDiff[0] !== $isDefaultDiff[1]) {
+            $this->createOrUpdateDefaultPath($model);
         }
     }
 
@@ -54,17 +90,6 @@ class ContentObserver
         $model->navigation?->setDisable();
     }
 
-    /**deleted
-     * Handle "deleting" event.
-     *
-     * @param  Content|Model  $model  The model instance being deleted.
-     * @return void
-     */
-    public function deleted(Content | Model $model)
-    {
-        $this->dispatchRefreshIndex($model);
-    }
-
     /**
      * Handle "forceDeleting" event.
      *
@@ -77,6 +102,7 @@ class ContentObserver
         $model->sitemap()->delete();
 
         $model->navigation()->delete();
+
         $this->clearCached(); // Since the navigation is deleted, we need to clear the cache.
     }
 
@@ -92,19 +118,6 @@ class ContentObserver
 
         $model->sitemap?->setEnable();
         $model->navigation?->setEnable();
-
-        $this->dispatchRefreshIndex($model);
-    }
-
-    /**
-     * Handle "restored" event.
-     *
-     * @param  Content|Model  $model  The model instance being restored.
-     * @return void
-     */
-    public function restored(Content | Model $model)
-    {
-        $this->dispatchRefreshIndex($model);
     }
 
     protected function clearCached()
@@ -112,8 +125,16 @@ class ContentObserver
         InspireCms::forgetCachedNavigation();
     }
 
-    protected function dispatchRefreshIndex(Content | Model $model)
+    protected function createOrUpdateDefaultPath(Content | Model $model)
     {
-        event(new \SolutionForest\InspireCms\Events\Content\DispatchIndexModel(get_class($model)));
+        event(new UpdatePath($model->withoutRelations()));
+
+        if ($model->is_default) {
+            return;
+        }
+
+        $model->children->each(function ($child) {
+            $this->createOrUpdateDefaultPath($child);
+        });
     }
 }
