@@ -106,7 +106,7 @@ class Content extends BaseModel implements ContentContract
             // e.g. format: "/" instead of "/home"
             if ($item->is_default) {
                 continue;
-            } 
+            }
 
             $slugs[] = $item->slug;
         }

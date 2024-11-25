@@ -43,7 +43,7 @@ class SampleSeeder extends Seeder
         $this->addSampleTemplates();
 
         $this->importDataService->run();
-        
+
     }
 
     protected function addSampleTemplates(): void
@@ -568,7 +568,7 @@ Html;
                         'zh_Hant' => '文章列表',
                         'zh_Hans' => '文章列表',
                     ],
-                ]
+                ],
             ],
             'publish',
             [],
@@ -665,7 +665,7 @@ Html;
                             'link' => 'https://project3.com',
                             'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                         ],
-                    ]
+                    ],
                 ],
             ],
             'publish',
@@ -758,10 +758,9 @@ Html;
                 'is_folder' => false,
             ]);
             $mediaAsset->addMediaFromUrl($url)->toMediaCollection();
-    
+
             $this->mediaAssets[] = $mediaAsset;
         }
-
 
     }
 

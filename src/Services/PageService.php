@@ -2,9 +2,6 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Facades\InspireCms;
-
 class PageService implements PageServiceInterface
 {
     public function __construct(

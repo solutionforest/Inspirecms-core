@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Events\Content\ChangeStatus;
 use SolutionForest\InspireCms\Events\Content\UpdatePath;
 use SolutionForest\InspireCms\Facades\InspireCms;

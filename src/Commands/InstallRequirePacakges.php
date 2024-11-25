@@ -29,19 +29,19 @@ class InstallRequirePacakges extends Command
                 '--provider' => 'SolutionForest\\FilamentFieldGroup\\FilamentFieldGroupServiceProvider',
                 '--tag' => 'filament-field-group-migrations',
             ]);
-            
+
         });
     }
 
     protected function installSpatieLaravelPermissionPackage()
     {
         $this->components->task('Install Spatie\\LaravelPermission package', function () {
-            
+
             // Publish Spatie\\LaravelPermission package - migration
             Artisan::call('vendor:publish', [
                 '--provider' => 'Spatie\\Permission\\PermissionServiceProvider',
             ]);
-            
+
         });
     }
 
@@ -69,7 +69,7 @@ class InstallRequirePacakges extends Command
     {
         $this->components->task('Implement notification data table', function () {
             $isLaravel11OrHigher = version_compare(App::version(), '11.0', '>=');
-            
+
             if ($isLaravel11OrHigher) {
                 Artisan::call('make:notifications-table');
             } else {

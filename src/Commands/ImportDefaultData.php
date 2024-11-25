@@ -30,13 +30,13 @@ class ImportDefaultData extends Command
     protected function importLanguageData(): void
     {
         $this->components->task('Import language data', function () {
-            
+
             $model = InspireCmsConfig::getLanguageModelClass();
-            
+
             if (! $this->isTableExists($model)) {
                 return;
             }
-            
+
             $model::findOrCreateDefaultLanguage();
         });
     }
@@ -93,7 +93,7 @@ class ImportDefaultData extends Command
         // Copy routes to user's routes/web.php
         $this->components->task('Publish route definition', function () {
             $destination = base_path('routes/web.php');
-            
+
             if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
                 (new Filesystem)->append($destination, $this->cmsRotueDefinition());
             }

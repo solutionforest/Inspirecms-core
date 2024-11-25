@@ -55,9 +55,8 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
 
     /**
      * Get the full URL of the content.
-     * 
-     * @param LanguageDto|string|null $locale
-     * 
+     *
+     * @param  LanguageDto|string|null  $locale
      * @return string
      */
     public function getUrl($locale = null);

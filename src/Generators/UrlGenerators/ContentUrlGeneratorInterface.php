@@ -10,21 +10,21 @@ interface ContentUrlGeneratorInterface
     /**
      * Generates a URL for the given content.
      *
-     * @param Content $content The content for which the URL is being generated.
-     * @param string|null|LanguageDto $locale The locale to use for the URL. If null, the default locale will be used.
+     * @param  Content  $content  The content for which the URL is being generated.
+     * @param  string|null|LanguageDto  $locale  The locale to use for the URL. If null, the default locale will be used.
      * @return ?string The generated URL.
      */
     public function getUrl(Content $content, $locale = null);
-    
+
     /**
      * Generates a localized URL based on the provided slug path and locale.
      *
-     * @param string $slugPath The slug path for the content.
-     * @param string $locale The locale for the URL.
+     * @param  string  $slugPath  The slug path for the content.
+     * @param  string  $locale  The locale for the URL.
      * @return string The localized URL.
      */
     public function getLocalizedUrl($slugPath, $locale);
-    
+
     /**
      * Interface method to retrieve the route name.
      *

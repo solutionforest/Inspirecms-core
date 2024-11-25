@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 class UpdatePath
 {
     use SerializesModels;
-    
+
     /**
      * @var Content
      */
@@ -18,12 +18,12 @@ class UpdatePath
      * @var null|string The slug path, optional. Null to auto-generate.
      */
     public $slugPath;
-    
+
     /**
      * UpdatePath constructor.
      *
-     * @param Content $model The content model instance.
-     * @param string|null $slugPath The slug path, optional. Null to auto-generate.
+     * @param  Content  $model  The content model instance.
+     * @param  string|null  $slugPath  The slug path, optional. Null to auto-generate.
      */
     public function __construct(Content $model, $slugPath = null)
     {

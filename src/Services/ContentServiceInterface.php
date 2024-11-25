@@ -12,7 +12,7 @@ interface ContentServiceInterface
     /**
      * Find a published web page by its ID.
      *
-     * @param string|int $id The ID of the web page to find.
+     * @param  string|int  $id  The ID of the web page to find.
      * @return ?TResult The content item if found, or null if not found.
      */
     public function findPublishedWebPageById($id);
@@ -27,7 +27,7 @@ interface ContentServiceInterface
     /**
      * Find a web page by its slug path.
      *
-     * @param string $slugPath The slug path of the web page.
+     * @param  string  $slugPath  The slug path of the web page.
      * @return ?TResult The web page object or null if not found.
      */
     public function findWebPageBySlugPath(string $slugPath);

@@ -34,12 +34,11 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
 
         } catch (\Throwable $th) {
 
-
-            if (!blank($locale)) {
+            if (! blank($locale)) {
                 $fullPath = str_replace(
                     ['{locale}', '{slug?}'],
                     [
-                        $locale, 
+                        $locale,
                         ltrim($slugPath, '/'),
                     ],
                     $this->getPathPattern()
@@ -102,12 +101,12 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
             }
 
             return $slug;
-        } 
+        }
 
         // More than one segment, the last segment is the slug without locale
-            $filteredParts = [];
+        $filteredParts = [];
         foreach ($parts as $i => $path) {
-            
+
             if ($i === 0 && $path === $locale) {
                 continue;
             }

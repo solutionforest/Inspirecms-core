@@ -30,7 +30,7 @@ class ContentController extends Controller
         if (blank($locale)) {
             return $this->redirectToLocalizedUrl($slug ?? '', $this->getDefaultLocale());
         }
-        
+
         [$contentDto, $view] = $this->pageService->findContentAndView($slug, $locale);
 
         if (is_null($contentDto) || is_null($view)) {

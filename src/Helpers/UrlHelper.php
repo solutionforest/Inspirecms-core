@@ -7,8 +7,8 @@ class UrlHelper
     /**
      * Shortens a given URL path using the specified encoding method.
      *
-     * @param string $path The URL path to be shortened.
-     * @param string $encoding The encoding method to use for shortening. Default is 'base62'.
+     * @param  string  $path  The URL path to be shortened.
+     * @param  string  $encoding  The encoding method to use for shortening. Default is 'base62'.
      * @return string The shortened URL.
      */
     public static function getShortener(string $path, string $encoding = 'base62')
