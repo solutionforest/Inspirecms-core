@@ -54,7 +54,7 @@ class PageActivity extends BaseWidget
     {
         $resource = config('inspirecms.filament.resources.page', PageResource::class);
 
-        return FilamentResourceHelper::attemptToGetUrl($resource, ['index'], ['record' => $record], true);
+        return FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view', 'index'], ['record' => $record], true);
     }
 
     protected function getLatestUpdatePagesQuery(): Builder
