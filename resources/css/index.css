@@ -33,6 +33,17 @@
 
 }
 
+@media screen(lg) {
+    .list-view-components {
+        @apply flex-col;
+    }
+}
+.list-view-components .tree-node-sidebar {
+    @apply h-56 overflow-scroll;
+    width: auto;
+    min-width: auto;
+}
+
 .fi-page-sub-navigation-sidebar-ctn {
     @apply w-44;
 }
