@@ -178,15 +178,15 @@ return [
 
     'set_default_content_page' => [
 
-        'label' => 'Set default content page',
+        'label' => 'Set as default page',
 
-        'permission_display_name' => 'Set default content page',
+        'permission_display_name' => 'Set default page',
 
         'notifications' => [
 
             'success' => [
 
-                'title' => 'Set default content page successful',
+                'title' => 'Set as default page successful',
 
             ],
         ],

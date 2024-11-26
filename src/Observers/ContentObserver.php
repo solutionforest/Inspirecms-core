@@ -42,7 +42,7 @@ class ContentObserver
         // Set "is_default" of other content as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
             $original = $model->newQuery()->where('is_default', true)->whereKeyNot($model->getKey())->get();
-            $original->each(function ($item) {
+            $original->each(function (Content | Model $item) {
                 $item->is_default = false;
                 $item->save();
             });
