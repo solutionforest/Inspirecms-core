@@ -81,6 +81,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->persistTabInQueryString()
                     ->contained(false)
                     ->tabs([
+                        static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('seo')
                             ->label(__('inspirecms::resources/content.seo.heading'))
                             ->schema([
@@ -94,7 +95,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ]),
                                 static::getSeoFormComponent(),
                             ]),
-                        static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('sitemap')
                             ->label(__('inspirecms::resources/content.sitemap.heading'))
                             ->schema([
