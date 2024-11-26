@@ -75,26 +75,5 @@ class ContentService implements ContentServiceInterface
     {
         return $this->contentModel::query();
     }
-
-    /**
-     * Apply the provided callbacks to the search builder.
-     *
-     * @param  \Laravel\Scout\Builder  $builder  The search builder instance.
-     * @param  callable|null  $builderCallback  The callback to modify the builder.
-     * @param  callable|null  $queryCallback  The callback to modify the query.
-     * @return \Laravel\Scout\Builder
-     */
-    protected function applyCallbacksForSearchBuilder($builder, $builderCallback, $queryCallback)
-    {
-        if ($builderCallback) {
-            $builder = $builderCallback($builder);
-        }
-
-        if ($queryCallback) {
-            $builder = $builder->query($queryCallback);
-        }
-
-        return $builder;
-    }
     //endregion Helpers
 }
