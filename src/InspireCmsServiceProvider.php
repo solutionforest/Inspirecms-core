@@ -319,19 +319,23 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerSupport(): void
     {
-        Support\Facades\MediaLibraryManifest::setModel(
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\MediaAsset::class,
             Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
         );
-        Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
-        Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
-        Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
-
-        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setNestableTreeModel(
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\NestableTree::class,
             Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
+        Support\Facades\MediaLibraryRegistry::setDisk(config('inspirecms.media_library.disk'));
+        Support\Facades\MediaLibraryRegistry::setDirectory(config('inspirecms.media_library.directory'));
+        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(config('inspirecms.media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+        Support\Facades\InspireCmsSupport::setAuthGuard(config('inspirecms.auth.guard'));
+
+        Support\Facades\ResolverRegistry::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
     }
 
     protected function getConfigSupoortModels(): array

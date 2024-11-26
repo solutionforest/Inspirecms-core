@@ -68,13 +68,15 @@ abstract class TestCase extends Orchestra
         //endregion inspirecms
 
         //region inspirecms support
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk(config('inspirecms.media_library.disk'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory(config('inspirecms.media_library.directory'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(config('inspirecms.media_library.should_map_video_properties_with_ffmpeg', false)));
 
         \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setAuthGuard(config('inspirecms.auth.guard'));
 
-        \SolutionForest\InspireCms\Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class));
         //endregion inspirecms support
 
         $migrations = [
@@ -100,6 +102,7 @@ abstract class TestCase extends Orchestra
 
             if (in_array($key, ['media_asset', 'nestable_tree'])) {
                 $testModel = "SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\{$guessName}";
+                \SolutionForest\InspireCms\Support\Facades\ModelRegistry::replace("SolutionForest\\InspireCms\\Support\\Models\\Contracts\\{$guessName}", $testModel);
             }
 
             if (! class_exists($testModel)) {

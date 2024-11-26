@@ -84,6 +84,7 @@ return [
             'width' => 300,
             'height' => 300,
         ],
+        'should_map_video_properties_with_ffmpeg' => false,
     ],
 
     'models' => [
@@ -122,11 +123,10 @@ return [
     ],
 
     'resolvers' => [
-        'user' => \SolutionForest\InspireCms\Support\Resolver\UserResolver::class,
+        'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
     ],
 
     'generators' => [
-        'content_path_generator' => \SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGenerator::class,
         'content_url_generator' => \SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGenerator::class,
         'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
     ],
