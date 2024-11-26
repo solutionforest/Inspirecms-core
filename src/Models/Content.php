@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Dtos\ContentDto;
+use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
@@ -139,7 +140,7 @@ class Content extends BaseModel implements ContentContract
             return false;
         }
 
-        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
             throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
@@ -244,7 +245,7 @@ class Content extends BaseModel implements ContentContract
      */
     public function scopeWhereIsPublished(Builder $query, bool $condition = true)
     {
-        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
             throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
@@ -287,7 +288,13 @@ class Content extends BaseModel implements ContentContract
     public function displayStatus(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->status ? inspirecms_content_statuses()->getOption($this->status) : null,
+            get: function ($value) {
+                $statusKey = $this->status;
+                if (is_null($statusKey)) {
+                    return null;
+                }
+                return ContentStatusManifest::getOption($statusKey);
+            }
         );
     }
     //endregion Attribute(s)
