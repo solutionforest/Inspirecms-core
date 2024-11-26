@@ -10,7 +10,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResou
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateResource extends Resource implements ClusterSectionResource
 {

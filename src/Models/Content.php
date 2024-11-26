@@ -293,6 +293,7 @@ class Content extends BaseModel implements ContentContract
                 if (is_null($statusKey)) {
                     return null;
                 }
+
                 return ContentStatusManifest::getOption($statusKey);
             }
         );

@@ -80,8 +80,8 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                 ->successNotificationTitle(__('inspirecms::notification.saved.title'))
                 ->modalSubmitActionLabel(__('inspirecms::actions.save.label'))
                 ->action(function (array $data, Action $action) {
-                    
-                    if (!isset($data['full_path']) || !isset($data['content'])) {
+
+                    if (! isset($data['full_path']) || ! isset($data['content'])) {
                         return;
                     }
 
@@ -125,17 +125,19 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
         parent::configureEditAction($action);
 
         $action->mutateRecordDataUsing(function (array $data, Model $record) {
-            if (!$record instanceof \SolutionForest\InspireCms\Models\Contracts\Template) {
+            if (! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Template) {
                 return [];
             }
             $fullPath = $record->getFileFullPath();
             $data['full_path'] = $fullPath;
             $data['content'] = $this->getFileContent($fullPath);
+
             return $data;
         });
         $action->using(function (array $data, EditAction $action) {
-            if (!isset($data['full_path']) || !isset($data['content'])) {
+            if (! isset($data['full_path']) || ! isset($data['content'])) {
                 $action->cancel();
+
                 return;
             }
 
