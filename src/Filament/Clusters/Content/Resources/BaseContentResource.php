@@ -168,6 +168,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with('publishedVersions'))
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')
@@ -188,13 +189,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
                     ->getStateUsing(function ($record) {
-                        if ($record->isRoot()) {
+                        if ($record->isRootLevel()) {
                             return null;
                         }
 
                         return $record->parent?->title ?? $record->parent_id;
                     })
-                    ->grow(),
+                    ->grow()
+                    ->toggleable(),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::resources/content.visibility.label'))
                     ->columns([
