@@ -17,6 +17,7 @@ class ImportDefaultData extends Command
 {
     public function handle(): int
     {
+        $this->publishAssets();
         $this->publishRotueDefinition();
 
         $this->importLanguageData();
@@ -98,6 +99,11 @@ class ImportDefaultData extends Command
                 (new Filesystem)->append($destination, $this->cmsRotueDefinition());
             }
         });
+    }
+
+    protected function publishAssets(): void
+    {
+        $this->call('filament:assets');
     }
 
     protected function isTableExists(string $tableName): bool
