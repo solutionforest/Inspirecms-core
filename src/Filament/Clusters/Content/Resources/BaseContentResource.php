@@ -159,6 +159,17 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 ->selectablePlaceholder(false)
                 ->prefixIcon('heroicon-m-language')
                 ->hiddenLabel()
+                ->suffix(function ($state) {
+                    if (! $state) {
+                        return null;
+                    }
+                    $lang = collect(InspireCms::getAllAvailableLanguages())->get($state);
+                    if (! $lang || ! $lang?->isDefault) {
+                        return null;
+                    }
+
+                    return __('inspirecms::inspirecms.default');
+                })
                 ->live(),
             static::getPropertyDataValueComponent(),
         ];
