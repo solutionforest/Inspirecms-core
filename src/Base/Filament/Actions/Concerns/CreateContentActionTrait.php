@@ -19,6 +19,8 @@ trait CreateContentActionTrait
 
     protected ?Closure $nodeTitleUsing = null;
 
+    protected ?Closure $urlParametersUsing = null;
+
     public static function getDefaultName(): ?string
     {
         return 'create_content';
@@ -58,19 +60,30 @@ trait CreateContentActionTrait
             return __('inspirecms::actions.create_content.modal.heading', ['title' => $title]);
         });
 
-        $this->modalContent(function () use ($contentResource) {
+        $this->modalContent(function ($livewire) use ($contentResource) {
+
+            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ?  $livewire->getActiveActionsLocale() : null;
 
             return view('inspirecms::filament.actions.create-content', [
                 'documentTypes' => $this->getAvailableDocumentTypes(),
                 'getLabelUsing' => fn (?Model $record) => $this->evaluate($this->documentTypeTitleUsing, ['record' => $record]) ?? $record?->title,
-                'getUrlUsing' => function (?Model $record) use ($contentResource) {
+                'getUrlUsing' => function (?Model $record) use ($contentResource, $translatableLocale) {
+
+                    $parameters = [
+                        'documentType' => $record->getKey(),
+                        'parent' => $this->getParentContentKey(),
+                        // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
+                        'locale' => $translatableLocale,
+                    ];
+
+                    if ($this->urlParametersUsing != null) {
+                        $parameters = array_merge($parameters, $this->evaluate($this->urlParametersUsing, ['parameters' => $parameters, 'record' => $record]));
+                    }
+
                     return FilamentResourceHelper::attemptToGetUrl(
                         $contentResource,
                         'create',
-                        [
-                            'documentType' => $record->getKey(),
-                            'parent' => $this->getParentContentKey(),
-                        ],
+                        $parameters,
                         false
                     );
                 },
@@ -97,6 +110,13 @@ trait CreateContentActionTrait
     public function documentTypeTitleUsing(Closure $callback): static
     {
         $this->documentTypeTitleUsing = $callback;
+
+        return $this;
+    }
+
+    public function urlParametersUsing(Closure $callback): static
+    {
+        $this->urlParametersUsing = $callback;
 
         return $this;
     }

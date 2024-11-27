@@ -29,7 +29,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     use ContentPageTrait;
     use ContentPreviewEditorTrait;
     use EditRecord\Concerns\Translatable{
-        updatedActiveLocale as protected traitUpdatedActiveLocale;
+        ContentFormTrait::updatedActiveLocale insteadof EditRecord\Concerns\Translatable;
+        ContentFormTrait::fillForm insteadof EditRecord\Concerns\Translatable;
     }
     use WithPagination;
 
@@ -113,11 +114,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
         return $this->getUrl(['record' => $this->getRecord()]);
     }
 
-    public function updatedActiveLocale(string $newActiveLocale): void
-    {
-        $this->updatedActiveLocaleForContent($newActiveLocale);
-    }
-
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
         $translatableAttributes = $this->getTranslatableAttributes();
@@ -189,7 +185,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                         fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
-                        return $this->getUrl(['record' => $record]);
+                        return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
                     });
 
                 break;

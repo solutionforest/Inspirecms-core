@@ -70,7 +70,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         $resource = $this->getPageClass()::getResource();
 
         $action->url(
-            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record], false)
+            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record, ...$this->getRedirectUrlParameters()], false)
         );
     }
 
@@ -81,7 +81,15 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         $resource = $this->getPageClass()::getResource();
 
         $action->url(
-            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record], false)
+            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record, ...$this->getRedirectUrlParameters()], false)
         );
+    }
+    
+    protected function getRedirectUrlParameters(): array
+    {
+        return [
+            'activeRelationManager' => 0,
+            'locale' => $this->activeLocale,
+        ];
     }
 }

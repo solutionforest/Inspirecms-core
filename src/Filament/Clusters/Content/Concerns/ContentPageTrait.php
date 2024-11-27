@@ -39,6 +39,13 @@ trait ContentPageTrait
             $this->refreshModelExplorerSidebar();
         }
     }
+    
+    protected function queryStringContentPageTrait()
+    {
+        return [
+            'activeLocale' => ['as' => 'locale'],
+        ];
+    }
 
     //region Model Explorer
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
@@ -78,7 +85,7 @@ trait ContentPageTrait
                     'hasChildren' => false,
                     'depth' => 0,
                     'icon' => 'heroicon-o-home',
-                    'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false),
+                    'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                     'documentTypeKey' => null,
                 ],
             ], $items))
@@ -89,9 +96,8 @@ trait ContentPageTrait
                     'activeRelationManager' => 0,
                 ];
 
-                if (property_exists($this, 'activeLocale')) {
-                    $itemUrlParams['activeLocale'] = $this->activeLocale;
-                }
+                // query string activeLocale at queryString()
+                $itemUrlParams['locale'] = method_exists($this, 'getActiveActionsLocale') ?  $this->getActiveActionsLocale() : null;
 
                 $item['link'] = FilamentResourceHelper::attemptToGetUrl(
                     static::getResource(), 
@@ -182,7 +188,7 @@ trait ContentPageTrait
 
                         $itemLabel = $item['label'] ?? null;
 
-                        $translatableLocale = $livewire->getActiveActionsLocale();
+                        $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ?  $livewire->getActiveActionsLocale() : null;
 
                         if (! blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
                             $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
@@ -199,7 +205,7 @@ trait ContentPageTrait
 
                 $action
                     ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))
-                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', $this->getRedirectUrlParameters(), false));
 
                 break;
 
@@ -216,11 +222,11 @@ trait ContentPageTrait
                     })
                     ->successRedirectUrl(function () {
                         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-                            return $this->getUrl(['record' => $this->getRecord()]);
+                            return $this->getUrl(['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
                         }
 
                         if ($this instanceof ListRecords || $this instanceof CreateRecord) {
-                            return $this->getUrl();
+                            return $this->getUrl($this->getRedirectUrlParameters());
                         }
 
                         return null;
@@ -266,5 +272,13 @@ trait ContentPageTrait
     public function getSubNavigation(): array
     {
         return [];
+    }
+    
+    protected function getRedirectUrlParameters(): array
+    {
+        return [
+            'activeRelationManager' => 0,
+            'locale' => $this->activeLocale,
+        ];
     }
 }

@@ -36,7 +36,7 @@ class ListPages extends BaseContentListPage
         $action->url(function () {
             $resource = static::getResource();
 
-            return FilamentResourceHelper::attemptToGetUrl($resource, ['create'], ['parent' => $this->parent], false);
+            return FilamentResourceHelper::attemptToGetUrl($resource, ['create'], ['parent' => $this->parent, ...$this->getRedirectUrlParameters()], false);
         });
     }
 
