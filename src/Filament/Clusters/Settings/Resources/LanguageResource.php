@@ -22,7 +22,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
 
     protected static ?string $navigationIcon = 'heroicon-o-language';
 
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'code';
 
     protected static ?string $cluster = Settings::class;
 
@@ -40,10 +40,9 @@ class LanguageResource extends Resource implements ClusterSectionResource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
                 static::getCodeFormComponent(),
-                static::getNameFormComponent(),
-                static::getRoutePatternFormComponent(),
                 static::getIsDefaultFormComponent(),
             ]);
     }
@@ -54,12 +53,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->columns([
                 Tables\Columns\TextColumn::make('code')
                     ->label(__('inspirecms::inspirecms.code'))
-                    ->width('1%')->sortable(),
-                Tables\Columns\TextColumn::make('route_pattern')
-                    ->label(__('inspirecms::inspirecms.route_pattern'))
-                    ->width('1%'),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name')),
+                    ->sortable(),
                 Tables\Columns\CheckboxColumn::make('is_default')
                     ->label(__('inspirecms::inspirecms.is_default'))
                     ->width('1%')
@@ -115,33 +109,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.code'))
             ->unique(table: static::getModel(), column: 'code', ignoreRecord: true)
             ->datalist(LocaleManifest::getLocales())
-            ->live()->afterStateUpdated(function (?string $state, Forms\Set $set) {
-                if (filled($state)) {
-                    $set('name', locale_get_display_name($state));
-                }
-            })
             ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getNameFormComponent()
-    {
-        return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::inspirecms.name'))
-            ->required();
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getRoutePatternFormComponent()
-    {
-        return Forms\Components\TextInput::make('route_pattern')
-            ->label(__('inspirecms::inspirecms.route_pattern'))
-            ->columnSpanFull()
-            ->dehydrateStateUsing(fn ($get, $state) => blank($state) ? $get('code') : $state);
     }
 
     /**

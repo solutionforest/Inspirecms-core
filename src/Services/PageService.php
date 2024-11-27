@@ -2,18 +2,15 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use SolutionForest\InspireCms\Dtos\LanguageDto;
-use SolutionForest\InspireCms\Facades\InspireCms;
-
 class PageService implements PageServiceInterface
 {
     public function __construct(
         protected ContentServiceInterface $contentService
     ) {}
 
-    public function findPublishedContentAndView(string $fullPath, ?string $locale)
+    public function findContentAndView($fullPath, $locale)
     {
-        $content = $this->searchPublishedContentByFullPath($fullPath);
+        $content = $this->findContentAndLangByFullPath($fullPath);
 
         if (is_null($content)) {
             return [null, null];
@@ -25,15 +22,13 @@ class PageService implements PageServiceInterface
 
         $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
 
-        $lang = collect(InspireCms::getAllAvailableLanguages())->first(fn (LanguageDto $languageDto) => $languageDto->locale == $locale);
-
-        return [$content->toDto($lang->code), $template?->getViewFullName()];
+        return [$content->toDto($locale), $template?->getViewFullName()];
     }
 
     /**
      * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
      */
-    protected function searchPublishedContentByFullPath(string $fullPath)
+    protected function findContentAndLangByFullPath(?string $fullPath)
     {
         $relations = [
             'documentType.fields.group',
@@ -41,27 +36,17 @@ class PageService implements PageServiceInterface
             'webSetting',
             'publishedVersions',
             'templates',
-            'ancestorsAndSelf', // for url (full path)
         ];
 
         // ensure the format of full path
-        $fullPath = $this->ensureFormatOfFullPath($fullPath);
+        $fullPath = $this->ensureFormatOfFullPath($fullPath ?? '');
 
         // if the full path is the root path, return the index page
         if (blank(trim($fullPath, '/'))) {
-            $content = $this->contentService->findIndexWebPage();
+            $content = $this->contentService->findDefaultWebPage();
         } else {
-            $content = $this->contentService->searchOne(
-                $fullPath,
-                fn (\Laravel\Scout\Builder $builder) => $builder
-                    ->where('is_web', 1)
-                    ->where('full_path', $fullPath) // Avoid searching same slug in different parent
-                    ->where('__soft_deleted', 0),   // Avoid searching soft deleted content
-                fn (\Illuminate\Database\Eloquent\Builder $query) => $query
-            );
+            $content = $this->contentService->findWebPageBySlugPath($fullPath);
         }
-
-        // dd($content, $fullPath);
 
         if (is_null($content)) {
             return null;

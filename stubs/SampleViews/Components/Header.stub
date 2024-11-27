@@ -1,9 +1,9 @@
 @php
-    $locale = request()->getLocale();
+    $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);
-    $allLocales = collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(function ($item) {
-        return [$item->locale => $item->name];
-    })->all();
+    $allLocales = collect(inspirecms()->getAllAvailableLanguages())
+      ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
+      ->all();
 @endphp
 <!-- Header -->
 <header class="pointer-events-none relative z-50 flex flex-none flex-col" style="height:var(--header-height);margin-bottom:var(--header-mb)">

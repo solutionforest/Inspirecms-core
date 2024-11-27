@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Models\Contracts\User as UserContract;
@@ -32,7 +31,7 @@ class User extends BaseAuthenticatableModel implements UserContract
         'email_confirmed_at' => 'datetime',
     ];
 
-    public function userActivity(): HasOne
+    public function userActivity()
     {
         return $this->hasOne(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
     }

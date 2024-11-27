@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Dtos\SeoDto;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -18,7 +17,7 @@ class ContentWebSetting extends BaseModel implements ContentWebSettingContract
         'robots' => 'json',
     ];
 
-    public function redirectContent(): BelongsTo
+    public function redirectContent()
     {
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'redirect_content_id');
     }
@@ -51,7 +50,7 @@ class ContentWebSetting extends BaseModel implements ContentWebSettingContract
         return $dtoClass::fromArray($dtoParameters);
     }
 
-    public static function getDtoClass(): string
+    public static function getDtoClass()
     {
         return SeoDto::class;
     }

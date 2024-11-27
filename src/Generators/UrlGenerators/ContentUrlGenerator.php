@@ -4,67 +4,63 @@ namespace SolutionForest\InspireCms\Generators\UrlGenerators;
 
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentUrlGenerator implements ContentUrlGeneratorInterface
 {
     /** {@inheritDoc} */
-    public function getUrl(Content $content, ?string $locale = null, bool $useFallbackLocale = false): string
+    public function getUrl(Content $content, $locale = null)
     {
-        $pathGenerator = ContentPathGeneratorFactory::create();
-
-        if (blank($locale) && $useFallbackLocale) {
-            $locale = InspireCms::getFallbackLanguage()?->locale ?? '';
+        $contentPath = $content->path;
+        if (! $contentPath) {
+            return null;
         }
 
-        $relatedLanguage = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->locale === $locale);
-        if (is_null($relatedLanguage)) {
-            $locale = '';
+        $localeCode = $locale instanceof LanguageDto ? $locale->code : $locale;
+        if (blank($localeCode)) {
+            $localeCode = InspireCms::getFallbackLanguage()?->code;
         }
 
-        if (! blank($locale)) {
-            return $this->getLocalizedUrl($pathGenerator->getFullPath($content), $locale);
-        }
-
-        $path = $pathGenerator->getPath($content, $locale);
-
-        return url($path);
+        return $this->getLocalizedUrl($contentPath->slug_path ?? '', $localeCode);
     }
 
-    /** {@inheritDoc} */
-    public function getLocalizedUrl(string $path, string $locale): string
+    public function getLocalizedUrl($slugPath, $locale)
     {
-        $pathGenerator = ContentPathGeneratorFactory::create();
-
-        $routeName = $pathGenerator->getRouteName();
+        $routeName = $this->getRouteName();
 
         try {
 
-            return url()->route($routeName, ['locale' => $locale, 'slug' => $path]);
+            return url()->route($routeName, ['locale' => $locale, 'slug' => ltrim($slugPath, '/')]);
 
         } catch (\Throwable $th) {
 
-            $currRequest = request();
-
-            $scheme = $currRequest->getScheme();
-            $domainName = $currRequest->getHost();
-            if ($currRequest->getPort() !== 80) {
-                $domainName .= ':' . $currRequest->getPort();
+            if (! blank($locale)) {
+                $fullPath = str_replace(
+                    ['{locale}', '{slug?}'],
+                    [
+                        $locale,
+                        ltrim($slugPath, '/'),
+                    ],
+                    $this->getPathPattern()
+                );
+            } else {
+                $fullPath = $slugPath;
             }
 
-            return str_replace(
-                ['{scheme}', '{domain_name}', '{locale}', '{slug?}'],
-                [$scheme, $domainName, $locale, $path],
-                $this->getUrlPattern(),
-            );
+            return url($fullPath);
         }
     }
 
     /** {@inheritDoc} */
-    public function getUrlPattern(): string
+    public function getPathPattern(): string
     {
-        return '{scheme}://{domain_name}/{locale}/{slug?}';
+        return '{locale}/{slug?}';
+    }
+
+    /** {@inheritDoc} */
+    public function getRouteName(): string
+    {
+        return 'inspirecms.content.show';
     }
 
     /** {@inheritDoc} */
@@ -78,7 +74,7 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
         }
 
         $language = collect(InspireCms::getAllAvailableLanguages())
-            ->where(fn (LanguageDto $language) => $language->locale === $locale)
+            ->where(fn (LanguageDto $language) => $language->code === $locale)
             ->first();
 
         if (is_null($language)) {
@@ -86,6 +82,39 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
         }
 
         return $locale;
+    }
+
+    /** {@inheritDoc} */
+    public function getSlugFromRequest($request, $locale): ?string
+    {
+        $path = $request->path();
+        $parts = explode('/', $path);
+        $segmentCount = count($parts);
+
+        // Only one segment, it's the slug
+        if ($segmentCount <= 1) {
+            $slug = $parts[0] ?? null;
+
+            // If the locale is the same as the slug, return null
+            if ($locale == $slug) {
+                return null;
+            }
+
+            return $slug;
+        }
+
+        // More than one segment, the last segment is the slug without locale
+        $filteredParts = [];
+        foreach ($parts as $i => $path) {
+
+            if ($i === 0 && $path === $locale) {
+                continue;
+            }
+
+            $filteredParts[] = $path;
+        }
+
+        return implode('/', $filteredParts);
     }
 
     protected function getLocaleFromPath(string $path): ?string

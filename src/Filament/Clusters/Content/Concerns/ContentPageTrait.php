@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseCont
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
@@ -37,6 +38,13 @@ trait ContentPageTrait
         if (! $this instanceof ListRecords) {
             $this->refreshModelExplorerSidebar();
         }
+    }
+
+    protected function queryStringContentPageTrait()
+    {
+        return [
+            'activeLocale' => ['as' => 'locale'],
+        ];
     }
 
     //region Model Explorer
@@ -77,19 +85,33 @@ trait ContentPageTrait
                     'hasChildren' => false,
                     'depth' => 0,
                     'icon' => 'heroicon-o-home',
-                    'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false),
+                    'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                     'documentTypeKey' => null,
                 ],
             ], $items))
             ->mutuateNodeItemsUsing(function (array $item, Model $record) {
-                $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], [
+
+                $itemUrlParams = [
                     'record' => $record,
                     'activeRelationManager' => 0,
-                ], true);
+                ];
+
+                // query string activeLocale at queryString()
+                $itemUrlParams['locale'] = method_exists($this, 'getActiveActionsLocale') ? $this->getActiveActionsLocale() : null;
+
+                $item['link'] = FilamentResourceHelper::attemptToGetUrl(
+                    static::getResource(),
+                    ['edit', 'view'],
+                    $itemUrlParams,
+                    true
+                );
 
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');
                     $item['fallbackLabel'] = $record->getTranslation('title', $record->getFallbackLocale());
+                    if (blank($item['fallbackLabel'])) {
+                        $item['fallbackLabel'] = collect($record->getTranslations('title'))->filter()->first();
+                    }
                 }
 
                 $item['documentTypeKey'] = $record->document_type_id;
@@ -100,6 +122,7 @@ trait ContentPageTrait
                 CreateContentItemAction::make(),
                 ActionGroup::make([
                     ReorderContentItemAction::make('reorder_content_item'),
+                    SetDefaultContentPageAction::make(),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
@@ -166,7 +189,7 @@ trait ContentPageTrait
 
                         $itemLabel = $item['label'] ?? null;
 
-                        $translatableLocale = $livewire->getActiveActionsLocale();
+                        $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
                         if (! blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
                             $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
@@ -179,10 +202,11 @@ trait ContentPageTrait
 
                 break;
             case $action instanceof DeleteContentItemAction:
+            case $action instanceof SetDefaultContentPageAction:
 
                 $action
                     ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))
-                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false));
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', $this->getRedirectUrlParameters(), false));
 
                 break;
 
@@ -199,11 +223,11 @@ trait ContentPageTrait
                     })
                     ->successRedirectUrl(function () {
                         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-                            return $this->getUrl(['record' => $this->getRecord()]);
+                            return $this->getUrl(['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
                         }
 
                         if ($this instanceof ListRecords || $this instanceof CreateRecord) {
-                            return $this->getUrl();
+                            return $this->getUrl($this->getRedirectUrlParameters());
                         }
 
                         return null;
@@ -249,5 +273,13 @@ trait ContentPageTrait
     public function getSubNavigation(): array
     {
         return [];
+    }
+
+    protected function getRedirectUrlParameters(): array
+    {
+        return [
+            'activeRelationManager' => 0,
+            'locale' => $this->activeLocale,
+        ];
     }
 }

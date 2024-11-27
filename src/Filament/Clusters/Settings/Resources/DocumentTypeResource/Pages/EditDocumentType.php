@@ -5,13 +5,10 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Concerns\DocumentTypeDetailTrait;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Concerns\DocumentTypeFormTrait;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 
-class EditDocumentType extends BaseEditPage implements DocumentTypeForm
+class EditDocumentType extends BaseEditPage
 {
     use DocumentTypeDetailTrait;
-    use DocumentTypeFormTrait;
 
     public static function getResource(): string
     {

@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models\Polymorphic;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroupable as FieldGroupableContract;
 use SolutionForest\InspireCms\Observers\FieldGroupableObserver;
@@ -25,17 +23,17 @@ class FieldGroupable extends BaseMorphPivotModel implements FieldGroupableContra
         'sort_when_creating' => true,
     ];
 
-    public function fieldGroup(): BelongsTo
+    public function fieldGroup()
     {
         return $this->belongsTo(InspireCmsConfig::getFieldGroupModelClass());
     }
 
-    public function groupabled(): MorphTo
+    public function groupabled()
     {
         return $this->morphTo();
     }
 
-    public function inheritedFrom(): MorphTo
+    public function inheritedFrom()
     {
         return $this->morphTo();
     }

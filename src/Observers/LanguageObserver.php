@@ -11,16 +11,11 @@ use SolutionForest\InspireCms\Models\Contracts\Language;
 class LanguageObserver
 {
     /**
-     * Handle "saving" event.
-     *
-     * @param  Language|Model  $model  The model instance being saving.
+     * @param  Language&Model  $model
      * @return void
      */
-    public function saving(Language | Model $model)
+    public function saving($model)
     {
-        if (blank($model->route_pattern)) {
-            $model->route_pattern = $model->code;
-        }
         // Set "is_default" of other languages as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
             DB::transaction(function () use ($model) {
@@ -35,23 +30,19 @@ class LanguageObserver
     }
 
     /**
-     * Handle "updated" event.
-     *
-     * @param  Language|Model  $model  The model instance being updated.
+     * @param  Language&Model  $model
      * @return void
      */
-    public function updated(Language | Model $model)
+    public function updated($model)
     {
         event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
     }
 
     /**
-     * Handle "deleting" event.
-     *
-     * @param  Language|Model  $model  The model instance being deleting.
+     * @param  Language&Model  $model
      * @return void
      */
-    public function deleting(Language | Model $model)
+    public function deleting($model)
     {
         if ($model->is_default) {
             throw new \Exception('Cannot delete default language');

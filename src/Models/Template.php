@@ -2,42 +2,43 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
 use SolutionForest\InspireCms\Observers\TemplateObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
+/**
+ * @implements TemplateContract<Template>
+ */
 class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
 
     protected ?string $preloadTemplateContent = null;
 
-    public function templateable(): HasMany
+    public function templateable()
     {
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
     }
 
-    public function documentTypes(): MorphToMany
+    public function documentTypes()
     {
         return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
     }
 
-    public function content(): MorphToMany
+    public function content()
     {
         return $this->morphedByMany(InspireCmsConfig::getContentModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
     }
 
-    public function isFileCreated(): bool
+    public function isFileCreated()
     {
         $fullpath = $this->getFileFullPath();
 
         return file_exists($fullpath);
     }
 
-    public function createTemplateFile(): void
+    public function createTemplateFile()
     {
         $fullpath = $this->getFileFullPath();
 
@@ -52,7 +53,7 @@ class Template extends BaseModel implements TemplateContract
         }
     }
 
-    public function getFileFullPath(): string
+    public function getFileFullPath()
     {
         return str($this->ensureDirectoryExists($this->getTemplateDirectory()))
             ->rtrim('/')
@@ -61,7 +62,7 @@ class Template extends BaseModel implements TemplateContract
             ->toString();
     }
 
-    public function getViewFullName(): string
+    public function getViewFullName()
     {
         return str($this->getTemplateDirectory())
             ->rtrim('/')
@@ -73,7 +74,7 @@ class Template extends BaseModel implements TemplateContract
             ->toString();
     }
 
-    public function performTemplatePath(): string
+    public function retrieveTemplatePath()
     {
         return str($this->slug)
             ->trim()
@@ -84,7 +85,7 @@ class Template extends BaseModel implements TemplateContract
             ->toString();
     }
 
-    public function preloadTemplateContentBeforeCreate(string $content)
+    public function preloadTemplateContentBeforeCreate($content)
     {
         $this->preloadTemplateContent = $content;
 

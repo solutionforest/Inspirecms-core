@@ -2,39 +2,62 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-
+/**
+ * @template TModel of \Illuminate\Database\Eloquent\Model
+ */
 interface Template
 {
-    public function templateable(): HasMany;
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function templateable();
 
-    public function documentTypes(): MorphToMany;
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documentTypes();
 
-    public function content(): MorphToMany;
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function content();
 
     /**
      * Check if the template file has been created.
      *
      * @return bool True if the file is created, false otherwise.
      */
-    public function isFileCreated(): bool;
+    public function isFileCreated();
 
     /**
      * Create the template file.
+     *
+     * @return void
      */
-    public function createTemplateFile(): void;
+    public function createTemplateFile();
 
     /**
      * Get the full path of the template file.
      *
      * @return string The full path of the template file.
      */
-    public function getFileFullPath(): string;
+    public function getFileFullPath();
 
-    public function getViewFullName(): string;
+    /**
+     * Get the full name of the view.
+     *
+     * @return string The full name of the view.
+     */
+    public function getViewFullName();
 
-    public function performTemplatePath(): string;
+    /**
+     * Perform operations to retrieve the template path.
+     *
+     * @return string The path of the template.
+     */
+    public function retrieveTemplatePath();
 
     /**
      * Preloads the template content before creating a new template.
@@ -42,7 +65,7 @@ interface Template
      * This method is used to set up the initial content for a template before it is created.
      *
      * @param  string  $content  The content to preload into the template.
-     * @return self
+     * @return TModel
      */
-    public function preloadTemplateContentBeforeCreate(string $content);
+    public function preloadTemplateContentBeforeCreate($content);
 }

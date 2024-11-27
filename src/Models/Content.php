@@ -2,22 +2,17 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Laravel\Scout\Searchable;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Events;
-use SolutionForest\InspireCms\Factories\ContentPathGeneratorFactory;
+use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
+use SolutionForest\InspireCms\Models\Scopes\ContentPathScope;
 use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
@@ -41,10 +36,6 @@ class Content extends BaseModel implements ContentContract
     use HasAuthor;
     use HasRecursiveRelationships;
     use HasUuids;
-    use Searchable {
-        queueMakeSearchable as protected traitQueueMakeSearchable;
-        queueRemoveFromSearch as protected traitQueueRemoveFromSearch;
-    }
     use SoftDeletes;
 
     protected $guarded = ['id'];
@@ -63,41 +54,63 @@ class Content extends BaseModel implements ContentContract
      */
     protected array $tempRelationData = [];
 
-    protected $casts = [];
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
 
     protected $table = 'content';
 
-    public function documentType(): BelongsTo
+    public function documentType()
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');
     }
 
-    public function sitemap(): MorphOne
+    public function sitemap()
     {
         return $this->morphOne(InspireCmsConfig::getSitemapModelClass(), 'model');
     }
 
-    public function trashedParent(): BelongsTo
+    public function trashedParent()
     {
         return $this->parent()->withTrashed();
     }
 
-    public function navigation(): HasOne
+    public function navigation()
     {
         return $this->hasOne(InspireCmsConfig::getNavigationModelClass(), 'content_id');
     }
 
-    public function getFullSlug(?string $locale = null): string
+    public function path()
     {
-        return ContentPathGeneratorFactory::create()->getPath($this, $locale);
+        return $this->hasOne(InspireCmsConfig::getContentPathModelClass(), 'content_id');
     }
 
-    public function getUrl(?string $locale = null): string
+    public function getUrl($locale = null)
     {
-        return ContentUrlGeneratorFactory::create()->getUrl($this, $locale);
+        return ContentUrlGeneratorFactory::create()->getUrl($this, $locale) ?? '';
     }
 
-    public function getSegments(): array
+    public function generateSlugPath()
+    {
+        $ancestorsAndSelf = collect($this->ancestorsAndSelf)->reverse()->values();
+
+        $slugs = [];
+
+        foreach ($ancestorsAndSelf as $index => $item) {
+
+            // Skip the default item
+            // e.g. format: "/" instead of "/home"
+            if ($item->is_default) {
+                continue;
+            }
+
+            $slugs[] = $item->slug;
+        }
+
+        return (string) Str::of(implode('/', $slugs))->prepend('/');
+    }
+
+    public function getSegments()
     {
         $this->loadMissing('ancestorsAndSelf');
 
@@ -112,36 +125,7 @@ class Content extends BaseModel implements ContentContract
         return $slugs;
     }
 
-    public function isFirstAndRoot(): bool
-    {
-        $itemOrder = $this->nestable_tree_order;
-        $itemParentId = $this->nestable_tree_parent_id;
-
-        $orderColumn = $this->getNestableTreeOrderName();
-        $parentIdColumn = $this->getNestableTreeParentIdName();
-
-        $rootLevelParentId = $this->nestableTree()->getRelated()->getRootLevelParentId();
-
-        if (is_null($itemOrder) || is_null($itemParentId)) {
-            $this->loadMissing('nestableTree');
-            $itemOrder ??= $this->nestableTree?->{$orderColumn} ?? 0;
-            $itemParentId ??= $this->nestableTree?->{$parentIdColumn} ?? 0;
-        }
-
-        // not a root level item
-        if ($itemParentId != $rootLevelParentId) {
-            return false;
-        }
-
-        $firstOrder = $this->nestableTree()->getRelated()->newQuery()
-            ->whereHasMorph('nestable', [static::class])
-            ->where($parentIdColumn, $itemParentId)
-            ->min($orderColumn);
-
-        return $itemOrder == ($firstOrder ?? 1);
-    }
-
-    public function isPublished(?\Closure $callback = null): bool
+    public function isPublished(): bool
     {
         $publishedAt = $this->getPublishTime();
         $status = $this->status;
@@ -151,130 +135,36 @@ class Content extends BaseModel implements ContentContract
             return false;
         }
 
-        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
             throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
 
-        switch ($status) {
-
-            case $unpublishOption->getValue():
-                return false;
+        if ($status == $unpublishOption->getValue()) {
+            return false;
         }
 
-        if ($callback) {
-            return $callback($this, inspirecms_content_statuses()->getOption($status));
-        }
-
-        return true;
+        return $publishedAt->isPast();
     }
 
-    public function getPublishTime(): ?\Carbon\Carbon
+    public function getPublishTime()
     {
         // If the publish date is in the future, it's not published
         return $this->getLatestPublishedContentVersion()?->pivot?->published_at;
     }
 
-    public function getLatestPublishedTime(): ?\Carbon\Carbon
+    public function getLatestPublishedTime()
     {
         return $this->getLatestContentVersionHasPublish()?->pivot?->published_at;
     }
 
-    public function isWebPage(): bool
+    public function isWebPage()
     {
         return $this->documentType?->isWebPageType() ?? false;
     }
 
-    //region Indexing
-    /**
-     * Get the name of the index associated with the model.
-     */
-    public function searchableAs(): string
-    {
-        return InspireCmsConfig::get('indexes.content.index_name', 'content_index');
-    }
-
-    public function toSearchableArray()
-    {
-        $this->loadMissing([
-            'ancestorsAndSelf',
-            'documentType',
-        ]);
-        $latestVersion = $this->getLatestPublishedContentVersion();
-        $data = $this->withoutRelations()->only([
-            $this->getKeyName(),
-            $this->getParentKeyName(),
-        ]);
-
-        $data['is_web'] = intval($this->documentType?->isWebPageType() ?? false);
-
-        $data['full_path'] = $this->getFullSlug();
-
-        $data['published_at'] = $latestVersion?->pivot?->published_at?->toIso8601String();
-        $data['__soft_deleted'] = intval($this->trashed());
-
-        event(new Events\Indexes\IndexingModel($this, $data));
-
-        return $data;
-    }
-
-    public function getScoutKey(): mixed
-    {
-        return $this->getKey();
-    }
-
-    /**
-     * Dispatch the job to make the given models searchable.
-     *
-     * @param  \Illuminate\Database\Eloquent\Collection  $models
-     * @return void
-     */
-    public function queueMakeSearchable($models)
-    {
-        // Also index the descendants of the models
-        $models = $this->getModelsForIndexSearch($models);
-        $this->traitQueueMakeSearchable($models);
-    }
-
-    /**
-     * Dispatch the job to make the given models unsearchable.
-     *
-     * @param  \Illuminate\Database\Eloquent\Collection  $models
-     * @return void
-     */
-    public function queueRemoveFromSearch($models)
-    {
-        // Also index the descendants of the models
-        $models = $this->getModelsForIndexSearch($models);
-        $this->traitQueueRemoveFromSearch($models);
-    }
-
-    /**
-     * @param  \Illuminate\Database\Eloquent\Collection  $models
-     */
-    protected function getModelsForIndexSearch($models)
-    {
-        $result = collect();
-
-        foreach ($models as $model) {
-            // affecting the "full path" of the model
-            if ($model instanceof ContentContract) {
-                $result = $result
-                    ->push($model)
-                    ->concat($model->children()->get())
-                    ->unique($this->getKeyName());
-
-            } else {
-                $result->push($model);
-            }
-        }
-
-        return $result;
-    }
-    //endregion Indexing
-
     //region Dto
-    public static function getDtoClass(): string
+    public static function getDtoClass()
     {
         return ContentDto::class;
     }
@@ -294,7 +184,7 @@ class Content extends BaseModel implements ContentContract
         );
     }
 
-    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?Contracts\DocumentType $documentType = null)
+    public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null)
     {
         $dtoClass = static::getDtoClass();
 
@@ -348,9 +238,9 @@ class Content extends BaseModel implements ContentContract
     /**
      * Determine if this content is already published.
      */
-    public function scopeWhereIsPublished(Builder $query, bool $condition = true)
+    public function scopeWhereIsPublished($query, bool $condition = true)
     {
-        $unpublishOption = inspirecms_content_statuses()->getOption('unpublish');
+        $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
             throw new \Exception('At least one "unpublish" option is required in the manifest.');
         }
@@ -382,7 +272,7 @@ class Content extends BaseModel implements ContentContract
 
     }
 
-    public function scopeWhereIsWebPage(Builder $query)
+    public function scopeWhereIsWebPage($query)
     {
         return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }
@@ -393,7 +283,14 @@ class Content extends BaseModel implements ContentContract
     public function displayStatus(): Attribute
     {
         return Attribute::make(
-            get: fn ($value) => $this->status ? inspirecms_content_statuses()->getOption($this->status) : null,
+            get: function ($value) {
+                $statusKey = $this->status;
+                if (is_null($statusKey)) {
+                    return null;
+                }
+
+                return ContentStatusManifest::getOption($statusKey);
+            }
         );
     }
     //endregion Attribute(s)
@@ -480,6 +377,7 @@ class Content extends BaseModel implements ContentContract
             'status',
             'document_type_id',
             'parent_id',
+            'is_default',
         ];
     }
     //endregion ContentVersion
@@ -489,5 +387,7 @@ class Content extends BaseModel implements ContentContract
         parent::boot();
 
         static::observe(ContentObserver::class);
+
+        static::addGlobalScope(new ContentPathScope);
     }
 }

@@ -12,11 +12,13 @@ use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 
 class Field extends BaseModel implements FieldContract
 {
-    public function getStatePathWithGroup(): string
+    /** {@inheritDoc} */
+    public function getStatePathWithGroup()
     {
         return implode('.', [$this->group?->name, $this->name]);
     }
 
+    /** {@inheritDoc} */
     public function getFieldTypeConfigAttribute()
     {
         $fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($this->type);
@@ -36,18 +38,20 @@ class Field extends BaseModel implements FieldContract
         return $dtoClass::fromArray($dtoParameters);
     }
 
-    public static function getDtoClass(): string
+    public static function getDtoClass()
     {
         return PropertyTypeDto::class;
     }
     //endregion Dto
 
     //region Scope(s)
+    /** {@inheritDoc} */
     public function scopeByGroup($query, string $group)
     {
         return $query->whereHas('group', fn ($q) => $q->where('name', $group)->whereActive());
     }
 
+    /** {@inheritDoc} */
     public function scopeWithGroupName($query)
     {
         $as = 'group';

@@ -29,7 +29,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     use ContentPageTrait;
     use ContentPreviewEditorTrait;
     use EditRecord\Concerns\Translatable{
-        updatedActiveLocale as protected traitUpdatedActiveLocale;
+        ContentFormTrait::updatedActiveLocale insteadof EditRecord\Concerns\Translatable;
+        ContentFormTrait::fillForm insteadof EditRecord\Concerns\Translatable;
     }
     use WithPagination;
 
@@ -81,7 +82,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                 ->color('gray')
                 ->actions(array_filter([
                     inspirecms_content_statuses()->getOption('unpublish')->getFormAction(),
-                    inspirecms_content_statuses()->getOption('private')->getFormAction(),
                 ])),
             $this->getCancelFormAction(),
         ];
@@ -111,12 +111,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
 
     public function getRedirectUrl(): ?string
     {
-        return $this->getUrl(['record' => $this->getRecord()]);
-    }
-
-    public function updatedActiveLocale(string $newActiveLocale): void
-    {
-        $this->updatedActiveLocaleForContent($newActiveLocale);
+        return $this->getUrl(['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
@@ -190,7 +185,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
                         fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
-                        return $this->getUrl(['record' => $record]);
+                        return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
                     });
 
                 break;

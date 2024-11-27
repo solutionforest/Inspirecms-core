@@ -9,7 +9,7 @@
 
 .boarding-popover-ctn {
 
-    @apply min-w-52 max-w-60 !pb-5;
+    @apply min-w-52 max-w-60 rounded-md shadow-lg shadow-gray-600 m-0 !pb-5;
     
     .boarding-popover-description {
         @apply text-sm text-gray-500;
@@ -31,6 +31,17 @@
         @apply absolute bottom-0.5 right-0.5 text-danger-500 text-xs font-bold;
     }
 
+}
+
+@media screen(lg) {
+    .list-view-components {
+        @apply flex-col;
+    }
+}
+.list-view-components .tree-node-sidebar {
+    @apply h-56 overflow-scroll;
+    width: auto;
+    min-width: auto;
 }
 
 .fi-page-sub-navigation-sidebar-ctn {

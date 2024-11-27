@@ -21,6 +21,11 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function getFormSchema(): array
     {
+        $exceptsInnerFields = [
+            'repeater',
+            'translate',
+        ];
+
         return [
             Forms\Components\Repeater::make('fields')
                 ->columnSpanFull()
@@ -28,14 +33,8 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
                 ->schema([
                     Forms\Components\Select::make('field')
-                        ->options(function () {
-                            $options = FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions();
-                            // filter out the current field type
-                            $configNames = $this->getConfigNames()[0];
-                            unset($options[$configNames['group']]);
-
-                            return $options;
-                        })
+                        ->options(fn () => FieldTypeHelper::getFieldTypeOptions(excepts: $exceptsInnerFields))
+                        ->getSearchResultsUsing(fn ($search) => FieldTypeHelper::getFieldTypeOptions($search, excepts: $exceptsInnerFields))
                         ->searchable()->allowHtml()
                         ->required()
                         ->live(debounce: 500)

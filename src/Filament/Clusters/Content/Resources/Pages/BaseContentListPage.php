@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
 use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
@@ -16,7 +15,10 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 abstract class BaseContentListPage extends BaseListPage implements HasModelExplorer
 {
     use ContentPageTrait;
-    use ListRecords\Concerns\Translatable;
+
+    // Commented out to insteadof ListRecords\Concerns\Translatable
+    // use ListRecords\Concerns\Translatable;
+    use ListPage\Concerns\Translatable;
 
     protected static string $view = 'inspirecms::filament.pages.content.list';
 

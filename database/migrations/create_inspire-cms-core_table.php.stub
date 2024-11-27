@@ -18,6 +18,7 @@ return new class extends BaseMigration
             $table->json('title');
             $table->string('slug');
             $table->integer('status')->unsigned()->default(0); // Enum: 0 = Pending
+            $table->boolean('is_default')->default(false)->comment('Indicates if this content is the default.');
 
             $table->author(nullable: true);
 
@@ -27,6 +28,15 @@ return new class extends BaseMigration
             $table->index('document_type_id');
             $table->index('status');
             $table->unique(['slug', 'parent_id']);
+        });
+        Schema::create($tableNames['content_path'], function (Blueprint $table) use ($tableNames) {
+            $table->id();
+            $table->foreignUlid('content_id')->references('id')->on($tableNames['content'])->onDelete('cascade');
+            $table->string('slug_path');
+            $table->string('encoded_path');
+
+            $table->index('slug_path');
+            $table->index('encoded_path');
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
@@ -156,15 +166,12 @@ return new class extends BaseMigration
         Schema::create($tableNames['language'], function (Blueprint $table) {
             $table->id();
             $table->string('code');
-            $table->string('name');
-            $table->string('route_pattern');
             $table->boolean('is_default')->default(false);
 
             $table->timestamps();
 
             $table->unique('code');
             $table->index('is_default');
-            $table->index('route_pattern');
         });
         Schema::create($tableNames['navigation'], function (Blueprint $table) {
             $table->id();
@@ -211,6 +218,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['template']);
 
         Schema::dropIfExists($tableNames['document_type']);
+        Schema::dropIfExists($tableNames['content_path']);
         Schema::dropIfExists($tableNames['content']);
     }
 
@@ -220,6 +228,7 @@ return new class extends BaseMigration
             'field_groupable' => $this->prefix . 'field_groupables',
             'content_version' => $this->prefix . 'content_versions',
             'content_publish_version' => $this->prefix . 'content_publish_version',
+            'content_path' => $this->prefix . 'content_paths',
             'content' => $this->prefix . 'content',
             'document_type' => $this->prefix . 'document_types',
             'document_type_inheritance' => $this->prefix . 'document_type_inheritance',

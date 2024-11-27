@@ -54,7 +54,6 @@ return [
     'role' => 'Role',
     'roles' => 'Roles',
     'root' => 'Root',
-    'route_pattern' => 'Route pattern',
     'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',
@@ -84,9 +83,6 @@ return [
         ],
         'publish' => [
             'label' => 'Publish',
-        ],
-        'private' => [
-            'label' => 'Private',
         ],
         'unpublish' => [
             'label' => 'Unpublish',

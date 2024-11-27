@@ -61,7 +61,9 @@ class PermissionManifest implements PermissionManifestInterface
                         $permissionName = $this->getPermissionNameForModel($prefix, $model);
 
                         $permissionLabel = str($prefix)
-                            ->studly()
+                            ->kebab()
+                            ->replace(['-', '_'], ' ')
+                            ->ucfirst()
                             ->toString();
 
                         return [$permissionName => $permissionLabel];
@@ -167,11 +169,6 @@ class PermissionManifest implements PermissionManifestInterface
 
     //region Helper methods
     protected function getDefaultPermissions(): array
-    {
-        return $this->getEntitiesPermissions();
-    }
-
-    protected function getEntitiesPermissions(): array
     {
         return collect($this->getClusterSectionPermissions())->keys()
             ->merge(collect($this->getClusterSectionResourceModelPermissions())->collapse()->keys())

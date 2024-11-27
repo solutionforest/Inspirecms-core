@@ -10,7 +10,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResou
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateResource extends Resource implements ClusterSectionResource
 {
@@ -40,13 +39,13 @@ class TemplateResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->contentGrid(['md' => 2, 'lg' => 3])
+            ->heading(static::getNavigationLabel())
             ->columns([
-                Tables\Columns\Layout\Split::make([
-                    Tables\Columns\TextColumn::make('name')
-                        ->weight('bold')
-                        ->description(fn (Template $record) => $record->path),
-                ]),
+                Tables\Columns\TextColumn::make('slug')->weight('bold'),
+                Tables\Columns\TextColumn::make('path'),
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make()->slideOver()->modalWidth('5xl')->iconButton(),
             ]);
     }
 

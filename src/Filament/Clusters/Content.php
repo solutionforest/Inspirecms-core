@@ -10,7 +10,7 @@ class Content extends Cluster implements ClusterSection
 {
     use ClusterSectionTrait;
 
-    protected static ?string $navigationIcon = 'heroicon-o-folder';
+    protected static ?string $navigationIcon = 'heroicon-o-document';
 
     protected static ?int $navigationSort = -10;
 

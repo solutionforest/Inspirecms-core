@@ -10,43 +10,38 @@ class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
 
-    public function getCode(): string
+    public function getCode()
     {
         return $this->code;
     }
 
-    public function routePattern(): string
+    public function getLabel($displayLocale = null)
     {
-        return $this->route_pattern;
+        $result = locale_get_display_name($this->getCode(), $displayLocale);
+
+        if ($result === false) {
+            return $this->getCode();
+        }
+
+        return $result;
     }
 
-    public function getLabel(): string
-    {
-        return $this->name;
-    }
-
-    public function isDefault(): bool
+    public function isDefault()
     {
         return $this->is_default;
     }
 
-    public static function findOrCreateDefaultLanguage(): LanguageContract
+    public static function findOrCreateDefaultLanguage()
     {
         $locale = config('app.locale', 'en');
 
         // Create if not exists
-        /**
-         * @var LanguageContract
-         */
-        $result = static::query()->firstOrCreate(
+        return static::query()->firstOrCreate(
             ['code' => $locale],
             [
-                'name' => locale_get_display_name($locale) ?? $locale,
                 'is_default' => true,
             ]
         );
-
-        return $result;
     }
 
     public static function boot()

@@ -9,12 +9,10 @@ use SolutionForest\InspireCms\Models\Contracts\FieldGroupable;
 class FieldGroupableObserver
 {
     /**
-     * Handle "created" event.
-     *
-     * @param  FieldGroupable|Model  $model  The model instance being created.
+     * @param  FieldGroupable&Model  $model
      * @return void
      */
-    public function created(FieldGroupable | Model $model)
+    public function created($model)
     {
         if ($model->groupabled instanceof DocumentType) {
             $model->groupabled->inheritingDocumentTypes()->each(function ($documentType) use ($model) {
@@ -24,12 +22,10 @@ class FieldGroupableObserver
     }
 
     /**
-     * Handle "deleting" event.
-     *
-     * @param  FieldGroupable|Model  $model  The model instance being deleting.
+     * @param  FieldGroupable&Model  $model
      * @return void
      */
-    public function deleting(FieldGroupable | Model $model)
+    public function deleting($model)
     {
         if ($model->groupabled instanceof DocumentType) {
             $model->groupabled->inheritingDocumentTypes()->each(function (DocumentType $documentType) use ($model) {

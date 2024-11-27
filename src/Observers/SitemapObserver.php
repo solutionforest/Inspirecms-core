@@ -9,35 +9,34 @@ use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 class SitemapObserver
 {
     /**
-     * Handle "created" event.
-     *
-     * @param  Sitemap|Model  $model  The model instance being updated.
+     * @param  Sitemap&Model  $model
      * @return void
      */
-    public function created(Sitemap | Model $model)
+    public function created($model)
     {
-        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'created'));
+        $this->dispatchGenerateSitemapEvent($model, 'created');
     }
 
     /**
-     * Handle "updated" event.
-     *
-     * @param  Sitemap|Model  $model  The model instance being updated.
+     * @param  Sitemap&Model  $model
      * @return void
      */
-    public function updated(Sitemap | Model $model)
+    public function updated($model)
     {
-        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
+        $this->dispatchGenerateSitemapEvent($model, 'updated');
     }
 
     /**
-     * Handle "deleted" event.
-     *
-     * @param  Sitemap|Model  $model  The model instance being deleted.
+     * @param  Sitemap&Model  $model
      * @return void
      */
-    public function deleted(Sitemap | Model $model)
+    public function deleted($model)
     {
-        event(new GenerateSitemap(get_class($model), $model?->getKey(), 'deleted'));
+        $this->dispatchGenerateSitemapEvent($model, 'deleted');
+    }
+
+    protected function dispatchGenerateSitemapEvent($model, $action)
+    {
+        event(new GenerateSitemap(get_class($model), $model?->getKey(), $action));
     }
 }

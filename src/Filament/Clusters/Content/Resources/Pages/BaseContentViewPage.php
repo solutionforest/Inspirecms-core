@@ -28,7 +28,8 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     use ContentPageTrait;
     use HasPreviewModal;
     use ViewRecord\Concerns\Translatable {
-        updatedActiveLocale as protected traitUpdatedActiveLocale;
+        ContentFormTrait::updatedActiveLocale insteadof ViewRecord\Concerns\Translatable;
+        ContentFormTrait::fillForm insteadof ViewRecord\Concerns\Translatable;
     }
     use WithPagination;
 
@@ -69,22 +70,24 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
         ];
     }
 
-    public function updatedActiveLocale(string $newActiveLocale): void
-    {
-        $this->updatedActiveLocaleForContent($newActiveLocale);
-    }
-
     protected function configureAction(Actions\Action $action): void
     {
         parent::configureAction($action);
 
+        $resource = static::getResource();
+
         switch (true) {
             case $action instanceof Actions\RestoreAction:
                 $action
-                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], [], false));
+                    ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl($resource, ['index'], [], false));
 
                 break;
             case $action instanceof Actions\EditAction:
+
+                if ($resource::hasPage('edit')) {
+                    $action->url(fn (): string => static::getResource()::getUrl('edit', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]));
+                }
+
                 $action
                     ->hidden(fn ($record) => $record->trashed());
 
@@ -96,7 +99,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
                         fn ($record) => ! method_exists($record, 'getParentId') ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
-                        return $this->getUrl(['record' => $record]);
+                        return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
                     });
 
                 break;

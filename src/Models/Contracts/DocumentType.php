@@ -2,99 +2,138 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 
 interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInterface
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function fields(): HasManyThrough;
+    public function fields();
 
     /**
      * Get the field groups associated with the document type.
      *
-     * @return MorphToMany The field groups associated with the document type.
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany The field groups associated with the document type.
      */
-    public function fieldGroups(): MorphToMany;
+    public function fieldGroups();
 
     /**
      * Get the morph field groups associated with the document type.
      *
-     * @return MorphMany The morph field groups associated with the document type.
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany The morph field groups associated with the document type.
      */
-    public function fieldGroupables(): MorphMany;
+    public function fieldGroupables();
 
     /**
      * Get the document types that are inherited by this document type.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function inheritedDocumentTypes(): BelongsToMany;
+    public function inheritedDocumentTypes();
 
     /**
      * Get the document types that inherit from this document type.
      *
-     * @return BelongsToMany The relationship instance.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
      */
-    public function inheritingDocumentTypes(): BelongsToMany;
+    public function inheritingDocumentTypes();
 
     /**
      * Get the content associated with the document type.
      *
-     * @return HasMany The content associated with the document type.
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function content(): HasMany;
+    public function content();
 
     /**
      * Determine if the children should be displayed as a table.
      *
      * @return bool True if the children should be shown as a table, false otherwise.
      */
-    public function isShowChildrenAsTable(): bool;
+    public function isShowChildrenAsTable();
 
-    public function isWebPageType(): bool;
+    public function isWebPageType();
 
-    public function canInheriting(): bool;
+    public function canInheriting();
 
-    public function canBeInherited(): bool;
+    public function canBeInherited();
 
-    public function getCategoryEnum(): ?\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
+    /**
+     * Get the category enum for the document type.
+     *
+     * @return \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory|null The category enum or null if not set.
+     */
+    public function getCategoryEnum();
 
     /**
      * Get the class name of the type enumeration.
      *
      * @return string The class name of the type enumeration.
      */
-    public static function getCategoryEnumClass(): string;
+    public static function getCategoryEnumClass();
 
-    public function inheritDocumentType(string | int | DocumentType $documentType): bool;
+    /**
+     * Inherit the document type from another source.
+     *
+     * @param  string|int|DocumentType&Model  $documentType  The document type to inherit, which can be a string, an integer, or an instance of DocumentType.
+     * @return bool Returns true if the document type was successfully inherited, false otherwise.
+     */
+    public function inheritDocumentType($documentType);
 
-    public function inheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
+    /**
+     * Inherit field groups from the specified document type.
+     *
+     * @param  string|int|DocumentType&Model  $documentType  The document type to inherit field groups from.
+     *                                                       This can be a string, an integer, or an instance of DocumentType.
+     * @return bool Returns true if the field groups were successfully inherited, false otherwise.
+     */
+    public function inheritFieldGroupsFrom($documentType);
 
-    public function deteachInheritFieldGroupsFrom(string | int | DocumentType $documentType): bool;
+    /**
+     * Detaches inherited field groups from the specified document type.
+     *
+     * @param  string|int|DocumentType&Model  $documentType  The document type from which to detach inherited field groups.
+     * @return bool True on success, false on failure.
+     */
+    public function deteachInheritFieldGroupsFrom($documentType);
 
     /**
      * Determine if the document type can be a parent.
      *
      * @return bool True if the document type can be a parent, false otherwise.
      */
-    public function canBeParent(): bool;
+    public function canBeParent();
 
     /**
      * Determine if the document type can have a parent.
      *
      * @return bool True if the document type can have a parent, false otherwise.
      */
-    public function canHaveParent(): bool;
+    public function canHaveParent();
 
     /**
      * Determine if the document type can manage templates.
      *
      * @return bool True if the document type can manage templates, false otherwise.
      */
-    public function canManageTemplates(): bool;
+    public function canManageTemplates();
+
+    /**
+     * Scope a query to only include document types that can be inherited.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCanBeInherited($query);
+
+    /**
+     * Scope a query to only include web page document types.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereIsWebPage($query);
 }

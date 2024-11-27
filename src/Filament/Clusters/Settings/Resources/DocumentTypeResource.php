@@ -15,14 +15,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Contracts\DocumentTypeForm;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Pages;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
-use SolutionForest\InspireCms\Filament\Tables\Actions\QuickEditAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -87,16 +85,34 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ]);
     }
 
-    public static function quickForm(Form $form): Form
+    /**
+     * Used to define the form for the children relation manager.
+     */
+    public static function childrenForm(Form $form, $parent): Form
     {
         return $form
+            ->columns(3)
             ->schema([
-                static::getDisplayIdFormComponent()->inlineLabel(),
-                static::getDisplayParentFormComponent()->inlineLabel(),
-                static::getTitleFormComponent()->inlineLabel(),
-                static::getSlugFormComponent()->inlineLabel(),
-                static::getTypeFormComponent()->inlineLabel(),
-                static::getShowChildAsTableFormComponent(),
+
+                Forms\Components\Group::make()
+                    ->columns(1)
+                    ->columnSpan(2)
+                    ->schema([
+                        Forms\Components\Section::make()
+                            ->schema([
+                                static::getParentIdFormComponent($parent),
+                                static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
+                                static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
+                            ]),
+                    ]),
+                Forms\Components\Section::make()
+                    ->columns(1)
+                    ->columnSpan(1)
+                    ->schema([
+                        static::getTypeFormComponent($parent),
+                        static::getShowChildAsTableFormComponent(),
+                        static::getTimestampsGroupedFormComponent(),
+                    ]),
             ]);
     }
 
@@ -171,9 +187,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\ActionGroup::make([
-                    QuickEditAction::make(),
-                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -257,7 +270,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-        return UIHelper::generateTextWithBadge(static::getRecordTitle($record), $record->slug);
+        return UIHelper::generateTextWithBadge(
+            text: static::getRecordTitle($record),
+            badgeText: $record->slug,
+            attibutes: [
+                'text' => ['class' => 'flex-1 font-semibold'],
+                'badge' => ['class' => 'font-mono'],
+            ]
+        );
     }
     //endregion Global search
 
@@ -269,7 +289,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Placeholder::make('display_id')
             ->label(__('inspirecms::inspirecms.id'))
-            ->hiddenOn(['create', 'quick_create'])
+            ->hiddenOn(['create'])
             ->content(fn ($record) => $record?->getKey());
     }
 
@@ -281,18 +301,15 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\Placeholder::make('display_parent')
             ->label(__('inspirecms::inspirecms.parent'))
             ->visible(function ($operation, ?DocumentType $record) {
-                if ($operation === 'create' || $operation === 'quick_create') {
+                if ($operation === 'create') {
                     return false;
                 }
 
                 return $record?->canHaveParent() ?? false;
             })
-            ->content(function ($livewire, $record) {
-                if ($livewire instanceof DocumentTypeForm) {
-                    $parent = $livewire->getParent();
-                } else {
-                    $parent = $record?->parent;
-                }
+            ->content(function ($record) {
+
+                $parent = $record?->parent;
 
                 if (! $parent) {
                     return null;
@@ -322,7 +339,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::resources/document-type.title.label'))
             ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
                 // Fill slug if empty / operation is create
-                if ($operation === 'create' || $operation === 'quick_create' || empty($get('slug'))) {
+                if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', Str::slug($state));
                 }
             })
@@ -343,20 +360,25 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
+     * @param  DocumentType|Model|null  $parent
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getTypeFormComponent()
+    protected static function getTypeFormComponent($parent = null)
     {
         return Forms\Components\Select::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
             ->options(static::getModel()::getCategoryEnumClass())
             ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
-            ->disabled(function ($operation, $livewire) {
-                if ($operation === 'edit' || $operation === 'quick_edit') {
+            ->disabled(function ($operation) use ($parent) {
+                if ($operation === 'edit') {
                     return true;
-                } elseif ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
 
-                    return $livewire->canBeParent($livewire->getParentKey());
+                }
+                // If create with parent and parent can have children, disable this field
+                elseif ($operation === 'create' && ! is_null($parent) && $parent->canBeParent()) {
+
+                    return true;
+
                 }
 
                 return false;
@@ -400,18 +422,19 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
+     * @param  DocumentType|Model|null  $parent
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getParentIdFormComponent()
+    protected static function getParentIdFormComponent($parent = null)
     {
         return Forms\Components\Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->afterStateHydrated(function ($operation, $livewire, $state, $component) {
-                if ($operation === 'create' && $livewire instanceof DocumentTypeForm) {
-                    $parentKey = $livewire->getParentKey();
+            ->afterStateHydrated(function ($operation, $state, $component) use ($parent) {
 
-                    if ($livewire->canBeParent($parentKey)) {
-                        $component->state($parentKey);
+                if ($operation === 'create') {
+
+                    if ($parent?->canBeParent() ?? false) {
+                        $component->state($parent->getKey());
 
                         return;
                     }

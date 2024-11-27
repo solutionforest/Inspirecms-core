@@ -1,5 +1,5 @@
 @php
-    $locale = request()->getLocale();
+    $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('footer', $locale);
 @endphp
 <!-- Footer -->

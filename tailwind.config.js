@@ -1,4 +1,4 @@
-const preset = require('./vendor/filament/filament/tailwind.config.preset')
+const preset = require('./vendor/solution-forest/inspirecms-support/tailwind.config.preset')
 
 module.exports = {
     presets: [preset],

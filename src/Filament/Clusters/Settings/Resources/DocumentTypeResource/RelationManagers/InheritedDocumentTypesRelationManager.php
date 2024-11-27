@@ -7,6 +7,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\AttachAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -42,6 +43,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
+            ->openRecordUrlInNewTab()
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
@@ -66,18 +68,21 @@ class InheritedDocumentTypesRelationManager extends RelationManager
     {
         parent::configureAttachAction($action);
 
-        $action->after(function (array $data) {
-            $recordId = $data['recordId'] ?? null;
+        $action
+            ->slideOver()
+            ->modalWidth('lg')
+            ->after(function (array $data) {
+                $recordId = $data['recordId'] ?? null;
 
-            if (! $recordId) {
-                return;
-            }
+                if (! $recordId) {
+                    return;
+                }
 
-            $success = $this->getOwnerRecord()->inheritFieldGroupsFrom($recordId);
+                $success = $this->getOwnerRecord()->inheritFieldGroupsFrom($recordId);
 
-            $this->dispatch('refreshFieldGroups');
-            $this->dispatch('refreshAlerts');
-        });
+                $this->dispatch('refreshFieldGroups');
+                $this->dispatch('refreshAlerts');
+            });
     }
 
     protected function configureDetachAction(Tables\Actions\DetachAction $action): void
@@ -105,6 +110,6 @@ class InheritedDocumentTypesRelationManager extends RelationManager
 
     protected static function getModelLabel(): ?string
     {
-        return __('inspirecms::inspirecms.document_type');
+        return Str::lower(__('inspirecms::inspirecms.document_type'));
     }
 }

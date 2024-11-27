@@ -57,7 +57,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'force_delete_any',
             'publish',
             'unpublish',
-            'set_private',
         ];
     }
 
@@ -82,6 +81,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->persistTabInQueryString()
                     ->contained(false)
                     ->tabs([
+                        static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('seo')
                             ->label(__('inspirecms::resources/content.seo.heading'))
                             ->schema([
@@ -95,7 +95,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ]),
                                 static::getSeoFormComponent(),
                             ]),
-                        static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('sitemap')
                             ->label(__('inspirecms::resources/content.sitemap.heading'))
                             ->schema([
@@ -150,7 +149,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component | array
     {
         $langs = collect(InspireCms::getAllAvailableLanguages())
-            ->mapWithKeys(fn (LanguageDto $lang) => [$lang->code => $lang->name])
+            ->mapWithKeys(fn (LanguageDto $lang) => [$lang->code => $lang->getLabel()])
             ->all();
 
         return [
@@ -160,6 +159,17 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 ->selectablePlaceholder(false)
                 ->prefixIcon('heroicon-m-language')
                 ->hiddenLabel()
+                ->suffix(function ($state) {
+                    if (! $state) {
+                        return null;
+                    }
+                    $lang = collect(InspireCms::getAllAvailableLanguages())->get($state);
+                    if (! $lang || ! $lang?->isDefault) {
+                        return null;
+                    }
+
+                    return __('inspirecms::inspirecms.default');
+                })
                 ->live(),
             static::getPropertyDataValueComponent(),
         ];
@@ -169,6 +179,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->modifyQueryUsing(fn ($query) => $query->with('publishedVersions'))
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')
@@ -189,13 +200,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
                     ->getStateUsing(function ($record) {
-                        if ($record->isRoot()) {
+                        if ($record->isRootLevel()) {
                             return null;
                         }
 
                         return $record->parent?->title ?? $record->parent_id;
                     })
-                    ->grow(),
+                    ->grow()
+                    ->toggleable(),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::resources/content.visibility.label'))
                     ->columns([
@@ -417,9 +429,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                 return collect($documentType->templates)
                     ->mapWithKeys(function ($template) use ($documentType) {
+
                         $label = $template->slug;
+
                         if ($template->getKey() === $documentType->getDefaultTemplate()?->getKey()) {
-                            $label = '<b class="font-bold">' . $label . '</b><span class="font-mono"> (' . __('inspirecms::inspirecms.default') . ')</span>';
+                            $label .= ' [' . __('inspirecms::inspirecms.default') . ']';
                         }
 
                         return [
@@ -428,8 +442,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     })
                     ->all();
             })
-            ->searchable()
-            ->allowHtml()
             ->dehydrated(false)
             ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
                 if ($state) {
@@ -699,7 +711,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 $code = $livewire->getActiveActionsLocale();
                 $lang = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->code === $code);
 
-                $url = $record->getUrl($lang?->locale);
+                $url = $record->getUrl($lang);
+
+                if (is_null($url)) {
+                    return null;
+                }
 
                 return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
             });

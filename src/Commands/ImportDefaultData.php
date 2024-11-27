@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -16,86 +17,99 @@ class ImportDefaultData extends Command
 {
     public function handle(): int
     {
+        $this->publishAssets();
         $this->publishRotueDefinition();
+        $this->createSymlink();
 
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
-        $this->importDocumentType();
+        $this->importSampleData();
 
         return static::SUCCESS;
     }
 
     protected function importLanguageData(): void
     {
-        $this->info('Importing language data ...');
+        $this->components->task('Import language data', function () {
 
-        $model = InspireCmsConfig::getLanguageModelClass();
+            $model = InspireCmsConfig::getLanguageModelClass();
 
-        if (! $this->isTableExists($model)) {
-            return;
-        }
+            if (! $this->isTableExists($model)) {
+                return;
+            }
 
-        $model::findOrCreateDefaultLanguage();
+            $model::findOrCreateDefaultLanguage();
+        });
     }
 
     protected function importLaravelPermissionData(): void
     {
-        $this->info('Importing user role and permission data ...');
+        $this->components->task('Import user role and permission data', function () {
 
-        $tableNames = config('permission.table_names');
+            $tableNames = config('permission.table_names');
 
-        foreach ($tableNames as $key => $tableName) {
-            if (! $this->isTableExists($tableName)) {
-                return;
+            foreach ($tableNames as $key => $tableName) {
+                if (! $this->isTableExists($tableName)) {
+                    return;
+                }
             }
-        }
 
-        // Reset cached roles and permissions
-        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+            // Reset cached roles and permissions
+            app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $permissionClass = InspireCmsConfig::getPermissionModelClass();
-        $rolClass = InspireCmsConfig::getRoleModelClass();
+            $permissionClass = InspireCmsConfig::getPermissionModelClass();
+            $rolClass = InspireCmsConfig::getRoleModelClass();
 
-        $permissions = PermissionManifest::permissions()->map(
-            fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
-        );
+            $permissions = PermissionManifest::permissions()->map(
+                fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
+            );
 
-        // create roles and assign created permissions
-        $role = $rolClass::findOrCreate(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
+            // create roles and assign created permissions
+            $role = $rolClass::findOrCreate(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
 
-        // assign all permissions for "admin" role.
-        $role->syncPermissions($permissions);
+            // assign all permissions for "admin" role.
+            $role->syncPermissions($permissions);
+        });
+
     }
 
-    protected function importDocumentType(): void
+    protected function importSampleData(): void
     {
-        $this->info('Importing document type data ...');
+        $this->components->info('Import sample data');
 
-        $model = InspireCmsConfig::getDocumentTypeModelClass();
-
-        if (! $this->isTableExists($model)) {
-            return;
-        }
-
-        $model::firstOrCreate([
-            'slug' => 'homepage',
-        ], [
-            'title' => 'Homepage',
+        $this->call('vendor:publish', [
+            '--tag' => 'inspirecms-sample-views',
+            '--force' => true,
         ]);
+
+        $this->call('db:seed', [
+            '--class' => SampleSeeder::class,
+        ]);
+
+        $this->components->info('Sample data imported successfully.');
     }
 
     protected function publishRotueDefinition(): void
     {
         // Copy routes to user's routes/web.php
+        $this->components->task('Publish route definition', function () {
+            $destination = base_path('routes/web.php');
 
-        $this->info('Publishing route definition ...');
+            if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
+                (new Filesystem)->append($destination, $this->cmsRotueDefinition());
+            }
+        });
+    }
 
-        $destination = base_path('routes/web.php');
+    protected function publishAssets(): void
+    {
+        $this->call('filament:assets');
+    }
 
-        if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
-            (new Filesystem)->append($destination, $this->cmsRotueDefinition());
-        }
+    protected function createSymlink(): void
+    {
+        $this->call('storage:link');
     }
 
     protected function isTableExists(string $tableName): bool

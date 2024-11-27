@@ -3,20 +3,13 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Filament\Actions\Action;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
-use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\BaseContentResource;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages\EditPage;
-use SolutionForest\InspireCms\Models\Concerns\Publishable;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-
-use function Filament\Support\is_app_url;
 
 class ContentStatusManifest implements ContentStatusManifestInterface
 {
@@ -137,68 +130,6 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                             ->title(__('inspirecms::actions.unpublish.notifications.unpublished.title'))
                     )
             ),
-            new ContentStatusOption(
-                3,
-                'private',
-                false,
-                __('inspirecms::inspirecms.page_status.private.label'),
-                'secondary',
-                'heroicon-o-lock-closed',
-                fn () => Action::make('private')
-                    ->label(__('inspirecms::actions.private.label'))
-                    ->modalSubmitActionLabel(__('inspirecms::actions.private.actions.private.label'))
-                    ->color('gray')
-                    ->form(fn (Form $form) => $form->schema([
-                        BaseContentResource::getPublishedAtFormComponent(),
-                    ])->operation('publish'))
-                    ->beforeFormValidated(function (Action $action, $livewire) {
-
-                        if (! $livewire instanceof ContentForm) {
-                            throw new \RuntimeException('The Livewire component must implement ContentForm.');
-                        }
-
-                        try {
-
-                            if ($livewire instanceof EditPage) {
-                                $livewire->validatePublishableData();
-                            }
-
-                        } catch (\Throwable $e) {
-                            Notification::make()
-                                ->title(__('inspirecms::notification.form_check_error.title'))
-                                ->danger()
-                                ->send();
-
-                            throw $e;
-                        }
-                    })
-                    ->action(function (Model | Content $record, array $data, Action $action, $livewire) {
-                        if (is_null($record)) {
-                            $action->cancel();
-
-                            return;
-                        }
-
-                        if (! static::handlePublishableRecord($record, 'private', $livewire, $data)) {
-                            return;
-                        }
-
-                        $action->success();
-
-                        if ($livewire instanceof EditPage) {
-
-                            $redirectUrl = $livewire->getUrl(['record' => $record->getKey()]);
-
-                            $livewire->redirect($redirectUrl, navigate: FilamentView::hasSpaMode() && is_app_url($redirectUrl));
-                        }
-                    })
-                    ->authorize('setPrivate')
-                    ->successNotification(
-                        fn () => Notification::make()
-                            ->success()
-                            ->title(__('inspirecms::actions.private.notifications.updated.title'))
-                    )
-            ),
         ];
     }
 
@@ -221,12 +152,6 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             if (! $isSuccess) {
                 return false;
             }
-
-        } elseif (in_array(Publishable::class, class_uses_recursive($record))) {
-
-            $record->setPublishableState('private');
-
-            $record->save();
 
         } else {
 

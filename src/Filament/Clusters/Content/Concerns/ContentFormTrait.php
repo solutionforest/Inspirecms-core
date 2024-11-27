@@ -19,7 +19,18 @@ trait ContentFormTrait
 {
     protected ?string $publishOperation = null;
 
-    public function updatedActiveLocaleForContent(string $newActiveLocale): void
+    public function mountContentFormTrait(): void
+    {
+        if (blank($this->activeLocale)) {
+            if ($this instanceof \Filament\Resources\Pages\CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
+                $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
+            } else {
+                $this->activeLocale = $this->getDefaultTranslatableLocale();
+            }
+        }
+    }
+
+    public function updatedActiveLocale(string $newActiveLocale): void
     {
         if (blank($this->oldActiveLocale)) {
             return;
@@ -37,6 +48,33 @@ trait ContentFormTrait
         );
 
         unset($this->otherLocaleData[$this->activeLocale]);
+    }
+
+    protected function fillForm(): void
+    {
+        // apply the default locale if the active locale is not set
+        // $this->activeLocale = $this->getDefaultTranslatableLocale();
+        $this->activeLocale ??= $this->getDefaultTranslatableLocale();
+
+        $record = $this->getRecord();
+        $translatableAttributes = static::getResource()::getTranslatableAttributes();
+
+        foreach ($this->getTranslatableLocales() as $locale) {
+            $translatedData = [];
+
+            foreach ($translatableAttributes as $attribute) {
+                $translatedData[$attribute] = $record->getTranslation($attribute, $locale, useFallbackLocale: false);
+            }
+
+            if ($locale !== $this->activeLocale) {
+                $this->otherLocaleData[$locale] = $this->mutateFormDataBeforeFill($translatedData);
+
+                continue;
+            }
+
+            /** @internal Read the DocBlock above the following method. */
+            $this->fillFormWithDataAndCallHooks($record, $translatedData);
+        }
     }
 
     /**

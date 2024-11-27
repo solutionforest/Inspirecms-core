@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use Closure;
 use Illuminate\Support\Collection;
 
 /**
@@ -11,31 +10,27 @@ use Illuminate\Support\Collection;
 interface ContentServiceInterface
 {
     /**
-     * Search for content based on a keyword.
+     * Find a published web page by its ID.
      *
-     * @param  string  $keyword  The keyword to search for.
-     * @param  Closure|null  $builderCallback  Optional callback to modify the query builder.
-     * @param  Closure|null  $queryCallback  Optional callback to modify the query.
-     * @return TResult The search results.
+     * @param  string|int  $id  The ID of the web page to find.
+     * @return ?TResult The content item if found, or null if not found.
      */
-    public function search($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null);
+    public function findPublishedWebPageById($id);
 
     /**
-     * Search for a single content item based on the provided keyword.
+     * Find the default web page.
      *
-     * @param  string  $keyword  The keyword to search for.
-     * @param  Closure|null  $builderCallback  Optional callback to modify the query builder.
-     * @param  Closure|null  $queryCallback  Optional callback to modify the query.
-     * @return TResult The result of the search query.
+     * @return ?TResult The index web page.
      */
-    public function searchOne($keyword, ?Closure $builderCallback = null, ?Closure $queryCallback = null);
+    public function findDefaultWebPage();
 
     /**
-     * Find the index web page.
+     * Find a web page by its slug path.
      *
-     * @return TResult The index web page.
+     * @param  string  $slugPath  The slug path of the web page.
+     * @return ?TResult The web page object or null if not found.
      */
-    public function findIndexWebPage();
+    public function findWebPageBySlugPath(string $slugPath);
 
     /**
      * Retrieve content by its slug path.

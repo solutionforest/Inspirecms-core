@@ -2,28 +2,28 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Spatie\EloquentSortable\Sortable;
 
 interface FieldGroupable extends Sortable
 {
     /**
-     * Get the field group associated with the component field group.
+     * Get the field group that this model belongs to.
      *
-     * @return BelongsTo The associated field group.
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function fieldGroup(): BelongsTo;
+    public function fieldGroup();
 
     /**
-     * Get the model associated with the field groupable.
+     * Get the morphable relationship for the groupable model.
      *
-     * @return MorphTo The associated model.
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function groupabled(): MorphTo;
+    public function groupabled();
 
     /**
-     * Define a polymorphic relationship for inherited models.
+     * Get the morphable relationship for the inherited model.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
      */
-    public function inheritedFrom(): MorphTo;
+    public function inheritedFrom();
 }

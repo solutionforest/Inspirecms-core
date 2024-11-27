@@ -25,7 +25,7 @@ trait CmsUserTrait
             return false;
         }
 
-        // todo add more checks
+        // @todo add more checks
         return true;
     }
 
@@ -43,7 +43,7 @@ trait CmsUserTrait
         return null;
     }
 
-    public function isSuperAdmin(): bool
+    public function isSuperAdmin()
     {
         return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
     }
@@ -53,7 +53,7 @@ trait CmsUserTrait
         return InspireCmsConfig::getGuardName();
     }
 
-    public function handleActivity(UserActivity $activity)
+    public function handleActivity($activity)
     {
         switch ($activity) {
             case UserActivity::Login:

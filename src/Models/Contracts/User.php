@@ -8,26 +8,31 @@ use Filament\Models\Contracts\HasName;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 
 interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
 {
     /**
-     * Get the user activity associated with the user.
+     * Get the user's activity.
      *
-     * @return HasOne The associated user activity.
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function userActivity(): HasOne;
+    public function userActivity();
 
     /**
      * Determine if the user is a super admin.
      *
      * @return bool True if the user is a super admin, false otherwise.
      */
-    public function isSuperAdmin(): bool;
+    public function isSuperAdmin();
 
-    public function handleActivity(UserActivity $activity);
+    /**
+     * Handle the given user activity.
+     *
+     * @param  UserActivity  $activity  The user activity to handle.
+     * @return void
+     */
+    public function handleActivity($activity);
 
     /**
      * Determine if the user has exceeded the maximum number of login attempts.

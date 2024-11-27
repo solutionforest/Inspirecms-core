@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\CreateRecord;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
@@ -19,8 +18,15 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     use ContentPageTrait;
     use ContentPreviewEditorTrait;
     use CreateContentPageTrait;
-    use CreateRecord\Concerns\Translatable {
-        updatedActiveLocale as protected traitUpdatedActiveLocale;
+
+    // Commented out to insteadof CreateRecord\Concerns\Translatable
+    // use CreateRecord\Concerns\Translatable {
+    //     ContentFormTrait::updatedActiveLocale insteadof CreateRecord\Concerns\Translatable;
+    //     mountTranslatable as protected overrideMountTranslatableTrait;
+    // }
+    use CreatePage\Concerns\Translatable {
+        ContentFormTrait::updatedActiveLocale insteadof CreatePage\Concerns\Translatable;
+        mountTranslatable as protected overrideMountTranslatableTrait;
     }
     use WithPagination;
 
@@ -54,26 +60,14 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     {
         $resource = static::getResource();
 
-        if ($resource::hasPage('view') && $resource::canView($this->getRecord())) {
-            return $resource::getUrl('view', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
-        }
-
         if ($resource::hasPage('edit') && $resource::canEdit($this->getRecord())) {
             return $resource::getUrl('edit', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
         }
 
-        return $resource::getUrl('index');
-    }
+        if ($resource::hasPage('view') && $resource::canView($this->getRecord())) {
+            return $resource::getUrl('view', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
+        }
 
-    protected function getRedirectUrlParameters(): array
-    {
-        return [
-            'activeRelationManager' => 0,
-        ];
-    }
-
-    public function updatedActiveLocale(string $newActiveLocale): void
-    {
-        $this->updatedActiveLocaleForContent($newActiveLocale);
+        return $resource::getUrl('index', $this->getRedirectUrlParameters());
     }
 }

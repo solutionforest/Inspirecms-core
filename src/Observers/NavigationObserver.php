@@ -12,12 +12,10 @@ use SolutionForest\InspireCms\Models\Contracts\Navigation;
 class NavigationObserver
 {
     /**
-     * Handle "saving" event.
-     *
-     * @param  Navigation|Model  $model  The model instance being saving.
+     * @param  Navigation&Model  $model
      * @return void
      */
-    public function saving(Navigation | Model $model)
+    public function saving($model)
     {
         if ($model->type instanceof NavigationTypeEnumInterface) {
             $model->type = $model->type->value;
@@ -56,12 +54,10 @@ class NavigationObserver
     }
 
     /**
-     * Handle "deleting" event.
-     *
-     * @param  Navigation|Model  $model  The model instance being deleting.
+     * @param  Navigation&Model  $model
      * @return void
      */
-    public function deleting(Navigation | Model $model)
+    public function deleting($model)
     {
         $this->clearCached();
     }

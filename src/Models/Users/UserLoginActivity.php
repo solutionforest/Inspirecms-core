@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models\Users;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\UserLoginActivity as UserLoginActivityContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -18,7 +17,7 @@ class UserLoginActivity extends BaseModel implements UserLoginActivityContract
         'last_logged_out_at_utc' => 'datetime',
     ];
 
-    public function users(): HasMany
+    public function users()
     {
         return $this->hasMany(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
     }

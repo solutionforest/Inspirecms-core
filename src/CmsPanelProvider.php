@@ -53,27 +53,8 @@ class CmsPanelProvider extends PanelProvider
                 'warning' => Color::hex('#f39e19'),
 
                 'zinc' => Color::Zinc,
-                'lime' => Color::Lime,
             ])
             ->maxContentWidth('full')
-            ->plugins([
-                FilamentFieldGroupPlugin::make()
-                    ->enablePlugin()
-                    ->overrideResources([])
-                    ->fieldTypeConfigs([
-                        \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-
-                        \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
-                        \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
-
-                        \SolutionForest\InspireCms\Fields\Configs\Translate::class,
-
-                        \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
-                        \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
-                    ], false),
-                FilamentPeekPlugin::make(),
-                \Filament\SpatieLaravelTranslatablePlugin::make(),
-            ])
             ->resources(config('inspirecms.filament.resources'))
             ->pages([
                 ...array_values(config('inspirecms.filament.pages')),
@@ -115,6 +96,7 @@ class CmsPanelProvider extends PanelProvider
 
             });
 
+        $this->configurePlugins($panel);
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
         $this->configureFilamentActions($panel);
@@ -122,6 +104,48 @@ class CmsPanelProvider extends PanelProvider
         $this->registerLivewireComponents($panel);
 
         return $panel;
+    }
+
+    protected function configurePlugins(Panel $panel): Panel
+    {
+        $plugins[] = FilamentPeekPlugin::make();
+        $plugins[] = FilamentFieldGroupPlugin::make()
+            ->enablePlugin()
+            ->overrideResources([])
+            ->fieldTypeConfigs([
+                \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
+
+                \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
+                \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
+
+                \SolutionForest\InspireCms\Fields\Configs\Translate::class,
+
+                \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
+                \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
+            ], false);
+
+        $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
+        $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {
+
+            $lang = data_get(\SolutionForest\InspireCms\Facades\InspireCms::getAllAvailableLanguages(), $locale);
+
+            if (! $lang) {
+                return null;
+            }
+
+            $label = $lang->getLabel($displayLocale);
+
+            if ($lang->isDefault == true) {
+                $label .= ' [' . __('inspirecms::inspirecms.default') . ']';
+            }
+
+            return $label;
+
+        });
+
+        $plugins[] = $translatablePlugin;
+
+        return $panel->plugins($plugins);
     }
 
     protected function configureNavigation(Panel $panel): Panel

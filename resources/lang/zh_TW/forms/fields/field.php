@@ -25,7 +25,4 @@ return [
         'label' => '狀態路徑',
         'helper' => '',
     ],
-    'group' => [
-        'label' => '欄位群組',
-    ],
 ];

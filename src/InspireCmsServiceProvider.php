@@ -43,12 +43,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
-                    ->askToRunMigrations()
                     ->askToStarRepoOnGitHub('solution-forest/inspirecms')
                     ->startWith(function (InstallCommand $command) {
                         $command->call(Commands\InstallRequirePacakges::class);
                     })
                     ->endWith(function (InstallCommand $command) {
+                        $command->call('migrate');
                         $command->call(Commands\PublishPanel::class);
                         $command->call(Commands\ImportDefaultData::class);
                     });
@@ -187,9 +187,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
-            Commands\ImportSampleData::class,
             Commands\CleanupContentVersion::class,
-            Commands\RefreshIndexes::class,
         ];
     }
 
@@ -256,18 +254,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
-
-        if (InspireCmsConfig::get('override_plugins.scout', true)) {
-
-            $indexSettings = config('scout.meilisearch.index-settings', []);
-
-            if (InspireCmsConfig::get('indexes.content.enabled', true)) {
-                $indexSettings[InspireCmsConfig::getContentModelClass()] = InspireCmsConfig::get('indexes.content.index_settings', []);
-            }
-
-            config()->set('scout.meilisearch.index-settings', $indexSettings);
-            config()->set('scout.soft_delete', true);
-        }
     }
 
     protected function registerAuthGuard(): void
@@ -307,8 +293,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         //endregion User Auth Activity
 
         //region Content
-        Event::listen(Events\Content\DispatchIndexModel::class, Listeners\Content\ProcessRefreshIndex::class);
-        Event::listen(\Spatie\EloquentSortable\EloquentModelSortedEvent::class, Listeners\Content\ProcessRefreshIndex::class);
+        Event::listen(
+            Events\Content\UpdatePath::class,
+            [Listeners\Content\ProcessContentPath::class, 'handleUpsert']
+        );
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
         Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
         //endregion Content
@@ -335,19 +323,23 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerSupport(): void
     {
-        Support\Facades\MediaLibraryManifest::setModel(
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\MediaAsset::class,
             Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
         );
-        Support\Facades\MediaLibraryManifest::setDisk(config('inspirecms.media_library.disk'));
-        Support\Facades\MediaLibraryManifest::setDirectory(config('inspirecms.media_library.directory'));
-        Support\Facades\MediaLibraryManifest::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
-
-        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setNestableTreeModel(
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\NestableTree::class,
             Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
+        Support\Facades\MediaLibraryRegistry::setDisk(config('inspirecms.media_library.disk'));
+        Support\Facades\MediaLibraryRegistry::setDirectory(config('inspirecms.media_library.directory'));
+        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
+        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(config('inspirecms.media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        Support\Facades\ResolverManifest::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
+        Support\Facades\InspireCmsSupport::setAuthGuard(config('inspirecms.auth.guard'));
+
+        Support\Facades\ResolverRegistry::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
     }
 
     protected function getConfigSupoortModels(): array

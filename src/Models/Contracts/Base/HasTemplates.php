@@ -13,21 +13,27 @@ interface HasTemplates
      *
      * @return MorphToMany The templates associated with the document type.
      */
-    public function templates(): MorphToMany;
+    public function templates();
 
     /**
      * Get the morph field templates associated with the document type.
      *
      * @return MorphMany The morph field templates associated with the document type.
      */
-    public function templateable(): MorphMany;
+    public function templateable();
 
     /**
      * Set the specified template as the default for the document type.
      *
      * @param  Template|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
+     * @return void
      */
-    public function setAsDefaultTemplate(Template | string | int $template): void;
+    public function setAsDefaultTemplate($template);
 
-    public function getDefaultTemplate(): ?Template;
+    /**
+     * Get the default template.
+     *
+     * @return Template|null The default template or null if not set.
+     */
+    public function getDefaultTemplate();
 }

@@ -48,6 +48,8 @@ return [
 
         ],
 
+        'empty_state' => 'No document types available. Please create a document type first.',
+
     ],
 
     'content_history' => [
@@ -108,44 +110,6 @@ return [
 
         'label' => 'More actions',
 
-    ],
-
-    'quick_create' => [
-
-        'label' => 'Quick create',
-
-        'modal' => [
-
-            'heading' => 'Quick create :label',
-
-            'actions' => [
-
-                'create' => [
-
-                    'label' => 'Create',
-
-                ],
-            ],
-        ],
-    ],
-
-    'quick_edit' => [
-
-        'label' => 'Quick edit',
-
-        'modal' => [
-
-            'heading' => 'Quick edit :label',
-
-            'actions' => [
-
-                'save' => [
-
-                    'label' => 'Save',
-
-                ],
-            ],
-        ],
     ],
 
     'save' => [
@@ -209,6 +173,23 @@ return [
         ],
 
         'permission_display_name' => 'Reorder content',
+
+    ],
+
+    'set_default_content_page' => [
+
+        'label' => 'Set as default page',
+
+        'permission_display_name' => 'Set default page',
+
+        'notifications' => [
+
+            'success' => [
+
+                'title' => 'Set as default page successful',
+
+            ],
+        ],
 
     ],
 ];

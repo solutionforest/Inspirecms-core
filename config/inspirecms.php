@@ -3,7 +3,6 @@
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
@@ -52,7 +51,6 @@ return [
             'page' => PageResource::class,
             'document_type' => DocumentTypeResource::class,
             'field_group' => FieldGroupResource::class,
-            'field' => FieldResource::class,
             'language' => LanguageResource::class,
             'template' => TemplateResource::class,
             'user' => UserResource::class,
@@ -76,6 +74,7 @@ return [
             \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
 
             \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
+            \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
         ],
     ],
 
@@ -86,6 +85,7 @@ return [
             'width' => 300,
             'height' => 300,
         ],
+        'should_map_video_properties_with_ffmpeg' => false,
     ],
 
     'models' => [
@@ -95,6 +95,7 @@ return [
             'content' => Models\Content::class,
             'content_version' => Models\ContentVersion::class,
             'content_web_setting' => Models\ContentWebSetting::class,
+            'content_path' => Models\ContentPath::class,
             'document_type' => Models\DocumentType::class,
             'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
             'language' => Models\Language::class,
@@ -112,7 +113,6 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
-        'scout' => true,
     ],
 
     'permissions' => [
@@ -124,30 +124,17 @@ return [
     ],
 
     'resolvers' => [
-        'user' => \SolutionForest\InspireCms\Support\Resolver\UserResolver::class,
+        'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
     ],
 
     'generators' => [
-        'content_path_generator' => \SolutionForest\InspireCms\Generators\PathGenerators\ContentPathGenerator::class,
         'content_url_generator' => \SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGenerator::class,
         'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
-    ],
-
-    'indexes' => [
-        'content' => [
-            'enabled' => true,
-            'index_name' => 'content_index',
-            'index_settings' => [
-                'filterableAttributes' => ['full_path', 'is_web', '__soft_deleted'],
-                'sortableAttributes' => ['level', 'published_at'],
-            ],
-        ],
     ],
 
     'routes' => [
         'middleware' => [
             'web',
-            \SolutionForest\InspireCms\Http\Middlewares\ContentLocaleMiddleware::class,
         ],
         'sitemap' => [
             'file_path' => public_path('sitemap.xml'),

@@ -1,7 +1,10 @@
-<x-layout :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()">
-    <x-header />
+@php
+    $locale = $content->getLocale() ?? request()->getLocale();
+@endphp
+<x-layout :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
+    <x-header :locale="$locale" />
 
     {{ $slot }}
 
-    <x-footer />
+    <x-footer :locale="$locale" />
 </x-layout>

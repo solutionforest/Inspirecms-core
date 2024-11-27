@@ -8,12 +8,10 @@ use SolutionForest\FilamentFieldGroup\Models\Field;
 class FieldObserver
 {
     /**
-     * Handle "saving" event.
-     *
-     * @param  Field|Model  $model  The model instance being saving.
+     * @param  Field&Model  $model
      * @return void
      */
-    public function saving(Field | Model $model)
+    public function saving($model)
     {
         $model->config ??= [];
     }
