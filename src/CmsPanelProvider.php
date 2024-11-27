@@ -20,7 +20,6 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\HtmlString;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
