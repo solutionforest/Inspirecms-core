@@ -67,7 +67,7 @@ class PropertyDataDto extends BaseDto
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Translate:
 
-                $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($propertyType->field, []);
+                $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($propertyType->field, $propertyType->fieldConfig ?? []);
 
                 // If the inner property type is not found, return null.
                 if (is_null($innerPropertyType)) {
@@ -125,6 +125,7 @@ class PropertyDataDto extends BaseDto
                     $propertyTypes = [];
 
                     foreach ($data as $key => $value) {
+                        
                         $field = collect($propertyType->fields)->firstWhere('name', $key);
 
                         if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
