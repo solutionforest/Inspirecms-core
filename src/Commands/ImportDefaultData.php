@@ -19,6 +19,7 @@ class ImportDefaultData extends Command
     {
         $this->publishAssets();
         $this->publishRotueDefinition();
+        $this->createSymlink();
 
         $this->importLanguageData();
         $this->importLaravelPermissionData();
@@ -104,6 +105,11 @@ class ImportDefaultData extends Command
     protected function publishAssets(): void
     {
         $this->call('filament:assets');
+    }
+
+    protected function createSymlink(): void
+    {
+        $this->call('storage:link');
     }
 
     protected function isTableExists(string $tableName): bool
