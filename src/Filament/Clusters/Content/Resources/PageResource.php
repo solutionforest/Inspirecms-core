@@ -84,7 +84,10 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
             $whereClause = $isFirst ? 'where' : 'orWhere';
 
             $query->when(
-                str($searchAttribute)->contains('.') && str($searchAttribute)->afterLast('.') != 'id',
+                // Check if the search attribute is a relation column
+                str($searchAttribute)->contains('.') && 
+                // Check if the search attribute is not an id column
+                str($searchAttribute)->afterLast('.') != 'id',
                 function (Builder $query) use ($databaseConnection, $isForcedCaseInsensitive, $searchAttribute, $search, $whereClause): Builder {
                     return $query->{"{$whereClause}Relation"}(
                         (string) str($searchAttribute)->beforeLast('.'),
