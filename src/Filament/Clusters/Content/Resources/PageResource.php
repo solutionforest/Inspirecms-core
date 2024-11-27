@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
@@ -11,6 +12,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Content;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+
+use function Filament\Support\generate_search_column_expression;
 
 class PageResource extends BaseContentResource implements ClusterSectionResource
 {
@@ -46,7 +49,12 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     //region Global search
     public static function getGloballySearchableAttributes(): array
     {
-        return ['id', 'slug'];
+        /**
+         * @var Model
+         */
+        $model = app(static::getModel());
+
+        return [$model->qualifyColumn('id'), 'slug'];
     }
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
@@ -61,6 +69,44 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
                 </x-filament::badge>
             </div>
         blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
+    }
+    
+    /**
+     * @param  array<string>  $searchAttributes
+     */
+    protected static function applyGlobalSearchAttributeConstraint(Builder $query, string $search, array $searchAttributes, bool &$isFirst): Builder
+    {
+        $model = $query->getModel();
+
+        $isForcedCaseInsensitive = static::isGlobalSearchForcedCaseInsensitive();
+
+        /** @var Connection $databaseConnection */
+        $databaseConnection = $query->getConnection();
+
+        foreach ($searchAttributes as $searchAttribute) {
+            $whereClause = $isFirst ? 'where' : 'orWhere';
+
+            $query->when(
+                str($searchAttribute)->contains('.') && str($searchAttribute)->afterLast('.') != 'id',
+                function (Builder $query) use ($databaseConnection, $isForcedCaseInsensitive, $searchAttribute, $search, $whereClause): Builder {
+                    return $query->{"{$whereClause}Relation"}(
+                        (string) str($searchAttribute)->beforeLast('.'),
+                        generate_search_column_expression((string) str($searchAttribute)->afterLast('.'), $isForcedCaseInsensitive, $databaseConnection),
+                        'like',
+                        "%{$search}%",
+                    );
+                },
+                fn (Builder $query) => $query->{$whereClause}(
+                    generate_search_column_expression($searchAttribute, $isForcedCaseInsensitive, $databaseConnection),
+                    'like',
+                    "%{$search}%",
+                ),
+            );
+
+            $isFirst = false;
+        }
+
+        return $query;
     }
     //endregion Global search
 
