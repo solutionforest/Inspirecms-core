@@ -41,8 +41,8 @@ class ContentObserver
     {
         // Set "is_default" of other content as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
-            $original = $model->newQuery()->where('is_default', true)->whereKeyNot($model->getKey())->get();
-            $original->each(function (Content | Model $item) {
+            $otherDefaultContent = $this->getOtherDefaultContent($model);
+            $otherDefaultContent->each(function (Content | Model $item) {
                 $item->is_default = false;
                 $item->save();
             });
@@ -117,6 +117,14 @@ class ContentObserver
 
         $model->sitemap?->setEnable();
         $model->navigation?->setEnable();
+
+        // Have other default content and this content is default
+        if ($model->is_default) {
+            $otherDefaultContent = $this->getOtherDefaultContent($model);
+            if ($otherDefaultContent->isNotEmpty()) {
+                $model->is_default = false;
+            }
+        }
     }
 
     protected function clearCached()
@@ -128,12 +136,17 @@ class ContentObserver
     {
         event(new UpdatePath($model->withoutRelations()));
 
-        if ($model->is_default) {
-            return;
-        }
-
         $model->children->each(function ($child) {
             $this->createOrUpdateDefaultPath($child);
         });
+    }
+
+    /**
+     * @param \SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model $original
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    protected function getOtherDefaultContent(Content | Model $original)
+    {
+        return $original->newQuery()->where('is_default', true)->whereKeyNot($original->getKey())->get();
     }
 }
