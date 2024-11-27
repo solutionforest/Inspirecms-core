@@ -33,7 +33,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             return $model::query()
                 ->limit($component->getOptionsLimit())
                 ->when(filled($search), function ($query) use ($search) {
-                    $query->where('name', 'like', "%$search%");
+                    $query->where('slug', 'like', "%$search%");
                 })
                 ->get()
                 ->mapWithKeys(fn ($model) => [

@@ -29,6 +29,9 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public function getFormSchema(): array
     {
+        $exceptsInnerFields = [
+            'translate',
+        ];
         return [
 
             Forms\Components\Section::make()
@@ -36,14 +39,8 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->compact()
                 ->schema([
                     Forms\Components\Select::make('field')
-                        ->options(function () {
-                            $options = FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions();
-                            // filter out the current field type
-                            $configNames = $this->getConfigNames()[0];
-                            unset($options[$configNames['group']]);
-
-                            return $options;
-                        })
+                        ->options(fn () => FieldTypeHelper::getFieldTypeOptions(excepts: $exceptsInnerFields))
+                        ->getSearchResultsUsing(fn ($search) => FieldTypeHelper::getFieldTypeOptions($search, excepts: $exceptsInnerFields))
                         ->searchable()->allowHtml()
                         ->required()
                         ->live(debounce: 500)

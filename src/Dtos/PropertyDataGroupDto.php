@@ -41,6 +41,6 @@ class PropertyDataGroupDto extends BaseDto
      */
     public function getPropertyData(string $key)
     {
-        return collect($this->data)->first(fn (PropertyDataDto $p) => $p->key === $key);
+        return collect($this->data)->first(fn (PropertyDataDto $p) => $p->key == $key);
     }
 }

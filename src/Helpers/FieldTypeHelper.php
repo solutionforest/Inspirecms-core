@@ -37,7 +37,7 @@ class FieldTypeHelper
         return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
     }
 
-    public static function getFieldTypeOptions(?string $search = null): array
+    public static function getFieldTypeOptions(?string $search = null, array $excepts = []): array
     {
         $options = FilamentFieldGroup::getFieldTypeOptions();
 
@@ -45,6 +45,13 @@ class FieldTypeHelper
             $options = Arr::where(
                 $options,
                 fn ($item) => str_contains($item['name'], $search)
+            );
+        }
+
+        if (!empty($excepts)) {
+            $options = Arr::where(
+                $options,
+                fn ($item) => !in_array($item['name'], $excepts)
             );
         }
 
