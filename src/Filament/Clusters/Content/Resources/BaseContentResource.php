@@ -149,7 +149,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getPreviewBuilderEditorSchema(string $builderName): Forms\Components\Component | array
     {
         $langs = collect(InspireCms::getAllAvailableLanguages())
-            ->mapWithKeys(fn (LanguageDto $lang) => [$lang->code => $lang->name])
+            ->mapWithKeys(fn (LanguageDto $lang) => [$lang->code => $lang->getLabel()])
             ->all();
 
         return [
