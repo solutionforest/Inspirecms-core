@@ -56,7 +56,7 @@ document.addEventListener('alpine:init', () => {
         className: "boarding-popover-ctn", // className to wrap boarding.js popover
         animate: false, // Whether to animate or not
         opacity: 0.75, // Overlay opacity (0 means only popovers and without overlay)
-        padding: 8, // Distance of element from around the edges
+        padding: 2, // Distance of element from around the edges
         allowClose: false, // Whether the click on overlay should close or not
         overlayClickNext: true, // Whether the click on overlay should move next
         overlayColor: "rgb(0,0,0)", // Fill color for the overlay
@@ -200,6 +200,7 @@ document.addEventListener('alpine:init', () => {
             popover: {
               ...generalPopoverOptions,
               title: "Create a new Document Type",
+              prefferedSide: "left",
             },
           }
         ],

@@ -9,7 +9,7 @@
 
 .boarding-popover-ctn {
 
-    @apply min-w-52 max-w-60 !pb-5;
+    @apply min-w-52 max-w-60 rounded-md shadow-lg shadow-gray-600 m-0 !pb-5;
     
     .boarding-popover-description {
         @apply text-sm text-gray-500;
