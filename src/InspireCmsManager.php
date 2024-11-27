@@ -194,7 +194,7 @@ class InspireCmsManager
     //region Helpers
     private function getSerializedLanguagesForCache(): array
     {
-        $attributes = ['id', 'code', 'name', 'is_default'];
+        $attributes = ['id', 'code', 'is_default'];
 
         $alias = $this->aliasModelFields($attributes);
 

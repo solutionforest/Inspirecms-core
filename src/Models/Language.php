@@ -15,9 +15,15 @@ class Language extends BaseModel implements LanguageContract
         return $this->code;
     }
 
-    public function getLabel()
+    public function getLabel($displayLocale = null)
     {
-        return $this->name;
+        $result = locale_get_display_name($this->getCode(), $displayLocale);
+
+        if ($result === false) {
+            return $this->getCode();
+        }
+
+        return $result;
     }
 
     public function isDefault()
@@ -33,7 +39,6 @@ class Language extends BaseModel implements LanguageContract
         return static::query()->firstOrCreate(
             ['code' => $locale],
             [
-                'name' => locale_get_display_name($locale) ?? $locale,
                 'is_default' => true,
             ]
         );

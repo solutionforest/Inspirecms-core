@@ -20,21 +20,12 @@ class LanguageDto extends BaseDto
     public $code;
 
     /**
-     * @var string
-     */
-    public $name;
-
-    /**
      * @var bool
      */
     public $isDefault;
 
     public static function fromArray(array $parameters)
     {
-        if (! isset($parameters['label'])) {
-            $parameters['label'] = $parameters['code'];
-        }
-
         if (isset($parameters['is_default'])) {
             $parameters['isDefault'] = (bool) $parameters['is_default'];
         } elseif (! isset($parameters['isDefault'])) {
@@ -42,5 +33,26 @@ class LanguageDto extends BaseDto
         }
 
         return parent::fromArray($parameters);
+    }
+
+    /**
+     * Get the label for the language.
+     *
+     * @param string|null $displayLocale The locale to display the label in. If null, the default locale will be used.
+     * @return string The label for the language.
+     */
+    public function getLabel($displayLocale = null)
+    {
+        if (is_null($this->code)) {
+            return '';
+        }
+        
+        $result = locale_get_display_name($this->code, $displayLocale);
+
+        if ($result === false) {
+            return $this->code;
+        }
+
+        return $result;
     }
 }

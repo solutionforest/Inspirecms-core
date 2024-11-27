@@ -70,7 +70,7 @@ trait ContentPageTrait
 
                 return $record->children_count > 0;
             })
-            ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
+            ->mutuateRootNodeItemsUsing(fn ($items)  => array_merge([
                 [
                     'key' => 'root',
                     'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
@@ -83,10 +83,21 @@ trait ContentPageTrait
                 ],
             ], $items))
             ->mutuateNodeItemsUsing(function (array $item, Model $record) {
-                $item['link'] = FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['edit', 'view'], [
+
+                $itemUrlParams = [
                     'record' => $record,
                     'activeRelationManager' => 0,
-                ], true);
+                ];
+
+                if (property_exists($this, 'activeLocale')) {
+                    $itemUrlParams['activeLocale'] = $this->activeLocale;
+                }
+
+                $item['link'] = FilamentResourceHelper::attemptToGetUrl(
+                    static::getResource(), 
+                    ['edit', 'view'], 
+                    $itemUrlParams, 
+                    true);
 
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');

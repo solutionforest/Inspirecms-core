@@ -774,15 +774,12 @@ Html;
 
         $languagesData = [
             'en' => [
-                'name' => 'English',
                 'is_default' => true,
             ],
             'zh_Hant' => [
-                'name' => 'Traditional Chinese',
                 'is_default' => false,
             ],
             'zh_Hans' => [
-                'name' => 'Simplified Chinese',
                 'is_default' => false,
             ],
         ];
