@@ -111,7 +111,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
 
     public function getRedirectUrl(): ?string
     {
-        return $this->getUrl(['record' => $this->getRecord()]);
+        return $this->getUrl(['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]);
     }
 
     protected function handleRecordUpdate(Model $record, array $data): Model
