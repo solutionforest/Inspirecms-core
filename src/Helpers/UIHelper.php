@@ -204,16 +204,20 @@ class UIHelper
         ]));
     }
 
-    public static function generateTextWithBadge(string $text, $badgeText, string $color = 'primary', ?string $icon = null): HtmlString
+    /**
+     * @param array<string,array{class:[]string}> $attributes Additional HTML attributes for the badge.
+     */
+    public static function generateTextWithBadge(string $text, $badgeText, string $color = 'primary', ?string $icon = null, $attibutes = []): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
-            <div class="flex items-center gap-2">
-                <span>
+            <div class="flex items-center gap-x-2">
+                <span class="{{$textClass}}">
                     {{$text}}
                 </span>
                 <x-filament::badge
                     color="{{$color}}"
                     icon="{{$icon}}"
+                    class="{{$badgeClass}}"
                 >
                     {{$badgeText}}
                 </x-filament::badge>
@@ -223,6 +227,8 @@ class UIHelper
             'badgeText' => $badgeText,
             'color' => $color,
             'icon' => $icon,
+            'textClass' => \Illuminate\Support\Arr::toCssClasses($attibutes['text']['class'] ?? []),
+            'badgeClass' => \Illuminate\Support\Arr::toCssClasses($attibutes['badge']['class'] ?? []),
         ]));
     }
 }

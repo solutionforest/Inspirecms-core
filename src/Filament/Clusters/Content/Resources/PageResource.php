@@ -6,12 +6,11 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Filament\Clusters\Content;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 
 use function Filament\Support\generate_search_column_expression;
 
@@ -59,16 +58,14 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-        return new HtmlString(Blade::render(<<<'blade'
-            <div class="flex gap-x-2 items-center">
-                <span class="flex-1 font-semibold">
-                    {{ $title }}
-                </span>
-                <x-filament::badge class="font-mono">
-                    {{ $badge }}
-                </x-filament::badge>
-            </div>
-        blade, ['title' => static::getRecordTitle($record), 'badge' => $record->slug]));
+        return UIHelper::generateTextWithBadge(
+            text: static::getRecordTitle($record), 
+            badgeText: $record->slug, 
+            attibutes: [
+                'text' => ['class' => 'flex-1 font-semibold'],
+                'badge' => ['class' => 'font-mono'],
+            ]
+        );
     }
     
     /**
