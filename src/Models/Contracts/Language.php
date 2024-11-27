@@ -14,7 +14,7 @@ interface Language
     /**
      * Get the language label.
      *
-     * @param string|null $displayLocale
+     * @param  string|null  $displayLocale
      * @return string The language label.
      */
     public function getLabel($displayLocale = null);

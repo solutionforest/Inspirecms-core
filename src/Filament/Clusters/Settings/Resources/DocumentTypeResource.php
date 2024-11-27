@@ -271,8 +271,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
         return UIHelper::generateTextWithBadge(
-            text: static::getRecordTitle($record), 
-            badgeText: $record->slug, 
+            text: static::getRecordTitle($record),
+            badgeText: $record->slug,
             attibutes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],

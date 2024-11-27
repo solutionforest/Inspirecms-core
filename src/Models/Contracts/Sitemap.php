@@ -23,21 +23,21 @@ interface Sitemap extends ActivableEntity, HasLocaleUrl
 
     /**
      * Get the last modified date of the sitemap.
-     * 
+     *
      * @return \DateTime
      */
     public function getLastModified();
 
     /**
      * Get the change frequency of the sitemap.
-     * 
+     *
      * @return string
      */
     public function getChangeFrequency();
 
     /**
      * Get the priority of the sitemap.
-     * 
+     *
      * @return float
      */
     public function getPriority();
@@ -52,8 +52,7 @@ interface Sitemap extends ActivableEntity, HasLocaleUrl
     /**
      * Scope a query to only include enabled items.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereEnabled($query, bool $condition = true);

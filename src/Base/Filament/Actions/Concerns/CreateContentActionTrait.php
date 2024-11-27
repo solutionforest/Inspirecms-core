@@ -62,7 +62,7 @@ trait CreateContentActionTrait
 
         $this->modalContent(function ($livewire) use ($contentResource) {
 
-            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ?  $livewire->getActiveActionsLocale() : null;
+            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
             return view('inspirecms::filament.actions.create-content', [
                 'documentTypes' => $this->getAvailableDocumentTypes(),

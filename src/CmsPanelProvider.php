@@ -136,7 +136,7 @@ class CmsPanelProvider extends PanelProvider
             $label = $lang->getLabel($displayLocale);
 
             if ($lang->isDefault == true) {
-                $label .= ' ['.__('inspirecms::inspirecms.default').']';
+                $label .= ' [' . __('inspirecms::inspirecms.default') . ']';
             }
 
             return $label;

@@ -38,7 +38,7 @@ class LanguageDto extends BaseDto
     /**
      * Get the label for the language.
      *
-     * @param string|null $displayLocale The locale to display the label in. If null, the default locale will be used.
+     * @param  string|null  $displayLocale  The locale to display the label in. If null, the default locale will be used.
      * @return string The label for the language.
      */
     public function getLabel($displayLocale = null)
@@ -46,7 +46,7 @@ class LanguageDto extends BaseDto
         if (is_null($this->code)) {
             return '';
         }
-        
+
         $result = locale_get_display_name($this->code, $displayLocale);
 
         if ($result === false) {

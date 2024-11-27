@@ -13,7 +13,7 @@ interface ContentVersion
 
     /**
      * Get the associated publish log for the content version.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function publishLog();
@@ -26,8 +26,7 @@ interface ContentVersion
     /**
      * Scope a query to only include published content versions.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsPublished($query, bool $condition = true);

@@ -21,7 +21,7 @@ interface ContentPublishVersion
     /**
      * Scope a query to only include published content.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsPublished($query);

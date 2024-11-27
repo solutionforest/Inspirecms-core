@@ -25,6 +25,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
             'repeater',
             'translate',
         ];
+
         return [
             Forms\Components\Repeater::make('fields')
                 ->columnSpanFull()

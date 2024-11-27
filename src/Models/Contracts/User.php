@@ -29,7 +29,7 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     /**
      * Handle the given user activity.
      *
-     * @param UserActivity $activity The user activity to handle.
+     * @param  UserActivity  $activity  The user activity to handle.
      * @return void
      */
     public function handleActivity($activity);

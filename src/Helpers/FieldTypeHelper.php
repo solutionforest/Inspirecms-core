@@ -48,10 +48,10 @@ class FieldTypeHelper
             );
         }
 
-        if (!empty($excepts)) {
+        if (! empty($excepts)) {
             $options = Arr::where(
                 $options,
-                fn ($item) => !in_array($item['name'], $excepts)
+                fn ($item) => ! in_array($item['name'], $excepts)
             );
         }
 

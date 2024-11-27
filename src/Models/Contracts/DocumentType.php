@@ -8,7 +8,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
     public function fields();
@@ -29,7 +29,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
 
     /**
      * Get the document types that are inherited by this document type.
-     * 
+     *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function inheritedDocumentTypes();
@@ -78,7 +78,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
     /**
      * Inherit the document type from another source.
      *
-     * @param string|int|DocumentType&Model $documentType The document type to inherit, which can be a string, an integer, or an instance of DocumentType.
+     * @param  string|int|DocumentType&Model  $documentType  The document type to inherit, which can be a string, an integer, or an instance of DocumentType.
      * @return bool Returns true if the document type was successfully inherited, false otherwise.
      */
     public function inheritDocumentType($documentType);
@@ -86,8 +86,8 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
     /**
      * Inherit field groups from the specified document type.
      *
-     * @param string|int|DocumentType&Model $documentType The document type to inherit field groups from. 
-     *                                              This can be a string, an integer, or an instance of DocumentType.
+     * @param  string|int|DocumentType&Model  $documentType  The document type to inherit field groups from.
+     *                                                       This can be a string, an integer, or an instance of DocumentType.
      * @return bool Returns true if the field groups were successfully inherited, false otherwise.
      */
     public function inheritFieldGroupsFrom($documentType);
@@ -95,7 +95,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
     /**
      * Detaches inherited field groups from the specified document type.
      *
-     * @param string|int|DocumentType&Model $documentType The document type from which to detach inherited field groups.
+     * @param  string|int|DocumentType&Model  $documentType  The document type from which to detach inherited field groups.
      * @return bool True on success, false on failure.
      */
     public function deteachInheritFieldGroupsFrom($documentType);
@@ -120,11 +120,11 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
      * @return bool True if the document type can manage templates, false otherwise.
      */
     public function canManageTemplates();
-    
+
     /**
      * Scope a query to only include document types that can be inherited.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCanBeInherited($query);
@@ -132,7 +132,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
     /**
      * Scope a query to only include web page document types.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsWebPage($query);

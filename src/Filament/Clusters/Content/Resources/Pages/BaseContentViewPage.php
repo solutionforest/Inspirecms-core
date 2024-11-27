@@ -83,7 +83,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
 
                 break;
             case $action instanceof Actions\EditAction:
-                
+
                 if ($resource::hasPage('edit')) {
                     $action->url(fn (): string => static::getResource()::getUrl('edit', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]));
                 }

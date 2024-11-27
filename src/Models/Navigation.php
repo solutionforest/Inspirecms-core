@@ -32,13 +32,13 @@ class Navigation extends BaseModel implements NavigationContract
         'url',
     ];
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function content()
     {
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getUrl($locale = null)
     {
         switch (trim($this->type)) {

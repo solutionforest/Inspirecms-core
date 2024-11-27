@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use SolutionForest\InspireCms\Events\Content\ChangeStatus;
 use SolutionForest\InspireCms\Events\Content\UpdatePath;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -144,7 +143,7 @@ class ContentObserver
     }
 
     /**
-     * @param \SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model $original
+     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model  $original
      * @return \Illuminate\Database\Eloquent\Collection
      */
     protected function getOtherDefaultContent($original)
@@ -159,7 +158,7 @@ class ContentObserver
     /**
      * Get the total count of default content based on the provided query.
      *
-     * @param \Illuminate\Database\Query\Builder $query The query builder instance.
+     * @param  \Illuminate\Database\Query\Builder  $query  The query builder instance.
      * @return int The total count of default content.
      */
     protected function getTotalDefaultContent($query)

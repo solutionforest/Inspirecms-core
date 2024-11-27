@@ -26,8 +26,7 @@ interface Field extends BaseContract, HasDtoModel
     /**
      * Scope a query to only include fields of a given group.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $group
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeByGroup($query, string $group);
@@ -35,7 +34,7 @@ interface Field extends BaseContract, HasDtoModel
     /**
      * Scope a query to include fields with a group name.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWithGroupName($query);

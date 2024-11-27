@@ -26,7 +26,6 @@ interface HasTemplates
      * Set the specified template as the default for the document type.
      *
      * @param  Template|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
-     * 
      * @return void
      */
     public function setAsDefaultTemplate($template);

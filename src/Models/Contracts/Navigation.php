@@ -63,12 +63,11 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
      * @return bool True if the navigation item is visible, false otherwise.
      */
     public function isVisibility();
-    
+
     /**
      * Scope a query to only include navigation items of a given category type.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $type
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeCategory($query, string $type);
@@ -76,8 +75,7 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
     /**
      * Scope a query to only include active records.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsActive($query, bool $condition = true);

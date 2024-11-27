@@ -84,7 +84,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
             fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record, ...$this->getRedirectUrlParameters()], false)
         );
     }
-    
+
     protected function getRedirectUrlParameters(): array
     {
         return [

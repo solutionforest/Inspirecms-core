@@ -32,6 +32,7 @@ class Translate extends FieldTypeBaseConfig implements FieldTypeConfig
         $exceptsInnerFields = [
             'translate',
         ];
+
         return [
 
             Forms\Components\Section::make()

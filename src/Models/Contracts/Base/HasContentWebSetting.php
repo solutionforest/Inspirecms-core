@@ -8,7 +8,7 @@ interface HasContentWebSetting
 {
     /**
      * Define a one-to-one relationship with the WebSetting model.
-     * 
+     *
      * @return HasOne
      */
     public function webSetting();

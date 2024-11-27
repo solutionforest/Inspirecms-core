@@ -14,10 +14,11 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 abstract class BaseContentCreatePage extends BaseCreatePage implements ContentForm, HasModelExplorer
 {
-    use ContentPageTrait;
     use ContentFormTrait;
+    use ContentPageTrait;
     use ContentPreviewEditorTrait;
     use CreateContentPageTrait;
+
     // Commented out to insteadof CreateRecord\Concerns\Translatable
     // use CreateRecord\Concerns\Translatable {
     //     ContentFormTrait::updatedActiveLocale insteadof CreateRecord\Concerns\Translatable;

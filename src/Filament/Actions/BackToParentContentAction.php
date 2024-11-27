@@ -39,7 +39,7 @@ class BackToParentContentAction extends Action
 
             $resource = InspireCmsConfig::get('filament.resources.page', PageResource::class);
 
-            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ?  $livewire->getActiveActionsLocale() : null;
+            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
             $parameters = [
                 'record' => $record->parent,

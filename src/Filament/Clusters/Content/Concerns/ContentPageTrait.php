@@ -39,7 +39,7 @@ trait ContentPageTrait
             $this->refreshModelExplorerSidebar();
         }
     }
-    
+
     protected function queryStringContentPageTrait()
     {
         return [
@@ -77,7 +77,7 @@ trait ContentPageTrait
 
                 return $record->children_count > 0;
             })
-            ->mutuateRootNodeItemsUsing(fn ($items)  => array_merge([
+            ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
                 [
                     'key' => 'root',
                     'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
@@ -97,13 +97,14 @@ trait ContentPageTrait
                 ];
 
                 // query string activeLocale at queryString()
-                $itemUrlParams['locale'] = method_exists($this, 'getActiveActionsLocale') ?  $this->getActiveActionsLocale() : null;
+                $itemUrlParams['locale'] = method_exists($this, 'getActiveActionsLocale') ? $this->getActiveActionsLocale() : null;
 
                 $item['link'] = FilamentResourceHelper::attemptToGetUrl(
-                    static::getResource(), 
-                    ['edit', 'view'], 
-                    $itemUrlParams, 
-                    true);
+                    static::getResource(),
+                    ['edit', 'view'],
+                    $itemUrlParams,
+                    true
+                );
 
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');
@@ -188,7 +189,7 @@ trait ContentPageTrait
 
                         $itemLabel = $item['label'] ?? null;
 
-                        $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ?  $livewire->getActiveActionsLocale() : null;
+                        $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
                         if (! blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
                             $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
@@ -273,7 +274,7 @@ trait ContentPageTrait
     {
         return [];
     }
-    
+
     protected function getRedirectUrlParameters(): array
     {
         return [

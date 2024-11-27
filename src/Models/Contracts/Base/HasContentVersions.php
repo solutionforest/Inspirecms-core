@@ -20,27 +20,28 @@ interface HasContentVersions
 
     /**
      * Get the logs of the published versions.
-     * 
+     *
      * @return HasMany
      */
     public function publishVersionLogs();
 
     /**
      * Get the published versions.
-     * 
+     *
      * @return BelongsToMany
      */
     public function publishedVersions();
 
     /**
      * Get the latest content version associated with the model.
-     * 
+     *
      * @return HasOne
      */
     public function latestContentVersion();
 
     /**
      * Summary of getPublishedVersions
+     *
      * @return Collection<\SolutionForest\InspireCms\Models\Contracts\ContentVersion&Model>
      */
     public function getPublishedVersions();
@@ -102,7 +103,6 @@ interface HasContentVersions
      * behavior of the entity.
      *
      * @param  string  $state  The state to set for the publishable state.
-     * 
      * @return void
      */
     public function setPublishableState(string $state);
@@ -121,7 +121,6 @@ interface HasContentVersions
      * Sets the versioning event for the content.
      *
      * @param  string  $event  The event to set for versioning.
-     * 
      * @return void
      */
     public function setVersioningEvent(string $event);
@@ -137,7 +136,6 @@ interface HasContentVersions
      * Sets the publishable data for the content.
      *
      * @param  array  $data  An associative array containing the publishable data.
-     * 
      * @return void
      */
     public function setPublishableData(array $data);
@@ -155,7 +153,7 @@ interface HasContentVersions
      * Preloads the content version data.
      *
      * This method is responsible for preloading any necessary data related to content versions.
-     * 
+     *
      * @return void
      */
     public function preloadContentVersionData();
@@ -175,7 +173,7 @@ interface HasContentVersions
      *
      * This method is responsible for resetting any state or data
      * related to the content version of the implementing class.
-     * 
+     *
      * @return void
      */
     public function resetContentVersionState();
@@ -183,8 +181,7 @@ interface HasContentVersions
     /**
      * Scope a query to only include published content versions.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsPublished($query, bool $condition = true);

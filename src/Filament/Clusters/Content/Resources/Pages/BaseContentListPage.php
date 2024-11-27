@@ -15,6 +15,7 @@ use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 abstract class BaseContentListPage extends BaseListPage implements HasModelExplorer
 {
     use ContentPageTrait;
+
     // Commented out to insteadof ListRecords\Concerns\Translatable
     // use ListRecords\Concerns\Translatable;
     use ListPage\Concerns\Translatable;

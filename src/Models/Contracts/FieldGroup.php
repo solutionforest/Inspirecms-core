@@ -21,8 +21,7 @@ interface FieldGroup extends BaseContract
     /**
      * Scope a query to only include active records.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereActive($query, bool $condition = true);

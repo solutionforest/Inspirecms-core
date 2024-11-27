@@ -125,7 +125,7 @@ class PropertyDataDto extends BaseDto
                     $propertyTypes = [];
 
                     foreach ($data as $key => $value) {
-                        
+
                         $field = collect($propertyType->fields)->firstWhere('name', $key);
 
                         if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {

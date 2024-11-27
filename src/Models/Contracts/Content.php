@@ -14,7 +14,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelatio
 /**
  * @template TDto of \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto
  */
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasRecursiveRelationshipsInterface, HasLocaleUrl
+interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
     /**
      * Return the document type relation.
@@ -25,14 +25,14 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
 
     /**
      * Define a one-to-one relationship for the sitemap.
-     * 
+     *
      * @return MorphOne
      */
     public function sitemap();
 
     /**
      * Establish a relationship with the parent model, including those that are soft deleted.
-     * 
+     *
      * @return BelongsTo
      */
     public function trashedParent();
@@ -40,7 +40,7 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     /**
      * Define a method to retrieve navigation data.
      *
-     * @return HasOne 
+     * @return HasOne
      */
     public function navigation();
 
@@ -52,11 +52,10 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     /**
      * Converts the given record and property data to a preview DTO.
      *
-     * @param array|Model&Content $record The record to be converted, either as an array or a Model instance.
-     * @param array $propertyData The property data associated with the record.
-     * @param string|null $locale Optional. The locale to be used for the preview. Defaults to null.
-     * @param DocumentType&Model|null $documentType Optional. The document type to be used for the preview. Defaults to null.
-     *
+     * @param  array|Model&Content  $record  The record to be converted, either as an array or a Model instance.
+     * @param  array  $propertyData  The property data associated with the record.
+     * @param  string|null  $locale  Optional. The locale to be used for the preview. Defaults to null.
+     * @param  DocumentType&Model|null  $documentType  Optional. The document type to be used for the preview. Defaults to null.
      * @return TDto The preview DTO.
      */
     public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null);
@@ -85,7 +84,7 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     /**
      * Scope a query to only include web pages.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsWebPage($query);
