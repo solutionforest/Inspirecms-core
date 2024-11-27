@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap as SitemapContract;
@@ -17,20 +16,17 @@ class Sitemap extends BaseModel implements SitemapContract
         'enable' => 'boolean',
     ];
 
-    public function model(): MorphTo
+    public function model()
     {
         return $this->morphTo();
     }
 
-    public function getType(): string
+    public function getType()
     {
         return $this->model_type ?? 'general';
     }
 
-    /**
-     * Get the URL of the sitemap.
-     */
-    public function getUrl(?string $locale = null): string
+    public function getUrl($locale = null)
     {
         if ($this->model && $this->model instanceof Contracts\Content) {
             return $this->model->getUrl($locale) ?? '';
@@ -39,26 +35,17 @@ class Sitemap extends BaseModel implements SitemapContract
         return $this->url ?? '';
     }
 
-    /**
-     * Get the last modified date of the sitemap.
-     */
-    public function getLastModified(): \DateTime
+    public function getLastModified()
     {
         return $this->{$this->getUpdatedAtColumn()};
     }
 
-    /**
-     * Get the change frequency of the sitemap.
-     */
-    public function getChangeFrequency(): string
+    public function getChangeFrequency()
     {
         return (SitemapChangeFrequency::tryFrom($this->change_frequency) ?? SitemapChangeFrequency::Monthly)->value;
     }
 
-    /**
-     * Get the priority of the sitemap.
-     */
-    public function getPriority(): float
+    public function getPriority()
     {
         return $this->priority;
     }
@@ -111,7 +98,7 @@ class Sitemap extends BaseModel implements SitemapContract
     }
     //endregions Scope(s)
 
-    public function setDisable(bool $save = true): void
+    public function setDisable(bool $save = true)
     {
         $this->enable = false;
         if ($save) {
@@ -119,7 +106,7 @@ class Sitemap extends BaseModel implements SitemapContract
         }
     }
 
-    public function setEnable(bool $save = true): void
+    public function setEnable(bool $save = true)
     {
         $this->enable = true;
         if ($save) {

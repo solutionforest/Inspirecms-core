@@ -2,10 +2,14 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
 interface ContentWebSetting extends HasDtoModel
 {
-    public function redirectContent(): BelongsTo;
+    /**
+     * Define a relationship to redirect content.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function redirectContent();
 }

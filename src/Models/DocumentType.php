@@ -2,11 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -26,7 +21,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         'show_children_as_table' => 'boolean',
     ];
 
-    public function fields(): HasManyThrough
+    public function fields()
     {
         // target model
         $fieldModelClass = InspireCmsConfig::getFieldModelClass();
@@ -60,30 +55,30 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             ->orderBy($fieldModel->qualifyColumn($fieldModel->determineOrderColumnName()));
     }
 
-    public function fieldGroups(): MorphToMany
+    public function fieldGroups()
     {
         return $this->morphToMany(InspireCmsConfig::getFieldGroupModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName())
             ->withPivot(['order', 'inherited_from_id', 'inherited_from_type'])
             ->using(InspireCmsConfig::getFieldGroupableModelClass());
     }
 
-    public function fieldGroupables(): MorphMany
+    public function fieldGroupables()
     {
         return $this->morphMany(InspireCmsConfig::getFieldGroupableModelClass(), 'groupabled')
             ->orderBy('order');
     }
 
-    public function inheritedDocumentTypes(): BelongsToMany
+    public function inheritedDocumentTypes()
     {
         return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getDocumentTypeInheritanceTableName(), 'document_type_id', 'inherited_document_type_id');
     }
 
-    public function inheritingDocumentTypes(): BelongsToMany
+    public function inheritingDocumentTypes()
     {
         return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getDocumentTypeInheritanceTableName(), 'inherited_document_type_id', 'document_type_id');
     }
 
-    public function content(): HasMany
+    public function content()
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
@@ -100,32 +95,32 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     }
     //endregion Scope(s)
 
-    public function isShowChildrenAsTable(): bool
+    public function isShowChildrenAsTable()
     {
         return $this->show_children_as_table;
     }
 
-    public function isWebPageType(): bool
+    public function isWebPageType()
     {
         return $this->category == DocumentTypeCategoryEnum::Web->value;
     }
 
-    public function canInheriting(): bool
+    public function canInheriting()
     {
         return $this->getCategoryEnum()?->canInheriting() ?? false;
     }
 
-    public function canBeInherited(): bool
+    public function canBeInherited()
     {
         return $this->getCategoryEnum()?->canBeInherited() ?? false;
     }
 
-    public function getCategoryEnum(): ?DocumentTypeCategoryInterface
+    public function getCategoryEnum()
     {
         return static::getCategoryEnumClass()::tryFrom($this->category);
     }
 
-    public static function getCategoryEnumClass(): string
+    public static function getCategoryEnumClass()
     {
         $class = DocumentTypeCategoryEnum::class;
 
@@ -136,7 +131,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $class;
     }
 
-    public function inheritDocumentType(string | int | DocumentTypeContract $documentType): bool
+    public function inheritDocumentType($documentType)
     {
         try {
             if (is_string($documentType) || is_int($documentType)) {
@@ -158,7 +153,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         }
     }
 
-    public function inheritFieldGroupsFrom(string | int | DocumentTypeContract $documentType): bool
+    public function inheritFieldGroupsFrom($documentType)
     {
         try {
             if (is_string($documentType) || is_int($documentType)) {
@@ -203,7 +198,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         }
     }
 
-    public function deteachInheritFieldGroupsFrom(string | int | DocumentTypeContract $documentType): bool
+    public function deteachInheritFieldGroupsFrom($documentType)
     {
         try {
             if (is_string($documentType) || is_int($documentType)) {
@@ -224,17 +219,17 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         }
     }
 
-    public function canBeParent(): bool
+    public function canBeParent()
     {
         return $this->exists && $this->isWebPageType();
     }
 
-    public function canHaveParent(): bool
+    public function canHaveParent()
     {
         return $this->exists && ! $this->isRoot() && $this->isWebPageType();
     }
 
-    public function canManageTemplates(): bool
+    public function canManageTemplates()
     {
         return $this->exists && $this->isWebPageType();
     }

@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Observers\ContentVersionObserver;
@@ -25,17 +23,17 @@ class ContentVersion extends BaseModel implements ContentVersionContract
 
     public $timestamps = false;
 
-    public function content(): BelongsTo
+    public function content()
     {
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function publishLog(): HasOne
+    public function publishLog()
     {
         return $this->hasOne(InspireCmsConfig::getContentPublishVersionModelClass(), 'version_id');
     }
 
-    public function getDifferences(): array
+    public function getDifferences()
     {
         $from = $this->from_data;
         $to = $this->to_data;

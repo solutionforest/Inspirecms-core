@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
@@ -33,12 +32,14 @@ class Navigation extends BaseModel implements NavigationContract
         'url',
     ];
 
-    public function content(): BelongsTo
+    /** @inheritDoc */
+    public function content()
     {
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function getUrl(null | string | LanguageDto $locale = null): ?string
+    /** @inheritDoc */
+    public function getUrl($locale = null)
     {
         switch (trim($this->type)) {
             case NavigationTypeEnum::Link->value:
@@ -59,27 +60,27 @@ class Navigation extends BaseModel implements NavigationContract
     //region Scopes
     public function scopeCategory($query, string $type)
     {
-        $query->where('category', $type);
+        return $query->where('category', $type);
     }
 
     public function scopeWhereIsActive($query, bool $condition = true)
     {
-        $query->where('is_active', $condition);
+        return $query->where('is_active', $condition);
     }
     //endregion Scopes
 
-    public function isVisibility(): bool
+    public function isVisibility()
     {
         return $this->is_active;
     }
 
     //region Enums
-    public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface
+    public function getNavigationCategoryEnum()
     {
         return static::getNavigationCategoryEnumClass()::tryFrom($this->category);
     }
 
-    public static function getNavigationCategoryEnumClass(): string
+    public static function getNavigationCategoryEnumClass()
     {
         $class = NavigationCategoryEnum::class;
 
@@ -90,12 +91,12 @@ class Navigation extends BaseModel implements NavigationContract
         return $class;
     }
 
-    public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface
+    public function getNavigationTypeEnum()
     {
         return static::getNavigationTypeEnumClass()::tryFrom($this->type);
     }
 
-    public static function getNavigationTypeEnumClass(): string
+    public static function getNavigationTypeEnumClass()
     {
         $class = NavigationTypeEnum::class;
 
@@ -116,12 +117,12 @@ class Navigation extends BaseModel implements NavigationContract
     }
     //endregion Node
 
-    public static function defaultContentId(): string | int | null
+    public static function defaultContentId()
     {
         return KeyHelper::generateMinUuid();
     }
 
-    public function setDisable(bool $save = true): void
+    public function setDisable(bool $save = true)
     {
         $this->is_active = false;
         if ($save) {
@@ -129,7 +130,7 @@ class Navigation extends BaseModel implements NavigationContract
         }
     }
 
-    public function setEnable(bool $save = true): void
+    public function setEnable(bool $save = true)
     {
         $this->is_active = true;
         if ($save) {

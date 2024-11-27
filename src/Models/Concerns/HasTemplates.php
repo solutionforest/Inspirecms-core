@@ -2,25 +2,24 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
-use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 trait HasTemplates
 {
-    public function templates(): MorphToMany
+    public function templates()
     {
         return $this->morphToMany(InspireCmsConfig::getTemplateModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName())
             ->withPivot(['is_default']);
     }
 
-    public function templateable(): MorphMany
+    public function templateable()
     {
         return $this->morphMany(InspireCmsConfig::getTemplateableModelClass(), 'templateable');
     }
 
-    public function setAsDefaultTemplate(Template | string | int $template): void
+    /** @inheritDoc*/
+    public function setAsDefaultTemplate($template)
     {
         $templateId = $template instanceof Template ? $template->getKey() : $template;
 
@@ -33,7 +32,7 @@ trait HasTemplates
             ->update(['is_default' => false]);
     }
 
-    public function getDefaultTemplate(): ?Template
+    public function getDefaultTemplate()
     {
         if ($this->relationLoaded('templates')) {
             return $this->templates->first(fn (Template $template) => $template->pivot->is_default);

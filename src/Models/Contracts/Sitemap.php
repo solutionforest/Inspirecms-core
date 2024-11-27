@@ -2,33 +2,45 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
+use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 
-interface Sitemap
+interface Sitemap extends ActivableEntity, HasLocaleUrl
 {
-    public function model(): MorphTo;
-
-    public function getType(): string;
+    /**
+     * Get the model that this sitemap belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     */
+    public function model();
 
     /**
-     * Get the URL of the sitemap.
+     * Get the type of the sitemap.
+     *
+     * @return string The type of the sitemap.
      */
-    public function getUrl(?string $locale = null): string;
+    public function getType();
 
     /**
      * Get the last modified date of the sitemap.
+     * 
+     * @return \DateTime
      */
-    public function getLastModified(): \DateTime;
+    public function getLastModified();
 
     /**
      * Get the change frequency of the sitemap.
+     * 
+     * @return string
      */
-    public function getChangeFrequency(): string;
+    public function getChangeFrequency();
 
     /**
      * Get the priority of the sitemap.
+     * 
+     * @return float
      */
-    public function getPriority(): float;
+    public function getPriority();
 
     /**
      * Generate the sitemap item.
@@ -37,7 +49,12 @@ interface Sitemap
      */
     public function generateSitemapItem(): array;
 
-    public function setDisable(bool $save = true): void;
-
-    public function setEnable(bool $save = true): void;
+    /**
+     * Scope a query to only include enabled items.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool $condition
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereEnabled($query, bool $condition = true);
 }

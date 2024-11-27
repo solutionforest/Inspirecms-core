@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -12,13 +10,13 @@ use SolutionForest\InspireCms\Models\Contracts\FieldGroup as FieldGroupContract;
 class FieldGroup extends BaseModel implements FieldGroupContract
 {
     /** {@inheritDoc} */
-    public function documentTypes(): MorphToMany
+    public function documentTypes()
     {
         return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'groupabled', InspireCmsConfig::getFieldGroupableTableName());
     }
 
     /** {@inheritDoc} */
-    public function groupabled(): HasMany
+    public function groupabled()
     {
         return $this->hasMany(InspireCmsConfig::getFieldGroupableModelClass(), 'field_group_id');
     }
@@ -84,6 +82,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
     }
 
     //region Scopes
+    /** {@inheritDoc} */
     public function scopeWhereActive($query, bool $condition = true)
     {
         return $query->where('active', $condition);

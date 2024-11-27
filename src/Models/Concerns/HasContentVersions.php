@@ -2,9 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -30,19 +27,19 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function contentVersions(): HasMany
+    public function contentVersions()
     {
         return $this->hasMany(InspireCmsConfig::getContentVersionModelClass(), 'content_id');
     }
 
     /** {@inheritDoc} */
-    public function publishVersionLogs(): HasMany
+    public function publishVersionLogs()
     {
         return $this->hasMany(InspireCmsConfig::getContentPublishVersionModelClass(), 'content_id');
     }
 
     /** {@inheritDoc} */
-    public function publishedVersions(): BelongsToMany
+    public function publishedVersions()
     {
         return $this->belongsToMany(
             InspireCmsConfig::getContentVersionModelClass(),
@@ -52,12 +49,12 @@ trait HasContentVersions
         )->withPivot('published_at')->orderBy('published_at', 'desc')->using(InspireCmsConfig::getContentPublishVersionModelClass());
     }
 
-    public function latestContentVersion(): HasOne
+    public function latestContentVersion()
     {
         return $this->hasOne(InspireCmsConfig::getContentVersionModelClass(), 'content_id')->latestOfMany();
     }
 
-    public function getPublishedVersions(): Collection
+    public function getPublishedVersions()
     {
         if (! $this->relationLoaded('publishedVersions')) {
             $this->loadMissing('publishedVersions');
@@ -71,18 +68,18 @@ trait HasContentVersions
         return $this->getPublishedVersions()->sortByDesc('pivot.published_at');
     }
 
-    public function getLatestContentVersionHasPublish(): ?ContentVersion
+    public function getLatestContentVersionHasPublish()
     {
         return $this->getOrderedPublishedVersions()->first();
     }
 
-    public function getLatestPublishedContentVersion(): ?ContentVersion
+    public function getLatestPublishedContentVersion()
     {
         return $this->getOrderedPublishedVersions()->where(fn ($version) => $version?->pivot?->published_at?->isPast())->first();
     }
 
     /** {@inheritDoc} */
-    public function getLatestPublishedPropertyData(): array
+    public function getLatestPublishedPropertyData()
     {
         $latestContentVersion = $this->getLatestPublishedContentVersion();
 
@@ -90,7 +87,7 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function getLatestVersionPropertyData(): array
+    public function getLatestVersionPropertyData()
     {
         $this->loadMissing('latestContentVersion');
 
@@ -100,37 +97,37 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function setPublishableState(string $state): void
+    public function setPublishableState(string $state)
     {
         $this->publishableState = $state;
     }
 
     /** {@inheritDoc} */
-    public function getPublishableState(): string
+    public function getPublishableState()
     {
         return $this->publishableState;
     }
 
     /** {@inheritDoc} */
-    public function setVersioningEvent(string $event): void
+    public function setVersioningEvent(string $event)
     {
         $this->versioningEvent = $event;
     }
 
     /** {@inheritDoc} */
-    public function getVersioningEvent(): ?string
+    public function getVersioningEvent()
     {
         return $this->versioningEvent;
     }
 
     /** {@inheritDoc} */
-    public function setPublishableData(array $data): void
+    public function setPublishableData(array $data)
     {
         $this->publishableData = $data;
     }
 
     /** {@inheritDoc} */
-    public function getPublishableData(): array
+    public function getPublishableData()
     {
         return $this->publishableData;
     }
@@ -143,19 +140,19 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function preloadContentVersionData(): void
+    public function preloadContentVersionData()
     {
         $this->preloadContentVersionData = $this->prepareContentVersionData();
     }
 
     /** {@inheritDoc} */
-    public function getPreloadVersionData(): array
+    public function getPreloadVersionData()
     {
         return $this->preloadContentVersionData;
     }
 
     /** {@inheritDoc} */
-    public function resetContentVersionState(): void
+    public function resetContentVersionState()
     {
         $this->resetPublishableData();
         $this->resetPublishableState();

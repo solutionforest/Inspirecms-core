@@ -9,26 +9,26 @@ interface Language
      *
      * @return string The language code.
      */
-    public function getCode(): string;
+    public function getCode();
 
     /**
      * Get the language label.
      *
      * @return string The language label.
      */
-    public function getLabel(): string;
+    public function getLabel();
 
     /**
      * Determine if the language is the default language.
      *
      * @return bool True if the language is default, false otherwise.
      */
-    public function isDefault(): bool;
+    public function isDefault();
 
     /**
      * Find or create the default language.
      *
-     * @return Language The found or newly created default language instance.
+     * @return Language&Model The found or newly created default language instance.
      */
-    public static function findOrCreateDefaultLanguage(): Language;
+    public static function findOrCreateDefaultLanguage();
 }

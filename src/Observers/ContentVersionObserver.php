@@ -8,23 +8,19 @@ use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 class ContentVersionObserver
 {
     /**
-     * Handle "creating" event.
-     *
-     * @param  ContentVersion|Model  $model  The model instance being creating.
+     * @param  ContentVersion&Model  $model
      * @return void
      */
-    public function creating(ContentVersion | Model $model)
+    public function creating($model)
     {
         $model->created_at = $model->freshTimestamp();
     }
 
     /**
-     * Handle "deleting" event.
-     *
-     * @param  ContentVersion|Model  $model  The model instance being deleting.
+     * @param  ContentVersion&Model  $model
      * @return void
      */
-    public function deleting(ContentVersion | Model $model)
+    public function deleting($model)
     {
         $model->publishLog()->delete();
     }

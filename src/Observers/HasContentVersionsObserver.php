@@ -17,12 +17,10 @@ class HasContentVersionsObserver
     public static $restoring = false;
 
     /**
-     * Handle the saving event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function saving(HasContentVersions | Model $model)
+    public function saving($model)
     {
         // Skip state the versioning if restoring
         if (static::$restoring) {
@@ -34,12 +32,10 @@ class HasContentVersionsObserver
     }
 
     /**
-     * Handle the saved event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function saved(HasContentVersions | Model $model)
+    public function saved($model)
     {
         // Skip state the versioning if restoring
         if (static::$restoring) {
@@ -49,12 +45,10 @@ class HasContentVersionsObserver
     }
 
     /**
-     * Handle the deleting event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function deleting(HasContentVersions | Model $model)
+    public function deleting($model)
     {
         if (! $this->isSupportSoftDelete($model)) {
             $this->deleteContentVersions($model);
@@ -62,42 +56,36 @@ class HasContentVersionsObserver
     }
 
     /**
-     * Handle the forceDeleting event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function forceDeleting(HasContentVersions | Model $model)
+    public function forceDeleting($model)
     {
         $this->deleteContentVersions($model);
     }
 
     /**
-     * Handle the restoring event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function restoring(HasContentVersions | Model $model)
+    public function restoring($model)
     {
         // When restoring a model, an updated event is also fired.
         static::$restoring = true;
     }
 
     /**
-     * Handle the resotred event.
-     *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions  $model
+     * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function resotred(HasContentVersions | Model $model)
+    public function resotred($model)
     {
         // Once the model is restored, we need to put everything back
         // as before, in case a legitimate update event is fired
         static::$restoring = false;
     }
 
-    protected function dispatchContentVersioning(HasContentVersions | Model $model)
+    protected function dispatchContentVersioning($model)
     {
         $model->preloadContentVersionData();
 
@@ -105,12 +93,12 @@ class HasContentVersionsObserver
         event(new DispatchContentVersion($model->withoutRelations()));
     }
 
-    protected function isSupportSoftDelete(HasContentVersions | Model $model)
+    protected function isSupportSoftDelete($model)
     {
         return in_array(SoftDeletes::class, class_uses($model));
     }
 
-    protected function deleteContentVersions(HasContentVersions | Model $model)
+    protected function deleteContentVersions($model)
     {
         $model->contentVersions()->delete();
         $model->publishVersionLogs()->delete();

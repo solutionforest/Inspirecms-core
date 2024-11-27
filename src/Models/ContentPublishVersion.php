@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion as ContentPublishVersionContract;
 use SolutionForest\InspireCms\Support\Base\Models\BasePivotModel;
@@ -17,12 +16,12 @@ class ContentPublishVersion extends BasePivotModel implements ContentPublishVers
         'published_at' => 'datetime',
     ];
 
-    public function content(): BelongsTo
+    public function content()
     {
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
     }
 
-    public function version(): BelongsTo
+    public function version()
     {
         return $this->belongsTo(InspireCmsConfig::getContentVersionModelClass(), 'version_id');
     }

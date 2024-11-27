@@ -10,12 +10,10 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 class DocumentTypeObserver
 {
     /**
-     * Handle "saving" event.
-     *
-     * @param  DocumentType|Model  $model  The model instance being saving.
+     * @param  DocumentType&Model  $model
      * @return void
      */
-    public function saving(DocumentType | Model $model)
+    public function saving($model)
     {
         //region Set default value
         if (blank($model->category) || is_null($model->category)) {
@@ -28,7 +26,11 @@ class DocumentTypeObserver
         }
     }
 
-    public function deleting(DocumentType | Model $model)
+    /**
+     * @param  DocumentType&Model  $model
+     * @return void
+     */
+    public function deleting($model)
     {
         $content = $model->content()->withoutGlobalScopes([
             SoftDeletingScope::class,

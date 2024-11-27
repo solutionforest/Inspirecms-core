@@ -2,13 +2,8 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -65,22 +60,22 @@ class Content extends BaseModel implements ContentContract
 
     protected $table = 'content';
 
-    public function documentType(): BelongsTo
+    public function documentType()
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');
     }
 
-    public function sitemap(): MorphOne
+    public function sitemap()
     {
         return $this->morphOne(InspireCmsConfig::getSitemapModelClass(), 'model');
     }
 
-    public function trashedParent(): BelongsTo
+    public function trashedParent()
     {
         return $this->parent()->withTrashed();
     }
 
-    public function navigation(): HasOne
+    public function navigation()
     {
         return $this->hasOne(InspireCmsConfig::getNavigationModelClass(), 'content_id');
     }
@@ -115,7 +110,7 @@ class Content extends BaseModel implements ContentContract
         return (string) Str::of(implode('/', $slugs))->prepend('/');
     }
 
-    public function getSegments(): array
+    public function getSegments()
     {
         $this->loadMissing('ancestorsAndSelf');
 
@@ -152,24 +147,24 @@ class Content extends BaseModel implements ContentContract
         return $publishedAt->isPast();
     }
 
-    public function getPublishTime(): ?\Carbon\Carbon
+    public function getPublishTime()
     {
         // If the publish date is in the future, it's not published
         return $this->getLatestPublishedContentVersion()?->pivot?->published_at;
     }
 
-    public function getLatestPublishedTime(): ?\Carbon\Carbon
+    public function getLatestPublishedTime()
     {
         return $this->getLatestContentVersionHasPublish()?->pivot?->published_at;
     }
 
-    public function isWebPage(): bool
+    public function isWebPage()
     {
         return $this->documentType?->isWebPageType() ?? false;
     }
 
     //region Dto
-    public static function getDtoClass(): string
+    public static function getDtoClass()
     {
         return ContentDto::class;
     }
@@ -189,7 +184,7 @@ class Content extends BaseModel implements ContentContract
         );
     }
 
-    public static function toPreviewDto(array | Model $record, array $propertyData, ?string $locale = null, ?Contracts\DocumentType $documentType = null)
+    public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null)
     {
         $dtoClass = static::getDtoClass();
 
@@ -243,7 +238,7 @@ class Content extends BaseModel implements ContentContract
     /**
      * Determine if this content is already published.
      */
-    public function scopeWhereIsPublished(Builder $query, bool $condition = true)
+    public function scopeWhereIsPublished($query, bool $condition = true)
     {
         $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
@@ -277,7 +272,7 @@ class Content extends BaseModel implements ContentContract
 
     }
 
-    public function scopeWhereIsWebPage(Builder $query)
+    public function scopeWhereIsWebPage($query)
     {
         return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }

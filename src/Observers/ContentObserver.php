@@ -11,33 +11,43 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentObserver
 {
-    public function creating(Content | Model $model)
+    /**
+     * @param  Content&Model  $model
+     * @return void
+     */
+    public function creating($model)
     {
         // Set is default if the first created
-        $isDefaultCount = $model->query()->withoutGlobalScope(new SoftDeletingScope)->where('is_default', true)->count();
+        $isDefaultCount = $this->getTotalDefaultContent($model->newQuery());
 
         if ($isDefaultCount <= 0) {
             $model->is_default = true;
         }
     }
 
-    public function created(Content | Model $model)
+    /**
+     * @param  Content&Model  $model
+     * @return void
+     */
+    public function created($model)
     {
         $this->createOrUpdateDefaultPath($model);
     }
 
     /**
-     * Handle "saving" event.
-     *
-     * @param  Content|Model  $model  The model instance being saving.
+     * @param  Content&Model  $model
      * @return void
      */
-    public function saving(Content | Model $model)
+    public function saving($model)
     {
         $this->clearCached();
     }
 
-    public function updating(Content | Model $model)
+    /**
+     * @param  Content&Model  $model
+     * @return void
+     */
+    public function updating($model)
     {
         // Set "is_default" of other content as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
@@ -50,12 +60,10 @@ class ContentObserver
     }
 
     /**
-     * Handle "updated" event.
-     *
-     * @param  Content|Model  $model  The model instance being updated.
+     * @param  Content&Model  $model
      * @return void
      */
-    public function updated(Content | Model $model)
+    public function updated($model)
     {
         $statusDiff = [$model->getOriginal('status'), $model->getAttribute('status')];
 
@@ -76,12 +84,10 @@ class ContentObserver
     }
 
     /**
-     * Handle "deleting" event.
-     *
-     * @param  Content|Model  $model  The model instance being deleting.
+     * @param  Content&Model  $model
      * @return void
      */
-    public function deleting(Content | Model $model)
+    public function deleting($model)
     {
         $this->clearCached();
 
@@ -90,12 +96,10 @@ class ContentObserver
     }
 
     /**
-     * Handle "forceDeleting" event.
-     *
-     * @param  Content|Model  $model  The model instance being forceDeleting.
+     * @param  Content&Model  $model
      * @return void
      */
-    public function forceDeleting(Content | Model $model)
+    public function forceDeleting($model)
     {
         $model->webSetting()->delete();
         $model->sitemap()->delete();
@@ -106,12 +110,10 @@ class ContentObserver
     }
 
     /**
-     * Handle "restoring" event.
-     *
-     * @param  Content|Model  $model  The model instance being restored.
+     * @param  Content&Model  $model
      * @return void
      */
-    public function restoring(Content | Model $model)
+    public function restoring($model)
     {
         $this->clearCached();
 
@@ -132,7 +134,7 @@ class ContentObserver
         InspireCms::forgetCachedNavigation();
     }
 
-    protected function createOrUpdateDefaultPath(Content | Model $model)
+    protected function createOrUpdateDefaultPath($model)
     {
         event(new UpdatePath($model->withoutRelations()));
 
@@ -145,8 +147,26 @@ class ContentObserver
      * @param \SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model $original
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    protected function getOtherDefaultContent(Content | Model $original)
+    protected function getOtherDefaultContent($original)
     {
-        return $original->newQuery()->where('is_default', true)->whereKeyNot($original->getKey())->get();
+        return $original->newQuery()
+            ->withoutGlobalScopes([])
+            ->where('is_default', true)
+            ->whereKeyNot($original->getKey())
+            ->get();
+    }
+
+    /**
+     * Get the total count of default content based on the provided query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query The query builder instance.
+     * @return int The total count of default content.
+     */
+    protected function getTotalDefaultContent($query)
+    {
+        return $query
+            ->withoutGlobalScopes([])
+            ->where('is_default', true)
+            ->count();
     }
 }

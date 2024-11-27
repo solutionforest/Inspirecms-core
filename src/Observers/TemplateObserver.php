@@ -9,14 +9,12 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 class TemplateObserver
 {
     /**
-     * Handle "creating" event.
-     *
-     * @param  Template|Model  $model  The model instance being creating.
+     * @param  Template&Model  $model
      * @return void
      */
-    public function creating(Template | Model $model)
+    public function creating($model)
     {
-        $model->path = $model->performTemplatePath();
+        $model->path = $model->retrieveTemplatePath();
 
         $model->createTemplateFile();
 
@@ -24,13 +22,11 @@ class TemplateObserver
     }
 
     /**
-     * Handle "saving" event.
-     *
-     * @param  Template|Model  $model  The model instance being saving.
+     * @param  Template&Model  $model
      * @return void
      */
-    public function saving(Template | Model $model)
+    public function saving($model)
     {
-        $model->path = $model->performTemplatePath();
+        $model->path = $model->retrieveTemplatePath();
     }
 }

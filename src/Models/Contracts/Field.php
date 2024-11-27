@@ -14,7 +14,7 @@ interface Field extends BaseContract, HasDtoModel
      *
      * @return string The state path with group.
      */
-    public function getStatePathWithGroup(): string;
+    public function getStatePathWithGroup();
 
     /**
      * Get the configuration for the field type.
@@ -22,4 +22,21 @@ interface Field extends BaseContract, HasDtoModel
      * @return array The configuration settings for the field type.
      */
     public function getFieldTypeConfigAttribute();
+
+    /**
+     * Scope a query to only include fields of a given group.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $group
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeByGroup($query, string $group);
+
+    /**
+     * Scope a query to include fields with a group name.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWithGroupName($query);
 }

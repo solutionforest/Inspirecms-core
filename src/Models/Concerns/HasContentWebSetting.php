@@ -2,19 +2,18 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 trait HasContentWebSetting
 {
-    public function webSetting(): HasOne
+    public function webSetting()
     {
         return $this->hasOne(InspireCmsConfig::getContentWebSettingModelClass(), 'content_id');
     }
 
-    public function isAllowIndex(): bool
+    public function isAllowIndex()
     {
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');
@@ -26,7 +25,7 @@ trait HasContentWebSetting
         return $noindex === false;
     }
 
-    public function isAllowFollow(): bool
+    public function isAllowFollow()
     {
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');
@@ -38,7 +37,7 @@ trait HasContentWebSetting
         return $nofollow === false;
     }
 
-    public function isRedirectable(): bool
+    public function isRedirectable()
     {
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');
@@ -79,7 +78,7 @@ trait HasContentWebSetting
         return null;
     }
 
-    public function getRedirectType(): int
+    public function getRedirectType()
     {
         if (! $this->relationLoaded('webSetting')) {
             $this->loadMissing('webSetting');

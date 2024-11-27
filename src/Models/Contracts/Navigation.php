@@ -2,18 +2,26 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
-use SolutionForest\InspireCms\Dtos\LanguageDto;
+use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
+use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 
-interface Navigation
+interface Navigation extends ActivableEntity, HasLocaleUrl
 {
-    public function content(): BelongsTo;
+    /**
+     * Get the content associated with the navigation.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function content();
 
-    public function getUrl(null | string | LanguageDto $locale = null): ?string;
-
-    public function getNavigationCategoryEnum(): ?NavigationCategoryEnumInterface;
+    /**
+     * Get the navigation category enumeration.
+     *
+     * @return NavigationCategoryEnumInterface|null The navigation category enumeration, or null if not set.
+     */
+    public function getNavigationCategoryEnum();
 
     /**
      * Get the class name of the NavigationCategoryEnum.
@@ -23,9 +31,14 @@ interface Navigation
      *
      * @return string The class name of the NavigationCategoryEnumInterface.
      */
-    public static function getNavigationCategoryEnumClass(): string;
+    public static function getNavigationCategoryEnumClass();
 
-    public function getNavigationTypeEnum(): ?NavigationTypeEnumInterface;
+    /**
+     * Get the navigation type enum.
+     *
+     * @return NavigationTypeEnumInterface|null The navigation type enum or null if not set.
+     */
+    public function getNavigationTypeEnum();
 
     /**
      * Get the class name of the NavigationCategoryEnum.
@@ -35,13 +48,37 @@ interface Navigation
      *
      * @return string The class name of the NavigationTypeEnumInterface.
      */
-    public static function getNavigationTypeEnumClass(): string;
+    public static function getNavigationTypeEnumClass();
 
-    public static function defaultContentId(): string | int | null;
+    /**
+     * Get the default content ID.
+     *
+     * @return string|int|null The default content ID, which can be a string, an integer, or null.
+     */
+    public static function defaultContentId();
 
-    public function isVisibility(): bool;
+    /**
+     * Determine if the navigation item is visible.
+     *
+     * @return bool True if the navigation item is visible, false otherwise.
+     */
+    public function isVisibility();
+    
+    /**
+     * Scope a query to only include navigation items of a given category type.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeCategory($query, string $type);
 
-    public function setDisable(bool $save = true): void;
-
-    public function setEnable(bool $save = true): void;
+    /**
+     * Scope a query to only include active records.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool $condition
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereIsActive($query, bool $condition = true);
 }

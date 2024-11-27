@@ -2,11 +2,27 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
 interface ContentPublishVersion
 {
-    public function content(): BelongsTo;
+    /**
+     * Get the content associated with the publish version.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function content();
 
-    public function version(): BelongsTo;
+    /**
+     * Get the version associated with the content.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function version();
+
+    /**
+     * Scope a query to only include published content.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereIsPublished($query);
 }
