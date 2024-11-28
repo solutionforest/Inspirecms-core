@@ -29,16 +29,21 @@ class ImportJobService implements ImportJobServiceInterface
     ];
 
     const FOLDER_IDENTIFIER_CONTENT = 'Content';
+
     const FOLDER_IDENTIFIER_DOCUMENTTYPE = 'DocumentTypes';
+
     const FOLDER_IDENTIFIER_FIELDGROUP = 'FieldGroups';
+
     const FOLDER_IDENTIFIER_NAVIGATION = 'NavigationMenus';
+
     const FOLDER_IDENTIFIER_TEMPLATE = 'Templates';
+
     const FOLDER_IDENTIFIER_VIEW = 'Views';
 
     public function __construct(
         protected ImportDataServiceInterface $importDataService,
         protected ZipFileReader $zipFileReader,
-    ) { }
+    ) {}
 
     public static function getFileStructureHtml()
     {
@@ -48,10 +53,11 @@ class ImportJobService implements ImportJobServiceInterface
             $html .= '<li>' . $folder . '</li>';
         }
         $html .= '</ul>';
+
         return new HtmlString($html);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function execute($job)
     {
         $extractorFs = null;
@@ -63,7 +69,7 @@ class ImportJobService implements ImportJobServiceInterface
 
             // Ensure the import data service is reset
             $this->importDataService->reset();
-            
+
             [$jobFs, $filePath] = $job->getStorageAndFilePath();
 
             [$extractorFs, $extractedFolderPath] = $this->zipFileReader->readFromPath($jobFs->path($filePath));
@@ -94,7 +100,7 @@ class ImportJobService implements ImportJobServiceInterface
                     }
 
                 }
-                
+
                 $failedForImportData = $this->importDataForType($extractorFs, $folderPath, $folderName);
                 if (! empty($failedForImportData)) {
                     $message[] = [
@@ -124,7 +130,7 @@ class ImportJobService implements ImportJobServiceInterface
                 'exMessage' => $th->getMessage(),
                 'exTrace' => $th->getTraceAsString(),
             ];
-            
+
             $job->markAsFailed($message);
 
         } finally {
@@ -136,10 +142,9 @@ class ImportJobService implements ImportJobServiceInterface
     }
 
     /**
-     * @param \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter $fs The filesystem instance.
-     * @param string $folderPath The path to the folder containing the view files to duplicate.
-     * @param string $forType 
-     * 
+     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  string  $folderPath  The path to the folder containing the view files to duplicate.
+     * @param  string  $forType
      * @return array|null Error message for the file or null
      */
     protected function importDataForType($fs, $folderPath, $forType)
@@ -149,7 +154,7 @@ class ImportJobService implements ImportJobServiceInterface
         if (! in_array($forType, $neededTypes)) {
             return;
         }
-        
+
         return static::fileProcessingWithCallback(fs: $fs, folderPath: $folderPath, callback: function ($fs, $folderPath, $file) use ($forType) {
 
             $slug = Str::before(basename($file), '.');
@@ -161,6 +166,7 @@ class ImportJobService implements ImportJobServiceInterface
                     slug: $data->slug,
                     data: $data
                 );
+
                 return;
             }
 
@@ -204,16 +210,16 @@ class ImportJobService implements ImportJobServiceInterface
 
                     break;
             }
-            
+
         }, includeSubFolders: false, neededExtensions: ['.json', '.blade.php']);
     }
 
     /**
      * Duplicates view files from the specified folder path.
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter $fs The filesystem instance.
-     * @param string $folderPath The path to the folder containing the view files to duplicate.
-     * @param string $forType The type of view files to duplicate.
+     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  string  $folderPath  The path to the folder containing the view files to duplicate.
+     * @param  string  $forType  The type of view files to duplicate.
      * @return array|null Error message for the file or null
      */
     protected function duplicateViewFiles($fs, $folderPath, $forType)
@@ -225,7 +231,7 @@ class ImportJobService implements ImportJobServiceInterface
             $toPath = self::getViewFolderMapFor($forType, $subPathRelativeToFolder);
 
             $content = $fs->get($file);
-            
+
             file_put_contents($toPath, $content);
 
         }, includeSubFolders: true, neededExtensions: ['.blade.php']);
@@ -239,15 +245,14 @@ class ImportJobService implements ImportJobServiceInterface
     /**
      * Processes files in a specified folder and applies a callback function to each file.
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter $fs The filesystem instance to use for file operations.
-     * @param string $folderPath The path to the folder containing the files to process.
-     * @param callable(\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter, string, string): void $callback The callback function to apply to each file.
-     * @param bool $includeSubFolders Whether to include subfolders in the essing. Default is false.
-     * @param array $neededExtensions The file extension to filter files by. If empty, all files are processed.
-     *
+     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance to use for file operations.
+     * @param  string  $folderPath  The path to the folder containing the files to process.
+     * @param  callable(\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter, string, string): void  $callback  The callback function to apply to each file.
+     * @param  bool  $includeSubFolders  Whether to include subfolders in the essing. Default is false.
+     * @param  array  $neededExtensions  The file extension to filter files by. If empty, all files are processed.
      * @return array|null Error message for the file or null
      */
-    protected static function fileProcessingWithCallback($fs, $folderPath, $callback, bool $includeSubFolders = false, array $neededExtensions = null)
+    protected static function fileProcessingWithCallback($fs, $folderPath, $callback, bool $includeSubFolders = false, ?array $neededExtensions = null)
     {
         $files = $includeSubFolders ? $fs->allFiles($folderPath) : $fs->files($folderPath);
 
@@ -273,7 +278,7 @@ class ImportJobService implements ImportJobServiceInterface
                 $callback($fs, $folderPath, $file);
 
             } catch (\Throwable $th) {
-                    
+
                 $failed[$file] = [
                     'ex' => $th->getMessage(),
                     'trace' => $th->getTraceAsString(),

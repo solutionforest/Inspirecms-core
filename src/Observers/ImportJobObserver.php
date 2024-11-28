@@ -32,8 +32,7 @@ class ImportJobObserver
     public function updating($model)
     {
         if (($model->isDirty('finished_at') && ! blank($model->finished_at)) ||
-            ($model->isDirty('failed_at') && ! blank($model->failed_at))) 
-        {
+            ($model->isDirty('failed_at') && ! blank($model->failed_at))) {
             $this->dispatchComplete($model);
         }
     }
@@ -44,10 +43,10 @@ class ImportJobObserver
     protected function dispatchComplete($model)
     {
         event(new ImportJobCompleted($model->withoutRelations()));
-        
+
         try {
             // Notify the user that the import job has completed
-            if (($author = $model->author)){
+            if (($author = $model->author)) {
                 $notification = $this->getImportJobCompletedNotification($model);
                 $notification->sendToDatabase($author, true);
             }
@@ -58,7 +57,6 @@ class ImportJobObserver
 
     /**
      * @param  ImportJob&Model  $model
-     * 
      * @return Notification
      */
     protected function getImportJobCompletedNotification($model)
@@ -73,7 +71,7 @@ class ImportJobObserver
         if (filled($url)) {
             $notification = $notification->actions([
                 Action::make('view')->button()->url($url),
-            ]); 
+            ]);
         }
 
         return $notification;

@@ -11,7 +11,7 @@ interface ImportJobServiceInterface
     /**
      * Executes the pending job and mark complete.
      *
-     * @param ImportJob&Model $job The job to be executed.
+     * @param  ImportJob&Model  $job  The job to be executed.
      * @return void
      */
     public function execute($job);

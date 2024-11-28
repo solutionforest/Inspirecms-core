@@ -22,15 +22,16 @@ interface ImportJob extends HasAuthor
     /**
      * Get the storage and file path for the import job.
      *
+     * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string}
+     *
      * @throws \Exception if the disk is not set for the import job.
-     * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string} 
      */
     public function getStorageAndFilePath();
 
     /**
      * Marks the import job as failed with the given message.
      *
-     * @param string|\Throwable|array $msg The failure message to be recorded.
+     * @param  string|\Throwable|array  $msg  The failure message to be recorded.
      * @return void
      */
     public function markAsFailed($msg);
@@ -38,7 +39,7 @@ interface ImportJob extends HasAuthor
     /**
      * Marks the import job as completed.
      *
-     * @param string|array|null $msg Optional message to be associated with the completion status.
+     * @param  string|array|null  $msg  Optional message to be associated with the completion status.
      * @return void
      */
     public function markAsCompleted($msg = null);
@@ -53,8 +54,7 @@ interface ImportJob extends HasAuthor
     /**
      * Scope a query to only include pending import jobs.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWherePending($query, bool $condition = true);
@@ -62,7 +62,7 @@ interface ImportJob extends HasAuthor
     /**
      * Scope a query to only include completed jobs.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereCompleted($query);
@@ -70,7 +70,7 @@ interface ImportJob extends HasAuthor
     /**
      * Scope a query to only include failed jobs.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereFailed($query);
@@ -78,7 +78,7 @@ interface ImportJob extends HasAuthor
     /**
      * Scope a query to only include records that can be cleared.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereCanClear($query);

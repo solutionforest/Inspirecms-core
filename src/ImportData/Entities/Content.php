@@ -83,7 +83,7 @@ class Content extends BaseEntity
          * @var string|null
          */
         public $template = null,
-    ) { }
+    ) {}
 
     public function getDataForModel(): array
     {
