@@ -290,6 +290,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Navigation model');
     }
 
+    public static function getImportJobTableName(): string
+    {
+        return app(static::getImportJobModelClass())->getTable();
+    }
+
+    public static function getImportJobModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\ImportJob::class, Models\ImportJob::class);
+
+        return self::ensureClassExists($class, 'ImportJob model');
+    }
+
     /**
      * Ensure that a class exists, or throw an exception.
      *

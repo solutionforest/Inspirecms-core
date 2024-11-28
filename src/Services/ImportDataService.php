@@ -6,10 +6,8 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
-use SolutionForest\InspireCms\ImportData\JsonFileReader;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
@@ -57,7 +55,6 @@ class ImportDataService implements ImportDataServiceInterface
 
     public function __construct(
         protected ContentServiceInterface $contentService,
-        protected JsonFileReader $jsonFileReader,
     ) {}
 
     /** {@inheritDoc} */
@@ -66,6 +63,7 @@ class ImportDataService implements ImportDataServiceInterface
         if (isset($this->pendingData['documentTypes'][$slug])) {
             return;
         }
+        $data->slug = $slug;
         $this->pendingData['documentTypes'][$slug] = $data;
     }
 
@@ -76,6 +74,7 @@ class ImportDataService implements ImportDataServiceInterface
             return;
         }
 
+        $data->slug = $slug;
         $this->pendingData['fieldGroups'][$slug] = $data;
 
         foreach ($fields as $item) {
@@ -97,6 +96,7 @@ class ImportDataService implements ImportDataServiceInterface
             return;
         }
 
+        $data->slug = $slug;
         $this->pendingData['templates'][$slug] = $data;
     }
 
@@ -109,6 +109,7 @@ class ImportDataService implements ImportDataServiceInterface
             return;
         }
 
+        $data->slug = $slug;
         $this->pendingData['content'][$contentKey] = $data;
     }
 
@@ -186,66 +187,6 @@ class ImportDataService implements ImportDataServiceInterface
     public function getValidationErrors(): array
     {
         return $this->processErrors['__validation__'] ?? [];
-    }
-
-    /** {@inheritDoc} */
-    public function importFromFile(TemporaryUploadedFile $file): array
-    {
-        $data = $this->jsonFileReader->readFromFile($file);
-
-        $this->handleFromUploadData($data);
-
-        return $data;
-    }
-
-    protected function handleFromUploadData(array $data): void
-    {
-        foreach ($data as $type => $items) {
-            foreach ($items as $item) {
-                switch ($type) {
-                    case 'documentTypes':
-                        $data = Entities\DocumentType::fromArray($item);
-                        $this->addDocumentType(
-                            $data->slug,
-                            $data
-                        );
-
-                        break;
-                    case 'fieldGroups':
-                        $data = Entities\FieldGroup::fromArray(Arr::except($item, 'fields'));
-                        $fields = Arr::map($item['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
-                        $this->addFieldGroup(
-                            $data->slug,
-                            $data,
-                            $fields
-                        );
-
-                        break;
-                    case 'templates':
-                        $data = Entities\Template::fromArray($item);
-                        $this->addTemplate(
-                            $data->slug,
-                            $data
-                        );
-
-                        break;
-                    case 'content':
-                        $data = Entities\Content::fromArray($item);
-                        $this->addContent(
-                            $data->slug,
-                            $data->parent,
-                            $data
-                        );
-
-                        break;
-                    case 'navigation':
-                        $data = Entities\Navigation::fromArray($item);
-                        $this->addNavigation($data);
-
-                        break;
-                }
-            }
-        }
     }
 
     protected function processForTemplates()
@@ -514,9 +455,22 @@ class ImportDataService implements ImportDataServiceInterface
                 $item->validate();
 
                 $navigationData = $this->mutateNavigationData($item);
-                $navigation = $model::create($navigationData);
 
-                $this->finished['navigation'][] = $navigation;
+                if (isset($item->id)) {
+                    $navigation = $model::find($item->id);
+                    if ($navigation) {
+                        $navigation->update($navigationData);
+                        $navigation->refresh();
+                    } else {
+                        continue;
+                    }
+                } else {
+                    $navigation = $model::create($navigationData);
+                }
+
+                if (isset($navigation)) { 
+                    $this->finished['navigation'][] = $navigation ?? null;
+                }
 
             } catch (\Throwable $th) {
                 $this->processErrors['navigation'][] = $th->getMessage();

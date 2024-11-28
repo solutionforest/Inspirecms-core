@@ -88,6 +88,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
+        $this->app->singleton(Services\ImportJobServiceInterface::class, fn () => $this->app->make(Services\ImportJobService::class));
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
@@ -188,6 +189,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
             Commands\CleanupContentVersion::class,
+            Commands\ExecuteImportJob::class,
+            Commands\CleanupImportJob::class,
         ];
     }
 
@@ -227,6 +230,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return [
             'create_inspire-cms-core_table',
+            'create_cms_import_jobs_table',
         ];
     }
 
@@ -356,6 +360,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $tasks = Arr::only(config('inspirecms.scheduled_tasks', []), [
             'cleanup_content_verion',
+            'execute_import_job',
+            'cleanup_import_job',
         ]);
 
         foreach ($tasks as $taskKey => $task) {

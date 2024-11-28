@@ -326,54 +326,54 @@ Html;
             'redirect-page' => $redirect_page,
         ];
         foreach ($items as $slug => $content) {
-            $this->importDataService->addTemplate($slug, new ImportDataEntities\Template($slug, $content));
+            $this->importDataService->addTemplate($slug, new ImportDataEntities\Template(slug: $slug, content: $content));
         }
     }
 
     protected function addSampleFields(): void
     {
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('general_page_banner'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'general_page_banner'),
             'fields' => [
-                new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
-                new ImportDataEntities\Field('description', 'translate', ['field' => 'text']),
-                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                new ImportDataEntities\Field(slug: 'title', type: 'translate', config: ['field' => 'text']),
+                new ImportDataEntities\Field(slug: 'description', type: 'translate', config: ['field' => 'text']),
+                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('recently_blogs'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'recently_blogs'),
             'fields' => [
-                new ImportDataEntities\Field('blogs', 'contentPicker', ['documentType' => 'blog', 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['documentType' => 'blog', 'multiple' => true]),
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('image_slider'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'image_slider'),
             'fields' => [
-                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => true]),
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('social_media'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'social_media'),
             'fields' => [
-                new ImportDataEntities\Field('github', 'text'),
-                new ImportDataEntities\Field('twitter', 'text'),
-                new ImportDataEntities\Field('instagram', 'text'),
-                new ImportDataEntities\Field('linkedin', 'text'),
-                new ImportDataEntities\Field('email', 'text'),
+                new ImportDataEntities\Field(slug: 'github', type: 'text'),
+                new ImportDataEntities\Field(slug: 'twitter', type: 'text'),
+                new ImportDataEntities\Field(slug: 'instagram', type: 'text'),
+                new ImportDataEntities\Field(slug: 'linkedin', type: 'text'),
+                new ImportDataEntities\Field(slug: 'email', type: 'text'),
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('blog_detail_content'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'blog_detail_content'),
             'fields' => [
-                new ImportDataEntities\Field('title', 'translate', ['field' => 'text']),
-                new ImportDataEntities\Field('content', 'translate', ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
-                new ImportDataEntities\Field('image', 'mediaPicker', ['mimeTypes' => ['image'], 'multiple' => false]),
+                new ImportDataEntities\Field(slug: 'title', type: 'translate', config: ['field' => 'text']),
+                new ImportDataEntities\Field(slug: 'content', type: 'translate', config: ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
+                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
         $items[] = [
-            'data' => new ImportDataEntities\FieldGroup('projects'),
+            'data' => new ImportDataEntities\FieldGroup(slug: 'projects'),
             'fields' => [
-                new ImportDataEntities\Field('projects', 'repeater', [
+                new ImportDataEntities\Field(slug: 'projects', type: 'repeater', config: [
                     'fields' => [
                         [
                             'field' => 'translate',
@@ -412,86 +412,77 @@ Html;
     protected function addSampleDocumentTypes(): void
     {
         $items[] = new ImportDataEntities\DocumentType(
-            'general-page-banner',
-            false,
-            'inheritance',
-            'Page Banner',
-            [
+            slug: 'general-page-banner',
+            childrenAsTable: false,
+            category: 'inheritance',
+            title: 'Page Banner',
+            fieldGroups: [
                 'general_page_banner',
             ]
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'homepage',
-            false,
-            'web',
-            'Homepage',
-            [
+            slug: 'homepage',
+            childrenAsTable: false,
+            category: 'web',
+            fieldGroups: [
                 'social_media',
             ],
-            ['home'],
-            'home',
-            ['general-page-banner'],
+            templates: ['home'],
+            defaultTemplate: 'home',
+            inheritance: ['general-page-banner'],
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'about',
-            false,
-            'web',
-            'About',
-            [
+            slug: 'about',
+            childrenAsTable: false,
+            category: 'web',
+            fieldGroups: [
                 'blog_detail_content',
             ],
-            ['about'],
-            'about',
-            ['general-page-banner'],
-            'homepage',
+            templates: ['about'],
+            defaultTemplate: 'about',
+            inheritance: ['general-page-banner'],
+            parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'blogs',
-            true,
-            'web',
-            'Blogs',
-            [],
-            ['blogs'],
-            'blogs',
-            ['general-page-banner'],
-            'homepage',
+            slug: 'blogs',
+            childrenAsTable: true,
+            category: 'web',
+            fieldGroups: [],
+            templates: ['blogs'],
+            defaultTemplate: 'blogs',
+            inheritance: ['general-page-banner'],
+            parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'blog',
-            false,
-            'web',
-            'Blog',
-            [
+            slug: 'blog',
+            childrenAsTable: false,
+            category: 'web',
+            fieldGroups: [
                 'blog_detail_content',
             ],
-            ['blog'],
-            'blog',
-            [],
-            'blogs',
+            templates: ['blog'],
+            defaultTemplate: 'blog',
+            parent: 'blogs',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'projects',
-            false,
-            'web',
-            'Projects',
-            [
+            slug: 'projects',
+            childrenAsTable: false,
+            category: 'web',
+            fieldGroups: [
                 'projects',
             ],
-            ['projects'],
-            'projects',
-            ['general-page-banner'],
-            'homepage',
+            templates: ['projects'],
+            defaultTemplate: 'projects',
+            inheritance: ['general-page-banner'],
+            parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            'blank_page',
-            false,
-            'web',
-            'Blank Page',
-            [],
-            ['blank-page', 'redirect-page'],
-            'blank-page',
-            [],
-            'homepage',
+            slug: 'blank_page',
+            childrenAsTable: false,
+            category: 'web',
+            templates: ['blank-page', 'redirect-page'],
+            defaultTemplate: 'blank-page',
+            parent: 'homepage',
         );
         foreach ($items as $item) {
             $this->importDataService->addDocumentType($item->slug, $item);
@@ -502,10 +493,11 @@ Html;
     protected function addSampleContent(): void
     {
         $items[] = new ImportDataEntities\Content(
-            'home',
-            ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
-            'homepage',
-            [
+            slug: 'home',
+            title: ['en' => 'Homepage', 'zh_Hant' => '首頁', 'zh_Hans' => '首页'],
+            documentType: 'homepage',
+            isDefault: true,
+            properties: [
                 'social_media' => [
                     'github' => 'https://github.com',
                     'twitter' => 'https://twitter.com',
@@ -526,13 +518,13 @@ Html;
                     ],
                 ],
             ],
-            'publish'
+            publishState: 'publish'
         );
         $items[] = new ImportDataEntities\Content(
-            'about',
-            ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
-            'about',
-            [
+            slug: 'about',
+            title: ['en' => 'About', 'zh_Hant' => '關於', 'zh_Hans' => '关于'],
+            documentType: 'about',
+            properties: [
                 'blog_detail_content' => [
                     'title' => [
                         'en' => 'About Us',
@@ -547,16 +539,14 @@ Html;
                     'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                 ],
             ],
-            'publish',
-            [],
-            [],
-            'home',
+            publishState: 'publish',
+            parent: 'home',
         );
         $items[] = new ImportDataEntities\Content(
-            'blogs',
-            ['en' => 'Blogs', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
-            'blogs',
-            [
+            slug: 'blogs',
+            title: ['en' => 'Blogs', 'zh_Hant' => '文章', 'zh_Hans' => '文章'],
+            documentType: 'blogs',
+            properties: [
                 'general_page_banner' => [
                     'title' => [
                         'en' => 'Blogs',
@@ -570,19 +560,17 @@ Html;
                     ],
                 ],
             ],
-            'publish',
-            [],
-            [],
-            'home',
+            publishState: 'publish',
+            parent: 'home',
         );
 
         foreach (range(1, 5) as $i) {
 
             $items[] = new ImportDataEntities\Content(
-                "blog-$i",
-                ['en' => "Blog $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
-                'blog',
-                [
+                slug: "blog-$i",
+                title: ['en' => "Blog $i", 'zh_Hant' => "文章 $i", 'zh_Hans' => "文章 $i"],
+                documentType: 'blog',
+                properties: [
                     'blog_detail_content' => [
                         'title' => [
                             'en' => "Blog $i",
@@ -597,18 +585,16 @@ Html;
                         'image' => $this->mediaAssets[array_rand($this->mediaAssets)]->getKey(),
                     ],
                 ],
-                'publish',
-                [],
-                [],
-                'home/blogs',
+                publishState: 'publish',
+                parent: 'home/blogs',
             );
         }
 
         $items[] = new ImportDataEntities\Content(
-            'projects',
-            ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
-            'projects',
-            [
+            slug: 'projects',
+            title: ['en' => 'Projects', 'zh_Hant' => '項目', 'zh_Hans' => '项目'],
+            documentType: 'projects',
+            properties: [
                 'general_page_banner' => [
                     'title' => [
                         'en' => 'Projects',
@@ -668,22 +654,18 @@ Html;
                     ],
                 ],
             ],
-            'publish',
-            [],
-            [],
-            'home',
+            publishState: 'publish',
+            parent: 'home',
         );
 
         $items[] = new ImportDataEntities\Content(
-            'redirect-page',
-            ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
-            'blank_page',
-            [],
-            'publish',
-            [],
-            ['redirect_path' => '/'],
-            'home',
-            'redirect-page',
+            slug: 'redirect-page',
+            title: ['en' => 'Redirect Page', 'zh_Hant' => '重定向頁面', 'zh_Hans' => '重定向页面'],
+            documentType: 'blank_page',
+            publishState: 'publish',
+            webSetting: ['redirect_path' => '/'],
+            parent: 'home',
+            template: 'redirect-page',
         );
 
         foreach ($items as $item) {

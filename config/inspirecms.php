@@ -3,6 +3,7 @@
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
@@ -57,11 +58,11 @@ return [
             'role' => RoleResource::class,
             'navigation' => NavigationResource::class,
             'sitemap' => SitemapResource::class,
+            'import_job' => ImportJobResource::class,
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
             'health' => \SolutionForest\InspireCms\Filament\Pages\Health::class,
-            'import' => \SolutionForest\InspireCms\Filament\Pages\ImportData::class,
         ],
         'clusters' => [
             'content' => \SolutionForest\InspireCms\Filament\Clusters\Content::class,
@@ -88,6 +89,12 @@ return [
         'should_map_video_properties_with_ffmpeg' => false,
     ],
 
+    'imports' => [
+        'disk' => 'local',
+        'temp_disk' => 'local',
+        'temp_directory' => 'temp/imports',
+    ],
+
     'models' => [
         'table_name_prefix' => 'cms_',
         'morph_map_prefix' => 'cms_',
@@ -108,6 +115,7 @@ return [
             'navigation' => Models\Navigation::class,
             'media_asset' => SupportModels\MediaAsset::class,
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
+            'import_job' => Models\ImportJob::class,
         ],
     ],
 
@@ -147,6 +155,20 @@ return [
             'schedule' => 'daily',
             'command' => \SolutionForest\InspireCms\Commands\CleanupContentVersion::class,
             'old_content_version_days' => 30,
+        ],
+        'execute_import_job' => [
+            'enabled' => true,
+            'schedule' => 'everyFiveMinutes',
+            'command' => \SolutionForest\InspireCms\Commands\ExecuteImportJob::class,
+            'arguments' => [
+                '--limit 50', // limit
+            ],
+        ],
+        'cleanup_import_job' => [
+            'enabled' => true,
+            'schedule' => 'daily',
+            'command' => \SolutionForest\InspireCms\Commands\CleanupImportJob::class,
+            'old_import_job_days' => 5,
         ],
     ],
 

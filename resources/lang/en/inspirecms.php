@@ -27,6 +27,7 @@ return [
     'general' => 'General',
     'group' => 'Group',
     'id' => 'ID',
+    'import_jobs' => 'Import Jobs',
     'is_active' => 'Active',
     'is_default' => 'Default',
     'label' => 'Label',

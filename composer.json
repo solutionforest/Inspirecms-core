@@ -26,6 +26,7 @@
         "filament/filament": "^3.0",
         "filament/spatie-laravel-translatable-plugin": "^3.2",
         "kalnoy/nestedset": "^6.0",
+        "parallax/filament-syntax-entry": "^2.0",
         "pboivin/filament-peek": "^2.0",
         "riodwanto/filament-ace-editor": "^1.0",
         "solution-forest/filament-field-group": "^1.0.0",

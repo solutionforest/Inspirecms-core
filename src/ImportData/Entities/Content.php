@@ -13,6 +13,7 @@ class Content extends BaseEntity
         'slug' => 'required|string',
         'title' => 'required|array',
         'documentType' => 'required|string',
+        'isDefault' => 'nullable|boolean',
         'properties' => 'array',
         'publishState' => 'required|string',
         'sitemap' => 'nullable|array',
@@ -40,6 +41,12 @@ class Content extends BaseEntity
          * @var string
          */
         public $documentType,
+        /**
+         * Indicates whether this content is the default.
+         *
+         * @var bool
+         */
+        public $isDefault = false,
         /**
          * An array of properties associated with the content.
          *
@@ -76,7 +83,7 @@ class Content extends BaseEntity
          * @var string|null
          */
         public $template = null,
-    ) {}
+    ) { }
 
     public function getDataForModel(): array
     {
@@ -84,6 +91,7 @@ class Content extends BaseEntity
             'slug' => $this->slug,
             'title' => $this->title,
             'status' => inspirecms_content_statuses()->getOption($this->publishState)?->getValue(),
+            'is_default' => $this->isDefault ?? false,
         ];
     }
 
