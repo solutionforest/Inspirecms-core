@@ -360,34 +360,31 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         foreach ($tasks as $taskKey => $task) {
 
-            if (! is_array($task)) {
-                continue;
-            }
+            try {
 
-            if (! ($task['enabled'] ?? false) ||
-                ! isset($task['schedule'])
-            ) {
-                continue;
-            }
+                if (! is_array($task)) {
+                    continue;
+                }
 
-            $func = $task['schedule'];
+                if (! ($task['enabled'] ?? false) ||
+                    ! isset($task['schedule'])
+                ) {
+                    continue;
+                }
 
-            switch ($taskKey) {
-                case 'cleanup_content_verion':
+                $func = $task['schedule'];
 
-                    $command = $task['command'] ?? null;
+                $command = $task['command'] ?? null;
 
-                    if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
-                        break;
-                    }
+                $arguments = $task['arguments'] ?? [];
 
-                    // check have this func
-                    if (method_exists($schedule->command($command), $func)) {
-
-                        $schedule->command($command)->{$func}();
-                    }
-
+                if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
                     break;
+                }
+
+                $schedule->command($command, $arguments)->{$func}();
+            } catch (\Throwable $th) {
+                //
             }
 
         }
