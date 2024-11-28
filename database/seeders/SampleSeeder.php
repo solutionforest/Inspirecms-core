@@ -760,7 +760,7 @@ Html;
                 }
 
                 $filename = pathinfo($fakeImage, PATHINFO_BASENAME);
-                
+
                 /** @var MediaAsset */
                 $mediaAsset = $model::create([
                     'title' => $filename,
