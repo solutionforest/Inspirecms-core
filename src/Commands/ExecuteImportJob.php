@@ -28,6 +28,7 @@ class ExecuteImportJob extends Command
 
         if ($records->isEmpty()) {
             $this->info('No pending jobs found.');
+
             return;
         }
 

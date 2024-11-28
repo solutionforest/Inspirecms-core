@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum ImportJobStatus: string implements HasColor, HasLabel, HasIcon
+enum ImportJobStatus: string implements HasColor, HasIcon, HasLabel
 {
     case Pending = 'pending';
     case Failed = 'failed';
@@ -28,7 +28,7 @@ enum ImportJobStatus: string implements HasColor, HasLabel, HasIcon
         };
     }
 
-    public function getIcon(): string | null
+    public function getIcon(): ?string
     {
         return match ($this) {
             self::Pending => 'heroicon-o-clock',

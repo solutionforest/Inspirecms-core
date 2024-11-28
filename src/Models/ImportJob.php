@@ -13,8 +13,8 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
 class ImportJob extends BaseModel implements ImportJobContract
 {
-    use HasUuids;
     use HasAuthor;
+    use HasUuids;
 
     const UPDATED_AT = null;
 
@@ -59,16 +59,15 @@ class ImportJob extends BaseModel implements ImportJobContract
         return Attribute::make(
             get: function () {
                 [$finishTime, $failedTime, $scheduleTime] = [$this->finished_at, $this->failed_at, $this->available_at];
-                if (!is_null($finishTime)) {
+                if (! is_null($finishTime)) {
                     return ImportJobStatus::Finished;
-                } else if (!is_null($failedTime)) {
+                } elseif (! is_null($failedTime)) {
                     return ImportJobStatus::Failed;
-                } 
-                    return ImportJobStatus::Pending;
-            },
-            set: function ($value) {
+                }
 
-            }
+                return ImportJobStatus::Pending;
+            },
+            set: function ($value) {}
         );
     }
 
@@ -79,11 +78,10 @@ class ImportJob extends BaseModel implements ImportJobContract
                 if ($this->display_status == ImportJobStatus::Pending) {
                     return null;
                 }
+
                 return $this->created_at?->addDays(static::retrieveClearanceDaysInterval());
             },
-            set: function ($value) {
-
-            }
+            set: function ($value) {}
         );
     }
 
@@ -137,10 +135,10 @@ class ImportJob extends BaseModel implements ImportJobContract
     //region Helper(s)
     /**
      * Get the storage disk used for the import job.
-     * 
-     * @throws \Exception if the disk is not set for the import job.
      *
      * @return \Illuminate\Contracts\Filesystem\Filesystem The storage disk instance.
+     *
+     * @throws \Exception if the disk is not set for the import job.
      */
     protected function getStorageDisk()
     {

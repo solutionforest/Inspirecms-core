@@ -468,7 +468,7 @@ class ImportDataService implements ImportDataServiceInterface
                     $navigation = $model::create($navigationData);
                 }
 
-                if (isset($navigation)) { 
+                if (isset($navigation)) {
                     $this->finished['navigation'][] = $navigation ?? null;
                 }
 

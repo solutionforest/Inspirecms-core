@@ -14,9 +14,9 @@ class ImportJobCompleted
     public $job;
 
     /**
-     * @param \SolutionForest\InspireCms\Models\Contracts\ImportJob&\Illuminate\Database\Eloquent\Model $job
+     * @param  \SolutionForest\InspireCms\Models\Contracts\ImportJob&\Illuminate\Database\Eloquent\Model  $job
      */
-    public function __construct($job) 
+    public function __construct($job)
     {
         $this->job = $job;
     }

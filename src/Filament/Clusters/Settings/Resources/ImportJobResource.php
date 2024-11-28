@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Parallax\FilamentSyntaxEntry\SyntaxEntry;
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource\Pages;
@@ -17,7 +18,6 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ImportJob;
-use Parallax\FilamentSyntaxEntry\SyntaxEntry;
 use SolutionForest\InspireCms\Services\ImportJobServiceInterface;
 
 class ImportJobResource extends Resource implements ClusterSectionResource
@@ -52,20 +52,20 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                                 if ($state instanceof ImportJobStatus) {
                                     return $state->getColor();
                                 }
-            
+
                                 return null;
                             }),
                         Infolists\Components\TextEntry::make('file')
                             ->label(__('inspirecms::resources/import-jobs.file.title'))
                             ->fontFamily('mono')
-                            ->suffixAction(function (ImportJob&Model $record) {
-                            
+                            ->suffixAction(function (ImportJob & Model $record) {
+
                                 [$fs, $path] = $record->getStorageAndFilePath();
 
                                 return Infolists\Components\Actions\Action::make('download')
                                     ->icon('heroicon-o-arrow-down-on-square')
                                     ->action(fn () => $fs->download($path));
-                            })
+                            }),
                     ]),
 
                 Infolists\Components\Group::make()
@@ -89,12 +89,12 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                             ->since()
                             ->dateTimeTooltip(),
                     ]),
-                    
+
                 SyntaxEntry::make('payload')
                     ->label(__('inspirecms::resources/import-jobs.payload.title'))
                     ->columnSpanFull()
                     ->language('json'),
-            ]);   
+            ]);
     }
 
     public static function form(Form $form): Form
@@ -112,16 +112,15 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                     ->acceptedFileTypes([
                         //zip
                         ...[
-                            'application/zip', 
-                            'application/octet-stream', 
-                            'application/x-zip-compressed', 
+                            'application/zip',
+                            'application/octet-stream',
+                            'application/x-zip-compressed',
                             'multipart/x-zip',
                         ],
                     ])
                     ->preserveFilenames(false),
             ]);
     }
-
 
     public static function table(Table $table): Table
     {
