@@ -735,29 +735,43 @@ Html;
             return;
         }
 
-        $mediaData = collect(range(1, 5))->map(function () {
-            $size = '400x400';
-            // Random color
-            $backgroundColor = str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
-            $foregroundColor = str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+        $totalRetry = 5;
 
-            $format = 'png';
+        foreach (range(1, 5) as $i) {
 
-            // Random text
-            $text = str_pad(dechex(mt_rand(0, 0xFFFFFF)), 6, '0', STR_PAD_LEFT);
+            try {
 
-            return "https://dummyimage.com/{$size}/{$backgroundColor}/{$foregroundColor}.{$format}&text={$text}";
+                $dir = storage_path('app/temp');
 
-        });
+                if (! is_dir($dir)) {
+                    mkdir($dir, 0777, true);
+                }
 
-        foreach ($mediaData as $url) {
+                //Retry x-times to create fake image
+                $fakeImage = false;
+                $retry = 0;
+                while ($fakeImage === false && $retry < $totalRetry) {
+                    $fakeImage = fake()->image($dir, 400, 400);
+                    $retry++;
+                }
 
-            /** @var MediaAsset */
-            $mediaAsset = $model::create([
-                'title' => $url,
-                'is_folder' => false,
-            ]);
-            $mediaAsset->addMediaFromUrl($url)->toMediaCollection();
+                if (! $fakeImage) {
+                    continue;
+                }
+
+                $filename = pathinfo($fakeImage, PATHINFO_BASENAME);
+                
+                /** @var MediaAsset */
+                $mediaAsset = $model::create([
+                    'title' => $filename,
+                    'is_folder' => false,
+                ]);
+
+                $mediaAsset->addMedia($fakeImage)->toMediaCollection();
+
+            } catch (\Throwable $th) {
+                //
+            }
 
             $this->mediaAssets[] = $mediaAsset;
         }
