@@ -27,22 +27,35 @@ Optional: Install required default data:
 php artisan inspirecms:import-default-data
 ```
 
-Optional: Install sample data and views:
+3. Execute the schedule command to run scheduled jobs:
 ```bash
-php artisan inspirecms:import-sample-data
+php artisan schedule:work
 ```
 
-3. Add routes to you web.php
+Existing scheduled jobs in the configuration file:
 ```php
-<?php
-
-use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return view('welcome');
-});
-
-\SolutionForest\InspireCms\Facades\InspireCms::routes();
+'scheduled_tasks' => [
+    'cleanup_content_verion' => [
+        'enabled' => true,
+        'schedule' => 'daily',
+        'command' => \SolutionForest\InspireCms\Commands\CleanupContentVersion::class,
+        'old_content_version_days' => 30,
+    ],
+    'execute_import_job' => [
+        'enabled' => true,
+        'schedule' => 'everyMinute',
+        'command' => \SolutionForest\InspireCms\Commands\ExecuteImportJob::class,
+        'arguments' => [
+            '--limit 50',
+        ],
+    ],
+    'cleanup_import_job' => [
+        'enabled' => true,
+        'schedule' => 'daily',
+        'command' => \SolutionForest\InspireCms\Commands\CleanupImportJob::class,
+        'old_import_job_days' => 5,
+    ],
+],
 ```
 
 ## Configuration
@@ -61,6 +74,8 @@ Route::get('/', function () {
 config on `inspirecms.php` config file:
 
 1. cleanup_content_verion
+2. execute_import_job
+3. cleanup_import_job
 
 ## Testing
 

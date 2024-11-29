@@ -50,6 +50,10 @@ class Navigation extends BaseEntity
          */
         public $target = null,
         /**
+         * @var string|int|null $id The identifier for the navigation entity.  Update existing if provided.
+         */
+        public $id = null,
+        /**
          * The content slug path of the navigation item (optional).
          *
          * @var string|null
@@ -66,6 +70,7 @@ class Navigation extends BaseEntity
     public function getDataForModel(): array
     {
         return [
+            'id' => $this->id,
             'category' => $this->category,
             'type' => $this->type,
             'title' => $this->title,

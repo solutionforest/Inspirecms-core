@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -86,6 +88,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
+        $this->app->singleton(Services\ImportJobServiceInterface::class, fn () => $this->app->make(Services\ImportJobService::class));
+
+        $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
         Facades\ModelManifest::register();
         $supportModels = $this->getConfigSupoortModels();
@@ -130,8 +135,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Icon Registration
         FilamentIcon::register($this->getIcons());
 
-        // Handle Stubs
         if (app()->runningInConsole()) {
+            // Handle Stubs
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/inspirecms/{$file->getFilename()}"),
@@ -152,6 +157,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     $file->getRealPath() => $viewFullPath,
                 ], 'inspirecms-sample-views');
             }
+
+            // Handle sample
+            $this->publishes([
+                __DIR__ . '/../sample' => public_path('vendor/inspirecms/sample'),
+            ], 'inspirecms-sample');
         }
 
         // Testing
@@ -184,6 +194,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
             Commands\CleanupContentVersion::class,
+            Commands\ExecuteImportJob::class,
+            Commands\CleanupImportJob::class,
         ];
     }
 
@@ -197,6 +209,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
             'inspirecms::reset' => 'heroicon-o-arrow-path',
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
+            'inspirecms::json-file' => view('inspirecms::icons.json-file'),
         ];
     }
 
@@ -223,6 +236,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return [
             'create_inspire-cms-core_table',
+            'create_cms_import_jobs_table',
         ];
     }
 
@@ -352,38 +366,37 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $tasks = Arr::only(config('inspirecms.scheduled_tasks', []), [
             'cleanup_content_verion',
+            'execute_import_job',
+            'cleanup_import_job',
         ]);
 
         foreach ($tasks as $taskKey => $task) {
 
-            if (! is_array($task)) {
-                continue;
-            }
+            try {
 
-            if (! ($task['enabled'] ?? false) ||
-                ! isset($task['schedule'])
-            ) {
-                continue;
-            }
+                if (! is_array($task)) {
+                    continue;
+                }
 
-            $func = $task['schedule'];
+                if (! ($task['enabled'] ?? false) ||
+                    ! isset($task['schedule'])
+                ) {
+                    continue;
+                }
 
-            switch ($taskKey) {
-                case 'cleanup_content_verion':
+                $func = $task['schedule'];
 
-                    $command = $task['command'] ?? null;
+                $command = $task['command'] ?? null;
 
-                    if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
-                        break;
-                    }
+                $arguments = $task['arguments'] ?? [];
 
-                    // check have this func
-                    if (method_exists($schedule->command($command), $func)) {
-
-                        $schedule->command($command)->{$func}();
-                    }
-
+                if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
                     break;
+                }
+
+                $schedule->command($command, $arguments)->{$func}();
+            } catch (\Throwable $th) {
+                //
             }
 
         }

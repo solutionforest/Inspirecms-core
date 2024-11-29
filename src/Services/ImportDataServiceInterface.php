@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use SolutionForest\InspireCms\ImportData\Entities;
 
 interface ImportDataServiceInterface
@@ -70,8 +69,6 @@ interface ImportDataServiceInterface
      * @return void
      */
     public function reset();
-
-    public function importFromFile(TemporaryUploadedFile $file): array;
 
     /**
      * Checks if there are any errors.

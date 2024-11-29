@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Facade;
 /**
  * @method static bool needInstall() Determine if there is a need to go to the install page
  * @method static ?string getInstallUrl()
+ * @method static ?string getImportDataUrl()
  * @method static \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection> getSections(... $names)
  * @method static void routes() Registers the routes for the Inspire CMS.
  * @method static void addSection(\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section)

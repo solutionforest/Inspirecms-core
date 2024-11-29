@@ -27,6 +27,7 @@ return [
     'general' => '一般',
     'group' => '組',
     'id' => 'ID',
+    'import_jobs' => '導入工作',
     'is_active' => '活躍',
     'is_default' => '默認',
     'label' => '標籤',

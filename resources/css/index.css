@@ -54,3 +54,7 @@
         @apply w-5 h-5;
     }
 }
+
+.fi-icon > svg.custom-icon {
+    stroke: currentColor;
+}
