@@ -41,7 +41,7 @@ class EditProfile extends BasePage
             ->color('gray');
     }
 
-    protected function getRedirectUrl(): string|null
+    protected function getRedirectUrl(): ?string
     {
         // reload with preferred language
         return $this->getUrl();
