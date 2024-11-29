@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Tests\TestModels\DocumentType;
 
 class DocumentTypeTest extends TestCase
 {
-    /** @test */
     public function test_deleting_document_type_with_content_throws_exception()
     {
         $this->expectException(\Exception::class);
@@ -30,7 +29,6 @@ class DocumentTypeTest extends TestCase
         $documentType->delete();
     }
 
-    /** @test */
     public function test_deleting_document_type_without_content_does_not_throw_exception()
     {
         $documentType = DocumentType::factory()->create();

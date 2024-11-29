@@ -8,7 +8,6 @@ use SolutionForest\InspireCms\Tests\TestModels\Content;
 
 class ContentTest extends TestCase
 {
-    /** @test */
     public function it_creates_content_version_and_nestable_tree_after_content_creation()
     {
         // Act
@@ -43,7 +42,6 @@ class ContentTest extends TestCase
         $this->assertDatabaseHas('content_publish_version', ['content_id' => $contentKey]);
     }
 
-    /** @test */
     public function delete_children_if_parent_is_deleted()
     {
         // Arrange
@@ -64,7 +62,6 @@ class ContentTest extends TestCase
         $this->assertSoftDeleted('content', ['id' => $child->id]);
     }
 
-    /** @test */
     public function delete_content_versions_and_nestable_tree_if_content_is_deleted()
     {
         // Arrange
