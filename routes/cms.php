@@ -18,7 +18,7 @@ Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
     Route::name('cms.samples.')->prefix('samples')->group(function () {
 
         Route::get('import-job/download', function () {
-            
+
             return response()->download(public_path('vendor/inspirecms/sample/import-job-sample.zip'));
 
         })->name('download-import-job');

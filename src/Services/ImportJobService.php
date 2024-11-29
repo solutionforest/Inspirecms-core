@@ -48,7 +48,7 @@ class ImportJobService implements ImportJobServiceInterface
     public static function getFileStructureHtml()
     {
         $structure = collect(self::FOLDER_STRUCTURE)->mapWithKeys(function ($folder) {
-            
+
             $sampleFiles = [];
 
             $maxRandomFiles = 3;
@@ -70,10 +70,10 @@ class ImportJobService implements ImportJobServiceInterface
             if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
 
                 $sampleFiles = array_merge([
-                    'components' => $generateFiles("component", '.blade.php'),
-                ], $generateFiles("sample", '.blade.php'));
-                
-            } else if (in_array($folder, self::FOLDER_HAS_VIEWS)) {
+                    'components' => $generateFiles('component', '.blade.php'),
+                ], $generateFiles('sample', '.blade.php'));
+
+            } elseif (in_array($folder, self::FOLDER_HAS_VIEWS)) {
 
                 $sampleFiles = $generateFiles($folder, '.blade.php');
 
@@ -84,9 +84,9 @@ class ImportJobService implements ImportJobServiceInterface
             }
 
             return [$folder => $sampleFiles];
-            
+
         })->all();
-        
+
         $html = view('inspirecms::import-job.file-structure-sample', compact('structure'))->render();
 
         return new HtmlString($html);
