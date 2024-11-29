@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-interface ContentVersion
+use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
+
+interface ContentVersion extends HasAuthor
 {
     /**
      * Get the content associated with the content version.

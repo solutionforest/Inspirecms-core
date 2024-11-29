@@ -10,11 +10,12 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
+use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
  * @template TDto of \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto
  */
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
+interface Content extends HasAuthor, Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
     /**
      * Return the document type relation.
