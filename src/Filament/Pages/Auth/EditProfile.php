@@ -40,4 +40,10 @@ class EditProfile extends BasePage
             ->alpineClickHandler('document.referrer ? window.history.back() : (window.location.href = ' . Js::from(filament()->getUrl()) . ')')
             ->color('gray');
     }
+
+    protected function getRedirectUrl(): string|null
+    {
+        // reload with preferred language
+        return $this->getUrl();
+    }
 }
