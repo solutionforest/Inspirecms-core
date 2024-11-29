@@ -19,6 +19,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ImportJob;
 use SolutionForest\InspireCms\Services\ImportJobServiceInterface;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class ImportJobResource extends Resource implements ClusterSectionResource
 {
@@ -42,11 +43,17 @@ class ImportJobResource extends Resource implements ClusterSectionResource
     public static function infolist(Infolist $infolist): Infolist
     {
         return $infolist
+            ->columns(3)
             ->schema([
                 Infolists\Components\Group::make()
+                    ->columnSpan(2)
                     ->schema([
+                        Infolists\Components\TextEntry::make('id')
+                            ->label(__('inspirecms::inspirecms.id'))
+                            ->inlineLabel(),
                         Infolists\Components\TextEntry::make('display_status')
                             ->label(__('inspirecms::inspirecms.status'))
+                            ->inlineLabel()
                             ->badge()
                             ->iconColor(function ($state) {
                                 if ($state instanceof ImportJobStatus) {
@@ -57,35 +64,42 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                             }),
                         Infolists\Components\TextEntry::make('file')
                             ->label(__('inspirecms::resources/import-jobs.file.title'))
+                            ->inlineLabel()
                             ->fontFamily('mono')
                             ->suffixAction(function (ImportJob & Model $record) {
 
                                 [$fs, $path] = $record->getStorageAndFilePath();
 
                                 return Infolists\Components\Actions\Action::make('download')
-                                    ->icon('heroicon-o-arrow-down-on-square')
+                                    ->icon('heroicon-s-arrow-down-on-square')
+                                    ->color('info')
+                                    ->extraAttributes(['aria-label' => 'download'])
                                     ->action(fn () => $fs->download($path));
                             }),
                     ]),
 
                 Infolists\Components\Group::make()
-                    ->columns(2)
                     ->schema([
                         Infolists\Components\TextEntry::make('created_at')
                             ->label(__('inspirecms::inspirecms.created_at'))
+                            ->inlineLabel()
                             ->since()
                             ->dateTimeTooltip(),
                         Infolists\Components\TextEntry::make('available_at')
                             ->label(__('inspirecms::resources/import-jobs.available_at.title'))
+                            ->inlineLabel()
                             ->since()
                             ->dateTimeTooltip(),
                         Infolists\Components\TextEntry::make('finished_at')
-                            ->label(__('inspirecms::resources/import-jobs.finished_at.title')),
+                            ->label(__('inspirecms::resources/import-jobs.finished_at.title'))
+                            ->inlineLabel(),
                         Infolists\Components\TextEntry::make('failed_at')
-                            ->label(__('inspirecms::resources/import-jobs.failed_at.title')),
+                            ->label(__('inspirecms::resources/import-jobs.failed_at.title'))
+                            ->inlineLabel(),
                         Infolists\Components\TextEntry::make('clear_at')
                             ->weight('bold')
                             ->label(__('inspirecms::resources/import-jobs.clear_at.title'))
+                            ->inlineLabel()
                             ->since()
                             ->dateTimeTooltip(),
                     ]),
@@ -103,11 +117,16 @@ class ImportJobResource extends Resource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Hidden::make('disk'),
+                Forms\Components\DateTimePicker::make('available_at')
+                    ->label(__('inspirecms::resources/import-jobs.available_at.title'))
+                    ->helperText(__('inspirecms::resources/import-jobs.available_at.instructions'))
+                    ->hint(__('inspirecms::resources/import-jobs.available_at.hint'))
+                    ->native(false)
+                    ->autofocus(false),
                 Forms\Components\FileUpload::make('file')
                     ->required()
                     ->label(__('inspirecms::resources/import-jobs.file.title'))
-                    ->hint(__('inspirecms::resources/import-jobs.file.instructions'))
-                    ->helperText(app(ImportJobServiceInterface::class)->getFileStructureHtml())
+                    ->hint(__('inspirecms::resources/import-jobs.file.hint'))
                     ->disk(app(ImportJob::class)->getDiskDriver())
                     ->acceptedFileTypes([
                         //zip
@@ -119,6 +138,27 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                         ],
                     ])
                     ->preserveFilenames(false),
+                Forms\Components\Placeholder::make('file_structure_instructions')
+                    ->label(__('inspirecms::resources/import-jobs.file_structure_instructions.title'))
+                    ->hint(__('inspirecms::resources/import-jobs.file_structure_instructions.hint'))
+                    ->hintColor('warning')
+                    ->hintAction(
+                        Forms\Components\Actions\Action::make('download_sample')
+                            ->label(__('inspirecms::resources/import-jobs.actions.download_sample.label'))
+                            ->icon('heroicon-s-arrow-down-on-square')
+                            ->button()
+                            ->outlined()
+                            ->color('warning')
+                            ->url(function () {
+                                try {
+                                    return route('cms.samples.download-import-job');
+                                } catch (RouteNotFoundException $th) {
+                                    return null;
+                                }
+                            })
+                    )
+                    ->content(app(ImportJobServiceInterface::class)->getFileStructureHtml())
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -136,8 +176,8 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/import-jobs.file.title'))
                     ->fontFamily('mono'),
                 Tables\Columns\TextColumn::make('display_status')
-                    ->badge()
                     ->label(__('inspirecms::inspirecms.status'))
+                    ->badge()
                     ->iconColor(function ($state) {
                         if ($state instanceof ImportJobStatus) {
                             return $state->getColor();

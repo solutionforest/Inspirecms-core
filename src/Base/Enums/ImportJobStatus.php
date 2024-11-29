@@ -24,7 +24,7 @@ enum ImportJobStatus: string implements HasColor, HasIcon, HasLabel
         return match ($this) {
             self::Pending => 'gray',
             self::Failed => 'danger',
-            self::Finished => 'primary',
+            self::Finished => 'success',
         };
     }
 

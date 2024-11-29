@@ -24,8 +24,8 @@ class ImportJobService implements ImportJobServiceInterface
     ];
 
     const FOLDER_HAS_VIEWS = [
-        self::FOLDER_IDENTIFIER_VIEW,
         self::FOLDER_IDENTIFIER_TEMPLATE,
+        self::FOLDER_IDENTIFIER_VIEW,
     ];
 
     const FOLDER_IDENTIFIER_CONTENT = 'Content';
@@ -47,12 +47,47 @@ class ImportJobService implements ImportJobServiceInterface
 
     public static function getFileStructureHtml()
     {
-        $html = '<b>Folder Structure of zip file:</b>';
-        $html .= '<ul>';
-        foreach (self::FOLDER_STRUCTURE as $folder) {
-            $html .= '<li>' . $folder . '</li>';
-        }
-        $html .= '</ul>';
+        $structure = collect(self::FOLDER_STRUCTURE)->mapWithKeys(function ($folder) {
+            
+            $sampleFiles = [];
+
+            $maxRandomFiles = 3;
+
+            $generateFiles = function ($filenamePrefix, $extension) use ($maxRandomFiles) {
+
+                return collect(range(1, random_int(1, $maxRandomFiles)))
+                    ->map(function ($i) use ($filenamePrefix, $extension) {
+
+                        $name = (string) Str::of($filenamePrefix)->snake()->singular()->replaceMatches('/[^a-z0-9]/', '-');
+
+                        return "{$name}-{$i}{$extension}";
+
+                    })
+                    ->values()
+                    ->all();
+            };
+
+            if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
+
+                $sampleFiles = array_merge([
+                    'components' => $generateFiles("component", '.blade.php'),
+                ], $generateFiles("sample", '.blade.php'));
+                
+            } else if (in_array($folder, self::FOLDER_HAS_VIEWS)) {
+
+                $sampleFiles = $generateFiles($folder, '.blade.php');
+
+            } else {
+
+                $sampleFiles = $generateFiles($folder, '.json');
+
+            }
+
+            return [$folder => $sampleFiles];
+            
+        })->all();
+        
+        $html = view('inspirecms::import-job.file-structure-sample', compact('structure'))->render();
 
         return new HtmlString($html);
     }

@@ -135,8 +135,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Icon Registration
         FilamentIcon::register($this->getIcons());
 
-        // Handle Stubs
         if (app()->runningInConsole()) {
+            // Handle Stubs
             foreach (app(Filesystem::class)->files(__DIR__ . '/../stubs/') as $file) {
                 $this->publishes([
                     $file->getRealPath() => base_path("stubs/inspirecms/{$file->getFilename()}"),
@@ -157,6 +157,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     $file->getRealPath() => $viewFullPath,
                 ], 'inspirecms-sample-views');
             }
+
+            // Handle sample
+            $this->publishes([
+                __DIR__ . '/../sample' => public_path('vendor/inspirecms/sample'),
+            ], 'inspirecms-sample');
         }
 
         // Testing
@@ -204,6 +209,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
             'inspirecms::reset' => 'heroicon-o-arrow-path',
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
+            'inspirecms::json-file' => view('inspirecms::icons.json-file'),
         ];
     }
 
