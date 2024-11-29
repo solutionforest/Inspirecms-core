@@ -15,7 +15,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 /**
  * @template TDto of \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto
  */
-interface Content extends HasAuthor, Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
+interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
     /**
      * Return the document type relation.
