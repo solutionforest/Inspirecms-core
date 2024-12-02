@@ -1,5 +1,5 @@
 @php
-    $locale = $content->getLocale() ?? request()->getLocale();
+    $locale ??= $content->getLocale() ?? request()->getLocale();
 @endphp
 <x-layout :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
     <x-header :locale="$locale" />

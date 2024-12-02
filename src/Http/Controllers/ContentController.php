@@ -28,7 +28,7 @@ class ContentController extends Controller
 
         // Redirect to the localized URL if needed
         if (blank($locale)) {
-            return $this->redirectToLocalizedUrl($slug ?? '', $this->getDefaultLocale());
+            $locale = $this->getDefaultLocale();
         }
 
         [$contentDto, $view] = $this->pageService->findContentAndView($slug, $locale);
@@ -51,21 +51,9 @@ class ContentController extends Controller
 
         return view($view, [
             'content' => $contentDto,
+        ])->with([
+            'locale' => $locale,
         ]);
-    }
-
-    /**
-     * Redirects to a localized URL based on the provided slug and locale.
-     *
-     * @param  string  $slug  The slug of the content.
-     * @param  string  $locale  The locale to redirect to.
-     * @return \Illuminate\Http\RedirectResponse The redirect response to the localized URL.
-     */
-    protected function redirectToLocalizedUrl(string $slug, string $locale): \Illuminate\Http\RedirectResponse
-    {
-        $url = $this->urlGenerator->getLocalizedUrl($slug, $locale);
-
-        return redirect($url);
     }
 
     protected function getDefaultLocale(): string

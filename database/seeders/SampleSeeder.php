@@ -52,7 +52,7 @@ class SampleSeeder extends Seeder
 @php
     $title = $content->getTitle();
 
-    $locale = $content->getLocale();
+    $locale ??= $content->getLocale();
 
     $general_page_banner = $content->getPropertyGroup('general_page_banner');
     $general_page_banner_title = $general_page_banner?->getPropertyData('title')?->getValue($locale);
@@ -66,7 +66,7 @@ class SampleSeeder extends Seeder
     $social_media_email = $social_media?->getPropertyData('email')?->getValue();
 
 @endphp
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
   <main class="flex-auto">
     <div class="sm:px-8 mt-9">
       <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -118,7 +118,7 @@ Html;
 @php
     $title = $content->getTitle();
 
-    $locale = $content->getLocale();
+    $locale ??= $content->getLocale();
 
     $general_page_banner = $content->getPropertyGroup('general_page_banner');
     $general_page_banner_title = $general_page_banner?->getPropertyData('title')?->getValue($locale);
@@ -127,7 +127,7 @@ Html;
     $projects = $content->getPropertyGroup('projects');
     $projects_projects = $projects?->getPropertyData('projects')?->getValue();
 @endphp
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 sm:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -178,14 +178,14 @@ Html;
 Html;
         $about = <<<'Html'
 @php
-    $locale = $content->getLocale();
+    $locale ??= $content->getLocale();
 
     $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
     $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
     $blog_detail_content_content = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
     $blog_detail_content_image = collect($blog_detail_content?->getPropertyData('image')?->getValue())->first();
 @endphp
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
   <main class="flex-auto">
     <div class="sm:px-8 mt-16 sm:mt-32">
         <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -214,7 +214,7 @@ Html;
 Html;
         $blogs = <<<'Html'
 @php
-    $locale = $content->getLocale();
+    $locale ??= $content->getLocale();
 
     $general_page_banner = $content->getPropertyGroup('general_page_banner');
     $general_page_banner_title = $general_page_banner?->getPropertyData('title')?->getValue($locale);
@@ -222,7 +222,7 @@ Html;
 
     $blogs = $content->getChildren()->paginate(3);
 @endphp
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 sm:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -271,13 +271,13 @@ Html;
 Html;
         $blog = <<<'Html'
 @php
-    $locale = $content->getLocale();
+    $locale ??= $content->getLocale();
 
     $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
     $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
     $blog_detail_content_description = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
 @endphp
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 lg:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -306,12 +306,12 @@ Html;
 </x-page>   
 Html;
         $blank_page = <<<'Html'
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
 
 </x-page>   
 Html;
         $redirect_page = <<<'Html'
-<x-page :content="$content">
+<x-page :content="$content" :locale="$locale">
     Redirecting...
 </x-page>   
 Html;
