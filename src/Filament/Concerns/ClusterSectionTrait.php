@@ -56,7 +56,7 @@ trait ClusterSectionTrait
     {
         $items = collect(parent::getNavigationItems())
             ->map(function ($item) {
-                if ($item instanceof \Filament\Navigation\NavigationItem | $item instanceof \SolutionForest\InspireCms\Filament\Navigation\NavigationItem) {
+                if ($item instanceof \Filament\Navigation\NavigationItem || $item instanceof \SolutionForest\InspireCms\Filament\Navigation\NavigationItem) {
                     return static::configureSectionKeyOnNavigationItem($item);
                 }
 

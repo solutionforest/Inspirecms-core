@@ -29,7 +29,7 @@ class ExecuteImportJob extends Command
         if ($records->isEmpty()) {
             $this->info('No pending jobs found.');
 
-            return;
+            return static::SUCCESS;
         }
 
         foreach ($records as $record) {
@@ -42,6 +42,8 @@ class ExecuteImportJob extends Command
                 $this->error("Job {$record->getKey()} failed: {$e->getMessage()}");
             }
         }
+        
+        return static::SUCCESS;
     }
 
     /**

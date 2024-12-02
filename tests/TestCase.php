@@ -13,18 +13,24 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Schema\Blueprint;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
+use SolutionForest\InspireCms\Helpers\PermissionHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\InspireCmsServiceProvider;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
+use SolutionForest\InspireCms\Tests\TestModels\User;
 
 abstract class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
         parent::setUp();
+        
+        $this->setUpDatabase($this->app);
 
         Factory::guessFactoryNamesUsing(
             fn (string $modelName) => 'SolutionForest\\InspireCms\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
@@ -50,21 +56,32 @@ abstract class TestCase extends Orchestra
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
 
+            \Spatie\Permission\PermissionServiceProvider::class,
+
             FilamentFieldGroupServiceProvider::class,
             \Kalnoy\Nestedset\NestedSetServiceProvider::class,
+
+            \Pboivin\FilamentPeek\FilamentPeekServiceProvider::class,
 
             InspireCmsSupportServiceProvider::class,
 
             InspireCmsServiceProvider::class,
+
+            \SolutionForest\InspireCms\CmsPanelProvider::class,
         ];
     }
 
     public function getEnvironmentSetUp($app)
     {
-        config()->set('database.default', 'testing');
+        $app['config']->set('database.default', 'testing');
+        $app['config']->set('app.key', 'base64:I4ofV4eI4v12PUp+g9ZahXUu0ZhPCbk1Q8iawecCtdw=');
 
         //region inspirecms
         static::registerTestModels();
+
+        // Extra resources
+        $app['config']->set('inspirecms.filament.resources.custom_post', \SolutionForest\InspireCms\Tests\Support\Filament\Resources\PostResource::class);
+
         //endregion inspirecms
 
         //region inspirecms support
@@ -81,9 +98,11 @@ abstract class TestCase extends Orchestra
 
         $migrations = [
             __DIR__ . '/../database/migrations/create_inspire-cms-core_table.php.stub',
+            __DIR__ . '/../database/migrations/create_cms_import_jobs_table.php.stub',
             __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_nestable-trees_table.php.stub',
             __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_media-assets_table.php.stub',
             __DIR__ . '/../vendor/spatie/laravel-medialibrary/database/migrations/create_media_table.php.stub',
+            __DIR__ . '/../vendor/spatie/laravel-permission/database/migrations/create_permission_tables.php.stub',
         ];
 
         foreach ($migrations as $migrationPath) {
@@ -100,6 +119,7 @@ abstract class TestCase extends Orchestra
 
             $testModel = "SolutionForest\\InspireCms\\Tests\\TestModels\\{$guessName}";
 
+            // Support plugin's models
             if (in_array($key, ['media_asset', 'nestable_tree'])) {
                 $testModel = "SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\{$guessName}";
                 \SolutionForest\InspireCms\Support\Facades\ModelRegistry::replace("SolutionForest\\InspireCms\\Support\\Models\\Contracts\\{$guessName}", $testModel);
@@ -113,6 +133,8 @@ abstract class TestCase extends Orchestra
         }
 
         \SolutionForest\InspireCms\Facades\ModelManifest::register();
+
+        \SolutionForest\InspireCms\Facades\ModelManifest::registerMorphMap();
     }
 
     protected function getTable($table)
@@ -122,5 +144,40 @@ abstract class TestCase extends Orchestra
         }
 
         return config('inspirecms.models.table_name_prefix') . $table;
+    }
+
+    protected function setUpDatabase($app)
+    {
+        $schema = $app['db']->connection()->getSchemaBuilder();
+
+        $schema->create('test_posts', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('name');
+            $table->timestamps();
+        });
+    }
+
+    protected function createSuperAdminUser()
+    {
+        $role = PermissionHelper::setupSuperAdminRole();
+
+        /**
+         * @var User
+         */
+        $user = User::create([
+            'name' => 'Super Admin',
+            'email' => 'superadmin@example.com',
+            'password' => \Hash::make('password'), // Change this to a secure password
+        ]);
+
+        $user->syncRoles($role);
+
+    }
+
+    public function loginCmsPanelAsSuperAdmin()
+    {
+        $user = User::first();
+
+        return $this->actingAs($user, InspireCmsConfig::getGuardName());
     }
 }

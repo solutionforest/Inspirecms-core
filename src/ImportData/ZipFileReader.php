@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\ImportData;
 
 use Illuminate\Support\Facades\Storage;
+use SolutionForest\InspireCms\Helpers\FileHelper;
 
 class ZipFileReader
 {
@@ -25,16 +26,20 @@ class ZipFileReader
 
         [$fs, $fullExtractTo, $extractTo] = $this->generateFolderForExtraction(uniqid());
 
-        $zip = new \ZipArchive;
-        $zip->open($zipFilePath);
-        $zip->extractTo($fullExtractTo);
-        $zip->close();
+        logger()->debug('Extracting ZIP file', [
+            'zipFilePath' => $zipFilePath,
+            'extractTo' => $extractTo,
+            'extractTofull' => $fullExtractTo,
+        ]);
+
+        FileHelper::unzipFile($zipFilePath, $fullExtractTo);
 
         return [$fs, $extractTo];
     }
 
     public function getTempDiskDriver(): string
     {
+        return 'local';
         return strval(config('inspirecms.imports.temp_disk', 'local'));
     }
 
@@ -62,8 +67,9 @@ class ZipFileReader
 
         $path = $tempDir . DIRECTORY_SEPARATOR . $folderName;
 
+        // Create directory with permissions
         if (! $disk->exists($path)) {
-            $disk->makeDirectory($path);
+            $disk->makeDirectory($path, 0755, true);
         }
 
         return [

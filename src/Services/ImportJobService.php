@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Services;
 use Illuminate\Support\Arr;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
 
@@ -109,6 +110,7 @@ class ImportJobService implements ImportJobServiceInterface
 
             [$extractorFs, $extractedFolderPath] = $this->zipFileReader->readFromPath($jobFs->path($filePath));
 
+            logger()->debug(__METHOD__, array($job, $filePath, $jobFs, $extractedFolderPath, is_null($extractedFolderPath)));
             if (is_null($extractedFolderPath)) {
                 throw new \Exception('The provided file is not a ZIP file.');
             }
@@ -163,7 +165,7 @@ class ImportJobService implements ImportJobServiceInterface
 
             $message[] = [
                 'exMessage' => $th->getMessage(),
-                'exTrace' => $th->getTraceAsString(),
+                'exTrace' => ThrowableHelper::getTraceAsString($th, 5),
             ];
 
             $job->markAsFailed($message);
@@ -171,7 +173,7 @@ class ImportJobService implements ImportJobServiceInterface
         } finally {
             // Delete the extracted folder
             if ($extractorFs != null && $extractedFolderPath != null && $extractorFs->exists($extractedFolderPath)) {
-                $extractorFs->deleteDirectory($extractedFolderPath);
+                // $extractorFs->deleteDirectory($extractedFolderPath);
             }
         }
     }

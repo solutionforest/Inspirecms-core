@@ -90,6 +90,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
         $this->app->singleton(Services\ImportJobServiceInterface::class, fn () => $this->app->make(Services\ImportJobService::class));
 
+        $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
+        
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
         Facades\ModelManifest::register();

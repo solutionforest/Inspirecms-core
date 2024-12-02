@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
+use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\Models\Contracts\ImportJob as ImportJobContract;
 use SolutionForest\InspireCms\Observers\ImportJobObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -37,7 +38,7 @@ class ImportJob extends BaseModel implements ImportJobContract
         if ($msg instanceof \Throwable) {
             $msg = [
                 'exMessage' => $msg->getMessage(),
-                'exTrace' => $msg->getTrace(),
+                'exTrace' => ThrowableHelper::getTraceAsString($msg, 5),
             ];
         }
         $this->update([

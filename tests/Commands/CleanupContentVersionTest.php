@@ -7,7 +7,7 @@ use SolutionForest\InspireCms\Tests\TestCase;
 use SolutionForest\InspireCms\Tests\TestModels\ContentPublishVersion;
 use SolutionForest\InspireCms\Tests\TestModels\ContentVersion;
 
-class CleanContentVersionCommandTest extends TestCase
+class CleanupContentVersionTest extends TestCase
 {
     public function test_handle_no_versions_to_cleanup()
     {

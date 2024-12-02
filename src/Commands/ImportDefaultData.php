@@ -6,10 +6,9 @@ use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
-use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use Spatie\Permission\PermissionRegistrar;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
@@ -55,23 +54,9 @@ class ImportDefaultData extends Command
                 }
             }
 
-            // Reset cached roles and permissions
-            app(PermissionRegistrar::class)->forgetCachedPermissions();
+            PermissionHelper::setupSuperAdminRole();
 
-            $permissionClass = InspireCmsConfig::getPermissionModelClass();
-            $rolClass = InspireCmsConfig::getRoleModelClass();
-
-            $permissions = PermissionManifest::permissions()->map(
-                fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, InspireCmsConfig::getGuardName())
-            );
-
-            // create roles and assign created permissions
-            $role = $rolClass::findOrCreate(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
-
-            // assign all permissions for "admin" role.
-            $role->syncPermissions($permissions);
         });
-
     }
 
     protected function importSampleData(): void

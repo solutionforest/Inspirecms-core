@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\PermissionRegistrar;
 
@@ -152,11 +153,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
             return false;
         }
 
-        $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
-
-        foreach ($missing as $permission) {
-            $permissionModel::findOrCreate($permission, InspireCmsConfig::getGuardName());
-        }
+        PermissionHelper::setupPermissions();
 
         return true;
     }

@@ -182,7 +182,6 @@ class CmsPanelProvider extends PanelProvider
                     ], true),
             ])
             ->bootUsing(function () {
-                $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
                 \Filament\Navigation\NavigationItem::macro('section', function ($section) {
                     $cast = $this->cloneAsCustom();
                     $cast->section = $section;
