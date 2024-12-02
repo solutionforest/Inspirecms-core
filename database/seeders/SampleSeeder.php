@@ -732,8 +732,10 @@ Html;
                 //Retry x-times to create fake image
                 $fakeImage = false;
                 $retry = 0;
+
+                $fakeImageWord = "image-{$i}";
                 while ($fakeImage === false && $retry < $totalRetry) {
-                    $fakeImage = fake()->image($dir, 400, 400);
+                    $fakeImage = fake()->image(dir: $dir, width: 400, height: 400, word: $fakeImageWord);
                     $retry++;
                 }
 
