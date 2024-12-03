@@ -50,8 +50,6 @@ return [
     'password' => 'Password',
     'path' => 'Path',
     'publish_at_xxx' => 'Publish at :time',
-    'referenced_by_xxx' => 'Referenced by :name',
-    'referenced_by' => 'Referenced by',
     'role' => 'Role',
     'roles' => 'Roles',
     'root' => 'Root',
@@ -75,6 +73,8 @@ return [
     'tree' => 'Tree',
     'type' => 'Type',
     'url' => 'URL',
+    'used_by_xxx' => 'Used by :name',
+    'used_by' => 'Used by',
     'user' => 'User',
     'users' => 'Users',
 

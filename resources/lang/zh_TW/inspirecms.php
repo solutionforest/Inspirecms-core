@@ -50,8 +50,6 @@ return [
     'password' => '密碼',
     'path' => '路徑',
     'publish_at_xxx' => '發布於:time',
-    'referenced_by_xxx' => '被 :name 引用',
-    'referenced_by' => '被引用',
     'role' => '角色',
     'roles' => '角色',
     'root' => '根',
@@ -75,6 +73,8 @@ return [
     'tree' => '樹',
     'type' => '類型',
     'url' => '網址',
+    'used_by_xxx' => '被 :name 引用',
+    'used_by' => '被引用',
     'user' => '用戶',
     'users' => '用戶',
 
