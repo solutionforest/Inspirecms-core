@@ -37,6 +37,37 @@ class FieldGroupsRelationManager extends RelationManager
         return $resource::form($form);
     }
 
+    public function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Infolists\Components\RepeatableEntry::make('fields')
+                    ->hiddenLabel()
+                    ->columnSpanFull()
+                    ->columns(6)
+                    ->schema([
+                        Infolists\Components\TextEntry::make('name')
+                            ->columnSpan(1)
+                            ->hiddenLabel()
+                            ->getStateUsing(fn ($record) => $record->field_type_config[0]['name'] ?? null)
+                            ->icon(fn ($record) => $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle'),
+
+                        Infolists\Components\Group::make([
+                            
+                            Infolists\Components\TextEntry::make('label')
+                                ->label(__('inspirecms::resources/field.label.label'))
+                                ->inlineLabel(),
+
+                            Infolists\Components\TextEntry::make('name')
+                                ->label(__('inspirecms::resources/field.name.label'))
+                                ->inlineLabel()
+                                ->badge(),
+
+                        ])->columnSpan(5),
+                    ]),
+            ]);
+    }
+
     public function table(Table $table): Table
     {
         return $table
@@ -106,35 +137,6 @@ class FieldGroupsRelationManager extends RelationManager
                     ->visible(fn ($record) => $record->pivot?->inheritedFrom == null),
             ])
             ->actionsAlignment('left');
-    }
-
-    public function infolist(Infolist $infolist): Infolist
-    {
-        return $infolist
-            ->schema([
-                Infolists\Components\RepeatableEntry::make('fields')
-                    ->hiddenLabel()
-                    ->columnSpanFull()
-                    ->columns(6)
-                    ->schema([
-                        Infolists\Components\TextEntry::make('name')
-                            ->columnSpan(1)
-                            ->hiddenLabel()
-                            ->getStateUsing(fn ($record) => $record->field_type_config[0]['name'] ?? null)
-                            ->icon(fn ($record) => $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle'),
-                        Infolists\Components\Group::make([
-                            Infolists\Components\TextEntry::make('label')
-                                ->label(__('inspirecms::forms/fields/field.label.label'))
-                                ->inlineLabel(),
-
-                            Infolists\Components\TextEntry::make('name')
-                                ->label(__('inspirecms::forms/fields/field.name.label'))
-                                ->inlineLabel()
-                                ->badge(),
-
-                        ])->columnSpan(5),
-                    ]),
-            ]);
     }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
