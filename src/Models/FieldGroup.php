@@ -50,8 +50,8 @@ class FieldGroup extends BaseModel implements FieldGroupContract
 
             //     if (isset($fiFormConfig->translatable) && $fiFormConfig->translatable) {
             //         return FieldTypeHelper::buildTranslatableField(
-            //             typeName: $field->type, 
-            //             fieldTypeConfig: $field->config, 
+            //             typeName: $field->type,
+            //             fieldTypeConfig: $field->config,
             //             name: $fieldName,
             //             label: $field->label,
             //             helperText: $field->instructions,

@@ -40,6 +40,7 @@ class ZipFileReader
     public function getTempDiskDriver(): string
     {
         return 'local';
+
         return strval(config('inspirecms.imports.temp_disk', 'local'));
     }
 

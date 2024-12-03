@@ -7,8 +7,8 @@ class ThrowableHelper
     /**
      * Returns the stack trace of a Throwable as a string, limited to a specified number of entries.
      *
-     * @param \Throwable $e The throwable instance to get the stack trace from.
-     * @param int $limit The maximum number of stack trace entries to include in the string.
+     * @param  \Throwable  $e  The throwable instance to get the stack trace from.
+     * @param  int  $limit  The maximum number of stack trace entries to include in the string.
      * @return string The stack trace as a string.
      */
     public static function getTraceAsString(\Throwable $e, int $limit): string

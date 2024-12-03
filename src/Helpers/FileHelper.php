@@ -6,9 +6,9 @@ class FileHelper
 {
     public static function buildZipFromFolder(string $pathToZip, string $zipFullResultPath)
     {
-        $zip = new \ZipArchive();
+        $zip = new \ZipArchive;
         if ($zip->open($zipFullResultPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
-            
+
             /** @var \SplFileInfo[] $files */
             $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($pathToZip));
 
@@ -16,7 +16,7 @@ class FileHelper
                 $filePath = $file->getPathName();
                 $relativePath = substr($filePath, strlen($pathToZip) + 1);
 
-                if (!$file->isDir()) {
+                if (! $file->isDir()) {
                     $zip->addFile($filePath, $relativePath);
                 } else {
                     if ($relativePath !== false) {
@@ -26,8 +26,7 @@ class FileHelper
             }
 
             $zip->close();
-        }
-        else {
+        } else {
             throw new \Exception('Cannot open zip file at ' . $zipFullResultPath);
         }
     }
