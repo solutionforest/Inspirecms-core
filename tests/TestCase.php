@@ -29,7 +29,7 @@ abstract class TestCase extends Orchestra
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->setUpDatabase($this->app);
 
         Factory::guessFactoryNamesUsing(

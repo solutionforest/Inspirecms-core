@@ -141,6 +141,6 @@ class FieldResourceHelper
         return Forms\Components\Group::make()
             ->key($key)
             ->statePath($statePath)
-            ->schema(fn (Forms\Get $get)  => FieldTypeHelper::getFieldConfigFormSchemaForFieldType($get('type')));
+            ->schema(fn (Forms\Get $get) => FieldTypeHelper::getFieldConfigFormSchemaForFieldType($get('type')));
     }
 }

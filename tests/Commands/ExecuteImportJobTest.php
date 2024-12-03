@@ -46,7 +46,7 @@ class ExecuteImportJobTest extends TestCase
     protected function createImportJobWithFakeFile($filename)
     {
         $jobDiskName = 'local';
-        /** @var Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  */
+        /** @var Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter */
         $jobDisk = Storage::disk($jobDiskName);
 
         if (pathinfo($filename, PATHINFO_EXTENSION) == 'zip') {
@@ -61,27 +61,27 @@ class ExecuteImportJobTest extends TestCase
                     'fake.json',
                 ],
             ];
-            
+
             $jobDisk->makeDirectory($folderName, 0777, true);
 
             foreach ($fakeFiles as $folder => $files) {
 
                 foreach ($files as $file) {
-                    
+
                     $fileFolder = $folderName . DIRECTORY_SEPARATOR . $folder;
 
                     // Create directory with permissions
                     if (! $jobDisk->directoryExists($fileFolder)) {
                         $jobDisk->makeDirectory($fileFolder, 0777, true);
                     }
-                    
+
                     $dumpContent = pathinfo($file, PATHINFO_EXTENSION) == 'json' ? json_encode(['test' => 'test']) : '<div>test</div>';
 
                     $jobDisk->put($fileFolder . DIRECTORY_SEPARATOR . $file, $dumpContent);
-                    
+
                 }
             }
-    
+
             $zipPath = $jobDisk->path($filename);
 
             FileHelper::buildZipFromFolder($jobDisk->path($folderName), $zipPath);

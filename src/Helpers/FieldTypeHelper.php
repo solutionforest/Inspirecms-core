@@ -13,10 +13,9 @@ class FieldTypeHelper
     /**
      * Perform form field creation from configuration.
      *
-     * @param string $typeName The type name of the form field.
-     * @param callable(\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig,string,array) $createFieldUsing A closure that creates the form field.
-     * @param array $config Optional configuration array for the form field.
-     *
+     * @param  string  $typeName  The type name of the form field.
+     * @param  callable(\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig,string,array)  $createFieldUsing  A closure that creates the form field.
+     * @param  array  $config  Optional configuration array for the form field.
      * @return mixed The created form field.
      */
     public static function performFormFieldFromConfig(string $typeName, \Closure $createFieldUsing, array $config = [])
@@ -46,18 +45,18 @@ class FieldTypeHelper
     /**
      * Builds a translatable field configuration.
      *
-     * @param string $typeName The type name of the field.
-     * @param array $fieldTypeConfig The configuration for the field type.
-     * @param string $name The name of the field.
-     * @param string $label The label for the field.
-     * @param string $helperText The helper text for the field.
-     * @param bool $required Whether the field is required.
-     * @param string $groupName The group name for the field.
+     * @param  string  $typeName  The type name of the field.
+     * @param  array  $fieldTypeConfig  The configuration for the field type.
+     * @param  string  $name  The name of the field.
+     * @param  string  $label  The label for the field.
+     * @param  string  $helperText  The helper text for the field.
+     * @param  bool  $required  Whether the field is required.
+     * @param  string  $groupName  The group name for the field.
      * @return TranslateComponent The filament translatable form field.
      */
     public static function buildTranslatableField(string $typeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
-        $component =  TranslateComponent::make();
+        $component = TranslateComponent::make();
 
         $fiFormComponent = static::performFormFieldFromConfig(
             typeName: $typeName,
@@ -85,39 +84,38 @@ class FieldTypeHelper
     /**
      * Builds a field for the given field type.
      *
-     * @param string $fieldTypeName The name of the field type.
-     * @param array $fieldTypeConfig The configuration array for the field type.
-     * @param string $name The name of the field.
-     * @param string $label The label for the field.
-     * @param string|null $helperText The helper text for the field.
-     * @param bool $required Whether the field is required.
-     * @param string|null $groupName The name of the group the field belongs to.
-     *
+     * @param  string  $fieldTypeName  The name of the field type.
+     * @param  array  $fieldTypeConfig  The configuration array for the field type.
+     * @param  string  $name  The name of the field.
+     * @param  string  $label  The label for the field.
+     * @param  string|null  $helperText  The helper text for the field.
+     * @param  bool  $required  Whether the field is required.
+     * @param  string|null  $groupName  The name of the group the field belongs to.
      * @return ?\Filament\Forms\Components\Field The built filament form field.
      */
     public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
         return static::performFormFieldFromConfig(
             typeName: $fieldTypeName,
-            createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config)  use ($fieldTypeName, $name, $label, $helperText, $required, $groupName) {
+            createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config) use ($fieldTypeName, $name, $label, $helperText, $required, $groupName) {
 
                 // if the field is translatable
                 if ($fieldType->isTranslatable()) {
 
                     return static::buildTranslatableField(
-                        typeName: $fieldTypeName, 
-                        fieldTypeConfig: $config, 
+                        typeName: $fieldTypeName,
+                        fieldTypeConfig: $config,
                         name: $name,
                         label: $label,
                         helperText: $helperText,
                         required: $required,
                         groupName: $groupName,
                     );
-        
-                } else if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
-        
+
+                } elseif (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+
                     $fiFormComponent = $fiFormComponentFQCN::make($name);
-                    
+
                     $fiFormComponent->label($label);
                     $fiFormComponent->helperText($helperText);
                     $fiFormComponent->required($required);
@@ -126,7 +124,7 @@ class FieldTypeHelper
                         $statePath = implode('.', [$groupName, $name]);
                         $fiFormComponent->statePath($statePath);
                     }
-        
+
                 } else {
 
                     $fiFormComponent = null;
@@ -143,7 +141,7 @@ class FieldTypeHelper
     /**
      * Get the configuration form schema for a given field type.
      *
-     * @param ?string $typeName The name of the field type.
+     * @param  ?string  $typeName  The name of the field type.
      * @return array The configuration form schema for the specified field type.
      */
     public static function getFieldConfigFormSchemaForFieldType($typeName)
@@ -157,7 +155,7 @@ class FieldTypeHelper
          */
         $fieldTypeConfig = FilamentFieldGroup::getFieldTypeConfig($typeName);
 
-        if (!$fieldTypeConfig) {
+        if (! $fieldTypeConfig) {
             return [];
         }
 
@@ -165,7 +163,7 @@ class FieldTypeHelper
         if ($fieldTypeConfig instanceof Repeater) {
             return $fieldTypeConfig->getFormSchema();
         }
-        
+
         // display "translatable" field for the field type
         return $fieldTypeConfig->getEnhancedFormSchema();
     }

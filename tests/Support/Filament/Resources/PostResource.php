@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Tests\TestModels\Post;
 class PostResource extends Resource implements ClusterSectionResource
 {
     use ClusterSectionResourceTrait;
-    
+
     protected static ?string $model = Post::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';

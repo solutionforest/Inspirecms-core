@@ -108,7 +108,7 @@ class PropertyDataDto extends BaseDto
 
             })->toArray();
 
-        } else if ($propertyType->isTranslatable()) {
+        } elseif ($propertyType->isTranslatable()) {
 
             $value = TranslatableHelper::getTranslations(
                 $sourceValue,

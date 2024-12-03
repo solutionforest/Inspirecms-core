@@ -110,7 +110,7 @@ class ImportJobService implements ImportJobServiceInterface
 
             [$extractorFs, $extractedFolderPath] = $this->zipFileReader->readFromPath($jobFs->path($filePath));
 
-            logger()->debug(__METHOD__, array($job, $filePath, $jobFs, $extractedFolderPath, is_null($extractedFolderPath)));
+            logger()->debug(__METHOD__, [$job, $filePath, $jobFs, $extractedFolderPath, is_null($extractedFolderPath)]);
             if (is_null($extractedFolderPath)) {
                 throw new \Exception('The provided file is not a ZIP file.');
             }

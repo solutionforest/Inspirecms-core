@@ -8,6 +8,7 @@ use SolutionForest\InspireCms\Tests\TestCase;
 class PanelTest extends TestCase
 {
     protected $panelPath = '/cms';
+
     protected $panelId = 'cms';
 
     protected function setUp(): void
@@ -20,12 +21,13 @@ class PanelTest extends TestCase
     public function test_it_can_access_cms_panel()
     {
         $panel = filament()->getPanel($this->panelId);
+
         return $this->loginCmsPanelAsSuperAdmin()
             ->get($panel->getUrl())
             ->assertStatus(200);
     }
 
-    public function test_it_can_have_extra_PostResource()
+    public function test_it_can_have_extra_post_resource()
     {
         $url = PostResource::getUrl(panel: $this->panelId);
 

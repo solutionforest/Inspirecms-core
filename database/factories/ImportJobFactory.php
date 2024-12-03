@@ -22,10 +22,10 @@ class ImportJobFactory extends Factory
             ];
         });
     }
-    
+
     public function isFailed($payload = null)
     {
-        return $this->state(function (array $attributes)  use ($payload) {
+        return $this->state(function (array $attributes) use ($payload) {
             return [
                 'failed_at' => now(),
                 'payload' => $payload,

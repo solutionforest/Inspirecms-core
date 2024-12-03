@@ -48,10 +48,10 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                             Forms\Components\TextInput::make('helperText'),
                             Forms\Components\Toggle::make('isRequired')->default(false),
                         ]),
-                        Forms\Components\Group::make()
+                    Forms\Components\Group::make()
                         ->key('fieldConfig')
                         ->statePath('fieldConfig')
-                        ->schema(fn (Forms\Get $get)  => FieldTypeHelper::getFieldConfigFormSchemaForFieldType($get('field')))
+                        ->schema(fn (Forms\Get $get) => FieldTypeHelper::getFieldConfigFormSchemaForFieldType($get('field'))),
                 ])
                 ->defaultItems(1),
         ];

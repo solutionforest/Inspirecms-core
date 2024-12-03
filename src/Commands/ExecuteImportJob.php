@@ -42,7 +42,7 @@ class ExecuteImportJob extends Command
                 $this->error("Job {$record->getKey()} failed: {$e->getMessage()}");
             }
         }
-        
+
         return static::SUCCESS;
     }
 
