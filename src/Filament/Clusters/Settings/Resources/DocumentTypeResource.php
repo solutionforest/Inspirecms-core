@@ -109,7 +109,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->columns(1)
                     ->columnSpan(1)
                     ->schema([
-                        static::getTypeFormComponent($parent),
+                        // static::getTypeFormComponent($parent),
                         static::getShowChildAsTableFormComponent(),
                         static::getTimestampsGroupedFormComponent(),
                     ]),
