@@ -10,7 +10,7 @@ class ContentPublishVersion extends BasePivotModel implements ContentPublishVers
 {
     public $timestamps = false;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     protected $casts = [
         'published_at' => 'datetime',

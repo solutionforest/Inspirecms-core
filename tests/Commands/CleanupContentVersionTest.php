@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Tests\Commands;
 
+use Illuminate\Testing\Constraints\HasInDatabase;
 use SolutionForest\InspireCms\Commands\CleanupContentVersion;
 use SolutionForest\InspireCms\Tests\TestCase;
 use SolutionForest\InspireCms\Tests\TestModels\ContentPublishVersion;
@@ -80,11 +81,14 @@ class CleanupContentVersionTest extends TestCase
 
         $this->travel(-31)->days();
         $oldVersion = $modelClass::factory()->avoidToClean(false)->withPublishLog()->create();
+        $oldVersionId = $oldVersion->id;
         $this->travelBack();
 
         $this->travel(-29)->days();
         $newVersion = $modelClass::factory()->avoidToClean(false)->withPublishLog()->create();
+        $newVersionId = $newVersion->id;
         $this->travelBack();
+
 
         // Run the command
         $this->artisan('inspirecms:cleanup-content-version')
@@ -92,10 +96,13 @@ class CleanupContentVersionTest extends TestCase
             ->assertExitCode(CleanupContentVersion::SUCCESS);
 
         // Assert the old version is deleted and the new one is not
-        $this->assertDatabaseMissing($model, ['id' => $oldVersion->id]);
-        $this->assertDatabaseHas($model, ['id' => $newVersion->id]);
+        $this->assertDatabaseMissing($model, ['id' => $oldVersionId]);
+        $this->assertDatabaseHas($model, ['id' => $newVersionId]);
 
-        $this->assertDatabaseMissing($publishVersionModel, ['version_id' => $oldVersion->id]);
-        $this->assertDatabaseHas($publishVersionModel, ['version_id' => $newVersion->id]);
+        $oldVersionExists = $publishVersionModel::withoutGlobalScopes([])->where('version_id', $oldVersionId)->exists();
+        $newVersionExists = $publishVersionModel::withoutGlobalScopes([])->where('version_id', $newVersionId)->exists();
+
+        $this->assertFalse($oldVersionExists);
+        $this->assertTrue($newVersionExists);
     }
 }
