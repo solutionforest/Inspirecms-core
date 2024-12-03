@@ -39,7 +39,7 @@ class PropertyDataDto extends BaseDto
         $propertyDataValue = $this->getSourceValue();
 
         try {
-            return $this->processPropertyType($propertyDataValue, $propertyType, $locale);
+            return $this->transformPropertyValueWithTranslatable($propertyDataValue, $propertyType, $locale);
         } catch (\Throwable $th) {
             return null;
         }
@@ -57,30 +57,77 @@ class PropertyDataDto extends BaseDto
         return $this;
     }
 
-    protected function processPropertyType($sourceValue, ?FieldTypeConfig $propertyType, ?string $locale)
+    protected function transformPropertyValueWithTranslatable($sourceValue, ?FieldTypeConfig $propertyType, ?string $locale)
+    {
+        if (is_null($propertyType)) {
+            return $sourceValue;
+        }
+
+        if ($propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater) {
+
+            return collect($sourceValue)->map(function ($data, $i) use ($propertyType, $locale) {
+
+                $result = [];
+                $propertyTypes = [];
+
+                foreach ($data as $key => $value) {
+
+                    $field = collect($propertyType->fields)->firstWhere('name', $key);
+
+                    if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
+                        return null;
+                    }
+
+                    $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
+
+                    if (is_null($innerPropertyType)) {
+                        return null;
+                    }
+
+                    $finalValue = $this->transformPropertyValueWithTranslatable($value, $innerPropertyType, $locale);
+
+                    $result[] = PropertyDataDto::fromArray([
+                        'key' => $key,
+                        'value' => $finalValue,
+                        'propertyType' => PropertyTypeDto::fromArray([
+                            'key' => $field['field'],
+                            'group' => $i,
+                            'config' => $innerPropertyType,
+                        ]),
+                    ])->setFallbackLocale($this->fallbackLocale);
+
+                    $propertyTypes[] = $innerPropertyType;
+
+                }
+
+                return PropertyDataGroupDto::fromArray([
+                    'key' => $i,
+                    'data' => $result,
+                    'propertyTypes' => $propertyTypes,
+                ]);
+
+            })->toArray();
+
+        } else if ($propertyType->isTranslatable()) {
+
+            $value = TranslatableHelper::getTranslations(
+                $sourceValue,
+                $locale,
+                $this->fallbackLocale
+            );
+
+            return $this->transformPropertyValueWithoutTranslatable($value, $propertyType, $locale);
+        } else {
+            return $this->transformPropertyValueWithoutTranslatable($sourceValue, $propertyType, $locale);
+        }
+    }
+
+    protected function transformPropertyValueWithoutTranslatable($sourceValue, FieldTypeConfig $propertyType, ?string $locale)
     {
         switch (true) {
-
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:
                 return new HtmlString($sourceValue);
-
-            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Translate:
-
-                $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($propertyType->field, $propertyType->fieldConfig ?? []);
-
-                // If the inner property type is not found, return null.
-                if (is_null($innerPropertyType)) {
-                    return null;
-                }
-
-                $value = TranslatableHelper::getTranslations(
-                    $sourceValue,
-                    $locale,
-                    $this->fallbackLocale
-                );
-
-                return $this->processPropertyType($value, $innerPropertyType, $locale);
 
             case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image:
                 $disk = $propertyType->disk ?? config('filesystems.default');
@@ -116,51 +163,6 @@ class PropertyDataDto extends BaseDto
                     ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
                     ->values()
                     ->all();
-
-            case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater:
-
-                return collect($sourceValue)->map(function ($data, $i) use ($propertyType, $locale) {
-
-                    $result = [];
-                    $propertyTypes = [];
-
-                    foreach ($data as $key => $value) {
-
-                        $field = collect($propertyType->fields)->firstWhere('name', $key);
-
-                        if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
-                            return null;
-                        }
-
-                        $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
-
-                        if (is_null($innerPropertyType)) {
-                            return null;
-                        }
-
-                        $finalValue = $this->processPropertyType($value, $innerPropertyType, $locale);
-
-                        $result[] = PropertyDataDto::fromArray([
-                            'key' => $key,
-                            'value' => $finalValue,
-                            'propertyType' => PropertyTypeDto::fromArray([
-                                'key' => $field['field'],
-                                'group' => $i,
-                                'config' => $innerPropertyType,
-                            ]),
-                        ])->setFallbackLocale($this->fallbackLocale);
-
-                        $propertyTypes[] = $innerPropertyType;
-
-                    }
-
-                    return PropertyDataGroupDto::fromArray([
-                        'key' => $i,
-                        'data' => $result,
-                        'propertyTypes' => $propertyTypes,
-                    ]);
-
-                })->toArray();
 
             default:
                 return $sourceValue;

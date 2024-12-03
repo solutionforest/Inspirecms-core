@@ -13,12 +13,6 @@ use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 class Field extends BaseModel implements FieldContract
 {
     /** {@inheritDoc} */
-    public function getStatePathWithGroup()
-    {
-        return implode('.', [$this->group?->name, $this->name]);
-    }
-
-    /** {@inheritDoc} */
     public function getFieldTypeConfigAttribute()
     {
         $fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($this->type);

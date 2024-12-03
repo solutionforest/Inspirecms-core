@@ -5,9 +5,20 @@ namespace SolutionForest\InspireCms\Helpers;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
+use SolutionForest\InspireCms\Fields\Configs\Repeater;
+use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
 
 class FieldTypeHelper
 {
+    /**
+     * Perform form field creation from configuration.
+     *
+     * @param string $typeName The type name of the form field.
+     * @param callable(\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig,string,array) $createFieldUsing A closure that creates the form field.
+     * @param array $config Optional configuration array for the form field.
+     *
+     * @return mixed The created form field.
+     */
     public static function performFormFieldFromConfig(string $typeName, \Closure $createFieldUsing, array $config = [])
     {
 
@@ -19,17 +30,144 @@ class FieldTypeHelper
 
         $fiFormComponentFQCN = Arr::first(Arr::pluck($fiFormConfig->getFormComponents(), 'component'));
         if (! $fiFormComponentFQCN) {
-            throw new \Exception("The field type config class {$fiFormConfig} does not have a FormComponent attribute.");
+            throw new \Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
         }
 
-        $fiFormComponent = $createFieldUsing($fiFormConfig, $fiFormComponentFQCN);
+        $fiFormComponent = $createFieldUsing($fiFormConfig, $fiFormComponentFQCN, $config);
         if (! $fiFormComponent) {
-            throw new \Exception("The field type config class {$fiFormConfig} does not have a FormComponent attribute.");
+            throw new \Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
         }
 
         $fiFormConfig->applyConfig($fiFormComponent);
 
         return $fiFormComponent;
+    }
+
+    /**
+     * Builds a translatable field configuration.
+     *
+     * @param string $typeName The type name of the field.
+     * @param array $fieldTypeConfig The configuration for the field type.
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param string $helperText The helper text for the field.
+     * @param bool $required Whether the field is required.
+     * @param string $groupName The group name for the field.
+     * @return TranslateComponent The filament translatable form field.
+     */
+    public static function buildTranslatableField(string $typeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
+    {
+        $component =  TranslateComponent::make();
+
+        $fiFormComponent = static::performFormFieldFromConfig(
+            typeName: $typeName,
+            createFieldUsing: function ($fiFormConfig, $fiFormComponentFQCN, $config) use ($name, $label, $helperText, $required) {
+
+                if (blank($name)) {
+                    throw new \Exception('The field\'s name is required.');
+                }
+
+                return $fiFormComponentFQCN::make($name)
+                    ->label($label)
+                    ->helperText($helperText)
+                    ->required($required);
+
+            },
+            config: $fieldTypeConfig
+        );
+
+        return $component
+            ->schema([$fiFormComponent])
+            // also set the state path for this component
+            ->groupName($groupName);
+    }
+
+    /**
+     * Builds a field for the given field type.
+     *
+     * @param string $fieldTypeName The name of the field type.
+     * @param array $fieldTypeConfig The configuration array for the field type.
+     * @param string $name The name of the field.
+     * @param string $label The label for the field.
+     * @param string|null $helperText The helper text for the field.
+     * @param bool $required Whether the field is required.
+     * @param string|null $groupName The name of the group the field belongs to.
+     *
+     * @return ?\Filament\Forms\Components\Field The built filament form field.
+     */
+    public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
+    {
+        return static::performFormFieldFromConfig(
+            typeName: $fieldTypeName,
+            createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config)  use ($fieldTypeName, $name, $label, $helperText, $required, $groupName) {
+
+                // if the field is translatable
+                if ($fieldType->isTranslatable()) {
+
+                    return static::buildTranslatableField(
+                        typeName: $fieldTypeName, 
+                        fieldTypeConfig: $config, 
+                        name: $name,
+                        label: $label,
+                        helperText: $helperText,
+                        required: $required,
+                        groupName: $groupName,
+                    );
+        
+                } else if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+        
+                    $fiFormComponent = $fiFormComponentFQCN::make($name);
+                    
+                    $fiFormComponent->label($label);
+                    $fiFormComponent->helperText($helperText);
+                    $fiFormComponent->required($required);
+
+                    if (filled($groupName)) {
+                        $statePath = implode('.', [$groupName, $name]);
+                        $fiFormComponent->statePath($statePath);
+                    }
+        
+                } else {
+
+                    $fiFormComponent = null;
+                }
+
+                return $fiFormComponent;
+
+            },
+            config: $fieldTypeConfig,
+        );
+
+    }
+
+    /**
+     * Get the configuration form schema for a given field type.
+     *
+     * @param ?string $typeName The name of the field type.
+     * @return array The configuration form schema for the specified field type.
+     */
+    public static function getFieldConfigFormSchemaForFieldType($typeName)
+    {
+        if (blank($typeName)) {
+            return [];
+        }
+
+        /**
+         * @var ?\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig
+         */
+        $fieldTypeConfig = FilamentFieldGroup::getFieldTypeConfig($typeName);
+
+        if (!$fieldTypeConfig) {
+            return [];
+        }
+
+        // hidden "translatable" field for the field type
+        if ($fieldTypeConfig instanceof Repeater) {
+            return $fieldTypeConfig->getFormSchema();
+        }
+        
+        // display "translatable" field for the field type
+        return $fieldTypeConfig->getEnhancedFormSchema();
     }
 
     public static function getFieldTypeConfig(string $typeName, array $config = []): ?FieldTypeConfig
@@ -39,33 +177,6 @@ class FieldTypeHelper
 
     public static function getFieldTypeOptions(?string $search = null, array $excepts = []): array
     {
-        $options = FilamentFieldGroup::getFieldTypeOptions();
-
-        if (filled($search) && ! is_null($search)) {
-            $options = Arr::where(
-                $options,
-                fn ($item) => str_contains($item['name'], $search)
-            );
-        }
-
-        if (! empty($excepts)) {
-            $options = Arr::where(
-                $options,
-                fn ($item) => ! in_array($item['name'], $excepts)
-            );
-        }
-
-        return collect($options)
-            ->groupBy('group')
-            ->map(fn ($collection) => collect($collection)->mapWithKeys(function ($item) {
-
-                $icon = $item['icon'] ?? null;
-                $label = $item['display'] ?? $item['name'] ?? '';
-
-                $textWithIconHtml = UIHelper::generateTextWithIcon($label, $icon, 'gray');
-
-                return [$item['name'] => $textWithIconHtml->toHtml()];
-            }))
-            ->toArray();
+        return FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions($search, $excepts);
     }
 }

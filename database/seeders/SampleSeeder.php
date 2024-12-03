@@ -335,8 +335,8 @@ Html;
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'general_page_banner'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'title', type: 'translate', config: ['field' => 'text']),
-                new ImportDataEntities\Field(slug: 'description', type: 'translate', config: ['field' => 'text']),
+                new ImportDataEntities\Field(slug: 'title', type: 'text', config: ['translatable' => true]),
+                new ImportDataEntities\Field(slug: 'description', type: 'text', config: ['translatable' => true]),
                 new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
@@ -365,8 +365,8 @@ Html;
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'blog_detail_content'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'title', type: 'translate', config: ['field' => 'text']),
-                new ImportDataEntities\Field(slug: 'content', type: 'translate', config: ['field' => 'richEditor', 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
+                new ImportDataEntities\Field(slug: 'title', type: 'text', config: ['translatable' => true]),
+                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'fieldConfig' => ['toolbarButtons' => array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons())]]),
                 new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
             ],
         ];
@@ -376,17 +376,17 @@ Html;
                 new ImportDataEntities\Field(slug: 'projects', type: 'repeater', config: [
                     'fields' => [
                         [
-                            'field' => 'translate',
+                            'field' => 'text',
                             'name' => 'title',
                             'fieldConfig' => [
-                                'field' => 'text',
+                                'translatable' => true,
                             ],
                         ],
                         [
-                            'field' => 'translate',
+                            'field' => 'textArea',
                             'name' => 'description',
                             'fieldConfig' => [
-                                'field' => 'textArea',
+                                'translatable' => true,
                             ],
                         ],
                         [

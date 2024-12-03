@@ -92,6 +92,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
         
+        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\TranslatableFieldType());
+
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
         Facades\ModelManifest::register();

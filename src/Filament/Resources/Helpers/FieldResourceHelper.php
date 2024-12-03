@@ -6,7 +6,6 @@ use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -137,18 +136,11 @@ class FieldResourceHelper
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
-    public static function getConfigFormComponent()
+    public static function getConfigFormComponent($key = 'configFields', $statePath = 'config')
     {
         return Forms\Components\Group::make()
-            ->key('configFields')
-            ->statePath('config')
-            ->schema(function (Forms\Get $get) {
-
-                if ($type = $get('type')) {
-                    return FilamentFieldGroup::getFieldTypeConfigFormSchema($type);
-                }
-
-                return [];
-            });
+            ->key($key)
+            ->statePath($statePath)
+            ->schema(fn (Forms\Get $get)  => FieldTypeHelper::getFieldConfigFormSchemaForFieldType($get('type')));
     }
 }
