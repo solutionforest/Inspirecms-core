@@ -16,6 +16,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupsRelationManager extends RelationManager
@@ -113,7 +114,12 @@ class FieldGroupsRelationManager extends RelationManager
                 Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
-                    ->recordSelectSearchColumns(['title', 'name']),
+                    ->recordSelectSearchColumns(['title', 'name'])
+                    ->recordTitle(fn ($record) => UIHelper::generateTextWithBadge($record->title, $record->name)->toHtml())
+                    ->recordSelect(fn (Select $select) => $select
+                        ->searchable()
+                        ->allowHtml()
+                    ),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()
