@@ -78,7 +78,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->columns(1)
                     ->columnSpan(1)
                     ->schema([
-                        static::getTypeFormComponent(),
+                        // static::getTypeFormComponent(),
                         static::getShowChildAsTableFormComponent(),
                         static::getTimestampsGroupedFormComponent(),
                     ]),
@@ -121,13 +121,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return $table
             ->defaultSort('created_at', 'desc')
             ->emptyStateActions([])
-            ->groups([
-                Tables\Grouping\Group::make('category')
-                    ->label(__('inspirecms::resources/document-type.category.label'))
-                    ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getLabel())
-                    ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
-            ])
-            ->defaultGroup('category')
+            // ->groups([
+            //     Tables\Grouping\Group::make('category')
+            //         ->label(__('inspirecms::resources/document-type.category.label'))
+            //         ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getLabel())
+            //         ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
+            // ])
+            // ->defaultGroup('category')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -166,12 +166,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         return FilamentIcon::resolve('tables::columns.icon-column.false')
                             ?? 'heroicon-o-x-circle';
                     }),
-                Tables\Columns\TextColumn::make('category')
-                    ->label(__('inspirecms::resources/document-type.category.label'))
-                    ->badge()
-                    ->getStateUsing(fn (DocumentType $record) => $record->getCategoryEnum())
-                    ->formatStateUsing(fn (?DocumentTypeCategory $state) => $state?->getLabel())
-                    ->color(fn (?DocumentTypeCategory $state) => $state?->getColor()),
+                // Tables\Columns\TextColumn::make('category')
+                //     ->label(__('inspirecms::resources/document-type.category.label'))
+                //     ->badge()
+                //     ->getStateUsing(fn (DocumentType $record) => $record->getCategoryEnum())
+                //     ->formatStateUsing(fn (?DocumentTypeCategory $state) => $state?->getLabel())
+                //     ->color(fn (?DocumentTypeCategory $state) => $state?->getColor()),
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
@@ -196,7 +196,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_root')
                     ->label(__('inspirecms::resources/document-type.is_root.label'))
-                    ->default(true)
+                    // ->default(true)
                     ->queries(
                         true: fn ($query) => $query->whereIsRoot(condition: true),
                         false: fn ($query) => $query->whereIsRoot(condition: false),
@@ -220,7 +220,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return [
             'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.label'), [
-                RelationManagers\InheritedDocumentTypesRelationManager::class,
+                // RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
             ])->badge(function ($ownerRecord) {
                 if (is_null($ownerRecord->field_groups_count)) {
@@ -233,7 +233,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'templates' => RelationManagers\TemplatesRelationManager::class,
             'used_by' => RelationGroup::make(fn () => __('inspirecms::inspirecms.used_by'), [
                 RelationManagers\ContentRelationManager::class,
-                RelationManagers\InheritingDocumentTypesRelationManager::class,
+                // RelationManagers\InheritingDocumentTypesRelationManager::class,
             ]),
         ];
     }

@@ -21,17 +21,17 @@ class ListDocumentTypes extends BaseListPage
         return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
     }
 
-    public function getTabs(): array
-    {
-        return collect(\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::cases())
-            ->mapWithKeys(
-                fn (\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory $value) => [
-                    $value->value => Tab::make()
-                        ->label($value->getLabel())
-                        ->modifyQueryUsing(fn ($query) => $query->where('type', $value->value)),
-                ]
-            )
-            ->prepend(Tab::make(), 'all')
-            ->toArray();
-    }
+    // public function getTabs(): array
+    // {
+    //     return collect(\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::cases())
+    //         ->mapWithKeys(
+    //             fn (\SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory $value) => [
+    //                 $value->value => Tab::make()
+    //                     ->label($value->getLabel())
+    //                     ->modifyQueryUsing(fn ($query) => $query->where('type', $value->value)),
+    //             ]
+    //         )
+    //         ->prepend(Tab::make(), 'all')
+    //         ->toArray();
+    // }
 }

@@ -334,13 +334,14 @@ class ImportDataService implements ImportDataServiceInterface
                     $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
                 }
 
-                foreach ($item->inheritance ?? [] as $inheritance) {
-                    $inheritanceDocumentType = $this->findDocumentTypes($inheritance)->first();
-                    if (! $inheritanceDocumentType) {
-                        throw new \Exception("Inheritance document type '{$inheritance}' not found.");
-                    }
-                    $documentType->inheritDocumentType($inheritanceDocumentType);
-                }
+                // @todo Hide this for now
+                // foreach ($item->inheritance ?? [] as $inheritance) {
+                //     $inheritanceDocumentType = $this->findDocumentTypes($inheritance)->first();
+                //     if (! $inheritanceDocumentType) {
+                //         throw new \Exception("Inheritance document type '{$inheritance}' not found.");
+                //     }
+                //     $documentType->inheritDocumentType($inheritanceDocumentType);
+                // }
 
                 $this->finished['documentTypes'][$slug] = $documentType;
 

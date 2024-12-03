@@ -411,15 +411,15 @@ Html;
 
     protected function addSampleDocumentTypes(): void
     {
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'general-page-banner',
-            childrenAsTable: false,
-            category: 'inheritance',
-            title: 'Page Banner',
-            fieldGroups: [
-                'general_page_banner',
-            ]
-        );
+        // $items[] = new ImportDataEntities\DocumentType(
+        //     slug: 'general-page-banner',
+        //     childrenAsTable: false,
+        //     category: 'inheritance',
+        //     title: 'Page Banner',
+        //     fieldGroups: [
+        //         'general_page_banner',
+        //     ]
+        // );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'homepage',
             childrenAsTable: false,
@@ -429,7 +429,7 @@ Html;
             ],
             templates: ['home'],
             defaultTemplate: 'home',
-            inheritance: ['general-page-banner'],
+            inheritance: [], // ['general-page-banner'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'about',
@@ -440,7 +440,7 @@ Html;
             ],
             templates: ['about'],
             defaultTemplate: 'about',
-            inheritance: ['general-page-banner'],
+            inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
@@ -450,7 +450,7 @@ Html;
             fieldGroups: [],
             templates: ['blogs'],
             defaultTemplate: 'blogs',
-            inheritance: ['general-page-banner'],
+            inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(
@@ -473,7 +473,7 @@ Html;
             ],
             templates: ['projects'],
             defaultTemplate: 'projects',
-            inheritance: ['general-page-banner'],
+            inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
         );
         $items[] = new ImportDataEntities\DocumentType(

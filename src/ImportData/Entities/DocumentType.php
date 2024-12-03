@@ -74,7 +74,20 @@ class DocumentType extends BaseEntity
          * @var string|null
          */
         public $parent = null,
-    ) {}
+    ) { }
+
+    /** @inheritDoc */
+    public static function fromArray(array $parameters)
+    {
+        if (blank($parameters['category'] ?? null) || !isset($parameters['category'])) {
+            $parameters['category'] = 'web';
+        }
+        if (!isset($parameters['inheritance'])) {
+            $parameters['inheritance'] = [];
+        }
+
+        return parent::fromArray($parameters);
+    }
 
     public function getDataForModel(): array
     {

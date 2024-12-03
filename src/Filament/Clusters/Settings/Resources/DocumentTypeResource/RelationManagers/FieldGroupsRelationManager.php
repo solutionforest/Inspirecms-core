@@ -56,23 +56,23 @@ class FieldGroupsRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('fields_count')
                     ->label(__('inspirecms::inspirecms.fields')),
 
-                Tables\Columns\ColumnGroup::make('inherited_from')
-                    ->label(__('inspirecms::resources/document-type.inherited_from.label'))
-                    ->columns([
+                // Tables\Columns\ColumnGroup::make('inherited_from')
+                //     ->label(__('inspirecms::resources/document-type.inherited_from.label'))
+                //     ->columns([
 
-                        Tables\Columns\TextColumn::make('inherited_from_title')
-                            ->label(__('inspirecms::inspirecms.title'))
-                            ->getStateUsing(function ($record) {
-                                return $record->pivot?->inheritedFrom?->title;
-                            }),
-                        Tables\Columns\TextColumn::make('inherited_from_slug')
-                            ->label(__('inspirecms::resources/document-type.slug.label'))
-                            ->width('5%')
-                            ->getStateUsing(function ($record) {
-                                return $record->pivot?->inheritedFrom?->slug;
-                            })
-                            ->badge(),
-                    ]),
+                //         Tables\Columns\TextColumn::make('inherited_from_title')
+                //             ->label(__('inspirecms::inspirecms.title'))
+                //             ->getStateUsing(function ($record) {
+                //                 return $record->pivot?->inheritedFrom?->title;
+                //             }),
+                //         Tables\Columns\TextColumn::make('inherited_from_slug')
+                //             ->label(__('inspirecms::resources/document-type.slug.label'))
+                //             ->width('5%')
+                //             ->getStateUsing(function ($record) {
+                //                 return $record->pivot?->inheritedFrom?->slug;
+                //             })
+                //             ->badge(),
+                //     ]),
 
                 Tables\Columns\TextColumn::make('order')
                     ->label(__('inspirecms::inspirecms.order'))
