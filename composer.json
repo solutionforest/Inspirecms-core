@@ -31,7 +31,7 @@
         "riodwanto/filament-ace-editor": "^1.0",
         "solution-forest/filament-field-group": "^1.0.0",
         "solution-forest/filament-tree": "^2.1.0",
-        "solution-forest/inspirecms-support": "*",
+        "solution-forest/inspirecms-support": "self.version",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0"
     },
@@ -84,6 +84,17 @@
             }
         }
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "type": "path",
+            "url": "~/html/packages/*",
+            "options": {
+                "versions": {
+                    "solution-forest/inspirecms-support": "dev-main"
+                }
+            }
+        }
+    ]
 }
