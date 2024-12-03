@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Tests\Commands;
 
-use Illuminate\Testing\Constraints\HasInDatabase;
 use SolutionForest\InspireCms\Commands\CleanupContentVersion;
 use SolutionForest\InspireCms\Tests\TestCase;
 use SolutionForest\InspireCms\Tests\TestModels\ContentPublishVersion;
@@ -88,7 +87,6 @@ class CleanupContentVersionTest extends TestCase
         $newVersion = $modelClass::factory()->avoidToClean(false)->withPublishLog()->create();
         $newVersionId = $newVersion->id;
         $this->travelBack();
-
 
         // Run the command
         $this->artisan('inspirecms:cleanup-content-version')
