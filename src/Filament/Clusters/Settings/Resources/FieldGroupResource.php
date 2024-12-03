@@ -19,7 +19,6 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
-use SolutionForest\InspireCms\Filament\Tables\Actions\CloneAction;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource implements ClusterSectionResource
@@ -83,8 +82,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     public static function cloneForm(Form $form): Form
     {
         return $form->schema([
-            FieldGroupResourceHelper::getTitleFormComponent()->autofocus(true),
             FieldGroupResourceHelper::getNameFormComponent()->autofocus(false),
+            FieldGroupResourceHelper::getTitleFormComponent()->autofocus(true),
         ]);
     }
 
@@ -127,25 +126,19 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             // Sync action formats
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\ActionGroup::make([
+                Tables\Actions\ReplicateAction::make()->iconButton()
+                    ->slideOver()
+                    ->modalWidth('5xl')
+                    ->form(fn (Form $form) => static::cloneForm($form))
+                    ->excludeAttributes(['fields_count', 'document_types_count'])
+                    ->after(function (Model | FieldGroup $replica, Model | FieldGroup $record) {
+                        
+                        $fields = $record->fields()->get()->map(fn (Model $field) => $field->replicate([
+                            'group_id',
+                        ])->toArray())->all();
 
-                    CloneAction::make()
-                        ->recordTitleAttribute('title')
-                        ->replicateExcepts(['fields_count', 'document_types_count'])
-                        ->fillForm(fn (Model | FieldGroup $record) => [
-                            'title' => $record->title,
-                            'name' => $record->name,
-                        ])
-                        ->form(fn (Form $form) => static::cloneForm($form))
-                        ->saveRelationshipsUsing(function (Model | FieldGroup $originalRecord, Model | FieldGroup $record) {
-
-                            $fields = $originalRecord->fields->map(fn (Model $field) => $field->replicate([
-                                'group_id',
-                            ])->toArray())->all();
-
-                            $record->fields()->createMany($fields);
-                        }),
-                ]),
+                        $replica->fields()->createMany($fields);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

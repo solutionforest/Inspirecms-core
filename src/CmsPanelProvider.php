@@ -289,6 +289,11 @@ class CmsPanelProvider extends PanelProvider
                     }
                 });
             });
+            \Filament\Tables\Actions\ReplicateAction::configureUsing(function (\Filament\Tables\Actions\ReplicateAction $action) {
+                $action
+                    ->color('gray')
+                    ->modalIcon('heroicon-o-document-duplicate');
+            });
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
                 $action->icon('heroicon-o-eye');
             });

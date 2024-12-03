@@ -41,6 +41,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             'delete_any',
             'attach',
             'detach',
+            'replicate',
         ];
     }
 
@@ -116,6 +117,19 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ]);
     }
 
+    /**
+     * Replicates the given form.
+     */
+    public static function replicateForm(Form $form): Form
+    {
+        return $form
+            ->schema([
+                static::getSlugFormComponent()->inlineLabel()->columnSpanFull()->autofocus(true),
+                static::getTitleFormComponent()->inlineLabel()->columnSpanFull()->autofocus(false),
+                static::getShowChildAsTableFormComponent(),
+            ]);
+    }
+
     public static function table(Table $table): Table
     {
         return $table
@@ -187,6 +201,17 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
+                Tables\Actions\ReplicateAction::make()
+                    ->iconButton()
+                    ->slideOver('5xl')
+                    ->form(fn (Form $form) => static::replicateForm($form))
+                    ->excludeAttributes(['templates_count', 'field_groups_count', 'children_count'])
+                    ->after(function (Model | DocumentType $replica, Model | DocumentType $record) {
+                        
+                        $fieldGroups = $record->fieldGroups()->pluck($record->fieldGroups()->getQualifiedRelatedKeyName())->toArray();
+
+                        $replica->fieldGroups()->sync($fieldGroups);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -5,12 +5,9 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGr
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
-use SolutionForest\InspireCms\Filament\Resources\Concerns\HasCloneAction;
 
 class ManageFieldGroup extends BaseManagePage
 {
-    use HasCloneAction;
-
     protected function getHeaderActions(): array
     {
         return [

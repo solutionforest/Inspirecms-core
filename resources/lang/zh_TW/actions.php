@@ -8,36 +8,6 @@ return [
 
     ],
 
-    'clone' => [
-
-        'label' => '複製',
-
-        'modal' => [
-
-            'heading' => '正在複製 <i>:label</i>',
-
-            'description' => '您確定要複製此項目嗎？',
-
-            'actions' => [
-
-                'clone' => [
-
-                    'label' => '複製',
-
-                ],
-            ],
-        ],
-
-        'notifications' => [
-
-            'cloned' => [
-
-                'title' => '複製成功',
-
-            ],
-        ],
-    ],
-
     'create_content' => [
 
         'label' => '創建內容',

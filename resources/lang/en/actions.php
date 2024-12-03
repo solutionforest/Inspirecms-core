@@ -8,36 +8,6 @@ return [
 
     ],
 
-    'clone' => [
-
-        'label' => 'Clone',
-
-        'modal' => [
-
-            'heading' => 'Cloning <i>:label</i>',
-
-            'description' => 'Are you sure you want to clone this item?',
-
-            'actions' => [
-
-                'clone' => [
-
-                    'label' => 'Clone',
-
-                ],
-            ],
-        ],
-
-        'notifications' => [
-
-            'cloned' => [
-
-                'title' => 'Clone Successful',
-
-            ],
-        ],
-    ],
-
     'create_content' => [
 
         'label' => 'Create content',
