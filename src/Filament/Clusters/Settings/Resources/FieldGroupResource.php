@@ -62,7 +62,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                         ->schema([
                             TimestampsGroup::make()->columns(['default' => 1]),
                         ])
-                        ->visible(fn ($operation) => $operation == 'edit')
+                        ->hidden(fn ($operation) => $operation == 'create')
                         ->grow(false),
 
                     Forms\Components\Section::make()
