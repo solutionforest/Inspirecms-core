@@ -35,7 +35,23 @@ class SetDefaultContentPageAction extends Action implements GuardAction
 
         $this->icon('heroicon-o-globe-alt');
 
-        $this->hidden(fn ($record) => is_null($record) || $record->is_default);
+        $this->hidden(function (null | Content | Model $record) {
+            if (is_null($record) || $record->is_default) {
+                return true;
+            }
+            
+            if (! $record instanceof Content) {
+                throw new \Exception('The provided record is not an instance of the Content model.');
+            }
+
+            $rootLevelKey = $record->getNestableTreeRootLevelParentId();
+
+            $nestableTreeParentId = isset($record->nestable_tree_parent_id)
+                ? $record->nestable_tree_parent_id
+                : ($record->nestableTree?->parent_id ?? 0);
+
+            return $nestableTreeParentId !== $rootLevelKey;
+        });
 
         $this->successNotificationTitle(__('inspirecms::actions.set_default_content_page.notifications.success.title'));
 

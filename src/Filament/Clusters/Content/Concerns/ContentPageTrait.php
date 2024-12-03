@@ -219,7 +219,11 @@ trait ContentPageTrait
                             throw new \Exception('The provided record is not an instance of the Content model.');
                         }
 
-                        return $record->nestableTree?->parent_id ?? 0;
+                        $nestableTreeParentId = isset($record->nestable_tree_parent_id)
+                            ? $record->nestable_tree_parent_id
+                            : ($record->nestableTree?->parent_id ?? 0);
+
+                        return $nestableTreeParentId;
                     })
                     ->successRedirectUrl(function () {
                         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
