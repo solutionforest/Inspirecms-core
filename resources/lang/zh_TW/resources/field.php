@@ -25,4 +25,7 @@ return [
         'label' => '狀態路徑',
         'helper' => '',
     ],
+    'translatable' => [
+        'label' => '可翻譯',
+    ],
 ];

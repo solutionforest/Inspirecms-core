@@ -43,10 +43,10 @@ class FieldResourceHelper
     public static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::forms/fields/field.name.label'))
+            ->label(__('inspirecms::resources/field.name.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms/fields/field.name.label'))
-            ->helperText(__('inspirecms::forms/fields/field.name.helper'))
+            ->placeholder(__('inspirecms::resources/field.name.label'))
+            ->helperText(__('inspirecms::resources/field.name.helper'))
             ->required()
             ->maxLength(255)
             ->live(debounce: 500)
@@ -66,10 +66,10 @@ class FieldResourceHelper
     public static function getLabelFormComponent()
     {
         return Forms\Components\TextInput::make('label')
-            ->label(__('inspirecms::forms/fields/field.label.label'))
+            ->label(__('inspirecms::resources/field.label.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms/fields/field.label.label'))
-            ->helperText(__('inspirecms::forms/fields/field.label.helper'))
+            ->placeholder(__('inspirecms::resources/field.label.label'))
+            ->helperText(__('inspirecms::resources/field.label.helper'))
             ->required()
             ->columnSpan('full')
             ->maxLength(255)
@@ -81,10 +81,10 @@ class FieldResourceHelper
     public static function getInstructionsFormComponent()
     {
         return Forms\Components\TextInput::make('instructions')
-            ->label(__('inspirecms::forms/fields/field.instructions.label'))
+            ->label(__('inspirecms::resources/field.instructions.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms/fields/field.instructions.label'))
-            ->helperText(__('inspirecms::forms/fields/field.instructions.helper'))
+            ->placeholder(__('inspirecms::resources/field.instructions.label'))
+            ->helperText(__('inspirecms::resources/field.instructions.helper'))
             ->maxLength(255)
             ->columnSpan('full');
     }
@@ -93,10 +93,10 @@ class FieldResourceHelper
     public static function getTypeFormComponent()
     {
         return Forms\Components\Select::make('type')
-            ->label(__('inspirecms::forms/fields/field.type.label'))
+            ->label(__('inspirecms::resources/field.type.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms/fields/field.type.label'))
-            ->helperText(__('inspirecms::forms/fields/field.type.helper'))
+            ->placeholder(__('inspirecms::resources/field.type.label'))
+            ->helperText(__('inspirecms::resources/field.type.helper'))
             ->columns(4)
             ->searchable()
             ->options(fn () => FieldTypeHelper::getFieldTypeOptions())
@@ -118,10 +118,10 @@ class FieldResourceHelper
     public static function getStatePathFormComponent()
     {
         return Forms\Components\TextInput::make('state_path')
-            ->label(__('inspirecms::forms/fields/field.state_path.label'))
+            ->label(__('inspirecms::resources/field.state_path.label'))
             ->inlineLabel()
-            ->placeholder(__('inspirecms::forms/fields/field.state_path.label'))
-            ->helperText(__('inspirecms::forms/fields/field.state_path.helper'))
+            ->placeholder(__('inspirecms::resources/field.state_path.label'))
+            ->helperText(__('inspirecms::resources/field.state_path.helper'))
             ->maxLength(255);
     }
 
@@ -129,9 +129,9 @@ class FieldResourceHelper
     public static function getMandatoryFormComponent()
     {
         return Forms\Components\Toggle::make('mandatory')
-            ->label(__('inspirecms::forms/fields/field.mandatory.label'))
+            ->label(__('inspirecms::resources/field.mandatory.label'))
             ->inlineLabel()
-            ->helperText(__('inspirecms::forms/fields/field.mandatory.helper'))
+            ->helperText(__('inspirecms::resources/field.mandatory.helper'))
             ->inlineLabel();
     }
 

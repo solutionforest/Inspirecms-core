@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResourceHelper
@@ -17,7 +18,7 @@ class FieldGroupResourceHelper
     public static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
-            ->label(__('inspirecms::forms/fields/field-group.title.label'))
+            ->label(__('inspirecms::resources/field-group.title.label'))
             ->required()
             ->maxLength(255)
             ->live(true, 500)
@@ -36,7 +37,7 @@ class FieldGroupResourceHelper
     public static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::forms/fields/field-group.name.label'))
+            ->label(__('inspirecms::resources/field-group.name.label'))
             ->required()
             ->maxLength(255)
             ->live(true, 500)
@@ -64,7 +65,7 @@ class FieldGroupResourceHelper
     public static function getFieldsFormComponent()
     {
         return Forms\Components\Section::make()
-            ->heading(fn () => __('inspirecms::forms/fields/field-group.fields.label'))
+            ->heading(fn () => __('inspirecms::resources/field-group.fields.label'))
             ->aside()
             ->compact()
             ->schema([
@@ -118,6 +119,23 @@ class FieldGroupResourceHelper
                                 ->disabled()->saveRelationshipsWhenDisabled()->dehydrated(),
                             FieldResourceHelper::getStatePathFormComponent()->helperText('')
                                 ->hidden()->saveRelationshipsWhenHidden()->dehydrated(),
+
+                            Forms\Components\Placeholder::make('display_translatable')
+                                ->label(__('inspirecms::resources/field.translatable.label'))
+                                ->inlineLabel()
+                                ->content(function ($get) {
+                                    $translatable = $get('config.translatable') ?? false;
+
+                                    return UIHelper::generateBooleanIcon(condition: $translatable, falseColor: 'gray');
+                                }),
+                            Forms\Components\Placeholder::make('display_mandatory')
+                                ->label(__('inspirecms::resources/field.mandatory.label'))
+                                ->inlineLabel()
+                                ->content(function ($get) {
+                                    $mandatory = $get('mandatory') ?? false;
+
+                                    return UIHelper::generateBooleanIcon(condition: $mandatory, falseColor: 'gray');
+                                }),
                         ]),
                     FieldResourceHelper::getInstructionsFormComponent()->helperText('')
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()

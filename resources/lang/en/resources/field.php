@@ -28,4 +28,7 @@ return [
     'group' => [
         'label' => 'Field Group',
     ],
+    'translatable' => [
+        'label' => 'Translatable',
+    ],
 ];
