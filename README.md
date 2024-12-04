@@ -9,6 +9,28 @@
 
 This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
 
+
+## Development
+### Install inspirecms-support library
+`COMPOSER_ROOT_VERSION=dev-main composer update`
+
+### Build js and css
+
+1. Install composer dependencies:
+```bash
+composer install
+```
+
+2. Install npm dependencies:
+```bash
+npm i 
+```
+
+3. Build assets:
+```bash
+npm run build
+```
+
 ## Installation
 
 1. You can install the package via composer:
@@ -81,24 +103,6 @@ config on `inspirecms.php` config file:
 
 ```bash
 composer test
-```
-
-## Development
-### Build js and css
-
-1. Install composer dependencies:
-```bash
-composer install
-```
-
-2. Install npm dependencies:
-```bash
-npm i 
-```
-
-3. Build assets:
-```bash
-npm run build
 ```
 
 ## Changelog
