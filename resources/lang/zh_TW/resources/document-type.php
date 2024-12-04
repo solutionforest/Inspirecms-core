@@ -72,4 +72,15 @@ return [
             'label' => '結構',
         ],
     ],
+
+    'children' => [
+        'section' => [
+            'label' => '可用的文檔類型',
+        ],
+    ],
+    'general' => [
+        'section' => [
+            'label' => '一般',
+        ],
+    ],
 ];

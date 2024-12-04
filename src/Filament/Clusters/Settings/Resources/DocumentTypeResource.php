@@ -65,7 +65,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Section::make()
-                    ->heading('General')
+                    ->heading(__('inspirecms::resources/document-type.general.section.label'))
                     ->columns(1)
                     ->aside()
                     ->schema([
@@ -73,7 +73,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         static::getDisplayParentFormComponent()->inlineLabel(),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading('Available document types')
+                    ->heading(__('inspirecms::resources/document-type.children.section.label'))
                     ->columns(1)
                     ->aside()
                     ->visible(function (Model | DocumentType | null $record) {
@@ -107,7 +107,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Section::make()
-                    ->heading('General')
+                    ->heading(__('inspirecms::resources/document-type.general.section.label'))
                     ->columns(1)
                     ->aside()
                     ->schema(static::getCreateFormSchema()),

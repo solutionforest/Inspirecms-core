@@ -72,4 +72,15 @@ return [
             'label' => 'Structure',
         ],
     ],
+
+    'children' => [
+        'section' => [
+            'label' => 'Available document types',
+        ],
+    ],
+    'general' => [
+        'section' => [
+            'label' => 'General',
+        ],
+    ],
 ];
