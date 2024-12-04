@@ -14,7 +14,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
  * @template TDto of \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto
- * 
+ *
  * @property string $id
  * @property string $parent_id
  * @property string $title

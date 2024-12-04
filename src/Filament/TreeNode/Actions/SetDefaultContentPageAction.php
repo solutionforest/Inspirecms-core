@@ -39,7 +39,7 @@ class SetDefaultContentPageAction extends Action implements GuardAction
             if (is_null($record) || $record->is_default) {
                 return true;
             }
-            
+
             if (! $record instanceof Content) {
                 throw new \Exception('The provided record is not an instance of the Content model.');
             }

@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\WidgetConfiguration;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets\AlertOverview;
 

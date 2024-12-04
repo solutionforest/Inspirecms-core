@@ -6,7 +6,6 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;

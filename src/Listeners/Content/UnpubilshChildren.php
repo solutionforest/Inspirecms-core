@@ -15,14 +15,14 @@ class UnpubilshChildren
 
         $parent = $event->content;
         $unpublishStatus = ContentStatusManifest::getOption('unpublish');
-        if (!$unpublishStatus) {
+        if (! $unpublishStatus) {
             return;
         }
 
         if ($parent->status !== $unpublishStatus->getValue()) {
             return;
         }
-        
+
         $parent->children()->update(['status' => $parent->status]);
     }
 }

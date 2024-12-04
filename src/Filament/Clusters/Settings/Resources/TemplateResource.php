@@ -35,7 +35,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
             'update_view',
         ];
     }
-    
+
     public static function getNavigationIcon(): string | Htmlable | null
     {
         return FilamentIcon::resolve('inspirecms::templates');

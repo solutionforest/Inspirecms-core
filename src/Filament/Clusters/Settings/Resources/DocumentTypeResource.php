@@ -21,8 +21,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
-use SolutionForest\InspireCms\Filament\Resources\Helpers\DocumentTypeResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -52,7 +50,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;
-    
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
@@ -69,7 +66,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->columns(1)
                     ->aside()
                     ->schema([
-                        ... static::getCreateFormSchema(),
+                        ...static::getCreateFormSchema(),
                         static::getDisplayParentFormComponent()->inlineLabel(),
                     ]),
                 Forms\Components\Section::make()
@@ -203,7 +200,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->form(fn (Form $form) => static::replicateForm($form))
                     ->excludeAttributes(['templates_count', 'field_groups_count', 'children_count'])
                     ->after(function (Model | DocumentType $replica, Model | DocumentType $record) {
-                        
+
                         $fieldGroups = $record->fieldGroups()->pluck($record->fieldGroups()->getQualifiedRelatedKeyName())->toArray();
 
                         $replica->fieldGroups()->sync($fieldGroups);
@@ -282,6 +279,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         if ($record instanceof DocumentType) {
             return ! ($record->content()->withoutGlobalScopes([\Illuminate\Database\Eloquent\SoftDeletingScope::class])->count() > 0);
         }
+
         return parent::canDelete($record);
     }
 
@@ -441,23 +439,24 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 if (Str::startsWith($itemStatePath, 'record-')) {
                     return true;
                 }
-                
+
                 return false;
             })
             ->itemLabel(fn (array $state): ?string => $state['title'] ?? $state['slug'] ?? null)
             // Cannot display delete button if it exists
-            ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action
-                ->hidden(function (array $arguments, Forms\Components\Repeater $component) {
-                    
-                    if (! isset($arguments['item'])) {
-                        return false;
-                    }
+            ->deleteAction(
+                fn (Forms\Components\Actions\Action $action) => $action
+                    ->hidden(function (array $arguments, Forms\Components\Repeater $component) {
 
-                    $itemData = $component->getRawItemState($arguments['item']);
+                        if (! isset($arguments['item'])) {
+                            return false;
+                        }
 
-                    // cannot delete if it created (has primary key)
-                    return filled($itemData['id']);
-                })
+                        $itemData = $component->getRawItemState($arguments['item']);
+
+                        // cannot delete if it created (has primary key)
+                        return filled($itemData['id']);
+                    })
             )
             ->extraItemActions([
                 Forms\Components\Actions\Action::make('open')
@@ -476,20 +475,23 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         }
 
                         return FilamentResourceHelper::attemptToGetUrl(static::class, 'edit', ['record' => $recordId], false);
-                        
+
                     }, true),
             ])
-            ->addAction(fn (Forms\Components\Actions\Action $action) => $action
-                ->label(__('inspirecms::inspirecms.add'))
-                ->size('lg')
-                ->extraAttributes(['class' => 'w-full'])
-                ->icon(FilamentIcon::resolve('inspirecms::add'))
+            ->addAction(
+                fn (Forms\Components\Actions\Action $action) => $action
+                    ->label(__('inspirecms::inspirecms.add'))
+                    ->size('lg')
+                    ->extraAttributes(['class' => 'w-full'])
+                    ->icon(FilamentIcon::resolve('inspirecms::add'))
             )
             ->schema([
                 Forms\Components\Hidden::make('id'),
-                ...Arr::map(static::getCreateFormSchema(), fn (Forms\Components\Component$component) => $component
+                ...Arr::map(
+                    static::getCreateFormSchema(),
+                    fn (Forms\Components\Component $component) => $component
                     // Disable if id exists (record is created)
-                    ->disabled(fn (Forms\Get $get) => filled($get('id')))
+                        ->disabled(fn (Forms\Get $get) => filled($get('id')))
                 ),
             ]);
     }

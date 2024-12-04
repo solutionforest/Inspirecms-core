@@ -122,7 +122,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->form(fn (Form $form) => static::replicateForm($form))
                     ->excludeAttributes(['fields_count', 'document_types_count'])
                     ->after(function (Model | FieldGroup $replica, Model | FieldGroup $record) {
-                        
+
                         $fields = $record->fields()->get()->map(fn (Model $field) => $field->replicate([
                             'group_id',
                         ])->toArray())->all();

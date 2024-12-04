@@ -27,13 +27,14 @@ class UIHelper
             ]),
             'iconStyle' => Arr::toCssStyles([
                 \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray' && filled($color),
-            ])
+            ]),
         ]));
     }
 
     public static function generateBooleanIcon(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
     {
         $color = $condition ? $trueColor : $falseColor;
+
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::icon
                 icon="{{ $icon }}"
@@ -50,7 +51,7 @@ class UIHelper
             ]),
             'iconStyle' => Arr::toCssStyles([
                 \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
-            ])
+            ]),
         ]));
     }
 
@@ -93,7 +94,7 @@ class UIHelper
             ]),
             'iconStyle' => Arr::toCssStyles([
                 \Filament\Support\get_color_css_variables($iconColor, shades: [400, 500]) => $iconColor !== 'gray' && filled($iconColor),
-            ])
+            ]),
         ];
         if (is_string($iconPosition)) {
             $iconPosition = IconPosition::tryFrom($iconPosition) ?? IconPosition::Before;

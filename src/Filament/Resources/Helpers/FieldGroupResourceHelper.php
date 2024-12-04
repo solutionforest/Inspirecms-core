@@ -35,7 +35,7 @@ class FieldGroupResourceHelper
             ->live(true, 500)
             ->autofocus()
             ->afterStateUpdated(function ($operation, Forms\Get $get, Forms\Set $set, $component, ?string $state) {
-                
+
                 $component->state(Str::slug($state, '_'));
 
                 // Fill slug if empty / operation is create

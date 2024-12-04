@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Wizard\Step;
-use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -23,7 +22,6 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Field;
-use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 
 class FieldGroupsRelationManager extends RelationManager
 {
@@ -36,7 +34,7 @@ class FieldGroupsRelationManager extends RelationManager
     protected $listeners = [
         'refreshFieldGroups' => '$refresh',
     ];
-    
+
     protected static function getStepSchema()
     {
         return [
@@ -71,7 +69,7 @@ class FieldGroupsRelationManager extends RelationManager
                             ->icon(fn ($record) => $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle'),
 
                         Infolists\Components\Group::make([
-                            
+
                             Infolists\Components\TextEntry::make('label')
                                 ->label(__('inspirecms::resources/field.label.label'))
                                 ->inlineLabel(),
@@ -84,7 +82,7 @@ class FieldGroupsRelationManager extends RelationManager
                             Infolists\Components\IconEntry::make('translatable')
                                 ->label(__('inspirecms::resources/field.translatable.label'))
                                 ->inlineLabel()
-                                ->getStateUsing(fn (Model|Field $record) => Arr::get($record->config ?? [], 'translatable', false) === true)
+                                ->getStateUsing(fn (Model | Field $record) => Arr::get($record->config ?? [], 'translatable', false) === true)
                                 ->boolean()
                                 ->falseColor('gray'),
 
@@ -140,9 +138,10 @@ class FieldGroupsRelationManager extends RelationManager
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['title', 'name'])
                     ->recordTitle(fn ($record) => UIHelper::generateTextWithBadge($record->title, $record->name)->toHtml())
-                    ->recordSelect(fn (Select $select) => $select
-                        ->searchable()
-                        ->allowHtml()
+                    ->recordSelect(
+                        fn (Select $select) => $select
+                            ->searchable()
+                            ->allowHtml()
                     ),
             ])
             ->actions([

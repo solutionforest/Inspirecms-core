@@ -325,7 +325,7 @@ trait ContentFormTrait
             ->authorize('publish')
             ->successNotification($this->getPublishedNotification())
             // Cannot publish if the parent is not published
-            ->disabled(function (null | Model $record, $livewire) {
+            ->disabled(function (?Model $record, $livewire) {
                 // Create page
                 if ($livewire instanceof BaseContentCreatePage) {
 
@@ -348,6 +348,7 @@ trait ContentFormTrait
         if ($parent === null || ($parent && ! $parent->exists) || ! $parent instanceof Content) {
             return false;
         }
+
         return ! $parent->isPublished();
     }
 
