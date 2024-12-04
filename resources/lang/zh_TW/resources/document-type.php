@@ -8,10 +8,13 @@ return [
         'label' => '類別',
     ],
     'show_children_as_table' => [
-        'label' => '顯示子項為表格',
+        'label' => '顯示為表格',
     ],
     'is_root' => [
         'label' => '根',
+    ],
+    'icon' => [
+        'label' => '圖標',
     ],
     'slug' => [
         'label' => '標識',
@@ -25,13 +28,19 @@ return [
         'plural' => '模板',
         'description' => '渲染此文檔類型時使用的模板。',
         'hint' => '創建一個模板來顯示此文檔類型。',
+        'tab' => [
+            'label' => '模板',
+        ],
     ],
     'field_groups' => [
-        'label' => '字段組',
-        'singular' => '字段組',
-        'plural' => '字段組',
-        'description' => '創建此類型文檔時使用的字段組。',
+        'label' => '字段',
+        'singular' => '字段',
+        'plural' => '字段',
+        'description' => '',
         'hint' => '創建一個字段組來與此文檔類型一起使用。',
+        'tab' => [
+            'label' => '結構',
+        ],
     ],
     'inherited' => [
         'label' => '繼承自 :name',
@@ -50,6 +59,17 @@ return [
         'inheritance' => [
             'label' => '繼承',
             'description' => '可以繼承的文檔類型佈局。',
+        ],
+    ],
+
+    'presentation' => [
+        'tab' => [
+            'label' => '演示',
+        ],
+    ],
+    'structure' => [
+        'tab' => [
+            'label' => '結構',
         ],
     ],
 ];

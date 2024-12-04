@@ -3,8 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources;
 
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
@@ -16,8 +18,6 @@ class TemplateResource extends Resource implements ClusterSectionResource
     use ClusterSectionResourceTrait;
 
     protected static ?int $navigationSort = -5;
-
-    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
 
     protected static ?string $cluster = Settings::class;
 
@@ -34,6 +34,11 @@ class TemplateResource extends Resource implements ClusterSectionResource
             'detach',
             'update_view',
         ];
+    }
+    
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return FilamentIcon::resolve('inspirecms::templates');
     }
 
     public static function table(Table $table): Table

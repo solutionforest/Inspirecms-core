@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -25,8 +26,6 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     protected static ?int $navigationSort = -9;
 
-    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;
@@ -45,6 +44,11 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             'reorder',
             'replicate',
         ];
+    }
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return FilamentIcon::resolve('inspirecms::fields');
     }
 
     public static function form(Form $form): Form

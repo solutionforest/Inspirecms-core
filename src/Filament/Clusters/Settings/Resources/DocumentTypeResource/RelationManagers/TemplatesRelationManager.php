@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
@@ -21,8 +22,6 @@ class TemplatesRelationManager extends RelationManager
 
     protected static string $relationship = 'templates';
 
-    protected static ?string $icon = 'heroicon-c-sparkles';
-
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
@@ -30,15 +29,6 @@ class TemplatesRelationManager extends RelationManager
         }
 
         return $ownerRecord->canManageTemplates();
-    }
-
-    public static function getBadge(Model $ownerRecord, string $pageClass): ?string
-    {
-        if (is_null($ownerRecord->templates_count)) {
-            $ownerRecord->loadCount('templates');
-        }
-
-        return $ownerRecord->templates_count;
     }
 
     public function createForm(Form $form): Form

@@ -14,6 +14,7 @@ class DocumentTypeFactory extends Factory
             'category' => 'web',
             'show_children_as_table' => false,
             'parent_id' => 0,
+            'icon' => null,
         ];
     }
 }

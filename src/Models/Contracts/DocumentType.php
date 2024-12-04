@@ -4,6 +4,17 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
 
+/**
+ * @property int|string $id
+ * @property string $title
+ * @property string $slug
+ * @property string $category
+ * @property bool $show_children_as_table
+ * @property ?string $icon
+ * @property int|string|null $parent_id
+ * @property \Carbon\Carbon|null $created_at
+ * @property \Carbon\Carbon|null $updated_at
+ */
 interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInterface
 {
     /**

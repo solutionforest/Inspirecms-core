@@ -45,7 +45,7 @@ class DocumentTypesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.referenced_by_xxx', [
+        return __('inspirecms::inspirecms.used_by_xxx', [
             'name' => __('inspirecms::inspirecms.document_type'),
         ]);
     }

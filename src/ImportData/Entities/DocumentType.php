@@ -11,6 +11,7 @@ class DocumentType extends BaseEntity
         'slug' => 'required|string',
         'childrenAsTable' => 'required|boolean',
         'category' => 'required|string',
+        'icon' => 'nullable|string',
         'title' => 'nullable|string',
         'fieldGroups' => 'array',
         'templates' => 'array',
@@ -38,6 +39,10 @@ class DocumentType extends BaseEntity
          * @var string
          */
         public $category,
+        /**
+         * @var mixed|null $icon The icon associated with the document type. Default is null.
+         */
+        public $icon = null,
         /**
          * The title of the document type (optional).
          *
@@ -96,6 +101,7 @@ class DocumentType extends BaseEntity
             'category' => $this->category,
             'title' => $this->title ?? (string) str($this->slug)->title()->replace('_', ' '),
             'slug' => $this->slug,
+            'icon' => $this->icon,
         ];
     }
 }

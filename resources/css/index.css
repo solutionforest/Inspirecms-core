@@ -58,3 +58,10 @@
 .fi-icon > svg.custom-icon {
     stroke: currentColor;
 }
+
+.filament-icon-picker svg {
+    @apply w-6 h-6;
+}
+.filament-icon-picker div.relative:has(svg) {
+    @apply flex items-center justify-center;
+}

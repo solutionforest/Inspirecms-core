@@ -80,11 +80,10 @@ trait ContentPageTrait
             ->mutuateRootNodeItemsUsing(fn ($items) => array_merge([
                 [
                     'key' => 'root',
-                    'parentKey' => $this->getModelExplorer()->getRootLevelKey(),
+                    'parentKey' => -1,
                     'label' => __('inspirecms::inspirecms.root'),
                     'hasChildren' => false,
-                    'depth' => 0,
-                    'icon' => 'heroicon-o-home',
+                    'depth' => -1,
                     'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                     'documentTypeKey' => null,
                 ],
@@ -114,6 +113,7 @@ trait ContentPageTrait
                     }
                 }
 
+                $item['icon'] = $record->documentType?->icon;
                 $item['documentTypeKey'] = $record->document_type_id;
 
                 return $item;

@@ -181,6 +181,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->defaultSort('created_at', 'desc')
             ->modifyQueryUsing(fn ($query) => $query->with('publishedVersions'))
             ->columns([
+                    
+                Tables\Columns\ViewColumn::make('documentType.icon')
+                    ->label('')
+                    ->view('inspirecms::filament.tables.columns.guava-icon', ['height' => 5])
+                    ->extraAttributes(['class' => 'text-gray-500 dark:text-gray-400'])
+                    ->alignCenter()->verticallyAlignCenter()
+                    ->tooltip(fn (Model|ModelsContent $record) => $record->documentType?->title)
+                    ->width('1%'),
 
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::resources/content.id.label'))
@@ -284,7 +292,14 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         blank: fn (Builder $query) => $query,
                     )
                     ->hiddenOn([ChildrenRelationManager::class]),
-            ]);
+                Tables\Filters\QueryBuilder::make()
+                    ->constraints([
+                        Tables\Filters\QueryBuilder\Constraints\TextConstraint::make('documentType')
+                            ->label(__('inspirecms::inspirecms.document_type'))
+                            ->relationship(name: 'documentType', titleAttribute: 'title'),
+                    ]),
+            ])
+            ->filtersLayout(Tables\Enums\FiltersLayout::AboveContentCollapsible);
     }
 
     public static function getRelations(): array

@@ -213,7 +213,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
             'inspirecms::reset' => 'heroicon-o-arrow-path',
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
+            'inspirecms::add' => 'heroicon-o-plus-small',
             'inspirecms::json-file' => view('inspirecms::icons.json-file'),
+            'inspirecms::fields' => view('inspirecms::icons.fields'),
+            'inspirecms::templates' => view('inspirecms::icons.templates'),
+            'inspirecms::document-type' => view('inspirecms::icons.document-type'),
         ];
     }
 

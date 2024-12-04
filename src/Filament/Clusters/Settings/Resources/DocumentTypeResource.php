@@ -12,6 +12,7 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -21,6 +22,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
+use SolutionForest\InspireCms\Filament\Resources\Helpers\DocumentTypeResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -47,73 +49,68 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     protected static ?int $navigationSort = -10;
 
-    protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-
     protected static ?string $recordTitleAttribute = 'title';
 
     protected static ?string $cluster = Settings::class;
+    
+
+    public static function getNavigationIcon(): string | Htmlable | null
+    {
+        return FilamentIcon::resolve('inspirecms::document-type');
+    }
 
     public static function form(Form $form): Form
     {
         return $form
-            ->columns(3)
+            ->columns(1)
             ->schema([
-                Forms\Components\Group::make()
+                Forms\Components\Section::make()
+                    ->heading('General')
                     ->columns(1)
-                    ->columnSpan(2)
+                    ->aside()
                     ->schema([
-                        Forms\Components\Section::make()
-                            ->hiddenOn(['create'])
-                            ->schema([
-                                static::getDisplayIdFormComponent()->inlineLabel(),
-                                static::getDisplayParentFormComponent()->inlineLabel(),
-                            ]),
-                        Forms\Components\Section::make()
-                            ->schema([
-                                static::getParentIdFormComponent(),
-                                static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
-                                static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
-                            ]),
+                        ... static::getCreateFormSchema(),
+                        static::getDisplayParentFormComponent()->inlineLabel(),
                     ]),
                 Forms\Components\Section::make()
+                    ->heading('Available document types')
                     ->columns(1)
-                    ->columnSpan(1)
-                    ->schema([
-                        // static::getTypeFormComponent(),
-                        static::getShowChildAsTableFormComponent(),
-                        static::getTimestampsGroupedFormComponent(),
-                    ]),
+                    ->aside()
+                    ->visible(function (Model | DocumentType | null $record) {
+                        if (! $record) {
+                            return false;
+                        }
+
+                        return $record->canBeParent();
+                    })
+                    ->schema(fn ($record) => array_filter([
+                        static::getChildrenRepeater($record),
+                    ])),
             ]);
     }
 
-    /**
-     * Used to define the form for the children relation manager.
-     */
-    public static function childrenForm(Form $form, $parent): Form
+    /** @return array */
+    public static function getCreateFormSchema()
+    {
+        return [
+            static::getSlugFormComponent()->inlineLabel(),
+            static::getTitleFormComponent()->inlineLabel(),
+            static::getShowChildAsTableFormComponent(),
+            // static::getTypeFormComponent($parent),
+            static::getIconFormComponent()->inlineLabel(),
+        ];
+    }
+
+    public static function createForm(Form $form): Form
     {
         return $form
-            ->columns(3)
+            ->columns(1)
             ->schema([
-
-                Forms\Components\Group::make()
-                    ->columns(1)
-                    ->columnSpan(2)
-                    ->schema([
-                        Forms\Components\Section::make()
-                            ->schema([
-                                static::getParentIdFormComponent($parent),
-                                static::getTitleFormComponent()->inlineLabel()->columnSpanFull(),
-                                static::getSlugFormComponent()->inlineLabel()->columnSpanFull(),
-                            ]),
-                    ]),
                 Forms\Components\Section::make()
+                    ->heading('General')
                     ->columns(1)
-                    ->columnSpan(1)
-                    ->schema([
-                        // static::getTypeFormComponent($parent),
-                        static::getShowChildAsTableFormComponent(),
-                        static::getTimestampsGroupedFormComponent(),
-                    ]),
+                    ->aside()
+                    ->schema(static::getCreateFormSchema()),
             ]);
     }
 
@@ -122,12 +119,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
      */
     public static function replicateForm(Form $form): Form
     {
-        return $form
-            ->schema([
-                static::getSlugFormComponent()->inlineLabel()->columnSpanFull()->autofocus(true),
-                static::getTitleFormComponent()->inlineLabel()->columnSpanFull()->autofocus(false),
-                static::getShowChildAsTableFormComponent(),
-            ]);
+        return $form->schema(static::getCreateFormSchema());
     }
 
     public static function table(Table $table): Table
@@ -146,6 +138,11 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
+                Tables\Columns\ViewColumn::make('icon')
+                    ->view('inspirecms::filament.tables.columns.guava-icon')
+                    ->label(__('inspirecms::resources/document-type.icon.label'))
+                    ->extraAttributes(['class' => 'text-gray-500 dark:text-gray-400'])
+                    ->width('1%'),
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
                 Tables\Columns\TextColumn::make('slug')
@@ -203,7 +200,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ReplicateAction::make()
                     ->iconButton()
-                    ->slideOver('5xl')
                     ->form(fn (Form $form) => static::replicateForm($form))
                     ->excludeAttributes(['templates_count', 'field_groups_count', 'children_count'])
                     ->after(function (Model | DocumentType $replica, Model | DocumentType $record) {
@@ -235,7 +231,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return [
             'index' => Pages\ListDocumentTypes::route('/'),
-            'create' => Pages\CreateDocumentType::route('/create'),
             'edit' => Pages\EditDocumentType::route('/{record}/edit'),
             'view' => Pages\ViewDocumentType::route('/{record}'),
         ];
@@ -244,18 +239,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.label'), [
+            'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.tab.label'), [
                 // RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
-            ])->badge(function ($ownerRecord) {
-                if (is_null($ownerRecord->field_groups_count)) {
-                    $ownerRecord->loadCount('fieldGroups');
-                }
-
-                return $ownerRecord->field_groups_count;
-            }),
-            'children' => RelationManagers\ChildrenRelationManager::class,
-            'templates' => RelationManagers\TemplatesRelationManager::class,
+            ])->icon(FilamentIcon::resolve('inspirecms::fields')),
+            'templates' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.templates.tab.label'), [
+                RelationManagers\TemplatesRelationManager::class,
+            ])->icon(FilamentIcon::resolve('inspirecms::templates')),
             'used_by' => RelationGroup::make(fn () => __('inspirecms::inspirecms.used_by'), [
                 RelationManagers\ContentRelationManager::class,
                 // RelationManagers\InheritingDocumentTypesRelationManager::class,
@@ -287,6 +277,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->withCount(['templates', 'fieldGroups', 'children']);
     }
 
+    public static function canDelete(Model $record): bool
+    {
+        if ($record instanceof DocumentType) {
+            return ! ($record->content()->withoutGlobalScopes([\Illuminate\Database\Eloquent\SoftDeletingScope::class])->count() > 0);
+        }
+        return parent::canDelete($record);
+    }
+
     //region Global search
     public static function getGloballySearchableAttributes(): array
     {
@@ -307,17 +305,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     //endregion Global search
 
     //region Form field(s)/component(s)
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getDisplayIdFormComponent()
-    {
-        return Forms\Components\Placeholder::make('display_id')
-            ->label(__('inspirecms::inspirecms.id'))
-            ->hiddenOn(['create'])
-            ->content(fn ($record) => $record?->getKey());
-    }
-
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -362,13 +349,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/document-type.title.label'))
-            ->live(true, 300)->afterStateUpdated(function ($state, $get, $set, $operation) {
-                // Fill slug if empty / operation is create
-                if ($operation === 'create' || empty($get('slug'))) {
-                    $set('slug', Str::slug($state));
-                }
-            })
-            ->autofocus()
             ->required();
     }
 
@@ -379,8 +359,16 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::resources/document-type.slug.label'))
-            ->live(true, 300)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->live(true, 300)
+            ->afterStateUpdated(function ($component, $state, Forms\Get $get, Forms\Set $set, $operation) {
+                $component->state(Str::slug($state));
+                // Fill slug if empty / operation is create
+                if ($operation === 'create' || empty($get('title'))) {
+                    $set('title', $state);
+                }
+            })
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true)
+            ->autofocus()
             ->required();
     }
 
@@ -437,37 +425,78 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             });
     }
 
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getTimestampsGroupedFormComponent()
+    /** @return Forms\Components\Field | Forms\Components\Component*/
+    protected static function getChildrenRepeater($record)
     {
-        return TimestampsGroup::make()
-            ->columns(['default' => 1]);
+        return Forms\Components\Repeater::make('children')
+            ->hiddenLabel()
+            ->relationship('children')
+            ->defaultItems(0)
+            ->reorderable(false)
+            ->collapsible()->collapsed(false)
+            ->itemLabel(fn (array $state): ?string => $state['title'] ?? $state['slug'] ?? null)
+            // Cannot display delete button if it exists
+            ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action
+                ->hidden(function (array $arguments, Forms\Components\Repeater $component) {
+                    
+                    if (! isset($arguments['item'])) {
+                        return false;
+                    }
+
+                    $itemData = $component->getRawItemState($arguments['item']);
+
+                    // cannot delete if it created (has primary key)
+                    return filled($itemData['id']);
+                })
+            )
+            ->extraItemActions([
+                Forms\Components\Actions\Action::make('open')
+                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
+                    ->label(__('filament-actions::edit.single.label'))
+                    // Hide if url is empty
+                    ->visible(fn (Forms\Components\Actions\Action $action) => filled($action->getUrl()))
+                    ->url(function (array $arguments, Forms\Components\Repeater $component) {
+
+                        $itemData = $component->getRawItemState($arguments['item']);
+
+                        $recordId = $itemData['id'];
+
+                        if (blank($recordId)) {
+                            return null;
+                        }
+
+                        return FilamentResourceHelper::attemptToGetUrl(static::class, 'edit', ['record' => $recordId], false);
+                        
+                    }, true),
+            ])
+            ->addAction(fn (Forms\Components\Actions\Action $action) => $action
+                ->label(__('inspirecms::inspirecms.add'))
+                ->size('lg')
+                ->extraAttributes(['class' => 'w-full'])
+                ->icon(FilamentIcon::resolve('inspirecms::add'))
+            )
+            ->schema([
+                Forms\Components\Hidden::make('id'),
+                ...Arr::map(static::getCreateFormSchema(), fn (Forms\Components\Component$component) => $component
+                    // Disable if id exists (record is created)
+                    ->disabled(fn (Forms\Get $get) => filled($get('id')))
+                ),
+            ]);
     }
 
-    /**
-     * @param  DocumentType|Model|null  $parent
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    protected static function getParentIdFormComponent($parent = null)
+    /** @return Forms\Components\Field | Forms\Components\Component*/
+    protected static function getIconFormComponent()
     {
-        return Forms\Components\Hidden::make('parent_id')
-            ->dehydratedWhenHidden()
-            ->afterStateHydrated(function ($operation, $state, $component) use ($parent) {
-
-                if ($operation === 'create') {
-
-                    if ($parent?->canBeParent() ?? false) {
-                        $component->state($parent->getKey());
-
-                        return;
-                    }
-                }
-
-                $component->state($state);
-
-            });
+        return \Guava\FilamentIconPicker\Forms\IconPicker::make('icon')
+            ->label(__('inspirecms::resources/document-type.icon.label'))
+            ->preload()
+            ->columns([
+                'default' => 5,
+                'sm' => 1,
+                'md' => 2,
+                'lg' => 3,
+            ])
+            ->extraAttributes(['class' => 'w-1/2']);
     }
     //endregion Form field(s)/component(s)
 }

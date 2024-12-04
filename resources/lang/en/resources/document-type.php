@@ -8,10 +8,13 @@ return [
         'label' => 'Category',
     ],
     'show_children_as_table' => [
-        'label' => 'Show children as table',
+        'label' => 'Show as table',
     ],
     'is_root' => [
         'label' => 'Is Root',
+    ],
+    'icon' => [
+        'label' => 'Icon',
     ],
     'slug' => [
         'label' => 'Slug',
@@ -25,13 +28,19 @@ return [
         'plural' => 'Templates',
         'description' => 'The template to use when rendering this document type.',
         'hint' => 'Create a template to display this document type.',
+        'tab' => [
+            'label' => 'Templates',
+        ],
     ],
     'field_groups' => [
-        'label' => 'Field groups',
-        'singular' => 'Field group',
-        'plural' => 'Field groups',
-        'description' => 'The field groups to use when creating a document of this type.',
+        'label' => 'Fields',
+        'singular' => 'Field',
+        'plural' => 'Fields',
+        'description' => '',
         'hint' => 'Create a field group to use with this document type.',
+        'tab' => [
+            'label' => 'Structure',
+        ],
     ],
     'inherited' => [
         'label' => 'Inherited from :name',
@@ -50,6 +59,17 @@ return [
         'inheritance' => [
             'label' => 'Inheritance',
             'description' => 'A document type layout that can be inherited.',
+        ],
+    ],
+
+    'presentation' => [
+        'tab' => [
+            'label' => 'Presentation',
+        ],
+    ],
+    'structure' => [
+        'tab' => [
+            'label' => 'Structure',
         ],
     ],
 ];

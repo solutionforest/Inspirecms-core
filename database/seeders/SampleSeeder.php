@@ -430,6 +430,7 @@ Html;
             templates: ['home'],
             defaultTemplate: 'home',
             inheritance: [], // ['general-page-banner'],
+            icon: 'heroicon-o-home',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'about',
@@ -442,6 +443,7 @@ Html;
             defaultTemplate: 'about',
             inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
+            icon: 'heroicon-o-information-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blogs',
@@ -452,6 +454,7 @@ Html;
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
+            icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog',
@@ -463,6 +466,7 @@ Html;
             templates: ['blog'],
             defaultTemplate: 'blog',
             parent: 'blogs',
+            icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'projects',
@@ -475,6 +479,7 @@ Html;
             defaultTemplate: 'projects',
             inheritance: [], // ['general-page-banner'],
             parent: 'homepage',
+            icon: 'heroicon-o-document',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blank_page',
@@ -483,6 +488,7 @@ Html;
             templates: ['blank-page', 'redirect-page'],
             defaultTemplate: 'blank-page',
             parent: 'homepage',
+            icon: 'heroicon-o-document',
         );
         foreach ($items as $item) {
             $this->importDataService->addDocumentType($item->slug, $item);

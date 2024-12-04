@@ -43,6 +43,7 @@ return new class extends BaseMigration
             $table->string('title');
             $table->string('slug');
             $table->string('category')->default('web');
+            $table->string('icon')->nullable();
             $table->boolean('show_children_as_table')->default(false);
             $table->unsignedBigInteger('parent_id')->default(0);
 

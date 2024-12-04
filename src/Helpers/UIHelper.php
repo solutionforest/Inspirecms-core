@@ -3,26 +3,54 @@
 namespace SolutionForest\InspireCms\Helpers;
 
 use Filament\Support\Enums\IconPosition;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 
 class UIHelper
 {
-    public static function generateBooleanIcon(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
+    public static function generateIcon(string $icon, string $color): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::icon
-                icon="{{$icon}}"
-                class="h-5 w-5 text-custom-500 dark:text-custom-400"
-                style="{{$iconStyle}}"
+                icon="{{ $icon }}"
+                class="{{  $iconClass }}"
+                style="{{ $iconStyle }}"
+            >
+            </x-filament::icon>
+        blade, [
+            'icon' => $icon,
+            'iconClass' => Arr::toCssClasses([
+                'h-5 w-5 ',
+                'text-custom-500 dark:text-custom-400' => $color != 'gray',
+                'text-gray-400 dark:text-gray-500' => $color == 'gray',
+            ]),
+            'iconStyle' => Arr::toCssStyles([
+                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
+            ])
+        ]));
+    }
+
+    public static function generateBooleanIcon(bool $condition, string $trueIcon = 'heroicon-m-check-circle', string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger'): HtmlString
+    {
+        $color = $condition ? $trueColor : $falseColor;
+        return new HtmlString(Blade::render(<<<'blade'
+            <x-filament::icon
+                icon="{{ $icon }}"
+                class="{{  $iconClass }}"
+                style="{{ $iconStyle }}"
             >
             </x-filament::icon>
         blade, [
             'icon' => $condition ? $trueIcon : $falseIcon,
-            'iconStyle' => \Filament\Support\get_color_css_variables(
-                $condition ? $trueColor : $falseColor,
-                shades: [400, 500],
-            ),
+            'iconClass' => Arr::toCssClasses([
+                'h-5 w-5 ',
+                'text-custom-500 dark:text-custom-400' => $color != 'gray',
+                'text-gray-400 dark:text-gray-500' => $color == 'gray',
+            ]),
+            'iconStyle' => Arr::toCssStyles([
+                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
+            ])
         ]));
     }
 
@@ -58,10 +86,14 @@ class UIHelper
         $data = [
             'text' => $text,
             'icon' => $icon,
-            'iconStyle' => \Filament\Support\get_color_css_variables(
-                $color,
-                shades: [400, 500],
-            ),
+            'iconClass' => Arr::toCssClasses([
+                'h-5 w-5 ',
+                'text-custom-500 dark:text-custom-400' => $color != 'gray',
+                'text-gray-400 dark:text-gray-500' => $color == 'gray',
+            ]),
+            'iconStyle' => Arr::toCssStyles([
+                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
+            ])
         ];
         if (is_string($iconPosition)) {
             $iconPosition = IconPosition::tryFrom($iconPosition) ?? IconPosition::Before;
@@ -73,9 +105,9 @@ class UIHelper
                         {{ $text }}
                     </span>
                     <x-filament::icon
-                        icon="{{$icon}}"
-                        class="h-5 w-5 text-custom-500 dark:text-custom-400"
-                        style="{{$iconStyle}}"
+                        icon="{{ $icon }}"
+                        class="{{  $iconClass }}"
+                        style="{{ $iconStyle }}"
                     />
                 </div>
             blade, $data));
@@ -84,9 +116,9 @@ class UIHelper
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex items-center gap-2">
                 <x-filament::icon
-                    icon="{{$icon}}"
-                    class="h-5 w-5 text-custom-500 dark:text-custom-400"
-                    style="{{$iconStyle}}"
+                    icon="{{ $icon }}"
+                    class="{{  $iconClass }}"
+                    style="{{ $iconStyle }}"
                 />
                 <span>
                     {{ $text }}

@@ -249,11 +249,11 @@ document.addEventListener('alpine:init', () => {
         // Then go to edit page to create "FieldGroup" and "Template" for the Document Type
         [
           {
-            element: "[data-relation-manager-key='field_group']",
+            element: "[data-relation-manager-key='fields']",
             popover: {
               ...generalPopoverOptions,
-              title: "Create Field Group",
-              description: "A form fields group is a collection of fields that can be used in a form while creating a content page.",
+              title: "Create Fields",
+              description: "A group of fields that can be used in a form while creating a content page.",
             },
           }, {
             element: "[data-relation-manager-key='templates']",

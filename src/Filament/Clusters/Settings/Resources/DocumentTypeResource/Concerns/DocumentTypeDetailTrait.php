@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\WidgetConfiguration;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets\AlertOverview;
 
@@ -24,5 +25,15 @@ trait DocumentTypeDetailTrait
         }
 
         return $widgets;
+    }
+
+    public function hasCombinedRelationManagerTabsWithContent(): bool
+    {
+        return true;
+    }
+
+    public function getContentTabLabel(): ?string
+    {
+        return __('inspirecms::resources/document-type.presentation.tab.label');
     }
 }
