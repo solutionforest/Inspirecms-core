@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Wizard\Step;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
@@ -15,9 +17,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
+use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 
 class FieldGroupsRelationManager extends RelationManager
 {
@@ -30,12 +34,23 @@ class FieldGroupsRelationManager extends RelationManager
     protected $listeners = [
         'refreshFieldGroups' => '$refresh',
     ];
-
-    public function form(Form $form): Form
+    
+    protected static function getStepSchema()
     {
-        $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
-
-        return $resource::form($form);
+        return [
+            Step::make('fields')
+                ->label(__('inspirecms::resources/field-group.steps.fields.label'))
+                ->schema([
+                    FieldGroupResourceHelper::getFieldsRepeater()->hiddenLabel(),
+                ]),
+            Step::make('settings')
+                ->label(__('inspirecms::resources/field-group.steps.settings.label'))
+                ->schema([
+                    FieldGroupResourceHelper::getNameFormComponent(),
+                    FieldGroupResourceHelper::getTitleFormComponent(),
+                    FieldGroupResourceHelper::getActiveFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
+                ]),
+        ];
     }
 
     public function infolist(Infolist $infolist): Infolist
@@ -159,7 +174,8 @@ class FieldGroupsRelationManager extends RelationManager
             ->modalWidth('7xl')
             ->after(function (Model $record) {
                 $this->dispatch('refreshAlerts');
-            });
+            })
+            ->steps(static::getStepSchema());
     }
 
     protected function configureAttachAction(Tables\Actions\AttachAction $action): void

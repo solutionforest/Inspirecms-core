@@ -16,8 +16,6 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupRes
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\RevertOrderGroup;
-use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -55,35 +53,24 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->columns(1)
             ->schema([
 
-                RevertOrderGroup::make([
-
-                    Forms\Components\Section::make()
-                        ->columns(1)
-                        ->schema([
-                            TimestampsGroup::make()->columns(['default' => 1]),
-                        ])
-                        ->hidden(fn ($operation) => $operation == 'create')
-                        ->grow(false),
-
-                    Forms\Components\Section::make()
-                        ->columns(2)
-                        ->schema([
-                            FieldGroupResourceHelper::getTitleFormComponent()->autofocus(true),
-                            FieldGroupResourceHelper::getNameFormComponent()->autofocus(false),
-                            FieldGroupResourceHelper::getActiveFormComponent(),
-                        ])
-                        ->grow(),
-                ])->revertBreakPoint('lg'),
+                Forms\Components\Section::make()
+                    ->columns(2)
+                    ->schema([
+                        FieldGroupResourceHelper::getNameFormComponent(),
+                        FieldGroupResourceHelper::getTitleFormComponent(),
+                        FieldGroupResourceHelper::getActiveFormComponent(),
+                    ]),
 
                 FieldGroupResourceHelper::getFieldsFormComponent(),
             ]);
     }
 
-    public static function cloneForm(Form $form): Form
+    public static function replicateForm(Form $form): Form
     {
         return $form->schema([
-            FieldGroupResourceHelper::getNameFormComponent()->autofocus(false),
-            FieldGroupResourceHelper::getTitleFormComponent()->autofocus(true),
+            FieldGroupResourceHelper::getNameFormComponent(),
+            FieldGroupResourceHelper::getTitleFormComponent(),
+            FieldGroupResourceHelper::getActiveFormComponent(),
         ]);
     }
 
@@ -93,6 +80,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->reorderable(false)
             ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
             ->emptyStateActions([])
+            ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->label(__('inspirecms::inspirecms.name'))
@@ -127,9 +115,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
                 Tables\Actions\ReplicateAction::make()->iconButton()
-                    ->slideOver()
-                    ->modalWidth('5xl')
-                    ->form(fn (Form $form) => static::cloneForm($form))
+                    ->form(fn (Form $form) => static::replicateForm($form))
                     ->excludeAttributes(['fields_count', 'document_types_count'])
                     ->after(function (Model | FieldGroup $replica, Model | FieldGroup $record) {
                         
@@ -154,7 +140,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageFieldGroup::route('/'),
+            'index' => Pages\ListFieldGroup::route('/'),
             'create' => Pages\CreateFieldGroup::route('/create'),
             'edit' => Pages\EditFieldGroup::route('/{record}/edit'),
             'view' => Pages\ViewFieldGroup::route('/{record}'),

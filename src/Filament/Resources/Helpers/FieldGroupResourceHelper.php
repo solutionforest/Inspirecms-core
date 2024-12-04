@@ -20,15 +20,7 @@ class FieldGroupResourceHelper
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/field-group.title.label'))
             ->required()
-            ->maxLength(255)
-            ->live(true, 500)
-            ->afterStateUpdated(function ($operation, $state, Forms\Get $get, Forms\Set $set) {
-                // Fill slug if empty / operation is create
-                if ($operation === 'create' || empty($get('name'))) {
-                    $set('name', Str::slug($state, '_'));
-                }
-            })
-            ->autofocus();
+            ->maxLength(255);
     }
 
     /**
@@ -41,7 +33,16 @@ class FieldGroupResourceHelper
             ->required()
             ->maxLength(255)
             ->live(true, 500)
-            ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state, '_')))
+            ->autofocus()
+            ->afterStateUpdated(function ($operation, Forms\Get $get, Forms\Set $set, $component, ?string $state) {
+                
+                $component->state(Str::slug($state, '_'));
+
+                // Fill slug if empty / operation is create
+                if ($operation === 'create' || empty($get('title'))) {
+                    $set('title', $state);
+                }
+            })
             ->unique(
                 table: InspireCmsConfig::getFieldGroupModelClass(),
                 column: 'name',
@@ -157,6 +158,8 @@ class FieldGroupResourceHelper
         return $action
             ->size(ActionSize::ExtraLarge)
             ->extraAttributes(['class' => 'w-full'])
+            ->label(__('inspirecms::inspirecms.add'))
+            ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->slideOver()
             ->modalWidth('5xl')
             ->fillForm(fn ($record) => [

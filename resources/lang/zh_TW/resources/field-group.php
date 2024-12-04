@@ -2,12 +2,21 @@
 
 return [
     'name' => [
-        'label' => '名稱',
+        'label' => '唯一名稱',
     ],
     'title' => [
-        'label' => '標題',
+        'label' => '描述',
     ],
     'fields' => [
         'label' => '欄位',
+    ],
+
+    'steps' => [
+        'fields' => [
+            'label' => '欄位',
+        ],
+        'settings' => [
+            'label' => '設定',
+        ],
     ],
 ];

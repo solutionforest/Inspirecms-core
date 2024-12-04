@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'add' => '新增',
     'add_xxx' => '新增 :name',
     'allow_sections' => '允許部分',
     'as_root' => '作為根',

@@ -2,12 +2,21 @@
 
 return [
     'name' => [
-        'label' => 'Name',
+        'label' => 'Unqiue name',
     ],
     'title' => [
-        'label' => 'Title',
+        'label' => 'Description',
     ],
     'fields' => [
         'label' => 'Fields',
+    ],
+
+    'steps' => [
+        'fields' => [
+            'label' => 'Fields',
+        ],
+        'settings' => [
+            'label' => 'Settings',
+        ],
     ],
 ];

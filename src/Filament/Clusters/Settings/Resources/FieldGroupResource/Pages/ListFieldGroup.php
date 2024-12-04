@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\Pages;
 
 use Filament\Actions;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 
-class ManageFieldGroup extends BaseManagePage
+class ListFieldGroup extends BaseListPage
 {
     protected function getHeaderActions(): array
     {

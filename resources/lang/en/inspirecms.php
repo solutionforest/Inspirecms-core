@@ -1,6 +1,7 @@
 <?php
 
 return [
+    'add' => 'Add',
     'add_xxx' => 'Add :name',
     'allow_sections' => 'Allow Sections',
     'as_root' => 'As root',
