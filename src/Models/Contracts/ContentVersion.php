@@ -4,6 +4,16 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
+/**
+ * @property int $id
+ * @property \Carbon\Carbon $created_at
+ * @property string $event_name
+ * @property string $publish_state
+ * @property string $content_id
+ * @property array $from_data
+ * @property array $to_data
+ * @property bool $avoid_to_clean
+ */
 interface ContentVersion extends HasAuthor
 {
     /**

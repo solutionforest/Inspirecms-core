@@ -11,6 +11,8 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use Throwable;
 
 use function Filament\Support\is_app_url;
@@ -321,7 +323,32 @@ trait ContentFormTrait
             ->action(fn ($data, $action) => $this->publish($data, $action))
             ->model($model)
             ->authorize('publish')
-            ->successNotification($this->getPublishedNotification());
+            ->successNotification($this->getPublishedNotification())
+            // Cannot publish if the parent is not published
+            ->disabled(function (null | Model $record, $livewire) {
+                // Create page
+                if ($livewire instanceof BaseContentCreatePage) {
+
+                    $parent = $livewire->getParentRecord();
+
+                    return static::isReadyForPublication($parent);
+                }
+
+                // Edit page
+                if ($record === null || ($record && ! $record->exists) || ! $record instanceof Content || $record->isRootLevel()) {
+                    return false;
+                }
+
+                return static::isReadyForPublication($record->parent);
+            });
+    }
+
+    protected static function isReadyForPublication(?Model $parent): bool
+    {
+        if ($parent === null || ($parent && ! $parent->exists) || ! $parent instanceof Content) {
+            return false;
+        }
+        return ! $parent->isPublished();
     }
 
     protected function getPublishableFormName(): string

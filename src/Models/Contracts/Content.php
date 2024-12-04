@@ -14,6 +14,17 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
  * @template TDto of \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto
+ * 
+ * @property string $id
+ * @property string $parent_id
+ * @property string $title
+ * @property string $slug
+ * @property int $status
+ * @property bool $is_default
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\Carbon $deleted_at
+ * @property null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
  */
 interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {

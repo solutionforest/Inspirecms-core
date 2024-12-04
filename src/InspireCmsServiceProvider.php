@@ -315,6 +315,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Events\Content\UpdatePath::class,
             [Listeners\Content\ProcessContentPath::class, 'handleUpsert']
         );
+        Event::listen(Events\Content\CreatingContentVersion::class, Listeners\Content\UnpubilshChildren::class);
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
         Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
         //endregion Content

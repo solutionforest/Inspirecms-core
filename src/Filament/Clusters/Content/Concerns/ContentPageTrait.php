@@ -88,7 +88,7 @@ trait ContentPageTrait
                     'documentTypeKey' => null,
                 ],
             ], $items))
-            ->mutuateNodeItemsUsing(function (array $item, Model $record) {
+            ->mutuateNodeItemsUsing(function (array $item, Model | Content $record) {
 
                 $itemUrlParams = [
                     'record' => $record,
@@ -115,6 +115,12 @@ trait ContentPageTrait
 
                 $item['icon'] = $record->documentType?->icon;
                 $item['documentTypeKey'] = $record->document_type_id;
+
+                if ($record->display_status?->getName() !== 'publish') {
+                    $item['extraAttributes']['class'] = [
+                        '!text-gray-400',
+                    ];
+                }
 
                 return $item;
             })
