@@ -547,12 +547,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 return collect();
             }
 
-            return $documentType->fieldGroups ?? collect();
+            return collect($documentType->fieldGroups)->sortBy('pivot.order')->values();
         };
 
         $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromDocumentType) {
             if ($record) { //edit/view page
-                $fieldGroups = $record->documentType->fieldGroups;
+                $fieldGroups = collect($record->documentType->fieldGroups)->sortBy('pivot.order')->values();
             } elseif ($livewire instanceof ContentForm) { // create
                 $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
             } elseif ($livewire instanceof BuilderEditor) { // preview builder
