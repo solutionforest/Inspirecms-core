@@ -14,6 +14,7 @@ use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
@@ -21,6 +22,7 @@ use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelpe
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Field;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 
 class FieldGroupsRelationManager extends RelationManager
@@ -78,6 +80,13 @@ class FieldGroupsRelationManager extends RelationManager
                                 ->label(__('inspirecms::resources/field.name.label'))
                                 ->inlineLabel()
                                 ->badge(),
+
+                            Infolists\Components\IconEntry::make('translatable')
+                                ->label(__('inspirecms::resources/field.translatable.label'))
+                                ->inlineLabel()
+                                ->getStateUsing(fn (Model|Field $record) => Arr::get($record->config ?? [], 'translatable', false) === true)
+                                ->boolean()
+                                ->falseColor('gray'),
 
                         ])->columnSpan(5),
                     ]),
