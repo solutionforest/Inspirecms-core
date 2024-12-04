@@ -9,7 +9,7 @@ use Illuminate\Support\HtmlString;
 
 class UIHelper
 {
-    public static function generateIcon(string $icon, string $color): HtmlString
+    public static function generateIcon(string $icon, ?string $color = null, int $width = 5): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <x-filament::icon
@@ -21,12 +21,12 @@ class UIHelper
         blade, [
             'icon' => $icon,
             'iconClass' => Arr::toCssClasses([
-                'h-5 w-5 ',
-                'text-custom-500 dark:text-custom-400' => $color != 'gray',
-                'text-gray-400 dark:text-gray-500' => $color == 'gray',
+                "w-{$width} h-{$width} ",
+                'text-custom-500 dark:text-custom-400' => $color !== 'gray' && filled($color),
+                'text-gray-400 dark:text-gray-500' => $color === 'gray',
             ]),
             'iconStyle' => Arr::toCssStyles([
-                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
+                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray' && filled($color),
             ])
         ]));
     }
@@ -81,18 +81,18 @@ class UIHelper
         ]));
     }
 
-    public static function generateTextWithIcon(string $text, string $icon, string $color = 'primary', IconPosition | string $iconPosition = IconPosition::Before): HtmlString
+    public static function generateTextWithIcon(string $text, string $icon, ?string $iconColor = null, IconPosition | string $iconPosition = IconPosition::Before, int $iconWidth = 5): HtmlString
     {
         $data = [
             'text' => $text,
             'icon' => $icon,
             'iconClass' => Arr::toCssClasses([
-                'h-5 w-5 ',
-                'text-custom-500 dark:text-custom-400' => $color != 'gray',
-                'text-gray-400 dark:text-gray-500' => $color == 'gray',
+                "w-{$iconWidth} h-{$iconWidth} ",
+                'text-custom-500 dark:text-custom-400' => $iconColor !== 'gray' && filled($iconColor),
+                'text-gray-400 dark:text-gray-500' => $iconColor === 'gray',
             ]),
             'iconStyle' => Arr::toCssStyles([
-                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray',
+                \Filament\Support\get_color_css_variables($iconColor, shades: [400, 500]) => $iconColor !== 'gray' && filled($iconColor),
             ])
         ];
         if (is_string($iconPosition)) {
