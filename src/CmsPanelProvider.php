@@ -48,7 +48,7 @@ class CmsPanelProvider extends PanelProvider
                 'gray' => Color::hex('#5e5e5e'),
                 'info' => Color::hex('#88B0BA'),
                 'primary' => Color::hex('#B5834A'),
-                'secondary' => Color::hex('#d2b492'),
+                'secondary' => Color::hex('#bfa15a'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
 
