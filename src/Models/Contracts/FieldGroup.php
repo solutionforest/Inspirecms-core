@@ -4,6 +4,14 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup as BaseContract;
 
+/**
+ * @property string $title
+ * @property string $name
+ * @property bool $active
+ * @property int $sort
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ */
 interface FieldGroup extends BaseContract
 {
     /**
