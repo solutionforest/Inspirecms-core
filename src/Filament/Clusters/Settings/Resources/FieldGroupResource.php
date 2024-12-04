@@ -87,11 +87,11 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->defaultSort('created_at', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                    ->label(__('inspirecms::resources/field-group.name.label'))
                     ->sortable()->width('1%')
                     ->badge(),
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/field-group.title.label')),
                 Tables\Columns\TextColumn::make('fields_count')
                     ->label(__('inspirecms::inspirecms.fields'))
                     ->alignEnd()
