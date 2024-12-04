@@ -22,7 +22,7 @@ return [
     'email_confirmed_at' => 'Email confirmed at',
     'email' => 'Email',
     'failed_login_attempt' => 'Failed login attempt',
-    'field_group' => 'Field Group',
+    'field_group' => 'Custom Fields',
     'field' => 'Field',
     'fields' => 'Fields',
     'general' => 'General',
