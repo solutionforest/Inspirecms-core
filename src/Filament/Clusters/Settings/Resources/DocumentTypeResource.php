@@ -433,7 +433,17 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->relationship('children')
             ->defaultItems(0)
             ->reorderable(false)
-            ->collapsible()->collapsed(false)
+            ->collapsible()->collapsed(function (?Forms\ComponentContainer $item) {
+
+                $itemStatePath = $item->getStatePath(false);
+
+                // If item is new, do not collapse
+                if (Str::startsWith($itemStatePath, 'record-')) {
+                    return true;
+                }
+                
+                return false;
+            })
             ->itemLabel(fn (array $state): ?string => $state['title'] ?? $state['slug'] ?? null)
             // Cannot display delete button if it exists
             ->deleteAction(fn (Forms\Components\Actions\Action $action) => $action
