@@ -196,11 +196,29 @@ return new class extends BaseMigration
             $table->index('type');
             $table->index('is_active');
         });
+
+        Schema::create($tableNames['import_job'], function (Blueprint $table) {
+            $table->uuid('id')->primary();
+
+            $table->string('disk');
+            $table->string('file');
+
+            $table->longText('payload')->nullable();
+
+            $table->unsignedInteger('available_at')->index();
+            $table->unsignedInteger('created_at');
+            $table->unsignedInteger('finished_at')->nullable()->index();
+            $table->unsignedInteger('failed_at')->nullable();
+
+            $table->author(nullable: true);
+        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
+
+        Schema::dropIfExists($tableNames['import_job']);
 
         Schema::dropIfExists($tableNames['navigation']);
         Schema::dropIfExists($tableNames['language']);
@@ -241,6 +259,7 @@ return new class extends BaseMigration
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'sitemap' => $this->prefix . 'sitemaps',
             'navigation' => $this->prefix . 'navigation',
+            'import_job' => $this->prefix . 'import_jobs',
         ];
     }
 };

@@ -247,7 +247,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return [
             'create_inspire-cms-core_table',
-            'create_cms_import_jobs_table',
         ];
     }
 
