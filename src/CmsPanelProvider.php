@@ -51,8 +51,6 @@ class CmsPanelProvider extends PanelProvider
                 'secondary' => Color::hex('#bfa15a'),
                 'success' => Color::hex('#76ae51'),
                 'warning' => Color::hex('#f39e19'),
-
-                'zinc' => Color::Zinc,
             ])
             ->maxContentWidth('full')
             ->resources(config('inspirecms.filament.resources'))
@@ -63,6 +61,7 @@ class CmsPanelProvider extends PanelProvider
                     ->all(),
             ])
             ->widgets([
+                Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
                 Widgets\AlertOverview::class,
             ])

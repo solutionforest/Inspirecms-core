@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Pages;
 
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
-use SolutionForest\InspireCms\Filament\Widgets\PageActivity;
+use SolutionForest\InspireCms\Filament\Widgets;
 
 class Dashboard extends Page
 {
@@ -13,6 +13,8 @@ class Dashboard extends Page
     protected static ?int $navigationSort = -999;
 
     protected static ?string $navigationIcon = 'heroicon-s-home';
+
+    protected ?string $maxContentWidth = 'screen-xl';
 
     protected static bool $shouldRegisterNavigation = true;
 
@@ -36,7 +38,8 @@ class Dashboard extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            PageActivity::class,
+            Widgets\CmsInfoWidget::class,
+            Widgets\PageActivity::class,
         ];
     }
 }
