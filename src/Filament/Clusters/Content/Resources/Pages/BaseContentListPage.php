@@ -10,9 +10,8 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
-use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentListPage extends BaseListPage implements HasModelExplorer
+abstract class BaseContentListPage extends BaseListPage
 {
     use ContentPageTrait;
 
@@ -20,7 +19,8 @@ abstract class BaseContentListPage extends BaseListPage implements HasModelExplo
     // use ListRecords\Concerns\Translatable;
     use ListPage\Concerns\Translatable;
 
-    protected static string $view = 'inspirecms::filament.pages.content.list';
+    protected static string $view = 'inspirecms::filament.pages.list-content';
+    protected static string $layout = 'inspirecms::components.layout.content-page';
 
     public function getActions(): array
     {

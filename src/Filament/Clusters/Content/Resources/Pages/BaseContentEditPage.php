@@ -19,11 +19,10 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 use function Filament\Support\is_app_url;
 
-abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, HasModelExplorer
+abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
 {
     use ContentFormTrait;
     use ContentPageTrait;
@@ -34,7 +33,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm, 
     }
     use WithPagination;
 
-    protected static string $view = 'inspirecms::filament.pages.content.edit';
+    protected static string $layout = 'inspirecms::components.layout.content-page';
 
     public function booted(): void
     {

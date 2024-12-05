@@ -20,9 +20,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
-abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, HasModelExplorer
+abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
 {
     use ContentFormTrait;
     use ContentPageTrait;
@@ -33,7 +32,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm, 
     }
     use WithPagination;
 
-    protected static string $view = 'inspirecms::filament.pages.content.view';
+    protected static string $layout = 'inspirecms::components.layout.content-page';
 
     protected function getHeaderActions(): array
     {
