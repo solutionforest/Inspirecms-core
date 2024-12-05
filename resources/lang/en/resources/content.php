@@ -149,4 +149,11 @@ return [
         'label' => 'Template',
         'helperText' => 'Keep empty to use the default template of the document type',
     ],
+
+    'notification' => [
+        'remove_content_same_slug_in_same_parent' => [
+            'title' => 'Remove Content',
+            'body' => 'A content with the same slug already exists in the same parent. Please remove the existing content first.',
+        ],
+    ],
 ];

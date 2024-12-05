@@ -149,4 +149,11 @@ return [
         'label' => '模板',
         'helperText' => '保持空白以使用文檔類型的默認模板',
     ],
+
+    'notification' => [
+        'remove_content_same_slug_in_same_parent' => [
+            'title' => '刪除內容',
+            'body' => '在相同父項中已存在具有相同短網址的內容。請先刪除現有內容。',
+        ],
+    ],
 ];

@@ -10,6 +10,7 @@ use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -263,6 +264,20 @@ trait ContentFormTrait
         }
 
         return $data;
+    }
+
+    protected function onValidationError(ValidationException $exception): void
+    {
+        $fieldKeys = array_keys($exception->validator->errors()->messages());
+        
+        // Display notification if have validation error for "slug" field
+        if (in_array('data.slug', $fieldKeys)) {
+            Notification::make()
+                ->title(__('inspirecms::resources/content.notification.remove_content_same_slug_in_same_parent.title'))
+                ->body(__('inspirecms::resources/content.notification.remove_content_same_slug_in_same_parent.body'))
+                ->warning()
+                ->send();
+        }
     }
 
     //region Notification
