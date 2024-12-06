@@ -73,7 +73,7 @@
                             :model-explorer="$modelExplorer"
                             :translatable="$translatable"
                             :translatable-locale="$translatableLocale"
-                            :spaMode="$isSpaMode ?? false"
+                            :spa-mode="$isSpaMode ?? false"
                         />
                     @endforeach
                 </ul>
