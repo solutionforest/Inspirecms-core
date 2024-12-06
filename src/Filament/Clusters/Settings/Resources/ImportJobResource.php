@@ -10,7 +10,6 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Parallax\FilamentSyntaxEntry\SyntaxEntry;
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource\Pages;
@@ -104,10 +103,16 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                             ->dateTimeTooltip(),
                     ]),
 
-                SyntaxEntry::make('payload')
+                Infolists\Components\TextEntry::make('payload')
                     ->label(__('inspirecms::resources/import-jobs.payload.title'))
                     ->columnSpanFull()
-                    ->language('json'),
+                    ->listWithLineBreaks()
+                    ->formatStateUsing(function ($state) {
+                        if (!is_array($state)) {
+                            $state = [$state];
+                        }
+                        return json_encode($state, JSON_PRETTY_PRINT);
+                    })
             ]);
     }
 
