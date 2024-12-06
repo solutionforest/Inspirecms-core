@@ -108,11 +108,12 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                     ->columnSpanFull()
                     ->listWithLineBreaks()
                     ->formatStateUsing(function ($state) {
-                        if (!is_array($state)) {
+                        if (! is_array($state)) {
                             $state = [$state];
                         }
+
                         return json_encode($state, JSON_PRETTY_PRINT);
-                    })
+                    }),
             ]);
     }
 
