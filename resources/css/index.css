@@ -107,6 +107,13 @@
     }
 }
 
+/* Table */
+.fi-ta-content-grid {
+    .fi-ta-actions {
+        @apply justify-end;
+    }
+}
+
 /* Tree Node */
 @media screen(lg) {
     .list-view-components {

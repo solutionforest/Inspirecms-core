@@ -162,4 +162,18 @@ return [
         ],
 
     ],
+    
+    'set_as_default' => [
+
+        'label' => 'Set as default',
+        
+        'notifications' => [
+
+            'saved' => [
+                
+                'title' => 'Set as default successful',
+
+            ],
+        ],
+    ],
 ];

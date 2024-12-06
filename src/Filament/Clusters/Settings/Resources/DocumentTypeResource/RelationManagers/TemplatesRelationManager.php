@@ -68,7 +68,7 @@ class TemplatesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->contentGrid(['lg' => 3, 'md' => 2])
+            ->contentGrid(['xl' => 3, 'lg' => 2, 'default' => 1])
             ->recordTitle(fn ($record) => $record->path)
             ->modelLabel(fn () => __('inspirecms::resources/document-type.templates.singular'))
             ->pluralModelLabel(__('inspirecms::resources/document-type.templates.plural'))
@@ -77,12 +77,15 @@ class TemplatesRelationManager extends RelationManager
                 Tables\Columns\Layout\Split::make([
                     Tables\Columns\TextColumn::make('slug')
                         ->weight('bold')
-                        ->description(fn (Template $record) => $record->path),
+                        ->description(fn (Template $record) => $record->path)
+                        ->grow(),
                     Tables\Columns\TextColumn::make('is_default')
                         ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                         ->iconColor(fn ($state) => $state ? 'success' : 'danger')
-                        ->formatStateUsing(fn () => __('inspirecms::inspirecms.is_default')),
-                ]),
+                        ->formatStateUsing(fn () => __('inspirecms::inspirecms.is_default'))
+                        ->extraAttributes(['class' => 'sdsds'])
+                        ->grow(),
+                ])->from('md'),
             ])
             ->headerActions([
                 Tables\Actions\CreateAction::make(),
@@ -90,9 +93,12 @@ class TemplatesRelationManager extends RelationManager
             ])
             ->actions([
                 Tables\Actions\Action::make('set_as_default')
-                    ->label(__('inspirecms::inspirecms.set_as_default'))
-                    ->color('secondary')
-                    ->successNotificationTitle(__('filament-actions::edit.single.notifications.saved.title'))
+                    ->label(__('inspirecms::actions.set_as_default.label'))
+                    ->color('primary')
+                    ->icon('heroicon-o-check-circle')
+                    ->badge()
+                    ->size('lg')
+                    ->successNotificationTitle(__('inspirecms::actions.set_as_default.notifications.saved.title'))
                     ->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
 
@@ -102,9 +108,11 @@ class TemplatesRelationManager extends RelationManager
 
                         $this->dispatch('$refresh');
                     }),
-                Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\ViewAction::make()->iconButton(),
-                Tables\Actions\DetachAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make(),
+                    Tables\Actions\ViewAction::make(),
+                    Tables\Actions\DetachAction::make(),
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

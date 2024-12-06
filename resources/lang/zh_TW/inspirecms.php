@@ -54,7 +54,6 @@ return [
     'role' => '角色',
     'roles' => '角色',
     'root' => '根',
-    'set_as_default' => '設為默認',
     'setting' => '設置',
     'settings' => '設置',
     'sitemap' => '網站地圖',

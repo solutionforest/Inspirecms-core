@@ -54,7 +54,6 @@ return [
     'role' => 'Role',
     'roles' => 'Roles',
     'root' => 'Root',
-    'set_as_default' => 'Set as default',
     'setting' => 'Setting',
     'settings' => 'Settings',
     'sitemap' => 'Sitemap',
