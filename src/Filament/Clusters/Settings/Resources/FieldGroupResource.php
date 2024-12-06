@@ -58,14 +58,22 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->schema([
 
                 Forms\Components\Section::make()
-                    ->columns(2)
+                    ->heading(__('inspirecms::resources/field-group.general.section.label'))
+                    ->columns(1)
+                    ->aside()
                     ->schema([
                         FieldGroupResourceHelper::getNameFormComponent(),
                         FieldGroupResourceHelper::getTitleFormComponent(),
                         FieldGroupResourceHelper::getActiveFormComponent(),
                     ]),
 
-                FieldGroupResourceHelper::getFieldsFormComponent(),
+                Forms\Components\Section::make()
+                    ->heading(__('inspirecms::resources/field-group.fields.section.label'))
+                    ->columns(1)
+                    ->aside()
+                    ->schema([
+                        FieldGroupResourceHelper::getFieldsRepeater(),
+                    ]),
             ]);
     }
 

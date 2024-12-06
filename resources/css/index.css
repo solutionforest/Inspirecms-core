@@ -84,10 +84,27 @@
 
 /* Form */
 .filament-icon-picker svg {
-    @apply w-6 h-6;
+    svg {
+        @apply w-6 h-6;
+    }
+    div.relative:has(svg) {
+        @apply flex items-center justify-center;
+
+    }
 }
-.filament-icon-picker div.relative:has(svg) {
-    @apply flex items-center justify-center;
+.fi-aside.field-group-field-details-section {
+    & > .fi-section-header, & > .fi-section-content-ctn {
+        @apply col-span-3;
+    }
+    > .fi-section-header {
+        @apply lg:col-span-1;
+    }
+    > .fi-section-content-ctn {
+        @apply lg:col-span-2;
+    }
+    .fi-section-header-heading {
+        @apply text-sm font-medium;
+    }
 }
 
 /* Tree Node */

@@ -60,20 +60,6 @@ class FieldGroupResourceHelper
             ->dehydrateStateUsing(fn () => true);
     }
 
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
-    public static function getFieldsFormComponent()
-    {
-        return Forms\Components\Section::make()
-            ->heading(fn () => __('inspirecms::resources/field-group.fields.label'))
-            ->aside()
-            ->compact()
-            ->schema([
-                FieldGroupResourceHelper::getFieldsRepeater(),
-            ]);
-    }
-
     public static function getFieldsRepeater()
     {
         return Forms\Components\Repeater::make('fields')
@@ -112,6 +98,7 @@ class FieldGroupResourceHelper
                         ->columnSpanFull(),
                     Forms\Components\Section::make(__('inspirecms::inspirecms.details'))
                         ->columnSpanFull()
+                        ->extraAttributes(['class' => 'field-group-field-details-section'])
                         ->aside()
                         ->schema([
                             FieldResourceHelper::getLabelFormComponent()->helperText('')
@@ -124,6 +111,7 @@ class FieldGroupResourceHelper
                             Forms\Components\Placeholder::make('display_translatable')
                                 ->label(__('inspirecms::resources/field.translatable.label'))
                                 ->inlineLabel()
+                                ->extraAttributes(['class' => 'flex justify-center'])
                                 ->content(function ($get) {
                                     $translatable = $get('config.translatable') ?? false;
 
@@ -132,6 +120,7 @@ class FieldGroupResourceHelper
                             Forms\Components\Placeholder::make('display_mandatory')
                                 ->label(__('inspirecms::resources/field.mandatory.label'))
                                 ->inlineLabel()
+                                ->extraAttributes(['class' => 'flex justify-center'])
                                 ->content(function ($get) {
                                     $mandatory = $get('mandatory') ?? false;
 
@@ -158,7 +147,7 @@ class FieldGroupResourceHelper
         return $action
             ->size(ActionSize::ExtraLarge)
             ->extraAttributes(['class' => 'w-full'])
-            ->label(__('inspirecms::inspirecms.add'))
+            ->label(__('inspirecms::resources/field-group.fields.actions.add.label'))
             ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->slideOver()
             ->modalWidth('5xl')
@@ -166,6 +155,8 @@ class FieldGroupResourceHelper
                 'group_id' => $record?->getKey(),
             ])
             ->form(static::getFieldsEditFormSchema())
+            ->modalHeading(__('inspirecms::resources/field-group.fields.actions.add.modal.heading'))
+            ->modalSubmitActionLabel(__('inspirecms::resources/field-group.fields.actions.add.modal.actions.submit.label'))
             ->action(function (array $data, Forms\Components\Repeater $component) {
                 $newUuid = $component->generateUuid();
 
@@ -181,7 +172,7 @@ class FieldGroupResourceHelper
 
                 $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
 
-                $component->collapsed(true, shouldMakeComponentCollapsible: true);
+                $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
                 $component->callAfterStateUpdated();
             });
