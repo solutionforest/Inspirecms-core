@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 use Filament\Support\Facades\FilamentIcon;
 use Pboivin\FilamentPeek\Support;
 
-class EditAndPreview extends \Filament\Tables\Actions\Action
+class EditAndPreviewAction extends \Filament\Tables\Actions\Action
 {
     use Support\Concerns\SetsInitialPreviewModalData;
 

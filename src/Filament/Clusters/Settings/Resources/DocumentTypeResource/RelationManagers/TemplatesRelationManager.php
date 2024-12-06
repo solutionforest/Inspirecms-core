@@ -17,6 +17,7 @@ use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use Pboivin\FilamentPeek\Support\Html;
 use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
+use SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreviewAction;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -136,8 +137,7 @@ class TemplatesRelationManager extends RelationManager
                         $this->dispatch('$refresh');
                     }),
                 Tables\Actions\ActionGroup::make([
-                    \SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreview::make()
-                        ->builderName('templateViewBuilder'),
+                    EditAndPreviewAction::make()->builderName('templateViewBuilder'),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DetachAction::make(),
@@ -153,6 +153,15 @@ class TemplatesRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('inspirecms::resources/document-type.templates.plural');
+    }
+
+    protected function configureTableAction(Tables\Actions\Action $action): void
+    {
+        parent::configureTableAction($action);
+
+        if ($action instanceof EditAndPreviewAction) {
+            $action->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record));
+        }
     }
 
     protected function configureCreateAction(CreateAction $action): void
