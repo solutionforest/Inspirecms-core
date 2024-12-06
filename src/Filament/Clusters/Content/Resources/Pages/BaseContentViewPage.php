@@ -137,16 +137,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
 
         return $data;
     }
-
-    public static function renderPreviewModalView(string $view, array $data): string
-    {
-        return Html::injectPreviewModalStyle(
-            view('inspirecms::filament-peek.preview', [
-                'templateData' => $data,
-                'templateView' => $view,
-            ])->render()
-        );
-    }
     //endregion Preview
 
     //region Computed properties

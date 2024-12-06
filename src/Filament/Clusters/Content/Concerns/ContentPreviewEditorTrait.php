@@ -87,14 +87,4 @@ trait ContentPreviewEditorTrait
 
         return $previewData;
     }
-
-    public static function renderBuilderPreview(string $view, array $data): string
-    {
-        return Html::injectPreviewModalStyle(
-            view('inspirecms::filament-peek.preview', [
-                'templateData' => $data,
-                'templateView' => $view,
-            ])->render()
-        );
-    }
 }
