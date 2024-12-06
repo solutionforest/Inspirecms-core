@@ -85,9 +85,7 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model&\SolutionForest\InspireCms\Models\Contracts\DocumentType $documentType
-     * @param array $propertyData
-     * 
+     * @param  \Illuminate\Database\Eloquent\Model&\SolutionForest\InspireCms\Models\Contracts\DocumentType  $documentType
      * @return \SolutionForest\InspireCms\Dtos\ContentDto
      */
     public static function fakeForDocumentType($documentType, array $propertyData = [])
@@ -98,7 +96,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         $fallbackLocale = array_key_first($availableLocales) ?? 'en';
 
-        /** @var SupportCollection<PropertyTypeDto>*/
+        /** @var SupportCollection<PropertyTypeDto> */
         $propertyTypes = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
         $dtoParameters['propertyTypes'] = $propertyTypes;
 
@@ -110,9 +108,8 @@ class ContentDto extends BaseTranslatableModelDto
         }
         $dtoParameters['propertyData'] = $propertyData;
 
-        
         $parameters = static::mutuateParameters($dtoParameters, [$fallbackLocale, $availableLanguages]);
-        
+
         $dto = parent::fromArray($parameters);
 
         $dto->setLocale($fallbackLocale);

@@ -24,13 +24,13 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 class TemplatesRelationManager extends RelationManager
 {
     use CanAuthorizeRelationManager;
-    use HasPreviewModal;
     use HasBuilderPreview;
+    use HasPreviewModal;
 
     protected static string $relationship = 'templates';
 
     /**
-     * @var array $data An array to store preview editor data.
+     * @var array An array to store preview editor data.
      */
     public $data = [];
 
@@ -260,6 +260,7 @@ class TemplatesRelationManager extends RelationManager
         if (! $templateRecord || ! ($templateRecord instanceof Template)) {
             return null;
         }
+
         return $templateRecord->getViewFullName();
     }
 
@@ -293,7 +294,7 @@ class TemplatesRelationManager extends RelationManager
                 'fieldType' => $field->type,
             ])
             ->all();
-        
+
         return $editorData;
     }
 
@@ -331,7 +332,7 @@ class TemplatesRelationManager extends RelationManager
     /**
      * Retrieves the content of the template associated with the given record.
      *
-     * @param Template $record The record from which to retrieve the template content.
+     * @param  Template  $record  The record from which to retrieve the template content.
      * @return string The content of the template.
      */
     protected static function getTemplateContent($record): string
@@ -342,10 +343,8 @@ class TemplatesRelationManager extends RelationManager
     /**
      * Updates the content of a template.
      *
-     * @param Template $record The record associated with the template.
-     * @param string $content The new content to be updated in the template.
-     *
-     * @return void
+     * @param  Template  $record  The record associated with the template.
+     * @param  string  $content  The new content to be updated in the template.
      */
     protected static function updateTemplateContent($record, $content): void
     {

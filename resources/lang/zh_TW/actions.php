@@ -162,15 +162,15 @@ return [
         ],
 
     ],
-    
+
     'set_as_default' => [
 
         'label' => '設為默認',
-        
+
         'notifications' => [
 
             'saved' => [
-                
+
                 'title' => '設為默認成功',
 
             ],
@@ -180,11 +180,11 @@ return [
     'edit_and_preview' => [
 
         'label' => '編輯和預覽',
-        
+
         'notifications' => [
 
             'saved' => [
-                
+
                 'title' => '保存成功',
 
             ],

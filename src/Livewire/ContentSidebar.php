@@ -5,11 +5,6 @@ namespace SolutionForest\InspireCms\Livewire;
 use Filament\Actions;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
-use Filament\Pages\Page;
-use Filament\Resources\Pages\CreateRecord;
-use Filament\Resources\Pages\EditRecord;
-use Filament\Resources\Pages\ListRecords;
-use Filament\Resources\Pages\ViewRecord;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
@@ -30,7 +25,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     public array $redirectUrlParameters = [];
 
     public ?string $activeLocale = null;
-    
+
     public ?string $pageName = null;
 
     public array $expandedModelExplorerItems = [];
@@ -69,8 +64,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                         'documentType',
                     ])
             )
-            ->determineRecordLabelUsing(fn (Model|Content $record) => $record->title)
-            ->determineRecordHasChildrenUsing(function (Model|Content $record) {
+            ->determineRecordLabelUsing(fn (Model | Content $record) => $record->title)
+            ->determineRecordHasChildrenUsing(function (Model | Content $record) {
                 if ($record->documentType?->isShowChildrenAsTable()) {
                     return false;
                 }
@@ -120,7 +115,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
     }
-    
+
     protected function refreshModelExplorerSidebar(): void
     {
         $record = filled($this->selectedModelItemKey) ? $this->resolveSelectedModelItem($this->selectedModelItemKey) : null;
@@ -190,6 +185,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     public function getGroupedNodeItems()
     {
         $items = parent::getGroupedNodeItems();
+
         return array_merge([
             [
                 'key' => 'root',
@@ -199,7 +195,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 'depth' => -1,
                 'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                 'documentTypeKey' => null,
-            ]
+            ],
         ], $items);
     }
 
@@ -288,7 +284,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                                 ['record' => $this->selectedModelItemKey, ...$this->getRedirectUrlParameters()],
                                 false
                             );
-                        } else if (filled($pageName)) {
+                        } elseif (filled($pageName)) {
                             return FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', $this->getRedirectUrlParameters(), false);
                         }
 

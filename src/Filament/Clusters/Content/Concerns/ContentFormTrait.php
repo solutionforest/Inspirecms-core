@@ -269,7 +269,7 @@ trait ContentFormTrait
     protected function onValidationError(ValidationException $exception): void
     {
         $fieldKeys = array_keys($exception->validator->errors()->messages());
-        
+
         // Display notification if have validation error for "slug" field
         if (in_array('data.slug', $fieldKeys)) {
             Notification::make()

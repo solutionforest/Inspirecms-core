@@ -20,7 +20,6 @@ class EditDocumentType extends BaseEditPage
         \Pboivin\FilamentPeek\Support\View::setupBuilderEditor();
     }
 
-
     public static function getResource(): string
     {
         return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);

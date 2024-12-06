@@ -20,6 +20,7 @@ abstract class BaseContentListPage extends BaseListPage
     use ListPage\Concerns\Translatable;
 
     protected static string $view = 'inspirecms::filament.pages.list-content';
+
     protected static string $layout = 'inspirecms::components.layout.content-page';
 
     public function getActions(): array

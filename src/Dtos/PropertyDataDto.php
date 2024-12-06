@@ -171,8 +171,8 @@ class PropertyDataDto extends BaseDto
     }
 
     /**
-     * @param PropertyTypeDto $propertyType
-     * @param string[] $availableLocales
+     * @param  PropertyTypeDto  $propertyType
+     * @param  string[]  $availableLocales
      */
     public static function fakeValueForPropertyType($propertyType, $availableLocales)
     {
@@ -180,16 +180,17 @@ class PropertyDataDto extends BaseDto
         $value = null;
 
         if ($fieldType  instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater) {
-            
-            $value = collect(range(1, 3))->map(fn ($i) => collect($fieldType->fields)->mapWithKeys(function ($field) use ($availableLocales) {
+
+            $value = collect(range(1, 3))->map(
+                fn ($i) => collect($fieldType->fields)->mapWithKeys(function ($field) {
                     $innerFieldType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
+
                     return [
-                        $field['name'] => static::getFakeValueForBasicFieldType($innerFieldType)
+                        $field['name'] => static::getFakeValueForBasicFieldType($innerFieldType),
                     ];
                 })->toArray()
             )->all();
-        }
-        else if ($fieldType->isTranslatable()) {
+        } elseif ($fieldType->isTranslatable()) {
             $value = collect($availableLocales)->mapWithKeys(function ($locale) use ($fieldType) {
                 return [$locale => static::getFakeValueForBasicFieldType($fieldType)];
             })->toArray();
@@ -202,8 +203,8 @@ class PropertyDataDto extends BaseDto
     }
 
     /**
-     * @param \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig $fieldType
-     * @param string[] $availableLocales
+     * @param  \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig  $fieldType
+     * @param  string[]  $availableLocales
      */
     protected static function getFakeValueForBasicFieldType($fieldType)
     {

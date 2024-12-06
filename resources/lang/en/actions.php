@@ -162,15 +162,15 @@ return [
         ],
 
     ],
-    
+
     'set_as_default' => [
 
         'label' => 'Set as default',
-        
+
         'notifications' => [
 
             'saved' => [
-                
+
                 'title' => 'Set as default successful',
 
             ],
@@ -180,11 +180,11 @@ return [
     'edit_and_preview' => [
 
         'label' => 'Edit and preview',
-        
+
         'notifications' => [
 
             'saved' => [
-                
+
                 'title' => 'Saved',
 
             ],

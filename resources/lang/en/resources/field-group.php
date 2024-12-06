@@ -21,7 +21,7 @@ return [
                         'submit' => [
                             'label' => 'Add',
                         ],
-                    ]
+                    ],
                 ],
             ],
         ],

@@ -9,7 +9,6 @@ use Filament\Support\Exceptions\Halt;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
-use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
