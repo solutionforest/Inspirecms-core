@@ -4,6 +4,11 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 /**
  * @template TModel of \Illuminate\Database\Eloquent\Model
+ * 
+ * @property string $slug
+ * @property string $path
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
  */
 interface Template
 {

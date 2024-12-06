@@ -176,4 +176,19 @@ return [
             ],
         ],
     ],
+
+    'edit_and_preview' => [
+
+        'label' => '編輯和預覽',
+        
+        'notifications' => [
+
+            'saved' => [
+                
+                'title' => '保存成功',
+
+            ],
+        ],
+
+    ],
 ];

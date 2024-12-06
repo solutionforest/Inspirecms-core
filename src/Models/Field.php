@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\Models\Field as BaseModel;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
@@ -27,7 +26,7 @@ class Field extends BaseModel implements FieldContract
 
         $dtoParameters['key'] = $this->name;
         $dtoParameters['group'] = $this->group_name ?? $this->group?->name;
-        $dtoParameters['config'] = FilamentFieldGroup::getFieldTypeConfig($this->type, $this->config ?? []);
+        $dtoParameters['config'] = FieldTypeHelper::getFieldTypeConfig($this->type, $this->config ?? []);
 
         return $dtoClass::fromArray($dtoParameters);
     }

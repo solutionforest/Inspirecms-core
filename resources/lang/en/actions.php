@@ -176,4 +176,19 @@ return [
             ],
         ],
     ],
+
+    'edit_and_preview' => [
+
+        'label' => 'Edit and preview',
+        
+        'notifications' => [
+
+            'saved' => [
+                
+                'title' => 'Saved',
+
+            ],
+        ],
+
+    ],
 ];

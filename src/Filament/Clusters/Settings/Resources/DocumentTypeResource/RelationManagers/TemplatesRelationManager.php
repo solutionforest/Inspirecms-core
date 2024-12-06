@@ -10,16 +10,28 @@ use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Str;
+use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
+use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
+use Pboivin\FilamentPeek\Support\Html;
 use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplatesRelationManager extends RelationManager
 {
     use CanAuthorizeRelationManager;
+    use HasPreviewModal;
+    use HasBuilderPreview;
 
     protected static string $relationship = 'templates';
+
+    /**
+     * @var array $data An array to store preview editor data.
+     */
+    public $data = [];
 
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
@@ -55,14 +67,29 @@ class TemplatesRelationManager extends RelationManager
         return $form
             ->columns(1)
             ->schema([
-                AceEditor::make('content')
-                    ->mode('php')
-                    ->theme('github')
-                    ->darkTheme('dracula')
-                    ->afterStateHydrated(fn ($component, Template $record) => $component->state(file_get_contents($record->getFileFullPath())))
-                    ->dehydrateStateUsing(fn ($state, Template $record) => file_put_contents($record->getFileFullPath(), $state))
-                    ->height('64rem'),
+                static::getContentFormField()
+                    ->afterStateHydrated(fn ($component, Template $record) => $component->state(static::getTemplateContent($record)))
+                    ->dehydrateStateUsing(fn ($state, Template $record) => static::updateTemplateContent($record, $state)),
             ]);
+    }
+
+    /** @return Forms\Components\Component|Forms\Components\Field */
+    public static function getContentFormField($name = 'content')
+    {
+        return AceEditor::make($name)
+            ->mode('php')
+            ->theme('github')
+            ->darkTheme('dracula')
+            ->height('64rem');
+    }
+
+    public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
+    {
+        return [
+            Forms\Components\ViewField::make('property_type_instructions')
+                ->view('inspirecms::filament.forms.components.property-type-instructions'),
+            static::getContentFormField('htmlContent'),
+        ];
     }
 
     public function table(Table $table): Table
@@ -96,8 +123,8 @@ class TemplatesRelationManager extends RelationManager
                     ->label(__('inspirecms::actions.set_as_default.label'))
                     ->color('primary')
                     ->icon('heroicon-o-check-circle')
-                    ->badge()
-                    ->size('lg')
+                    ->button()
+                    ->outlined()
                     ->successNotificationTitle(__('inspirecms::actions.set_as_default.notifications.saved.title'))
                     ->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
@@ -109,6 +136,8 @@ class TemplatesRelationManager extends RelationManager
                         $this->dispatch('$refresh');
                     }),
                 Tables\Actions\ActionGroup::make([
+                    \SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreview::make()
+                        ->builderName('templateViewBuilder'),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DetachAction::make(),
@@ -214,5 +243,103 @@ class TemplatesRelationManager extends RelationManager
 
             $action->cancel();
         }
+    }
+
+    protected function getBuilderPreviewView(string $builderName): ?string
+    {
+        $templateRecord = $this->cachedMountedTableActionRecord;
+        if (! $templateRecord || ! ($templateRecord instanceof Template)) {
+            return null;
+        }
+        return $templateRecord->getViewFullName();
+    }
+
+    public static function renderBuilderPreview(string $view, array $data): string
+    {
+        $htmlContent = $data['htmlContent'] ?? '';
+
+        $documentType = $data['documentType'] ?? null;
+
+        $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
+
+        return Html::injectPreviewModalStyle(
+            Blade::render($htmlContent, [
+                'content' => $dummyDto,
+            ])
+        );
+    }
+
+    public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
+    {
+        $templateRecord = $this->cachedMountedTableActionRecord;
+        $editorData['recordId'] = $templateRecord?->getKey();
+        if ($templateRecord instanceof Template) {
+            $editorData['htmlContent'] = static::getTemplateContent($templateRecord);
+        }
+        $documentType = $this->getOwnerRecord();
+        $editorData['documentTypeId'] = $documentType->getKey();
+        $editorData['property_type_instructions'] = collect($documentType?->fields)
+            ->map(fn ($field) => [
+                'dtoData' => $field->toDto(),
+                'fieldType' => $field->type,
+            ])
+            ->all();
+        
+        return $editorData;
+    }
+
+    public static function mutateBuilderPreviewData(string $builderName, array $editorData, array $previewData): array
+    {
+        $documentTypeId = $editorData['documentTypeId'] ?? null;
+        $previewData['documentType'] = filled($documentTypeId)
+            ? InspireCmsConfig::getDocumentTypeModelClass()::with('fields')->find($documentTypeId)
+            : null;
+
+        return $previewData;
+    }
+
+    public function updateBuilderFieldWithEditorData(string $builderName, array $editorData): void
+    {
+        $htmlContent = $editorData['htmlContent'] ?? '';
+        $templateId = $editorData['recordId'] ?? null;
+        if (! $templateId) {
+            return;
+        }
+
+        $template = $this->getRelationship()->getRelated()->find($templateId);
+        if (! $template) {
+            return;
+        }
+
+        static::updateTemplateContent($template, $htmlContent);
+
+        Notification::make()
+            ->title(__('inspirecms::actions.edit_and_preview.notifications.saved.title'))
+            ->success()
+            ->send();
+    }
+
+    /**
+     * Retrieves the content of the template associated with the given record.
+     *
+     * @param Template $record The record from which to retrieve the template content.
+     * @return string The content of the template.
+     */
+    protected static function getTemplateContent($record): string
+    {
+        return file_get_contents($record->getFileFullPath());
+    }
+
+    /**
+     * Updates the content of a template.
+     *
+     * @param Template $record The record associated with the template.
+     * @param string $content The new content to be updated in the template.
+     *
+     * @return void
+     */
+    protected static function updateTemplateContent($record, $content): void
+    {
+        file_put_contents($record->getFileFullPath(), $content);
     }
 }
