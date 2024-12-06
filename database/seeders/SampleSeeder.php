@@ -390,7 +390,7 @@ Html;
                             ],
                         ],
                         [
-                            'field' => 'text',
+                            'field' => 'url',
                             'name' => 'link',
                             'fieldConfig' => [],
                         ],
@@ -426,6 +426,7 @@ Html;
             category: 'web',
             fieldGroups: [
                 'social_media',
+                'general_page_banner',
             ],
             templates: ['home'],
             defaultTemplate: 'home',
@@ -438,6 +439,7 @@ Html;
             category: 'web',
             fieldGroups: [
                 'blog_detail_content',
+                'general_page_banner',
             ],
             templates: ['about'],
             defaultTemplate: 'about',
@@ -449,7 +451,9 @@ Html;
             slug: 'blogs',
             childrenAsTable: true,
             category: 'web',
-            fieldGroups: [],
+            fieldGroups: [
+                'general_page_banner',
+            ],
             templates: ['blogs'],
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
@@ -474,6 +478,7 @@ Html;
             category: 'web',
             fieldGroups: [
                 'projects',
+                'general_page_banner',
             ],
             templates: ['projects'],
             defaultTemplate: 'projects',
