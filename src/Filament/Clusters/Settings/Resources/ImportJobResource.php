@@ -103,17 +103,10 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                             ->dateTimeTooltip(),
                     ]),
 
-                Infolists\Components\TextEntry::make('payload')
+                \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
                     ->label(__('inspirecms::resources/import-jobs.payload.title'))
                     ->columnSpanFull()
-                    ->listWithLineBreaks()
-                    ->formatStateUsing(function ($state) {
-                        if (! is_array($state)) {
-                            $state = [$state];
-                        }
-
-                        return json_encode($state, JSON_PRETTY_PRINT);
-                    }),
+                    ->darkTheme('tomorrow_night_eighties'),
             ]);
     }
 
