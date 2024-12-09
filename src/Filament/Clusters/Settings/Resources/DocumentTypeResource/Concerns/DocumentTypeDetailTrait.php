@@ -16,8 +16,21 @@ trait DocumentTypeDetailTrait
             $widgetFqcn = $widget instanceof WidgetConfiguration ? $widget->widget : $widget;
             $widgetProperties = $widget instanceof WidgetConfiguration ? $widget->getProperties() : [];
             if (is_a($widgetFqcn, AlertOverview::class, true) && ($this instanceof EditRecord || $this instanceof ViewRecord)) {
-                if (! isset($widgetProperties['ownerRecord'])) {
-                    $widgetProperties['ownerRecord'] = $this->getRecord();
+                /**
+                 * @var \SolutionForest\InspireCms\Models\Contracts\DocumentType&\Illuminate\Database\Eloquent\Model
+                 */
+                $ownerRecord = $this->getRecord();
+
+                if ($ownerRecord->canManageTemplates()) {
+                    $widgetProperties['recordCounts']['template'] = $ownerRecord->templates_count ?? null;
+                    if (empty($widgetProperties['recordCounts']['template'])) {
+                        $widgetProperties['recordCounts']['template'] = $ownerRecord->templates()->count();
+                    }
+                }
+
+                $widgetProperties['recordCounts']['fieldGroups'] = $ownerRecord->field_groups_count ?? null;
+                if (empty($widgetProperties['recordCounts']['fieldGroups'])) {
+                    $widgetProperties['recordCounts']['fieldGroups'] = $ownerRecord->fieldGroups()->count();
                 }
             }
             $widgets[] = $widgetFqcn::make($widgetProperties);

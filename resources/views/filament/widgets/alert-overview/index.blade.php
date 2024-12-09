@@ -8,7 +8,7 @@
     $alerts = $this->getCachedAlerts();
 @endphp
 
-<x-filament-widgets::widget class="fi-wi-alert-overview">
+<div class="fi-wi-alert-overview">
     @if (count($alerts) > 0)
         <div
             @class([
@@ -21,4 +21,14 @@
             @endforeach
         </div>
     @endif
-</x-filament-widgets::widget>
+</div>
+
+{{-- <div>
+    <div wire:loading> 
+        Saving post...
+    </div>
+    <x-filament::loading-indicator class="h-5 w-5" />
+    @foreach ($alerts as $alert)
+        {{ $alert }}
+    @endforeach
+</div> --}}

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Filament\Widgets\Widget;
+use Illuminate\Contracts\View\View;
 
 class AlertOverview extends Widget
 {
@@ -36,5 +37,31 @@ class AlertOverview extends Widget
     public function getColumns(): int | array
     {
         return 1;
+    }
+
+    public function placeholder(): View
+    {
+        return view(
+            'inspirecms::components.loading-bar',
+            [
+                'height' => $this->getPlaceholderHeight(),
+                ...$this->getPlaceholderData(),
+            ],
+        );
+    }
+
+    public function getPlaceholderHeight(): string
+    {
+        if (count($this->getCachedAlerts()) <= 0) {
+            return '0px';
+        }
+        return '12px';
+    }
+
+    public function getPlaceholderData(): array
+    {
+        return [
+            'columnSpan' => 1,
+        ];
     }
 }
