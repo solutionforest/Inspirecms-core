@@ -12,6 +12,8 @@ class Content extends Cluster implements ClusterSection
 
     protected static ?string $navigationIcon = 'heroicon-o-document';
 
+    protected static ?string $activeNavigationIcon = 'heroicon-s-document';
+
     protected static ?int $navigationSort = -10;
 
     public static function getNavigationLabel(): string

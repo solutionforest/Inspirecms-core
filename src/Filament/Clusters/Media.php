@@ -11,6 +11,8 @@ class Media extends Cluster implements ClusterSection
     use ClusterSectionTrait;
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
+    
+    protected static ?string $activeNavigationIcon = 'heroicon-s-photo';
 
     protected static ?int $navigationSort = -9;
 

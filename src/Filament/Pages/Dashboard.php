@@ -12,7 +12,9 @@ class Dashboard extends Page
 
     protected static ?int $navigationSort = -999;
 
-    protected static ?string $navigationIcon = 'heroicon-s-home';
+    protected static ?string $navigationIcon = 'heroicon-o-home';
+
+    protected static ?string $activeNavigationIcon = 'heroicon-s-home';
 
     protected ?string $maxContentWidth = 'screen-xl';
 
