@@ -103,8 +103,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                     ->dehydrated(),
                 AceEditor::make('content')
                     ->mode('php')
-                    ->theme('github')
-                    ->darkTheme('dracula')
+                    ->darkTheme('tomorrow_night_eighties')
                     ->height('56rem'),
             ]);
     }

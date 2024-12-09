@@ -79,8 +79,7 @@ class TemplatesRelationManager extends RelationManager
     {
         return AceEditor::make($name)
             ->mode('php')
-            ->theme('github')
-            ->darkTheme('dracula')
+            ->darkTheme('tomorrow_night_eighties')
             ->height('64rem');
     }
 
