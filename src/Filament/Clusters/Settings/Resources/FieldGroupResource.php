@@ -56,24 +56,21 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return $form
             ->columns(1)
             ->schema([
-
-                Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/field-group.general.section.label'))
-                    ->columns(1)
-                    ->aside()
-                    ->schema([
-                        FieldGroupResourceHelper::getNameFormComponent(),
-                        FieldGroupResourceHelper::getTitleFormComponent(),
-                        FieldGroupResourceHelper::getActiveFormComponent(),
-                    ]),
-
-                Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/field-group.fields.section.label'))
-                    ->columns(1)
-                    ->aside()
-                    ->schema([
-                        FieldGroupResourceHelper::getFieldsRepeater(),
-                    ]),
+                Forms\Components\Wizard::make([
+                
+                    Forms\Components\Wizard\Step::make('fields')
+                        ->label(__('inspirecms::resources/field-group.steps.fields.label'))
+                        ->schema([
+                            FieldGroupResourceHelper::getFieldsRepeater()->hiddenLabel(),
+                        ]),
+                    Forms\Components\Wizard\Step::make('settings')
+                        ->label(__('inspirecms::resources/field-group.steps.settings.label'))
+                        ->schema([
+                            FieldGroupResourceHelper::getNameFormComponent(),
+                            FieldGroupResourceHelper::getTitleFormComponent(),
+                            FieldGroupResourceHelper::getActiveFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
+                        ]),
+                ])->skippable()
             ]);
     }
 

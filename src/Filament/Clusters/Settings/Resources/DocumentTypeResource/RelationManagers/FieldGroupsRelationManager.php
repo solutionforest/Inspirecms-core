@@ -183,7 +183,8 @@ class FieldGroupsRelationManager extends RelationManager
             ->after(function (Model $record) {
                 $this->dispatch('refreshAlerts');
             })
-            ->steps(static::getStepSchema());
+            ->steps(static::getStepSchema())
+            ->skippableSteps();
     }
 
     protected function configureAttachAction(Tables\Actions\AttachAction $action): void
