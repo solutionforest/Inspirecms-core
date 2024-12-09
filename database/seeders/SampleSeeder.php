@@ -730,7 +730,7 @@ Html;
 
         $totalRetry = 5;
 
-        foreach (range(1, 5) as $i) {
+        foreach (range(1, 2) as $i) {
 
             try {
 
