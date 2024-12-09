@@ -4,6 +4,12 @@
         'upload' => [
             'collap_open' => true,
         ],
+        'sort' => [
+            'collap_open' => true,
+        ],
+        'filter' => [
+            'collap_open' => true,
+        ],
     ];
 
 @endphp
