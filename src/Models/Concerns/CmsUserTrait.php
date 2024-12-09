@@ -37,7 +37,7 @@ trait CmsUserTrait
     public function getFilamentAvatarUrl(): ?string
     {
         if (filled($this->avatar)) {
-            return Storage::disk(config('inspirecms.avatar.driver'))->url($this->avatar);
+            return Storage::disk(InspireCmsConfig::get('avatar.driver'))->url($this->avatar);
         }
 
         return null;

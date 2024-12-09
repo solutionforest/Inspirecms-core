@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResour
 
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CreateUser extends BaseCreatePage
 {
@@ -14,7 +15,7 @@ class CreateUser extends BaseCreatePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.user', UserResource::class);
+        return InspireCmsConfig::getFilamentResource('user', UserResource::class);
     }
 
     protected function getForms(): array

@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResour
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListRoles extends BaseListPage
 {
@@ -17,6 +18,6 @@ class ListRoles extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.role', RoleResource::class);
+        return InspireCmsConfig::getFilamentResource('role', RoleResource::class);
     }
 }

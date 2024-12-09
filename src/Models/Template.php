@@ -104,7 +104,7 @@ class Template extends BaseModel implements TemplateContract
 
     protected function getTemplateDirectory(): string
     {
-        return config('inspirecms.template.path');
+        return InspireCmsConfig::get('template.path');
     }
 
     public static function boot()

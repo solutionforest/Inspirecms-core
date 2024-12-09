@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResour
 
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreatePage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CreateRole extends BaseCreatePage
 {
@@ -14,6 +15,6 @@ class CreateRole extends BaseCreatePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.role', RoleResource::class);
+        return InspireCmsConfig::getFilamentResource('role', RoleResource::class);
     }
 }

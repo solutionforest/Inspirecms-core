@@ -3,12 +3,13 @@
 namespace SolutionForest\InspireCms\Factories;
 
 use SolutionForest\InspireCms\Generators\SitemapGeneratorInterface;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class SitemapGeneratorFactory
 {
     public static function create(): SitemapGeneratorInterface
     {
-        $sitemapGeneratorClass = config('inspirecms.generators.sitemap_generator');
+        $sitemapGeneratorClass = InspireCmsConfig::get('generators.sitemap_generator');
 
         static::guardAgainstInvalidSitemapGenerator($sitemapGeneratorClass);
 

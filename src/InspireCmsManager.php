@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -31,7 +32,7 @@ class InspireCmsManager
     {
         $this->cacheManager = $cacheManager;
 
-        $this->sections = collect(config('inspirecms.filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
+        $this->sections = collect(InspireCmsConfig::get('filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
     }
 
     /**
@@ -142,8 +143,8 @@ class InspireCmsManager
     {
         if (! $this->cachedLanguages) {
             $this->cachedLanguages = $this->cacheManager->remember(
-                config('inspirecms.cache.languages.key'),
-                config('inspirecms.cache.languages.ttl'),
+                InspireCmsConfig::get('cache.languages.key'),
+                InspireCmsConfig::get('cache.languages.ttl'),
                 fn () => $this->getSerializedLanguagesForCache()
             );
         }
@@ -161,7 +162,7 @@ class InspireCmsManager
 
     public function forgetCachedLanguages(): void
     {
-        $this->cacheManager->forget(config('inspirecms.cache.languages.key'));
+        $this->cacheManager->forget(InspireCmsConfig::get('cache.languages.key'));
     }
 
     /**
@@ -171,8 +172,8 @@ class InspireCmsManager
     {
         if (! $this->cachedNavigation) {
             $this->cachedNavigation = $this->cacheManager->remember(
-                config('inspirecms.cache.navigation.key'),
-                config('inspirecms.cache.navigation.ttl'),
+                InspireCmsConfig::get('cache.navigation.key'),
+                InspireCmsConfig::get('cache.navigation.ttl'),
                 fn () => $this->getSerializedNavigationForCache()
             );
         }
@@ -203,7 +204,7 @@ class InspireCmsManager
 
     public function forgetCachedNavigation(): void
     {
-        $this->cacheManager->forget(config('inspirecms.cache.navigation.key'));
+        $this->cacheManager->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
 
     //region Helpers

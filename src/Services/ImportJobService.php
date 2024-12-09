@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ImportJobService implements ImportJobServiceInterface
 {
@@ -331,7 +332,7 @@ class ImportJobService implements ImportJobServiceInterface
     {
         return match ($forType) {
             self::FOLDER_IDENTIFIER_VIEW => resource_path('views') . DIRECTORY_SEPARATOR . $fileRelativePath,
-            self::FOLDER_IDENTIFIER_TEMPLATE => config('inspirecms.template.path') . DIRECTORY_SEPARATOR . $fileRelativePath,
+            self::FOLDER_IDENTIFIER_TEMPLATE => InspireCmsConfig::get('template.path') . DIRECTORY_SEPARATOR . $fileRelativePath,
             default => null,
         };
     }

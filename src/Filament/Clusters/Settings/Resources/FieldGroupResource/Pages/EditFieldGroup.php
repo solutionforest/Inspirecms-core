@@ -5,12 +5,13 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGr
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class EditFieldGroup extends BaseEditPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
+        return InspireCmsConfig::getFilamentResource('field_group', FieldGroupResource::class);
     }
 
     public function getHeading(): string

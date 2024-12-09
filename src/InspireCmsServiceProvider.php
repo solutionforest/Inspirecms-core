@@ -17,6 +17,7 @@ use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ContentSidebar;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -255,7 +256,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function registerPolymorphism(): void
     {
-        $map = Arr::pluck(config('inspirecms.models'), 'fqcn', 'polymorphic_type');
+        $map = Arr::pluck(InspireCmsConfig::get('models'), 'fqcn', 'polymorphic_type');
 
         if (! empty($map)) {
             Relation::enforceMorphMap($map);
@@ -352,20 +353,20 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             SupportModels\Contracts\NestableTree::class,
             Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
-        Support\Facades\MediaLibraryRegistry::setDisk(config('inspirecms.media_library.disk'));
-        Support\Facades\MediaLibraryRegistry::setDirectory(config('inspirecms.media_library.directory'));
-        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
-        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(config('inspirecms.media_library.should_map_video_properties_with_ffmpeg', false)));
+        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
+        Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
+        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
+        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setAuthGuard(config('inspirecms.auth.guard'));
+        Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
+        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
 
-        Support\Facades\ResolverRegistry::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        Support\Facades\ResolverRegistry::set('user', InspireCmsConfig::get('resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
     }
 
     protected function getConfigSupoortModels(): array
     {
-        return Arr::only(config('inspirecms.models.fqcn'), [
+        return Arr::only(InspireCmsConfig::get('models.fqcn'), [
             'media_asset',
             'nestable_tree',
         ]);
@@ -375,7 +376,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $schedule = $this->app[\Illuminate\Console\Scheduling\Schedule::class];
 
-        $tasks = Arr::only(config('inspirecms.scheduled_tasks', []), [
+        $tasks = Arr::only(InspireCmsConfig::get('scheduled_tasks', []), [
             'cleanup_content_verion',
             'execute_import_job',
             'cleanup_import_job',

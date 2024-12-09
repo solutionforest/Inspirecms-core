@@ -28,7 +28,7 @@ trait CreateContentActionTrait
 
     protected function setUpAction(): void
     {
-        $contentResource = config('inspirecms.filament.resources.page', PageResource::class);
+        $contentResource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
         $this->authorize('create', InspireCmsConfig::getContentModelClass());
 

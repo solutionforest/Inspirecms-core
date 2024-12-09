@@ -7,6 +7,7 @@ use Filament\Tables;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListPages extends BaseContentListPage
 {
@@ -24,7 +25,7 @@ class ListPages extends BaseContentListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
     protected function configureCreateAction(Actions\CreateAction | Tables\Actions\CreateAction $action): void

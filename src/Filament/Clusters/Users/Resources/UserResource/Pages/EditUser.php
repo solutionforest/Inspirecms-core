@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResour
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\ProfilePageTrait;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class EditUser extends BaseEditPage
 {
@@ -12,7 +13,7 @@ class EditUser extends BaseEditPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.user', UserResource::class);
+        return InspireCmsConfig::getFilamentResource('user', UserResource::class);
     }
 
     public static function isSimple(): bool

@@ -43,7 +43,7 @@ class CleanupContentVersion extends Command
 
         return $model::query()
             ->where('avoid_to_clean', false)
-            ->where('created_at', '<', now()->subDays(config('inspirecms.scheduled_tasks.cleanup_content_verion.old_content_version_days', 30)))
+            ->where('created_at', '<', now()->subDays(InspireCmsConfig::get('scheduled_tasks.cleanup_content_verion.old_content_version_days', 30)))
             ->get();
     }
 }

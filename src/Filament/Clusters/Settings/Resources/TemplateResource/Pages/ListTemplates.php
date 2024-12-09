@@ -11,6 +11,7 @@ use Livewire\Attributes\On;
 use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
@@ -26,7 +27,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.template', TemplateResource::class);
+        return InspireCmsConfig::getFilamentResource('template', TemplateResource::class);
     }
 
     public function fileExplorer(FileExplorer $fileExplorer): FileExplorer

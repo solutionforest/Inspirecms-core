@@ -24,6 +24,16 @@ class InspireCmsConfig
         return static::get('auth.guard', 'inspirecms');
     }
 
+    /**
+     * @param string $key
+     * @param null|class-string $default
+     * @return class-string
+     */
+    public static function getFilamentResource(string $key, $default = null)
+    {
+        return static::get("filament.resources.{$key}", $default);
+    }
+
     public static function getContentTableName(): string
     {
         return app(static::getContentModelClass())->getTable();

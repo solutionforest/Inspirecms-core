@@ -85,15 +85,15 @@ abstract class TestCase extends Orchestra
         //endregion inspirecms
 
         //region inspirecms support
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk(config('inspirecms.media_library.disk'));
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory(config('inspirecms.media_library.directory'));
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(config('inspirecms.media_library.thumbnail.width'), config('inspirecms.media_library.thumbnail.height'));
-        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(config('inspirecms.media_library.should_map_video_properties_with_ffmpeg', false)));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
+        \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix(config('inspirecms.models.table_name_prefix'));
-        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setAuthGuard(config('inspirecms.auth.guard'));
+        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
+        \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
 
-        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', config('inspirecms.resolvers.user', \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class));
+        \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', InspireCmsConfig::get('resolvers.user', \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class));
         //endregion inspirecms support
 
         $migrations = [
@@ -112,7 +112,7 @@ abstract class TestCase extends Orchestra
 
     protected static function registerTestModels()
     {
-        foreach (array_keys(config('inspirecms.models.fqcn')) as $key) {
+        foreach (array_keys(InspireCmsConfig::get('models.fqcn')) as $key) {
 
             $guessName = (string) str($key)->studly()->replace(' ', '');
 
@@ -142,7 +142,7 @@ abstract class TestCase extends Orchestra
             return parent::getTable($table);
         }
 
-        return config('inspirecms.models.table_name_prefix') . $table;
+        return InspireCmsConfig::get('models.table_name_prefix') . $table;
     }
 
     protected function setUpDatabase($app)

@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class PermissionManifest implements PermissionManifestInterface
 {
@@ -47,7 +48,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getClusterSectionResourceModelPermissions(): array
     {
-        return collect(config('inspirecms.filament.resources'))
+        return collect(InspireCmsConfig::get('filament.resources'))
             ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Resources\Resource::class))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn)))
             ->map(function ($fqcn) {
@@ -93,7 +94,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getActionPermissions(): array
     {
-        return collect(config('inspirecms.filament.actions'))
+        return collect(InspireCmsConfig::get('filament.actions'))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()
@@ -102,7 +103,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getPagePermissions(): array
     {
-        return collect(config('inspirecms.filament.pages'))
+        return collect(InspireCmsConfig::get('filament.pages'))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardPage::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()

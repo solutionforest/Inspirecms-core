@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Languag
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListLanguages extends BaseListPage
 {
@@ -17,6 +18,6 @@ class ListLanguages extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.language', LanguageResource::class);
+        return InspireCmsConfig::getFilamentResource('language', LanguageResource::class);
     }
 }

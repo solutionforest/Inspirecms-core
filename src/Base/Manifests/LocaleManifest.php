@@ -2,13 +2,15 @@
 
 namespace SolutionForest\InspireCms\Base\Manifests;
 
+use SolutionForest\InspireCms\InspireCmsConfig;
+
 class LocaleManifest implements LocaleManifestInterface
 {
     protected array $locales = [];
 
     public function __construct()
     {
-        $this->locales = collect(config('inspirecms.available_locales', []))->mapWithKeys(fn ($locale) => [$locale => $locale])->all();
+        $this->locales = collect(InspireCmsConfig::get('available_locales', []))->mapWithKeys(fn ($locale) => [$locale => $locale])->all();
     }
 
     public function addLocale(string $locale): void

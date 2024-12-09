@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Sitemap
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ManageSitemap extends BaseManagePage
 {
@@ -17,6 +18,6 @@ class ManageSitemap extends BaseManagePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.sitemap', SitemapResource::class);
+        return InspireCmsConfig::getFilamentResource('sitemap', SitemapResource::class);
     }
 }

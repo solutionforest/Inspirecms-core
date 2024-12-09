@@ -7,6 +7,7 @@ use Filament\Tables;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Trashes extends BaseContentListTrashPage
 {
@@ -23,7 +24,7 @@ class Trashes extends BaseContentListTrashPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
     protected function configureTableBulkAction(Tables\Actions\BulkAction $action): void

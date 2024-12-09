@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResour
 use Filament\Support\Facades\FilamentIcon;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class EditRole extends BaseEditPage
 {
@@ -15,7 +16,7 @@ class EditRole extends BaseEditPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.role', RoleResource::class);
+        return InspireCmsConfig::getFilamentResource('role', RoleResource::class);
     }
 
     public function hasCombinedRelationManagerTabsWithContent(): bool

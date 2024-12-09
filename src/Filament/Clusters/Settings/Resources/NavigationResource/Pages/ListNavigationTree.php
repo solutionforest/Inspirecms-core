@@ -9,6 +9,7 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListNavigationTree extends BaseManagePage
 {
@@ -58,6 +59,6 @@ class ListNavigationTree extends BaseManagePage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.navigation', NavigationResource::class);
+        return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
     }
 }

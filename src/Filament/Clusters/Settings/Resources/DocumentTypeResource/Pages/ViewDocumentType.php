@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Concerns\DocumentTypeDetailTrait;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ViewDocumentType extends BaseViewPage
 {
@@ -12,6 +13,6 @@ class ViewDocumentType extends BaseViewPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
+        return InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
     }
 }

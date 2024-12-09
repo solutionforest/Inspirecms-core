@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ModelManifest implements ModelManifestInterface
 {
@@ -85,7 +86,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected static function getDefaultModels(): array
     {
-        return config('inspirecms.models.fqcn', []);
+        return InspireCmsConfig::get('models.fqcn', []);
     }
 
     //region Helper methods
@@ -171,7 +172,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected function getMorphMapKey(string $className): string
     {
-        $prefix = config('inspirecms.models.morph_map_prefix', null);
+        $prefix = InspireCmsConfig::get('models.morph_map_prefix', null);
 
         $key = Str::snake(class_basename($className));
 

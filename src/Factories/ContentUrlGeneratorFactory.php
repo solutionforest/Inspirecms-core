@@ -3,12 +3,13 @@
 namespace SolutionForest\InspireCms\Factories;
 
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ContentUrlGeneratorFactory
 {
     public static function create(): ContentUrlGeneratorInterface
     {
-        $urlGeneratorClass = config('inspirecms.generators.content_url_generator');
+        $urlGeneratorClass = InspireCmsConfig::get('generators.content_url_generator');
 
         static::guardAgainstInvalidUrlGenerator($urlGeneratorClass);
 

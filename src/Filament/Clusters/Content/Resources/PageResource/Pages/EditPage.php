@@ -5,12 +5,13 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageReso
 use Filament\Resources\Pages\ContentTabPosition;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentEditPage;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class EditPage extends BaseContentEditPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
     public function hasCombinedRelationManagerTabsWithContent(): bool

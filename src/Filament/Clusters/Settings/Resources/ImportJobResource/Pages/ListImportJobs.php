@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJ
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListImportJobs extends BaseListPage
 {
@@ -17,6 +18,6 @@ class ListImportJobs extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.import_job', ImportJobResource::class);
+        return InspireCmsConfig::getFilamentResource('import_job', ImportJobResource::class);
     }
 }

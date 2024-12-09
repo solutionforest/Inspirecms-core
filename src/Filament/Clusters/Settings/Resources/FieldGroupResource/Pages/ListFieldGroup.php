@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGr
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListFieldGroup extends BaseListPage
 {
@@ -17,6 +18,6 @@ class ListFieldGroup extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.field_group', FieldGroupResource::class);
+        return InspireCmsConfig::getFilamentResource('field_group', FieldGroupResource::class);
     }
 }

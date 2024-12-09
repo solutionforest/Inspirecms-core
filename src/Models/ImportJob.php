@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ImportJob as ImportJobContract;
 use SolutionForest\InspireCms\Observers\ImportJobObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -95,7 +96,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 
     public static function getDiskDriver()
     {
-        return config('inspirecms.imports.disk');
+        return InspireCmsConfig::get('imports.disk');
     }
 
     //region Scope(s)
@@ -173,7 +174,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 
     protected static function retrieveClearanceDaysInterval()
     {
-        return config('inspirecms.scheduled_tasks.cleanup_import_job.old_import_job_days', 30);
+        return InspireCmsConfig::get('scheduled_tasks.cleanup_import_job.old_import_job_days', 30);
     }
     //endregion Helper(s)
 }

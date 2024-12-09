@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResour
 use Filament\Actions;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListUsers extends BaseListPage
 {
@@ -17,6 +18,6 @@ class ListUsers extends BaseListPage
 
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.user', UserResource::class);
+        return InspireCmsConfig::getFilamentResource('user', UserResource::class);
     }
 }

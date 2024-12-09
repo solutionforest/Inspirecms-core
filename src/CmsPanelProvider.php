@@ -26,6 +26,7 @@ use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middlewares\UserPreference;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -53,9 +54,9 @@ class CmsPanelProvider extends PanelProvider
                 'warning' => Color::hex('#f39e19'),
             ])
             ->maxContentWidth('full')
-            ->resources(config('inspirecms.filament.resources'))
+            ->resources(InspireCmsConfig::get('filament.resources'))
             ->pages([
-                ...array_values(config('inspirecms.filament.pages')),
+                ...array_values(InspireCmsConfig::get('filament.pages')),
                 ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
                     ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
                     ->all(),

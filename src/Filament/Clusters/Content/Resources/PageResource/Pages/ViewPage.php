@@ -6,12 +6,13 @@ use Filament\Resources\Pages\ContentTabPosition;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentViewPage;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ViewPage extends BaseContentViewPage
 {
     public static function getResource(): string
     {
-        return config('inspirecms.filament.resources.page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
     public function getDocumentType(): int | string | Model
