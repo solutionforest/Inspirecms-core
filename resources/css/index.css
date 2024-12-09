@@ -136,3 +136,8 @@
         @apply w-5 h-5;
     }
 }
+
+/* Tree */
+.dd-placeholder {
+    @apply rounded-md bg-gray-100/20 dark:bg-gray-200;
+}
