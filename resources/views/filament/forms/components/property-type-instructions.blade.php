@@ -26,7 +26,7 @@
                 $fieldTypeName = $fieldTypeConfig['name'] ?? null;
                 $icon = $fieldTypeConfig['icon'] ?? null;
 
-                $translatable = $fieldType->isTranslatable();
+                $translatable = $fieldType?->isTranslatable() ?? false;
             @endphp
             <x-filament::section 
                 collapsible

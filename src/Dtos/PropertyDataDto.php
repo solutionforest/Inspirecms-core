@@ -190,7 +190,7 @@ class PropertyDataDto extends BaseDto
                     ];
                 })->toArray()
             )->all();
-        } elseif ($fieldType->isTranslatable()) {
+        } elseif ($fieldType?->isTranslatable()) {
             $value = collect($availableLocales)->mapWithKeys(function ($locale) use ($fieldType) {
                 return [$locale => static::getFakeValueForBasicFieldType($fieldType)];
             })->toArray();
