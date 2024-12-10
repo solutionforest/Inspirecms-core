@@ -61,4 +61,7 @@
 
         <x-filament::icon icon="heroicon-o-chevron-right" class="icon" />
     </a>
+
+    @livewire(\SolutionForest\InspireCms\Filament\Widgets\PageActivity::class)
+
 </x-filament-widgets::widget>

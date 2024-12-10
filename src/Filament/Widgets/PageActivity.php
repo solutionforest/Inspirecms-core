@@ -80,8 +80,8 @@ class PageActivity extends BaseWidget
     {
         return UIHelper::generateTextWithIcon(
             __('inspirecms::widgets.page_activity.title'),
-            'heroicon-o-document-text',
-            'info',
+            'heroicon-o-arrow-trending-up',
+            'primary',
         );
     }
     //endregion Table Configuration

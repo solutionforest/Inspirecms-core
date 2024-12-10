@@ -80,6 +80,9 @@
             }
         }
     }
+    > .fi-wi-widget {
+        @apply lg:col-span-2 lg:row-span-2;
+    }
 }
 
 /* Form */

@@ -41,7 +41,6 @@ class Dashboard extends Page
     {
         return [
             Widgets\CmsInfoWidget::class,
-            Widgets\PageActivity::class,
         ];
     }
 }
