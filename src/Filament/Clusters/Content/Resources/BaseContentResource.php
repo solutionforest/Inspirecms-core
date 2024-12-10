@@ -30,6 +30,7 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
+use SolutionForest\InspireCms\Filament\Resources\Helpers\ContentResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
@@ -220,7 +221,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Tables\Columns\ColumnGroup::make(__('inspirecms::resources/content.visibility.label'))
                     ->columns([
 
-                        Tables\Columns\TextColumn::make('displayStatus')
+                        Tables\Columns\TextColumn::make('display_status')
                             ->label(__('inspirecms::resources/content.status.label'))
                             ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
                             ->color(fn (?ContentStatusOption $state) => $state->getColor())
@@ -242,7 +243,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::resources/content.published_at.label'))
-                            ->getStateUsing(fn (Model | ModelsContent $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
+                            ->getStateUsing(fn (Model | ModelsContent $record) => ContentResourceHelper::getLatestPublishTime($record)?->diffForHumans())
                             ->width('5%')
                             ->hiddenOn([BaseContentListTrashPage::class]),
                     ]),
@@ -585,7 +586,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 ->key('propertyData')
                 ->statePath('propertyData')
                 ->dehydratedWhenHidden()
-                ->dehydrateStateUsing(fn (Forms\Components\Group $component) => $component->getState())
+                ->dehydrateStateUsing(fn ($component) => $component->getState())
                 ->schema($schema);
         }
 
@@ -594,7 +595,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->statePath('propertyData')
             ->columnSpanFull()
             ->schema($schema)
-            ->dehydrateStateUsing(fn (Forms\Components\Group $component) => $component->getState());
+            ->dehydrateStateUsing(fn ($component) => $component->getState());
     }
 
     /**

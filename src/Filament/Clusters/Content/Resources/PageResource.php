@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Pages;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Helpers\UIHelper;
@@ -113,5 +114,12 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
     public static function getModelLabel(): string
     {
         return __('inspirecms::inspirecms.page');
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            Widgets\ContentPageOverview::class,
+        ];
     }
 }

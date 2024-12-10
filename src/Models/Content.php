@@ -277,6 +277,10 @@ class Content extends BaseModel implements ContentContract
         return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
     }
 
+    public function scopeWhereIsDefault($query, bool $condition = true)
+    {
+        return $query->where('is_default', $condition);
+    }
     //endregion Scope(s)
 
     //region Attribute(s)

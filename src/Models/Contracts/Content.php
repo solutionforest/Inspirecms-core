@@ -116,4 +116,13 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsWebPage($query);
+    
+    /**
+     * Scope a query to only include default content.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param bool $condition
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereIsDefault($query, bool $condition = true);
 }

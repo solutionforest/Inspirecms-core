@@ -11,6 +11,10 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListPages extends BaseContentListPage
 {
+    protected $listeners = [
+        'mountAction',
+    ];
+
     public function getActions(): array
     {
         return [
@@ -21,6 +25,11 @@ class ListPages extends BaseContentListPage
                 ->color('gray')
                 ->icon('heroicon-o-trash'),
         ];
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return static::getResource()::getWidgets();
     }
 
     public static function getResource(): string
