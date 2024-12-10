@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
 use Filament\Navigation\NavigationItem;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ClusterSectionTrait
 {
@@ -64,7 +65,7 @@ trait ClusterSectionTrait
             })
             ->all();
 
-        if (config('inspirecms.filament.enable_cluster_navigation')) {
+        if (InspireCmsConfig::get('filament.enable_cluster_navigation')) {
             return $items;
         }
 

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Facades\LocaleManifest;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ProfilePageTrait
 {
@@ -132,7 +133,7 @@ trait ProfilePageTrait
     {
         return Forms\Components\FileUpload::make('avatar')
             ->label(__('inspirecms::pages/auth/profile.form.avatar.label'))
-            ->disk(config('inspirecms.avatar.driver'))
+            ->disk(InspireCmsConfig::get('avatar.driver'))
             ->image();
     }
 

@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class DocumentTypesRelationManager extends RelationManager
 {
@@ -38,7 +39,7 @@ class DocumentTypesRelationManager extends RelationManager
 
     protected function getRecordUrl($record): ?string
     {
-        $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
+        $resource = InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
 
         return FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], ['record' => $record], true);
     }

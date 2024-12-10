@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentRelationManager extends RelationManager
@@ -42,7 +43,7 @@ class ContentRelationManager extends RelationManager
 
     protected function getRecordUrl(Content $record): ?string
     {
-        $resource = config('inspirecms.filament.resources.page', PageResource::class);
+        $resource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
         return FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $record], true);
     }

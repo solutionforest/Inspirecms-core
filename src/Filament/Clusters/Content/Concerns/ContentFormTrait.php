@@ -13,6 +13,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Throwable;
 
@@ -310,7 +311,7 @@ trait ContentFormTrait
             ->keyBindings(['mod+p'])
             ->color('primary')
             ->form(function (Form $form) {
-                $resource = config('inspirecms::resources.page', PageResource::class);
+                $resource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
                 if (! method_exists($resource, 'getPublishedAtFormComponent')) {
                     throw new \RuntimeException('The resource must have a getPublishedAtFormComponent method.');
                 }

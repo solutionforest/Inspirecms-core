@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait CanAuthorizeResource
 {
     public static function skipAccessRightPermissionChecking(): bool
     {
-        return config('inspirecms.skip_access_right_permission_on_resource', false);
+        return InspireCmsConfig::get('skip_access_right_permission_on_resource', false);
     }
 
     public static function canAccess(): bool

@@ -514,7 +514,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 if (! filled($text)) {
                     $text = __('inspirecms::inspirecms.n/a');
                 }
-                $resource = config('inspirecms.filament.resources.document_type', DocumentTypeResource::class);
+                $resource = InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
                 $url = $documentType ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentType], true) : null;
                 if (! $url) {
                     return $text;
