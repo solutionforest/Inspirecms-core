@@ -2,8 +2,13 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
+use SolutionForest\InspireCms\Models\Contracts\ContentWebSetting;
 
+/**
+ * @property null | Model & ContentWebSetting $webSetting
+ */
 interface HasContentWebSetting
 {
     /**

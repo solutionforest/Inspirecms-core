@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAct
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
@@ -66,7 +67,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             )
             ->determineRecordLabelUsing(fn (Model | Content $record) => $record->title)
             ->determineRecordHasChildrenUsing(function (Model | Content $record) {
-                if ($record->documentType?->isShowChildrenAsTable()) {
+
+                if ($record->documentType?->show_as_table) {
                     return false;
                 }
 
@@ -141,6 +143,9 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         }
     }
 
+    /**
+     * @return null | Model & Content
+     */
     protected function resolveSelectedModelItem(string | int $key): ?Model
     {
         if (in_array($key, ['root'])) {
@@ -158,9 +163,12 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     {
         if ($record) {
 
+            /**
+             * @var null | Model & Content $item
+             */
             $item = $record instanceof Model ? $record : $this->resolveSelectedModelItem($record);
 
-            if ($item?->parent?->documentType->isShowChildrenAsTable()) {
+            if ($item?->parent?->documentType->show_as_table) {
                 parent::setSelectedModelItem($item->parent);
 
                 return;
@@ -175,7 +183,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     {
         $selectItem = $this->resolveSelectedModelItem($parentKey);
 
-        if ($selectItem?->documentType->isShowChildrenAsTable()) {
+        if ($selectItem?->documentType->show_as_table) {
             return [];
         }
 

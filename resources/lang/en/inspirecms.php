@@ -5,6 +5,7 @@ return [
     'add_xxx' => 'Add :name',
     'allow_sections' => 'Allow Sections',
     'as_root' => 'As root',
+    'attach' => 'Attach',
     'back' => 'Back',
     'category' => 'Category',
     'children' => 'Children',

@@ -7,7 +7,7 @@ return [
     'category' => [
         'label' => 'Category',
     ],
-    'show_children_as_table' => [
+    'show_as_table' => [
         'label' => 'Show as table',
     ],
     'is_root' => [
@@ -73,14 +73,18 @@ return [
         ],
     ],
 
-    'children' => [
-        'section' => [
-            'label' => 'Available document types',
-        ],
-    ],
     'general' => [
         'section' => [
             'label' => 'General',
         ],
+    ],
+    'rejected' => [
+        'section' => [
+            'label' => 'Rejected document types',
+        ],
+    ],
+    'rejecting' => [
+        'label' => 'Rejecting document types',
+        'description' => 'The document types that reject this document type.',
     ],
 ];

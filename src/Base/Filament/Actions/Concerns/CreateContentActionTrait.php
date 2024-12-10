@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
@@ -143,13 +144,17 @@ trait CreateContentActionTrait
      */
     protected function getAvailableDocumentTypes()
     {
+        /**
+         * @var Builder $query
+         */
         $query = InspireCmsConfig::getDocumentTypeModelClass()::whereIsWebPage();
 
         if (($parentDocumentType = $this->getParentDocumentType()) !== null) {
-            $query->whereParent($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType);
-        } else {
-            $query->whereIsRoot();
-        }
+            $query->whereDoesntHave(
+                'rejectingDocumentTypes',
+                fn ($query) => $query->whereKey($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType)
+            );
+        } 
 
         return $query->get();
     }

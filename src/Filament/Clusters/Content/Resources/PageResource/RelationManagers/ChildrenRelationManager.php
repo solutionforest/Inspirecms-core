@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Tables\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ChildrenRelationManager extends BaseChildrenRelationManager implements ContentForm
 {
@@ -34,8 +35,11 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
             return false;
         }
+        if (! $ownerRecord instanceof Content) {
+            return false;
+        }
 
-        return $ownerRecord->documentType?->isShowChildrenAsTable() === true;
+        return $ownerRecord->documentType?->show_as_table === true;
     }
 
     public function table(Table $table): Table

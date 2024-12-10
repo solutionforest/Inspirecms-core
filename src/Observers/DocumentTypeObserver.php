@@ -22,7 +22,7 @@ class DocumentTypeObserver
         //endregion Set default value
 
         if (! $model->canInheriting()) {
-            $model->show_children_as_table = false;
+            $model->show_as_table = false;
         }
     }
 

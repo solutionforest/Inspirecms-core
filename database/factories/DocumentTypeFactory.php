@@ -12,8 +12,7 @@ class DocumentTypeFactory extends Factory
             'title' => $this->faker->sentence(1),
             'slug' => $this->faker->slug(1),
             'category' => 'web',
-            'show_children_as_table' => false,
-            'parent_id' => 0,
+            'show_as_table' => false,
             'icon' => null,
         ];
     }

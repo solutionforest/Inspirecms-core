@@ -9,7 +9,7 @@ class DocumentType extends BaseEntity
 {
     protected static array $rules = [
         'slug' => 'required|string',
-        'childrenAsTable' => 'required|boolean',
+        'showAsTable' => 'nullable|boolean',
         'category' => 'required|string',
         'icon' => 'nullable|string',
         'title' => 'nullable|string',
@@ -17,7 +17,7 @@ class DocumentType extends BaseEntity
         'templates' => 'array',
         'defaultTemplate' => 'nullable|string',
         'inheritance' => 'array',
-        'parent' => 'nullable|string',
+        'rejected' => 'array',
     ];
 
     public function __construct(
@@ -32,7 +32,7 @@ class DocumentType extends BaseEntity
          *
          * @var bool
          */
-        public $childrenAsTable,
+        public $showAsTable,
         /**
          * The category of the document type. (e.g. web, inheritance, etc.)
          *
@@ -74,11 +74,9 @@ class DocumentType extends BaseEntity
          */
         public $inheritance = [],
         /**
-         * The parent document type (optional).
-         *
-         * @var string|null
+         * @var array $rejected An array to hold rejected document types (optional).
          */
-        public $parent = null,
+        public $rejected = [],
     ) {}
 
     /** {@inheritDoc} */
@@ -87,8 +85,11 @@ class DocumentType extends BaseEntity
         if (blank($parameters['category'] ?? null) || ! isset($parameters['category'])) {
             $parameters['category'] = 'web';
         }
-        if (! isset($parameters['inheritance'])) {
-            $parameters['inheritance'] = [];
+        $arrayFields = ['fieldGroups', 'templates', 'inheritance', 'rejected'];
+        foreach ($arrayFields as $field) {
+            if (! isset($parameters[$field])) {
+                $parameters[$field] = [];
+            }
         }
 
         return parent::fromArray($parameters);
@@ -97,7 +98,7 @@ class DocumentType extends BaseEntity
     public function getDataForModel(): array
     {
         return [
-            'show_children_as_table' => $this->childrenAsTable,
+            'show_as_table' => $this->showAsTable ?? false,
             'category' => $this->category,
             'title' => $this->title ?? (string) str($this->slug)->title()->replace('_', ' '),
             'slug' => $this->slug,

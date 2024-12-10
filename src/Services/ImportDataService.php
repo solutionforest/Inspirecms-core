@@ -298,22 +298,19 @@ class ImportDataService implements ImportDataServiceInterface
                 $item->validate();
 
                 $documentTypeData = $item->getDataForModel();
+
+                /**
+                 * @var null | DocumentType & Model
+                 */
                 $documentType = $this->findDocumentTypes($slug)->first();
 
                 if (! $documentType) {
+                    /**
+                     * @var null | DocumentType & Model
+                     */
                     $documentType = $model::create($documentTypeData);
-                }
-
-                if (filled($item->parent)) {
-
-                    $parentDocumentType = $this->findDocumentTypes($item->parent)->first();
-
-                    if (! $parentDocumentType) {
-                        throw new \Exception("Parent document type '{$item->parent}' not found.");
-                    }
-
-                    $documentType->parent()->associate($parentDocumentType);
-                    $documentType->save();
+                } else {
+                    // todo: update the document type
                 }
 
                 if (! empty($item->fieldGroups)) {
@@ -342,6 +339,11 @@ class ImportDataService implements ImportDataServiceInterface
                 //     }
                 //     $documentType->inheritDocumentType($inheritanceDocumentType);
                 // }
+
+                if (! empty($item->rejected)) {
+                    $rejectedDocumentTypeKeys = $this->findDocumentTypes($item->rejected)->map(fn ($i) => $i->getKey())->filter()->values();
+                    $documentType->rejectedDocumentTypes()->sync($rejectedDocumentTypeKeys);
+                }
 
                 $this->finished['documentTypes'][$slug] = $documentType;
 

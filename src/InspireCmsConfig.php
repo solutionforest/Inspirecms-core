@@ -154,6 +154,18 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'DocumentTypeInheritance model');
     }
 
+    public static function getRejectedDocumentTypeTableName(): string
+    {
+        return app(static::getRejectedDocumentTypeModelClass())->getTable();
+    }
+
+    public static function getRejectedDocumentTypeModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\RejectedDocumentType::class, Models\Pivot\RejectedDocumentType::class);
+
+        return self::ensureClassExists($class, 'RejectedDocumentType model');
+    }
+
     public static function getFieldGroupTableName(): string
     {
         return app(static::getFieldGroupModelClass())->getTable();

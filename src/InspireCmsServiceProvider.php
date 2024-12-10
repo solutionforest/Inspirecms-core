@@ -218,6 +218,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::reset' => 'heroicon-o-arrow-path',
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
             'inspirecms::add' => 'heroicon-o-plus-small',
+            'inspirecms::attach' => 'heroicon-o-link',
             'inspirecms::json-file' => view('inspirecms::icons.json-file'),
             'inspirecms::fields' => view('inspirecms::icons.fields'),
             'inspirecms::templates' => view('inspirecms::icons.templates'),

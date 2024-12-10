@@ -2,20 +2,18 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
-
 /**
  * @property int|string $id
  * @property string $title
  * @property string $slug
  * @property string $category
- * @property bool $show_children_as_table
+ * @property bool $show_as_table Determine if the children should be displayed as a table
  * @property ?string $icon
  * @property int|string|null $parent_id
  * @property \Carbon\Carbon|null $created_at
  * @property \Carbon\Carbon|null $updated_at
  */
-interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInterface
+interface DocumentType extends Base\HasTemplates
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.
@@ -53,18 +51,25 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
     public function inheritingDocumentTypes();
 
     /**
+     * Retrieve the document types that are rejected by the current doucment type.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
+     */
+    public function rejectedDocumentTypes();
+
+    /**
+     * Retrieve the document types that reject the current document type.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
+     */
+    public function rejectingDocumentTypes();
+
+    /**
      * Get the content associated with the document type.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function content();
-
-    /**
-     * Determine if the children should be displayed as a table.
-     *
-     * @return bool True if the children should be shown as a table, false otherwise.
-     */
-    public function isShowChildrenAsTable();
 
     public function isWebPageType();
 
@@ -110,21 +115,7 @@ interface DocumentType extends Base\HasTemplates, HasRecursiveRelationshipsInter
      * @return bool True on success, false on failure.
      */
     public function deteachInheritFieldGroupsFrom($documentType);
-
-    /**
-     * Determine if the document type can be a parent.
-     *
-     * @return bool True if the document type can be a parent, false otherwise.
-     */
-    public function canBeParent();
-
-    /**
-     * Determine if the document type can have a parent.
-     *
-     * @return bool True if the document type can have a parent, false otherwise.
-     */
-    public function canHaveParent();
-
+    
     /**
      * Determine if the document type can manage templates.
      *

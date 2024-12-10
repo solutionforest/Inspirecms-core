@@ -413,7 +413,7 @@ Html;
     {
         // $items[] = new ImportDataEntities\DocumentType(
         //     slug: 'general-page-banner',
-        //     childrenAsTable: false,
+        //     showAsTable: false,
         //     category: 'inheritance',
         //     title: 'Page Banner',
         //     fieldGroups: [
@@ -422,7 +422,7 @@ Html;
         // );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'homepage',
-            childrenAsTable: false,
+            showAsTable: false,
             category: 'web',
             fieldGroups: [
                 'social_media',
@@ -435,7 +435,7 @@ Html;
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'about',
-            childrenAsTable: false,
+            showAsTable: false,
             category: 'web',
             fieldGroups: [
                 'blog_detail_content',
@@ -444,12 +444,11 @@ Html;
             templates: ['about'],
             defaultTemplate: 'about',
             inheritance: [], // ['general-page-banner'],
-            parent: 'homepage',
             icon: 'heroicon-o-information-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blogs',
-            childrenAsTable: true,
+            showAsTable: true,
             category: 'web',
             fieldGroups: [
                 'general_page_banner',
@@ -457,24 +456,22 @@ Html;
             templates: ['blogs'],
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
-            parent: 'homepage',
             icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog',
-            childrenAsTable: false,
+            showAsTable: false,
             category: 'web',
             fieldGroups: [
                 'blog_detail_content',
             ],
             templates: ['blog'],
             defaultTemplate: 'blog',
-            parent: 'blogs',
             icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'projects',
-            childrenAsTable: false,
+            showAsTable: false,
             category: 'web',
             fieldGroups: [
                 'projects',
@@ -483,16 +480,14 @@ Html;
             templates: ['projects'],
             defaultTemplate: 'projects',
             inheritance: [], // ['general-page-banner'],
-            parent: 'homepage',
             icon: 'heroicon-o-document',
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blank_page',
-            childrenAsTable: false,
+            showAsTable: false,
             category: 'web',
             templates: ['blank-page', 'redirect-page'],
             defaultTemplate: 'blank-page',
-            parent: 'homepage',
             icon: 'heroicon-o-document',
         );
         foreach ($items as $item) {

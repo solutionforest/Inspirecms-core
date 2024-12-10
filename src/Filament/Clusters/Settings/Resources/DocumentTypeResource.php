@@ -12,7 +12,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -22,6 +24,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Helpers\SearchHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
@@ -67,21 +70,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->aside()
                     ->schema([
                         ...static::getCreateFormSchema(),
-                        static::getDisplayParentFormComponent()->inlineLabel(),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/document-type.children.section.label'))
+                    ->heading(__('inspirecms::resources/document-type.rejected.section.label'))
                     ->columns(1)
                     ->aside()
-                    ->visible(function (Model | DocumentType | null $record) {
-                        if (! $record) {
-                            return false;
-                        }
-
-                        return $record->canBeParent();
-                    })
                     ->schema(fn ($record) => array_filter([
-                        static::getChildrenRepeater($record),
+                        static::getRejectedRepeater($record),
                     ])),
             ]);
     }
@@ -93,7 +88,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             static::getSlugFormComponent()->inlineLabel(),
             static::getTitleFormComponent()->inlineLabel(),
             static::getShowChildAsTableFormComponent(),
-            // static::getTypeFormComponent($parent),
+            // static::getCategoryFormComponent(),
             static::getIconFormComponent()->inlineLabel(),
         ];
     }
@@ -146,15 +141,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->sortable()
                     ->badge(),
-                Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.parent'), [
-                    Tables\Columns\TextColumn::make('parent.title')
-                        ->label(__('inspirecms::resources/document-type.title.label')),
-                    Tables\Columns\TextColumn::make('parent.slug')
-                        ->label(__('inspirecms::resources/document-type.slug.label'))
-                        ->badge(),
-                ]),
-                Tables\Columns\IconColumn::make('show_children_as_table')
-                    ->label(__('inspirecms::resources/document-type.show_children_as_table.label'))
+                Tables\Columns\IconColumn::make('show_as_table')
+                    ->label(__('inspirecms::resources/document-type.show_as_table.label'))
                     ->color(function (DocumentType $record, $state) {
                         if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
                             return 'gray';
@@ -219,8 +207,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         true: fn ($query) => $query->whereIsRoot(condition: true),
                         false: fn ($query) => $query->whereIsRoot(condition: false),
                         blank: fn ($query) => $query,
-                    )
-                    ->hiddenOn([RelationManagers\ChildrenRelationManager::class]),
+                    ),
             ]);
     }
 
@@ -245,6 +232,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])->icon(FilamentIcon::resolve('inspirecms::templates')),
             'used_by' => RelationGroup::make(fn () => __('inspirecms::inspirecms.used_by'), [
                 RelationManagers\ContentRelationManager::class,
+                RelationManagers\RejectingDocumentTypesRelationManager::class,
                 // RelationManagers\InheritingDocumentTypesRelationManager::class,
             ]),
         ];
@@ -270,8 +258,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()
-            ->with(['parent'])
-            ->withCount(['templates', 'fieldGroups', 'children']);
+            ->withCount(['templates', 'fieldGroups']);
     }
 
     public static function canDelete(Model $record): bool
@@ -306,43 +293,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getDisplayParentFormComponent()
-    {
-        return Forms\Components\Placeholder::make('display_parent')
-            ->label(__('inspirecms::inspirecms.parent'))
-            ->visible(function ($operation, ?DocumentType $record) {
-                if ($operation === 'create') {
-                    return false;
-                }
-
-                return $record?->canHaveParent() ?? false;
-            })
-            ->content(function ($record) {
-
-                $parent = $record?->parent;
-
-                if (! $parent) {
-                    return null;
-                }
-
-                $url = FilamentResourceHelper::attemptToGetUrl(static::class, ['edit', 'view'], ['record' => $parent], true);
-
-                $title = static::getRecordTitle($parent);
-                $slug = $parent->slug;
-
-                $text = "{$title} ({$slug})";
-
-                if (! $url) {
-                    return $text;
-                }
-
-                return UIHelper::generateTextWithIconButton($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
-            });
-    }
-
-    /**
-     * @return Forms\Components\Field | Forms\Components\Component
-     */
     protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
@@ -371,23 +321,16 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @param  DocumentType|Model|null  $parent
      * @return Forms\Components\Field | Forms\Components\Component
      */
-    protected static function getTypeFormComponent($parent = null)
+    protected static function getCategoryFormComponent()
     {
         return Forms\Components\Select::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
             ->options(static::getModel()::getCategoryEnumClass())
             ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
-            ->disabled(function ($operation) use ($parent) {
+            ->disabled(function ($operation) {
                 if ($operation === 'edit') {
-                    return true;
-
-                }
-                // If create with parent and parent can have children, disable this field
-                elseif ($operation === 'create' && ! is_null($parent) && $parent->canBeParent()) {
-
                     return true;
 
                 }
@@ -409,8 +352,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /** @return Forms\Components\Field | Forms\Components\Component*/
     protected static function getShowChildAsTableFormComponent()
     {
-        return Forms\Components\Toggle::make('show_children_as_table')
-            ->label(__('inspirecms::resources/document-type.show_children_as_table.label'))
+        return Forms\Components\Toggle::make('show_as_table')
+            ->label(__('inspirecms::resources/document-type.show_as_table.label'))
             ->inlineLabel()
             ->default(false)
             ->live()
@@ -424,40 +367,24 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component*/
-    protected static function getChildrenRepeater($record)
+    protected static function getRejectedRepeater($record)
     {
-        return Forms\Components\Repeater::make('children')
+        return Forms\Components\Repeater::make('rejectedDocumentTypes')
             ->hiddenLabel()
-            ->relationship('children')
+            ->relationship('rejectedDocumentTypes')
+            ->saveRelationshipsUsing(function (array $state, Model $record, Forms\Components\Repeater $component) {
+                if (! is_array($state)) {
+                    $state = [];
+                }
+                $recordIds = Arr::pluck($state, 'rejected_document_type_id') ?? [];
+                /** @var BelongsToMany $relationship */
+                $relationship = $component->getRelationship();
+                $relationship->sync($recordIds);
+            })
             ->defaultItems(0)
             ->reorderable(false)
-            ->collapsible()->collapsed(function (?Forms\ComponentContainer $item) {
-
-                $itemStatePath = $item->getStatePath(false);
-
-                // If item is new, do not collapse
-                if (Str::startsWith($itemStatePath, 'record-')) {
-                    return true;
-                }
-
-                return false;
-            })
+            ->collapsible()->collapsed()
             ->itemLabel(fn (array $state): ?string => $state['title'] ?? $state['slug'] ?? null)
-            // Cannot display delete button if it exists
-            ->deleteAction(
-                fn (Forms\Components\Actions\Action $action) => $action
-                    ->hidden(function (array $arguments, Forms\Components\Repeater $component) {
-
-                        if (! isset($arguments['item'])) {
-                            return false;
-                        }
-
-                        $itemData = $component->getRawItemState($arguments['item']);
-
-                        // cannot delete if it created (has primary key)
-                        return filled($itemData['id']);
-                    })
-            )
             ->extraItemActions([
                 Forms\Components\Actions\Action::make('open')
                     ->icon(FilamentIcon::resolve('inspirecms::goto'))
@@ -468,7 +395,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
                         $itemData = $component->getRawItemState($arguments['item']);
 
-                        $recordId = $itemData['id'];
+                        $recordId = $itemData['rejected_document_type_id'] ?? null;
 
                         if (blank($recordId)) {
                             return null;
@@ -480,19 +407,103 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->addAction(
                 fn (Forms\Components\Actions\Action $action) => $action
-                    ->label(__('inspirecms::inspirecms.add'))
+                    ->label(__('inspirecms::inspirecms.attach'))
                     ->size('lg')
                     ->extraAttributes(['class' => 'w-full'])
-                    ->icon(FilamentIcon::resolve('inspirecms::add'))
+                    ->icon(FilamentIcon::resolve('inspirecms::attach'))
+                    ->slideOver()
+                    ->form(fn (Form $form, Forms\Components\Repeater $component, $state, ?Model $record) => $form
+                        ->schema(function () use ($component, $state, $record): array {
+
+                            /** @var BelongsToMany $relationship */
+                            $relationship = $component->getRelationship();
+                            $inverseRelationshipName = 'rejectingDocumentTypes';
+
+                            $getOptions = static function (int $optionsLimit, ?string $search = null, array $searchColumns = []) use ($relationship, $inverseRelationshipName, $state, $record): array {
+
+                                $excepts = collect($state ?? [])->pluck('document_type_id')->merge([$record?->getKey()])->filter()->unique()->values()->all();
+
+                                return collect(
+                                        SearchHelper::getAttachOptions(
+                                            relationship: $relationship, 
+                                            inverseRelationshipName: $inverseRelationshipName, 
+                                            optionsLimit: $optionsLimit, 
+                                            getRecordTitleUsing: fn (Model $record) => [$record->title, $record->slug], 
+                                            search: $search, 
+                                            searchColumns: $searchColumns,
+                                            excepts: $excepts,
+                                        )
+                                    )
+                                    ->map(function (array $values) {
+                                        [$title, $slug] = $values; 
+                                        return UIHelper::generateTextWithBadge(
+                                            text: $title,
+                                            badgeText: $slug,
+                                            attibutes: [
+                                                'text' => ['class' => 'flex-1 font-semibold'],
+                                                'badge' => ['class' => 'font-mono'],
+                                            ]
+                                        )->toHtml();
+                                    })
+                                    ->all();
+
+                            };
+
+                            return [
+                                Forms\Components\Select::make('recordId')
+                                    ->hiddenLabel()
+                                    ->searchable(['title', 'slug'])
+                                    ->allowHtml()
+                                    ->multiple()
+                                    ->getSearchResultsUsing(static fn (Forms\Components\Select $component, string $search): array => $getOptions(optionsLimit: $component->getOptionsLimit(), search: $search, searchColumns: $component->getSearchColumns()))
+                                    ->options(fn (Forms\Components\Select $component): array => $getOptions(optionsLimit: $component->getOptionsLimit(), searchColumns: $component->getSearchColumns()))
+                            ];
+                        })
+                    )
+                    ->action(function (array $data, Forms\Components\Repeater $component) {
+                        $recordIds = $data['recordId'] ?? [];
+                        if (! is_array($recordIds)) {
+                            $recordIds = [$recordIds];
+                        }
+                        /** @var BelongsToMany $relationship */
+                        $relationship = $component->getRelationship();
+                        /** @var Collection<Model> */
+                        $rejectedDocumentTypes = $relationship->getRelated()->find($recordIds);
+
+                        foreach ($rejectedDocumentTypes as $rejectedDocumentType) {
+
+                            $data = [
+                                'rejected_document_type_id' => $rejectedDocumentType->getKey(),
+                                'title' => $rejectedDocumentType->title,
+                                'slug' => $rejectedDocumentType->slug,
+                            ];
+
+                            $newUuid = $component->generateUuid();
+    
+                            $items = $component->getState();
+    
+                            if ($newUuid) {
+                                $items[$newUuid] = $data;
+                            } else {
+                                $items[] = $data;
+                            }
+    
+                            $component->state($items);
+    
+                            $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
+    
+                            $component->collapsed(true, shouldMakeComponentCollapsible: true);
+    
+                        }
+
+                        $component->callAfterStateUpdated();
+                    })
             )
+            ->columns(2)
             ->schema([
-                Forms\Components\Hidden::make('id'),
-                ...Arr::map(
-                    static::getCreateFormSchema(),
-                    fn (Forms\Components\Component $component) => $component
-                    // Disable if id exists (record is created)
-                        ->disabled(fn (Forms\Get $get) => filled($get('id')))
-                ),
+                Forms\Components\Hidden::make('rejected_document_type_id')->dehydratedWhenHidden(),
+                Forms\Components\TextInput::make('slug')->label(__('inspirecms::resources/document-type.slug.label'))->inlineLabel()->disabled(),
+                Forms\Components\TextInput::make('title')->label(__('inspirecms::resources/document-type.title.label'))->inlineLabel()->disabled(),
             ]);
     }
 

@@ -7,8 +7,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $contentVersions
+ * @property \Illuminate\Database\Eloquent\Collection<Model & ContentPublishVersion> $publishVersionLogs
+ * @property \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $publishedVersions
+ * @property null | Model & ContentVersion $latestContentVersion
+ */
 interface HasContentVersions
 {
     /**

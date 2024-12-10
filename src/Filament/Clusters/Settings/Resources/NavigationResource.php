@@ -83,10 +83,6 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::inspirecms.title')),
 
-                Tables\Columns\TextColumn::make('parent.title')
-                    ->label(__('inspirecms::inspirecms.parent'))
-                    ->tooltip(fn ($record) => ($parentId = $record->parent?->getKey()) ? __('inspirecms::inspirecms.id') . ': ' . $parentId : null),
-
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.url'), [
                     Tables\Columns\TextColumn::make('type')
                         ->label(__('inspirecms::inspirecms.type'))

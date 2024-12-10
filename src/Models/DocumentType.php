@@ -8,17 +8,15 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
-use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
     use Concerns\HasTemplates;
-    use HasRecursiveRelationships;
 
     protected $guarded = ['id'];
 
     protected $casts = [
-        'show_children_as_table' => 'boolean',
+        'show_as_table' => 'boolean',
     ];
 
     public function fields()
@@ -78,6 +76,16 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getDocumentTypeInheritanceTableName(), 'inherited_document_type_id', 'document_type_id');
     }
 
+    public function rejectedDocumentTypes()
+    {
+        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getRejectedDocumentTypeTableName(), 'document_type_id', 'rejected_document_type_id');
+    }
+
+    public function rejectingDocumentTypes()
+    {
+        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getRejectedDocumentTypeTableName(), 'rejected_document_type_id', 'document_type_id');
+    }
+
     public function content()
     {
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
@@ -94,11 +102,6 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $query->where('category', static::getCategoryEnumClass()::Web->value);
     }
     //endregion Scope(s)
-
-    public function isShowChildrenAsTable()
-    {
-        return $this->show_children_as_table;
-    }
 
     public function isWebPageType()
     {
@@ -217,16 +220,6 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         } catch (\Throwable $th) {
             return false;
         }
-    }
-
-    public function canBeParent()
-    {
-        return $this->exists && $this->isWebPageType();
-    }
-
-    public function canHaveParent()
-    {
-        return $this->exists && ! $this->isRootLevel() && $this->isWebPageType();
     }
 
     public function canManageTemplates()

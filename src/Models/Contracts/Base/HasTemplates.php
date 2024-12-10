@@ -2,10 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts\Base;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Models\Contracts\Templateable;
 
+/**
+ * @property \Illuminate\Database\Eloquent\Collection<Model & Template> $templates
+ * @property \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
+ */
 interface HasTemplates
 {
     /**

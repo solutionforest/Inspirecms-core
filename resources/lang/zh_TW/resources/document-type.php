@@ -7,7 +7,7 @@ return [
     'category' => [
         'label' => '類別',
     ],
-    'show_children_as_table' => [
+    'show_as_table' => [
         'label' => '顯示為表格',
     ],
     'is_root' => [
@@ -73,14 +73,18 @@ return [
         ],
     ],
 
-    'children' => [
-        'section' => [
-            'label' => '可用的文檔類型',
-        ],
-    ],
     'general' => [
         'section' => [
             'label' => '一般',
         ],
+    ],
+    'rejected' => [
+        'section' => [
+            'label' => '拒絕的文檔類型',
+        ],
+    ],
+    'rejecting' => [
+        'label' => '被拒絕的文檔類型',
+        'description' => '拒絕此文檔類型的文檔類型。',
     ],
 ];

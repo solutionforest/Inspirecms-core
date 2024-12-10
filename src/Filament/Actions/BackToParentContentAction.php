@@ -29,11 +29,11 @@ class BackToParentContentAction extends Action
 
         $this->icon('heroicon-o-chevron-left');
 
-        $this->url(function (?Model $record, $livewire) {
+        $this->url(function (null|Model|Content $record, $livewire) {
             if ($record->trashed() || ! $record || ! ($record instanceof Content)) {
                 return null;
             }
-            if (! $record->parent?->documentType?->isShowChildrenAsTable()) {
+            if (! $record->parent?->documentType?->show_as_table) {
                 return null;
             }
 
