@@ -25,6 +25,21 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\Carbon $updated_at
  * @property ?\Carbon\Carbon $deleted_at
  * @property null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
+ * 
+ * @property null | Model & DocumentType $documentType
+ * @property null | Model & Sitemap $sitemap
+ * @property null | Model & Content $trashedParent
+ * @property null | Model & Navigation $navigation
+ * @property null | Model & ContentPath $path
+ * 
+ * @property Collection<Model & Content> $ancestors
+ * @property Collection<Model & Content> $ancestorsAndSelf
+ * @property Collection<Model & Content> $bloodline
+ * @property Collection<Model & Content> $children
+ * @property Collection<Model & Content> $childrenAndSelf
+ * @property Collection<Model & Content> $descendants
+ * @property null | Model & Content $parent
+ * @property Collection<Model & Content> $parentAndSelf
  */
 interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
