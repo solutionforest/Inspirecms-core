@@ -28,6 +28,7 @@
             <main
                 @class([
                     'split-image-main w-full bg-white px-6 py-12 shadow-lg ring-1 ring-gray-950/5 lg:bg-white/95 lg:dark:bg-gray-900/80 dark:bg-gray-900 dark:ring-white/10 sm:px-12',
+                    'flex flex-col items-center justify-center',
                     match ($maxWidth ?? null) {
                         MaxWidth::ExtraSmall, 'xs' => 'sm:max-w-xs',
                         MaxWidth::Small, 'sm' => 'sm:max-w-sm',

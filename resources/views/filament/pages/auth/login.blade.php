@@ -1,4 +1,4 @@
-<x-inspirecms::page.split-image-form class="px-6 py-8 md:px-24 lg:px-44 lg:py-12">
+<x-inspirecms::page.split-image-form class="w-full px-6 py-8 md:px-24 lg:px-44 lg:py-12">
     @if (filament()->hasRegistration())
         <x-slot name="subheading">
             {{ __('filament-panels::pages/auth/login.actions.register.before') }}
