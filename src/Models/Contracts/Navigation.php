@@ -2,11 +2,29 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 
+/**
+ * @property int $id
+ * @property string $content_id
+ * @property array<string,?string> $url
+ * @property string $target
+ * @property array<string,?string> $title
+ * @property string $type
+ * @property string $category
+ * @property bool $is_active
+ * @property int $_lft
+ * @property int $_rgt
+ * @property ?int $parent_id
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ * 
+ * @property null | Model & Content $content
+ */
 interface Navigation extends ActivableEntity, HasLocaleUrl
 {
     /**

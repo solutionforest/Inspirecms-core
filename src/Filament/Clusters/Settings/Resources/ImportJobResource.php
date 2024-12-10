@@ -65,7 +65,7 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                             ->label(__('inspirecms::resources/import-jobs.file.title'))
                             ->inlineLabel()
                             ->fontFamily('mono')
-                            ->suffixAction(function (ImportJob & Model $record) {
+                            ->suffixAction(function (ImportJob | Model $record) {
 
                                 [$fs, $path] = $record->getStorageAndFilePath();
 

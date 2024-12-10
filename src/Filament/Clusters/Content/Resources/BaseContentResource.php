@@ -207,7 +207,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->grow(),
                 Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
-                    ->getStateUsing(function ($record) {
+                    ->getStateUsing(function (Model | ModelsContent $record) {
                         if ($record->isRootLevel()) {
                             return null;
                         }
@@ -231,7 +231,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                         Tables\Columns\IconColumn::make('is_published')
                             ->label(__('inspirecms::resources/content.is_published.label'))
-                            ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())  // Already include private
+                            ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())
                             ->boolean()
                             ->width('2%')
                             ->trueIcon('heroicon-m-eye')
@@ -242,7 +242,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
                         Tables\Columns\TextColumn::make('published_at')
                             ->label(__('inspirecms::resources/content.published_at.label'))
-                            ->getStateUsing(fn (ModelsContent $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
+                            ->getStateUsing(fn (Model | ModelsContent $record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
                             ->width('5%')
                             ->hiddenOn([BaseContentListTrashPage::class]),
                     ]),
@@ -260,7 +260,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->width('5%'),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->iconButton()->visible(fn ($record) => ! $record->trashed()),
+                Tables\Actions\EditAction::make()->iconButton()->visible(fn (Model | ModelsContent $record) => ! $record->trashed()),
                 Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\DeleteAction::make(),
@@ -412,7 +412,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
         return Forms\Components\Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function (ContentForm $livewire, $operation, $record) use ($fallbackParentId) {
+            ->dehydrateStateUsing(function (ContentForm $livewire, $operation, null | Model | ModelsContent $record) use ($fallbackParentId) {
                 if ($operation === 'create') {
                     return $livewire->getParentKey() ?? $fallbackParentId;
                 }
@@ -458,7 +458,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->all();
             })
             ->dehydrated(false)
-            ->saveRelationshipsUsing(function (ModelsContent $record, $state) {
+            ->saveRelationshipsUsing(function (Model | ModelsContent $record, $state) {
                 if ($state) {
                     $record->templates()->sync($state);
                     $record->setAsDefaultTemplate($state);
@@ -466,7 +466,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $record->templates()->sync([]);
                 }
             })
-            ->loadStateFromRelationshipsUsing(function ($record, $component) {
+            ->loadStateFromRelationshipsUsing(function (Model | ModelsContent $record, $component) {
                 if ($template = $record?->getDefaultTemplate()) {
                     $component->state($template->getKey());
                 }
@@ -480,7 +480,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\Hidden::make('document_type_id')
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function (ContentForm $livewire, $record) {
+            ->dehydrateStateUsing(function (ContentForm $livewire, null | Model | ModelsContent $record) {
                 $documentTypeId = $record?->document_type_id ?? null;
                 if (! $documentTypeId) {
                     $documentType = $livewire->getDocumentType();
@@ -550,7 +550,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             return collect($documentType->fieldGroups)->sortBy('pivot.order')->values();
         };
 
-        $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromDocumentType) {
+        $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromDocumentType) {
             if ($record) { //edit/view page
                 $fieldGroups = collect($record->documentType->fieldGroups)->sortBy('pivot.order')->values();
             } elseif ($livewire instanceof ContentForm) { // create
@@ -564,7 +564,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             return $fieldGroups;
         };
 
-        $schema = function (ContentForm | BuilderEditor $livewire, $record) use ($getFieldGroupsFromLivewireOrRecord) {
+        $schema = function (ContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromLivewireOrRecord) {
             $fieldGroups = $getFieldGroupsFromLivewireOrRecord($livewire, $record);
 
             $groupComponents = [];
@@ -585,7 +585,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 ->key('propertyData')
                 ->statePath('propertyData')
                 ->dehydratedWhenHidden()
-                ->dehydrateStateUsing(fn ($component) => $component->getState())
+                ->dehydrateStateUsing(fn (Forms\Components\Group $component) => $component->getState())
                 ->schema($schema);
         }
 
@@ -594,7 +594,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->statePath('propertyData')
             ->columnSpanFull()
             ->schema($schema)
-            ->dehydrateStateUsing(fn ($component) => $component->getState());
+            ->dehydrateStateUsing(fn (Forms\Components\Group $component) => $component->getState());
     }
 
     /**
@@ -682,8 +682,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return Forms\Components\Placeholder::make('display_id')
             ->label(__('inspirecms::resources/content.id.label'))
             ->inlineLabel()
-            ->visible(fn ($record) => $record != null)
-            ->content(fn (Model | ModelsContent | null $record) => UIHelper::generateCopyableText($record->getKey()));
+            ->visible(fn (null | Model | ModelsContent $record) => $record != null)
+            ->content(fn (null | Model | ModelsContent $record) => UIHelper::generateCopyableText($record->getKey()));
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component */

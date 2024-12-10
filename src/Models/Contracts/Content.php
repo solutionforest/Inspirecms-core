@@ -21,6 +21,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property string $slug
  * @property int $status
  * @property bool $is_default
+ * @property int $document_type_id
  * @property ?\Carbon\Carbon $created_at
  * @property ?\Carbon\Carbon $updated_at
  * @property ?\Carbon\Carbon $deleted_at

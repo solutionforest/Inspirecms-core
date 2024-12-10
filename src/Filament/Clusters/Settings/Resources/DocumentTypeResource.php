@@ -75,9 +75,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->heading(__('inspirecms::resources/document-type.rejected.section.label'))
                     ->columns(1)
                     ->aside()
-                    ->schema(fn ($record) => array_filter([
-                        static::getRejectedRepeater($record),
-                    ])),
+                    ->schema([static::getRejectedRepeater()]),
             ]);
     }
 
@@ -122,8 +120,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             // ->groups([
             //     Tables\Grouping\Group::make('category')
             //         ->label(__('inspirecms::resources/document-type.category.label'))
-            //         ->getTitleFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getLabel())
-            //         ->getDescriptionFromRecordUsing(fn (DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
+            //         ->getTitleFromRecordUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum()?->getLabel())
+            //         ->getDescriptionFromRecordUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
             // ])
             // ->defaultGroup('category')
             ->columns([
@@ -143,14 +141,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->badge(),
                 Tables\Columns\IconColumn::make('show_as_table')
                     ->label(__('inspirecms::resources/document-type.show_as_table.label'))
-                    ->color(function (DocumentType $record, $state) {
+                    ->color(function (Model | DocumentType $record, $state) {
                         if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
                             return 'gray';
                         }
 
                         return $state ? 'success' : 'danger';
                     })
-                    ->icon(function (DocumentType $record, $state) {
+                    ->icon(function (Model | DocumentType $record, $state) {
                         if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
                             return 'heroicon-o-minus-circle';
                         }
@@ -165,7 +163,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 // Tables\Columns\TextColumn::make('category')
                 //     ->label(__('inspirecms::resources/document-type.category.label'))
                 //     ->badge()
-                //     ->getStateUsing(fn (DocumentType $record) => $record->getCategoryEnum())
+                //     ->getStateUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum())
                 //     ->formatStateUsing(fn (?DocumentTypeCategory $state) => $state?->getLabel())
                 //     ->color(fn (?DocumentTypeCategory $state) => $state?->getColor()),
 
@@ -280,7 +278,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return UIHelper::generateTextWithBadge(
             text: static::getRecordTitle($record),
-            badgeText: $record->slug,
+            badgeText: $record instanceof DocumentType ? $record->slug : null,
             attibutes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],
@@ -367,12 +365,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component*/
-    protected static function getRejectedRepeater($record)
+    protected static function getRejectedRepeater()
     {
         return Forms\Components\Repeater::make('rejectedDocumentTypes')
             ->hiddenLabel()
             ->relationship('rejectedDocumentTypes')
-            ->saveRelationshipsUsing(function (array $state, Model $record, Forms\Components\Repeater $component) {
+            ->saveRelationshipsUsing(function (array $state, Model | DocumentType $record, Forms\Components\Repeater $component) {
                 if (! is_array($state)) {
                     $state = [];
                 }
@@ -412,7 +410,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->extraAttributes(['class' => 'w-full'])
                     ->icon(FilamentIcon::resolve('inspirecms::attach'))
                     ->slideOver()
-                    ->form(fn (Form $form, Forms\Components\Repeater $component, $state, ?Model $record) => $form
+                    ->form(fn (Form $form, Forms\Components\Repeater $component, $state, null | Model | DocumentType $record) => $form
                         ->schema(function () use ($component, $state, $record): array {
 
                             /** @var BelongsToMany $relationship */
@@ -428,7 +426,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                                             relationship: $relationship, 
                                             inverseRelationshipName: $inverseRelationshipName, 
                                             optionsLimit: $optionsLimit, 
-                                            getRecordTitleUsing: fn (Model $record) => [$record->title, $record->slug], 
+                                            getRecordTitleUsing: fn (Model | DocumentType $record) => [$record->title, $record->slug], 
                                             search: $search, 
                                             searchColumns: $searchColumns,
                                             excepts: $excepts,

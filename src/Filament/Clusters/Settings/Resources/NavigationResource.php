@@ -9,6 +9,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Enums\NavigationType;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -61,10 +62,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->groups([
                 Tables\Grouping\Group::make('category')
                     ->label(__('inspirecms::inspirecms.category'))
-                    ->getTitleFromRecordUsing(fn ($record) => $record->getNavigationCategoryEnum()?->getLabel()),
+                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel()),
                 Tables\Grouping\Group::make('type')
                     ->label(__('inspirecms::inspirecms.type'))
-                    ->getTitleFromRecordUsing(fn ($record) => $record->getNavigationTypeEnum()?->getLabel()),
+                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel()),
             ])
             ->defaultGroup('category')
             ->modifyQueryUsing(fn ($query) => $query->with(['parent']))
@@ -76,8 +77,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('category')
                     ->label(__('inspirecms::inspirecms.category'))
                     ->badge()
-                    ->color(fn ($record) => $record->getNavigationCategoryEnum()?->getColor())
-                    ->getStateUsing(fn ($record) => $record->getNavigationCategoryEnum()?->getLabel())
+                    ->color(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getColor())
+                    ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel())
                     ->width('5%'),
 
                 Tables\Columns\TextColumn::make('title')
@@ -87,11 +88,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     Tables\Columns\TextColumn::make('type')
                         ->label(__('inspirecms::inspirecms.type'))
                         ->badge()
-                        ->getStateUsing(fn ($record) => $record->getNavigationTypeEnum()?->getLabel())
+                        ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel())
                         ->width('5%'),
                     Tables\Columns\TextColumn::make('url')
                         ->label(fn () => '')
-                        ->getStateUsing(fn ($record, $livewire) => $record->getUrl($livewire->getActiveActionsLocale() ?? app()->getLocale())),
+                        ->getStateUsing(fn (Model | Navigation $record, $livewire) => $record->getUrl($livewire->getActiveActionsLocale() ?? app()->getLocale())),
                 ])->alignCenter(),
 
                 Tables\Columns\TextColumn::make('target')
@@ -174,7 +175,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $type == NavigationType::Content->value;
         };
 
-        $isRelatedRecordDeleted = function ($record) {
+        $isRelatedRecordDeleted = function (null | Model | Navigation $record) {
             if (! $record) {
                 return false;
             }
@@ -213,9 +214,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     null;
             })
             // display deleted content
-            ->modifyPaginationOptionsUsing(fn ($query, $record) => $isRelatedRecordDeleted($record) ? $query->withTrashed() : $query)
+            ->modifyPaginationOptionsUsing(fn ($query, null | Model | Navigation $record) => $isRelatedRecordDeleted($record) ? $query->withTrashed() : $query)
             // disable if content is deleted
-            ->disabled(fn ($record) => $isRelatedRecordDeleted($record));
+            ->disabled(fn (null | Model | Navigation $record) => $isRelatedRecordDeleted($record));
     }
 
     /**
@@ -311,7 +312,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::inspirecms.is_active'))
             ->inlineLabel()
             ->default(true)
-            ->disabled(function ($get, $record, $operation) {
+            ->disabled(function ($get, null | Model | Navigation $record, $operation) {
                 $type = $operation == 'create' ? $get('type') : $record?->type;
                 if (! $type instanceof NavigationType) {
                     $type = NavigationType::tryFrom($type);

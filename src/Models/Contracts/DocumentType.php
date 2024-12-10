@@ -10,8 +10,17 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property bool $show_as_table Determine if the children should be displayed as a table
  * @property ?string $icon
  * @property int|string|null $parent_id
- * @property \Carbon\Carbon|null $created_at
- * @property \Carbon\Carbon|null $updated_at
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ * 
+ * @property \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
+ * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
+ * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
+ * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritedDocumentTypes
+ * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritingDocumentTypes
+ * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectedDocumentTypes
+ * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectingDocumentTypes
+ * @property \Illuminate\Database\Eloquent\Collection<Model&Content> $content
  */
 interface DocumentType extends Base\HasTemplates
 {

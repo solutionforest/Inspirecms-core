@@ -2,6 +2,13 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+/**
+ * @property int $id
+ * @property string $code
+ * @property bool $is_default
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ */
 interface Language
 {
     /**

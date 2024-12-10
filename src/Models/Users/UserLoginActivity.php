@@ -17,8 +17,8 @@ class UserLoginActivity extends BaseModel implements UserLoginActivityContract
         'last_logged_out_at_utc' => 'datetime',
     ];
 
-    public function users()
+    public function user()
     {
-        return $this->hasMany(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
+        return $this->belongsTo(InspireCmsConfig::getUserModelClass(), 'user_id');
     }
 }

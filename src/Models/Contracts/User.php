@@ -10,6 +10,20 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property string $preferred_language
+ * @property ?string $avatar
+ * @property int $failed_login_attempt
+ * @property ?\Carbon\Carbon $last_lockouted_at
+ * @property ?\Carbon\Carbon $last_password_change_date
+ * @property ?\Carbon\Carbon $last_logged_in_at
+ * @property ?\Carbon\Carbon $email_confirmed_at
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ */
 interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
 {
     /**

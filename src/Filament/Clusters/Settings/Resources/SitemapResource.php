@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResour
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 
 class SitemapResource extends Resource implements ClusterSectionResource
 {
@@ -54,10 +55,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->columns([
                 Tables\Columns\TextColumn::make('type')
                     ->label(__('inspirecms::resources/sitemap.type.label'))
-                    ->getStateUsing(fn ($record) => $record->getType()),
+                    ->getStateUsing(fn (Model | Sitemap $record) => $record->getType()),
                 Tables\Columns\TextColumn::make('url')
                     ->label(__('inspirecms::resources/sitemap.url.label'))
-                    ->getStateUsing(fn ($record) => $record->getUrl()),
+                    ->getStateUsing(fn (Model | Sitemap $record) => $record->getUrl()),
                 Tables\Columns\TextColumn::make('priority')
                     ->label(__('inspirecms::resources/sitemap.priority.label'))
                     ->sortable(),
@@ -66,14 +67,14 @@ class SitemapResource extends Resource implements ClusterSectionResource
                     ->formatStateUsing(fn ($state) => SitemapChangeFrequency::tryFrom($state)?->getLabel()),
                 Tables\Columns\CheckboxColumn::make('enable')
                     ->label(__('inspirecms::resources/sitemap.enable.label'))
-                    ->disabled(fn ($record) => ! static::canEdit($record)),
+                    ->disabled(fn (Model | Sitemap $record) => ! static::canEdit($record)),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/sitemap.last_modified.label'))
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->iconButton()->visible(fn ($record) => static::canEdit($record)),
-                Tables\Actions\DeleteAction::make()->iconButton()->visible(fn ($record) => static::canDelete($record)),
+                Tables\Actions\EditAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canEdit($record)),
+                Tables\Actions\DeleteAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canDelete($record)),
             ]);
     }
 
@@ -103,7 +104,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
 
     public static function canEdit(Model $record): bool
     {
-        if ($record->getType() != 'general') {
+        if ($record instanceof Sitemap && $record->getType() != 'general') {
             return false;
         }
 
@@ -112,7 +113,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
 
     public static function canDelete(Model $record): bool
     {
-        if ($record->getType() != 'general') {
+        if ($record instanceof Sitemap && $record->getType() != 'general') {
             return false;
         }
 

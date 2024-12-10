@@ -2,9 +2,23 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 
+/**
+ * @property int $id
+ * @property string $model_type
+ * @property string $model_id
+ * @property ?string $url
+ * @property string $change_frequency
+ * @property int $priority
+ * @property bool $enable
+ * @property ?\Carbon\Carbon $created_at
+ * @property ?\Carbon\Carbon $updated_at
+ * 
+ * @property null | Model $model
+ */
 interface Sitemap extends ActivableEntity, HasLocaleUrl
 {
     /**

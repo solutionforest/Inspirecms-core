@@ -7,12 +7,14 @@ use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\LocaleManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Language;
 
 class LanguageResource extends Resource implements ClusterSectionResource
 {
@@ -58,7 +60,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.is_default'))
                     ->width('1%')
                     ->alignCenter()->verticallyAlignCenter()
-                    ->disabled(fn ($record) => ! static::canEdit($record)),
+                    ->disabled(fn (Model | Language $record) => ! static::canEdit($record)),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()

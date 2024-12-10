@@ -6,6 +6,7 @@ use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
+ * @property int $id
  * @property string $type
  * @property string $disk
  * @property string $file_path
