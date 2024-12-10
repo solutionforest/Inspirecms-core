@@ -16,11 +16,14 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;
 
 class Install extends BasePage
 {
+    use HaveBackgroundImage;
+    
     /**
      * @var view-string
      */
@@ -29,7 +32,7 @@ class Install extends BasePage
     /**
      * @var view-string
      */
-    protected static string $layout = 'inspirecms::components.layout.split-image-form';
+    protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
 
     protected static string $slug = 'install';
 

@@ -8,10 +8,12 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Pages\Auth\Login as BasePage;
 use Illuminate\Auth\Events as AuthEvents;
-use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
 
 class Login extends BasePage
 {
+    use HaveBackgroundImage;
+    
     /**
      * @var view-string
      */
@@ -88,24 +90,5 @@ class Login extends BasePage
     protected function getRememberFormComponent(): \Filament\Forms\Components\Component
     {
         return parent::getRememberFormComponent()->default(true);
-    }
-
-    protected function getBackgroundImage()
-    {
-        $image = InspireCmsConfig::get('filament.login_background_image');
-
-        if (is_array($image) && count($image) > 0) {
-            return $image[array_rand($image)];
-        }
-
-        return $image;
-    }
-
-    protected function getLayoutData(): array
-    {
-        return [
-            ...parent::getLayoutData(),
-            'image' => $this->getBackgroundImage(),
-        ];
     }
 }

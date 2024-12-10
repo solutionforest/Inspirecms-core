@@ -48,7 +48,7 @@ return [
             'enabled' => true,
             'polling_interval' => '30s',
         ],
-        'login_background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
+        'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
         'resources' => [
             'page' => PageResource::class,
             'document_type' => DocumentTypeResource::class,
