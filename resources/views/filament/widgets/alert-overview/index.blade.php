@@ -22,13 +22,3 @@
         </div>
     @endif
 </div>
-
-{{-- <div>
-    <div wire:loading> 
-        Saving post...
-    </div>
-    <x-filament::loading-indicator class="h-5 w-5" />
-    @foreach ($alerts as $alert)
-        {{ $alert }}
-    @endforeach
-</div> --}}
