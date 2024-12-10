@@ -8,6 +8,7 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Pages\Auth\Login as BasePage;
 use Illuminate\Auth\Events as AuthEvents;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Login extends BasePage
 {
@@ -19,7 +20,7 @@ class Login extends BasePage
     /**
      * @var view-string
      */
-    protected static string $layout = 'inspirecms::components.layout.split-image-form';
+    protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
 
     protected ?string $maxWidth = '4xl';
 
@@ -81,6 +82,30 @@ class Login extends BasePage
         return [
             'email' => $data['email'],
             'password' => $data['password'],
+        ];
+    }
+
+    protected function getRememberFormComponent(): \Filament\Forms\Components\Component
+    {
+        return parent::getRememberFormComponent()->default(true);
+    }
+
+    protected function getBackgroundImage()
+    {
+        $image = InspireCmsConfig::get('filament.login_background_image');
+
+        if (is_array($image) && count($image) > 0) {
+            return $image[array_rand($image)];
+        }
+
+        return $image;
+    }
+
+    protected function getLayoutData(): array
+    {
+        return [
+            ...parent::getLayoutData(),
+            'image' => $this->getBackgroundImage(),
         ];
     }
 }

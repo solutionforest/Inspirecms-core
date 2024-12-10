@@ -1,36 +1,33 @@
+@props([
+    'after' => null,
+    'heading' => null,
+    'subheading' => null,
+    'image' => null,
+])
 @php
     use Filament\Support\Enums\MaxWidth;
 @endphp
 
 <x-filament-panels::layout.base :livewire="$livewire">
-    @props([
-        'after' => null,
-        'heading' => null,
-        'subheading' => null,
-    ])
 
-    <div class="fi-simple-layout flex min-h-screen flex-col items-center bg-primary-500/20">
-
-        @if (($hasTopbar ?? true) && filament()->auth()->check())
-            <div
-                class="absolute end-0 top-0 flex h-16 items-center gap-x-4 pe-4 md:pe-6 lg:pe-8"
-            >
-                @if (filament()->hasDatabaseNotifications())
-                    @livewire(Filament\Livewire\DatabaseNotifications::class, [
-                        'lazy' => filament()->hasLazyLoadedDatabaseNotifications()
-                    ])
-                @endif
-
-                <x-filament-panels::user-menu />
+    <div 
+        class="fi-simple-layout split-image-layout flex min-h-screen flex-col items-center bg-primary-200 dark:bg-primary-800/80" 
+        @style([
+            "--panel-background-image: url($image)" => isset($image) && filled($image),
+        ])
+    >
+        <div class="absolute end-0 top-0 flex h-16 items-center gap-x-4 pe-4 md:pe-6 lg:pe-8">
+            <div class="bg-white rounded-lg dark:bg-gray-900">
+                <x-filament-panels::theme-switcher />
             </div>
-        @endif
+        </div>
 
         <div
             class="split-image-main-ctn flex w-full flex-grow items-center justify-center sm:justify-end sm:items-stretch"
         >
             <main
                 @class([
-                    'split-image-main w-full bg-white px-6 py-12 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 sm:px-12',
+                    'split-image-main w-full bg-white px-6 py-12 shadow-lg ring-1 ring-gray-950/5 lg:bg-white/95 lg:dark:bg-gray-900/80 dark:bg-gray-900 dark:ring-white/10 sm:px-12',
                     match ($maxWidth ?? null) {
                         MaxWidth::ExtraSmall, 'xs' => 'sm:max-w-xs',
                         MaxWidth::Small, 'sm' => 'sm:max-w-sm',

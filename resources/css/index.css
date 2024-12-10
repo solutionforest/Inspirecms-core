@@ -141,3 +141,8 @@
 .dd-placeholder {
     @apply rounded-md bg-gray-100/20 dark:bg-gray-200;
 }
+
+/* Login */
+.split-image-layout {
+    @apply bg-center bg-no-repeat bg-cover bg-[image:var(--panel-background-image)] bg-blend-multiply;
+}
