@@ -20,7 +20,7 @@ interface ContentUrlGeneratorInterface
      * Generates a localized URL based on the provided slug path and locale.
      *
      * @param  string  $slugPath  The slug path for the content.
-     * @param  string  $locale  The locale for the URL.
+     * @param  ?string  $locale  The locale for the URL.
      * @return string The localized URL.
      */
     public function getLocalizedUrl($slugPath, $locale);

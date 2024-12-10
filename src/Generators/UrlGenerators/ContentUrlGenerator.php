@@ -16,10 +16,9 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
             return null;
         }
 
-        $localeCode = $locale instanceof LanguageDto ? $locale->code : $locale;
-        if (blank($localeCode)) {
-            $localeCode = InspireCms::getFallbackLanguage()?->code;
-        }
+        $locale = ($locale instanceof LanguageDto ? $locale : collect(InspireCms::getAllAvailableLanguages())->get($locale)) ?? InspireCms::getFallbackLanguage();
+
+        $localeCode = $locale?->isDefault ? null : $locale?->code;
 
         return $this->getLocalizedUrl($contentPath->slug_path ?? '', $localeCode);
     }
@@ -36,7 +35,7 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
 
             if (! blank($locale)) {
                 $fullPath = str_replace(
-                    ['{locale}', '{slug?}'],
+                    ['{locale?}', '{slug?}'],
                     [
                         $locale,
                         ltrim($slugPath, '/'),
@@ -54,7 +53,7 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
     /** {@inheritDoc} */
     public function getPathPattern(): string
     {
-        return '{locale}/{slug?}';
+        return '{locale?}/{slug?}';
     }
 
     /** {@inheritDoc} */
