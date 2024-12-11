@@ -144,6 +144,7 @@ class TemplatesRelationManager extends RelationManager
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DetachBulkAction::make(),
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
             ]);
@@ -172,9 +173,7 @@ class TemplatesRelationManager extends RelationManager
             ->createAnother(false)
             // Set the default template if it's not set
             ->after(function (Model $record) {
-                if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
-                    $this->getOwnerRecord()->setAsDefaultTemplate($record);
-                }
+                static::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
                 $this->dispatch('refreshAlerts');
             });
     }
@@ -184,11 +183,13 @@ class TemplatesRelationManager extends RelationManager
         parent::configureAttachAction($action);
 
         $action
+            ->multiple()
             // Set the default template if it's not set
-            ->after(function (Model $record) {
-                if (is_null($this->getOwnerRecord()->getDefaultTemplate())) {
-                    $this->getOwnerRecord()->setAsDefaultTemplate($record);
+            ->after(function (array $data, ?Model $record) {
+                if (is_null($record)) {
+                    $record = is_array($data['recordId'] ?? []) ? collect($data['recordId'] ?? [])->first() : $data['recordId'];
                 }
+                static::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
                 $this->dispatch('refreshAlerts');
             });
     }
@@ -349,4 +350,18 @@ class TemplatesRelationManager extends RelationManager
     {
         file_put_contents($record->getFileFullPath(), $content);
     }
+
+    //region Helpers
+    /**
+     * @param DocumentType&Model $record
+     * @param string|int|Model&Template $template
+     * @return void
+     */
+    protected static function setDefaultTemplateIfEmpty($record, $template): void
+    {
+        if (is_null($record->getDefaultTemplate())) {
+            $record->setAsDefaultTemplate($record);
+        }
+    }
+    //endregion Helpers
 }
