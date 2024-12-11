@@ -1,3 +1,6 @@
+@php
+    // todo: add translation
+@endphp
 <x-filament-widgets::widget class="fi-wi-content-page-overview">
     @php
         $defaultPage = $this->getDefaultPageRecord();
@@ -19,7 +22,7 @@
                 <x-filament::icon :icon="$defaultPageIcon" class="icon" />
             </div>
         @endif
-        <h2 class="text-primary-600 dark:text-primary-400">Default Page</h2>
+        <h2 class="text-gray-400 dark:text-gray-600">Default Page</h2>
         <div>
             <p class="text-md">
                 {{ $this->getContentTitle($defaultPage) }}
