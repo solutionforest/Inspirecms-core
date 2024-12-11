@@ -96,7 +96,7 @@ class FieldGroupsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->reorderable('order')
-            ->defaultSort('order')
+            ->defaultSort('pivot_order')
             ->modifyQueryUsing(fn ($query) => $query->withCount('fields'))
             ->modelLabel(fn () => Str::lower(__('inspirecms::resources/document-type.field_groups.singular')))
             ->pluralModelLabel(fn () => Str::lower(__('inspirecms::resources/document-type.field_groups.plural')))
@@ -128,7 +128,7 @@ class FieldGroupsRelationManager extends RelationManager
                 //             ->badge(),
                 //     ]),
 
-                Tables\Columns\TextColumn::make('order')
+                Tables\Columns\TextColumn::make('pivot.order')
                     ->label(__('inspirecms::inspirecms.order'))
                     ->sortable(),
             ])
