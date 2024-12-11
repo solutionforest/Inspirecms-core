@@ -201,6 +201,8 @@ abstract class BaseTreeNavigation extends BaseWidget
 
         $action->form(fn ($form) => $this->getResource()::form($form));
 
+        $action->slideOver();
+
         $action->after(function () {
             // refresh other tree widget
             $this->dispatch('refreshAllTree');
@@ -215,6 +217,8 @@ abstract class BaseTreeNavigation extends BaseWidget
 
         $action->form(fn ($form) => $this->getResource()::form($form));
 
+        $action->slideOver();
+        
         return $action;
     }
     //endregion Action Configuration

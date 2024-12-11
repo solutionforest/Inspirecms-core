@@ -18,7 +18,7 @@ class ListNavigationTable extends BaseManagePage
     {
         return [
             Actions\LocaleSwitcher::make(),
-            Actions\CreateAction::make(),
+            Actions\CreateAction::make()->slideOver(),
         ];
     }
 

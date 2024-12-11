@@ -195,7 +195,7 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()->iconButton(),
+                Tables\Actions\ViewAction::make()->iconButton()->slideOver(),
             ]);
     }
 

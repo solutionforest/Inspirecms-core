@@ -73,8 +73,8 @@ class SitemapResource extends Resource implements ClusterSectionResource
                     ->sortable(),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canEdit($record)),
-                Tables\Actions\DeleteAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canDelete($record)),
+                Tables\Actions\EditAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canEdit($record))->slideOver(),
+                Tables\Actions\DeleteAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canDelete($record))->slideOver(),
             ]);
     }
 

@@ -12,7 +12,7 @@ class ListImportJobs extends BaseListPage
     public function getActions(): array
     {
         return [
-            Actions\CreateAction::make()->createAnother(false)->modalWidth('7xl')->stickyModalHeader()->stickyModalHeader(),
+            Actions\CreateAction::make()->createAnother(false)->modalWidth('7xl')->stickyModalHeader()->stickyModalHeader()->slideOver(),
         ];
     }
 
