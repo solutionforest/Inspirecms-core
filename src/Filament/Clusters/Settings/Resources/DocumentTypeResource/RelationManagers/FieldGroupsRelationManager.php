@@ -165,7 +165,11 @@ class FieldGroupsRelationManager extends RelationManager
                     ->iconButton()
                     ->visible(fn ($record) => $record->pivot?->inheritedFrom == null),
             ])
-            ->actionsAlignment('left');
+            ->bulkActions([
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\DetachBulkAction::make(),
+                ]),
+            ]);
     }
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
@@ -192,6 +196,7 @@ class FieldGroupsRelationManager extends RelationManager
         parent::configureAttachAction($action);
 
         $action
+            ->multiple()
             ->slideOver()
             ->modalWidth('lg')
             ->after(function (array $data) {
