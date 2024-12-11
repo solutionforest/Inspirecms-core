@@ -94,7 +94,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getActionPermissions(): array
     {
-        return collect(InspireCmsConfig::get('filament.actions'))
+        return collect(InspireCmsConfig::get('permissions.guard_actions'))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()

@@ -71,13 +71,6 @@ return [
             'settings' => \SolutionForest\InspireCms\Filament\Clusters\Settings::class,
             'users' => \SolutionForest\InspireCms\Filament\Clusters\Users::class,
         ],
-        'actions' => [
-            \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
-            \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
-
-            \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
-            \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
-        ],
     ],
 
     'media_library' => [
@@ -126,6 +119,13 @@ return [
 
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
+        'guard_actions' => [
+            \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
+            \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
+
+            \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
+            \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
+        ],
     ],
 
     'template' => [
