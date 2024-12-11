@@ -67,14 +67,27 @@ class ContentStatusManifest implements ContentStatusManifestInterface
         return $this->options;
     }
 
+    /** {@inheritDoc} */
     public function setDefaultValue(int $value): void
     {
         $this->defaultValue = $value;
     }
 
+    /** {@inheritDoc} */
     public function getDefaultValue(): ?int
     {
         return $this->defaultValue;
+    }
+
+    /** {@inheritDoc} */
+    public function getFormActions(array $excepts = [])
+    {
+        return $this->options
+            ->filter(fn (ContentStatusOption $option) => ! in_array($option->getValue(), $excepts))
+            ->map(fn (ContentStatusOption $option) => $option->getFormAction())
+            ->filter()
+            ->values()
+            ->all();
     }
 
     protected static function getDefaultOptions(): array

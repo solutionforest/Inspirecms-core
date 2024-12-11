@@ -75,13 +75,10 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         return [
             $this->getPublishFormAction('edit', $this->getRecord()),
             $this->getSaveFormAction(),
-            \Filament\Actions\ActionGroup::make([])
                 ->label(__('inspirecms::actions.more_actions.label'))
+            \Filament\Actions\ActionGroup::make(inspirecms_content_statuses()->getFormActions())
                 ->button()
-                ->color('gray')
-                ->actions(array_filter([
-                    inspirecms_content_statuses()->getOption('unpublish')->getFormAction(),
-                ])),
+                ->color('gray'),
             $this->getCancelFormAction(),
         ];
     }

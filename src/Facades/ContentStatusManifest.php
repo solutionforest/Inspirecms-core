@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
  * @method static \Illuminate\Support\Collection all() Retrieves all available options from the manifest.
  * @method static void setDefaultValue(int $value)
  * @method static null | int getDefaultValue()
+ * @method static array<int,\Filament\Actions\Action> getFormActions(array $excepts = [])
  *
  * @see \SolutionForest\InspireCms\Base\Manifests\ContentStatusManifest
  */
