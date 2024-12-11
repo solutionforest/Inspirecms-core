@@ -54,10 +54,10 @@ class LanguageResource extends Resource implements ClusterSectionResource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
-                    ->label(__('inspirecms::inspirecms.code'))
+                    ->label(__('inspirecms::resources/language.code.label'))
                     ->sortable(),
                 Tables\Columns\CheckboxColumn::make('is_default')
-                    ->label(__('inspirecms::inspirecms.is_default'))
+                    ->label(__('inspirecms::resources/language.is_default.label'))
                     ->width('1%')
                     ->alignCenter()->verticallyAlignCenter()
                     ->disabled(fn (Model | Language $record) => ! static::canEdit($record)),
@@ -73,7 +73,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ])
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_default')
-                    ->label(__('inspirecms::inspirecms.is_default')),
+                    ->label(__('inspirecms::resources/language.is_default.label')),
             ]);
     }
 
@@ -108,7 +108,8 @@ class LanguageResource extends Resource implements ClusterSectionResource
     protected static function getCodeFormComponent()
     {
         return Forms\Components\TextInput::make('code')
-            ->label(__('inspirecms::inspirecms.code'))
+            ->label(__('inspirecms::resources/language.code.label'))
+            ->validationAttribute(__('inspirecms::resources/language.code.validation_attribute'))
             ->unique(table: static::getModel(), column: 'code', ignoreRecord: true)
             ->datalist(LocaleManifest::getLocales())
             ->required();
@@ -120,7 +121,8 @@ class LanguageResource extends Resource implements ClusterSectionResource
     protected static function getIsDefaultFormComponent()
     {
         return Forms\Components\Toggle::make('is_default')
-            ->label(__('inspirecms::inspirecms.is_default'))
+            ->label(__('inspirecms::resources/language.is_default.label'))
+            ->validationAttribute(__('inspirecms::resources/language.is_default.validation_attribute'))
             ->default(false);
     }
     //endregion Form field(s)/component(s)

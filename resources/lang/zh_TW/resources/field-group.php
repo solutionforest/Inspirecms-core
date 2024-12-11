@@ -7,27 +7,18 @@ return [
     ],
     'name' => [
         'label' => '唯一名稱',
+        'validation_attribute' => '唯一名稱',
     ],
     'title' => [
         'label' => '描述',
+        'validation_attribute' => '描述',
     ],
     'fields' => [
         'label' => '欄位',
+        'singular' => '欄位',
+        'validation_attribute' => '欄位',
         'section' => [
             'label' => '欄位',
-        ],
-        'actions' => [
-            'add' => [
-                'label' => '新增欄位',
-                'modal' => [
-                    'heading' => '新增欄位',
-                    'actions' => [
-                        'submit' => [
-                            'label' => '新增',
-                        ],
-                    ],
-                ],
-            ],
         ],
     ],
 
@@ -40,9 +31,9 @@ return [
         ],
     ],
 
-    'general' => [
+    'details' => [
         'section' => [
-            'label' => '一般',
+            'heading' => '詳細資料',
         ],
     ],
 ];

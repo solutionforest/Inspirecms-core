@@ -19,8 +19,8 @@ class ListPages extends BaseContentListPage
     {
         return [
             ...parent::getActions(),
-            Actions\Action::make('trash')
-                ->label(__('inspirecms::actions.trash.label'))
+            Actions\Action::make('trash_bin')
+                ->label(__('inspirecms::resources/content.actions.trash_bin.label'))
                 ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'trash', [], false))
                 ->color('gray')
                 ->icon('heroicon-o-trash'),

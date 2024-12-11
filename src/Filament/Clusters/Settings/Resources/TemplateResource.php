@@ -48,11 +48,14 @@ class TemplateResource extends Resource implements ClusterSectionResource
         return $table
             ->heading(static::getNavigationLabel())
             ->columns([
-                Tables\Columns\TextColumn::make('slug')->weight('bold'),
-                Tables\Columns\TextColumn::make('path'),
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::resources/template.slug.label'))
+                    ->weight('bold'),
+                Tables\Columns\TextColumn::make('path')
+                    ->label(__('inspirecms::resources/template.path.label')),
             ])
             ->actions([
-                Tables\Actions\EditAction::make()->slideOver()->modalWidth('5xl')->iconButton(),
+                Tables\Actions\EditAction::make()->slideOver()->modalWidth('7xl')->iconButton(),
             ]);
     }
 

@@ -21,9 +21,9 @@ class DocumentTypesRelationManager extends RelationManager
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/document-type.title.label')),
                 Tables\Columns\TextColumn::make('slug')
-                    ->label(__('inspirecms::inspirecms.slug'))
+                    ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
@@ -47,7 +47,7 @@ class DocumentTypesRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('inspirecms::inspirecms.used_by_xxx', [
-            'name' => __('inspirecms::inspirecms.document_type'),
+            'name' => strtolower(__('inspirecms::inspirecms.document_type')),
         ]);
     }
 }

@@ -2,33 +2,37 @@
 
 return [
     'empty_state' => [
-        'heading' => '沒有文檔類型',
-        'description' => '創建一個文檔類型以開始。',
+        'heading' => '沒有文件類型',
+        'description' => '創建一個文件類型以開始。',
     ],
     'title' => [
         'label' => '標題',
+        'validation_attribute' => '標題',
     ],
     'category' => [
         'label' => '類別',
+        'validation_attribute' => '類別',
     ],
     'show_as_table' => [
         'label' => '顯示為表格',
+        'validation_attribute' => '顯示為表格',
     ],
     'icon' => [
         'label' => '圖標',
+        'validation_attribute' => '圖標',
     ],
     'slug' => [
-        'label' => '標識',
+        'label' => '別名',
+        'validation_attribute' => '別名',
     ],
     'inherited_from' => [
         'label' => '繼承自',
     ],
     'templates' => [
         'label' => '模板',
-        'singular' => '模板',
-        'plural' => '模板',
-        'description' => '渲染此文檔類型時使用的模板。',
-        'hint' => '創建一個模板來顯示此文檔類型。',
+        'validation_attribute' => '模板',
+        'description' => '渲染此文件類型時使用的模板。',
+        'hint' => '創建一個模板來顯示此文件類型。',
         'tab' => [
             'label' => '模板',
         ],
@@ -38,18 +42,22 @@ return [
         'singular' => '字段',
         'plural' => '字段',
         'description' => '',
-        'hint' => '創建一個字段組來與此文檔類型一起使用。',
+        'hint' => '創建一個字段組以用於此文件類型。',
         'tab' => [
             'label' => '結構',
         ],
     ],
     'inherited' => [
         'label' => '繼承自 :name',
-        'description' => '此文檔類型繼承自的文檔類型。',
+        'description' => '此文件類型繼承的文件類型。',
     ],
     'inheriting' => [
-        'label' => '繼承到 :name',
-        'description' => '繼承自此文檔類型的文檔類型。',
+        'label' => '繼承至 :name',
+        'description' => '繼承此文件類型的文件類型。',
+    ],
+    'rejected_document_types' => [
+        'label' => '被拒絕的文件類型',
+        'validation_attribute' => '被拒絕的文件類型',
     ],
 
     'categories' => [
@@ -59,7 +67,7 @@ return [
         ],
         'inheritance' => [
             'label' => '繼承',
-            'description' => '可以繼承的文檔類型佈局。',
+            'description' => '可以繼承的文件類型佈局。',
         ],
     ],
 
@@ -76,16 +84,16 @@ return [
 
     'general' => [
         'section' => [
-            'label' => '一般',
+            'heading' => '一般',
         ],
     ],
     'rejected' => [
         'section' => [
-            'label' => '拒絕的文檔類型',
+            'heading' => '被拒絕的文件類型',
         ],
     ],
     'rejecting' => [
-        'label' => '被拒絕的文檔類型',
-        'description' => '拒絕此文檔類型的文檔類型。',
+        'label' => '拒絕的文件類型',
+        'description' => '拒絕此文件類型的文件類型。',
     ],
 ];

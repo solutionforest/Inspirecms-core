@@ -58,7 +58,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
     public static function getNavigationLabel(): string
     {
-        return __('inspirecms::health.title');
+        return __('inspirecms::pages/health.title');
     }
 
     public function getStatusInfo(): array
@@ -68,12 +68,12 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
         return [
             'permissions' => [
-                'title' => __('inspirecms::health.permissions.label'),
+                'title' => __('inspirecms::pages/health.permissions.label'),
                 ...$permissions,
                 'action' => 'fix',
             ],
             'sitemap' => [
-                'title' => __('inspirecms::health.sitemap.label'),
+                'title' => __('inspirecms::pages/health.sitemap.label'),
                 ...$sitemap,
                 'action' => 'fix',
             ],
@@ -83,7 +83,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     public function fixAction(): Action
     {
         return Action::make('fix')
-            ->label(__('inspirecms::health.actions.fix.label'))
+            ->label(__('inspirecms::pages/health.actions.fix.label'))
             ->outlined()
             ->size('sm')
             ->action(function (array $arguments) {

@@ -16,7 +16,12 @@ class TranslatableFieldType
             return [
                 Section::make()
                     ->schema([
-                        Toggle::make('translatable')->default(false)->inlineLabel()->onIcon('heroicon-m-language'),
+                        Toggle::make('translatable')
+                            ->label(__('inspirecms::resources/field.translatable.label'))
+                            ->validationAttribute(__('inspirecms::resources/field.translatable.validation_attribute'))
+                            ->default(false)
+                            ->inlineLabel()
+                            ->onIcon('heroicon-m-language'),
                     ]),
                 ...$this->getFormSchema(),
             ];

@@ -63,23 +63,18 @@ class UserResource extends Resource implements ClusterSectionResource
                     ->circular()
                     ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record)),
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                    ->label(__('inspirecms::resources/user.name.label'))
                     ->weight(FontWeight::Bold)
                     ->sortable()->width('1%'),
                 Tables\Columns\TextColumn::make('email')
-                    ->label(__('inspirecms::inspirecms.email')),
+                    ->label(__('inspirecms::resources/user.email.label')),
                 Tables\Columns\TextColumn::make('roles.name')
-                    ->label(__('inspirecms::inspirecms.roles')),
+                    ->label(__('inspirecms::resources/user.roles.label')),
                 Tables\Columns\TextColumn::make('last_logged_in_at')
-                    ->label(__('inspirecms::inspirecms.last_logged_in_at')),
+                    ->label(__('inspirecms::resources/user.last_logged_in_at.label')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
-            ])
-            ->filters([
-
-                // Keywords search
-                // Tables\Filters\TrashedFilter
             ]);
     }
 
@@ -130,7 +125,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static function getNameFormComponent()
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::inspirecms.name'))
+            ->label(__('inspirecms::resources/user.name.label'))
             ->required()
             ->maxLength(255);
     }
@@ -141,7 +136,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static function getEmailFormComponent()
     {
         return Forms\Components\TextInput::make('email')
-            ->label(__('inspirecms::inspirecms.email'))
+            ->label(__('inspirecms::resources/user.email.label'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -155,7 +150,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static function getPasswordFormComponent()
     {
         return Forms\Components\TextInput::make('password')
-            ->label(__('inspirecms::inspirecms.password'))
+            ->label(__('inspirecms::resources/user.password.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -171,7 +166,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static function getPasswordConfirmationFormComponent()
     {
         return Forms\Components\TextInput::make('passwordConfirmation')
-            ->label(__('inspirecms::inspirecms.password_confirmation'))
+            ->label(__('inspirecms::resources/user.password_confirmation.label'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -184,7 +179,7 @@ class UserResource extends Resource implements ClusterSectionResource
     protected static function getRolesFormComponent()
     {
         return UserRolePicker::make('roles')
-            ->label(__('inspirecms::inspirecms.role'))
+            ->label(__('inspirecms::resources/user.roles.label'))
             ->required()
             ->columnSpanFull();
     }

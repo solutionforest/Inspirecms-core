@@ -75,8 +75,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         return [
             $this->getPublishFormAction('edit', $this->getRecord()),
             $this->getSaveFormAction(),
-                ->label(__('inspirecms::actions.more_actions.label'))
             \Filament\Actions\ActionGroup::make(inspirecms_content_statuses()->getFormActions())
+                ->label(__('inspirecms::resources/content.actions.more_actions.label'))
                 ->button()
                 ->color('gray'),
             $this->getCancelFormAction(),
@@ -86,7 +86,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label(__('inspirecms::actions.save_draft.label'))
+            ->label(__('inspirecms::resources/content.actions.save_draft.label'))
             ->color('secondary');
     }
 

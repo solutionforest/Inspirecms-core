@@ -65,14 +65,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/document-type.general.section.label'))
+                    ->heading(__('inspirecms::resources/document-type.general.section.heading'))
                     ->columns(1)
                     ->aside()
                     ->schema([
                         ...static::getCreateFormSchema(),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/document-type.rejected.section.label'))
+                    ->heading(__('inspirecms::resources/document-type.rejected.section.heading'))
                     ->columns(1)
                     ->aside()
                     ->schema([static::getRejectedRepeater()]),
@@ -97,7 +97,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/document-type.general.section.label'))
+                    ->heading(__('inspirecms::resources/document-type.general.section.heading'))
                     ->columns(1)
                     ->aside()
                     ->schema(static::getCreateFormSchema()),
@@ -291,6 +291,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/document-type.title.label'))
+            ->validationAttribute(__('inspirecms::resources/document-type.title.category'))
             ->required();
     }
 
@@ -301,6 +302,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::resources/document-type.slug.label'))
+            ->validationAttribute(__('inspirecms::resources/document-type.slug.category'))
             ->live(true, 300)
             ->afterStateUpdated(function ($component, $state, Forms\Get $get, Forms\Set $set, $operation) {
                 $component->state(Str::slug($state));
@@ -321,6 +323,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Select::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
+            ->validationAttribute(__('inspirecms::resources/document-type.show_as_table.category'))
             ->options(static::getModel()::getCategoryEnumClass())
             ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
             ->disabled(function ($operation) {
@@ -348,6 +351,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Toggle::make('show_as_table')
             ->label(__('inspirecms::resources/document-type.show_as_table.label'))
+            ->validationAttribute(__('inspirecms::resources/document-type.show_as_table.validation_attribute'))
             ->inlineLabel()
             ->default(false)
             ->live()
@@ -366,6 +370,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\Repeater::make('rejectedDocumentTypes')
             ->hiddenLabel()
             ->relationship('rejectedDocumentTypes')
+            ->validationAttribute(__('inspirecms::resources/document-type.rejected_document_types.validation_attribute'))
             ->saveRelationshipsUsing(function (array $state, Model | DocumentType $record, Forms\Components\Repeater $component) {
                 if (! is_array($state)) {
                     $state = [];
@@ -401,7 +406,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->addAction(
                 fn (Forms\Components\Actions\Action $action) => $action
-                    ->label(__('inspirecms::inspirecms.attach'))
+                    ->label(__('inspirecms::actions.attach.label'))
                     ->size('lg')
                     ->extraAttributes(['class' => 'w-full'])
                     ->icon(FilamentIcon::resolve('inspirecms::attach'))
@@ -506,6 +511,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return \Guava\FilamentIconPicker\Forms\IconPicker::make('icon')
             ->label(__('inspirecms::resources/document-type.icon.label'))
+            ->validationAttribute(__('inspirecms::resources/document-type.icon.validation_attribute'))
             ->preload()
             ->columns([
                 'default' => 5,

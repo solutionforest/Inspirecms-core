@@ -24,14 +24,14 @@ class SetDefaultContentPageAction extends Action implements GuardAction
 
     public static function getPermissionDisplayName(): string
     {
-        return __('inspirecms::actions.set_default_content_page.permission_display_name');
+        return __('inspirecms::resources/content.actions.set_default_content_page.permission_display_name');
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label(__('inspirecms::actions.set_default_content_page.label'));
+        $this->label(__('inspirecms::resources/content.actions.set_default_content_page.label'));
 
         $this->icon('heroicon-o-globe-alt');
 
@@ -53,7 +53,7 @@ class SetDefaultContentPageAction extends Action implements GuardAction
             return $nestableTreeParentId !== $rootLevelKey;
         });
 
-        $this->successNotificationTitle(__('inspirecms::actions.set_default_content_page.notifications.success.title'));
+        $this->successNotificationTitle(__('inspirecms::resources/content.actions.set_default_content_page.notification.success.title'));
 
         $this->action(function (Content | Model $record, Action $action) {
             $record->is_default = true;

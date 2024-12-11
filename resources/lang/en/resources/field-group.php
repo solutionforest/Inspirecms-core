@@ -7,27 +7,18 @@ return [
     ],
     'name' => [
         'label' => 'Unqiue name',
+        'validation_attribute' => 'unqiue name',
     ],
     'title' => [
         'label' => 'Description',
+        'validation_attribute' => 'description',
     ],
     'fields' => [
         'label' => 'Fields',
+        'singular' => 'Field',
+        'validation_attribute' => 'fields',
         'section' => [
             'label' => 'Fields',
-        ],
-        'actions' => [
-            'add' => [
-                'label' => 'Add field',
-                'modal' => [
-                    'heading' => 'Add field',
-                    'actions' => [
-                        'submit' => [
-                            'label' => 'Add',
-                        ],
-                    ],
-                ],
-            ],
         ],
     ],
 
@@ -40,9 +31,9 @@ return [
         ],
     ],
 
-    'general' => [
+    'details' => [
         'section' => [
-            'label' => 'General',
+            'heading' => 'Details',
         ],
     ],
 ];

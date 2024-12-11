@@ -27,7 +27,7 @@ trait ReorderContentActionTrait
 
     public static function getPermissionDisplayName(): string
     {
-        return __('inspirecms::actions.reorder_content.permission_display_name');
+        return __('inspirecms::resources/content.actions.reorder_content.permission_display_name');
     }
 
     public function nodeParentId(Closure | string | int $nodeParentId): static
@@ -44,9 +44,9 @@ trait ReorderContentActionTrait
 
     protected function setUpAction(): void
     {
-        $this->label(__('inspirecms::actions.reorder_content.label'));
+        $this->label(__('inspirecms::resources/content.actions.reorder_content.label'));
 
-        $this->successNotificationTitle(__('inspirecms::actions.reorder_content.notifications.success.title'));
+        $this->successNotificationTitle(__('inspirecms::resources/content.actions.reorder_content.notification.success.title'));
 
         $this->groupedIcon('heroicon-o-arrows-up-down');
 
@@ -97,7 +97,7 @@ trait ReorderContentActionTrait
             if (! in_array(NestableTree::class, class_implements($nestableTreeModel))) {
 
                 Notification::make()
-                    ->title(__('inspirecms::actions.reorder_content.notifications.invalid_model.title'))
+                    ->title(__('inspirecms::resources/content.actions.reorder_content.notification.invalid_model.title'))
                     ->danger()
                     ->send();
 
@@ -117,7 +117,7 @@ trait ReorderContentActionTrait
             } catch (\Throwable $th) {
 
                 Notification::make()
-                    ->title(__('inspirecms::actions.reorder_content.notifications.error.title'))
+                    ->title(__('inspirecms::resources/content.actions.reorder_content.notification.error.title'))
                     ->body($th->getMessage())
                     ->danger()
                     ->send();

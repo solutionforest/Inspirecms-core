@@ -73,7 +73,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->schema([
                 Forms\Components\Actions::make([
                     \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::make()
-                        ->label(__('inspirecms::actions.preview.label'))
+                        ->label(__('inspirecms::resources/content.actions.preview.label'))
                         ->builderName('propertyData'),
                 ])
                     ->alignEnd()
@@ -84,11 +84,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->tabs([
                         static::getPropertyDataValueComponent(isTab: true),
                         Forms\Components\Tabs\Tab::make('seo')
-                            ->label(__('inspirecms::resources/content.seo.heading'))
+                            ->label(__('inspirecms::resources/content.seo.tab.label'))
                             ->schema([
                                 Forms\Components\Section::make()
                                     ->columns(1)
-                                    ->heading(__('inspirecms::resources/content.general.heading'))
+                                    ->heading(__('inspirecms::resources/content.general.section.heading'))
                                     ->aside()
                                     ->schema([
                                         static::getTitleFormComponent(),
@@ -97,12 +97,12 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 static::getSeoFormComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('sitemap')
-                            ->label(__('inspirecms::resources/content.sitemap.heading'))
+                            ->label(__('inspirecms::resources/content.sitemap.tab.label'))
                             ->schema([
                                 static::getSitemapFormComponent(),
                             ]),
                         Forms\Components\Tabs\Tab::make('details')
-                            ->label(__('inspirecms::resources/content.details.heading'))
+                            ->label(__('inspirecms::resources/content.details.tab.label'))
                             ->columns(3)
                             ->schema([
                                 Forms\Components\Section::make()
@@ -192,7 +192,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->width('1%'),
 
                 Tables\Columns\TextColumn::make('id')
-                    ->label(__('inspirecms::resources/content.id.label'))
+                    ->label(__('inspirecms::inspirecms.id'))
                     ->width('1%')->sortable(),
 
                 Tables\Columns\TextColumn::make('deleted_at')
@@ -359,6 +359,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/content.title.label'))
+            ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.title.placeholder'))
             ->helperText(__('inspirecms::resources/content.title.instructions'))
             ->live(true, 500)->afterStateUpdated(function ($state, $get, $set, $operation, ContentForm $livewire) {
@@ -382,6 +383,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::resources/content.slug.label'))
+            ->validationAttribute(__('inspirecms::resources/content.slug.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.slug.placeholder'))
             ->helperText(__('inspirecms::resources/content.slug.instructions'))
             ->live(true, 500)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
@@ -429,7 +431,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return Forms\Components\Select::make('template_id')
             ->label(__('inspirecms::resources/content.template.label'))
-            ->helperText(__('inspirecms::resources/content.template.helperText'))
+            ->validationAttribute(__('inspirecms::resources/content.template.validation_attribute'))
+            ->helperText(__('inspirecms::resources/content.template.instructions'))
             ->options(function (ContentForm $livewire) {
                 $documentType = $livewire->getDocumentType();
                 if (! $documentType instanceof Model) {
@@ -480,6 +483,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDocumentTypeFormComponent()
     {
         return Forms\Components\Hidden::make('document_type_id')
+            ->validationAttribute(__('inspirecms::resources/content.document_type.validation_attribute'))
             ->dehydratedWhenHidden()
             ->dehydrateStateUsing(function (ContentForm $livewire, null | Model | ModelsContent $record) {
                 $documentTypeId = $record?->document_type_id ?? null;
@@ -498,7 +502,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayDocumentTypeComponent()
     {
         return Forms\Components\Placeholder::make('display_document_type')
-            ->label(__('inspirecms::inspirecms.document_type'))
+            ->label(__('inspirecms::resources/content.document_type.label'))
             ->inlineLabel()
             ->content(function (Model | ModelsContent | null $record, ContentForm $livewire) {
                 if ($record) {
@@ -581,7 +585,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         if ($isTab) {
 
             return Forms\Components\Tabs\Tab::make('content')
-                ->label(__('inspirecms::resources/content.content.heading'))
+                ->label(__('inspirecms::resources/content.content.tab.label'))
                 ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
                 ->key('propertyData')
                 ->statePath('propertyData')
@@ -681,7 +685,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     protected static function getDisplayKeyFormComponent()
     {
         return Forms\Components\Placeholder::make('display_id')
-            ->label(__('inspirecms::resources/content.id.label'))
+            ->label(__('inspirecms::inspirecms.id'))
             ->inlineLabel()
             ->visible(fn (null | Model | ModelsContent $record) => $record != null)
             ->content(fn (null | Model | ModelsContent $record) => UIHelper::generateCopyableText($record->getKey()));
@@ -790,6 +794,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 'field' => Forms\Components\TextInput::class,
                                 'callback' => fn (Forms\Components\TextInput $field) => $field
                                     ->label(__('inspirecms::resources/content.seo.meta_title.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_title.validation_attribute'))
                                     ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
                                     ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
                                     ->limitLengthWithHint(60),
@@ -798,6 +803,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 'field' => Forms\Components\Textarea::class,
                                 'callback' => fn (Forms\Components\Textarea $field) => $field
                                     ->label(__('inspirecms::resources/content.seo.meta_description.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_description.validation_attribute'))
                                     ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
                                     ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
                                     ->limitLengthWithHint(120),
@@ -806,6 +812,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                 'field' => Forms\Components\TagsInput::class,
                                 'callback' => fn (Forms\Components\TagsInput $field) => $field
                                     ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_keywords.validation_attribute'))
                                     ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
                                     ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
                             ],
@@ -820,7 +827,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     }),
                 Forms\Components\Section::make()
                     ->columns(1)
-                    ->heading(__('inspirecms::resources/content.seo.og.heading'))
+                    ->heading(__('inspirecms::resources/content.seo_og.section.heading'))
                     ->aside()
                     ->statePath('seo')
                     ->schema(function () use ($createSeoField) {
@@ -828,24 +835,27 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             'og_title' => [
                                 'field' => Forms\Components\TextInput::class,
                                 'callback' => fn (Forms\Components\TextInput $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og.og_title.label'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.og.og_title.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og.og_title.instructions'))
+                                    ->label(__('inspirecms::resources/content.seo.og_title.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_title.validation_attribute'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.og_title.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og_title.instructions'))
                                     ->limitLengthWithHint(60),
                             ],
                             'og_description' => [
                                 'field' => Forms\Components\Textarea::class,
                                 'callback' => fn (Forms\Components\Textarea $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og.og_description.label'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.og.og_description.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og.og_description.instructions'))
+                                    ->label(__('inspirecms::resources/content.seo.og_description.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_description.validation_attribute'))
+                                    ->placeholder(__('inspirecms::resources/content.seo.og_description.placeholder'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og_description.instructions'))
                                     ->limitLengthWithHint(120),
                             ],
                             'og_image' => [
                                 'field' => \SolutionForest\InspireCms\Support\Forms\Components\MediaPicker::class,
                                 'callback' => fn (\SolutionForest\InspireCms\Support\Forms\Components\MediaPicker $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og.og_image.label'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og.og_image.instructions'))
+                                    ->label(__('inspirecms::resources/content.seo.og_image.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_image.validation_attribute'))
+                                    ->helperText(__('inspirecms::resources/content.seo.og_image.instructions'))
                                     ->image()
                                     ->multiple(true),
                             ],
@@ -859,27 +869,31 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         return $components;
                     }),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.seo.robots.heading'))
+                    ->heading(__('inspirecms::resources/content.robots.section.heading'))
                     ->aside()
                     ->statePath('robots')
                     ->schema([
                         Forms\Components\Toggle::make('noindex')
-                            ->label(__('inspirecms::resources/content.seo.robots.noindex.label'))
-                            ->helperText(__('inspirecms::resources/content.seo.robots.noindex.instructions')),
+                            ->label(__('inspirecms::resources/content.robots.noindex.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.robots.noindex.validation_attribute'))
+                            ->helperText(__('inspirecms::resources/content.robots.noindex.instructions')),
                         Forms\Components\Toggle::make('nofollow')
-                            ->label(__('inspirecms::resources/content.seo.robots.nofollow.label'))
-                            ->helperText(__('inspirecms::resources/content.seo.robots.nofollow.instructions')),
+                            ->label(__('inspirecms::resources/content.robots.nofollow.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.robots.nofollow.validation_attribute'))
+                            ->helperText(__('inspirecms::resources/content.robots.nofollow.instructions')),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.redirect.heading'))
+                    ->heading(__('inspirecms::resources/content.redirect.section.heading'))
                     ->aside()
                     ->schema([
                         Forms\Components\TextInput::make('redirect_path')
                             ->label(__('inspirecms::resources/content.redirect.redirect_path.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.redirect.redirect_path.validation_attribute'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
                         \SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker::make('redirect_content_id')
                             ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.redirect.redirect_content.validation_attribute'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_content.instructions'))
                             ->dehydrateStateUsing(fn ($state) => $state[0] ?? KeyHelper::generateMinUuid())
@@ -898,6 +912,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->minItems(0),
                         Forms\Components\Select::make('redirect_type')
                             ->label(__('inspirecms::resources/content.redirect.redirect_type.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.redirect.redirect_type.validation_attribute'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_type.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_type.instructions'))
                             ->options([
@@ -916,11 +931,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->schema([
                 Forms\Components\Toggle::make('enable')
                     ->label(__('inspirecms::resources/content.sitemap.enable.label'))
+                    ->validationAttribute(__('inspirecms::resources/content.sitemap.enable.validation_attribute'))
                     ->helperText(__('inspirecms::resources/content.sitemap.enable.instructions'))
                     ->inlineLabel()
                     ->afterStateHydrated(fn ($component, $state) => $component->state(is_null($state) ? true : $state)),
                 Forms\Components\TextInput::make('priority')
                     ->label(__('inspirecms::resources/content.sitemap.priority.label'))
+                    ->validationAttribute(__('inspirecms::resources/content.sitemap.priority.validation_attribute'))
                     ->placeholder(__('inspirecms::resources/content.sitemap.priority.placeholder'))
                     ->helperText(new HtmlString(__('inspirecms::resources/content.sitemap.priority.instructions')))
                     ->inlineLabel()
@@ -934,6 +951,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->required(),
                 Forms\Components\Select::make('change_frequency')
                     ->label(__('inspirecms::resources/content.sitemap.change_frequency.label'))
+                    ->validationAttribute(__('inspirecms::resources/content.sitemap.change_frequency.validation_attribute'))
                     ->placeholder(__('inspirecms::resources/content.sitemap.change_frequency.placeholder'))
                     ->helperText(__('inspirecms::resources/content.sitemap.change_frequency.instructions'))
                     ->inlineLabel()

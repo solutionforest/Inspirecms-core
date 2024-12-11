@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResour
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UsersRelationManager extends RelationManager
@@ -25,7 +26,7 @@ class UsersRelationManager extends RelationManager
                     ->circular()
                     ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record)),
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                    ->label(__('inspirecms::resources/user.name.label'))
                     ->width('90%'),
             ])
             ->headerActions([
@@ -35,5 +36,10 @@ class UsersRelationManager extends RelationManager
             ->actions([
                 Tables\Actions\DetachAction::make(),
             ]);
+    }
+
+    public static function getTitle(Model $ownerRecord, string $pageClass): string
+    {
+        return __('inspirecms::inspirecms.user');
     }
 }

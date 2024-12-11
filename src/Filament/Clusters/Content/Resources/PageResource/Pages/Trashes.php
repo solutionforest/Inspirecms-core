@@ -15,7 +15,7 @@ class Trashes extends BaseContentListTrashPage
     {
         return [
             Actions\Action::make('back')
-                ->label(__('inspirecms::inspirecms.back'))
+                ->label(__('inspirecms::resources/content.actions.back.label'))
                 ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', [], false))
                 ->color('gray'),
             ...parent::getActions(),
@@ -43,11 +43,11 @@ class Trashes extends BaseContentListTrashPage
 
     public function getBreadcrumb(): ?string
     {
-        return __('inspirecms::inspirecms.trash');
+        return __('inspirecms::inspirecms.trash_bin');
     }
 
     public function getTitle(): string
     {
-        return __('inspirecms::inspirecms.trash');
+        return __('inspirecms::inspirecms.trash_bin');
     }
 }

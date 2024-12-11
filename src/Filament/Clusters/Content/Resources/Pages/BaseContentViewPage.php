@@ -37,7 +37,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
     {
         return [
             Actions\Action::make('back')
-                ->label(__('inspirecms::inspirecms.back'))
+                ->label(__('inspirecms::resources/content.actions.back.label'))
                 ->color('gray')
                 ->url(function ($record) {
                     if ($record->trashed()) {
@@ -52,7 +52,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
             BackToParentContentAction::make(),
             Actions\LocaleSwitcher::make(),
             PreviewAction::make()
-                ->label(__('inspirecms::actions.preview.label')),
+                ->label(__('inspirecms::resources/content.actions.preview.label')),
             Actions\EditAction::make()->iconButton(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([

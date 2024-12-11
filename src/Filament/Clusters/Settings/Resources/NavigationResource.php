@@ -61,10 +61,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return $table
             ->groups([
                 Tables\Grouping\Group::make('category')
-                    ->label(__('inspirecms::inspirecms.category'))
+                    ->label(__('inspirecms::resources/navigation.category.label'))
                     ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel()),
                 Tables\Grouping\Group::make('type')
-                    ->label(__('inspirecms::inspirecms.type'))
+                    ->label(__('inspirecms::resources/navigation.type.label'))
                     ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel()),
             ])
             ->defaultGroup('category')
@@ -75,18 +75,18 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.id')),
 
                 Tables\Columns\TextColumn::make('category')
-                    ->label(__('inspirecms::inspirecms.category'))
+                    ->label(__('inspirecms::resources/navigation.category.label'))
                     ->badge()
                     ->color(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getColor())
                     ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel())
                     ->width('5%'),
 
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/navigation.title.label')),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.url'), [
                     Tables\Columns\TextColumn::make('type')
-                        ->label(__('inspirecms::inspirecms.type'))
+                        ->label(__('inspirecms::resources/navigation.type.label'))
                         ->badge()
                         ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel())
                         ->width('5%'),
@@ -96,7 +96,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 ])->alignCenter(),
 
                 Tables\Columns\TextColumn::make('target')
-                    ->label(__('inspirecms::inspirecms.target')),
+                    ->label(__('inspirecms::resources/navigation.target.label')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton()->slideOver(),
@@ -188,7 +188,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
         };
 
         return ContentPicker::make('content_id')
-            ->label(__('inspirecms::inspirecms.content'))
+            ->label(__('inspirecms::resources/navigation.content.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.content.validation_attribute'))
             ->maxItems(1)
             ->minItems(function ($get) use ($requiredOrDisplayIfContent) {
                 return $requiredOrDisplayIfContent($get('type')) ? 1 : 0;
@@ -225,7 +226,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getUrlFormComponent()
     {
         return Forms\Components\TextInput::make('url')
-            ->label(__('inspirecms::inspirecms.url'))
+            ->label(__('inspirecms::resources/navigation.url.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.url.validation_attribute'))
             ->columnSpanFull();
     }
 
@@ -235,7 +237,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getTypeFormComponent()
     {
         return Forms\Components\Select::make('type')
-            ->label(__('inspirecms::inspirecms.type'))
+            ->label(__('inspirecms::resources/navigation.type.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.type.validation_attribute'))
             ->columnSpanFull()
             ->live()
             ->required()
@@ -263,7 +266,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getCategoryFormComponent()
     {
         return Forms\Components\Select::make('category')
-            ->label(__('inspirecms::inspirecms.category'))
+            ->label(__('inspirecms::resources/navigation.category.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
             ->required()
             ->options(function () {
                 $model = static::guardAgainstInvalidModel(static::getModel());
@@ -284,7 +288,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getTargetFormComponent()
     {
         return Forms\Components\TextInput::make('target')
-            ->label(__('inspirecms::inspirecms.target'))
+            ->label(__('inspirecms::resources/navigation.target.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.target.validation_attribute'))
             ->inlineLabel()
             ->datalist([
                 '_self',
@@ -298,7 +303,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getTitleFormComponent()
     {
         return Forms\Components\TextInput::make('title')
-            ->label(__('inspirecms::inspirecms.title'))
+            ->label(__('inspirecms::resources/navigation.title.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.title.validation_attribute'))
             ->inlineLabel()
             ->required();
     }
@@ -309,7 +315,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getIsActiveFormComponent()
     {
         return Forms\Components\Toggle::make('is_active')
-            ->label(__('inspirecms::inspirecms.is_active'))
+            ->label(__('inspirecms::resources/navigation.is_active.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.is_active.validation_attribute'))
             ->inlineLabel()
             ->default(true)
             ->disabled(function ($get, null | Model | Navigation $record, $operation) {

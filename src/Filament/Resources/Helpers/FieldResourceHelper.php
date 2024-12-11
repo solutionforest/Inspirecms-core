@@ -44,6 +44,7 @@ class FieldResourceHelper
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::resources/field.name.label'))
+            ->validationAttribute(__('inspirecms::resources/field.name.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.name.label'))
             ->helperText(__('inspirecms::resources/field.name.helper'))
@@ -67,6 +68,7 @@ class FieldResourceHelper
     {
         return Forms\Components\TextInput::make('label')
             ->label(__('inspirecms::resources/field.label.label'))
+            ->validationAttribute(__('inspirecms::resources/field.label.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.label.label'))
             ->helperText(__('inspirecms::resources/field.label.helper'))
@@ -82,6 +84,7 @@ class FieldResourceHelper
     {
         return Forms\Components\TextInput::make('instructions')
             ->label(__('inspirecms::resources/field.instructions.label'))
+            ->validationAttribute(__('inspirecms::resources/field.instructions.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.instructions.label'))
             ->helperText(__('inspirecms::resources/field.instructions.helper'))
@@ -94,6 +97,7 @@ class FieldResourceHelper
     {
         return Forms\Components\Select::make('type')
             ->label(__('inspirecms::resources/field.type.label'))
+            ->validationAttribute(__('inspirecms::resources/field.type.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.type.label'))
             ->helperText(__('inspirecms::resources/field.type.helper'))
@@ -119,6 +123,7 @@ class FieldResourceHelper
     {
         return Forms\Components\TextInput::make('state_path')
             ->label(__('inspirecms::resources/field.state_path.label'))
+            ->validationAttribute(__('inspirecms::resources/field.state_path.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.state_path.label'))
             ->helperText(__('inspirecms::resources/field.state_path.helper'))
@@ -130,6 +135,7 @@ class FieldResourceHelper
     {
         return Forms\Components\Toggle::make('mandatory')
             ->label(__('inspirecms::resources/field.mandatory.label'))
+            ->validationAttribute(__('inspirecms::resources/field.mandatory.validation_attribute'))
             ->inlineLabel()
             ->helperText(__('inspirecms::resources/field.mandatory.helper'))
             ->inlineLabel();

@@ -33,7 +33,7 @@ trait CreateContentActionTrait
 
         $this->authorize('create', InspireCmsConfig::getContentModelClass());
 
-        $this->label(__('inspirecms::actions.create_content.label'));
+        $this->label(__('inspirecms::resources/content.actions.create_content.label'));
 
         $this->icon('heroicon-o-plus');
 
@@ -55,10 +55,10 @@ trait CreateContentActionTrait
             }
 
             if (blank($title)) {
-                return __('inspirecms::actions.create_content.label');
+                return __('inspirecms::resources/content.actions.create_content.label');
             }
 
-            return __('inspirecms::actions.create_content.modal.heading', ['title' => $title]);
+            return __('inspirecms::resources/content.actions.create_content.modal.heading', ['title' => $title]);
         });
 
         $this->modalContent(function ($livewire) use ($contentResource) {

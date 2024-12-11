@@ -19,6 +19,7 @@ class FieldGroupResourceHelper
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/field-group.title.label'))
+            ->validationAttribute(__('inspirecms::resources/field-group.name.title'))
             ->required()
             ->maxLength(255);
     }
@@ -30,6 +31,7 @@ class FieldGroupResourceHelper
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::resources/field-group.name.label'))
+            ->validationAttribute(__('inspirecms::resources/field-group.name.validation_attribute'))
             ->required()
             ->maxLength(255)
             ->live(true, 500)
@@ -63,6 +65,7 @@ class FieldGroupResourceHelper
     public static function getFieldsRepeater()
     {
         return Forms\Components\Repeater::make('fields')
+            ->validationAttribute(__('inspirecms::resources/field-group.fields.validation_attribute'))
             ->key('fieldsRepeater')
             ->hiddenLabel()
             ->defaultItems(0)
@@ -71,7 +74,6 @@ class FieldGroupResourceHelper
             ->collapsible()->collapsed()
             ->orderColumn('sort')
             ->reorderableWithButtons()->reorderableWithDragAndDrop(false)
-            ->addActionLabel(fn () => __('inspirecms::inspirecms.add_xxx', ['name' => strtolower(__('inspirecms::inspirecms.fields'))]))
             ->addAction(
                 fn (Forms\Components\Actions\Action $action) => static::configureFieldsCreateActionOnRepeater($action)
             )
@@ -96,7 +98,8 @@ class FieldGroupResourceHelper
                     FieldResourceHelper::getTypeFormComponent()->helperText('')
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
-                    Forms\Components\Section::make(__('inspirecms::inspirecms.details'))
+                    Forms\Components\Section::make()
+                        ->heading(__('inspirecms::resources/field-group.details.section.heading'))
                         ->columnSpanFull()
                         ->extraAttributes(['class' => 'field-group-field-details-section'])
                         ->aside()
@@ -147,7 +150,9 @@ class FieldGroupResourceHelper
         return $action
             ->size(ActionSize::ExtraLarge)
             ->extraAttributes(['class' => 'w-full'])
-            ->label(__('inspirecms::resources/field-group.fields.actions.add.label'))
+            ->label(__('inspirecms::actions.add.label_with_name', [
+                'name' => strtolower(__('inspirecms::resources/field-group.fields.singular')),
+            ]))
             ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->slideOver()
             ->modalWidth('5xl')
@@ -155,8 +160,10 @@ class FieldGroupResourceHelper
                 'group_id' => $record?->getKey(),
             ])
             ->form(static::getFieldsEditFormSchema())
-            ->modalHeading(__('inspirecms::resources/field-group.fields.actions.add.modal.heading'))
-            ->modalSubmitActionLabel(__('inspirecms::resources/field-group.fields.actions.add.modal.actions.submit.label'))
+            ->modalHeading(__('inspirecms::actions.add.modal.heading', [
+                'name' => strtolower(__('inspirecms::resources/field-group.fields.singular')),
+            ]))
+            ->modalSubmitActionLabel(__('inspirecms::actions.add.modal.actions.submit.label'))
             ->action(function (array $data, Forms\Components\Repeater $component) {
                 $newUuid = $component->generateUuid();
 

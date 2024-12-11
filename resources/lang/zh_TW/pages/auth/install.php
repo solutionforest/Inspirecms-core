@@ -12,14 +12,17 @@ return [
 
         'email' => [
             'label' => '電子郵件地址',
+            'validation_attribute' => '電子郵件地址',
         ],
 
         'login_name' => [
             'label' => '登入名稱',
+            'validation_attribute' => '登入名稱',
         ],
 
         'name' => [
-            'label' => '名稱',
+            'label' => '姓名',
+            'validation_attribute' => '姓名',
         ],
 
         'password' => [
@@ -29,6 +32,7 @@ return [
 
         'password_confirmation' => [
             'label' => '確認密碼',
+            'validation_attribute' => '確認密碼',
         ],
 
         'actions' => [
@@ -50,7 +54,7 @@ return [
 
         'assign_role_failed' => [
             'title' => '分配用戶角色失敗',
-            'body' => '請確保您已經運行了遷移並導入了默認數據。',
+            'body' => '請確保您已經運行遷移並導入默認數據。',
         ],
 
     ],

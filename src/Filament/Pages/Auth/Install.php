@@ -138,6 +138,7 @@ class Install extends BasePage
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::pages/auth/install.form.name.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.name'))
             ->required()
             ->maxLength(255)
             ->default('System');
@@ -150,6 +151,7 @@ class Install extends BasePage
     {
         return Forms\Components\TextInput::make('email')
             ->label(__('inspirecms::pages/auth/install.form.email.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.validation_attribute'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -164,13 +166,13 @@ class Install extends BasePage
     {
         return Forms\Components\TextInput::make('password')
             ->label(__('inspirecms::pages/auth/install.form.password.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/install.form.password.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
             ->rule(Password::default())
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-            ->same('passwordConfirmation')
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.password.validation_attribute'));
+            ->same('passwordConfirmation');
     }
 
     /**
@@ -180,6 +182,7 @@ class Install extends BasePage
     {
         return Forms\Components\TextInput::make('passwordConfirmation')
             ->label(__('inspirecms::pages/auth/install.form.password_confirmation.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()

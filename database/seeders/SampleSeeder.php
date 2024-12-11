@@ -312,11 +312,19 @@ Html;
 </x-dynamic-component>   
 Html;
         $blank_page = <<<'Html'
+@php
+    use SolutionForest\InspireCms\InspireCmsConfig;
+    $locale ??= $content->getLocale();
+@endphp
 <x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
 
 </x-dynamic-component>   
 Html;
         $redirect_page = <<<'Html'
+@php
+    use SolutionForest\InspireCms\InspireCmsConfig;
+    $locale ??= $content->getLocale();
+@endphp
 <x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
     Redirecting...
 </x-dynamic-component>   

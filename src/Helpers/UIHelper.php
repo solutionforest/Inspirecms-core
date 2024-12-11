@@ -197,7 +197,7 @@ class UIHelper
             'icon' => $icon,
             'url' => $url,
             'linkTarget' => $linkTarget,
-            'copiedMessage' => __('inspirecms::inspirecms.copied'),
+            'copiedMessage' => __('inspirecms::actions.copy.message'),
         ]));
     }
 
@@ -217,7 +217,7 @@ class UIHelper
             </div>
         blade, [
             'text' => $text,
-            'copiedMessage' => __('inspirecms::inspirecms.copied'),
+            'copiedMessage' => __('inspirecms::actions.copy.message'),
         ]));
     }
 

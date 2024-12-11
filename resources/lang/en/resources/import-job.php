@@ -6,25 +6,30 @@ return [
         'description' => 'Upload a ZIP file to start an import job and wait for it to be scheduled and executed.',
     ],
     'file' => [
-        'title' => 'File',
+        'label' => 'File',
+        'validation_attribute' => 'file',
         'hint' => 'The ZIP file containing the data to import.',
     ],
     'available_at' => [
-        'title' => 'Scheduled At',
+        'label' => 'Scheduled At',
+        'validation_attribute' => 'scheduled at',
         'instructions' => 'The date and time when the import job will be executed.',
         'hint' => 'Leave empty to start the import job immediately.',
     ],
     'finished_at' => [
-        'title' => 'Finished At',
+        'label' => 'Finished At',
     ],
     'failed_at' => [
-        'title' => 'Failed At',
+        'label' => 'Failed At',
     ],
     'clear_at' => [
-        'title' => 'Clear At',
+        'label' => 'Clear At',
     ],
     'payload' => [
-        'title' => 'Payload',
+        'label' => 'Payload',
+    ],
+    'status' => [
+        'label' => 'Status',
     ],
     'notification' => [
         'completed' => [
@@ -38,7 +43,7 @@ return [
         ],
     ],
     'file_structure_instructions' => [
-        'title' => 'Folder Structure of zip file',
+        'label' => 'Folder Structure of zip file',
         'hint' => 'Below is the folder structure of the zip file. Please ensure that the zip file contains the following folders.',
     ],
 ];

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -21,7 +22,7 @@ trait HasTemplates
     /** @inheritDoc*/
     public function setAsDefaultTemplate($template)
     {
-        $templateId = $template instanceof Template ? $template->getKey() : $template;
+        $templateId = $template instanceof Model ? $template->getKey() : $template;
 
         $this->templateable()
             ->where('template_id', $templateId)

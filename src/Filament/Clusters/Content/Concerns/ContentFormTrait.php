@@ -279,21 +279,6 @@ trait ContentFormTrait
         }
     }
 
-    //region Notification
-    protected function getPublishedNotification(): ?Notification
-    {
-        $title = __('inspirecms::actions.publish.notifications.published.title');
-
-        if (blank($title)) {
-            return null;
-        }
-
-        return Notification::make()
-            ->success()
-            ->title($title);
-    }
-    //endregion Notification
-
     //region Help functions
     protected function getPublishFormAction(string $operation, string $model): Action
     {
@@ -304,8 +289,10 @@ trait ContentFormTrait
         }
 
         return Action::make('publish')
-            ->label(__('inspirecms::actions.publish.label'))
-            ->modalSubmitActionLabel(__('inspirecms::actions.publish.actions.publish.label'))
+            ->label(__('inspirecms::resources/content.actions.publish.label'))
+            ->modalHeading(__('inspirecms::resources/content.actions.publish.modal.heading'))
+            ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.publish.modal.actions.publish.label'))
+            ->successNotificationTitle(__('inspirecms::resources/content.actions.publish.notification.published.title'))
             ->keyBindings(['mod+p'])
             ->color('primary')
             ->form(function (Form $form) {
@@ -337,7 +324,6 @@ trait ContentFormTrait
             ->action(fn ($data, $action) => $this->publish($data, $action))
             ->model($model)
             ->authorize('publish')
-            ->successNotification($this->getPublishedNotification())
             // Cannot publish if the parent is not published
             ->disabled(function (?Model $record, $livewire) {
                 // Create page

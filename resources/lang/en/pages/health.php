@@ -1,19 +1,23 @@
 <?php
 
 return [
-    'title' => '健康',
+    
+    'title' => 'Health',
 
     'permissions' => [
-        'label' => '權限',
+        'label' => 'Permissions',
     ],
 
     'sitemap' => [
-        'label' => '網站地圖',
+        'label' => 'Sitemap',
     ],
 
     'actions' => [
+
         'fix' => [
-            'label' => '修復',
+
+            'label' => 'Fix',
+
         ],
     ],
 ];

@@ -8,6 +8,7 @@
         $data['config'] = FieldTypeHelper::getFieldTypeConfig($arr['fieldType'], $data['config'] ?? []);
         return PropertyTypeDto::fromArray($data);
     });
+    //todo: add translation
 @endphp
 
 <x-filament::section
@@ -15,7 +16,7 @@
     compact
 >
     <x-slot name="heading">
-        Property Types Instructions
+        {{ trans('inspirecms::resources/template.property_type_instructions.label') }}
     </x-slot>
     <div class="flex flex-col space-y-4 w-full">
         @foreach ($propertyTypes as $propertyType)

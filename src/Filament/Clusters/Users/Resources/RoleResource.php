@@ -43,27 +43,27 @@ class RoleResource extends Resource implements ClusterSectionResource
                     ->columnSpanFull()->columns(1)
                     ->schema([
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.cluster_section_access.label'))
-                            ->description(__('inspirecms::resources/role.cluster_section_access.instructions'))
+                            ->heading(__('inspirecms::resources/role.cluster_section_access.section.heading'))
+                            ->description(__('inspirecms::resources/role.cluster_section_access.section.description'))
                             ->collapsible()
                             ->statePath('cluster_section_access')
                             ->columns(2)
                             ->schema(static::getFormComponentsForClusterSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.action_permissions.label'))
-                            ->description(__('inspirecms::resources/role.action_permissions.instructions'))
+                            ->heading(__('inspirecms::resources/role.action_permissions.section.heading'))
+                            ->description(__('inspirecms::resources/role.action_permissions.section.description'))
                             ->collapsible()
                             ->statePath('action_permissions')
                             ->schema(static::getFormComponentsForActionPermissionsSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.page_permissions.label'))
-                            ->description(__('inspirecms::resources/role.page_permissions.instructions'))
+                            ->heading(__('inspirecms::resources/role.page_permissions.section.heading'))
+                            ->description(__('inspirecms::resources/role.page_permissions.section.description'))
                             ->collapsible()
                             ->statePath('page_permissions')
                             ->schema(static::getFormComponentsForPagePermissionsSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.resource_permissions.label'))
-                            ->description(__('inspirecms::resources/role.resource_permissions.instructions'))
+                            ->heading(__('inspirecms::resources/role.resource_permissions.section.heading'))
+                            ->description(__('inspirecms::resources/role.resource_permissions.section.description'))
                             ->collapsible()
                             ->statePath('resource_permissions')
                             ->schema(static::getFormComponentForResourcePermissionsSection()),
@@ -124,10 +124,10 @@ class RoleResource extends Resource implements ClusterSectionResource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                    ->label(__('inspirecms::resources/role.name.label'))
                     ->badge(),
-                Tables\Columns\TextColumn::make('allow_sections')
-                    ->label(__('inspirecms::inspirecms.allow_sections'))
+                Tables\Columns\TextColumn::make('allow_clusters')
+                    ->label(__('inspirecms::resources/role.cluster_section_access.label'))
                     ->getStateUsing(function (Role $record) {
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
                         $allowSections = $record->getPermissionNames()
@@ -191,6 +191,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('name')
             ->label(__('inspirecms::resources/role.name.label'))
+            ->validationAttribute(__('inspirecms::resources/role.name.validation_attribute'))
             ->unique(table: static::getModel(), column: 'name', ignoreRecord: true, modifyRuleUsing: function (Unique $rule) {
                 return $rule->where('guard_name', InspireCmsConfig::getGuardName());
             })

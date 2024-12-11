@@ -29,6 +29,8 @@ class BackToParentContentAction extends Action
 
         $this->icon('heroicon-o-chevron-left');
 
+        $this->label(__('inspirecms::resources/content.actions.back.label'));
+
         $this->url(function (null|Model|Content $record, $livewire) {
             if ($record->trashed() || ! $record || ! ($record instanceof Content)) {
                 return null;

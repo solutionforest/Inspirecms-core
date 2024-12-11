@@ -100,12 +100,12 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/field-group.title.label')),
                 Tables\Columns\TextColumn::make('fields_count')
-                    ->label(__('inspirecms::inspirecms.fields'))
+                    ->label(__('inspirecms::resources/field-group.fields.label'))
                     ->alignEnd()
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('document_types_count')
                     ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
-                        'name' => __('inspirecms::inspirecms.document_type'),
+                        'name' => strtolower(__('inspirecms::inspirecms.document_type')),
                     ]))
                     ->alignEnd()
                     ->width('5%'),

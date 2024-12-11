@@ -11,12 +11,11 @@ use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
-use Illuminate\Support\Str;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use Pboivin\FilamentPeek\Support\Html;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
+use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreviewAction;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
@@ -48,18 +47,7 @@ class TemplatesRelationManager extends RelationManager
         return $form
             ->columns(1)
             ->schema([
-                Forms\Components\TextInput::make('slug')
-                    ->label(__('inspirecms::inspirecms.slug'))
-                    ->inlineLabel()
-                    ->required()
-                    ->maxLength(255)
-                    ->live(true, 500)
-                    ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state)))
-                    ->unique(
-                        table: $this->getRelationship()->getRelated()->getTable(),
-                        column: 'slug',
-                        ignoreRecord: true
-                    ),
+                TemplateResourceHelper::getSlugFormComponent(),
             ]);
     }
 
@@ -68,27 +56,19 @@ class TemplatesRelationManager extends RelationManager
         return $form
             ->columns(1)
             ->schema([
-                static::getContentFormField()
-                    ->afterStateHydrated(fn ($component, Template $record) => $component->state(static::getTemplateContent($record)))
-                    ->dehydrateStateUsing(fn ($state, Template $record) => static::updateTemplateContent($record, $state)),
+            TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
+            TemplateResourceHelper::getContentFormComponent()
+                    ->afterStateHydrated(fn ($component, Template $record) => $component->state(TemplateResourceHelper::getViewContent($record)))
+                    ->dehydrateStateUsing(fn ($state, Template $record) => TemplateResourceHelper::updateViewContent($record, $state)),
             ]);
-    }
-
-    /** @return Forms\Components\Component|Forms\Components\Field */
-    public static function getContentFormField($name = 'content')
-    {
-        return AceEditor::make($name)
-            ->mode('php')
-            ->darkTheme('tomorrow_night_eighties')
-            ->height('64rem');
     }
 
     public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
     {
         return [
-            Forms\Components\ViewField::make('property_type_instructions')
-                ->view('inspirecms::filament.forms.components.property-type-instructions'),
-            static::getContentFormField('htmlContent'),
+            TemplateResourceHelper::getPropertyTypeInstructionsFormComponent(),
+            TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
+            TemplateResourceHelper::getContentFormComponent('htmlContent'),
         ];
     }
 
@@ -97,8 +77,7 @@ class TemplatesRelationManager extends RelationManager
         return $table
             ->contentGrid(['xl' => 3, 'lg' => 2, 'default' => 1])
             ->recordTitle(fn ($record) => $record->path)
-            ->modelLabel(fn () => __('inspirecms::resources/document-type.templates.singular'))
-            ->pluralModelLabel(__('inspirecms::resources/document-type.templates.plural'))
+            ->modelLabel(fn () => __('inspirecms::inspirecms.template'))
             ->description(fn () => __('inspirecms::resources/document-type.templates.description'))
             ->columns([
                 Tables\Columns\Layout\Split::make([
@@ -110,7 +89,6 @@ class TemplatesRelationManager extends RelationManager
                         ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
                         ->iconColor(fn ($state) => $state ? 'success' : 'danger')
                         ->formatStateUsing(fn () => __('inspirecms::inspirecms.is_default'))
-                        ->extraAttributes(['class' => 'sdsds'])
                         ->grow(),
                 ])->from('md'),
             ])
@@ -125,7 +103,7 @@ class TemplatesRelationManager extends RelationManager
                     ->icon('heroicon-o-check-circle')
                     ->button()
                     ->outlined()
-                    ->successNotificationTitle(__('inspirecms::actions.set_as_default.notifications.saved.title'))
+                    ->successNotificationTitle(__('inspirecms::actions.set_as_default.notification.saved.title'))
                     ->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
 
@@ -136,8 +114,8 @@ class TemplatesRelationManager extends RelationManager
                         $this->dispatch('$refresh');
                     }),
                 Tables\Actions\ActionGroup::make([
-                    EditAndPreviewAction::make()->builderName('templateViewBuilder'),
                     Tables\Actions\EditAction::make(),
+                    EditAndPreviewAction::make()->builderName('templateViewBuilder'),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DetachAction::make(),
                 ]),
@@ -152,7 +130,7 @@ class TemplatesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::resources/document-type.templates.plural');
+        return __('inspirecms::resources/document-type.templates.label');
     }
 
     protected function configureTableAction(Tables\Actions\Action $action): void
@@ -173,7 +151,7 @@ class TemplatesRelationManager extends RelationManager
             ->createAnother(false)
             // Set the default template if it's not set
             ->after(function (Model $record) {
-                static::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
+                TemplateResourceHelper::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
                 $this->dispatch('refreshAlerts');
             });
     }
@@ -189,7 +167,7 @@ class TemplatesRelationManager extends RelationManager
                 if (is_null($record)) {
                     $record = is_array($data['recordId'] ?? []) ? collect($data['recordId'] ?? [])->first() : $data['recordId'];
                 }
-                static::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
+                TemplateResourceHelper::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
                 $this->dispatch('refreshAlerts');
             });
     }
@@ -245,7 +223,7 @@ class TemplatesRelationManager extends RelationManager
             }
         } catch (\Throwable $th) {
             Notification::make()
-                ->title(__('inspirecms::inspirecms.something_went_wrong'))
+                ->title(__('inspirecms::notification.something_went_wrong.title'))
                 ->body($th->getMessage())
                 ->danger()
                 ->send();
@@ -284,7 +262,7 @@ class TemplatesRelationManager extends RelationManager
         $templateRecord = $this->cachedMountedTableActionRecord;
         $editorData['recordId'] = $templateRecord?->getKey();
         if ($templateRecord instanceof Template) {
-            $editorData['htmlContent'] = static::getTemplateContent($templateRecord);
+            $editorData['htmlContent'] = TemplateResourceHelper::getViewContent($templateRecord);
         }
         $documentType = $this->getOwnerRecord();
         $editorData['documentTypeId'] = $documentType->getKey();
@@ -321,47 +299,11 @@ class TemplatesRelationManager extends RelationManager
             return;
         }
 
-        static::updateTemplateContent($template, $htmlContent);
+        TemplateResourceHelper::updateViewContent($template, $htmlContent);
 
         Notification::make()
-            ->title(__('inspirecms::actions.edit_and_preview.notifications.saved.title'))
+            ->title(__('inspirecms::actions.edit_and_preview.notification.saved.title'))
             ->success()
             ->send();
     }
-
-    /**
-     * Retrieves the content of the template associated with the given record.
-     *
-     * @param  Template  $record  The record from which to retrieve the template content.
-     * @return string The content of the template.
-     */
-    protected static function getTemplateContent($record): string
-    {
-        return file_get_contents($record->getFileFullPath());
-    }
-
-    /**
-     * Updates the content of a template.
-     *
-     * @param  Template  $record  The record associated with the template.
-     * @param  string  $content  The new content to be updated in the template.
-     */
-    protected static function updateTemplateContent($record, $content): void
-    {
-        file_put_contents($record->getFileFullPath(), $content);
-    }
-
-    //region Helpers
-    /**
-     * @param DocumentType&Model $record
-     * @param string|int|Model&Template $template
-     * @return void
-     */
-    protected static function setDefaultTemplateIfEmpty($record, $template): void
-    {
-        if (is_null($record->getDefaultTemplate())) {
-            $record->setAsDefaultTemplate($record);
-        }
-    }
-    //endregion Helpers
 }

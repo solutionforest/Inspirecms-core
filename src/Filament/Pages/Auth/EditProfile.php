@@ -22,13 +22,13 @@ class EditProfile extends BasePage
 
     protected function getSavedNotificationTitle(): ?string
     {
-        return __('inspirecms::pages/auth/profile.notifications.saved.title');
+        return __('inspirecms::notification.saved.title');
     }
 
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('inspirecms::pages/auth/profile.form.actions.save.label'))
+            ->label(__('inspirecms::actions.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }
@@ -36,7 +36,7 @@ class EditProfile extends BasePage
     public function getCancelFormAction(): Action
     {
         return Action::make('back')
-            ->label(__('inspirecms::pages/auth/profile.actions.cancel.label'))
+            ->label(__('inspirecms::actions.cancel.label'))
             ->alpineClickHandler('document.referrer ? window.history.back() : (window.location.href = ' . Js::from(filament()->getUrl()) . ')')
             ->color('gray');
     }

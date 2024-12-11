@@ -12,14 +12,17 @@ return [
 
         'email' => [
             'label' => 'Email address',
+            'validation_attribute' => 'email address',
         ],
 
         'login_name' => [
             'label' => 'Login name',
+            'validation_attribute' => 'login name',
         ],
 
         'name' => [
             'label' => 'Name',
+            'validation_attribute' => 'name',
         ],
 
         'password' => [
@@ -29,6 +32,7 @@ return [
 
         'password_confirmation' => [
             'label' => 'Confirm password',
+            'validation_attribute' => 'password confirmation',
         ],
 
         'actions' => [

@@ -103,12 +103,12 @@ class FieldGroupsRelationManager extends RelationManager
             ->description(fn () => __('inspirecms::resources/document-type.field_groups.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::inspirecms.title')),
+                    ->label(__('inspirecms::resources/field-group.title.label')),
                 Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::inspirecms.name'))
+                    ->label(__('inspirecms::resources/field-group.name.label'))
                     ->badge(),
                 Tables\Columns\TextColumn::make('fields_count')
-                    ->label(__('inspirecms::inspirecms.fields')),
+                    ->label(__('inspirecms::resources/field-group.fields.label')),
 
                 // Tables\Columns\ColumnGroup::make('inherited_from')
                 //     ->label(__('inspirecms::resources/document-type.inherited_from.label'))

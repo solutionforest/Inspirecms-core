@@ -25,14 +25,14 @@ class ContentHistoryAction extends Action implements GuardAction
 
     public static function getPermissionDisplayName(): string
     {
-        return __('inspirecms::actions.content_history.permission_display_name');
+        return __('inspirecms::resources/content.actions.content_history.permission_display_name');
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label(fn () => __('inspirecms::actions.content_history.label'));
+        $this->label(fn () => __('inspirecms::resources/content.actions.content_history.label'));
 
         $this->hidden(fn (null | Model | Content $record) => is_null($record));
 

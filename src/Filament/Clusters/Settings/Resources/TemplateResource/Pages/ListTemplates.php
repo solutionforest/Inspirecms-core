@@ -3,14 +3,15 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource\Pages;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Tables\Actions\EditAction;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\On;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
+use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithFileExplorer;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
@@ -86,7 +87,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                         return;
                     }
 
-                    $this->updateViewContent($data['full_path'], $data['content']);
+                    TemplateResourceHelper::updateViewContentByPath($data['full_path'], $data['content']);
 
                     $action->success();
                 }),
@@ -98,14 +99,14 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
         return $form
             ->columns(1)
             ->schema([
+                Hidden::make('template_id'),
                 TextInput::make('full_path')
                     ->hiddenLabel()
                     ->disabled()
                     ->dehydrated(),
-                AceEditor::make('content')
-                    ->mode('php')
-                    ->darkTheme('tomorrow_night_eighties')
-                    ->height('56rem'),
+                TemplateResourceHelper::getPageComponentInstructionsFormComponent()
+                    ->visible(fn ($get) => filled($get('template_id'))),
+                TemplateResourceHelper::getContentFormComponent(),
             ]);
     }
 
@@ -129,6 +130,7 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                 return [];
             }
             $fullPath = $record->getFileFullPath();
+            $data['template_id'] = $record->getKey();
             $data['full_path'] = $fullPath;
             $data['content'] = $this->getFileContent($fullPath);
 
@@ -141,13 +143,8 @@ class ListTemplates extends BaseListPage implements HasFileExplorer
                 return;
             }
 
-            $this->updateViewContent($data['full_path'], $data['content']);
+            TemplateResourceHelper::updateViewContentByPath($data['full_path'], $data['content']);
 
         });
-    }
-
-    protected function updateViewContent($fullPath, $content)
-    {
-        file_put_contents($fullPath, $content);
     }
 }

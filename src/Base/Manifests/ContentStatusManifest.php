@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -118,10 +117,14 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                 'heroicon-o-x-circle',
                 // Must have record injected
                 fn () => Action::make('unpublish')
-                    ->label(__('inspirecms::actions.unpublish.label'))
-                    ->modalSubmitActionLabel(__('inspirecms::actions.unpublish.actions.unpublish.label'))
+                    ->label(__('inspirecms::resources/content.actions.unpublish.label'))
                     ->color('gray')
                     ->requiresConfirmation()
+                    ->modalHeading(__('inspirecms::resources/content.actions.unpublish.modal.heading'))
+                    ->modalDescription(__('inspirecms::resources/content.actions.unpublish.modal.description'))
+                    ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.unpublish.modal.actions.unpublish.label'))
+                    ->modalIcon('heroicon-o-x-circle')
+                    ->successNotificationTitle(__('inspirecms::resources/content.actions.unpublish.notification.unpublished.title'))
                     ->action(function (null | Model | Content $record, Action $action, $livewire) {
                         if (is_null($record)) {
                             $action->cancel();
@@ -137,11 +140,6 @@ class ContentStatusManifest implements ContentStatusManifestInterface
 
                     })
                     ->authorize('unpublish')
-                    ->successNotification(
-                        fn () => Notification::make()
-                            ->success()
-                            ->title(__('inspirecms::actions.unpublish.notifications.unpublished.title'))
-                    )
             ),
         ];
     }

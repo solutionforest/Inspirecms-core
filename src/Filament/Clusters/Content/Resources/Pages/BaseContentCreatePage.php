@@ -51,7 +51,7 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     protected function getCreateFormAction(): Actions\Action
     {
         return parent::getCreateFormAction()
-            ->label(__('inspirecms::actions.save_draft.label'))
+            ->label(__('inspirecms::resources/content.actions.save_draft.label'))
             ->color('secondary');
     }
 

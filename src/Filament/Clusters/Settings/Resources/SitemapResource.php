@@ -69,7 +69,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/sitemap.enable.label'))
                     ->disabled(fn (Model | Sitemap $record) => ! static::canEdit($record)),
                 Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('inspirecms::resources/sitemap.last_modified.label'))
+                    ->label(__('inspirecms::inspirecms.last_updated_at'))
                     ->sortable(),
             ])
             ->actions([
@@ -126,6 +126,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('url')
             ->label(__('inspirecms::resources/sitemap.url.label'))
+            ->validationAttribute(__('inspirecms::resources/sitemap.url.validation_attribute'))
             ->url()
             ->columnSpanFull()
             ->required();
@@ -136,6 +137,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('priority')
             ->label(__('inspirecms::resources/sitemap.priority.label'))
+            ->validationAttribute(__('inspirecms::resources/sitemap.priority.validation_attribute'))
             ->numeric()
             ->inputMode('decimal')
             ->maxValue(1)
@@ -151,6 +153,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Select::make('change_frequency')
             ->label(__('inspirecms::resources/sitemap.change_frequency.label'))
+            ->validationAttribute(__('inspirecms::resources/sitemap.change_frequency.validation_attribute'))
             ->options(SitemapChangeFrequency::class)
             ->afterStateHydrated(fn ($component, $state) => $component->state($state ?? SitemapChangeFrequency::Monthly->value))
             ->dehydrateStateUsing(fn ($state) => $state ?? SitemapChangeFrequency::Monthly->value)
@@ -162,6 +165,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Toggle::make('enable')
             ->label(__('inspirecms::resources/sitemap.enable.label'))
+            ->validationAttribute(__('inspirecms::resources/sitemap.enable.validation_attribute'))
             ->default(true);
     }
     //endregion Form field(s)/component(s)
