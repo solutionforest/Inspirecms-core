@@ -269,10 +269,8 @@ trait ContentFormTrait
 
     protected function onValidationError(ValidationException $exception): void
     {
-        $fieldKeys = array_keys($exception->validator->errors()->messages());
-
-        // Display notification if have validation error for "slug" field
-        if (in_array('data.slug', $fieldKeys)) {
+        // Display notification if have "Unique" validation error for "slug" field
+        if (collect($exception->validator->failed()["data.slug"]["Unique"] ?? [])->isNotEmpty()) {
             Notification::make()
                 ->title(__('inspirecms::resources/content.notification.remove_content_same_slug_in_same_parent.title'))
                 ->body(__('inspirecms::resources/content.notification.remove_content_same_slug_in_same_parent.body'))
