@@ -411,53 +411,55 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->extraAttributes(['class' => 'w-full'])
                     ->icon(FilamentIcon::resolve('inspirecms::attach'))
                     ->slideOver()
-                    ->form(fn (Form $form, Forms\Components\Repeater $component, $state, null | Model | DocumentType $record) => $form
-                        ->schema(function () use ($component, $state, $record): array {
+                    ->form(
+                        fn (Form $form, Forms\Components\Repeater $component, $state, null | Model | DocumentType $record) => $form
+                            ->schema(function () use ($component, $state, $record): array {
 
-                            /** @var BelongsToMany $relationship */
-                            $relationship = $component->getRelationship();
-                            $inverseRelationshipName = 'rejectingDocumentTypes';
+                                /** @var BelongsToMany $relationship */
+                                $relationship = $component->getRelationship();
+                                $inverseRelationshipName = 'rejectingDocumentTypes';
 
-                            $getOptions = static function (int $optionsLimit, ?string $search = null, array $searchColumns = []) use ($relationship, $inverseRelationshipName, $state, $record): array {
+                                $getOptions = static function (int $optionsLimit, ?string $search = null, array $searchColumns = []) use ($relationship, $inverseRelationshipName, $state, $record): array {
 
-                                $excepts = collect($state ?? [])->pluck('document_type_id')->merge([$record?->getKey()])->filter()->unique()->values()->all();
+                                    $excepts = collect($state ?? [])->pluck('document_type_id')->merge([$record?->getKey()])->filter()->unique()->values()->all();
 
-                                return collect(
+                                    return collect(
                                         SearchHelper::getAttachOptions(
-                                            relationship: $relationship, 
-                                            inverseRelationshipName: $inverseRelationshipName, 
-                                            optionsLimit: $optionsLimit, 
-                                            getRecordTitleUsing: fn (Model | DocumentType $record) => [$record->title, $record->slug], 
-                                            search: $search, 
+                                            relationship: $relationship,
+                                            inverseRelationshipName: $inverseRelationshipName,
+                                            optionsLimit: $optionsLimit,
+                                            getRecordTitleUsing: fn (Model | DocumentType $record) => [$record->title, $record->slug],
+                                            search: $search,
                                             searchColumns: $searchColumns,
                                             excepts: $excepts,
                                         )
                                     )
-                                    ->map(function (array $values) {
-                                        [$title, $slug] = $values; 
-                                        return UIHelper::generateTextWithBadge(
-                                            text: $title,
-                                            badgeText: $slug,
-                                            attibutes: [
-                                                'text' => ['class' => 'flex-1 font-semibold'],
-                                                'badge' => ['class' => 'font-mono'],
-                                            ]
-                                        )->toHtml();
-                                    })
-                                    ->all();
+                                        ->map(function (array $values) {
+                                            [$title, $slug] = $values;
 
-                            };
+                                            return UIHelper::generateTextWithBadge(
+                                                text: $title,
+                                                badgeText: $slug,
+                                                attibutes: [
+                                                    'text' => ['class' => 'flex-1 font-semibold'],
+                                                    'badge' => ['class' => 'font-mono'],
+                                                ]
+                                            )->toHtml();
+                                        })
+                                        ->all();
 
-                            return [
-                                Forms\Components\Select::make('recordId')
-                                    ->hiddenLabel()
-                                    ->searchable(['title', 'slug'])
-                                    ->allowHtml()
-                                    ->multiple()
-                                    ->getSearchResultsUsing(static fn (Forms\Components\Select $component, string $search): array => $getOptions(optionsLimit: $component->getOptionsLimit(), search: $search, searchColumns: $component->getSearchColumns()))
-                                    ->options(fn (Forms\Components\Select $component): array => $getOptions(optionsLimit: $component->getOptionsLimit(), searchColumns: $component->getSearchColumns()))
-                            ];
-                        })
+                                };
+
+                                return [
+                                    Forms\Components\Select::make('recordId')
+                                        ->hiddenLabel()
+                                        ->searchable(['title', 'slug'])
+                                        ->allowHtml()
+                                        ->multiple()
+                                        ->getSearchResultsUsing(static fn (Forms\Components\Select $component, string $search): array => $getOptions(optionsLimit: $component->getOptionsLimit(), search: $search, searchColumns: $component->getSearchColumns()))
+                                        ->options(fn (Forms\Components\Select $component): array => $getOptions(optionsLimit: $component->getOptionsLimit(), searchColumns: $component->getSearchColumns())),
+                                ];
+                            })
                     )
                     ->action(function (array $data, Forms\Components\Repeater $component) {
                         $recordIds = $data['recordId'] ?? [];
@@ -478,21 +480,21 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                             ];
 
                             $newUuid = $component->generateUuid();
-    
+
                             $items = $component->getState();
-    
+
                             if ($newUuid) {
                                 $items[$newUuid] = $data;
                             } else {
                                 $items[] = $data;
                             }
-    
+
                             $component->state($items);
-    
+
                             $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill($data);
-    
+
                             $component->collapsed(true, shouldMakeComponentCollapsible: true);
-    
+
                         }
 
                         $component->callAfterStateUpdated();

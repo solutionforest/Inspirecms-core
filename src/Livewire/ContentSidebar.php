@@ -14,7 +14,6 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAct
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 
-use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -56,8 +55,8 @@ class TemplatesRelationManager extends RelationManager
         return $form
             ->columns(1)
             ->schema([
-            TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
-            TemplateResourceHelper::getContentFormComponent()
+                TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
+                TemplateResourceHelper::getContentFormComponent()
                     ->afterStateHydrated(fn ($component, Template $record) => $component->state(TemplateResourceHelper::getViewContent($record)))
                     ->dehydrateStateUsing(fn ($state, Template $record) => TemplateResourceHelper::updateViewContent($record, $state)),
             ]);

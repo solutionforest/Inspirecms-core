@@ -154,7 +154,7 @@ trait CreateContentActionTrait
                 'rejectingDocumentTypes',
                 fn ($query) => $query->whereKey($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType)
             );
-        } 
+        }
 
         return $query->get();
     }

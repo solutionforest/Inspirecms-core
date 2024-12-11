@@ -193,24 +193,23 @@ return [
         'preview' => [
 
             'label' => '預覽',
-    
+
         ],
 
         'more_actions' => [
 
             'label' => '更多操作',
-    
-        ],
 
+        ],
 
         'publish' => [
 
             'label' => '發布',
-    
+
             'modal' => [
-    
+
                 'heading' => '發布內容',
-                
+
                 'actions' => [
 
                     'publish' => [
@@ -220,9 +219,9 @@ return [
                     ],
 
                 ],
-    
+
             ],
-    
+
             'notification' => [
 
                 'published' => [
@@ -234,21 +233,21 @@ return [
         ],
 
         'save_draft' => [
-    
+
             'label' => '保存草稿',
-    
+
         ],
 
         'trash_bin' => [
-    
+
             'label' => '垃圾桶',
-    
+
         ],
 
         'reorder_content' => [
-    
+
             'label' => '重新排序內容',
-    
+
             'notification' => [
 
                 'invalid_model' => [
@@ -267,82 +266,82 @@ return [
 
                 ],
             ],
-    
+
             'permission_display_name' => '重新排序內容',
-    
+
         ],
-    
+
         'set_default_content_page' => [
-    
+
             'label' => '設為默認頁面',
-    
+
             'permission_display_name' => '設置默認頁面',
-    
+
             'notification' => [
-    
+
                 'success' => [
-    
+
                     'title' => '默認頁面已更新。',
-    
+
                 ],
             ],
-    
+
         ],
 
         'unpublish' => [
-    
+
             'label' => '取消發布',
-    
+
             'modal' => [
-    
+
                 'heading' => '取消發布內容',
 
                 'description' => '',
 
                 'actions' => [
-    
+
                     'unpublish' => [
-    
+
                         'label' => '取消發布',
-    
+
                     ],
                 ],
-    
+
             ],
-    
+
             'notification' => [
-    
+
                 'unpublished' => [
-    
+
                     'title' => '取消發布成功',
-    
+
                 ],
             ],
         ],
 
         'create_content' => [
-    
+
             'label' => '創建內容',
-    
+
             'modal' => [
-    
+
                 'heading' => '在 :title 下創建內容',
-    
+
             ],
-    
+
             'empty_state' => '沒有可用的文檔類型。請先創建文檔類型。',
-    
-        ],
-    
-        'content_history' => [
-    
-            'label' => '內容歷史',
-    
-            'permission_display_name' => '查看內容歷史',
-    
+
         ],
 
-        'back'=> [
+        'content_history' => [
+
+            'label' => '內容歷史',
+
+            'permission_display_name' => '查看內容歷史',
+
+        ],
+
+        'back' => [
 
             'label' => '返回',
 

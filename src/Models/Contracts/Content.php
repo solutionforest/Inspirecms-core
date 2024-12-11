@@ -26,13 +26,11 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\Carbon $updated_at
  * @property ?\Carbon\Carbon $deleted_at
  * @property null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
- * 
  * @property null | Model & DocumentType $documentType
  * @property null | Model & Sitemap $sitemap
  * @property null | Model & Content $trashedParent
  * @property null | Model & Navigation $navigation
  * @property null | Model & ContentPath $path
- * 
  * @property Collection<Model & Content> $ancestors
  * @property Collection<Model & Content> $ancestorsAndSelf
  * @property Collection<Model & Content> $bloodline
@@ -116,12 +114,11 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsWebPage($query);
-    
+
     /**
      * Scope a query to only include default content.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsDefault($query, bool $condition = true);

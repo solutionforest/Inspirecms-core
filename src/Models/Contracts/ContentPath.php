@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $content_id
  * @property string $slug_path
  * @property string $encoded_path
- * 
  * @property null | Model & Content $content
  */
 interface ContentPath

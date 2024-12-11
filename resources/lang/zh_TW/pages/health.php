@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'title' => '健康',
 
     'permissions' => [

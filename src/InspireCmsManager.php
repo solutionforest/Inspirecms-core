@@ -14,7 +14,6 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 

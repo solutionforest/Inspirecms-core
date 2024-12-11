@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
 class Login extends BasePage
 {
     use HaveBackgroundImage;
-    
+
     /**
      * @var view-string
      */

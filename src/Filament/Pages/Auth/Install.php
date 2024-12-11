@@ -23,7 +23,7 @@ use Spatie\Permission\Traits\HasRoles;
 class Install extends BasePage
 {
     use HaveBackgroundImage;
-    
+
     /**
      * @var view-string
      */

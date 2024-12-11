@@ -62,7 +62,7 @@ return [
     ],
 
     'add' => [
-            
+
         'label' => '添加',
 
         'label_with_name' => '添加 :name',
@@ -85,7 +85,7 @@ return [
     ],
 
     'attach' => [
-            
+
         'label' => '附加',
 
         'label_with_name' => '附加 :name',
@@ -98,7 +98,6 @@ return [
 
     ],
 
-    
     'copy' => [
 
         'label' => '複製到剪貼板',

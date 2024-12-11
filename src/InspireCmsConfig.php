@@ -25,8 +25,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @param string $key
-     * @param null|class-string $default
+     * @param  null|class-string  $default
      * @return class-string
      */
     public static function getFilamentResource(string $key, $default = null)

@@ -12,7 +12,6 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property int|string|null $parent_id
  * @property ?\Carbon\Carbon $created_at
  * @property ?\Carbon\Carbon $updated_at
- * 
  * @property \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
  * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
  * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
@@ -124,7 +123,7 @@ interface DocumentType extends Base\HasTemplates
      * @return bool True on success, false on failure.
      */
     public function deteachInheritFieldGroupsFrom($documentType);
-    
+
     /**
      * Determine if the document type can manage templates.
      *

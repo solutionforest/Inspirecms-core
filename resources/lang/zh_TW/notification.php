@@ -31,9 +31,9 @@ return [
     ],
 
     'something_went_wrong' => [
-            
+
         'title' => '出了些問題。',
-        
+
     ],
 
 ];

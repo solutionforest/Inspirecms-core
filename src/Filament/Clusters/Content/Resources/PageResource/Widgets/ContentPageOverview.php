@@ -63,7 +63,7 @@ class ContentPageOverview extends Widget
     }
 
     /**
-     * @param null | Model & Content $content
+     * @param  null | Model & Content  $content
      * @return ?string
      */
     public function getContentTitle($content)
@@ -72,7 +72,7 @@ class ContentPageOverview extends Widget
     }
 
     /**
-     * @param null | Model & Content $content
+     * @param  null | Model & Content  $content
      */
     public function getContentStatusIcon($content)
     {
@@ -80,7 +80,7 @@ class ContentPageOverview extends Widget
     }
 
     /**
-     * @param null | Model & Content $content
+     * @param  null | Model & Content  $content
      */
     public function getContentStatusLabel($content)
     {
@@ -88,7 +88,7 @@ class ContentPageOverview extends Widget
     }
 
     /**
-     * @param null | Model & Content $content
+     * @param  null | Model & Content  $content
      */
     public function getContentStatusColor($content)
     {
@@ -96,7 +96,7 @@ class ContentPageOverview extends Widget
     }
 
     /**
-     * @param null | Model & Content $content
+     * @param  null | Model & Content  $content
      */
     public function getContentPublishTime($content)
     {

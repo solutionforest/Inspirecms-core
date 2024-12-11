@@ -193,24 +193,23 @@ return [
         'preview' => [
 
             'label' => 'Preview',
-    
+
         ],
 
         'more_actions' => [
 
             'label' => 'More actions',
-    
-        ],
 
+        ],
 
         'publish' => [
 
             'label' => 'Publish',
-    
+
             'modal' => [
-    
+
                 'heading' => 'Publish content',
-                
+
                 'actions' => [
 
                     'publish' => [
@@ -220,9 +219,9 @@ return [
                     ],
 
                 ],
-    
+
             ],
-    
+
             'notification' => [
 
                 'published' => [
@@ -234,21 +233,21 @@ return [
         ],
 
         'save_draft' => [
-    
+
             'label' => 'Save draft',
-    
+
         ],
 
         'trash_bin' => [
-    
+
             'label' => 'Trash bin',
-    
+
         ],
 
         'reorder_content' => [
-    
+
             'label' => 'Reorder content',
-    
+
             'notification' => [
 
                 'invalid_model' => [
@@ -267,82 +266,82 @@ return [
 
                 ],
             ],
-    
+
             'permission_display_name' => 'Reorder content',
-    
+
         ],
-    
+
         'set_default_content_page' => [
-    
+
             'label' => 'Set as default page',
-    
+
             'permission_display_name' => 'Set default page',
-    
+
             'notification' => [
-    
+
                 'success' => [
-    
+
                     'title' => 'Default page updated.',
-    
+
                 ],
             ],
-    
+
         ],
 
         'unpublish' => [
-    
+
             'label' => 'Unpublish',
-    
+
             'modal' => [
-    
+
                 'heading' => 'Unpublish content',
 
                 'description' => '',
 
                 'actions' => [
-    
+
                     'unpublish' => [
-    
+
                         'label' => 'Unpublish',
-    
+
                     ],
                 ],
-    
+
             ],
-    
+
             'notification' => [
-    
+
                 'unpublished' => [
-    
+
                     'title' => 'Unpublished Successful',
-    
+
                 ],
             ],
         ],
 
         'create_content' => [
-    
+
             'label' => 'Create content',
-    
+
             'modal' => [
-    
+
                 'heading' => 'Create content under :title',
-    
+
             ],
-    
+
             'empty_state' => 'No document types available. Please create a document type first.',
-    
-        ],
-    
-        'content_history' => [
-    
-            'label' => 'Content History',
-    
-            'permission_display_name' => 'View content history',
-    
+
         ],
 
-        'back'=> [
+        'content_history' => [
+
+            'label' => 'Content History',
+
+            'permission_display_name' => 'View content history',
+
+        ],
+
+        'back' => [
 
             'label' => 'Back',
 

@@ -51,7 +51,7 @@ interface ContentStatusManifestInterface
     /**
      * Get the form actions, excluding specified actions.
      *
-     * @param array $excepts An array of actions to exclude from the result.
+     * @param  array  $excepts  An array of actions to exclude from the result.
      * @return array<int,\Filament\Actions\Action> The form actions after excluding the specified actions.
      */
     public function getFormActions(array $excepts = []);

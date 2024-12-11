@@ -12,9 +12,9 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateResourceHelper
 {
-    /** 
-     * @param string $name
-     * @return Forms\Components\Field|Forms\Components\Component 
+    /**
+     * @param  string  $name
+     * @return Forms\Components\Field|Forms\Components\Component
      */
     public static function getContentFormComponent($name = 'content')
     {
@@ -65,8 +65,8 @@ class TemplateResourceHelper
     /**
      * Updates the view content at the specified path with the given content.
      *
-     * @param string $fullPath The full path to the view component file.
-     * @param string $content The new content to be written to the view component file.
+     * @param  string  $fullPath  The full path to the view component file.
+     * @param  string  $content  The new content to be written to the view component file.
      * @return void
      */
     public static function updateViewContentByPath($fullPath, $content)
@@ -77,7 +77,7 @@ class TemplateResourceHelper
     /**
      * Retrieves the view content for the given record.
      *
-     * @param Template&Model $record The record for which to get the view component.
+     * @param  Template&Model  $record  The record for which to get the view component.
      * @return string The view component associated with the given record.
      */
     public static function getViewContent($record)
@@ -88,8 +88,8 @@ class TemplateResourceHelper
     /**
      * Updates the view content of a given record.
      *
-     * @param Template&Model $record The record to update.
-     * @param string $content The new content to set for the record.
+     * @param  Template&Model  $record  The record to update.
+     * @param  string  $content  The new content to set for the record.
      * @return void
      */
     public static function updateViewContent($record, $content)
@@ -98,8 +98,8 @@ class TemplateResourceHelper
     }
 
     /**
-     * @param HasTemplates&Model $templateable
-     * @param string|int|Model&Template $template
+     * @param  HasTemplates&Model  $templateable
+     * @param  string|int|Model&Template  $template
      * @return void
      */
     public static function setDefaultTemplateIfEmpty($templateable, $template)

@@ -62,7 +62,7 @@ return [
     ],
 
     'add' => [
-            
+
         'label' => 'Add',
 
         'label_with_name' => 'Add :name',
@@ -85,7 +85,7 @@ return [
     ],
 
     'attach' => [
-            
+
         'label' => 'Attach',
 
         'label_with_name' => 'Attach :name',
@@ -102,6 +102,6 @@ return [
         'label' => 'Copy to clipboard',
 
         'message' => 'Copied!',
-        
+
     ],
 ];

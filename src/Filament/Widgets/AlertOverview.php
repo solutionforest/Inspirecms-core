@@ -55,6 +55,7 @@ class AlertOverview extends Widget
         if (count($this->getCachedAlerts()) <= 0) {
             return '0px';
         }
+
         return '12px';
     }
 

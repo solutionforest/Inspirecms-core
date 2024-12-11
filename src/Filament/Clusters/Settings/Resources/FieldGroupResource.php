@@ -57,7 +57,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             ->columns(1)
             ->schema([
                 Forms\Components\Wizard::make([
-                
+
                     Forms\Components\Wizard\Step::make('fields')
                         ->label(__('inspirecms::resources/field-group.steps.fields.label'))
                         ->schema([
@@ -70,7 +70,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                             FieldGroupResourceHelper::getTitleFormComponent(),
                             FieldGroupResourceHelper::getActiveFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
                         ]),
-                ])->skippable()
+                ])->skippable(),
             ]);
     }
 

@@ -32,7 +32,7 @@ class JsonEntry extends Entry
 
         $this->initializeConfigurations();
 
-        $this->editorOptions(['mode' => "ace/mode/json"]);
+        $this->editorOptions(['mode' => 'ace/mode/json']);
     }
 
     protected function initializeConfigurations(): void
@@ -42,7 +42,7 @@ class JsonEntry extends Entry
         $this->extensions = config('filament-ace-editor.enabled_extensions');
         $this->config = config('filament-ace-editor.editor_config');
         $this->editorOptions = config('filament-ace-editor.editor_options');
-        $this->disableDarkTheme = !config('filament-ace-editor.dark_mode.enable');
+        $this->disableDarkTheme = ! config('filament-ace-editor.dark_mode.enable');
         $this->darkTheme = config('filament-ace-editor.dark_mode.theme');
     }
 
@@ -50,7 +50,7 @@ class JsonEntry extends Entry
     {
         $this->theme = "ace/theme/$theme";
 
-        return $this->editorOptions(["theme" => $this->theme]);
+        return $this->editorOptions(['theme' => $this->theme]);
     }
 
     public function darkTheme(string $darkTheme): static
@@ -63,9 +63,9 @@ class JsonEntry extends Entry
     public function disableDarkTheme(): static
     {
         $this->disableDarkTheme = true;
+
         return $this;
     }
-
 
     public function editorOptions(array $options): static
     {
@@ -103,6 +103,7 @@ class JsonEntry extends Entry
         $extensionsUrls = collect(config('filament-ace-editor.extensions'));
         $enabledExtensionsKeys = collect($this->extensions)->flip();
         $enabledExtensions = $extensionsUrls->intersectByKeys($enabledExtensionsKeys);
+
         return $enabledExtensions->toArray();
     }
 
@@ -114,7 +115,7 @@ class JsonEntry extends Entry
     public function getConfig(): array
     {
         $config = [
-            "basePath" => $this->getBasePath(),
+            'basePath' => $this->getBasePath(),
         ];
 
         $config = array_merge($this->config, $config);
@@ -125,7 +126,7 @@ class JsonEntry extends Entry
     public function getEditorOptions(): array
     {
         $editorOptions = [
-            "readOnly" => true,
+            'readOnly' => true,
         ];
 
         $editorOptions = array_merge($this->editorOptions, $editorOptions);

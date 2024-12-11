@@ -18,7 +18,6 @@ use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ContentSidebar;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -157,8 +156,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $dir = str($file->getRelativePath())->explode('/')
                     ->map(fn ($path) => (string) str($path)->kebab())
                     ->when(
-                        fn (Collection $collection) => $collection->first() === 'components', 
-                        // Add prefix after "components" 
+                        fn (Collection $collection) => $collection->first() === 'components',
+                        // Add prefix after "components"
                         function (Collection $collection) {
 
                             $afterIndex = $collection->search('components', $collection->count() - 1);

@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 class ContentResourceHelper
 {
     /**
-     * @param null | Model & Content $record
+     * @param  null | Model & Content  $record
      * @return ?\Carbon\Carbon
      */
     public static function getLatestPublishTime($record)
