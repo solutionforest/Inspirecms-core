@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => 'No document types',
+        'description' => 'Create a document type to get started.',
+    ],
     'title' => [
         'label' => 'Title',
     ],

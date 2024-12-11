@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => 'No custom fields',
+        'description' => '',
+    ],
     'name' => [
         'label' => 'Unqiue name',
     ],

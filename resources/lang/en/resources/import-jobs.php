@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => 'No Import Jobs',
+        'description' => 'Upload a ZIP file to start an import job and wait for it to be scheduled and executed.',
+    ],
     'file' => [
         'title' => 'File',
         'hint' => 'The ZIP file containing the data to import.',
@@ -21,10 +25,6 @@ return [
     ],
     'payload' => [
         'title' => 'Payload',
-    ],
-    'empty' => [
-        'title' => 'No Import Jobs',
-        'description' => 'Upload a ZIP file to start an import job and wait for it to be scheduled and executed.',
     ],
     'notification' => [
         'completed' => [

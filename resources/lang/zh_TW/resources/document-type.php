@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => '沒有文檔類型',
+        'description' => '創建一個文檔類型以開始。',
+    ],
     'title' => [
         'label' => '標題',
     ],

@@ -88,6 +88,8 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return parent::table($table)
             ->reorderable(false)
             ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
+            ->emptyStateHeading(__('inspirecms::resources/field-group.empty_state.heading'))
+            ->emptyStateDescription(__('inspirecms::resources/field-group.empty_state.description'))
             ->emptyStateActions([])
             ->defaultSort('created_at', 'desc')
             ->columns([

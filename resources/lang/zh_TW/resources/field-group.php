@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => '沒有自訂欄位',
+        'description' => '',
+    ],
     'name' => [
         'label' => '唯一名稱',
     ],

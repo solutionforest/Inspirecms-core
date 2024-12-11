@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'empty_state' => [
+        'heading' => '沒有匯入工作',
+        'description' => '上傳 ZIP 檔案以開始匯入工作，並等待其排程和執行。',
+    ],
     'file' => [
         'title' => '檔案',
         'hint' => '包含要匯入數據的 ZIP 檔案。',
@@ -21,10 +25,6 @@ return [
     ],
     'payload' => [
         'title' => 'Payload',
-    ],
-    'empty' => [
-        'title' => '沒有匯入工作',
-        'description' => '上傳 ZIP 檔案以開始匯入工作，並等待其排程和執行。',
     ],
     'notification' => [
         'completed' => [

@@ -116,6 +116,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return $table
             ->defaultSort('created_at', 'desc')
+            ->emptyStateHeading(__('inspirecms::resources/document-type.empty_state.heading'))
+            ->emptyStateDescription(__('inspirecms::resources/document-type.empty_state.description'))
             ->emptyStateActions([])
             // ->groups([
             //     Tables\Grouping\Group::make('category')

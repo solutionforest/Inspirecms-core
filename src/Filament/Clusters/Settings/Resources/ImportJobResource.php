@@ -166,8 +166,8 @@ class ImportJobResource extends Resource implements ClusterSectionResource
         return $table
             ->defaultSort('created_at', 'desc')
             ->emptyStateIcon('heroicon-o-arrow-up-on-square')
-            ->emptyStateHeading(__('inspirecms::resources/import-jobs.empty.title'))
-            ->emptyStateDescription(__('inspirecms::resources/import-jobs.empty.description'))
+            ->emptyStateHeading(__('inspirecms::resources/import-jobs.empty_state.heading'))
+            ->emptyStateDescription(__('inspirecms::resources/import-jobs.empty_state.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
