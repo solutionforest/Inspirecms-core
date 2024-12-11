@@ -25,14 +25,16 @@
         <h2 class="text-gray-400 dark:text-gray-600">Default Page</h2>
         <div>
             <p class="text-md">
-                {{ $this->getContentTitle($defaultPage) }}
+                {{ $this->getContentTitle($defaultPage) ?? 'No record' }}
             </p>
-            <div class="mt-2 flex items-center gap-2">
-                <span class="text-sm text-gray-400 dark:text-gray-200/80">Publish at</span>
-                <x-filament::badge icon="heroicon-o-clock" icon-position="after" color="secondary">
-                    {{ $this->getContentPublishTime($defaultPage) }}
-                </x-filament::badge>
-            </div>
+            @if ($defaultPage)
+                <div class="mt-2 flex items-center gap-2">
+                    <span class="text-sm text-gray-400 dark:text-gray-200/80">Publish at</span>
+                    <x-filament::badge icon="heroicon-o-clock" icon-position="after" color="secondary">
+                        {{ $this->getContentPublishTime($defaultPage) }}
+                    </x-filament::badge>
+                </div>
+            @endif
         </div>
     </a>
     <button class="card" wire:click="callAction('create_content')">

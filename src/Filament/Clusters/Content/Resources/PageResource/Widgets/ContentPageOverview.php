@@ -68,10 +68,7 @@ class ContentPageOverview extends Widget
      */
     public function getContentTitle($content)
     {
-        return $content?->title ?? 'No record';
-        if (! $content) {
-            return 'No record';
-        }
+        return $content?->title;
     }
 
     /**
