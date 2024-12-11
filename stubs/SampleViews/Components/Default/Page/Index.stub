@@ -1,0 +1,14 @@
+@php
+    use SolutionForest\InspireCms\InspireCmsConfig;
+
+    $locale ??= $content->getLocale() ?? request()->getLocale();
+    $componentName = InspireCmsConfig::getComponentWithTheme('layout');
+
+@endphp
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('layout')" :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
+    <x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('header')" :locale="$locale" />
+
+    {{ $slot }}
+
+    <x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('footer')" :locale="$locale" />
+</x-dynamic-component>

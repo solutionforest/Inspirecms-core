@@ -50,6 +50,8 @@ class SampleSeeder extends Seeder
     {
         $home = <<<'Html'
 @php
+    use SolutionForest\InspireCms\InspireCmsConfig;
+
     $title = $content->getTitle();
 
     $locale ??= $content->getLocale();
@@ -66,7 +68,7 @@ class SampleSeeder extends Seeder
     $social_media_email = $social_media?->getPropertyData('email')?->getValue();
 
 @endphp
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
   <main class="flex-auto">
     <div class="sm:px-8 mt-9">
       <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -112,10 +114,11 @@ class SampleSeeder extends Seeder
       </div>
     </div>
   </main>
-</x-page>
+</x-dynamic-component>
 Html;
         $projects = <<<'Html'
 @php
+    use SolutionForest\InspireCms\InspireCmsConfig;
     $title = $content->getTitle();
 
     $locale ??= $content->getLocale();
@@ -127,7 +130,7 @@ Html;
     $projects = $content->getPropertyGroup('projects');
     $projects_projects = $projects?->getPropertyData('projects')?->getValue();
 @endphp
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 sm:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -174,10 +177,11 @@ Html;
           </div>
         </div>
       </main>
-</x-page>
+</x-dynamic-component>
 Html;
         $about = <<<'Html'
 @php
+    use SolutionForest\InspireCms\InspireCmsConfig;
     $locale ??= $content->getLocale();
 
     $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
@@ -185,7 +189,7 @@ Html;
     $blog_detail_content_content = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
     $blog_detail_content_image = collect($blog_detail_content?->getPropertyData('image')?->getValue())->first();
 @endphp
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
   <main class="flex-auto">
     <div class="sm:px-8 mt-16 sm:mt-32">
         <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -210,10 +214,11 @@ Html;
         </div>
     </div>
   </main>
-</x-page>
+</x-dynamic-component>
 Html;
         $blogs = <<<'Html'
 @php
+    use SolutionForest\InspireCms\InspireCmsConfig;
     $locale ??= $content->getLocale();
 
     $general_page_banner = $content->getPropertyGroup('general_page_banner');
@@ -222,7 +227,7 @@ Html;
 
     $blogs = $content->getChildren()->paginate(3);
 @endphp
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 sm:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -267,17 +272,18 @@ Html;
           </div>
         </div>
       </main>
-</x-page>   
+</x-dynamic-component>    
 Html;
         $blog = <<<'Html'
 @php
+    use SolutionForest\InspireCms\InspireCmsConfig;
     $locale ??= $content->getLocale();
 
     $blog_detail_content = $content->getPropertyGroup('blog_detail_content');
     $blog_detail_content_title = $blog_detail_content?->getPropertyData('title')?->getValue($locale);
     $blog_detail_content_description = $blog_detail_content?->getPropertyData('content')?->getValue($locale);
 @endphp
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
     <main class="flex-auto">
         <div class="sm:px-8 mt-16 lg:mt-32">
           <div class="mx-auto w-full max-w-7xl lg:px-8">
@@ -303,17 +309,17 @@ Html;
           </div>
         </div>
       </main>
-</x-page>   
+</x-dynamic-component>   
 Html;
         $blank_page = <<<'Html'
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
 
-</x-page>   
+</x-dynamic-component>   
 Html;
         $redirect_page = <<<'Html'
-<x-page :content="$content" :locale="$locale">
+<x-dynamic-component :component="InspireCmsConfig::getComponentWithTheme('page')" :content="$content" :locale="$locale">
     Redirecting...
-</x-page>   
+</x-dynamic-component>   
 Html;
 
         $items = [
@@ -445,6 +451,7 @@ Html;
             defaultTemplate: 'about',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-information-circle',
+            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blogs',
@@ -457,6 +464,7 @@ Html;
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
+            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog',
@@ -468,6 +476,7 @@ Html;
             templates: ['blog'],
             defaultTemplate: 'blog',
             icon: 'heroicon-o-newspaper',
+            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'projects',
@@ -481,6 +490,7 @@ Html;
             defaultTemplate: 'projects',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-document',
+            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blank_page',
@@ -489,6 +499,7 @@ Html;
             templates: ['blank-page', 'redirect-page'],
             defaultTemplate: 'blank-page',
             icon: 'heroicon-o-document',
+            rejected: ['homepage'],
         );
         foreach ($items as $item) {
             $this->importDataService->addDocumentType($item->slug, $item);

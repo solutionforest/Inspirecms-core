@@ -130,6 +130,8 @@ return [
 
     'template' => [
         'path' => resource_path('views/inspire-cms/templates'),
+        'theme' => 'default',
+        'component_prefix' => 'inspire-cms',
     ],
 
     'resolvers' => [

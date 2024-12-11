@@ -12,6 +12,7 @@ use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Assets as BaseAssets;
@@ -153,10 +154,24 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleViews') as $file) {
 
-                $dir = collect(explode('/', $file->getRelativePath()))->map(fn ($path) => str($path)->kebab())->implode('/');
+                $dir = str($file->getRelativePath())->explode('/')
+                    ->map(fn ($path) => (string) str($path)->kebab())
+                    ->when(
+                        fn (Collection $collection) => $collection->first() === 'components', 
+                        // Add prefix after "components" 
+                        function (Collection $collection) {
+
+                            $afterIndex = $collection->search('components', $collection->count() - 1);
+
+                            return $collection->slice(0, $afterIndex + 1)
+                                ->merge(InspireCmsConfig::getTemplateComponentPrefix())
+                                ->merge($collection->slice($afterIndex + 1));
+                        }
+                    )
+                    ->implode('/');
                 $viewName = str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php');
 
-                $viewFullPath = (string) str(str(base_path('resources/views')))
+                $viewFullPath = (string) str(base_path('resources/views'))
                     ->finish('/')
                     ->when(filled($dir), fn ($str) => $str->finish($dir)->finish('/'))
                     ->finish($viewName);
