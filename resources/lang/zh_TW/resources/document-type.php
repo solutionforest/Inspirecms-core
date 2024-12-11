@@ -10,9 +10,6 @@ return [
     'show_as_table' => [
         'label' => '顯示為表格',
     ],
-    'is_root' => [
-        'label' => '根',
-    ],
     'icon' => [
         'label' => '圖標',
     ],

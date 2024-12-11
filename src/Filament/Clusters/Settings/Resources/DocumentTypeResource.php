@@ -198,14 +198,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 ])->iconButton(),
             ])
             ->filters([
-                Tables\Filters\TernaryFilter::make('is_root')
-                    ->label(__('inspirecms::resources/document-type.is_root.label'))
-                    // ->default(true)
-                    ->queries(
-                        true: fn ($query) => $query->whereIsRoot(condition: true),
-                        false: fn ($query) => $query->whereIsRoot(condition: false),
-                        blank: fn ($query) => $query,
-                    ),
+                Tables\Filters\TernaryFilter::make('show_as_table')
+                    ->label(__('inspirecms::resources/document-type.show_as_table.label')),
             ]);
     }
 

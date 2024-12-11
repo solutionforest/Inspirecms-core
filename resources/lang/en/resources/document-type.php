@@ -10,9 +10,6 @@ return [
     'show_as_table' => [
         'label' => 'Show as table',
     ],
-    'is_root' => [
-        'label' => 'Is Root',
-    ],
     'icon' => [
         'label' => 'Icon',
     ],
