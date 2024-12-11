@@ -17,6 +17,5 @@
     @endif
 
     <x-filament-actions::modals />
-    <x-inspirecms-support::tree-node.actions.modals />
     
 </x-filament-panels::page>
