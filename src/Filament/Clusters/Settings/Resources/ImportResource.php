@@ -139,7 +139,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                         ],
                     ])
                     ->preserveFilenames(false),
-                    
+
                 Forms\Components\Actions::make([
                     Forms\Components\Actions\Action::make('download_sample')
                         ->label(__('inspirecms::resources/import.actions.download_sample.label'))
@@ -154,7 +154,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                                 return null;
                             }
                         }),
-                    ])->alignEnd(),
+                ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import.file_structure_instructions.label'))
                     ->hint(__('inspirecms::resources/import.file_structure_instructions.hint'))

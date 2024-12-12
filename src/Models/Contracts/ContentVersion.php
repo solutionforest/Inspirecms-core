@@ -15,7 +15,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property array $to_data
  * @property bool $avoid_to_clean
  */
-interface ContentVersion extends HasAuthor, CanPrunable
+interface ContentVersion extends CanPrunable, HasAuthor
 {
     /**
      * Get the content associated with the content version.

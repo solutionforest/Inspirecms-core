@@ -10,7 +10,6 @@ use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Services\ImportServiceInterface;
 
 class ImportService implements ImportServiceInterface
 {
@@ -111,7 +110,7 @@ class ImportService implements ImportServiceInterface
         [$fs, $fullPath, $path] = $this->zipFileReader->generateFolderForExtraction(uniqid());
 
         foreach ($sampleData as $folder => $files) {
-                
+
             $folderPath = $path . DIRECTORY_SEPARATOR . $folder;
 
             $fs->makeDirectory($folderPath);
@@ -128,7 +127,7 @@ class ImportService implements ImportServiceInterface
 
         // Delete the folder
         $fs->deleteDirectory($path);
-        
+
         return new \SplFileInfo($zipFullPath);
     }
 

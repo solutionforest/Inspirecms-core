@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import as ImportContract;
 use SolutionForest\InspireCms\Observers\ImportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
