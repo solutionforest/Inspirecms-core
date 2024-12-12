@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Prunable;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Observers\ContentVersionObserver;
@@ -11,6 +12,7 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 class ContentVersion extends BaseModel implements ContentVersionContract
 {
     use HasAuthor;
+    use Prunable;
 
     protected $guarded = ['id'];
 
@@ -71,6 +73,20 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         }
     }
     //endregion Scopes
+    
+    //region Prunable
+    /**
+     * Get the prunable model query.
+     */
+    public function prunable()
+    {
+        $dayAfter = now()->subDays(InspireCmsConfig::get('models.prunable.content_version.interval', 5));
+
+        return static::query()
+            ->where('avoid_to_clean', false)
+            ->where('created_at', '<', $dayAfter);
+    }
+    //endregion Prunable
 
     public static function boot()
     {

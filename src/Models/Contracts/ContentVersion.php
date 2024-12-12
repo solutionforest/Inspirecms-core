@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
@@ -14,7 +15,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property array $to_data
  * @property bool $avoid_to_clean
  */
-interface ContentVersion extends HasAuthor
+interface ContentVersion extends HasAuthor, CanPrunable
 {
     /**
      * Get the content associated with the content version.

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
@@ -18,7 +19,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?ImportJobStatus $display_status
  * @property ?\Carbon\Carbon $clear_at
  */
-interface ImportJob extends HasAuthor
+interface ImportJob extends HasAuthor, CanPrunable
 {
     /**
      * Get the storage and file path for the import job.

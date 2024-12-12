@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
@@ -17,6 +18,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 {
     use HasAuthor;
     use HasUuids;
+    use Prunable;
 
     const UPDATED_AT = null;
 
@@ -99,6 +101,26 @@ class ImportJob extends BaseModel implements ImportJobContract
         return InspireCmsConfig::get('imports.disk');
     }
 
+    //region Prunable
+    /**
+     * Get the prunable model query.
+     */
+    public function prunable()
+    {
+        return static::whereCanClear();
+    }
+
+    /**
+     * Prepare the model for pruning.
+     *
+     * @return void
+     */
+    protected function pruning()
+    {
+        $this->deleteFile();
+    }
+    //endregion Prunable
+
     //region Scope(s)
     public function scopeWherePending($query, bool $condition = true)
     {
@@ -174,7 +196,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 
     protected static function retrieveClearanceDaysInterval()
     {
-        return InspireCmsConfig::get('scheduled_tasks.cleanup_import_job.old_import_job_days', 30);
+        return InspireCmsConfig::get('models.prunable.import_job.interval', 5);
     }
     //endregion Helper(s)
 }

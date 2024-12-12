@@ -111,6 +111,14 @@ return [
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
             'import_job' => Models\ImportJob::class,
         ],
+        'prunable' => [
+            'content_version' => [
+                'interval' => 30,
+            ],
+            'import_job' => [
+                'interval' => 5,
+            ],
+        ],
     ],
 
     'override_plugins' => [
@@ -153,12 +161,6 @@ return [
     ],
 
     'scheduled_tasks' => [
-        'cleanup_content_verion' => [
-            'enabled' => true,
-            'schedule' => 'daily',
-            'command' => \SolutionForest\InspireCms\Commands\CleanupContentVersion::class,
-            'old_content_version_days' => 30,
-        ],
         'execute_import_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
@@ -167,11 +169,10 @@ return [
                 '--limit 50', // limit
             ],
         ],
-        'cleanup_import_job' => [
+        'data_cleanup' => [
             'enabled' => true,
             'schedule' => 'daily',
-            'command' => \SolutionForest\InspireCms\Commands\CleanupImportJob::class,
-            'old_import_job_days' => 5,
+            'command' => \SolutionForest\InspireCms\Commands\DataCleanup::class,
         ],
     ],
 

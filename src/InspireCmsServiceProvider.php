@@ -210,9 +210,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
-            Commands\CleanupContentVersion::class,
             Commands\ExecuteImportJob::class,
-            Commands\CleanupImportJob::class,
+            Commands\DataCleanup::class,
         ];
     }
 
@@ -386,11 +385,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $schedule = $this->app[\Illuminate\Console\Scheduling\Schedule::class];
 
-        $tasks = Arr::only(InspireCmsConfig::get('scheduled_tasks', []), [
-            'cleanup_content_verion',
-            'execute_import_job',
-            'cleanup_import_job',
-        ]);
+        $tasks = InspireCmsConfig::get('scheduled_tasks', []);
 
         foreach ($tasks as $taskKey => $task) {
 
@@ -412,11 +407,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
                 $arguments = $task['arguments'] ?? [];
 
-                if (blank($command) || ! is_string($command) || ($command && ! class_exists($command))) {
+                if (blank($command) || ! is_string($command)) {
                     break;
                 }
 
                 $schedule->command($command, $arguments)->{$func}();
+
             } catch (\Throwable $th) {
                 //
             }
