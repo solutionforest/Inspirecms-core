@@ -471,14 +471,9 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $navigationData = $this->mutateNavigationData($item);
 
-                if (isset($item->id)) {
-                    $navigation = $model::find($item->id);
-                    if ($navigation) {
-                        $navigation->update($navigationData);
-                        $navigation->refresh();
-                    } else {
-                        continue;
-                    }
+                if (isset($item->id) && ($navigation = $model::find($item->id))) {
+                    $navigation->update($navigationData);
+                    $navigation->refresh();
                 } else {
                     $navigation = $model::create($navigationData);
                 }

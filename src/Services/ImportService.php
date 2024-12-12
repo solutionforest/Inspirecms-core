@@ -164,7 +164,7 @@ class ImportService implements ImportServiceInterface
             $jsonData = $fs->json($file);
 
             if (is_null($jsonData)) {
-                return;
+                throw new \Exception('Invalid JSON data.');
             }
 
             switch ($forType) {
