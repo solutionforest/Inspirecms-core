@@ -173,14 +173,14 @@ class ImportDataHelper
                                 config: [],
                                 label: 'Field 4',
                             ),
-                            ], [
+                        ], [
                             new Entities\Field(
                                 slug: 'field-5',
                                 type: 'text',
                                 config: [],
                                 label: 'Field 5',
                             ),
-                            ],
+                        ],
                     ])->map(fn (array $fields): array => ['title' => null, 'fields' => collect($fields)->map(fn ($field) => $field->toArray())->all()])->all();
 
                     break;
