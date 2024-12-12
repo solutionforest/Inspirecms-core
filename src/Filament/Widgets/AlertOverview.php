@@ -58,11 +58,4 @@ class AlertOverview extends Widget
 
         return '12px';
     }
-
-    public function getPlaceholderData(): array
-    {
-        return [
-            'columnSpan' => 1,
-        ];
-    }
 }
