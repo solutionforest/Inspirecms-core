@@ -11,6 +11,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResou
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
 use SolutionForest\InspireCms\Models;
+use SolutionForest\InspireCms\Policies;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 
 // config for SolutionForest/InspireCms
@@ -110,6 +111,9 @@ return [
             'media_asset' => SupportModels\MediaAsset::class,
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
             'import' => Models\Import::class,
+        ],
+        'policies' => [
+            'content' => Policies\ContentPublishPolicy::class,
         ],
         'prunable' => [
             'content_version' => [

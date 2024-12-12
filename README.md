@@ -80,6 +80,67 @@ Existing scheduled jobs in the configuration file:
 ],
 ```
 
+## Content Approving Flow
+1. Add custom status
+```php
+\SolutionForest\InspireCms\Facades\ContentStatusManifest::replaceOption(
+    new \SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption(
+        value: 5,
+        name: 'reviewing',
+        formAction: fn () => \Filament\Actions\Action::make('reviewing')
+            ->authorize('reviewing')
+            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, $livewire) {
+                
+                // Handle your action here
+
+            }),
+    )
+)
+```
+2. Add policy for Content Model (Super admin already skip all guard)
+```php
+use \SolutionForest\InspireCms\Models\Content;
+
+/**
+ * Bootstrap any application services.
+ */
+public function boot(): void
+{
+    Gate::policy(Content::class, YourContentPolicy::class);
+}
+```
+
+Or override ContentPublishPolicy on config
+```php
+    // ...
+    'models' => [
+        // ...
+        'policies' => [
+            'content' => YourContentPolicy::class,
+        ]
+    ],
+    //...
+```
+
+```php
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+
+class YourContentPolicy
+{
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @param  null|Content|Model  $content
+     * @return bool
+     */
+    public function reviewing($user, $content)
+    {
+        return true;
+    }
+}
+```
+
 ## Configuration
 
 ## Extending

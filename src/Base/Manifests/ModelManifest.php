@@ -44,7 +44,9 @@ class ModelManifest implements ModelManifestInterface
     {
         $modelClasses = static::getDefaultModels();
 
-        foreach ($modelClasses as $modelClass) {
+        $extraPolicies = InspireCmsConfig::get('models.policies', []);
+
+        foreach ($modelClasses as $key => $modelClass) {
             $interfaceClass = $this->guessContractClass($modelClass);
 
             $policyClass = $this->guessPolicyClass($interfaceClass);
@@ -54,6 +56,10 @@ class ModelManifest implements ModelManifestInterface
             }
 
             Gate::policy($modelClass, $policyClass);
+
+            if (isset($extraPolicies[$key]) && class_exists($extraPolicies[$key])) {
+                Gate::policy($modelClass, $extraPolicies[$key]);
+            }
         }
     }
 
