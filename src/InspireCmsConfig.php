@@ -331,16 +331,16 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Navigation model');
     }
 
-    public static function getImportJobTableName(): string
+    public static function getImportTableName(): string
     {
-        return app(static::getImportJobModelClass())->getTable();
+        return app(static::getImportModelClass())->getTable();
     }
 
-    public static function getImportJobModelClass(): string
+    public static function getImportModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ImportJob::class, Models\ImportJob::class);
+        $class = ModelManifest::get(Models\Contracts\Import::class, Models\Import::class);
 
-        return self::ensureClassExists($class, 'ImportJob model');
+        return self::ensureClassExists($class, 'Import model');
     }
 
     /**

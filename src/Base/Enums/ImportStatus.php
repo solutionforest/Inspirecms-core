@@ -6,7 +6,7 @@ use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasIcon;
 use Filament\Support\Contracts\HasLabel;
 
-enum ImportJobStatus: string implements HasColor, HasIcon, HasLabel
+enum ImportStatus: string implements HasColor, HasIcon, HasLabel
 {
     case Pending = 'pending';
     case Failed = 'failed';

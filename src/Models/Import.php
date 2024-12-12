@@ -6,15 +6,15 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Storage;
-use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
+use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\ImportJob as ImportJobContract;
-use SolutionForest\InspireCms\Observers\ImportJobObserver;
+use SolutionForest\InspireCms\Models\Contracts\Import as ImportContract;
+use SolutionForest\InspireCms\Observers\ImportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
-class ImportJob extends BaseModel implements ImportJobContract
+class Import extends BaseModel implements ImportContract
 {
     use HasAuthor;
     use HasUuids;
@@ -33,7 +33,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 
     public function getStorageAndFilePath()
     {
-        return [$this->getStorageDisk(), $this->file];
+        return [$this->getStorageDisk(), $this->file_name];
     }
 
     public function markAsFailed($msg)
@@ -64,12 +64,12 @@ class ImportJob extends BaseModel implements ImportJobContract
             get: function () {
                 [$finishTime, $failedTime, $scheduleTime] = [$this->finished_at, $this->failed_at, $this->available_at];
                 if (! is_null($finishTime)) {
-                    return ImportJobStatus::Finished;
+                    return ImportStatus::Finished;
                 } elseif (! is_null($failedTime)) {
-                    return ImportJobStatus::Failed;
+                    return ImportStatus::Failed;
                 }
 
-                return ImportJobStatus::Pending;
+                return ImportStatus::Pending;
             },
             set: function ($value) {}
         );
@@ -79,7 +79,7 @@ class ImportJob extends BaseModel implements ImportJobContract
     {
         return Attribute::make(
             get: function () {
-                if ($this->display_status == ImportJobStatus::Pending) {
+                if ($this->display_status == ImportStatus::Pending) {
                     return null;
                 }
 
@@ -125,7 +125,7 @@ class ImportJob extends BaseModel implements ImportJobContract
     public function scopeWherePending($query, bool $condition = true)
     {
         if ($condition) {
-            return $query->whereNull('finished_at')->where('available_at', '<=', now());
+            return $query->where('available_at', '<=', now())->whereNull('finished_at')->whereNull('failed_at');
         } else {
             return $query->whereNotNull('finished_at')->orWhereNotNull('failed_at');
         }
@@ -153,7 +153,7 @@ class ImportJob extends BaseModel implements ImportJobContract
     {
         parent::boot();
 
-        static::observe(ImportJobObserver::class);
+        static::observe(ImportObserver::class);
     }
 
     //region Helper(s)
@@ -166,7 +166,7 @@ class ImportJob extends BaseModel implements ImportJobContract
      */
     protected function getStorageDisk()
     {
-        $disk = $this->disk;
+        $disk = $this->file_disk;
 
         if (empty($disk)) {
             throw new \Exception('Disk is not set for the import job.');
@@ -186,7 +186,7 @@ class ImportJob extends BaseModel implements ImportJobContract
     protected function deleteFile()
     {
         try {
-            $this->getStorageDisk()->delete($this->file);
+            $this->getStorageDisk()->delete($this->file_name);
         } catch (\Throwable $th) {
             return false;
         }
@@ -196,7 +196,7 @@ class ImportJob extends BaseModel implements ImportJobContract
 
     protected static function retrieveClearanceDaysInterval()
     {
-        return InspireCmsConfig::get('models.prunable.import_job.interval', 5);
+        return InspireCmsConfig::get('models.prunable.import.interval', 5);
     }
     //endregion Helper(s)
 }

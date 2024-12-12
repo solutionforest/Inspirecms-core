@@ -3,15 +3,15 @@
 namespace SolutionForest\InspireCms\Services;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Services\ImportServiceInterface;
 
-class ImportJobService implements ImportJobServiceInterface
+class ImportService implements ImportServiceInterface
 {
     /**
      * Constant representing the folder structure.
@@ -93,7 +93,7 @@ class ImportJobService implements ImportJobServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function execute($job)
+    public function execute($import)
     {
         $extractorFs = null;
         $extractedFolderPath = null;
@@ -105,9 +105,9 @@ class ImportJobService implements ImportJobServiceInterface
             // Ensure the import data service is reset
             $this->importDataService->reset();
 
-            [$jobFs, $filePath] = $job->getStorageAndFilePath();
+            [$fs, $filePath] = $import->getStorageAndFilePath();
 
-            [$extractorFs, $extractedFolderPath] = $this->zipFileReader->extractFromZip($jobFs->path($filePath));
+            [$extractorFs, $extractedFolderPath] = $this->zipFileReader->extractFromZip($fs->path($filePath));
 
             if (is_null($extractedFolderPath)) {
                 throw new \Exception('The provided file is not a ZIP file.');
@@ -155,7 +155,7 @@ class ImportJobService implements ImportJobServiceInterface
                 ];
             }
 
-            $job->markAsCompleted(
+            $import->markAsCompleted(
                 empty($message) ? null : $message
             );
 
@@ -166,12 +166,12 @@ class ImportJobService implements ImportJobServiceInterface
                 'exTrace' => ThrowableHelper::getTraceAsString($th, 5),
             ];
 
-            $job->markAsFailed($message);
+            $import->markAsFailed($message);
 
         } finally {
             // Delete the extracted folder
             if ($extractorFs != null && $extractedFolderPath != null && $extractorFs->exists($extractedFolderPath)) {
-                // $extractorFs->deleteDirectory($extractedFolderPath);
+                $extractorFs->deleteDirectory($extractedFolderPath);
             }
         }
     }
@@ -185,7 +185,7 @@ class ImportJobService implements ImportJobServiceInterface
 
         foreach ($sampleData as $folder => $files) {
                 
-            $folderPath = $fullPath . DIRECTORY_SEPARATOR . $folder;
+            $folderPath = $path . DIRECTORY_SEPARATOR . $folder;
 
             $fs->makeDirectory($folderPath);
 
@@ -312,7 +312,7 @@ class ImportJobService implements ImportJobServiceInterface
         ];
         $data = [];
 
-        $getRandomFileBaseNameOnFolder = fn ($folder, $number) => collect($generateOrder[$folder])->random($number)->map(fn ($filename) => Str::before($filename, '.'))->all();
+        $getRandomFileBaseNameOnFolder = fn ($folder, $number): array => !isset($generateOrder[$folder]) ? [] : collect($generateOrder[$folder])->random($number)->map(fn ($filename) => Str::before($filename, '.'))->all();
 
         foreach ($generateOrder as $folder => $sampleFileNames) {
 

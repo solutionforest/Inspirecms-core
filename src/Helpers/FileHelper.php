@@ -34,11 +34,30 @@ class FileHelper
     public static function unzipFile(string $zipFilePath, string $extractTo)
     {
         $zip = new \ZipArchive;
-        if ($zip->open($zipFilePath) === true) {
-            $zip->extractTo($extractTo);
-            $zip->close();
-        } else {
-            throw new \Exception('Cannot open zip file at ' . $zipFilePath);
+        try {
+            if ($zip->open($zipFilePath) === true) {
+
+                // Extract include folder in the zip file to the destination folder
+                // (Exclude the root folder in the zip file)
+                for ($i = 0; $i < $zip->numFiles; $i++) {
+
+                    $filename = $zip->getNameIndex($i);
+                    $fileInfo = pathinfo($filename);
+
+                    if ($fileInfo['dirname'] == '.') {
+                        continue;
+                    }
+
+                    $zip->extractTo($extractTo, $filename);
+                }
+
+                $zip->close();
+
+            } else {
+                throw new \Exception('Cannot open zip file at ' . $zipFilePath);
+            }
+        } catch (\Throwable $th) {
+            throw $th;
         }
     }
 }

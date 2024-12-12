@@ -10,7 +10,7 @@ return [
     'document_type' => '文件類型',
     'field_group' => '自定義字段',
     'id' => 'ID',
-    'import_job' => '導入任務',
+    'import' => '匯入',
     'is_default' => '默認',
     'language' => '語言',
     'last_updated_at' => '最後更新於',

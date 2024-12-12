@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Tests\Commands;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Tests\TestCase;
@@ -9,11 +10,13 @@ use SolutionForest\InspireCms\Tests\TestModels\ImportJob;
 
 class ExecuteImportJobTest extends TestCase
 {
+    protected static string $command = 'inspirecms:import';
+
     public function test_handle_no_pending_jobs()
     {
-        $this->artisan('inspirecms:importjob:execute')
+        $this->artisan(static::$command)
             ->expectsOutput('No pending jobs found.')
-            ->assertExitCode(0);
+            ->assertExitCode(Command::SUCCESS);
     }
 
     //todo: fix this test
@@ -21,9 +24,9 @@ class ExecuteImportJobTest extends TestCase
     // {
     //     $job = $this->createImportJobWithFakeFile('test.zip');
 
-    //     $this->artisan('inspirecms:importjob:execute')
+    //     $this->artisan(static::$command)
     //         ->expectsOutput("Executing job {$job->getKey()} ...")
-    //         ->assertExitCode(0);
+    //         ->assertExitCode(Command::SUCCESS);
 
     //     $job->refresh();
 
@@ -34,9 +37,9 @@ class ExecuteImportJobTest extends TestCase
     {
         $job = $this->createImportJobWithFakeFile('test.csv');
 
-        $this->artisan('inspirecms:importjob:execute')
+        $this->artisan(static::$command)
             ->expectsOutput("Executing job {$job->getKey()} ...")
-            ->assertExitCode(0);
+            ->assertExitCode(Command::SUCCESS);
 
         $job->refresh();
 

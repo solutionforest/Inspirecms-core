@@ -63,7 +63,7 @@ class ZipFileReader
 
         // Create directory with permissions
         if (! $disk->exists($path)) {
-            $disk->makeDirectory($path, 0755, true);
+            $disk->makeDirectory($path, 0777, true);
         }
 
         return [

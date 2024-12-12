@@ -2,19 +2,18 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Models\Contracts\ImportJob;
+use SolutionForest\InspireCms\Models\Contracts\Import;
 
-interface ImportJobServiceInterface
+interface ImportServiceInterface
 {
     /**
      * Executes the pending job and mark complete.
      *
-     * @param  ImportJob&Model  $job  The job to be executed.
+     * @param  Import&Model  $import  The job to be executed.
      * @return void
      */
-    public function execute($job);
+    public function execute($import);
     
     /**
      * Builds a sample ZIP file.

@@ -5,7 +5,7 @@ return [
         'heading' => '沒有匯入工作',
         'description' => '上傳 ZIP 文件以開始匯入工作，並等待其被排程和執行。',
     ],
-    'file' => [
+    'file_name' => [
         'label' => '文件',
         'validation_attribute' => '文件',
         'hint' => '包含要匯入數據的 ZIP 文件。',
@@ -40,6 +40,19 @@ return [
     'actions' => [
         'download_sample' => [
             'label' => '下載範例',
+        ],
+        'import' => [
+            'label' => '匯入',
+            'modal' => [
+                'actions' => [
+                    'submit' => [
+                        'label' => '匯入',
+                    ],
+                ],
+            ]
+        ],
+        'view' => [
+            'label' => '查看',
         ],
     ],
     'file_structure_instructions' => [

@@ -5,14 +5,13 @@ namespace SolutionForest\InspireCms\Observers;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Events\ImportJob\ImportJobCompleted;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Models\Contracts\ImportJob;
+use SolutionForest\InspireCms\Models\Contracts\Import;
 
-class ImportJobObserver
+class ImportObserver
 {
     /**
-     * @param  ImportJob&Model  $model
+     * @param  Import&Model  $model
      * @return void
      */
     public function creating($model)
@@ -20,13 +19,13 @@ class ImportJobObserver
         if (blank($model->available_at)) {
             $model->available_at = now();
         }
-        if (blank($model->disk)) {
-            $model->disk = $model->getDiskDriver();
+        if (blank($model->file_disk)) {
+            $model->file_disk = $model->getDiskDriver();
         }
     }
 
     /**
-     * @param  ImportJob&Model  $model
+     * @param  Import&Model  $model
      * @return void
      */
     public function updating($model)
@@ -38,16 +37,16 @@ class ImportJobObserver
     }
 
     /**
-     * @param  ImportJob&Model  $model
+     * @param  Import&Model  $model
      */
     protected function dispatchComplete($model)
     {
-        event(new ImportJobCompleted($model->withoutRelations()));
+        event(new \SolutionForest\InspireCms\Events\Import\Completed($model->withoutRelations()));
 
         try {
             // Notify the user that the import job has completed
             if (($author = $model->author)) {
-                $notification = $this->getImportJobCompletedNotification($model);
+                $notification = $this->getImportCompletedNotification($model);
                 $notification->sendToDatabase($author, true);
             }
         } catch (\Throwable $th) {
@@ -56,21 +55,24 @@ class ImportJobObserver
     }
 
     /**
-     * @param  ImportJob&Model  $model
+     * @param  Import&Model  $model
      * @return Notification
      */
-    protected function getImportJobCompletedNotification($model)
+    protected function getImportCompletedNotification($model)
     {
         $url = InspireCms::getImportDataUrl();
 
         $notification = Notification::make()
             ->info()
-            ->title(__('inspirecms::resources/import-jobs.notification.completed.title'))
-            ->body(__('inspirecms::resources/import-jobs.notification.completed.body', ['id' => $model->getKey()]));
+            ->title(__('inspirecms::resources/import.notification.completed.title'))
+            ->body(__('inspirecms::resources/import.notification.completed.body', ['id' => $model->getKey()]));
 
         if (filled($url)) {
             $notification = $notification->actions([
-                Action::make('view')->button()->url($url),
+                Action::make('view')
+                    ->label(__('inspirecms::resources/import.actions.view.label'))
+                    ->button()
+                    ->url($url),
             ]);
         }
 

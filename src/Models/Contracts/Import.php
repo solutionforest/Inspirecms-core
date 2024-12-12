@@ -2,24 +2,24 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
-use SolutionForest\InspireCms\Base\Enums\ImportJobStatus;
+use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
  * @property int $id
  * @property string $type
- * @property string $disk
- * @property string $file_path
+ * @property string $file_disk
+ * @property string $file_name
  * @property ?string $payload
  * @property ?\Carbon\Carbon $created_at
  * @property ?\Carbon\Carbon $available_at
  * @property ?\Carbon\Carbon $finished_at
  * @property ?\Carbon\Carbon $failed_at
- * @property ?ImportJobStatus $display_status
+ * @property ?ImportStatus $display_status
  * @property ?\Carbon\Carbon $clear_at
  */
-interface ImportJob extends HasAuthor, CanPrunable
+interface Import extends HasAuthor, CanPrunable
 {
     /**
      * Get the storage and file path for the import job.
@@ -47,7 +47,7 @@ interface ImportJob extends HasAuthor, CanPrunable
     public function markAsCompleted($msg = null);
 
     /**
-     * Get the disk driver for the ImportJob.
+     * Get the disk driver for the Import.
      *
      * @return string The name of the disk driver.
      */

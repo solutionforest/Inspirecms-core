@@ -1,7 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use SolutionForest\InspireCms\Http\Controllers\ImportJobController;
+use SolutionForest\InspireCms\Http\Controllers\ImportController;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
 
@@ -15,7 +16,9 @@ Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
 
     })->name('login');
 
-    Route::name('cms.import-job.')->prefix('import-job')->group(function () {
-        Route::get('sample', [ImportJobController::class, 'sample'])->name('sample');
+    Route::name('cms.')->middleware(['web', 'auth:' . InspireCmsConfig::getGuardName(), 'verified'])->group(function () {
+        Route::name('import.')->prefix('import')->group(function () {
+            Route::get('sample', [ImportController::class, 'sample'])->name('sample');
+        });
     });
 });

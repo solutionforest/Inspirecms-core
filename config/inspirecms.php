@@ -3,7 +3,7 @@
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
@@ -59,7 +59,7 @@ return [
             'role' => RoleResource::class,
             'navigation' => NavigationResource::class,
             'sitemap' => SitemapResource::class,
-            'import_job' => ImportJobResource::class,
+            'import_job' => ImportResource::class,
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
@@ -109,13 +109,13 @@ return [
             'navigation' => Models\Navigation::class,
             'media_asset' => SupportModels\MediaAsset::class,
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
-            'import_job' => Models\ImportJob::class,
+            'import' => Models\Import::class,
         ],
         'prunable' => [
             'content_version' => [
                 'interval' => 30,
             ],
-            'import_job' => [
+            'import' => [
                 'interval' => 5,
             ],
         ],
@@ -164,7 +164,7 @@ return [
         'execute_import_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteImportJob::class,
+            'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
             'arguments' => [
                 '--limit 50', // limit
             ],

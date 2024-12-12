@@ -5,7 +5,7 @@ return [
         'heading' => 'No Import Jobs',
         'description' => 'Upload a ZIP file to start an import job and wait for it to be scheduled and executed.',
     ],
-    'file' => [
+    'file_name' => [
         'label' => 'File',
         'validation_attribute' => 'file',
         'hint' => 'The ZIP file containing the data to import.',
@@ -40,6 +40,19 @@ return [
     'actions' => [
         'download_sample' => [
             'label' => 'Download Sample',
+        ],
+        'import' => [
+            'label' => 'Import',
+            'modal' => [
+                'actions' => [
+                    'submit' => [
+                        'label' => 'Import',
+                    ],
+                ],
+            ]
+        ],
+        'view' => [
+            'label' => 'View',
         ],
     ],
     'file_structure_instructions' => [

@@ -10,7 +10,7 @@ return [
     'document_type' => 'Document Type',
     'field_group' => 'Custom Fields',
     'id' => 'ID',
-    'import_job' => 'Import Job',
+    'import' => 'Import',
     'is_default' => 'Default',
     'language' => 'Language',
     'last_updated_at' => 'Last updated at',

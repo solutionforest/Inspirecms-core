@@ -65,7 +65,7 @@ class InspireCmsManager
     {
         try {
 
-            $resource = InspireCmsConfig::get('resources.import_job', \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportJobResource::class);
+            $resource = InspireCmsConfig::get('resources.import', \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource::class);
 
             return FilamentResourceHelper::attemptToGetUrl($resource, 'index', [], true);
 
