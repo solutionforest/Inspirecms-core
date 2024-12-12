@@ -47,13 +47,6 @@ interface Import extends HasAuthor, CanPrunable
     public function markAsCompleted($msg = null);
 
     /**
-     * Get the disk driver for the Import.
-     *
-     * @return string The name of the disk driver.
-     */
-    public static function getDiskDriver();
-
-    /**
      * Scope a query to only include pending import jobs.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query

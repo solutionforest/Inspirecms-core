@@ -23,16 +23,4 @@ interface ImportServiceInterface
      * @return \SplFileInfo
      */
     public function buildSampleZip();
-
-    
-    /**
-     * Get the sample file structure for import jobs.
-     *
-     * This method returns an array representing the structure of a sample file
-     * that can be used for import jobs. The structure typically includes the
-     * necessary headers and format required for a successful import.
-     *
-     * @return array The sample file structure.
-     */
-    public static function getSampleFileStructure();
 }

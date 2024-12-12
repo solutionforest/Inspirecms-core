@@ -15,9 +15,9 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
-use SolutionForest\InspireCms\Services\ImportServiceInterface;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class ImportResource extends Resource implements ClusterSectionResource
@@ -128,7 +128,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/import.file_name.label'))
                     ->validationAttribute(__('inspirecms::resources/import.file_name.validation_attribute'))
                     ->hint(__('inspirecms::resources/import.file_name.hint'))
-                    ->disk(app(Import::class)->getDiskDriver())
+                    ->disk(ImportDataHelper::getDiskDriver())
                     ->acceptedFileTypes([
                         //zip
                         ...[
@@ -160,7 +160,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->hint(__('inspirecms::resources/import.file_structure_instructions.hint'))
                     ->hintColor('warning')
                     ->content(view('inspirecms::import.file-structure-sample', [
-                        'structure' => app(ImportServiceInterface::class)->getSampleFileStructure(),
+                        'structure' => ImportDataHelper::getSampleFileStructure(),
                     ]))
                     ->columnSpanFull(),
             ]);

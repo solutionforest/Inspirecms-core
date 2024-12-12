@@ -6,6 +6,7 @@ use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Models\Contracts\Import;
 
 class ImportObserver
@@ -20,7 +21,7 @@ class ImportObserver
             $model->available_at = now();
         }
         if (blank($model->file_disk)) {
-            $model->file_disk = $model->getDiskDriver();
+            $model->file_disk = ImportDataHelper::getDiskDriver();
         }
     }
 

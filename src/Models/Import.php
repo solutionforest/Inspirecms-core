@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ImportStatus;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import as ImportContract;
@@ -83,7 +84,7 @@ class Import extends BaseModel implements ImportContract
                     return null;
                 }
 
-                return $this->created_at?->addDays(static::retrieveClearanceDaysInterval());
+                return $this->created_at?->addDays(ImportDataHelper::retrieveClearanceDaysInterval());
             },
             set: function ($value) {}
         );
@@ -94,11 +95,6 @@ class Import extends BaseModel implements ImportContract
         $this->deleteFile();
 
         parent::delete();
-    }
-
-    public static function getDiskDriver()
-    {
-        return InspireCmsConfig::get('imports.disk');
     }
 
     //region Prunable
@@ -145,7 +141,7 @@ class Import extends BaseModel implements ImportContract
     {
         return $query
             ->wherePending(false)
-            ->where('created_at', '<', now()->subDays(static::retrieveClearanceDaysInterval()));
+            ->where('created_at', '<', now()->subDays(ImportDataHelper::retrieveClearanceDaysInterval()));
     }
     //endregion Scope(s)
 
@@ -192,11 +188,6 @@ class Import extends BaseModel implements ImportContract
         }
 
         return true;
-    }
-
-    protected static function retrieveClearanceDaysInterval()
-    {
-        return InspireCmsConfig::get('models.prunable.import.interval', 5);
     }
     //endregion Helper(s)
 }

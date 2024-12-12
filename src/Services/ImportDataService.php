@@ -13,6 +13,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class ImportDataService implements ImportDataServiceInterface
 {
@@ -417,7 +418,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $contentData = $item->getDataForModel();
                 $contentData['document_type_id'] = $documentType->getKey();
-                $contentData['parent_id'] = $parent?->getKey();
+                $contentData['parent_id'] = $parentSlug === '__root__' ? KeyHelper::generateMinUuid() : $parent?->getKey();
 
                 $content = $model::where('slug', $slug)
                     ->when($parent, fn ($q) => $q->whereParent($parent->getKey()), fn ($q) => $q->isRoot())
