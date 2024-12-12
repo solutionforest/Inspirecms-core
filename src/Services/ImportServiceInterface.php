@@ -14,7 +14,7 @@ interface ImportServiceInterface
      * @return void
      */
     public function execute($import);
-    
+
     /**
      * Builds a sample ZIP file.
      *

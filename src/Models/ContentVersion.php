@@ -73,7 +73,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         }
     }
     //endregion Scopes
-    
+
     //region Prunable
     /**
      * Get the prunable model query.

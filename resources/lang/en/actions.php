@@ -106,8 +106,8 @@ return [
     ],
 
     'view' => [
-            
+
         'label' => 'View',
-        
+
     ],
 ];

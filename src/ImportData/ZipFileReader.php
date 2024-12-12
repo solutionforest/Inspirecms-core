@@ -11,7 +11,7 @@ class ZipFileReader
     /**
      * Extracts the contents of a ZIP file.
      *
-     * @param string $zipFilePath The path to the ZIP file to be extracted.
+     * @param  string  $zipFilePath  The path to the ZIP file to be extracted.
      * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string}|null The filesystem instance, the relative path to the folder, or null if the file does not exist or is not a ZIP file.
      */
     public function extractFromZip(string $zipFilePath)

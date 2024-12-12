@@ -49,7 +49,7 @@ return [
                         'label' => 'Import',
                     ],
                 ],
-            ]
+            ],
         ],
     ],
     'file_structure_instructions' => [

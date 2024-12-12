@@ -19,7 +19,7 @@ class ImportController extends Controller
         $file = $this->importService->buildSampleZip();
 
         return response()
-            ->download($file, 'import-sample-'.uniqid().'.zip')
+            ->download($file, 'import-sample-' . uniqid() . '.zip')
             ->deleteFileAfterSend(true);
     }
 }

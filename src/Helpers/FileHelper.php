@@ -34,6 +34,7 @@ class FileHelper
     public static function unzipFile(string $zipFilePath, string $extractTo)
     {
         $zip = new \ZipArchive;
+
         try {
             if ($zip->open($zipFilePath) === true) {
 

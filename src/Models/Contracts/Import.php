@@ -18,7 +18,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?ImportStatus $display_status
  * @property ?\Carbon\Carbon $clear_at
  */
-interface Import extends HasAuthor, CanPrunable
+interface Import extends CanPrunable, HasAuthor
 {
     /**
      * Get the storage and file path for the import job.

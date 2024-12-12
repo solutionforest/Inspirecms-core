@@ -49,7 +49,7 @@ return [
                         'label' => '匯入',
                     ],
                 ],
-            ]
+            ],
         ],
     ],
     'file_structure_instructions' => [
