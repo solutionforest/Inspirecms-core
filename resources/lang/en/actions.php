@@ -104,4 +104,10 @@ return [
         'message' => 'Copied!',
 
     ],
+
+    'view' => [
+            
+        'label' => 'View',
+        
+    ],
 ];

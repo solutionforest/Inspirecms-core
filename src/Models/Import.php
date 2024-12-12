@@ -103,7 +103,7 @@ class Import extends BaseModel implements ImportContract
      */
     public function prunable()
     {
-        return static::whereCanClear();
+        return static::query()->whereCanClear();
     }
 
     /**

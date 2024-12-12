@@ -51,9 +51,6 @@ return [
                 ],
             ]
         ],
-        'view' => [
-            'label' => '查看',
-        ],
     ],
     'file_structure_instructions' => [
         'label' => 'ZIP 文件的文件夾結構',

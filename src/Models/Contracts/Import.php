@@ -7,8 +7,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
 /**
- * @property int $id
- * @property string $type
+ * @property string $id
  * @property string $file_disk
  * @property string $file_name
  * @property ?string $payload

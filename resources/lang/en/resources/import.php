@@ -51,9 +51,6 @@ return [
                 ],
             ]
         ],
-        'view' => [
-            'label' => 'View',
-        ],
     ],
     'file_structure_instructions' => [
         'label' => 'Folder Structure of zip file',

@@ -71,7 +71,7 @@ class ImportObserver
         if (filled($url)) {
             $notification = $notification->actions([
                 Action::make('view')
-                    ->label(__('inspirecms::resources/import.actions.view.label'))
+                    ->label(__('inspirecms::actions.view.label'))
                     ->button()
                     ->url($url),
             ]);
