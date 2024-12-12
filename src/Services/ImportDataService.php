@@ -235,6 +235,8 @@ class ImportDataService implements ImportDataServiceInterface
 
                 if (! $fieldGroup) {
                     $fieldGroup = $model::create($item->getDataForModel());
+                } else {
+                    $fieldGroup->update($item->getDataForModel());
                 }
 
                 $this->finished['fieldGroups'][$name] = $fieldGroup;
@@ -310,7 +312,7 @@ class ImportDataService implements ImportDataServiceInterface
                      */
                     $documentType = $model::create($documentTypeData);
                 } else {
-                    // todo: update the document type
+                    $documentType->update($documentTypeData);
                 }
 
                 if (! empty($item->fieldGroups)) {
@@ -375,9 +377,12 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $field = $fieldGroup->fields()->where('name', $name)->first();
 
+                $fieldData = $this->mutateFieldData($item->getDataForModel());
+
                 if (! $field) {
-                    $data = $this->mutateFieldData($item->getDataForModel());
-                    $field = $fieldGroup->fields()->create($data);
+                    $field = $fieldGroup->fields()->create($fieldData);
+                } else {
+                    $field->update($fieldData);
                 }
 
                 $this->finished['fields'][$fieldKey] = $field;
@@ -420,6 +425,12 @@ class ImportDataService implements ImportDataServiceInterface
 
                 if (! $content) {
                     $content = new $model($contentData);
+                    $content->propertyData = json_encode($item->properties);
+                    $content->setPublishableState($item->publishState);
+                    $content->save();
+                    $content->refresh();
+                } else {
+                    $content->fill($contentData);
                     $content->propertyData = json_encode($item->properties);
                     $content->setPublishableState($item->publishState);
                     $content->save();

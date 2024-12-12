@@ -722,13 +722,16 @@ Html;
                 'type' => 'content',
             ],
         ];
+        $tempId = 0;
         foreach ($navigationData as $data) {
 
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
                 'category' => 'main',
+                'id' => $tempId++,
             ])));
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
                 'category' => 'footer',
+                'id' => $tempId++,
             ])));
         }
     }
