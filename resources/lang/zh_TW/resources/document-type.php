@@ -22,8 +22,8 @@ return [
         'validation_attribute' => '圖標',
     ],
     'slug' => [
-        'label' => '別名',
-        'validation_attribute' => '別名',
+        'label' => 'Slug',
+        'validation_attribute' => 'slug',
     ],
     'inherited_from' => [
         'label' => '繼承自',
