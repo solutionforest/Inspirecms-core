@@ -15,6 +15,15 @@ interface ImportJobServiceInterface
      * @return void
      */
     public function execute($job);
+    
+    /**
+     * Builds a sample ZIP file.
+     *
+     * This method creates a sample ZIP file for demonstration or testing purposes.
+     *
+     * @return \SplFileInfo
+     */
+    public function buildSampleZip();
 
     /**
      * Generates and returns the HTML representation of the file structure.

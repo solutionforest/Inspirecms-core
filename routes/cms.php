@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use SolutionForest\InspireCms\Http\Controllers\ImportJobController;
 
 Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
 
@@ -14,14 +15,7 @@ Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
 
     })->name('login');
 
-    // Donwload the samples
-    Route::name('cms.samples.')->prefix('samples')->group(function () {
-
-        Route::get('import-job/download', function () {
-
-            return response()->download(public_path('vendor/inspirecms/sample/import-job-sample.zip'));
-
-        })->name('download-import-job');
-
+    Route::name('cms.import-job.')->prefix('import-job')->group(function () {
+        Route::get('sample', [ImportJobController::class, 'sample'])->name('sample');
     });
 });

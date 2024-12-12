@@ -9,12 +9,12 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 class ZipFileReader
 {
     /**
-     * Reads the contents of a ZIP file from the specified file path.
+     * Extracts the contents of a ZIP file.
      *
-     * @param  string  $zipFilePath  The path to the ZIP file to be read.
+     * @param string $zipFilePath The path to the ZIP file to be extracted.
      * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string}|null The filesystem instance, the relative path to the folder, or null if the file does not exist or is not a ZIP file.
      */
-    public function readFromPath(string $zipFilePath)
+    public function extractFromZip(string $zipFilePath)
     {
         if (! file_exists($zipFilePath)) {
             return null;
@@ -34,8 +34,6 @@ class ZipFileReader
 
     public function getTempDiskDriver(): string
     {
-        return 'local';
-
         return strval(InspireCmsConfig::get('imports.temp_disk', 'local'));
     }
 
@@ -55,7 +53,7 @@ class ZipFileReader
      * @param  string  $folderName  The name of the folder to be created for extraction.
      * @return array{\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,string,string} The filesystem instance, the full path to the folder, and the relative path to the folder.
      */
-    protected function generateFolderForExtraction($folderName)
+    public function generateFolderForExtraction($folderName)
     {
         $disk = $this->getTempDisk();
 

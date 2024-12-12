@@ -35,10 +35,6 @@ class FileHelper
     {
         $zip = new \ZipArchive;
         if ($zip->open($zipFilePath) === true) {
-            logger()->debug('Extracting ZIP file', [
-                'zipFilePath' => $zipFilePath,
-                'extractTo' => $extractTo,
-            ]);
             $zip->extractTo($extractTo);
             $zip->close();
         } else {

@@ -179,11 +179,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     $file->getRealPath() => $viewFullPath,
                 ], 'inspirecms-sample-views');
             }
-
-            // Handle sample
-            $this->publishes([
-                __DIR__ . '/../sample' => public_path('vendor/inspirecms/sample'),
-            ], 'inspirecms-sample');
         }
 
         // Testing

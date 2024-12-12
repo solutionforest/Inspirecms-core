@@ -90,11 +90,6 @@ class ImportDefaultData extends Command
     protected function publishAssets(): void
     {
         $this->call('filament:assets');
-
-        $this->call('vendor:publish', [
-            '--tag' => 'inspirecms-sample',
-            '--force' => true,
-        ]);
     }
 
     protected function createSymlink(): void

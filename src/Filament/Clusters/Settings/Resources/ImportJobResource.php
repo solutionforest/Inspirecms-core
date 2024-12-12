@@ -139,25 +139,26 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                         ],
                     ])
                     ->preserveFilenames(false),
+                    
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('download_sample')
+                        ->label(__('inspirecms::resources/import-job.actions.download_sample.label'))
+                        ->icon('heroicon-s-arrow-down-on-square')
+                        ->button()
+                        ->outlined()
+                        ->color('warning')
+                        ->url(function () {
+                            try {
+                                return route('cms.import-job.sample');
+                            } catch (RouteNotFoundException $th) {
+                                return null;
+                            }
+                        }),
+                    ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import-job.file_structure_instructions.label'))
                     ->hint(__('inspirecms::resources/import-job.file_structure_instructions.hint'))
                     ->hintColor('warning')
-                    ->hintAction(
-                        Forms\Components\Actions\Action::make('download_sample')
-                            ->label(__('inspirecms::resources/import-job.actions.download_sample.label'))
-                            ->icon('heroicon-s-arrow-down-on-square')
-                            ->button()
-                            ->outlined()
-                            ->color('warning')
-                            ->url(function () {
-                                try {
-                                    return route('cms.samples.download-import-job');
-                                } catch (RouteNotFoundException $th) {
-                                    return null;
-                                }
-                            })
-                    )
                     ->content(app(ImportJobServiceInterface::class)->getFileStructureHtml())
                     ->columnSpanFull(),
             ]);
