@@ -49,17 +49,17 @@ class ImportJobService implements ImportJobServiceInterface
     ) {}
 
     /** {@inheritDoc} */
-    public static function getFileStructureHtml()
+    public static function getSampleFileStructure()
     {
-        $structure = collect(self::FOLDER_STRUCTURE)->mapWithKeys(function ($folder) {
+        return collect(self::FOLDER_STRUCTURE)->mapWithKeys(function ($folder) {
 
             $sampleFiles = [];
 
-            $maxRandomFiles = 3;
+            $maxRandomFiles = 2;
 
             $generateFiles = function ($filenamePrefix, $extension) use ($maxRandomFiles) {
 
-                return collect(range(1, random_int(1, $maxRandomFiles)))
+                return collect(range(1, $maxRandomFiles))
                     ->map(function ($i) use ($filenamePrefix, $extension) {
 
                         $name = (string) Str::of($filenamePrefix)->snake()->singular()->replaceMatches('/[^a-z0-9]/', '-');
@@ -90,10 +90,6 @@ class ImportJobService implements ImportJobServiceInterface
             return [$folder => $sampleFiles];
 
         })->all();
-
-        $html = view('inspirecms::import-job.file-structure-sample', compact('structure'))->render();
-
-        return new HtmlString($html);
     }
 
     /** {@inheritDoc} */

@@ -159,7 +159,9 @@ class ImportJobResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/import-job.file_structure_instructions.label'))
                     ->hint(__('inspirecms::resources/import-job.file_structure_instructions.hint'))
                     ->hintColor('warning')
-                    ->content(app(ImportJobServiceInterface::class)->getFileStructureHtml())
+                    ->content(view('inspirecms::import-job.file-structure-sample', [
+                        'structure' => app(ImportJobServiceInterface::class)->getSampleFileStructure(),
+                    ]))
                     ->columnSpanFull(),
             ]);
     }

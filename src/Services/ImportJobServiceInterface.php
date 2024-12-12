@@ -25,10 +25,15 @@ interface ImportJobServiceInterface
      */
     public function buildSampleZip();
 
+    
     /**
-     * Generates and returns the HTML representation of the file structure.
+     * Get the sample file structure for import jobs.
      *
-     * @return Htmlable The HTML representation of the file structure.
+     * This method returns an array representing the structure of a sample file
+     * that can be used for import jobs. The structure typically includes the
+     * necessary headers and format required for a successful import.
+     *
+     * @return array The sample file structure.
      */
-    public static function getFileStructureHtml();
+    public static function getSampleFileStructure();
 }

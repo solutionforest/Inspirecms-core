@@ -16,7 +16,7 @@
 @endphp
 <div role="tree" aria-orientation="vertical" class="select-none py-1 px-1.5 rounded-md shadow-md bg-gray-200/40">
     <div role="group">
-        @foreach ($structure as $lv_1_folder => $lv_1_files)
+        @foreach ($structure ?? [] as $lv_1_folder => $lv_1_files)
 
             <div role="treeitem" aria-label="level-1-file-container">
                 <div class="py-0.5 flex items-center gap-x-0.5 w-full" aria-label="level-1-file">
