@@ -26,6 +26,7 @@ return [
     'table' => 'Table',
     'template' => 'Template',
     'total_xxx_have_used' => 'Total :name has been used',
+    'total_xxx_selected' => 'Total :count selected',
     'trash_bin' => 'Trash Bin',
     'tree' => 'Tree',
     'url' => 'URL',

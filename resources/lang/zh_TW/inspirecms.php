@@ -26,6 +26,7 @@ return [
     'table' => '表格',
     'template' => '模板',
     'total_xxx_have_used' => '總共使用了 :name',
+    'total_xxx_selected' => '總共選擇了 :count',
     'trash_bin' => '垃圾桶',
     'tree' => '樹',
     'url' => 'URL',

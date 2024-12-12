@@ -3,13 +3,16 @@
 namespace SolutionForest\InspireCms\Fields\Configs;
 
 use Filament\Forms;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker as ContentPickerComponent;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 #[ConfigName('contentPicker', 'Content Picker', 'Picker', 'heroicon-o-pencil')]
 #[FormComponent(ContentPickerComponent::class)]
@@ -36,8 +39,15 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                     $query->where('slug', 'like', "%$search%");
                 })
                 ->get()
-                ->mapWithKeys(fn ($model) => [
-                    $model->getKey() => "<span class=\"font-bold\">{$model->title}</span><br/><span class=\"font-light\">{$model->slug}</span>",
+                ->mapWithKeys(fn (DocumentType | Model $model) => [
+                    $model->getKey() => UIHelper::generateTextWithBadge(
+                        text: $model->title,
+                        badgeText: $model->slug,
+                        attibutes: [
+                            'text' => ['class' => 'flex-1 font-semibold'],
+                            'badge' => ['class' => 'font-mono'],
+                        ]
+                    )->toHtml(),
                 ]);
         };
 

@@ -21,7 +21,7 @@ class ContentPicker extends PaginationPicker
         $this->default([]);
 
         $this->tableColumns([
-            TextColumn::make('id')->label(__('inspirecms::resources/content.id.label')),
+            TextColumn::make('id')->label(__('inspirecms::inspirecms.id')),
             TextColumn::make('title')->label(__('inspirecms::resources/content.title.label')),
             TextColumn::make('slug')->label(__('inspirecms::resources/content.slug.label'))->badge(),
         ]);

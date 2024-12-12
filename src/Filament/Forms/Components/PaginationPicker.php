@@ -148,6 +148,8 @@ class PaginationPicker extends Field
         return Action::make('select')
             ->label(__('inspirecms::actions.select.label'))
             ->fillForm(fn () => ['records' => $this->getState()])
+            ->modalWidth('7xl')
+            ->stickyModalHeader()->stickyModalFooter()
             ->form(function () {
                 $select = PaginationCheckboxList::make('records')
                     ->hiddenLabel()
