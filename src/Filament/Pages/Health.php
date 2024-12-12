@@ -40,7 +40,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
     public static function getPermissionDisplayName(): string
     {
-        return __('inspirecms::health.title');
+        return __('inspirecms::pages/health.title');
     }
 
     public function getBreadcrumbs(): array
