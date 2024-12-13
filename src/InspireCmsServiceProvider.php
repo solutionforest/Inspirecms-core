@@ -212,6 +212,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\ImportDefaultData::class,
             Commands\ExecuteImport::class,
             Commands\DataCleanup::class,
+            Commands\RepairPermissionsCommand::class,
         ];
     }
 
