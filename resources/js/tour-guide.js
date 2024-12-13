@@ -49,7 +49,10 @@ document.addEventListener('alpine:init', () => {
       this.ensureStepBeforeInitBoarding();
       this.boarding = this.initBoarding();
       
-      this.boarding.start(this.getCurrentSubStep());
+      let steps = this.getCurrentSubStep();
+      if (steps.length > 0) {
+        this.boarding.start(steps);
+      }
     },
     initBoarding() {
       const boarding = new Boarding({
