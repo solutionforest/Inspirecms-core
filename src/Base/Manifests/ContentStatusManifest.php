@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentStatusManifest implements ContentStatusManifestInterface
@@ -125,14 +126,14 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                     ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.unpublish.modal.actions.unpublish.label'))
                     ->modalIcon('heroicon-o-x-circle')
                     ->successNotificationTitle(__('inspirecms::resources/content.actions.unpublish.notification.unpublished.title'))
-                    ->action(function (null | Model | Content $record, Action $action, $livewire) {
+                    ->action(function (null | Model | Content $record, Action $action, ContentForm $livewire) {
                         if (is_null($record)) {
                             $action->cancel();
 
                             return;
                         }
 
-                        if (! static::handlePublishableRecord($record, 'unpublish', $livewire, [])) {
+                        if (! ContentHelper::handlePublishableRecord($record, 'unpublish', $livewire, [])) {
                             return;
                         }
 
@@ -143,37 +144,4 @@ class ContentStatusManifest implements ContentStatusManifestInterface
             ),
         ];
     }
-
-    //region Helpers
-    protected static function handlePublishableRecord($record, $publishableState, $livewire, array $publishableData)
-    {
-        if (! $livewire instanceof ContentForm) {
-            throw new \RuntimeException('The Livewire component must implement ContentForm.');
-        }
-
-        if ($livewire instanceof EditRecord) {
-
-            $isSuccess = $livewire->handlePublishableRecord(function () use ($publishableData, $livewire, $publishableState) {
-
-                $data = $livewire->getPublishableFormDataBeforePublish();
-
-                $livewire->handlePublishableRecordCreateOrUpdate($data, $publishableData, false, $publishableState);
-            });
-
-            if (! $isSuccess) {
-                return false;
-            }
-
-        } else {
-
-            $record->setPublishableState($publishableState);
-
-            $record->save();
-
-        }
-
-        return true;
-    }
-
-    //endregion Helpers
 }

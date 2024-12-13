@@ -79,12 +79,28 @@ php artisan schedule:work
 \SolutionForest\InspireCms\Facades\ContentStatusManifest::replaceOption(
     new \SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption(
         value: 5,
-        name: 'reviewing',
-        formAction: fn () => \Filament\Actions\Action::make('reviewing')
-            ->authorize('reviewing')
-            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, $livewire) {
+        name: 'approved',
+        formAction: fn () => \Filament\Actions\Action::make('approved')
+            ->authorize('approved')
+            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, \SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm $livewire) {
                 
                 // Handle your action here
+                
+                //Example:
+
+                if (is_null($record)) {
+                    $action->cancel();
+
+                    return;
+                }
+
+                $publishableState = 'approved';
+
+                if (! \SolutionForest\InspireCms\Helpers\ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
+                    return;
+                }
+
+                $action->success();
 
             }),
     )
@@ -127,9 +143,29 @@ class YourContentPolicy
      * @param  null|Content|Model  $content
      * @return bool
      */
-    public function reviewing($user, $content)
+    public function approved($user, $content)
     {
         return true;
+    }
+}
+```
+
+3. Override the `Content` model to update the condition that determines if the content is published.
+
+```php
+use SolutionForest\InspireCms\Models\Content as BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
+
+class Content extends BaseModel implements ContentContract
+{
+    public function isPublished(): bool
+    {
+        // Your implementation here
+    }
+    
+    public function scopeWhereIsPublished($query, bool $condition = true)
+    {
+        // Your implementation here
     }
 }
 ```
@@ -139,7 +175,7 @@ class YourContentPolicy
 > [!IMPORTANT]  
 > need add back miss permission after cluster/resource/page added.
 
-Call
+Execute the command:
 ```bash
 php artisan inspirecms:repair-permissions
 ```
