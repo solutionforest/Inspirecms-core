@@ -37,19 +37,14 @@ document.addEventListener('alpine:init', () => {
     reset() {
       this.jumpToStep(0);
       this.jumpToSubStep(0);
-      
       this.boarding = this.initBoarding();
-      this.boarding.start(this.getCurrentSubStep());
     },
     skip() {
       this.jumpToStep(-1);
     },
     init() {
-
       this.ensureStepBeforeInitBoarding();
       this.boarding = this.initBoarding();
-      
-      this.boarding.start(this.getCurrentSubStep());
     },
     initBoarding() {
       const boarding = new Boarding({
@@ -104,6 +99,14 @@ document.addEventListener('alpine:init', () => {
         let steps  = this.getBoardingSteps(this.getCurrentStep());
         if (steps.length > 0) {
           boarding.defineSteps(steps);
+
+          // Start the tour guide
+          try {
+            boarding.start(this.getCurrentSubStep());
+          } catch (error) {
+            // If there is an error, skip the tour guide
+            this.jumpToStep(-1);            
+          }
         }
       }
 
@@ -135,21 +138,11 @@ document.addEventListener('alpine:init', () => {
         }
       } 
       if (step < 2) {
-        if (path.endsWith("/settings/document-types/create")) {
-          this.jumpToStep(2);
-        }
-      }
-      if (step < 3) {
         if (path.match(/\/settings\/document-types\/\d+/)?.length > 0) {
           this.jumpToStep(3);
         }
       }
       if (step < 4) {
-        if (path.match(/\/settings\/document-types\/\d+\/edit/)?.length > 0) {
-          this.jumpToStep(4);
-        }
-      }
-      if (step < 5) {
         if (path.match(/\/content\/pages/)?.length > 0) {
           this.jumpToStep(5);
         }
@@ -201,34 +194,20 @@ document.addEventListener('alpine:init', () => {
               ...generalPopoverOptions,
               title: "Create a new Document Type",
               prefferedSide: "left",
+              onPopoverRender: (el) => {  // Make changes to the actual popoverElements once they get rendered.
+                setTimeout(() => {
+                  document.querySelector("[data-action-name='create']")?.click();
+                }, 30);
+              },
             },
-          }
-        ],
-        // Fill in the form and submit to create a new Document Type
-        [
-          {
-            element: ".fi-page form",
+          }, {
+            element: ".fi-modal-content",
             popover: {
               ...generalPopoverOptions,
               title: "Fill in the form",
             },
           }, {
-            element: ".fi-page form #data\\.category",
-            popover: {
-              ...generalPopoverOptions,
-              title: "Category",
-              description: "Select a category for the Document Type, Web page for example it's used for createing web page content.",
-              prefferedSide: "left",
-            },
-          }, {
-            element: ".fi-page form #data\\.show_children_as_table",
-            popover: {
-              ...generalPopoverOptions,
-              title: "Optional",
-              description: "Toggle this option to show children as table.",
-            },
-          }, {
-            element: ".fi-page form button[type='submit']",
+            element: ".fi-modal-window button[type='submit']",
             popover: {
               ...generalPopoverOptions,
               title: "Submit the form to create a new Document Type",
@@ -239,7 +218,7 @@ document.addEventListener('alpine:init', () => {
         // After a Document Type is created, go to the detail page normally.
         [
           {
-            element: "[data-action-name='edit']",
+            element: "table > tbody > tr:first-child",
             popover: {
               ...generalPopoverOptions,
               title: "Go to edit page",
@@ -249,11 +228,11 @@ document.addEventListener('alpine:init', () => {
         // Then go to edit page to create "FieldGroup" and "Template" for the Document Type
         [
           {
-            element: "[data-relation-manager-key='fields']",
+            element: "[data-relation-manager-key='field_group']",
             popover: {
               ...generalPopoverOptions,
               title: "Create Fields",
-              description: "A group of fields that can be used in a form while creating a content page.",
+              description: "A custom fields that can be used in a form while creating a content page.",
             },
           }, {
             element: "[data-relation-manager-key='templates']",
