@@ -17,7 +17,7 @@ class ImportDefaultData extends Command
     public function handle(): int
     {
         $this->publishAssets();
-        $this->publishRotueDefinition();
+        $this->publishRouteDefinition();
         $this->createSymlink();
 
         $this->importLanguageData();
@@ -75,14 +75,14 @@ class ImportDefaultData extends Command
         $this->components->info('Sample data imported successfully.');
     }
 
-    protected function publishRotueDefinition(): void
+    protected function publishRouteDefinition(): void
     {
         // Copy routes to user's routes/web.php
         $this->components->task('Publish route definition', function () {
             $destination = base_path('routes/web.php');
 
             if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
-                (new Filesystem)->append($destination, $this->cmsRotueDefinition());
+                (new Filesystem)->append($destination, $this->cmsRouteDefinition());
             }
         });
     }
@@ -108,7 +108,7 @@ class ImportDefaultData extends Command
         return true;
     }
 
-    protected function cmsRotueDefinition(): string
+    protected function cmsRouteDefinition(): string
     {
         return <<<PHP
 
