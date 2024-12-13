@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Tests\TestCase;
-use SolutionForest\InspireCms\Tests\TestModels\ImportJob;
+use SolutionForest\InspireCms\Tests\TestModels\Import;
 
 class ExecuteImportJobTest extends TestCase
 {
@@ -93,9 +93,9 @@ class ExecuteImportJobTest extends TestCase
             $jobDisk->deleteDirectory($folderName);
         }
 
-        $job = ImportJob::factory()->create([
-            'file' => $filename,
-            'disk' => $jobDiskName,
+        $job = Import::factory()->create([
+            'file_name' => $filename,
+            'file_disk' => $jobDiskName,
         ]);
 
         $job->refresh();

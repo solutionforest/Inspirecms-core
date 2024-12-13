@@ -4,13 +4,13 @@ namespace SolutionForest\InspireCms\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ImportJobFactory extends Factory
+class ImportFactory extends Factory
 {
     public function definition()
     {
         return [
             'available_at' => now(),
-            'file' => 'test.zip',
+            'file_name' => 'test.zip',
         ];
     }
 

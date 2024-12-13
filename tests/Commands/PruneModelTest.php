@@ -3,11 +3,11 @@
 namespace SolutionForest\InspireCms\Tests\Commands;
 
 use Illuminate\Console\Command;
-use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Tests\TestCase;
 use SolutionForest\InspireCms\Tests\TestModels\ContentPublishVersion;
 use SolutionForest\InspireCms\Tests\TestModels\ContentVersion;
-use SolutionForest\InspireCms\Tests\TestModels\ImportJob;
+use SolutionForest\InspireCms\Tests\TestModels\Import;
 
 class PruneModelTest extends TestCase
 {
@@ -21,16 +21,16 @@ class PruneModelTest extends TestCase
     public function test_cleanup_import_job()
     {
         // Create some import jobs that can be cleared
-        $jobs = ImportJob::factory()->count(5)->isCompleted()->create([
-            'created_at' => now()->subDays(InspireCmsConfig::get('models.prunable.import_job.interval', 30) + 1),
+        $jobs = Import::factory()->count(5)->isCompleted()->create([
+            'created_at' => now()->subDays(ImportDataHelper::retrieveClearanceDaysInterval() + 1),
         ]);
 
-        $this->assertDatabaseCount('import_jobs', count($jobs));
+        $this->assertDatabaseCount(app(Import::class), count($jobs));
 
         $this->artisan(static::$command)->assertExitCode(Command::SUCCESS);
 
         // Assert that the jobs were deleted
-        $this->assertDatabaseCount('import_jobs', 0);
+        $this->assertDatabaseCount(app(Import::class), 0);
     }
 
     public function test_no_versions_to_cleanup()
