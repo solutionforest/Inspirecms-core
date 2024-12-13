@@ -99,7 +99,14 @@ document.addEventListener('alpine:init', () => {
         let steps  = this.getBoardingSteps(this.getCurrentStep());
         if (steps.length > 0) {
           boarding.defineSteps(steps);
-          boarding.start(this.getCurrentSubStep());
+
+          // Start the tour guide
+          try {
+            boarding.start(this.getCurrentSubStep());
+          } catch (error) {
+            // If there is an error, skip the tour guide
+            this.jumpToStep(-1);            
+          }
         }
       }
 
