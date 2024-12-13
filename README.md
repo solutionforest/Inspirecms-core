@@ -219,10 +219,13 @@ class Test extends Page implements ClusterSectionPage, GuardPage
 
 ### Override model
 ```php
-\SolutionForest\InspireCms\Facades\ModelManifest::replace(
-    \SolutionForest\InspireCms\Models\Content::class,
-    Your\Model\Class::class,
-);
+public function register(): void
+{
+    \SolutionForest\InspireCms\Facades\ModelManifest::replace(
+        \SolutionForest\InspireCms\Models\Contracts\Content::class,
+        Your\Model\Class::class,
+    );
+}
 ```
 
 ## Testing

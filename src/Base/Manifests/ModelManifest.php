@@ -30,13 +30,13 @@ class ModelManifest implements ModelManifestInterface
     /** {@inheritDoc} */
     public function registerMorphMap(): void
     {
-        $modelClasses = collect(static::getDefaultModels())->mapWithKeys(
-            fn ($class) => [
-                $this->getMorphMapKey($class) => $class,
-            ]
-        );
+        $map = [];
 
-        Relation::morphMap($modelClasses->toArray());
+        foreach ($this->models as $interfaceClass => $modelClass) {
+            $map[$this->getMorphMapKey($modelClass)] = $modelClass;
+        }
+
+        Relation::morphMap($map);
     }
 
     /** {@inheritDoc} */
@@ -46,12 +46,19 @@ class ModelManifest implements ModelManifestInterface
 
         $extraPolicies = InspireCmsConfig::get('models.policies', []);
 
-        foreach ($modelClasses as $key => $modelClass) {
-            $interfaceClass = $this->guessContractClass($modelClass);
+        foreach ($modelClasses as $key => $origianlmodelClass) {
+
+            $interfaceClass = $this->guessContractClass($origianlmodelClass);
 
             $policyClass = $this->guessPolicyClass($interfaceClass);
 
             if (! class_exists($policyClass)) {
+                continue;
+            }
+
+            $modelClass = $this->get($interfaceClass);
+
+            if (! $modelClass) {
                 continue;
             }
 
