@@ -657,7 +657,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             return null;
                         }
 
-                        return UIHelper::generateBadge($status->getLabel(), $status->getColor(), $status->getIcon());
+                        return UIHelper::generateBadge($status->getLabel(), $status->getColor() ?? 'gray', $status->getIcon());
                     }),
             ])
             ->columns(['default' => 1]);
