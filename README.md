@@ -54,33 +54,26 @@ php artisan inspirecms:import-default-data
 php artisan schedule:work
 ```
 
-Existing scheduled jobs in the configuration file:
+### Existing scheduled jobs in the configuration file:
 ```php
 'scheduled_tasks' => [
-    'cleanup_content_verion' => [
-        'enabled' => true,
-        'schedule' => 'daily',
-        'command' => \SolutionForest\InspireCms\Commands\CleanupContentVersion::class,
-        'old_content_version_days' => 30,
-    ],
     'execute_import_job' => [
         'enabled' => true,
-        'schedule' => 'everyMinute',
-        'command' => \SolutionForest\InspireCms\Commands\ExecuteImportJob::class,
+        'schedule' => 'everyFiveMinutes',
+        'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
         'arguments' => [
-            '--limit 50',
+            '--limit 50', // limit
         ],
     ],
-    'cleanup_import_job' => [
+    'data_cleanup' => [
         'enabled' => true,
         'schedule' => 'daily',
-        'command' => \SolutionForest\InspireCms\Commands\CleanupImportJob::class,
-        'old_import_job_days' => 5,
+        'command' => \SolutionForest\InspireCms\Commands\DataCleanup::class,
     ],
 ],
 ```
 
-## Content Approving Flow
+### Content Approving Flow
 1. Add custom status
 ```php
 \SolutionForest\InspireCms\Facades\ContentStatusManifest::replaceOption(
@@ -141,7 +134,86 @@ class YourContentPolicy
 }
 ```
 
-## Configuration
+### Adding extract filament cluster/resource/page
+
+> [!IMPORTANT]  
+> need add back miss permission after cluster/resource/page added.
+
+Call
+```bash
+php artisan inspirecms:repair-permissions
+```
+
+#### Adding extract filament cluster
+
+- Option 1: create by `make:filament-cluster xxx --panel=cms`
+- Option 2: create you cluster, and add this to `filament.cluster` on config file.
+
+1. After cluster created, please apply `ClusterSectionTrait` and `ClusterSection` to your resource.
+```php
+use Filament\Clusters\Cluster;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
+
+class Test extends Cluster implements ClusterSection
+{
+    use ClusterSectionTrait;
+}
+```
+
+#### Adding extract filament resource
+- Option 1: create by `make:filament-resource xxx --panel=cms`
+- Option 2: create you resource, and add this to `filament.resources` on config file.
+
+After resource created, please apply `ClusterSectionResource`, `ClusterSectionResourceTrait`, and Cluster to your resource.
+
+> [!IMPORTANT] 
+> Ensure your Cluster apply SolutionForest\InspireCms\Filament\Contracts\ClusterSection interface.
+
+```php
+use Filament\Resources\Resource;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+
+class TestResource extends Resource implements ClusterSectionResource
+{
+    use ClusterSectionResourceTrait;
+
+    protected static ?string $cluster = \App\Clusters\Test::class;
+}
+```
+
+#### Adding extract filament page
+- Option 1: create by `make:filament-page xxx --panel=cms`
+- Option 2: create you page, and add this to `filament.pages` on config file.
+
+After page created, please apply `ClusterSectionPage`, `ClusterSectionResourceTrait`, `GuardPage`, and Cluster to your resource.
+
+> [!IMPORTANT] 
+> Ensure your Cluster apply SolutionForest\InspireCms\Filament\Contracts\ClusterSection interface.
+
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
+use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+
+```php
+class Test extends Page implements ClusterSectionPage, GuardPage
+{
+    use ClusterSectionPageTrait;
+
+    protected static ?string $cluster = \App\Clusters\Test::class;
+
+    public static function getPermissionName(): string
+    {
+        return 'view_test_page';
+    }
+
+    public static function getPermissionDisplayName(): string
+    {
+        return 'View test page';
+    }
+}
+```
 
 ## Extending
 
@@ -152,13 +224,6 @@ class YourContentPolicy
     Your\Model\Class::class,
 );
 ```
-
-## Schedule jobs
-config on `inspirecms.php` config file:
-
-1. cleanup_content_verion
-2. execute_import_job
-3. cleanup_import_job
 
 ## Testing
 
