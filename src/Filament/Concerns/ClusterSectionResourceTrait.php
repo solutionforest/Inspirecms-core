@@ -57,6 +57,10 @@ trait ClusterSectionResourceTrait
     {
         $section = static::getClusterSection();
 
-        return $section::configureResourceKeyOnNavigationItem(static::class, $navigationItem);
+        if ($section instanceof \SolutionForest\InspireCms\Filament\Contracts\ClusterSection) {
+            return $section::configureResourceKeyOnNavigationItem(static::class, $navigationItem);
+        }
+
+        return $navigationItem;
     }
 }
