@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\BasePolicy;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
-class ContentPublishPolicy extends BasePolicy
+class ContentStatusPolicy extends BasePolicy
 {
     /**
      * @param  Authenticatable|User|Model  $user

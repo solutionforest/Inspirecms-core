@@ -113,7 +113,7 @@ return [
             'import' => Models\Import::class,
         ],
         'policies' => [
-            'content' => Policies\ContentPublishPolicy::class,
+            'content' => Policies\ContentStatusPolicy::class,
         ],
         'prunable' => [
             'content_version' => [
