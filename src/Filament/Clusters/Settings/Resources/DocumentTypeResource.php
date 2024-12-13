@@ -73,6 +73,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ]),
                 Forms\Components\Section::make()
                     ->heading(__('inspirecms::resources/document-type.rejected.section.heading'))
+                    ->description(__('inspirecms::resources/document-type.rejected.section.description'))
                     ->columns(1)
                     ->aside()
                     ->schema([static::getRejectedRepeater()]),

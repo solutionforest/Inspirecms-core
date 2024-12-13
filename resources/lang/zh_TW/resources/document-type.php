@@ -89,11 +89,12 @@ return [
     ],
     'rejected' => [
         'section' => [
-            'heading' => '被拒絕的文件類型',
+            'heading' => '受限制的文件類型',
+            'description' => '不允許作為子項的文件類型',
         ],
     ],
     'rejecting' => [
-        'label' => '拒絕的文件類型',
-        'description' => '拒絕此文件類型的文件類型。',
+        'label' => '限制此文件',
+        'description' => '限制此文件類型的文件類型。',
     ],
 ];

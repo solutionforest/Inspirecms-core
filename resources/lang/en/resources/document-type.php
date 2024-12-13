@@ -89,11 +89,12 @@ return [
     ],
     'rejected' => [
         'section' => [
-            'heading' => 'Rejected document types',
+            'heading' => 'Restricted document types',
+            'description' => 'Document types that are not allowed as child items',
         ],
     ],
     'rejecting' => [
-        'label' => 'Rejecting document types',
-        'description' => 'The document types that reject this document type.',
+        'label' => 'Restricting document types',
+        'description' => 'The document types that restrict this document type.',
     ],
 ];
