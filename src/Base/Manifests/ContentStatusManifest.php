@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Base\Manifests;
 
 use Filament\Actions\Action;
-use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
