@@ -9,7 +9,7 @@ class SitemapController extends Controller
 {
     public function __invoke()
     {
-        $filePath = InspireCmsConfig::get('routes.sitemap.file_path');
+        $filePath = InspireCmsConfig::get('content.sitemap.file_path');
 
         if (! file_exists($filePath)) {
             abort(404);

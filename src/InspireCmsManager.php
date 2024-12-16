@@ -117,7 +117,7 @@ class InspireCmsManager
         Route::name('inspirecms.sitemap')
             ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
 
-        Route::group(['middleware' => InspireCmsConfig::get('routes.middleware')], function () {
+        Route::group(['middleware' => InspireCmsConfig::get('content.middlewares')], function () {
 
             $contentUrlGenerator = ContentUrlGeneratorFactory::create();
             $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;

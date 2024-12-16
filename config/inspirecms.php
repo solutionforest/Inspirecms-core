@@ -155,8 +155,8 @@ return [
         'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
     ],
 
-    'routes' => [
-        'middleware' => [
+    'content' => [
+        'middlewares' => [
             'web',
         ],
         'sitemap' => [
