@@ -157,11 +157,13 @@ class PropertyDataDto extends BaseDto
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
                 //todo: improve performance
-                $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
+                $content = inspirecms_content()->findContentByIds($sourceValue);
 
                 // sort the content based on the source value
                 return collect($sourceValue)
-                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
+                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id))
+                    ->whereInstanceOf(\SolutionForest\InspireCms\Models\Contracts\Content::class)
+                    ->map(fn ($c) => $c->toDto($locale))
                     ->values()
                     ->all();
 

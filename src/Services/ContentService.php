@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -10,26 +12,34 @@ use SolutionForest\InspireCms\InspireCmsConfig;
  */
 class ContentService implements ContentServiceInterface
 {
-    protected string $contentModel;
-
-    public function __construct()
-    {
-        $this->contentModel = InspireCmsConfig::getContentModelClass();
-    }
-
     /** {@inheritDoc} */
     public function findPublishedWebPageById($id)
     {
-        return $this->getContentQuery()
+        return $this->getQuery()
             ->whereIsWebPage()
             ->whereIsPublished()
             ->find($id);
     }
 
     /** {@inheritDoc} */
+    public function findPublishedContentByIds(...$ids)
+    {
+        return $this->getQuery()
+            ->whereIsPublished()
+            ->findMany(Arr::collapse($ids));
+    }
+
+    /** {@inheritDoc} */
+    public function findContentByIds(...$ids)
+    {
+        return $this->getQuery()
+            ->findMany(Arr::collapse($ids));
+    }
+
+    /** {@inheritDoc} */
     public function findDefaultWebPage()
     {
-        return $this->getContentQuery()
+        return $this->getQuery()
             ->where('is_default', true)
             ->whereIsWebPage()
             ->first();
@@ -38,7 +48,7 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findWebPageBySlugPath(string $slugPath)
     {
-        return $this->getContentQuery()
+        return $this->getQuery()
             ->whereHas('path', fn ($q) => $q->where('slug_path', $slugPath))
             ->whereIsWebPage()
             ->first();
@@ -49,7 +59,7 @@ class ContentService implements ContentServiceInterface
     {
         $trueSlug = Str::afterLast($slugPath, '/');
 
-        $content = $this->getContentQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
+        $content = $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
 
         return collect($content)
             ->map(function ($item) {
@@ -71,9 +81,17 @@ class ContentService implements ContentServiceInterface
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getContentQuery()
+    protected function getQuery()
     {
-        return $this->contentModel::query();
+        return static::getModel()::query();
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    protected static function getModel()
+    {
+        return InspireCmsConfig::getContentModelClass();
     }
     //endregion Helpers
 }

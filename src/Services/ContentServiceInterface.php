@@ -18,6 +18,22 @@ interface ContentServiceInterface
     public function findPublishedWebPageById($id);
 
     /**
+     * Find published content by their IDs.
+     *
+     * @param string ...$ids The IDs of the content to find.
+     * @return Collection<TResult> The published content corresponding to the given IDs.
+     */
+    public function findPublishedContentByIds(...$ids);
+
+    /**
+     * Find content by their IDs.
+     *
+     * @param string ...$ids The IDs of the content to find.
+     * @return Collection<TResult> The content corresponding to the given IDs.
+     */
+    public function findContentByIds(...$ids);
+
+    /**
      * Find the default web page.
      *
      * @return ?TResult The index web page.

@@ -15,7 +15,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
-use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Livewire\ContentSidebar;
@@ -80,13 +79,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->registerPolymorphism();
 
-        $this->app->scoped(BaseAssets\InspireCmsAssetManagerInterface::class, fn () => $this->app->make(BaseAssets\InspireCmsAssetManager::class));
-
         $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
 
+        $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));

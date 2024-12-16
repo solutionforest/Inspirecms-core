@@ -82,6 +82,9 @@ return [
             'height' => 300,
         ],
         'should_map_video_properties_with_ffmpeg' => false,
+        'middlewares' => [
+            'cache.headers:public;max_age=2628000;etag',
+        ],
     ],
 
     'imports' => [
