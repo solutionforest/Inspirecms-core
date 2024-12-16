@@ -78,7 +78,7 @@
                             <div class="inline-flex gap-4 lg:items-center lg:justify-between flex-col lg:flex-row">
                                 <div class="inline-flex space-x-3">
                                     <p class="text-sm text-gray-500 dark:text-white"><span class="font-medium text-gray-900 dark:text-gray-200">{{ $item['authorName'] }}</span> {{ $item['event']}}.</p>
-                                    <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-1">
+                                    <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-4">
                                         {{ $item['publishState'] }}
                                     </x-filament::badge>
                                 </div>
