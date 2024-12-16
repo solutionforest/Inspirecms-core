@@ -20,7 +20,7 @@ interface ContentServiceInterface
     /**
      * Find published content by their IDs.
      *
-     * @param string ...$ids The IDs of the content to find.
+     * @param  string  ...$ids  The IDs of the content to find.
      * @return Collection<TResult> The published content corresponding to the given IDs.
      */
     public function findPublishedContentByIds(...$ids);
@@ -28,7 +28,7 @@ interface ContentServiceInterface
     /**
      * Find content by their IDs.
      *
-     * @param string ...$ids The IDs of the content to find.
+     * @param  string  ...$ids  The IDs of the content to find.
      * @return Collection<TResult> The content corresponding to the given IDs.
      */
     public function findContentByIds(...$ids);

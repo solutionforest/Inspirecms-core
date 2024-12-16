@@ -17,13 +17,13 @@ class AssetService implements AssetServiceInterface
     //     $this->cacheManager = $cacheManager;
     // }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function findByKey(string | int $key)
     {
         return static::getModel()::with('media')->find($key);
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function findByKeys(...$keys)
     {
         $keys = Arr::flatten($keys);
@@ -39,7 +39,7 @@ class AssetService implements AssetServiceInterface
     {
         return static::getModel()::query();
     }
-    
+
     /**
      * @return class-string<Model>
      */
