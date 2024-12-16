@@ -10,7 +10,7 @@ use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
  * @method static void setSuperAdminRoleName(string $name)
  * @method static \Illuminate\Support\Collection<string> permissions()
  * @method static array getClusterSectionPermissions()
- * @method static array getClusterSectionResourceModelPermissions()
+ * @method static array getResourcePermissions()
  * @method static array getActionPermissions()
  * @method static array getPagePermissions()
  * @method static string getPermissionNameForModel(string $ability, string $model)
