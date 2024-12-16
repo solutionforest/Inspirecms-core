@@ -58,7 +58,7 @@
                 @endif
             
                 <p class="font-mono text-xs">
-                    $content->getPropertyGroup('{{ $propertyType->group }}')?->getPropertyData('{{ $propertyType->key }}')?->getValue(@if ($translatable)'$locale'@endif);
+                    $content->getPropertyGroup('{{ $propertyType->group }}')?->getPropertyData('{{ $propertyType->key }}')?->getValue(@if ($translatable){{ html_entity_decode('$locale') }}@endif);
                 </p>
         </x-filament::section>
     @endforeach
