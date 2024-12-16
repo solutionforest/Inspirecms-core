@@ -37,11 +37,13 @@ class ContentPageOverview extends Widget
         return FilamentResourceHelper::attemptToGetUrl($resource, ['create', 'index'], [], true);
     }
 
-    public function getCreateContentUrl(): ?string
+    public function canCreateContent(): bool
     {
         $resource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
-        return FilamentResourceHelper::attemptToGetUrl($resource, ['create', 'index'], [], true);
+        $url = FilamentResourceHelper::attemptToGetUrl($resource, 'create', [], true);
+
+        return filled($url);
     }
 
     public function getDefaultPageUrl(): ?string

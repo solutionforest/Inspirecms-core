@@ -88,29 +88,6 @@
         @apply lg:col-span-2 lg:row-span-2;
     }
 }
-.fi-wi-content-page-overview {
-    @apply grid gap-6 lg:grid-rows-2 lg:grid-flow-col;
-    .card {
-        @apply ring-1 ring-white/[0.05] dark:ring-gray-800 hover:bg-gray-200/20 dark:hover:bg-white/5 dark:hover:ring-white/20;
-        @apply gap-4 lg:col-span-2 lg:row-span-1;
-    }
-    .card.main {
-        @apply gap-6 lg:col-span-2 lg:row-span-2;
-        @apply ring-2 ring-primary-200 hover:ring-primary-200/80 dark:ring-primary-400/25 hover:dark:ring-primary-400/5;
-    }
-    .icon-container--custom-color {
-        background-color: rgba(var(--icon-container-color), 0.2);
-        .icon {
-            color: rgba(var(--icon-container-color), 0.8);
-        }
-        &:is(.dark *) {
-            background-color: rgba(var(--icon-container-color), 0.4);
-            .icon {
-                color: rgba(var(--icon-container-color), 1);
-            }
-        }
-    }
-}
 
 /* Form */
 .filament-icon-picker {
