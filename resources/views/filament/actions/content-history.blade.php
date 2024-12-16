@@ -7,7 +7,7 @@
 
     $items = $history->getCollection()->transform(function ($item) {
         $diff = collect($item->getDifferences())
-            ->map(fn ($diffsArr) => collect($diffsArr)
+            ->map(fn ($diffsArr, $k) => collect($diffsArr)
                 ->map(fn ($value) => is_array($value) ? json_encode($value, JSON_PRETTY_PRINT) : $value)
                 ->all()
             )
@@ -100,21 +100,36 @@
                                 </div>
                             @endif
                             <div class="rounded-md p-3 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 shadow-lg">
-                                @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
-                                    <div class="flex justify-between gap-x-4">
-                                        @php
-                                            $from = $diffValue['from'] ?? '';
-                                            $to = $diffValue['to'] ?? '';
-                                        @endphp
-                                        <span default="1">
+                                @php
+                                    $headingClasses = 'text-xs/5 font-mono font-thin text-gray-500 dark:text-gray-200';
+                                    $dataColumnSpan = [
+                                        'default' => 1,
+                                        'md' => 2,
+                                    ];
+                                    //todo: add translations
+                                @endphp
+                                <x-filament::grid default="3" md="5" class="gap-x-1">
+                                    <x-filament::grid.column default="1">
+                                        <span @class([$headingClasses])>Field</span>
+                                    </x-filament::grid.column>
+                                    <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                        <span @class([$headingClasses])>From</span>
+                                    </x-filament::grid.column>
+                                    <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                        <span @class([$headingClasses])>To</span>
+                                    </x-filament::grid.column>
+                                    @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
+                                        <x-filament::grid.column>
                                             {{ $diffKey }}
-                                        </span>
-                                        <div default="2" class="text-xs/5">
-                                            <span class="text-gray-400 line-through">{{ $from }}</span>
-                                            <span>{{ $to }}</span>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                        </x-filament::grid.column>
+                                        <x-filament::grid.column class="text-gray-400 line-through text-xs/5" :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                            <pre class="overflow-auto h-full">{{ $diffValue['from'] ?? '' }}</pre>
+                                        </x-filament::grid.column>
+                                        <x-filament::grid.column class="text-xs/5" :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                            <pre class="overflow-auto h-full">{{ $diffValue['to'] ?? '' }}</pre>
+                                        </x-filament::grid.column>
+                                    @endforeach
+                                </x-filament::grid>
                             </div>
                         </div>
                     </div>
