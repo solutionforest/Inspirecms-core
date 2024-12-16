@@ -49,8 +49,8 @@ class PermissionManifest implements PermissionManifestInterface
     public function getResourcePermissions(): array
     {
         return collect(InspireCmsConfig::get('filament.resources'))
-            ->where(fn (string $fqcn): bool => 
-                is_subclass_of($fqcn, \Filament\Resources\Resource::class) && 
+            ->where(
+                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
                 in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn))
             )
             ->map(fn (string $fqcn) => [
@@ -61,7 +61,7 @@ class PermissionManifest implements PermissionManifestInterface
                 [
                     'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class),
                     'permissionPrefixes' => ['view', 'create', 'update', 'delete'],
-                ]
+                ],
             ])
             ->map(function (array $data) {
 
