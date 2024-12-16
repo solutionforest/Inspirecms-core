@@ -8,7 +8,7 @@
     $items = $history->getCollection()->transform(function ($item) {
         $diff = collect($item->getDifferences())
             ->map(fn ($diffsArr) => collect($diffsArr)
-                ->map(fn ($value) => is_array($value) ? json_encode($value) : $value)
+                ->map(fn ($value) => is_array($value) ? json_encode($value, JSON_PRETTY_PRINT) : $value)
                 ->all()
             )
             ->all();

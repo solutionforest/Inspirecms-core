@@ -341,6 +341,13 @@ class Content extends BaseModel implements ContentContract
         $data['to']['propertyData'] = $this->tempRelationData['propertyData'] ?? $this->getLatestVersionPropertyData();
         unset($this->tempRelationData['propertyData']);
 
+        if (isset($data['to']['status']) && $toStatus = inspirecms_content_statuses()->getOption($data['to']['status'])) {
+            $data['to']['status'] = $toStatus->getName();
+        }
+        if (isset($data['from']['status']) && $fromStatus = inspirecms_content_statuses()->getOption($data['from']['status'])) {
+            $data['from']['status'] = $fromStatus->getName();
+        }
+
         return $data;
     }
 
