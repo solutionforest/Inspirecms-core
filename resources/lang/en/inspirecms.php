@@ -19,6 +19,7 @@ return [
     'navigation' => 'Navigation',
     'order' => 'Order',
     'page' => 'Page',
+    'publish_at_xxx' => 'Published at :time',
     'role' => 'Role',
     'root' => 'Root',
     'settings' => 'Settings',

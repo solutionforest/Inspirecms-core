@@ -19,6 +19,7 @@ return [
     'navigation' => '導航',
     'order' => '順序',
     'page' => '頁面',
+    'publish_at_xxx' => '發布於 :time',
     'role' => '角色',
     'root' => '根',
     'settings' => '設置',
