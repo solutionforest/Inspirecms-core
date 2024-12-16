@@ -41,9 +41,7 @@ class ContentPageOverview extends Widget
     {
         $resource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
-        $url = FilamentResourceHelper::attemptToGetUrl($resource, 'create', [], true);
-
-        return filled($url);
+        return $resource::canCreate();
     }
 
     public function getDefaultPageUrl(): ?string
