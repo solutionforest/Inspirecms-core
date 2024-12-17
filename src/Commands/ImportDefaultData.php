@@ -64,7 +64,7 @@ class ImportDefaultData extends Command
         $this->components->info('Import sample data');
 
         $this->call('vendor:publish', [
-            '--tag' => 'inspirecms-sample-views',
+            '--tag' => 'inspirecms-sample-assets',
             '--force' => true,
         ]);
 

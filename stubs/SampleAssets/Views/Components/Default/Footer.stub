@@ -1,0 +1,35 @@
+@php
+    $locale ??= request()->getLocale();
+    $nav = inspirecms()->getNavigation('footer', $locale);
+@endphp
+<footer class="footer">
+  <!-- Contact Section -->
+  <section class="contact-section">
+  <div class="container">
+      <div class="row">
+          <div class="col-md-4 mb-4 mb-md-0">
+              <p class="heading">Need a project?</h2>
+              <p class="">(239) 555-0108</p>
+              <p>tanya.hill@example.com</p>
+          </div>
+          <div class="col-md-4 mb-4 mb-md-0">
+              <ul class="list-unstyled social-links mb-0">
+                  @foreach ($nav as $item)
+                    <{{ csrf_field() }}>
+                      <a class="text-dark text-decoration-none" href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+                    </>
+                  @endforeach
+              </ul>
+          </div>
+          <div class="col-md-4">
+              <p class="mb-0 copyright">
+                  © Copyright Manifest Theme.<br>
+                  All rights reserved
+              </p>
+          </div>
+      </div>
+  </div>
+</section>
+
+
+</footer>
