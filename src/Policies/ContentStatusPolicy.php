@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Policies;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Base\BasePolicy;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentStatusPolicy extends ContentPolicy

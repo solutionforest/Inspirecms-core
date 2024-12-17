@@ -139,14 +139,14 @@ trait ContentFormTrait
 
         if (! $isSuccess) {
             return;
-        } else if ($withDescendants) {
+        } elseif ($withDescendants) {
             /**
              * @var Content & Model $parent
              */
             $parent = $this->getRecord();
-            
-            $parent->descendants->each(fn (Content | Model $descendant) =>
-                $this->wrapPublisableSavingEventIntoDbTransaction(function () use ($descendant, $publishableData, $publishableState) {
+
+            $parent->descendants->each(
+                fn (Content | Model $descendant) => $this->wrapPublisableSavingEventIntoDbTransaction(function () use ($descendant, $publishableData, $publishableState) {
                     $descendant->setPublishableData($publishableData);
                     $descendant->setPublishableState($publishableState);
                     $descendant->save();
