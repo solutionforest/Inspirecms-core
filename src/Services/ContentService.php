@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -10,26 +12,27 @@ use SolutionForest\InspireCms\InspireCmsConfig;
  */
 class ContentService implements ContentServiceInterface
 {
-    protected string $contentModel;
-
-    public function __construct()
-    {
-        $this->contentModel = InspireCmsConfig::getContentModelClass();
-    }
-
     /** {@inheritDoc} */
     public function findPublishedWebPageById($id)
     {
-        return $this->getContentQuery()
+        return $this->getQuery()
             ->whereIsWebPage()
             ->whereIsPublished()
             ->find($id);
     }
 
     /** {@inheritDoc} */
+    public function findPublishedContentByIds(...$ids)
+    {
+        return $this->getQuery()
+            ->whereIsPublished()
+            ->findMany(Arr::collapse($ids));
+    }
+
+    /** {@inheritDoc} */
     public function findDefaultWebPage()
     {
-        return $this->getContentQuery()
+        return $this->getQuery()
             ->where('is_default', true)
             ->whereIsWebPage()
             ->first();
@@ -38,19 +41,24 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findWebPageBySlugPath(string $slugPath)
     {
-        return $this->getContentQuery()
-            ->whereHas('path', fn ($q) => $q->where('slug_path', $slugPath))
+        return $this->getQuery()
+            ->whereHas('path', fn ($q) => $q->where('slug_path', static::ensureSlugPath($slugPath)))
             ->whereIsWebPage()
             ->first();
     }
 
     /** {@inheritDoc} */
-    public function getBySlugPath(string $slugPath)
+    public function findByRealPath(string $slugPath, $withRelations = [])
     {
-        $trueSlug = Str::afterLast($slugPath, '/');
+        return $this->getByRealPath($slugPath, $withRelations)->get(trim($slugPath, '/'));
+    }
 
-        $content = $this->getContentQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
+    /** {@inheritDoc} */
+    public function getByRealPath(string $slugPath, $withRelations = [])
+    {
+        $content = $this->getFindByRealPathQuery($slugPath)->with($withRelations)->get();
 
+        // Find similar content by slug path
         return collect($content)
             ->map(function ($item) {
 
@@ -67,13 +75,48 @@ class ContentService implements ContentServiceInterface
             ->pluck('item', 'slugPath');
     }
 
+    /** {@inheritDoc} */
+    public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = [])
+    {
+        $parent = $this->findByRealPath($slugPath);
+        if (is_null($parent)) {
+            return collect();
+        }
+
+        return $parent->children()
+            ->with($withRelations)
+            ->when(! is_null($limit), fn ($q) => $q->limit($limit))
+            ->get();
+    }
+
     //region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getContentQuery()
+    protected function getQuery()
     {
-        return $this->contentModel::query();
+        return static::getModel()::query();
+    }
+
+    protected function getFindByRealPathQuery(string $slugPath)
+    {
+        // Find a content by read slug
+        $trueSlug = Str::afterLast($slugPath, '/');
+
+        return $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug);
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    protected static function getModel()
+    {
+        return InspireCmsConfig::getContentModelClass();
+    }
+
+    protected static function ensureSlugPath($slugPath)
+    {
+        return Str::of($slugPath)->trim('/')->prepend('/');
     }
     //endregion Helpers
 }

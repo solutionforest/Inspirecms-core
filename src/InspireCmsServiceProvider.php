@@ -15,7 +15,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
-use SolutionForest\InspireCms\Base\Assets as BaseAssets;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Livewire\ContentSidebar;
@@ -80,13 +79,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->registerPolymorphism();
 
-        $this->app->scoped(BaseAssets\InspireCmsAssetManagerInterface::class, fn () => $this->app->make(BaseAssets\InspireCmsAssetManager::class));
-
         $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
 
+        $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\PageServiceInterface::class, fn () => $this->app->make(Services\PageService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
@@ -151,7 +149,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 ], 'inspirecms-stubs');
             }
 
-            foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleViews') as $file) {
+            foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views') as $file) {
 
                 $dir = str($file->getRelativePath())->explode('/')
                     ->map(fn ($path) => (string) str($path)->kebab())
@@ -168,16 +166,26 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                         }
                     )
                     ->implode('/');
-                $viewName = str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php');
 
-                $viewFullPath = (string) str(base_path('resources/views'))
+                $fullPath = (string) str(base_path('resources/views'))
                     ->finish('/')
                     ->when(filled($dir), fn ($str) => $str->finish($dir)->finish('/'))
-                    ->finish($viewName);
+                    ->finish(str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php'));
 
                 $this->publishes([
-                    $file->getRealPath() => $viewFullPath,
-                ], 'inspirecms-sample-views');
+                    $file->getRealPath() => $fullPath,
+                ], 'inspirecms-sample-assets');
+            }
+            foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Assets') as $file) {
+                $dir = str($file->getRelativePath())->explode('/')
+                    ->map(fn ($path) => (string) str($path)->kebab())
+                    ->implode('/');
+                $fullPath = (string) str(public_path($dir))
+                    ->finish('/')
+                    ->finish(str($file->getFilename())->kebab()->beforeLast('.stub'));
+                $this->publishes([
+                    $file->getRealPath() => $fullPath,
+                ], 'inspirecms-sample-assets');
             }
         }
 

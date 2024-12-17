@@ -119,24 +119,39 @@ trait ContentFormTrait
         $this->{$this->getPublishableFormName()}->validate();
     }
 
-    public function publish(array $publishableData, Action $action)
+    public function publish(array $publishableData, Action $action, bool $withDescendants = false): void
     {
         $isCreating = $this->isCreatingPublishableData();
 
         $shouldRedirect = true;
 
+        $publishableState = 'publish';
+
         $this->authorizeAccess();
 
-        $isSuccess = $this->handlePublishableRecord(function () use ($publishableData, $isCreating) {
+        $isSuccess = $this->handlePublishableRecord(function () use ($publishableData, $isCreating, $publishableState) {
 
             $data = $this->getPublishableFormDataBeforePublish();
 
-            $this->handlePublishableRecordCreateOrUpdate($data, $publishableData, $isCreating, 'publish');
+            $this->handlePublishableRecordCreateOrUpdate($data, $publishableData, $isCreating, $publishableState);
 
         });
 
         if (! $isSuccess) {
             return;
+        } elseif ($withDescendants) {
+            /**
+             * @var Content & Model $parent
+             */
+            $parent = $this->getRecord();
+
+            $parent->descendants->each(
+                fn (Content | Model $descendant) => $this->wrapPublisableSavingEventIntoDbTransaction(function () use ($descendant, $publishableData, $publishableState) {
+                    $descendant->setPublishableData($publishableData);
+                    $descendant->setPublishableState($publishableState);
+                    $descendant->save();
+                })
+            );
         }
 
         $action->success();
@@ -214,7 +229,7 @@ trait ContentFormTrait
         } else {
 
             //region Handle Record Updating
-            /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
+            /** @var Model&\SolutionForest\InspireCms\Models\Contracts\Content */
             $record = $this->getRecord();
 
             $record->setPublishableData($publishableData);

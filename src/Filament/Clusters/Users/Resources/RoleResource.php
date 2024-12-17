@@ -78,7 +78,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                         $permissionNames = $record->permissions->pluck('name');
                         $state = [];
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
-                        $resourcePermissions = collect(PermissionManifest::getClusterSectionResourceModelPermissions())->collapse()->all();
+                        $resourcePermissions = collect(PermissionManifest::getResourcePermissions())->collapse()->all();
                         $actionPermissions = PermissionManifest::getActionPermissions();
                         $pagePermissions = PermissionManifest::getPagePermissions();
 
@@ -223,7 +223,7 @@ class RoleResource extends Resource implements ClusterSectionResource
      */
     protected static function getFormComponentForResourcePermissionsSection()
     {
-        $modelPermissions = PermissionManifest::getClusterSectionResourceModelPermissions();
+        $modelPermissions = PermissionManifest::getResourcePermissions();
 
         $components = [];
 

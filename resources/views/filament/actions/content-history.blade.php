@@ -7,8 +7,8 @@
 
     $items = $history->getCollection()->transform(function ($item) {
         $diff = collect($item->getDifferences())
-            ->map(fn ($diffsArr) => collect($diffsArr)
-                ->map(fn ($value) => is_array($value) ? json_encode($value) : $value)
+            ->map(fn ($diffsArr, $k) => collect($diffsArr)
+                ->map(fn ($value) => is_array($value) ? json_encode($value, JSON_PRETTY_PRINT) : $value)
                 ->all()
             )
             ->all();
@@ -17,7 +17,7 @@
 
         $data['diff'] = $diff;
 
-        $publishTime = $item->publishLog?->published_at;
+        $publishTime = $item?->publishLog?->published_at;
         $data['isPublished'] = $publishTime != null;
         $data['publishTime'] = $publishTime?->format('Y-m-d H:i:s');
         $data['publishTimeShort'] = $publishTime?->diffForHumans();
@@ -27,7 +27,7 @@
         $data['publishState'] = $publishStateOption?->getLabel() ?? $publishState;
         $data['publishStateColor'] = $publishStateOption?->getColor() ?? 'gray';
 
-        $data['logTime'] = $item->created_at->format('Y-m-d H:i:s');
+        $data['logTime'] = $item->created_at?->format('Y-m-d H:i:s');
 
         $data['event'] = $item->event_name;
         $data['authorName'] = $item->author?->name;
@@ -78,7 +78,7 @@
                             <div class="inline-flex gap-4 lg:items-center lg:justify-between flex-col lg:flex-row">
                                 <div class="inline-flex space-x-3">
                                     <p class="text-sm text-gray-500 dark:text-white"><span class="font-medium text-gray-900 dark:text-gray-200">{{ $item['authorName'] }}</span> {{ $item['event']}}.</p>
-                                    <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-1">
+                                    <x-filament::badge :color="$item['publishStateColor']" size="xs" class="px-4">
                                         {{ $item['publishState'] }}
                                     </x-filament::badge>
                                 </div>
@@ -100,21 +100,36 @@
                                 </div>
                             @endif
                             <div class="rounded-md p-3 ring-1 ring-inset ring-gray-200 dark:ring-gray-700 shadow-lg">
-                                @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
-                                    <div class="flex justify-between gap-x-4">
-                                        @php
-                                            $from = $diffValue['from'] ?? '';
-                                            $to = $diffValue['to'] ?? '';
-                                        @endphp
-                                        <span default="1">
+                                @php
+                                    $headingClasses = 'text-xs/5 font-mono font-thin text-gray-500 dark:text-gray-200';
+                                    $dataColumnSpan = [
+                                        'default' => 1,
+                                        'md' => 2,
+                                    ];
+                                    //todo: add translations
+                                @endphp
+                                <x-filament::grid default="3" md="5" class="gap-x-1">
+                                    <x-filament::grid.column default="1">
+                                        <span @class([$headingClasses])>Field</span>
+                                    </x-filament::grid.column>
+                                    <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                        <span @class([$headingClasses])>From</span>
+                                    </x-filament::grid.column>
+                                    <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                        <span @class([$headingClasses])>To</span>
+                                    </x-filament::grid.column>
+                                    @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
+                                        <x-filament::grid.column>
                                             {{ $diffKey }}
-                                        </span>
-                                        <div default="2" class="text-xs/5">
-                                            <span class="text-gray-400 line-through">{{ $from }}</span>
-                                            <span>{{ $to }}</span>
-                                        </div>
-                                    </div>
-                                @endforeach
+                                        </x-filament::grid.column>
+                                        <x-filament::grid.column class="text-gray-400 line-through text-xs/5" :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                            <pre class="overflow-auto h-full">{{ $diffValue['from'] ?? '' }}</pre>
+                                        </x-filament::grid.column>
+                                        <x-filament::grid.column class="text-xs/5" :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
+                                            <pre class="overflow-auto h-full">{{ $diffValue['to'] ?? '' }}</pre>
+                                        </x-filament::grid.column>
+                                    @endforeach
+                                </x-filament::grid>
                             </div>
                         </div>
                     </div>

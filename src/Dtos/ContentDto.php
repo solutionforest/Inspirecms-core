@@ -24,6 +24,11 @@ class ContentDto extends BaseTranslatableModelDto
     public $slug;
 
     /**
+     * @var ?\Carbon\CarbonInterface
+     */
+    public $publishAt;
+
+    /**
      * @var array<string,string>
      */
     public $urls;
@@ -64,13 +69,14 @@ class ContentDto extends BaseTranslatableModelDto
      * @param  Content  $model
      * @param  string  $locale
      */
-    public static function make($model, array $propertyData, $locale)
+    public static function make($model, array $propertyData, $locale, ?\Carbon\CarbonInterface $publishAt = null)
     {
         $availableLanguages = inspirecms()->getAllAvailableLanguages();
 
         $availableLocales = collect($availableLanguages)->map(fn ($lang) => $lang->code)->toArray();
 
         $parameters = static::prepareDtoParameters($model, $propertyData, $availableLanguages);
+        $parameters['publishAt'] = $publishAt;
 
         $fallbackLocale = $model->getFallbackLocale() ?? 'en';
 
@@ -88,7 +94,7 @@ class ContentDto extends BaseTranslatableModelDto
      * @param  \Illuminate\Database\Eloquent\Model&\SolutionForest\InspireCms\Models\Contracts\DocumentType  $documentType
      * @return \SolutionForest\InspireCms\Dtos\ContentDto
      */
-    public static function fakeForDocumentType($documentType, array $propertyData = [])
+    public static function fakeForDocumentType($documentType, array $propertyData = [], ?\Carbon\CarbonInterface $publishAt = null)
     {
         $availableLanguages = inspirecms()->getAllAvailableLanguages();
 
@@ -110,6 +116,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         $parameters = static::mutuateParameters($dtoParameters, [$fallbackLocale, $availableLanguages]);
 
+        $parameters['publishAt'] = $publishAt;
         $dto = parent::fromArray($parameters);
 
         $dto->setLocale($fallbackLocale);
@@ -141,7 +148,7 @@ class ContentDto extends BaseTranslatableModelDto
         $result = new \SolutionForest\InspireCms\Collection\ContentDtoCollection;
         foreach ($children as $child) {
             $propertyData = $child->getLatestPublishedPropertyData();
-            $result->push(static::make($child, $propertyData, $this->getLocale()));
+            $result->push(static::make($child, $propertyData, $this->getLocale(), $child->getPublishTime()));
         }
 
         return $this->children = $result;

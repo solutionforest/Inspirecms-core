@@ -17,7 +17,7 @@ interface PermissionManifestInterface
 
     public function getClusterSectionPermissions(): array;
 
-    public function getClusterSectionResourceModelPermissions(): array;
+    public function getResourcePermissions(): array;
 
     /**
      * Get the permission name for a given model and ability.

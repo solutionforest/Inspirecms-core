@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\RelationManagers;
 
+use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -65,9 +66,19 @@ class TemplatesRelationManager extends RelationManager
     public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
     {
         return [
-            TemplateResourceHelper::getPropertyTypeInstructionsFormComponent(),
-            TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
-            TemplateResourceHelper::getContentFormComponent('htmlContent'),
+            Forms\Components\Tabs::make()
+                ->tabs([
+                    // todo: add to translation
+                    Forms\Components\Tabs\Tab::make('Content')
+                        ->schema([
+                            TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
+                            TemplateResourceHelper::getContentFormComponent('htmlContent'),
+                        ]),
+                    Forms\Components\Tabs\Tab::make('Instructions')
+                        ->schema([
+                            TemplateResourceHelper::getPropertyTypeInstructionsFormComponent(),
+                        ]),
+                ]),
         ];
     }
 

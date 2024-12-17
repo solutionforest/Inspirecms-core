@@ -73,7 +73,18 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         }
 
         return [
-            $this->getPublishFormAction('edit', $this->getRecord()),
+            \Filament\Actions\ActionGroup::make([
+                $this->getPublishFormAction('edit', $this->getRecord()),
+                $this->getPublishFormAction('edit', $this->getRecord())
+                    ->name('publish_descendants_and_self')
+                    ->label(__('inspirecms::resources/content.actions.publish_descendants_and_self.label'))
+                    ->modalHeading(__('inspirecms::resources/content.actions.publish_descendants_and_self.modal.heading'))
+                    ->successNotificationTitle(__('inspirecms::resources/content.actions.publish_descendants_and_self.notification.success.title'))
+                    ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.publish_descendants_and_self.modal.actions.publish.label'))
+                    ->keyBindings(null)
+                    ->color('gray')
+                    ->action(fn (array $data, $action) => $this->publish($data, $action, true)),
+            ])->label(__('inspirecms::resources/content.actions.publish.label'))->button(),
             $this->getSaveFormAction(),
             \Filament\Actions\ActionGroup::make(inspirecms_content_statuses()->getFormActions())
                 ->label(__('inspirecms::resources/content.actions.more_actions.label'))

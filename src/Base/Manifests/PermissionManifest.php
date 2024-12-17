@@ -13,7 +13,7 @@ class PermissionManifest implements PermissionManifestInterface
     /** @var Collection<string> */
     protected Collection $permissions;
 
-    protected string $superAdminRoleName = 'Admininistrator';
+    protected string $superAdminRoleName = 'Administrator';
 
     public function __construct()
     {
@@ -46,17 +46,29 @@ class PermissionManifest implements PermissionManifestInterface
             ->toArray();
     }
 
-    public function getClusterSectionResourceModelPermissions(): array
+    public function getResourcePermissions(): array
     {
         return collect(InspireCmsConfig::get('filament.resources'))
-            ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Resources\Resource::class))
-            ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn)))
-            ->map(function ($fqcn) {
+            ->where(
+                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
+                in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn))
+            )
+            ->map(fn (string $fqcn) => [
+                'model' => $fqcn::getModel(),
+                'permissionPrefixes' => $fqcn::getPermissionPrefixes(),
+            ])
+            ->merge([
+                [
+                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class),
+                    'permissionPrefixes' => ['view', 'create', 'update', 'delete'],
+                ],
+            ])
+            ->map(function (array $data) {
 
-                $model = $fqcn::getModel();
+                $model = $data['model'];
                 $modelShortName = class_basename($model);
 
-                $permissionNames = collect($fqcn::getPermissionPrefixes())
+                $permissionNames = collect($data['permissionPrefixes'])
                     ->mapWithKeys(function (string $prefix) use ($model) {
 
                         $permissionName = $this->getPermissionNameForModel($prefix, $model);
@@ -139,7 +151,7 @@ class PermissionManifest implements PermissionManifestInterface
                 return null;
             }
 
-            $permissionNames = data_get($this->getClusterSectionResourceModelPermissions(), $modelShortName);
+            $permissionNames = data_get($this->getResourcePermissions(), $modelShortName);
 
             $permissionNameToCheck = collect($permissionNames)->filter(fn ($label) => lcfirst($label) === $ability)->keys()->first();
 
@@ -172,7 +184,7 @@ class PermissionManifest implements PermissionManifestInterface
     protected function getDefaultPermissions(): array
     {
         return collect($this->getClusterSectionPermissions())->keys()
-            ->merge(collect($this->getClusterSectionResourceModelPermissions())->collapse()->keys())
+            ->merge(collect($this->getResourcePermissions())->collapse()->keys())
             ->merge(collect($this->getActionPermissions())->keys())
             ->merge(collect($this->getPagePermissions())->keys())
             ->map(fn ($permission) => str($permission)->lower()->toString())

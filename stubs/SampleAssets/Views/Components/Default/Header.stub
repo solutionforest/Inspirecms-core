@@ -1,0 +1,29 @@
+@php
+    $locale ??= request()->getLocale();
+    $nav = inspirecms()->getNavigation('main', $locale);
+    $allLocales = collect(inspirecms()->getAllAvailableLanguages())
+      ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
+      ->all();
+@endphp
+
+<header>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">MANIFEST</a>
+        <button class="navbar-toggler" type="button"> 
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                @foreach ($nav as $item)
+                  <li class="nav-item">
+                    <a class="nav-link" href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+                  </li>
+                @endforeach
+                <li class="nav-link"><img src="{{ asset('image/icon/search.svg') }}" alt=""></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+</header>

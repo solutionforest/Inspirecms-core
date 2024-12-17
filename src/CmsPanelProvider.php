@@ -113,6 +113,7 @@ class CmsPanelProvider extends PanelProvider
             ->overrideResources([])
             ->fieldTypeConfigs([
                 \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
+                \SolutionForest\InspireCms\Fields\Configs\Tags::class,
 
                 \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
                 \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
@@ -159,6 +160,7 @@ class CmsPanelProvider extends PanelProvider
 
     protected function configureTourGuideElements(Panel $panel): Panel
     {
+        // todo: add translations
         return $panel
             ->userMenuItems([
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
@@ -174,7 +176,7 @@ class CmsPanelProvider extends PanelProvider
                     ->icon('heroicon-s-information-circle')
                     ->url('#')
                     ->extraAttributes([
-                        'class' => 'text-xs',
+                        'class' => 'cursor-default',
                         'aria-label' => 'Version',
                     ], true),
             ])

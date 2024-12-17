@@ -15,7 +15,7 @@
 @endphp
 <x-filament-panels::page>
     <livewire:inspirecms-support::media-library
-        :isMultiple="$isMultiple"
-        :formConfig="$formConfig"
+        :is-multiple="$isMultiple"
+        :form-config="$formConfig"
     />
 </x-filament-panels::page>

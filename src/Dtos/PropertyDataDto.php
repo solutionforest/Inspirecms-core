@@ -6,7 +6,6 @@ use Illuminate\Support\HtmlString;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Fields\Dtos\FileDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
@@ -113,7 +112,7 @@ class PropertyDataDto extends BaseDto
 
             $value = TranslatableHelper::getTranslations(
                 $sourceValue,
-                $locale,
+                $locale ?? $this->fallbackLocale,
                 $this->fallbackLocale
             );
 
@@ -125,6 +124,7 @@ class PropertyDataDto extends BaseDto
 
     protected function transformPropertyValueWithoutTranslatable($sourceValue, FieldTypeConfig $propertyType, ?string $locale)
     {
+        $locale ??= $this->fallbackLocale;
         switch (true) {
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:
@@ -157,11 +157,13 @@ class PropertyDataDto extends BaseDto
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
                 //todo: improve performance
-                $content = InspireCmsConfig::getContentModelClass()::whereIsPublished()->findMany($sourceValue);
+                $content = inspirecms_content()->findPublishedContentByIds($sourceValue);
 
                 // sort the content based on the source value
                 return collect($sourceValue)
-                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id)?->toDto($locale))
+                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id))
+                    ->whereInstanceOf(\SolutionForest\InspireCms\Models\Contracts\Content::class)
+                    ->map(fn ($c) => $c->toDto($locale))
                     ->values()
                     ->all();
 

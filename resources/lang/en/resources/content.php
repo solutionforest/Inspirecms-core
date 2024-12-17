@@ -232,6 +232,37 @@ return [
             ],
         ],
 
+        'publish_descendants_and_self' => [
+
+            'label' => 'Publish descendants and self',
+
+            'modal' => [
+
+                'heading' => 'Publish descendants and self',
+
+                'actions' => [
+
+                    'publish' => [
+
+                        'label' => 'Publish',
+
+                    ],
+
+                ],
+
+            ],
+
+            'notification' => [
+
+                'success' => [
+
+                    'title' => 'Published descendants and self successful',
+
+                ],
+            ],
+
+        ],
+
         'save_draft' => [
 
             'label' => 'Save draft',

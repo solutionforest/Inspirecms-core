@@ -8,6 +8,7 @@ class PageService implements PageServiceInterface
         protected ContentServiceInterface $contentService
     ) {}
 
+    /** {@inheritDoc} */
     public function findContentAndView($fullPath, $locale)
     {
         $content = $this->findContentAndLangByFullPath($fullPath);
@@ -25,18 +26,39 @@ class PageService implements PageServiceInterface
         return [$content->toDto($locale), $template?->getViewFullName()];
     }
 
+    /** {@inheritDoc} */
+    public function findContentByRealPath($slugPath, $locale)
+    {
+        $content = $this->contentService->findByRealPath($slugPath, static::getDtoRelations());
+
+        if (is_null($content) || ! $content->isPublished() || ! $content->isWebPage()) {
+            return null;
+        }
+
+        $content->loadMissing(static::getDtoRelations());
+
+        return $content->toDto($locale);
+    }
+
+    /** {@inheritDoc} */
+    public function getContentUnderRealPath($slugPath, $locale, $limit = null)
+    {
+        $content = $this->contentService->getUnderRealPath($slugPath, $limit, static::getDtoRelations());
+
+        $items = $content
+            ->filter(fn ($item) => $item->isPublished() && $item->isWebPage())
+            ->map(fn ($item) => $item->toDto($locale));
+
+        return new \SolutionForest\InspireCms\Collection\ContentDtoCollection($items);
+    }
+
+    //region Helpers
     /**
      * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
      */
     protected function findContentAndLangByFullPath(?string $fullPath)
     {
-        $relations = [
-            'documentType.fields.group',
-            'documentType.templates',
-            'webSetting',
-            'publishedVersions',
-            'templates',
-        ];
+        $relations = static::getDtoRelations();
 
         // ensure the format of full path
         $fullPath = $this->ensureFormatOfFullPath($fullPath ?? '');
@@ -67,4 +89,16 @@ class PageService implements PageServiceInterface
     {
         return (string) str($fullPath)->trim()->prepend('/');
     }
+
+    protected static function getDtoRelations(): array
+    {
+        return [
+            'documentType.fields.group',
+            'documentType.templates',
+            'webSetting',
+            'publishedVersions',
+            'templates',
+        ];
+    }
+    //endregion Helpers
 }

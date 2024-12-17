@@ -1,0 +1,30 @@
+@props(['author' => [], 'date', 'content', 'replies' => []])
+<div class="comment-thread">
+    <div class="comment">
+        <div class="comment-avatar">
+            <img src="{{ $author['avatar'] ?? null }}" alt="Avatar">
+        </div>
+        <div class="comment-content">
+            <div class="comment-header">
+                <div class="comment-username">{{ $author['name'] ?? null }}</div>
+                <span class="comment-date">{{ $date }}</span>
+            </div>
+            <p>{{ $content }}</p>
+            <button class="reply-btn">Reply</button>
+        </div>
+    </div>
+
+    @if (count($replies) > 0)
+        <!-- Nested Reply -->
+        <div class="comment-replies">
+            @foreach ($replies as $reply)
+                <x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('comments.comment')" 
+                    :author="$reply['author']"
+                    :date="$reply['date']"
+                    :content="$reply['content']"
+                    :replies="$reply['replies'] ?? []"
+                />
+            @endforeach
+        </div>
+    @endif
+</div>

@@ -10,7 +10,7 @@ class SitemapGenerator implements SitemapGeneratorInterface
 {
     public function generateSitemapFile(): void
     {
-        $fullFilePath = InspireCmsConfig::get('routes.sitemap.file_path');
+        $fullFilePath = InspireCmsConfig::get('content.sitemap.file_path');
 
         if (! $fullFilePath) {
             throw new \Exception('Sitemap file path is not set in the config file.');

@@ -11,6 +11,8 @@
             $icon = $isInvalid ? 'heroicon-o-x-circle' : 'heroicon-o-check-circle';
 
             $actionName = $item['action']?? null;
+
+            $actions = $isInvalid ? [($this->{$actionName})(['action' => $key])] : [];
         @endphp
 
         <x-filament::section 
@@ -20,6 +22,7 @@
             icon-size="md"
             icon-color="danger"
             class="flex-1"
+            :header-actions="$actions"
         >
             @if ($isInvalid)
                 <x-slot name="heading">
@@ -28,27 +31,21 @@
 
                 <x-slot name="headerEnd">
                     <span class="text-gray-400 dark:text-white">{{ $invalidCount }}</span>
-
-                    @if ($actionName && $isInvalid)
-                        <div @click.stop>
-                            {{ ($this->{$actionName})(['action' => $key]) }}
-                        </div>
-                    @endif
                 </x-slot>
             @else
-            <div class="flex items-center gap-3">
-                <x-filament::icon 
-                    :icon="$icon" 
-                    class="w-5 h-5 text-custom-500 dark:text-custom-400" 
-                    @style( \Filament\Support\get_color_css_variables(
-                        'success',
-                        shades: [400, 500],
-                    )) 
-                />
-                <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                    {{ $title }}
-                </h3>
-            </div>
+                <div class="flex items-center gap-3">
+                    <x-filament::icon 
+                        :icon="$icon" 
+                        class="w-5 h-5 text-custom-500 dark:text-custom-400" 
+                        @style( \Filament\Support\get_color_css_variables(
+                            'success',
+                            shades: [400, 500],
+                        )) 
+                    />
+                    <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                        {{ $title }}
+                    </h3>
+                </div>
             @endif
                 
                 

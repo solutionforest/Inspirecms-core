@@ -232,6 +232,37 @@ return [
             ],
         ],
 
+        'publish_descendants_and_self' => [
+
+            'label' => '發布後代和自身',
+
+            'modal' => [
+
+                'heading' => '發布後代和自身',
+
+                'actions' => [
+
+                    'publish' => [
+
+                        'label' => '發布',
+
+                    ],
+
+                ],
+
+            ],
+
+            'notification' => [
+
+                'success' => [
+
+                    'title' => '發布成功',
+
+                ],
+            ],
+
+        ],
+
         'save_draft' => [
 
             'label' => '保存草稿',
