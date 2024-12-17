@@ -47,7 +47,7 @@ class Template extends BaseModel implements TemplateContract
 
             $content = $this->preloadTemplateContent;
             if (blank($content)) {
-                $content = '<div>Template content</div>';
+                $content = '<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme(\'page\')" :content="$content">Template content</x-dynamic-component>';
             }
             file_put_contents($fullpath, $content);
         }
