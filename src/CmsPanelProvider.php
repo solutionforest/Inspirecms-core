@@ -113,6 +113,7 @@ class CmsPanelProvider extends PanelProvider
             ->overrideResources([])
             ->fieldTypeConfigs([
                 \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
+                \SolutionForest\InspireCms\Fields\Configs\Tags::class,
 
                 \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
                 \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
