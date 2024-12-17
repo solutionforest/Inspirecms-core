@@ -40,12 +40,11 @@ interface ContentServiceInterface
      */
     public function findWebPageBySlugPath(string $slugPath);
 
-
     /**
      * Find content by its real path.
      *
-     * @param string $slugPath The slug path of the content.
-     * @param array $withRelations Optional. An array of relations to load with the content.
+     * @param  string  $slugPath  The slug path of the content.
+     * @param  array  $withRelations  Optional. An array of relations to load with the content.
      * @return mixed The content found by the given slug path, or null if not found.
      */
     public function findByRealPath(string $slugPath, $withRelations = []);
@@ -62,10 +61,10 @@ interface ContentServiceInterface
     /**
      * Retrieve the content under the content with the provided real path.
      *
-     * @param string $slugPath The slug path used to identify the parent content.
-     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
-     * @param array $withRelations The relations to load with the content.
-     * @return Collection<TResult> 
+     * @param  string  $slugPath  The slug path used to identify the parent content.
+     * @param  int|null  $limit  The maximum number of content items to retrieve, or null for unlimited.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @return Collection<TResult>
      */
     public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = []);
 }

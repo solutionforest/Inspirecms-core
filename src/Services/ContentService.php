@@ -82,9 +82,10 @@ class ContentService implements ContentServiceInterface
         if (is_null($parent)) {
             return collect();
         }
+
         return $parent->children()
             ->with($withRelations)
-            ->when(!is_null($limit), fn ($q) => $q->limit($limit))
+            ->when(! is_null($limit), fn ($q) => $q->limit($limit))
             ->get();
     }
 
@@ -101,6 +102,7 @@ class ContentService implements ContentServiceInterface
     {
         // Find a content by read slug
         $trueSlug = Str::afterLast($slugPath, '/');
+
         return $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug);
     }
 

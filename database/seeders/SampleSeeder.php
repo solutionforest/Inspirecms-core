@@ -186,7 +186,7 @@ class SampleSeeder extends Seeder
     @endsection
 </x-dynamic-component>
 Html;
-        
+
         $about = <<<'Html'
 @php
     $locale ??= $content->getLocale();
@@ -884,7 +884,7 @@ Html;
             icon: 'heroicon-o-newspaper',
             rejected: collect($items)->map(fn ($item) => $item->slug)->where(fn ($slug) => $slug != 'blog')->toArray(),
         );
-        
+
         foreach ($items as $item) {
             $this->importDataService->addDocumentType($item->slug, $item);
         }
@@ -901,15 +901,15 @@ Html;
             properties: [
                 'hero_banner' => [
                     'brief' => [
-                        'en' => "Manifest is a newborn theme. <br/> Clean, simple and fast.",
-                        'fr' => "Manifest est un thème nouveau-né. <br/> Propre, simple et rapide.",
+                        'en' => 'Manifest is a newborn theme. <br/> Clean, simple and fast.',
+                        'fr' => 'Manifest est un thème nouveau-né. <br/> Propre, simple et rapide.',
                     ],
                     'image_slider' => $this->getRandomMediaAssetKeys(3, 'png'),
                 ],
                 'profile' => [
                     'brief' => [
-                        'en' => "Full-time UI/UX designer <br/> Head of Design at VeronaLabs.com",
-                        'fr' => "Designer UI/UX à plein temps <br/> Responsable du design chez VeronaLabs.com",
+                        'en' => 'Full-time UI/UX designer <br/> Head of Design at VeronaLabs.com',
+                        'fr' => 'Designer UI/UX à plein temps <br/> Responsable du design chez VeronaLabs.com',
                     ],
                     'description' => [
                         'en' => '<p>We work with clients around the world from our headquarters in Charlotte, South Carolina</p><p>We focus on naming, branding, brand innovation, mobility design and development, and brand experiences.</p>',
@@ -953,7 +953,7 @@ Html;
                 'about_section' => [
                     'brief' => [
                         'en' => "<p>I'm Manifest</p><p>Full-time UI/UX designer</p><p>Head of Design at VeronaLabs.com</p>",
-                        'fr' => "<p>Je suis Manifest</p><p>Designer UI/UX à plein temps</p><p>Responsable du design chez VeronaLabs.com</p>",
+                        'fr' => '<p>Je suis Manifest</p><p>Designer UI/UX à plein temps</p><p>Responsable du design chez VeronaLabs.com</p>',
                     ],
                     'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
                     'description' => [
@@ -961,7 +961,7 @@ Html;
                         'fr' => '<p>Je suis né en janvier 1990. Après avoir obtenu mon diplôme en informatique en 2002, j’ai poursuivi mes études supérieures en conception d’interaction homme-machine. J’ai obtenu mon premier emploi en tant que graphiste en 2008. Après avoir acquis de l’expérience en graphisme pendant un an, je suis passé à la conception UI-UX.</p><p>En 2010, j’ai décidé de travailler en tant que designer d’interface Web, UI-UX et mobile indépendant. Je me trouve toujours en phase d’apprentissage et j’ai un fort dés ir d’acquérir autant de compétences que possible.</p>',
                     ],
                     'resume' => Arr::first($this->getRandomMediaAssetKeys(1, 'pdf')),
-                ]
+                ],
             ],
             publishState: 'publish',
             parent: 'home',
@@ -1053,12 +1053,12 @@ Html;
                         'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
                         'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
                     ],
-                ]
+                ],
             ],
             publishState: 'publish',
             parent: 'home',
         );
-        
+
         foreach (range(1, 3) as $i) {
             $caseTitle = fake()->sentence(3);
             $content = collect(range(1, 3))->map(fn () => '<section class="research"><h3>User Research</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p></section>')->implode('');
@@ -1225,7 +1225,7 @@ Html;
             'is_folder' => false,
         ]);
 
-        $mediaAsset->addMedia( \Illuminate\Http\UploadedFile::fake()->create(name: 'dummy.pdf', mimeType: 'application/pdf'))->toMediaCollection();
+        $mediaAsset->addMedia(\Illuminate\Http\UploadedFile::fake()->create(name: 'dummy.pdf', mimeType: 'application/pdf'))->toMediaCollection();
         $this->mediaAssets[] = $mediaAsset;
     }
 
@@ -1243,7 +1243,7 @@ Html;
             ],
             'fr' => [
                 'is_default' => false,
-            ]
+            ],
         ];
 
         foreach ($languagesData as $code => $data) {
@@ -1270,10 +1270,13 @@ Html;
     protected function getRandomMediaAsset(int $total, $extension = null): array
     {
         $items = collect($this->mediaAssets)
-            ->when($extension, fn (Collection $collection) => $collection
-                ->where(fn (MediaAsset $asset) => Str::after($asset->title, '.') === $extension)
+            ->when(
+                $extension,
+                fn (Collection $collection) => $collection
+                    ->where(fn (MediaAsset $asset) => Str::after($asset->title, '.') === $extension)
             )->values()->all();
         $randIndexes = array_rand($items, $total);
+
         return array_map(fn ($index) => $items[$index], (array) $randIndexes);
 
     }

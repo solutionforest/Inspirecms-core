@@ -51,6 +51,7 @@ class PageService implements PageServiceInterface
 
         return new \SolutionForest\InspireCms\Collection\ContentDtoCollection($items);
     }
+
     //region Helpers
     /**
      * @return null|\SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model
