@@ -30,13 +30,6 @@ class ContentService implements ContentServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function findContentByIds(...$ids)
-    {
-        return $this->getQuery()
-            ->findMany(Arr::collapse($ids));
-    }
-
-    /** {@inheritDoc} */
     public function findDefaultWebPage()
     {
         return $this->getQuery()
@@ -49,7 +42,7 @@ class ContentService implements ContentServiceInterface
     public function findWebPageBySlugPath(string $slugPath)
     {
         return $this->getQuery()
-            ->whereHas('path', fn ($q) => $q->where('slug_path', $slugPath))
+            ->whereHas('path', fn ($q) => $q->where('slug_path', static::ensureSlugPath($slugPath)))
             ->whereIsWebPage()
             ->first();
     }
@@ -57,10 +50,11 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function getBySlugPath(string $slugPath)
     {
+        // Find a content by read slug
         $trueSlug = Str::afterLast($slugPath, '/');
-
         $content = $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
 
+        // Find similar content by slug path
         return collect($content)
             ->map(function ($item) {
 
@@ -92,6 +86,11 @@ class ContentService implements ContentServiceInterface
     protected static function getModel()
     {
         return InspireCmsConfig::getContentModelClass();
+    }
+
+    protected static function ensureSlugPath($slugPath)
+    {
+        return Str::of($slugPath)->trim('/')->prepend('/');
     }
     //endregion Helpers
 }

@@ -157,7 +157,7 @@ class PropertyDataDto extends BaseDto
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
                 //todo: improve performance
-                $content = inspirecms_content()->findContentByIds($sourceValue);
+                $content = inspirecms_content()->findPublishedContentByIds($sourceValue);
 
                 // sort the content based on the source value
                 return collect($sourceValue)
