@@ -719,7 +719,7 @@ class ImportDataService implements ImportDataServiceInterface
 
             foreach ($missing as $slugPathToFind) {
 
-                $found = $this->contentService->getBySlugPath($slugPathToFind);
+                $found = $this->contentService->getByRealPath($slugPathToFind);
 
                 if ($found->isNotEmpty()) {
 

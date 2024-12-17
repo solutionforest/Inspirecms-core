@@ -7,6 +7,7 @@ use SolutionForest\InspireCms\InspireCmsManager;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Services\AssetServiceInterface;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
+use SolutionForest\InspireCms\Services\PageServiceInterface;
 
 if (! function_exists('inspirecms')) {
     function inspirecms(): InspireCmsManager
@@ -26,6 +27,13 @@ if (! function_exists('inspirecms_content')) {
     function inspirecms_content(): ContentServiceInterface
     {
         return app(ContentServiceInterface::class);
+    }
+}
+
+if (! function_exists('inspirecms_page')) {
+    function inspirecms_page(): PageServiceInterface
+    {
+        return app(PageServiceInterface::class);
     }
 }
 

@@ -147,17 +147,6 @@ class Content extends BaseModel implements ContentContract
         return $publishedAt->isPast();
     }
 
-    public function getPublishTime()
-    {
-        // If the publish date is in the future, it's not published
-        return $this->getLatestPublishedContentVersion()?->pivot?->published_at;
-    }
-
-    public function getLatestPublishedTime()
-    {
-        return $this->getLatestContentVersionHasPublish()?->pivot?->published_at;
-    }
-
     public function isWebPage()
     {
         return $this->documentType?->isWebPageType() ?? false;
@@ -181,6 +170,7 @@ class Content extends BaseModel implements ContentContract
             $this,
             $propertyData,
             $locale,
+            $this->getPublishTime(),
         );
     }
 
@@ -222,6 +212,7 @@ class Content extends BaseModel implements ContentContract
                 $tmpModel,
                 $propertyData,
                 $locale,
+                now(),
             );
         }
 
@@ -229,6 +220,7 @@ class Content extends BaseModel implements ContentContract
             $record,
             $propertyData,
             $locale,
+            now(),
         );
     }
 

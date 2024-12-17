@@ -48,11 +48,15 @@ class ContentService implements ContentServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function getBySlugPath(string $slugPath)
+    public function findByRealPath(string $slugPath, $withRelations = [])
     {
-        // Find a content by read slug
-        $trueSlug = Str::afterLast($slugPath, '/');
-        $content = $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug)->get();
+        return $this->getByRealPath($slugPath, $withRelations)->get(trim($slugPath, '/'));
+    }
+
+    /** {@inheritDoc} */
+    public function getByRealPath(string $slugPath, $withRelations = [])
+    {
+        $content = $this->getFindByRealPathQuery($slugPath)->with($withRelations)->get();
 
         // Find similar content by slug path
         return collect($content)
@@ -71,6 +75,19 @@ class ContentService implements ContentServiceInterface
             ->pluck('item', 'slugPath');
     }
 
+    /** {@inheritDoc} */
+    public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = [])
+    {
+        $parent = $this->findByRealPath($slugPath);
+        if (is_null($parent)) {
+            return collect();
+        }
+        return $parent->children()
+            ->with($withRelations)
+            ->when(!is_null($limit), fn ($q) => $q->limit($limit))
+            ->get();
+    }
+
     //region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
@@ -78,6 +95,13 @@ class ContentService implements ContentServiceInterface
     protected function getQuery()
     {
         return static::getModel()::query();
+    }
+
+    protected function getFindByRealPathQuery(string $slugPath)
+    {
+        // Find a content by read slug
+        $trueSlug = Str::afterLast($slugPath, '/');
+        return $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug);
     }
 
     /**

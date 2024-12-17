@@ -166,15 +166,25 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                         }
                     )
                     ->implode('/');
-                $viewName = str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php');
 
-                $viewFullPath = (string) str(base_path('resources/views'))
+                $fullPath = (string) str(base_path('resources/views'))
                     ->finish('/')
                     ->when(filled($dir), fn ($str) => $str->finish($dir)->finish('/'))
-                    ->finish($viewName);
+                    ->finish(str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php'));
 
                 $this->publishes([
-                    $file->getRealPath() => $viewFullPath,
+                    $file->getRealPath() => $fullPath,
+                ], 'inspirecms-sample-assets');
+            }
+            foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Assets') as $file) {
+                $dir = str($file->getRelativePath())->explode('/')
+                    ->map(fn ($path) => (string) str($path)->kebab())
+                    ->implode('/');
+                $fullPath = (string) str(public_path($dir))
+                    ->finish('/')
+                    ->finish(str($file->getFilename())->kebab()->beforeLast('.stub'));
+                $this->publishes([
+                    $file->getRealPath() => $fullPath,
                 ], 'inspirecms-sample-assets');
             }
         }

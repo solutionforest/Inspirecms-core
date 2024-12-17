@@ -15,9 +15,9 @@
           <div class="col-md-4 mb-4 mb-md-0">
               <ul class="list-unstyled social-links mb-0">
                   @foreach ($nav as $item)
-                    <{{ csrf_field() }}>
+                    <li>
                       <a class="text-dark text-decoration-none" href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
-                    </>
+                    </li>
                   @endforeach
               </ul>
           </div>

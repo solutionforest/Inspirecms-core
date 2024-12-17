@@ -113,7 +113,7 @@ class PropertyDataDto extends BaseDto
 
             $value = TranslatableHelper::getTranslations(
                 $sourceValue,
-                $locale,
+                $locale ?? $this->fallbackLocale,
                 $this->fallbackLocale
             );
 
@@ -125,6 +125,7 @@ class PropertyDataDto extends BaseDto
 
     protected function transformPropertyValueWithoutTranslatable($sourceValue, FieldTypeConfig $propertyType, ?string $locale)
     {
+        $locale ??= $this->fallbackLocale;
         switch (true) {
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:

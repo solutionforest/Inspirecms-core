@@ -12,7 +12,7 @@ interface ContentServiceInterface
     /**
      * Find a published web page by its ID.
      *
-     * @param  string|int  $id  The ID of the web page to find.
+     * @param  string  $id  The ID of the web page to find.
      * @return ?TResult The content item if found, or null if not found.
      */
     public function findPublishedWebPageById($id);
@@ -24,14 +24,6 @@ interface ContentServiceInterface
      * @return Collection<TResult> The published content corresponding to the given IDs.
      */
     public function findPublishedContentByIds(...$ids);
-
-    /**
-     * Find content by their IDs.
-     *
-     * @param string ...$ids The IDs of the content to find.
-     * @return Collection<TResult> The content corresponding to the given IDs.
-     */
-    public function findContentByIds(...$ids);
 
     /**
      * Find the default web page.
@@ -48,11 +40,32 @@ interface ContentServiceInterface
      */
     public function findWebPageBySlugPath(string $slugPath);
 
+
     /**
-     * Retrieve content by its slug path.
+     * Find content by its real path.
+     *
+     * @param string $slugPath The slug path of the content.
+     * @param array $withRelations Optional. An array of relations to load with the content.
+     * @return mixed The content found by the given slug path, or null if not found.
+     */
+    public function findByRealPath(string $slugPath, $withRelations = []);
+
+    /**
+     * Retrieve content by its real path.
      *
      * @param  string  $slugPath  The slug path of the content to retrieve.
+     * @param  array  $withRelations  The relations to load with the content.
      * @return Collection<string,TResult> The content associated with the given slug path.
      */
-    public function getBySlugPath(string $slugPath);
+    public function getByRealPath(string $slugPath, $withRelations = []);
+
+    /**
+     * Retrieve the content under the content with the provided real path.
+     *
+     * @param string $slugPath The slug path used to identify the parent content.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
+     * @param array $withRelations The relations to load with the content.
+     * @return Collection<TResult> 
+     */
+    public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = []);
 }
