@@ -17,7 +17,7 @@
 
         $data['diff'] = $diff;
 
-        $publishTime = $item->publishLog?->published_at;
+        $publishTime = $item?->publishLog?->published_at;
         $data['isPublished'] = $publishTime != null;
         $data['publishTime'] = $publishTime?->format('Y-m-d H:i:s');
         $data['publishTimeShort'] = $publishTime?->diffForHumans();
@@ -27,7 +27,7 @@
         $data['publishState'] = $publishStateOption?->getLabel() ?? $publishState;
         $data['publishStateColor'] = $publishStateOption?->getColor() ?? 'gray';
 
-        $data['logTime'] = $item->created_at->format('Y-m-d H:i:s');
+        $data['logTime'] = $item->created_at?->format('Y-m-d H:i:s');
 
         $data['event'] = $item->event_name;
         $data['authorName'] = $item->author?->name;
