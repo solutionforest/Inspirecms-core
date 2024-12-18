@@ -113,7 +113,7 @@ return [
     ],
 
     'choose' => [
-        
+
         'label' => '選擇',
 
     ],
