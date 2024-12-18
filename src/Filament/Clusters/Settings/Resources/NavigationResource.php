@@ -62,10 +62,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->groups([
                 Tables\Grouping\Group::make('category')
                     ->label(__('inspirecms::resources/navigation.category.label'))
-                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel()),
+                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_category?->getLabel()),
                 Tables\Grouping\Group::make('type')
                     ->label(__('inspirecms::resources/navigation.type.label'))
-                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel()),
+                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_type?->getLabel()),
             ])
             ->defaultGroup('category')
             ->modifyQueryUsing(fn ($query) => $query->with(['parent']))
@@ -74,21 +74,18 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
 
-                Tables\Columns\TextColumn::make('category')
+                Tables\Columns\TextColumn::make('display_category')
                     ->label(__('inspirecms::resources/navigation.category.label'))
                     ->badge()
-                    ->color(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getColor())
-                    ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationCategoryEnum()?->getLabel())
                     ->width('5%'),
 
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/navigation.title.label')),
 
                 Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.url'), [
-                    Tables\Columns\TextColumn::make('type')
+                    Tables\Columns\TextColumn::make('display_type')
                         ->label(__('inspirecms::resources/navigation.type.label'))
                         ->badge()
-                        ->getStateUsing(fn (Model | Navigation $record) => $record->getNavigationTypeEnum()?->getLabel())
                         ->width('5%'),
                     Tables\Columns\TextColumn::make('url')
                         ->label(fn () => '')
@@ -125,12 +122,15 @@ class NavigationResource extends Resource implements ClusterSectionResource
         ]);
     }
 
+    /**
+     * @return class-string<Navigation>
+     */
     public static function getModel(): string
     {
-        return InspireCmsConfig::getNavigationModelClass();
+        return static::guardAgainstInvalidModel(InspireCmsConfig::getNavigationModelClass());
     }
 
-    public static function guardAgainstInvalidModel(string $model): string
+    protected static function guardAgainstInvalidModel(string $model): string
     {
         if (! in_array(Navigation::class, class_implements($model))) {
             throw new \InvalidArgumentException('The model must implement the ' . Navigation::class . ' interface.');
@@ -236,28 +236,22 @@ class NavigationResource extends Resource implements ClusterSectionResource
      */
     protected static function getTypeFormComponent()
     {
-        return Forms\Components\Select::make('type')
+        $enumClass = static::getModel()::getNavigationTypeEnumClass();
+        return Forms\Components\ToggleButtons::make('type')
             ->label(__('inspirecms::resources/navigation.type.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.type.validation_attribute'))
             ->columnSpanFull()
             ->live()
             ->required()
-            ->options(function () {
-                $model = static::guardAgainstInvalidModel(static::getModel());
-
-                return $model::getNavigationTypeEnumClass();
-            })
-            ->default(function () {
-                $model = static::guardAgainstInvalidModel(static::getModel());
-
-                return $model::getNavigationTypeEnumClass()::getDefaultValue();
-            })
+            ->options($enumClass)
+            ->default($enumClass::getDefaultValue())
             ->afterStateUpdated(function ($state, $set, $operation) {
                 if ($operation == 'create' &&
                     ($state == NavigationType::Content->value || $state == NavigationType::Content)) {
                     $set('is_active', true);
                 }
-            });
+            })
+            ->inline()->grouped();
     }
 
     /**
@@ -265,21 +259,15 @@ class NavigationResource extends Resource implements ClusterSectionResource
      */
     protected static function getCategoryFormComponent()
     {
-        return Forms\Components\Select::make('category')
+        $enumClass = static::getModel()::getNavigationCategoryEnumClass();
+        return Forms\Components\ToggleButtons::make('category')
             ->label(__('inspirecms::resources/navigation.category.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
             ->required()
-            ->options(function () {
-                $model = static::guardAgainstInvalidModel(static::getModel());
-
-                return $model::getNavigationCategoryEnumClass();
-            })
-            ->default(function () {
-                $model = static::guardAgainstInvalidModel(static::getModel());
-
-                return $model::getNavigationCategoryEnumClass()::getDefaultValue();
-            })
-            ->live();
+            ->options($enumClass)
+            ->default($enumClass::getDefaultValue())
+            ->live()
+            ->inline()->grouped();
     }
 
     /**
@@ -321,8 +309,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->default(true)
             ->disabled(function ($get, null | Model | Navigation $record, $operation) {
                 $type = $operation == 'create' ? $get('type') : $record?->type;
-                if (! $type instanceof NavigationType) {
-                    $type = NavigationType::tryFrom($type);
+                if (! $type instanceof \SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType) {
+                    $enumClass = static::getModel()::getNavigationTypeEnumClass();
+                    $type = $enumClass::tryFrom($type);
                 }
                 if ($type) {
                     return ! $type->canEditIsVisible();

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
@@ -75,37 +76,6 @@ class Navigation extends BaseModel implements NavigationContract
     }
 
     //region Enums
-    public function getNavigationCategoryEnum()
-    {
-        return static::getNavigationCategoryEnumClass()::tryFrom($this->category);
-    }
-
-    public static function getNavigationCategoryEnumClass()
-    {
-        $class = NavigationCategoryEnum::class;
-
-        if (! in_array(NavigationCategoryEnumInterface::class, class_implements($class))) {
-            throw new \RuntimeException("{$class} must implement " . NavigationCategoryEnumInterface::class);
-        }
-
-        return $class;
-    }
-
-    public function getNavigationTypeEnum()
-    {
-        return static::getNavigationTypeEnumClass()::tryFrom($this->type);
-    }
-
-    public static function getNavigationTypeEnumClass()
-    {
-        $class = NavigationTypeEnum::class;
-
-        if (! in_array(NavigationTypeEnumInterface::class, class_implements($class))) {
-            throw new \RuntimeException("{$class} must implement " . NavigationTypeEnumInterface::class);
-        }
-
-        return $class;
-    }
     //endregion Enums
 
     //region Node
@@ -138,10 +108,60 @@ class Navigation extends BaseModel implements NavigationContract
         }
     }
 
+    //region Attribute(s)
+    protected function displayCategory(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $category = $this->category;
+                if (filled($category)) {
+                    return static::getNavigationCategoryEnumClass()::tryFrom($category);
+                }
+                return null;
+            },
+        );
+    }
+
+    protected function displayType(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $type = $this->type;
+                if (filled($type)) {
+                    return static::getNavigationTypeEnumClass()::tryFrom($type);
+                }
+                return null;
+            },
+        );
+    }
+    //endregion Attribute(s)
+
     public static function boot()
     {
         parent::boot();
 
         static::observe(NavigationObserver::class);
+    }
+
+    public static function getNavigationCategoryEnumClass()
+    {
+        $class = NavigationCategoryEnum::class;
+
+        if (! in_array(NavigationCategoryEnumInterface::class, class_implements($class))) {
+            throw new \RuntimeException("{$class} must implement " . NavigationCategoryEnumInterface::class);
+        }
+
+        return $class;
+    }
+
+    public static function getNavigationTypeEnumClass()
+    {
+        $class = NavigationTypeEnum::class;
+
+        if (! in_array(NavigationTypeEnumInterface::class, class_implements($class))) {
+            throw new \RuntimeException("{$class} must implement " . NavigationTypeEnumInterface::class);
+        }
+
+        return $class;
     }
 }
