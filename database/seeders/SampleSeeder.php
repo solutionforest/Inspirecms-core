@@ -60,6 +60,24 @@ class SampleSeeder extends Seeder
             $blog->setPublishableState('publish');
             $blog->save();
         }
+
+        /**
+         * @var class-string<Model>
+         */
+        $fieldModel = InspireCmsConfig::getFieldModelClass();
+        /**
+         * @var class-string<Model>
+         */
+        $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
+        {
+            $field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first();
+            if ($field) {
+                $field->config = array_merge($field->config ?? [], [
+                    'documentType' => $documentTypeModel::firstWhere('slug', 'blog')?->getKey(),
+                ]);
+                $field->save();
+            }
+        }
     }
 
     protected function addSampleTemplates(): void
