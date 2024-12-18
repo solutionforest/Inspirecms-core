@@ -112,7 +112,7 @@ return [
     ],
 
     'choose' => [
-        
+
         'label' => 'Choose',
 
     ],
