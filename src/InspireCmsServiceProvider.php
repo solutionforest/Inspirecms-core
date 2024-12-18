@@ -17,7 +17,6 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
-use SolutionForest\InspireCms\Livewire\ContentSidebar;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
@@ -125,7 +124,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->configureFilamentForm();
 
-        \Livewire\Livewire::component('inspirecms::content-sidebar', ContentSidebar::class);
+        \Livewire\Livewire::component('inspirecms::content-sidebar', \SolutionForest\InspireCms\Livewire\ContentSidebar::class);
+        \Livewire\Livewire::component('inspirecms::document-type-paginator', \SolutionForest\InspireCms\Livewire\DocumentTypePaginator::class);
 
         // Asset Registration
         FilamentAsset::register(

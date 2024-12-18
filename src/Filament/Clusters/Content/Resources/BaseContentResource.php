@@ -81,27 +81,32 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 Forms\Components\Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
-                    ->tabs([
-                        static::getPropertyDataValueComponent(isTab: true),
-                        Forms\Components\Tabs\Tab::make('seo')
-                            ->label(__('inspirecms::resources/content.seo.tab.label'))
-                            ->schema([
-                                Forms\Components\Section::make()
-                                    ->columns(1)
-                                    ->heading(__('inspirecms::resources/content.general.section.heading'))
-                                    ->aside()
-                                    ->schema([
-                                        static::getTitleFormComponent(),
-                                        static::getSlugFormComponent(),
-                                    ]),
-                                static::getSeoFormComponent(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make('sitemap')
-                            ->label(__('inspirecms::resources/content.sitemap.tab.label'))
-                            ->schema([
-                                static::getSitemapFormComponent(),
-                            ]),
-                        Forms\Components\Tabs\Tab::make('details')
+                    ->tabs(function (ContentForm $livewire) {
+                        
+                        $documentType = $livewire->getDocumentType();
+
+                        $tabs[] = static::getPropertyDataValueComponent(isTab: true);
+                        if ($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data) {
+                            $tabs[] = Forms\Components\Tabs\Tab::make('seo')
+                                ->label(__('inspirecms::resources/content.seo.tab.label'))
+                                ->schema([
+                                    Forms\Components\Section::make()
+                                        ->columns(1)
+                                        ->heading(__('inspirecms::resources/content.general.section.heading'))
+                                        ->aside()
+                                        ->schema([
+                                            static::getTitleFormComponent(),
+                                            static::getSlugFormComponent(),
+                                        ]),
+                                    static::getSeoFormComponent(),
+                                ]);
+                            $tabs[] = Forms\Components\Tabs\Tab::make('sitemap')
+                                ->label(__('inspirecms::resources/content.sitemap.tab.label'))
+                                ->schema([
+                                    static::getSitemapFormComponent(),
+                                ]);
+                        }
+                        $tabs[] = Forms\Components\Tabs\Tab::make('details')
                             ->label(__('inspirecms::resources/content.details.tab.label'))
                             ->columns(3)
                             ->schema([
@@ -117,11 +122,21 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->columns(1)
                                     ->columnSpan(2)
                                     ->schema([
+                                        ...(
+                                            $documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data ?
+                                            [] :
+                                            [
+                                                Forms\Components\Section::make([
+                                                    static::getTitleFormComponent(),
+                                                    static::getSlugFormComponent(),
+                                                ]),
+                                            ]
+                                        ),
                                         Forms\Components\Section::make([
                                             static::getDisplayDocumentTypeComponent(),
                                             static::getDisplayParentFormComponent(),
                                             static::getDisplayKeyFormComponent(),
-                                            static::getDisplayUrlFormComponent(),
+                                            static::getDisplayUrlFormComponent()->visible($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data),
                                         ]),
                                         Forms\Components\Group::make()
                                             ->visible(fn ($record) => $record != null)
@@ -130,8 +145,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                                 static::getPublishDetailGroupedFormComponent()->columnSpan(1),
                                             ]),
                                     ]),
-                            ]),
-                    ]),
+                            ]);
+                        return $tabs;
+                    }),
             ]);
     }
 
@@ -434,14 +450,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->validationAttribute(__('inspirecms::resources/content.template.validation_attribute'))
             ->helperText(__('inspirecms::resources/content.template.instructions'))
             ->options(function (ContentForm $livewire) {
-                $documentType = $livewire->getDocumentType();
-                if (! $documentType instanceof Model) {
-                    $documentType = InspireCmsConfig::getDocumentTypeModelClass()::query()
-                        ->with(['templates'])
-                        ->find($documentType);
-                } else {
-                    $documentType->loadMissing('templates');
-                }
+                $documentType = $livewire->getDocumentType()?->loadMissing('templates');
                 if (! $documentType) {
                     return [];
                 }
@@ -486,13 +495,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->validationAttribute(__('inspirecms::resources/content.document_type.validation_attribute'))
             ->dehydratedWhenHidden()
             ->dehydrateStateUsing(function (ContentForm $livewire, null | Model | ModelsContent $record) {
-                $documentTypeId = $record?->document_type_id ?? null;
-                if (! $documentTypeId) {
-                    $documentType = $livewire->getDocumentType();
-                    $documentTypeId = $documentType instanceof Model ? $documentType->getKey() : $documentType;
-                }
-
-                return $documentTypeId;
+                return $record?->document_type_id ?? $livewire->getDocumentType()?->getKey();
             });
     }
 
@@ -510,9 +513,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     $text = $documentType->title;
                 } else {
                     $documentType = $livewire->getDocumentType();
-                    if (! $documentType instanceof Model) {
-                        $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($documentType);
-                    }
                     $text = $documentType?->title;
                 }
 

@@ -86,8 +86,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return [
             static::getSlugFormComponent()->inlineLabel(),
             static::getTitleFormComponent()->inlineLabel(),
-            static::getShowChildAsTableFormComponent(),
-            // static::getCategoryFormComponent(),
+            static::getShowAsTableFormComponent(),
+            static::getCategoryFormComponent()->inlineLabel(),
             static::getIconFormComponent()->inlineLabel(),
         ];
     }
@@ -120,13 +120,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->emptyStateHeading(__('inspirecms::resources/document-type.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/document-type.empty_state.description'))
             ->emptyStateActions([])
-            // ->groups([
-            //     Tables\Grouping\Group::make('category')
-            //         ->label(__('inspirecms::resources/document-type.category.label'))
-            //         ->getTitleFromRecordUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum()?->getLabel())
-            //         ->getDescriptionFromRecordUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum()?->getDescription()),
-            // ])
-            // ->defaultGroup('category')
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
@@ -144,31 +137,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->badge(),
                 Tables\Columns\IconColumn::make('show_as_table')
                     ->label(__('inspirecms::resources/document-type.show_as_table.label'))
-                    ->color(function (Model | DocumentType $record, $state) {
-                        if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
-                            return 'gray';
-                        }
-
-                        return $state ? 'success' : 'danger';
-                    })
-                    ->icon(function (Model | DocumentType $record, $state) {
-                        if ($record->getCategoryEnum()?->canManageChildDocumentTypes() === false) {
-                            return 'heroicon-o-minus-circle';
-                        }
-                        if ($state) {
-                            return FilamentIcon::resolve('tables::columns.icon-column.true')
-                                ?? 'heroicon-o-check-circle';
-                        }
-
-                        return FilamentIcon::resolve('tables::columns.icon-column.false')
-                            ?? 'heroicon-o-x-circle';
-                    }),
-                // Tables\Columns\TextColumn::make('category')
-                //     ->label(__('inspirecms::resources/document-type.category.label'))
-                //     ->badge()
-                //     ->getStateUsing(fn (Model | DocumentType $record) => $record->getCategoryEnum())
-                //     ->formatStateUsing(fn (?DocumentTypeCategory $state) => $state?->getLabel())
-                //     ->color(fn (?DocumentTypeCategory $state) => $state?->getColor()),
+                    ->boolean(),
+                Tables\Columns\TextColumn::make('display_category')
+                    ->label(__('inspirecms::resources/document-type.category.label'))
+                    ->badge(),
 
                 // timestamps
                 Tables\Columns\TextColumn::make('created_at')
@@ -240,6 +212,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         ];
     }
 
+    /**
+     * @return class-string<Model & DocumentType>
+     */
     public static function getModel(): string
     {
         return InspireCmsConfig::getDocumentTypeModelClass();
@@ -322,25 +297,20 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
      */
     protected static function getCategoryFormComponent()
     {
-        return Forms\Components\Select::make('category')
+        $enumClass = static::getModel()::getCategoryEnumClass();
+        return Forms\Components\ToggleButtons::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
-            ->validationAttribute(__('inspirecms::resources/document-type.show_as_table.category'))
-            ->options(static::getModel()::getCategoryEnumClass())
-            ->default(static::getModel()::getCategoryEnumClass()::getDefaultValue()->value)
-            ->disabled(function ($operation) {
-                if ($operation === 'edit') {
-                    return true;
-
-                }
-
-                return false;
-            })
+            ->validationAttribute(__('inspirecms::resources/document-type.category.validation_attribute'))
+            ->inline()
+            ->grouped()
+            ->options($enumClass)
+            ->default($enumClass::getDefaultValue()->value)
             ->required()
-            ->live()->helperText(function ($state) {
-                if ($state) {
-                    if ($enum = static::getModel()::getCategoryEnumClass()::tryFrom($state)) {
-                        return $enum->getDescription();
-                    }
+            ->live()
+            ->colors(collect($enumClass::cases())->mapWithKeys(fn (DocumentTypeCategory $enumClass): array  => [$enumClass->value => $enumClass->getColor()])->all())
+            ->helperText(function ($state) use ($enumClass) {
+                if ($state && ($enum = $enumClass::tryFrom($state))) {
+                    return $enum->getDescription();
                 }
 
                 return null;
@@ -348,21 +318,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component*/
-    protected static function getShowChildAsTableFormComponent()
+    protected static function getShowAsTableFormComponent()
     {
         return Forms\Components\Toggle::make('show_as_table')
             ->label(__('inspirecms::resources/document-type.show_as_table.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.show_as_table.validation_attribute'))
             ->inlineLabel()
             ->default(false)
-            ->live()
-            ->hidden(function ($get) {
-                if ($enum = static::getModel()::getCategoryEnumClass()::tryFrom($get('category'))) {
-                    return ! $enum->canManageChildDocumentTypes();
-                }
-
-                return false;
-            });
+            ->live();
     }
 
     /** @return Forms\Components\Field | Forms\Components\Component*/

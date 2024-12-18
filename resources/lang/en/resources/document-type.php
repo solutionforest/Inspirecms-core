@@ -65,6 +65,10 @@ return [
             'label' => 'Web page',
             'description' => 'A standard web page layout.',
         ],
+        'data' => [
+            'label' => 'Data',
+            'description' => 'A data layout that without routing.',
+        ],
         'inheritance' => [
             'label' => 'Inheritance',
             'description' => 'A document type layout that can be inherited.',

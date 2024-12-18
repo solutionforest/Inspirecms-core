@@ -14,7 +14,7 @@ class DocumentTypeTest extends TestCase
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Cannot delete this document type because it has content.');
 
-        $documentType = DocumentType::factory()->create();
+        $documentType = DocumentType::factory(['category' => 'web'])->create();
 
         $content = new Content([
             'title' => ['en' => 1],
@@ -31,7 +31,7 @@ class DocumentTypeTest extends TestCase
 
     public function test_deleting_document_type_without_content_does_not_throw_exception()
     {
-        $documentType = DocumentType::factory()->create();
+        $documentType = DocumentType::factory(['category' => 'web'])->create();
 
         $documentType->delete();
 

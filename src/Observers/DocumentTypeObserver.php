@@ -21,7 +21,7 @@ class DocumentTypeObserver
         }
         //endregion Set default value
 
-        if (! $model->canInheriting()) {
+        if (! ($model->display_category?->canInheriting() ?? false)) {
             $model->show_as_table = false;
         }
     }

@@ -31,7 +31,7 @@ class PageService implements PageServiceInterface
     {
         $content = $this->contentService->findByRealPath($slugPath, static::getDtoRelations());
 
-        if (is_null($content) || ! $content->isPublished() || ! $content->isWebPage()) {
+        if (is_null($content) || ! $content->isPublished()) {
             return null;
         }
 
@@ -46,7 +46,7 @@ class PageService implements PageServiceInterface
         $content = $this->contentService->getUnderRealPath($slugPath, $limit, static::getDtoRelations());
 
         $items = $content
-            ->filter(fn ($item) => $item->isPublished() && $item->isWebPage())
+            ->filter(fn ($item) => $item->isPublished())
             ->map(fn ($item) => $item->toDto($locale));
 
         return new \SolutionForest\InspireCms\Collection\ContentDtoCollection($items);

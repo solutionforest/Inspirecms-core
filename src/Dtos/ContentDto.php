@@ -24,6 +24,11 @@ class ContentDto extends BaseTranslatableModelDto
     public $slug;
 
     /**
+     * @var ?string
+     */
+    public $type;
+
+    /**
      * @var ?\Carbon\CarbonInterface
      */
     public $publishAt;
@@ -231,7 +236,10 @@ class ContentDto extends BaseTranslatableModelDto
         return $urls->get($locale ?? $this->getLocale()) ?? $urls->get($this->getFallbackLocale());
     }
     //region Helpers
-
+    /**
+     * @param Model | \SolutionForest\InspireCms\Models\Contracts\Content $record
+     * @return array
+     */
     protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLanguages): array
     {
         $record->loadMissing(static::getNecessaryRelationships());
@@ -247,6 +255,7 @@ class ContentDto extends BaseTranslatableModelDto
         ])->all();
 
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
+        $dtoParameters['type'] = $record?->documentType?->category;
 
         $dtoParameters['propertyData'] = $propertyData;
 

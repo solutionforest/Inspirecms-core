@@ -6,7 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 interface ContentForm
 {
-    public function getDocumentType(): string | int | Model;
+    /**
+     * @return null | Model & \SolutionForest\InspireCms\Models\Contracts\DocumentType
+     */
+    public function getDocumentType();
 
     public function getParent(): string | int | Model | null;
 

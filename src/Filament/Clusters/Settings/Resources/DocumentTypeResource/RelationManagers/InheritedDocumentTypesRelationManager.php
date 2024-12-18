@@ -28,7 +28,11 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             return false;
         }
 
-        return $ownerRecord->canInheriting();
+        if ($ownerRecord instanceof DocumentType) {
+            return $ownerRecord->display_category?->canInheriting() ?? false;
+        }
+
+        return false;
     }
 
     public function table(Table $table): Table
@@ -48,9 +52,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(function ($query) {
-                        $query->canBeInherited();
-                    }),
+                    ->recordSelectOptionsQuery(fn ($query) => $query->canBeInherited()),
             ])
             ->actions([
                 Tables\Actions\DetachAction::make()

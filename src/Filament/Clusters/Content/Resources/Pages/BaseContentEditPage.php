@@ -98,7 +98,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
             ->color('secondary');
     }
 
-    public function getDocumentType(): int | string | Model
+    /** * @inheritDoc */
+    public function getDocumentType()
     {
         return $this->getRecord()->documentType;
     }

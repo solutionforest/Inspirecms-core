@@ -6,16 +6,19 @@ enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
 {
     case Web = 'web';
 
-    /**
-     * To allow inherits field groups from other document types.
-     */
-    case Inheritance = 'inheritance';
+    case Data = 'data';
+
+    // /**
+    //  * To allow inherits field groups from other document types.
+    //  */
+    // case Inheritance = 'inheritance';
 
     public function getLabel(): ?string
     {
         return match ($this) {
             self::Web => __('inspirecms::resources/document-type.categories.web.label'),
-            self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.label'),
+            self::Data => __('inspirecms::resources/document-type.categories.data.label'),
+            // self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.label'),
             default => null,
         };
     }
@@ -24,7 +27,8 @@ enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
     {
         return match ($this) {
             self::Web => __('inspirecms::resources/document-type.categories.web.description'),
-            self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.description'),
+            self::Data => __('inspirecms::resources/document-type.categories.data.description'),
+            // self::Inheritance => __('inspirecms::resources/document-type.categories.inheritance.description'),
             default => null,
         };
     }
@@ -32,8 +36,9 @@ enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::Web => 'primary',
-            self::Inheritance => 'info',
+            self::Web => 'success',
+            self::Data => 'gray',
+            // self::Inheritance => 'info',
             default => null,
         };
     }
@@ -41,26 +46,22 @@ enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
     /** @inheritDoc*/
     public function canInheriting(): bool
     {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web;
+        return true;
+        // return $this != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Inheritance;
     }
 
     /** @inheritDoc*/
     public function canBeInherited(): bool
     {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Inheritance;
-    }
-
-    /** @inheritDoc*/
-    public function canManageChildDocumentTypes(): bool
-    {
-        return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web;
+        return false;
+        // return $this == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Inheritance;
     }
 
     /** @inheritDoc*/
     public static function allCanBeInherited(): array
     {
         return [
-            self::Inheritance,
+            // self::Inheritance,
         ];
     }
 

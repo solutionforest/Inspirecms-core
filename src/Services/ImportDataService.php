@@ -420,6 +420,9 @@ class ImportDataService implements ImportDataServiceInterface
                 $contentData['document_type_id'] = $documentType->getKey();
                 $contentData['parent_id'] = $parentSlug === '__root__' ? KeyHelper::generateMinUuid() : $parent?->getKey();
 
+                /**
+                 * @var null | Content & Model
+                 */
                 $content = $model::where('slug', $slug)
                     ->when($parent, fn ($q) => $q->whereParent($parent->getKey()), fn ($q) => $q->isRoot())
                     ->first();
@@ -438,8 +441,10 @@ class ImportDataService implements ImportDataServiceInterface
                     $content->refresh();
                 }
 
-                $content->webSetting()->updateOrCreate([], $item->getWebSettingData());
-                $content->sitemap()->updateOrCreate([], $item->getSitemapData());
+                if ($content->documentType?->display_category == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web) { 
+                    $content->webSetting()->updateOrCreate([], $item->getWebSettingData());
+                    $content->sitemap()->updateOrCreate([], $item->getSitemapData());
+                }
 
                 if (filled($item->template)) {
                     $template = $this->findTemplates($item->template)->first();

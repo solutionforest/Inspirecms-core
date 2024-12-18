@@ -3,11 +3,8 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
-use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait CreateContentActionTrait
@@ -20,7 +17,7 @@ trait CreateContentActionTrait
 
     protected ?Closure $nodeTitleUsing = null;
 
-    protected ?Closure $urlParametersUsing = null;
+    protected $page = 1;
 
     public static function getDefaultName(): ?string
     {
@@ -63,33 +60,16 @@ trait CreateContentActionTrait
             return __('inspirecms::resources/content.actions.create_content.modal.heading', ['title' => $title]);
         });
 
-        $this->modalContent(function ($livewire) use ($contentResource) {
+        $this->modalContent(function ($livewire) {
+            $parentDocumentType = $this->getParentDocumentType();
+            $parentDocumentTypeId = $parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType;
 
-            $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
+            $translatableLocale = isset($livewire->activeLocale) ? $livewire->activeLocale : null;
 
             return view('inspirecms::filament.actions.create-content', [
-                'documentTypes' => $this->getAvailableDocumentTypes(),
-                'getLabelUsing' => fn (?Model $record) => $this->evaluate($this->documentTypeTitleUsing, ['record' => $record]) ?? $record?->title,
-                'getUrlUsing' => function (?Model $record) use ($contentResource, $translatableLocale) {
-
-                    $parameters = [
-                        'documentType' => $record->getKey(),
-                        'parent' => $this->getParentContentKey(),
-                        // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
-                        'locale' => $translatableLocale,
-                    ];
-
-                    if ($this->urlParametersUsing != null) {
-                        $parameters = array_merge($parameters, $this->evaluate($this->urlParametersUsing, ['parameters' => $parameters, 'record' => $record]));
-                    }
-
-                    return FilamentResourceHelper::attemptToGetUrl(
-                        $contentResource,
-                        'create',
-                        $parameters,
-                        false
-                    );
-                },
+                'parentDocumentTypeId' => $parentDocumentTypeId,
+                'translatableLocale' => $translatableLocale,
+                'parentContentId' => $this->getParentContentKey(),
             ]);
         });
 
@@ -117,13 +97,6 @@ trait CreateContentActionTrait
         return $this;
     }
 
-    public function urlParametersUsing(Closure $callback): static
-    {
-        $this->urlParametersUsing = $callback;
-
-        return $this;
-    }
-
     public function getParentContentKey(): null | Closure | string | int
     {
         return $this->evaluate($this->parentContentKey);
@@ -139,25 +112,5 @@ trait CreateContentActionTrait
         $this->nodeTitleUsing = $callback;
 
         return $this;
-    }
-
-    /**
-     * @return Collection|array
-     */
-    protected function getAvailableDocumentTypes()
-    {
-        /**
-         * @var Builder $query
-         */
-        $query = InspireCmsConfig::getDocumentTypeModelClass()::whereIsWebPage();
-
-        if (($parentDocumentType = $this->getParentDocumentType()) !== null) {
-            $query->whereDoesntHave(
-                'rejectingDocumentTypes',
-                fn ($query) => $query->whereKey($parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType)
-            );
-        }
-
-        return $query->get();
     }
 }

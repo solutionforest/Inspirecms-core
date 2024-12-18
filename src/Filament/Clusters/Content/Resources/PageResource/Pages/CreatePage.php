@@ -50,8 +50,15 @@ class CreatePage extends BaseContentCreatePage
         return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
-    public function getDocumentType(): int | Model | string
+    /** * @inheritDoc */
+    public function getDocumentType()
     {
-        return $this->documentTypeRecord ?? $this->documentType;
+        if ($this->documentTypeRecord) {
+            return $this->documentTypeRecord;
+        }
+        if (! $this->documentType instanceof Model) {
+            return $this->documentTypeRecord = InspireCmsConfig::getDocumentTypeModelClass()::find($this->documentType);
+        }
+        return $this->documentType;
     }
 }

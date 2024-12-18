@@ -52,7 +52,8 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
             ]);
     }
 
-    public function getDocumentType(): int | Model | string
+    /** * @inheritDoc */
+    public function getDocumentType()
     {
         return $this->getOwnerRecord()->documentType;
     }
