@@ -3,8 +3,6 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -20,10 +18,8 @@ use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
-class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent implements HasActions
+class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent
 {
-    use InteractsWithActions;
-
     public array $redirectUrlParameters = [];
 
     public ?string $activeLocale = null;
@@ -70,7 +66,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {
-        $modelClass = InspireCmsConfig::getContentModelClass();
+        $modelClass = static::getModel();
         $model = app($modelClass);
         $parentIdColumn = $model->getQualifiedParentKeyName();
         $rootLevelKey = $model->getRootLevelParentId();
@@ -133,8 +129,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             })
             ->actions([
                 CreateContentItemAction::make(),
+                ReorderContentItemAction::make('reorder_content_item'),
                 ActionGroup::make([
-                    ReorderContentItemAction::make('reorder_content_item'),
                     SetDefaultContentPageAction::make(),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
@@ -275,6 +271,14 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         return InspireCmsConfig::get('filament.resources.page', PageResource::class);
     }
 
+    /**
+     * @return class-string<\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Content>
+     */
+    protected static function getModel()
+    {
+        return InspireCmsConfig::getContentModelClass();
+    }
+
     protected function getRedirectUrlParameters()
     {
         return array_merge($this->redirectUrlParameters, [
@@ -326,17 +330,20 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             case $action instanceof ReorderContentItemAction:
 
                 $action
-                    ->record(fn ($itemKey) => ! blank($itemKey) ? $this->resolveSelectedModelItem($itemKey) : null)
-                    ->nodeParentId(function (?Model $record) {
-                        if (! $record instanceof Content) {
-                            throw new \Exception('The provided record is not an instance of the Content model.');
+                    ->nodeParentId(function ($itemKey) {
+                        if ($itemKey === 'root' || blank($itemKey)) {
+                            return app(static::getModel())->getNestableTreeRootLevelParentId();
+                        }else {
+                            $record = $this->resolveSelectedModelItem($itemKey);
+
+                            if (! $record instanceof Content) {
+                                throw new \Exception('The provided record is not an instance of the Content model.');
+                            }
+
+                            return isset($record->nestable_tree_id)
+                                ? $record->nestable_tree_id
+                                : ($record->nestableTree?->getKey() ?? 0);
                         }
-
-                        $nestableTreeParentId = isset($record->nestable_tree_parent_id)
-                            ? $record->nestable_tree_parent_id
-                            : ($record->nestableTree?->parent_id ?? 0);
-
-                        return $nestableTreeParentId;
                     })
                     ->successRedirectUrl(function () {
                         $pageName = $this->pageName ?? 'index';

@@ -184,9 +184,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         switch (true) {
             case $action instanceof ReorderContentAction:
                 $action
-                    ->nodeParentId(fn ($record) => $record->getParentNestableTreeId())
-                    ->hidden(
-                        fn ($record) => ! method_exists($record, 'getParentId') ||
+                    ->nodeParentId(fn (\SolutionForest\InspireCms\Models\Contracts\Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
+                    ->hidden(fn (?Model $record) => 
+                        ! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Content ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);

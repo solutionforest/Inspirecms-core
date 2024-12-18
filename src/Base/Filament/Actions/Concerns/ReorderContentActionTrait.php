@@ -7,6 +7,8 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
@@ -17,17 +19,17 @@ trait ReorderContentActionTrait
 
     public static function getDefaultName(): ?string
     {
-        return 'reorder_content';
+        return 'reorder_content_children';
     }
 
     public static function getPermissionName(): string
     {
-        return 'action_reorder_content';
+        return 'action_reorder_content_children';
     }
 
     public static function getPermissionDisplayName(): string
     {
-        return __('inspirecms::resources/content.actions.reorder_content.permission_display_name');
+        return __('inspirecms::resources/content.actions.reorder_children.permission_display_name');
     }
 
     public function nodeParentId(Closure | string | int $nodeParentId): static
@@ -44,13 +46,19 @@ trait ReorderContentActionTrait
 
     protected function setUpAction(): void
     {
-        $this->label(__('inspirecms::resources/content.actions.reorder_content.label'));
+        $this->label(__('inspirecms::resources/content.actions.reorder_children.label'));
 
-        $this->successNotificationTitle(__('inspirecms::resources/content.actions.reorder_content.notification.success.title'));
+        $this->successNotificationTitle(__('inspirecms::resources/content.actions.reorder_children.notification.success.title'));
 
         $this->groupedIcon('heroicon-o-arrows-up-down');
 
+        /**
+         * @var class-string<\SolutionForest\InspireCms\Models\Contracts\Content & Model> $contentModel
+         */
         $contentModel = InspireCmsConfig::getContentModelClass();
+        /**
+         * @var class-string<\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree & Model> $nestableTreeModel
+         */
         $nestableTreeModel = InspireCmsConfig::getNestableTreeModelClass();
 
         $this->slideOver();
@@ -77,6 +85,8 @@ trait ReorderContentActionTrait
                 ->deletable(false)
                 ->orderable()
                 ->columns(2)
+                ->itemLabel(fn (array $state): ?string => $state['title'] ?? $state['slug'] ?? null)
+                ->collapsed()
                 ->schema([
                     TextInput::make('id')
                         ->hidden()
@@ -97,7 +107,7 @@ trait ReorderContentActionTrait
             if (! in_array(NestableTree::class, class_implements($nestableTreeModel))) {
 
                 Notification::make()
-                    ->title(__('inspirecms::resources/content.actions.reorder_content.notification.invalid_model.title'))
+                    ->title(__('inspirecms::resources/content.actions.reorder_children.notification.invalid_model.title'))
                     ->danger()
                     ->send();
 
@@ -106,7 +116,7 @@ trait ReorderContentActionTrait
                 return;
             }
 
-            $sortedKeys = collect($data['contents'])->pluck('id')->toArray();
+            $sortedKeys = Arr::pluck($data['contents'] ?? [], 'id') ?? [];
 
             try {
 
@@ -117,7 +127,7 @@ trait ReorderContentActionTrait
             } catch (\Throwable $th) {
 
                 Notification::make()
-                    ->title(__('inspirecms::resources/content.actions.reorder_content.notification.error.title'))
+                    ->title(__('inspirecms::resources/content.actions.reorder_children.notification.error.title'))
                     ->body($th->getMessage())
                     ->danger()
                     ->send();
