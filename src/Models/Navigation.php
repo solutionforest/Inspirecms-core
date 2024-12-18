@@ -117,6 +117,7 @@ class Navigation extends BaseModel implements NavigationContract
                 if (filled($category)) {
                     return static::getNavigationCategoryEnumClass()::tryFrom($category);
                 }
+
                 return null;
             },
         );
@@ -130,6 +131,7 @@ class Navigation extends BaseModel implements NavigationContract
                 if (filled($type)) {
                     return static::getNavigationTypeEnumClass()::tryFrom($type);
                 }
+
                 return null;
             },
         );

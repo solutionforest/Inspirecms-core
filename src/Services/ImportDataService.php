@@ -441,7 +441,7 @@ class ImportDataService implements ImportDataServiceInterface
                     $content->refresh();
                 }
 
-                if ($content->documentType?->display_category == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web) { 
+                if ($content->documentType?->display_category == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web) {
                     $content->webSetting()->updateOrCreate([], $item->getWebSettingData());
                     $content->sitemap()->updateOrCreate([], $item->getSitemapData());
                 }

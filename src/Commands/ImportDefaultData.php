@@ -38,7 +38,7 @@ class ImportDefaultData extends Command
             if (! $this->isTableExists($model)) {
                 return;
             }
-            
+
             $locale = config('app.locale', 'en');
 
             // Create if not exists
@@ -75,33 +75,33 @@ class ImportDefaultData extends Command
             $reviewer = $roleClass::findOrCreate('Reviewer', $guardName);
             $reviewer->givePermissionTo(
                 $allPermissions
-                    ->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        (Str::startsWith($permission->name, 'view') && ! (Str::endsWith($permission->name, 'user') || Str::endsWith($permission->name, 'role'))) || 
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => (Str::startsWith($permission->name, 'view') && ! (Str::endsWith($permission->name, 'user') || Str::endsWith($permission->name, 'role'))) ||
                         $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
                     )
-                );
+            );
             /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
             $writer = $roleClass::findOrCreate('Writer', $guardName);
             $writer->givePermissionTo(
                 $allPermissions
-                    ->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        $modelPermissionFilter($permission->name, 'view', ['content']) ||
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content']) ||
                         $modelPermissionFilter($permission->name, 'update', ['content']) ||
                         $modelPermissionFilter($permission->name, 'create', ['content']) ||
                         $clusterPermissionFilter($permission->name, ['content'])
                     )
-                );
+            );
             /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
             $editor = $roleClass::findOrCreate('Editor', $guardName);
             $editor->givePermissionTo(
                 $allPermissions
-                    ->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
                         $clusterPermissionFilter($permission->name, ['content', 'media'])
                     )
-                );
+            );
         });
     }
 

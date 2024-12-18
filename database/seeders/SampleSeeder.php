@@ -905,15 +905,18 @@ Html;
 
         foreach ($items as $item) {
             switch ($item->slug) {
-                case 'blog-management': 
+                case 'blog-management':
                     $item->rejected = collect($items)->map(fn ($item) => $item->slug)->filter(fn ($slug) => $slug !== 'blog')->toArray();
+
                     break;
-                case 'blog': 
-                case 'config': 
+                case 'blog':
+                case 'config':
                     $item->rejected = collect($items)->map(fn ($item) => $item->slug)->toArray();
+
                     break;
                 default:
                     $item->rejected = array_unique(array_merge($item->rejected, ['blog']));
+
                     break;
             }
             $this->importDataService->addDocumentType($item->slug, $item);

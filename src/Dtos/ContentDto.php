@@ -235,10 +235,10 @@ class ContentDto extends BaseTranslatableModelDto
 
         return $urls->get($locale ?? $this->getLocale()) ?? $urls->get($this->getFallbackLocale());
     }
+
     //region Helpers
     /**
-     * @param Model | \SolutionForest\InspireCms\Models\Contracts\Content $record
-     * @return array
+     * @param  Model | \SolutionForest\InspireCms\Models\Contracts\Content  $record
      */
     protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLanguages): array
     {

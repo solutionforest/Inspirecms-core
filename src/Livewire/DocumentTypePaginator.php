@@ -29,31 +29,34 @@ class DocumentTypePaginator extends \Livewire\Component
 
     public function render()
     {
-        $documentTypes = tap($this->getDocumentTypes(), fn ($paginatedInstance)=> $paginatedInstance
-            ->getCollection()
-            ->transform(function ( \SolutionForest\InspireCms\Models\Contracts\DocumentType | Model $documentType) {
-                
-                $parameters = [
-                    'documentType' => $documentType->getKey(),
-                    'parent' => $this->parentContentId,
-                    // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
-                    'locale' => $this->translatableLocale,
-                ];
+        $documentTypes = tap(
+            $this->getDocumentTypes(),
+            fn ($paginatedInstance) => $paginatedInstance
+                ->getCollection()
+                ->transform(function (\SolutionForest\InspireCms\Models\Contracts\DocumentType | Model $documentType) {
 
-                $url = FilamentResourceHelper::attemptToGetUrl(
-                    static::getResource(),
-                    'create',
-                    $parameters,
-                    false
-                );
+                    $parameters = [
+                        'documentType' => $documentType->getKey(),
+                        'parent' => $this->parentContentId,
+                        // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
+                        'locale' => $this->translatableLocale,
+                    ];
 
-                return [
-                    'label' => $documentType->title,
-                    'icon' => $documentType->icon,
-                    'url' =>$url,
-                ];
-            })
+                    $url = FilamentResourceHelper::attemptToGetUrl(
+                        static::getResource(),
+                        'create',
+                        $parameters,
+                        false
+                    );
+
+                    return [
+                        'label' => $documentType->title,
+                        'icon' => $documentType->icon,
+                        'url' => $url,
+                    ];
+                })
         );
+
         return view('inspirecms::livewire.document-type-paginator', [
             'documentTypes' => $documentTypes,
         ]);
@@ -78,7 +81,6 @@ class DocumentTypePaginator extends \Livewire\Component
 
         return $query->paginate(perPage: 15, pageName: 'documentTypesPage');
     }
-
 
     /**
      * @return class-string<\Filament\Resources\Resource>

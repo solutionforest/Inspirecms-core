@@ -82,7 +82,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->persistTabInQueryString()
                     ->contained(false)
                     ->tabs(function (ContentForm $livewire) {
-                        
+
                         $documentType = $livewire->getDocumentType();
 
                         $tabs[] = static::getPropertyDataValueComponent(isTab: true);
@@ -146,6 +146,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                             ]),
                                     ]),
                             ]);
+
                         return $tabs;
                     }),
             ]);
