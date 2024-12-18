@@ -227,6 +227,7 @@ class PropertyDataDto extends BaseDto
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\ColorPicker => '#000000',
             $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker => [KeyHelper::generateMinUuid()],
             $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker => [],
+            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\Tags => ['tag1', 'tag2'],
             default => null,
         };
     }
