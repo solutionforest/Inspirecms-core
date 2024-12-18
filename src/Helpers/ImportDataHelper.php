@@ -111,26 +111,29 @@ class ImportDataHelper
 
             switch ($folder) {
                 case self::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-
-                    $arrayOrder = ['title', 'showAsTable', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'rejected'];
+                    $arrayOrder = ['title', 'showAsTable', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'rejected'];
                     $sequence = collect([
                         [
                             'showAsTable' => false,
+                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
                         ],
                         [
                             'showAsTable' => true,
+                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                         ],
                         [
                             'showAsTable' => false,
+                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 2),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                         ],
                         [
                             'showAsTable' => false,
+                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => [],
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                         ],

@@ -32,13 +32,20 @@ class ImportDefaultData extends Command
     {
         $this->components->task('Import language data', function () {
 
+            /** @var class-string<\Illuminate\Database\Eloquent\Model> */
             $model = InspireCmsConfig::getLanguageModelClass();
 
             if (! $this->isTableExists($model)) {
                 return;
             }
 
-            $model::findOrCreateDefaultLanguage();
+            $locale = config('app.locale', 'en');
+
+            // Create if not exists
+            $model::query()->firstOrCreate(
+                ['code' => $locale],
+                ['is_default' => true]
+            );
         });
     }
 
@@ -56,6 +63,45 @@ class ImportDefaultData extends Command
 
             PermissionHelper::setupSuperAdminRole();
 
+            // Add example roles
+            $roleClass = InspireCmsConfig::getRoleModelClass();
+            $guardName = InspireCmsConfig::getGuardName();
+            $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
+
+            $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::startsWith($permissionName, $action) && in_array(Str::afterLast($permissionName, '_'), $models);
+            $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
+
+            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+            $reviewer = $roleClass::findOrCreate('Reviewer', $guardName);
+            $reviewer->givePermissionTo(
+                $allPermissions
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => (Str::startsWith($permission->name, 'view') && ! (Str::endsWith($permission->name, 'user') || Str::endsWith($permission->name, 'role'))) ||
+                        $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
+                    )
+            );
+            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+            $writer = $roleClass::findOrCreate('Writer', $guardName);
+            $writer->givePermissionTo(
+                $allPermissions
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content']) ||
+                        $modelPermissionFilter($permission->name, 'update', ['content']) ||
+                        $modelPermissionFilter($permission->name, 'create', ['content']) ||
+                        $clusterPermissionFilter($permission->name, ['content'])
+                    )
+            );
+            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+            $editor = $roleClass::findOrCreate('Editor', $guardName);
+            $editor->givePermissionTo(
+                $allPermissions
+                    ->filter(
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
+                        $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
+                        $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
+                        $clusterPermissionFilter($permission->name, ['content', 'media'])
+                    )
+            );
         });
     }
 

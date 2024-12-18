@@ -11,10 +11,10 @@ use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
 /**
- * @property \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $contentVersions
- * @property \Illuminate\Database\Eloquent\Collection<Model & ContentPublishVersion> $publishVersionLogs
- * @property \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $publishedVersions
- * @property null | Model & ContentVersion $latestContentVersion
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $contentVersions
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & ContentPublishVersion> $publishVersionLogs
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & ContentVersion> $publishedVersions
+ * @property-read null | Model & ContentVersion $latestContentVersion
  */
 interface HasContentVersions
 {

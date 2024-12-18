@@ -33,8 +33,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     }
     use WithPagination;
 
-    protected static string $layout = 'inspirecms::components.layout.content-page';
-
     public function booted(): void
     {
         // Guard 1 for trashed record, If the record is trashed, redirect to the view/index page
@@ -49,7 +47,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     {
         return [
             BackToParentContentAction::make(),
-            Actions\LocaleSwitcher::make(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([
                     Actions\ViewAction::make(),
@@ -101,7 +98,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
             ->color('secondary');
     }
 
-    public function getDocumentType(): int | string | Model
+    /** * {@inheritDoc} */
+    public function getDocumentType()
     {
         return $this->getRecord()->documentType;
     }
@@ -187,9 +185,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         switch (true) {
             case $action instanceof ReorderContentAction:
                 $action
-                    ->nodeParentId(fn ($record) => $record->getParentNestableTreeId())
+                    ->nodeParentId(fn (\SolutionForest\InspireCms\Models\Contracts\Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
                     ->hidden(
-                        fn ($record) => ! method_exists($record, 'getParentId') ||
+                        fn (?Model $record) => ! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Content ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);

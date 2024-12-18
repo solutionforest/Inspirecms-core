@@ -16,8 +16,8 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property bool $mandatory
  * @property ?string $state_path
  * @property ?array $config
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
  */
 interface Field extends BaseContract, HasDtoModel
 {

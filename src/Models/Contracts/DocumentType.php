@@ -10,16 +10,17 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property bool $show_as_table Determine if the children should be displayed as a table
  * @property ?string $icon
  * @property int|string|null $parent_id
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
- * @property \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
- * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
- * @property \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
- * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritedDocumentTypes
- * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritingDocumentTypes
- * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectedDocumentTypes
- * @property \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectingDocumentTypes
- * @property \Illuminate\Database\Eloquent\Collection<Model&Content> $content
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * @property-read null | (\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory & \BackedEnum) $display_category
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritedDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritingDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectedDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectingDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&Content> $content
  */
 interface DocumentType extends Base\HasTemplates
 {
@@ -81,21 +82,10 @@ interface DocumentType extends Base\HasTemplates
 
     public function isWebPageType();
 
-    public function canInheriting();
-
-    public function canBeInherited();
-
-    /**
-     * Get the category enum for the document type.
-     *
-     * @return \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory|null The category enum or null if not set.
-     */
-    public function getCategoryEnum();
-
     /**
      * Get the class name of the type enumeration.
      *
-     * @return string The class name of the type enumeration.
+     * @return enum-string<\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory> & class-string<\BackedEnum> The class name of the type enumeration.
      */
     public static function getCategoryEnumClass();
 
@@ -146,4 +136,12 @@ interface DocumentType extends Base\HasTemplates
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsWebPage($query);
+
+    /**
+     * Scope a query to only include content that can be used.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereCanBeContent($query);
 }

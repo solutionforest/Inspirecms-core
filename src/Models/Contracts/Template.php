@@ -7,8 +7,8 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  *
  * @property string $slug
  * @property string $path
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
  */
 interface Template
 {

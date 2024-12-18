@@ -275,9 +275,9 @@ return [
 
         ],
 
-        'reorder_content' => [
+        'reorder_children' => [
 
-            'label' => '重新排序內容',
+            'label' => '重新排序子項',
 
             'notification' => [
 
@@ -288,17 +288,17 @@ return [
                 ],
                 'success' => [
 
-                    'title' => '重新排序內容成功',
+                    'title' => '重新排序子項成功',
 
                 ],
                 'error' => [
 
-                    'title' => '重新排序內容錯誤',
+                    'title' => '重新排序子項錯誤',
 
                 ],
             ],
 
-            'permission_display_name' => '重新排序內容',
+            'permission_display_name' => '重新排序子內容',
 
         ],
 

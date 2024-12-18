@@ -14,7 +14,7 @@ class ReorderContentItemAction extends Action implements GuardAction
 
     public static function getDefaultName(): ?string
     {
-        return 'reorder_content_item';
+        return 'reorder_content_children_item';
     }
 
     protected function setUp(): void

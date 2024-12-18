@@ -39,55 +39,6 @@ class FieldGroup extends BaseModel implements FieldGroupContract
                 required: $field->mandatory,
                 groupName: $this->name,
             );
-            // $fiFormComponent = FieldTypeHelper::performFormFieldFromConfig($field->type, function ($fiFormConfig, $fiFormComponentFQCN) use ($field) {
-
-            //     $fieldName = $field->name;
-            //     $groupName = $this->name;
-
-            //     $statePath = method_exists($field, '') ?
-            //         $field->getStatePathWithGroup() :
-            //         implode('.', [$groupName, $fieldName]);
-
-            //     if (isset($fiFormConfig->translatable) && $fiFormConfig->translatable) {
-            //         return FieldTypeHelper::buildTranslatableField(
-            //             typeName: $field->type,
-            //             fieldTypeConfig: $field->config,
-            //             name: $fieldName,
-            //             label: $field->label,
-            //             helperText: $field->instructions,
-            //             required: $field->mandatory,
-            //             groupName: $groupName,
-            //         );
-            //     } else if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
-            //         $fiFormComponent = $fiFormComponentFQCN::make($fieldName);
-
-            //         $fiFormComponent->label($field->label);
-            //         $fiFormComponent->helperText($field->instructions);
-            //         $fiFormComponent->required($field->mandatory);
-            //         $fiFormComponent->statePath($statePath);
-
-            //     } else {
-
-            //         $fiFormComponent = null;
-            //     }
-
-            //     // if (in_array(\SolutionForest\InspireCms\Fields\Configs\Concerns\HasInnerField::class, class_uses($fiFormConfig))) {
-
-            //     //     $fiFormConfig->setFieldVariable([
-            //     //         'name' => $fieldName,
-            //     //         'label' => $field->label,
-            //     //         'helperText' => $field->instructions,
-            //     //         'required' => $field->mandatory,
-            //     //         'statePath' => $statePath,
-            //     //         'group' => $groupName,
-            //     //     ]);
-
-            //     //     $fiFormComponent = $fiFormComponentFQCN::make();
-            //     // }
-
-            //     return $fiFormComponent;
-
-            // }, $field->config);
 
             if (! $fiFormComponent) {
                 continue;

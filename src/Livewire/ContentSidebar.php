@@ -3,9 +3,9 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
@@ -18,10 +18,8 @@ use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
-class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent implements HasActions
+class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent
 {
-    use InteractsWithActions;
-
     public array $redirectUrlParameters = [];
 
     public ?string $activeLocale = null;
@@ -41,11 +39,34 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         if (filled($this->selectedModelItemKey)) {
             $this->refreshModelExplorerSidebar();
         }
+        if (! isset($this->activeLocale)) { // set default locale if not set
+            $this->activeLocale = Arr::first($this->getTranslatableLocales());
+        }
     }
+
+    //region Locale config
+    public function localeSwitcher(): \Filament\Actions\Action
+    {
+        return \Filament\Actions\LocaleSwitcher::make();
+    }
+
+    public function getTranslatableLocales(): array
+    {
+        return array_keys(InspireCms::getAllAvailableLanguages());
+    }
+
+    public function updatedActiveLocale(string $locale): void
+    {
+        $this->activeLocale = $locale;
+        $this->refreshModelExplorerSidebar();
+        // dispatch event to page component
+        $this->dispatch('changeActiveLocale', $locale);
+    }
+    //endregion Locale config
 
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {
-        $modelClass = InspireCmsConfig::getContentModelClass();
+        $modelClass = static::getModel();
         $model = app($modelClass);
         $parentIdColumn = $model->getQualifiedParentKeyName();
         $rootLevelKey = $model->getRootLevelParentId();
@@ -75,18 +96,18 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             })
             ->mutuateNodeItemsUsing(function (array $item, Model | Content $record): array {
 
-                $itemUrlParams = array_merge([
-                    'record' => $record,
-                    'activeRelationManager' => 0,
-                    'locale' => $this->activeLocale,
-                ], $this->redirectUrlParameters);
+                // authorize user to view/edit the record
+                $pageType = null;
+                $resource = static::getResource();
+                foreach (['edit', 'view'] as $action) {
+                    $method = 'can' . ucfirst($action);
+                    if ($resource::{$method}($record)) {
+                        $pageType = $action;
 
-                $item['link'] = FilamentResourceHelper::attemptToGetUrl(
-                    static::getResource(),
-                    ['edit', 'view'],
-                    $itemUrlParams,
-                    true
-                );
+                        break;
+                    }
+                }
+                $item['pageType'] = $pageType;
 
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
                     $item['label'] = $record->getTranslations('title');
@@ -109,8 +130,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             })
             ->actions([
                 CreateContentItemAction::make(),
+                ReorderContentItemAction::make('reorder_content_item'),
                 ActionGroup::make([
-                    ReorderContentItemAction::make('reorder_content_item'),
                     SetDefaultContentPageAction::make(),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
@@ -189,6 +210,34 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         return parent::getModelExplorerItemsFrom($parentKey, $depth);
     }
 
+    protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
+    {
+        foreach ($items as $parentKey => &$nodes) {
+            foreach ($nodes as &$node) {
+                if (! isset($node['pageType'])) {
+                    continue;
+                }
+
+                $itemUrlParams = array_merge([
+                    'record' => $node['key'],
+                    'activeRelationManager' => 0,
+                ], $this->redirectUrlParameters, [
+                    'locale' => $this->activeLocale,
+                ]);
+
+                $node['link'] = FilamentResourceHelper::attemptToGetUrl(
+                    static::getResource(),
+                    $node['pageType'],
+                    $itemUrlParams,
+                    false
+                );
+                unset($node['pageType']);
+            }
+        }
+
+        return $items;
+    }
+
     public function getGroupedNodeItems()
     {
         $items = parent::getGroupedNodeItems();
@@ -216,14 +265,27 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         ]);
     }
 
+    /**
+     * @return class-string<\Filament\Resources\Resource>
+     */
     protected static function getResource()
     {
         return InspireCmsConfig::get('filament.resources.page', PageResource::class);
     }
 
+    /**
+     * @return class-string<\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Content>
+     */
+    protected static function getModel()
+    {
+        return InspireCmsConfig::getContentModelClass();
+    }
+
     protected function getRedirectUrlParameters()
     {
-        return $this->redirectUrlParameters;
+        return array_merge($this->redirectUrlParameters, [
+            'locale' => $this->activeLocale,
+        ]);
     }
 
     protected function configureSelectedModelItemFormAction(Actions\Action | TreeNodeAction $action): void
@@ -270,17 +332,20 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             case $action instanceof ReorderContentItemAction:
 
                 $action
-                    ->record(fn ($itemKey) => ! blank($itemKey) ? $this->resolveSelectedModelItem($itemKey) : null)
-                    ->nodeParentId(function (?Model $record) {
-                        if (! $record instanceof Content) {
-                            throw new \Exception('The provided record is not an instance of the Content model.');
+                    ->nodeParentId(function ($itemKey) {
+                        if ($itemKey === 'root' || blank($itemKey)) {
+                            return app(static::getModel())->getNestableTreeRootLevelParentId();
+                        } else {
+                            $record = $this->resolveSelectedModelItem($itemKey);
+
+                            if (! $record instanceof Content) {
+                                throw new \Exception('The provided record is not an instance of the Content model.');
+                            }
+
+                            return isset($record->nestable_tree_id)
+                                ? $record->nestable_tree_id
+                                : ($record->nestableTree?->getKey() ?? 0);
                         }
-
-                        $nestableTreeParentId = isset($record->nestable_tree_parent_id)
-                            ? $record->nestable_tree_parent_id
-                            : ($record->nestableTree?->parent_id ?? 0);
-
-                        return $nestableTreeParentId;
                     })
                     ->successRedirectUrl(function () {
                         $pageName = $this->pageName ?? 'index';

@@ -65,6 +65,10 @@ return [
             'label' => '網頁',
             'description' => '標準的網頁佈局。',
         ],
+        'data' => [
+            'label' => '數據',
+            'description' => '不帶路由的數據佈局。',
+        ],
         'inheritance' => [
             'label' => '繼承',
             'description' => '可以繼承的文件類型佈局。',

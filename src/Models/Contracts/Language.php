@@ -6,8 +6,8 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property int $id
  * @property string $code
  * @property bool $is_default
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
  */
 interface Language
 {
@@ -32,11 +32,4 @@ interface Language
      * @return bool True if the language is default, false otherwise.
      */
     public function isDefault();
-
-    /**
-     * Find or create the default language.
-     *
-     * @return Language&Model The found or newly created default language instance.
-     */
-    public static function findOrCreateDefaultLanguage();
 }

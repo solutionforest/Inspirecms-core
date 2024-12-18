@@ -275,9 +275,9 @@ return [
 
         ],
 
-        'reorder_content' => [
+        'reorder_children' => [
 
-            'label' => 'Reorder content',
+            'label' => 'Reorder children',
 
             'notification' => [
 
@@ -288,17 +288,17 @@ return [
                 ],
                 'success' => [
 
-                    'title' => 'Reorder content successful',
+                    'title' => 'Reorder children successful',
 
                 ],
                 'error' => [
 
-                    'title' => 'Reorder content error',
+                    'title' => 'Reorder children error',
 
                 ],
             ],
 
-            'permission_display_name' => 'Reorder content',
+            'permission_display_name' => 'Reorder children content',
 
         ],
 

@@ -55,11 +55,32 @@ class SampleSeeder extends Seeder
         // handle the content have contentPicker field
         if ($blog = $this->contentService->findByRealPath('home/blog')) {
             $availableBlogs = $this->contentService->getUnderRealPath('blogs');
-            $propertyData['featured_blogs']['blogs'] = $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray();
-            $blog->propertyData = json_encode($propertyData);
+            $blog->propertyData = json_encode([
+                'featured_blogs' => [
+                    'blogs' => $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray(),
+                ],
+            ]);
             $blog->setPublishableState('publish');
             $blog->save();
         }
+
+        /**
+         * @var class-string<Model>
+         */
+        $fieldModel = InspireCmsConfig::getFieldModelClass();
+        /**
+         * @var class-string<Model>
+         */
+        $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
+
+        $field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first();
+        if ($field) {
+            $field->config = array_merge($field->config ?? [], [
+                'documentType' => $documentTypeModel::firstWhere('slug', 'blog')?->getKey(),
+            ]);
+            $field->save();
+        }
+
     }
 
     protected function addSampleTemplates(): void
@@ -786,18 +807,6 @@ Html;
             icon: 'heroicon-o-home',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'config',
-            showAsTable: false,
-            category: 'web',
-            fieldGroups: [
-                'social_media',
-            ],
-            templates: [],
-            defaultTemplate: null,
-            inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-cog-6-tooth',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
             slug: 'about',
             showAsTable: false,
             category: 'web',
@@ -818,20 +827,6 @@ Html;
             templates: ['blogs'],
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-newspaper',
-            rejected: ['homepage'],
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog',
-            showAsTable: false,
-            category: 'web',
-            fieldGroups: [
-                'page_banner',
-                'social_media',
-                'blog_content',
-            ],
-            templates: ['blog'],
-            defaultTemplate: 'blog',
             icon: 'heroicon-o-newspaper',
             rejected: ['homepage'],
         );
@@ -873,19 +868,60 @@ Html;
             icon: 'heroicon-o-clipboard-document-check',
             rejected: ['homepage'],
         );
+
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'config',
+            showAsTable: false,
+            category: 'data',
+            fieldGroups: [
+                'social_media',
+            ],
+            templates: [],
+            defaultTemplate: null,
+            inheritance: [], // ['general-page-banner'],
+            icon: 'heroicon-o-cog-6-tooth',
+        );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog-management',
             showAsTable: true,
-            category: 'web',
+            category: 'data',
             fieldGroups: [],
             templates: [],
             defaultTemplate: null,
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
-            rejected: collect($items)->map(fn ($item) => $item->slug)->where(fn ($slug) => $slug != 'blog')->toArray(),
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'blog',
+            showAsTable: false,
+            category: 'data',
+            fieldGroups: [
+                'page_banner',
+                'social_media',
+                'blog_content',
+            ],
+            templates: ['blog'],
+            defaultTemplate: 'blog',
+            icon: 'heroicon-o-newspaper',
+            rejected: ['homepage'],
         );
 
         foreach ($items as $item) {
+            switch ($item->slug) {
+                case 'blog-management':
+                    $item->rejected = collect($items)->map(fn ($item) => $item->slug)->filter(fn ($slug) => $slug !== 'blog')->toArray();
+
+                    break;
+                case 'blog':
+                case 'config':
+                    $item->rejected = collect($items)->map(fn ($item) => $item->slug)->toArray();
+
+                    break;
+                default:
+                    $item->rejected = array_unique(array_merge($item->rejected, ['blog']));
+
+                    break;
+            }
             $this->importDataService->addDocumentType($item->slug, $item);
         }
 

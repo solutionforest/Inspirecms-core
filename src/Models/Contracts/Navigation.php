@@ -20,9 +20,11 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property int $_lft
  * @property int $_rgt
  * @property ?int $parent_id
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
- * @property null | Model & Content $content
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * @property-read null | (NavigationCategoryEnumInterface & \BackedEnum) $display_category
+ * @property-read null | (NavigationTypeEnumInterface & \BackedEnum) $display_type
+ * @property-read null | Model & Content $content
  */
 interface Navigation extends ActivableEntity, HasLocaleUrl
 {
@@ -34,36 +36,22 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
     public function content();
 
     /**
-     * Get the navigation category enumeration.
-     *
-     * @return NavigationCategoryEnumInterface|null The navigation category enumeration, or null if not set.
-     */
-    public function getNavigationCategoryEnum();
-
-    /**
      * Get the class name of the NavigationCategoryEnum.
      *
      * This method returns the fully qualified class name of the enumeration
      * that represents the different types of navigation.
      *
-     * @return string The class name of the NavigationCategoryEnumInterface.
+     * @return enum-string<NavigationCategoryEnumInterface> | class-string<\BackedEnum> The class name of the NavigationCategoryEnumInterface.
      */
     public static function getNavigationCategoryEnumClass();
 
     /**
-     * Get the navigation type enum.
-     *
-     * @return NavigationTypeEnumInterface|null The navigation type enum or null if not set.
-     */
-    public function getNavigationTypeEnum();
-
-    /**
      * Get the class name of the NavigationCategoryEnum.
      *
      * This method returns the fully qualified class name of the enumeration
      * that represents the different types of navigation.
      *
-     * @return string The class name of the NavigationTypeEnumInterface.
+     * @return enum-string<NavigationTypeEnumInterface> | class-string<\BackedEnum> The class name of the NavigationTypeEnumInterface.
      */
     public static function getNavigationTypeEnumClass();
 

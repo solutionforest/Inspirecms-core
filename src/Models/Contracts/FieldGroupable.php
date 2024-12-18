@@ -12,9 +12,9 @@ use Spatie\EloquentSortable\Sortable;
  * @property string $groupable_type
  * @property int $inherited_from_id
  * @property string $inherited_from_type
- * @property null | Model & FieldGroup $fieldGroup
- * @property null | Model $groupabled
- * @property null | Model $inheritedFrom
+ * @property-read null | Model & FieldGroup $fieldGroup
+ * @property-read null | Model $groupabled
+ * @property-read null | Model $inheritedFrom
  */
 interface FieldGroupable extends Sortable
 {

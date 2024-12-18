@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -101,37 +102,19 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $query->where('category', static::getCategoryEnumClass()::Web->value);
     }
+
+    public function scopeWhereCanBeContent($query)
+    {
+        return $query->whereIn('category', [
+            static::getCategoryEnumClass()::Web->value,
+            static::getCategoryEnumClass()::Data->value,
+        ]);
+    }
     //endregion Scope(s)
 
     public function isWebPageType()
     {
         return $this->category == DocumentTypeCategoryEnum::Web->value;
-    }
-
-    public function canInheriting()
-    {
-        return $this->getCategoryEnum()?->canInheriting() ?? false;
-    }
-
-    public function canBeInherited()
-    {
-        return $this->getCategoryEnum()?->canBeInherited() ?? false;
-    }
-
-    public function getCategoryEnum()
-    {
-        return static::getCategoryEnumClass()::tryFrom($this->category);
-    }
-
-    public static function getCategoryEnumClass()
-    {
-        $class = DocumentTypeCategoryEnum::class;
-
-        if (! in_array(DocumentTypeCategoryInterface::class, class_implements($class))) {
-            throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory");
-        }
-
-        return $class;
     }
 
     public function inheritDocumentType($documentType)
@@ -141,7 +124,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
                 $documentType = static::query()->findOrFail($documentType);
             }
 
-            if (! $documentType->canBeInherited() || ! $this->canInheriting()) {
+            if (! ($documentType->display_category?->canBeInherited() ?? false) || ! ($this->display_category?->canInheriting() ?? false)) {
                 return false;
             }
 
@@ -163,7 +146,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
                 $documentType = static::query()->findOrFail($documentType);
             }
 
-            if (! $documentType->canBeInherited() || ! $this->canInheriting()) {
+            if (! ($documentType->display_category?->canBeInherited() ?? false) || ! ($this->display_category?->canInheriting() ?? false)) {
                 return false;
             }
 
@@ -227,10 +210,40 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->exists && $this->isWebPageType();
     }
 
+    //region Attribute(s)
+    protected function displayCategory(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $category = $this->category;
+                if (filled($category)) {
+                    return static::getCategoryEnumClass()::tryFrom($category);
+                }
+
+                return null;
+            },
+        );
+    }
+    //endregion Attribute(s)
+
     public static function boot()
     {
         parent::boot();
 
         static::observe(DocumentTypeObserver::class);
+    }
+
+    /**
+     * @return class-string<DocumentTypeCategoryEnum>
+     */
+    public static function getCategoryEnumClass()
+    {
+        $class = DocumentTypeCategoryEnum::class;
+
+        if (! in_array(DocumentTypeCategoryInterface::class, class_implements($class))) {
+            throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory");
+        }
+
+        return $class;
     }
 }

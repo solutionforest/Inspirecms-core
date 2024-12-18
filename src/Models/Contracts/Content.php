@@ -22,23 +22,23 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property int $status
  * @property bool $is_default
  * @property int $document_type_id
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
- * @property ?\Carbon\Carbon $deleted_at
- * @property null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
- * @property null | Model & DocumentType $documentType
- * @property null | Model & Sitemap $sitemap
- * @property null | Model & Content $trashedParent
- * @property null | Model & Navigation $navigation
- * @property null | Model & ContentPath $path
- * @property Collection<Model & Content> $ancestors
- * @property Collection<Model & Content> $ancestorsAndSelf
- * @property Collection<Model & Content> $bloodline
- * @property Collection<Model & Content> $children
- * @property Collection<Model & Content> $childrenAndSelf
- * @property Collection<Model & Content> $descendants
- * @property null | Model & Content $parent
- * @property Collection<Model & Content> $parentAndSelf
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?\Carbon\CarbonInterface $deleted_at
+ * @property-read null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
+ * @property-read null | Model & DocumentType $documentType
+ * @property-read null | Model & Sitemap $sitemap
+ * @property-read null | Model & Content $trashedParent
+ * @property-read null | Model & Navigation $navigation
+ * @property-read null | Model & ContentPath $path
+ * @property-read Collection<Model & Content> $ancestors
+ * @property-read Collection<Model & Content> $ancestorsAndSelf
+ * @property-read Collection<Model & Content> $bloodline
+ * @property-read Collection<Model & Content> $children
+ * @property-read Collection<Model & Content> $childrenAndSelf
+ * @property-read Collection<Model & Content> $descendants
+ * @property-read null | Model & Content $parent
+ * @property-read Collection<Model & Content> $parentAndSelf
  */
 interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {

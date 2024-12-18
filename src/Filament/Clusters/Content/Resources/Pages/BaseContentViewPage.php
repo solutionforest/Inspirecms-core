@@ -31,8 +31,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
     }
     use WithPagination;
 
-    protected static string $layout = 'inspirecms::components.layout.content-page';
-
     protected function getHeaderActions(): array
     {
         return [
@@ -50,7 +48,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
                     return filled($action->getUrl());
                 }),
             BackToParentContentAction::make(),
-            Actions\LocaleSwitcher::make(),
             PreviewAction::make()
                 ->label(__('inspirecms::resources/content.actions.preview.label')),
             Actions\EditAction::make()->iconButton(),

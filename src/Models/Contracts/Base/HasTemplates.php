@@ -9,8 +9,8 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 use SolutionForest\InspireCms\Models\Contracts\Templateable;
 
 /**
- * @property \Illuminate\Database\Eloquent\Collection<Model & Template> $templates
- * @property \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & Template> $templates
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
  */
 interface HasTemplates
 {
