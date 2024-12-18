@@ -175,6 +175,10 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->filters([
                 Tables\Filters\TernaryFilter::make('show_as_table')
                     ->label(__('inspirecms::resources/document-type.show_as_table.label')),
+                Tables\Filters\SelectFilter::make('category')
+                    ->multiple()
+                    ->label(__('inspirecms::resources/document-type.category.label'))
+                    ->options(static::getModel()::getCategoryEnumClass()),
             ]);
     }
 
