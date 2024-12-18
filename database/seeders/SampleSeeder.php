@@ -60,7 +60,6 @@ class SampleSeeder extends Seeder
                     'blogs' => $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray(),
                 ]
             ]);
-            ray($blog, $blog->propertyData);
             $blog->setPublishableState('publish');
             $blog->save();
         }
