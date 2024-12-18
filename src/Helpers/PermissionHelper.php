@@ -28,12 +28,12 @@ class PermissionHelper
         // Reset cached roles and permissions
         app(PermissionRegistrar::class)->forgetCachedPermissions();
 
-        $rolClass = InspireCmsConfig::getRoleModelClass();
+        $roleClass = InspireCmsConfig::getRoleModelClass();
 
         $permissions = static::setupPermissions();
 
         // create roles and assign created permissions
-        $adminRole = $rolClass::findOrCreate($superAdminRoleName, $guardName);
+        $adminRole = $roleClass::findOrCreate($superAdminRoleName, $guardName);
 
         // assign all permissions for "admin" role.
         $adminRole->syncPermissions($permissions);
