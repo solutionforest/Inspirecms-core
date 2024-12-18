@@ -15,7 +15,7 @@ class ViewPage extends BaseContentViewPage
         return InspireCmsConfig::getFilamentResource('page', PageResource::class);
     }
 
-    /** * @inheritDoc */
+    /** * {@inheritDoc} */
     public function getDocumentType()
     {
         return $this->getRecord()->documentType;

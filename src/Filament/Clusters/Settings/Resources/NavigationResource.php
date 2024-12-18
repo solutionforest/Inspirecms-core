@@ -237,6 +237,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getTypeFormComponent()
     {
         $enumClass = static::getModel()::getNavigationTypeEnumClass();
+
         return Forms\Components\ToggleButtons::make('type')
             ->label(__('inspirecms::resources/navigation.type.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.type.validation_attribute'))
@@ -260,6 +261,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function getCategoryFormComponent()
     {
         $enumClass = static::getModel()::getNavigationCategoryEnumClass();
+
         return Forms\Components\ToggleButtons::make('category')
             ->label(__('inspirecms::resources/navigation.category.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))

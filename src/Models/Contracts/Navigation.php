@@ -22,10 +22,8 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property ?int $parent_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read null | (NavigationCategoryEnumInterface & \BackedEnum) $display_category
  * @property-read null | (NavigationTypeEnumInterface & \BackedEnum) $display_type
- * 
  * @property-read null | Model & Content $content
  */
 interface Navigation extends ActivableEntity, HasLocaleUrl

@@ -116,7 +116,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     {
         return $this->category == DocumentTypeCategoryEnum::Web->value;
     }
-    
+
     public function inheritDocumentType($documentType)
     {
         try {
@@ -219,6 +219,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
                 if (filled($category)) {
                     return static::getCategoryEnumClass()::tryFrom($category);
                 }
+
                 return null;
             },
         );
@@ -231,7 +232,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
         static::observe(DocumentTypeObserver::class);
     }
-    
+
     /**
      * @return class-string<DocumentTypeCategoryEnum>
      */

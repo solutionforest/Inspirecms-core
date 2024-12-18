@@ -298,6 +298,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getCategoryFormComponent()
     {
         $enumClass = static::getModel()::getCategoryEnumClass();
+
         return Forms\Components\ToggleButtons::make('category')
             ->label(__('inspirecms::resources/document-type.category.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.category.validation_attribute'))
@@ -307,7 +308,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->default($enumClass::getDefaultValue()->value)
             ->required()
             ->live()
-            ->colors(collect($enumClass::cases())->mapWithKeys(fn (DocumentTypeCategory $enumClass): array  => [$enumClass->value => $enumClass->getColor()])->all())
+            ->colors(collect($enumClass::cases())->mapWithKeys(fn (DocumentTypeCategory $enumClass): array => [$enumClass->value => $enumClass->getColor()])->all())
             ->helperText(function ($state) use ($enumClass) {
                 if ($state && ($enum = $enumClass::tryFrom($state))) {
                     return $enum->getDescription();

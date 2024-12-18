@@ -12,9 +12,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property int|string|null $parent_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read null | (\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory & \BackedEnum) $display_category
- * 
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
@@ -142,7 +140,7 @@ interface DocumentType extends Base\HasTemplates
     /**
      * Scope a query to only include content that can be used.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereCanBeContent($query);

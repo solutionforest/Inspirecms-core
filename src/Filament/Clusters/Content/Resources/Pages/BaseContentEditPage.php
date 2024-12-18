@@ -98,7 +98,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
             ->color('secondary');
     }
 
-    /** * @inheritDoc */
+    /** * {@inheritDoc} */
     public function getDocumentType()
     {
         return $this->getRecord()->documentType;
@@ -186,8 +186,8 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
             case $action instanceof ReorderContentAction:
                 $action
                     ->nodeParentId(fn (\SolutionForest\InspireCms\Models\Contracts\Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
-                    ->hidden(fn (?Model $record) => 
-                        ! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Content ||
+                    ->hidden(
+                        fn (?Model $record) => ! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Content ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);

@@ -39,7 +39,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         if (filled($this->selectedModelItemKey)) {
             $this->refreshModelExplorerSidebar();
         }
-        if (!isset($this->activeLocale)) { // set default locale if not set
+        if (! isset($this->activeLocale)) { // set default locale if not set
             $this->activeLocale = Arr::first($this->getTranslatableLocales());
         }
     }
@@ -103,6 +103,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     $method = 'can' . ucfirst($action);
                     if ($resource::{$method}($record)) {
                         $pageType = $action;
+
                         break;
                     }
                 }
@@ -233,6 +234,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 unset($node['pageType']);
             }
         }
+
         return $items;
     }
 
@@ -333,7 +335,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     ->nodeParentId(function ($itemKey) {
                         if ($itemKey === 'root' || blank($itemKey)) {
                             return app(static::getModel())->getNestableTreeRootLevelParentId();
-                        }else {
+                        } else {
                             $record = $this->resolveSelectedModelItem($itemKey);
 
                             if (! $record instanceof Content) {
