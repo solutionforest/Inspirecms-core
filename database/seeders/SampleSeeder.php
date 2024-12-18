@@ -58,7 +58,7 @@ class SampleSeeder extends Seeder
             $blog->propertyData = json_encode([
                 'featured_blogs' => [
                     'blogs' => $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray(),
-                ]
+                ],
             ]);
             $blog->setPublishableState('publish');
             $blog->save();
