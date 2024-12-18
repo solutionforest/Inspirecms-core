@@ -10,8 +10,8 @@ use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup as BaseContrac
  * @property string $name
  * @property bool $active
  * @property int $sort
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
  */
 interface FieldGroup extends BaseContract
 {

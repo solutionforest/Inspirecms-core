@@ -31,19 +31,6 @@ class Language extends BaseModel implements LanguageContract
         return $this->is_default;
     }
 
-    public static function findOrCreateDefaultLanguage()
-    {
-        $locale = config('app.locale', 'en');
-
-        // Create if not exists
-        return static::query()->firstOrCreate(
-            ['code' => $locale],
-            [
-                'is_default' => true,
-            ]
-        );
-    }
-
     public static function boot()
     {
         parent::boot();

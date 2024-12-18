@@ -20,9 +20,9 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property int $_lft
  * @property int $_rgt
  * @property ?int $parent_id
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
- * @property null | Model & Content $content
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * @property-read null | Model & Content $content
  */
 interface Navigation extends ActivableEntity, HasLocaleUrl
 {

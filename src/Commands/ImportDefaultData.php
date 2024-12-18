@@ -32,13 +32,20 @@ class ImportDefaultData extends Command
     {
         $this->components->task('Import language data', function () {
 
+            /** @var class-string<\Illuminate\Database\Eloquent\Model> */
             $model = InspireCmsConfig::getLanguageModelClass();
 
             if (! $this->isTableExists($model)) {
                 return;
             }
+            
+            $locale = config('app.locale', 'en');
 
-            $model::findOrCreateDefaultLanguage();
+            // Create if not exists
+            $model::query()->firstOrCreate(
+                ['code' => $locale],
+                ['is_default' => true]
+            );
         });
     }
 

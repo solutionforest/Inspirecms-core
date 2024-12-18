@@ -14,9 +14,9 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property string $change_frequency
  * @property int $priority
  * @property bool $enable
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $updated_at
- * @property null | Model $model
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * @property-read null | Model $model
  */
 interface Sitemap extends ActivableEntity, HasLocaleUrl
 {

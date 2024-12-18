@@ -14,6 +14,8 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property array $from_data
  * @property array $to_data
  * @property bool $avoid_to_clean
+ * @property-read null | Model & Content $content
+ * @property-read null | Model & ContentPublishVersion $publishLog
  */
 interface ContentVersion extends CanPrunable, HasAuthor
 {

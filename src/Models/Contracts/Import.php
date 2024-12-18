@@ -11,12 +11,12 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property string $file_disk
  * @property string $file_name
  * @property ?string $payload
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $available_at
- * @property ?\Carbon\Carbon $finished_at
- * @property ?\Carbon\Carbon $failed_at
- * @property ?ImportStatus $display_status
- * @property ?\Carbon\Carbon $clear_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $available_at
+ * @property ?\Carbon\CarbonInterface $finished_at
+ * @property ?\Carbon\CarbonInterface $failed_at
+ * @property-read ?ImportStatus $display_status
+ * @property-read ?\Carbon\CarbonInterface $clear_at
  */
 interface Import extends CanPrunable, HasAuthor
 {

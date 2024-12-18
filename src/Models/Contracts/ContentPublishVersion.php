@@ -6,8 +6,8 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property string $content_id
  * @property int $version_id
  * @property \Carbon\Carbon $published_at
- * @property null | Model & Content $content
- * @property null | Model & ContentVersion $version
+ * @property-read null | Model & Content $content
+ * @property-read null | Model & ContentVersion $version
  */
 interface ContentPublishVersion
 {
