@@ -55,8 +55,12 @@ class SampleSeeder extends Seeder
         // handle the content have contentPicker field
         if ($blog = $this->contentService->findByRealPath('home/blog')) {
             $availableBlogs = $this->contentService->getUnderRealPath('blogs');
-            $propertyData['featured_blogs']['blogs'] = $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray();
-            $blog->propertyData = json_encode($propertyData);
+            $blog->propertyData = json_encode([
+                'featured_blogs' => [
+                    'blogs' => $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray(),
+                ]
+            ]);
+            ray($blog, $blog->propertyData);
             $blog->setPublishableState('publish');
             $blog->save();
         }
