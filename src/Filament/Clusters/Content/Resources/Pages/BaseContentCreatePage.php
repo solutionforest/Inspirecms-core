@@ -29,16 +29,6 @@ abstract class BaseContentCreatePage extends BaseCreatePage implements ContentFo
     }
     use WithPagination;
 
-    protected static string $layout = 'inspirecms::components.layout.content-page';
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Actions\LocaleSwitcher::make(),
-            ...parent::getHeaderActions(),
-        ];
-    }
-
     protected function getFormActions(): array
     {
         return [

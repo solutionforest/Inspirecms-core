@@ -21,12 +21,9 @@ abstract class BaseContentListPage extends BaseListPage
 
     protected static string $view = 'inspirecms::filament.pages.list-content';
 
-    protected static string $layout = 'inspirecms::components.layout.content-page';
-
     public function getActions(): array
     {
         return [
-            Actions\LocaleSwitcher::make(),
             CreateContentAction::make(),
         ];
     }

@@ -23,17 +23,6 @@ trait ContentFormTrait
 {
     protected ?string $publishOperation = null;
 
-    public function mountContentFormTrait(): void
-    {
-        if (blank($this->activeLocale)) {
-            if ($this instanceof \Filament\Resources\Pages\CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
-                $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
-            } else {
-                $this->activeLocale = $this->getDefaultTranslatableLocale();
-            }
-        }
-    }
-
     public function updatedActiveLocale(string $newActiveLocale): void
     {
         if (blank($this->oldActiveLocale)) {

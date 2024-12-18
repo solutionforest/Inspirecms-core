@@ -33,8 +33,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     }
     use WithPagination;
 
-    protected static string $layout = 'inspirecms::components.layout.content-page';
-
     public function booted(): void
     {
         // Guard 1 for trashed record, If the record is trashed, redirect to the view/index page
@@ -49,7 +47,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     {
         return [
             BackToParentContentAction::make(),
-            Actions\LocaleSwitcher::make(),
             Actions\ActionGroup::make([
                 Actions\ActionGroup::make([
                     Actions\ViewAction::make(),

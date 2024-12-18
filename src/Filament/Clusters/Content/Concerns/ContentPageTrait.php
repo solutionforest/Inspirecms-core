@@ -8,6 +8,29 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseCont
 
 trait ContentPageTrait
 {
+    public function initializeContentPageTrait()
+    {
+        $this->listeners = array_merge($this->listeners, [
+            'changeActiveLocale',
+        ]);
+    }
+
+    public function mountContentPageTrait(): void
+    {
+        if (blank($this->activeLocale)) {
+            if ($this instanceof \Filament\Resources\Pages\CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
+                $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
+            } else {
+                $this->activeLocale = $this->getDefaultTranslatableLocale();
+            }
+        }
+    }
+
+    public function changeActiveLocale(string $locale)
+    {
+        $this->activeLocale = $locale;
+    }
+
     protected function queryStringContentPageTrait()
     {
         return [
@@ -28,6 +51,11 @@ trait ContentPageTrait
         ];
     }
 
+    public function getLayout(): string
+    {
+        return 'inspirecms::components.layout.content-page';
+    }
+
     protected function getLayoutData(): array
     {
         $selectedModelItemKey = null;
@@ -40,7 +68,7 @@ trait ContentPageTrait
 
         return [
             'redirectUrlParameters' => $this->getRedirectUrlParameters(),
-            'activeLocale' => $this->activeLocale,
+            'activeLocale' => $this->activeLocale, // from queryString
             'selectedModelItemKey' => $selectedModelItemKey,
             'pageName' => match (true) {
                 $this instanceof EditRecord => 'edit',
