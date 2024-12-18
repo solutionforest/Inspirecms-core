@@ -110,4 +110,10 @@ return [
         'label' => 'View',
 
     ],
+
+    'choose' => [
+        
+        'label' => 'Choose',
+
+    ],
 ];
