@@ -1,8 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use SolutionForest\InspireCms\Http\Controllers\ImportController;
-use SolutionForest\InspireCms\InspireCmsConfig;
 
 Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
 
@@ -15,10 +13,4 @@ Route::prefix(config('insiprecms.filament.path', 'cms'))->group(function () {
         return redirect()->intended($url);
 
     })->name('login');
-
-    Route::name('cms.')->middleware(['web', 'auth:' . InspireCmsConfig::getGuardName(), 'verified'])->group(function () {
-        Route::name('import.')->prefix('import')->group(function () {
-            Route::get('sample', [ImportController::class, 'sample'])->name('sample');
-        });
-    });
 });
