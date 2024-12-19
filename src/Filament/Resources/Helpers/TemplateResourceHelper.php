@@ -48,7 +48,7 @@ class TemplateResourceHelper
     {
         return Forms\Components\ViewField::make('property_type_instructions')
             ->label(__('inspirecms::resources/template.property_type_instructions.label'))
-            ->view('inspirecms::filament.forms.components.property-type-instructions');
+            ->view('inspirecms::instructions.property-type-instructions');
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
@@ -56,7 +56,7 @@ class TemplateResourceHelper
     {
         return Forms\Components\ViewField::make('page_component_instructions')
             ->label(__('inspirecms::resources/template.page_component_instructions.label'))
-            ->view('inspirecms::filament.forms.components.page-component-instructions', [
+            ->view('inspirecms::instructions.page-component-instructions', [
                 'copiedMessage' => __('inspirecms::actions.copy.message'),
                 'copyButtonLabel' => __('inspirecms::actions.copy.label'),
             ]);
