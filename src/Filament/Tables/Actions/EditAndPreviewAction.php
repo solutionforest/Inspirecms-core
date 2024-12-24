@@ -15,7 +15,7 @@ class EditAndPreviewAction extends \Filament\Tables\Actions\Action
 
     public static function getDefaultName(): ?string
     {
-        return 'edit_and_preview';
+        return 'editAndPreview';
     }
 
     protected function setUp(): void

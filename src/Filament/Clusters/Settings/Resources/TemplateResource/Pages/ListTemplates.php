@@ -2,149 +2,69 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource\Pages;
 
-use Filament\Actions\Action;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
-use Filament\Tables\Actions\EditAction;
+use Filament\Notifications\Notification;
+use Filament\Tables;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Livewire\Attributes\On;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\TreeNodes\Concerns\InteractsWithFileExplorer;
-use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasFileExplorer;
-use SolutionForest\InspireCms\Support\TreeNodes\FileExplorer;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
-class ListTemplates extends BaseListPage implements HasFileExplorer
+class ListTemplates extends BaseListPage
 {
-    use InteractsWithFileExplorer;
+    public ?string $theme = null;
 
-    /**
-     * @var view-string
-     */
-    protected static string $view = 'inspirecms::filament.pages.list-templates';
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->theme = inspirecms_templates()->getCurrentTheme();
+    }
 
     public static function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('template', TemplateResource::class);
     }
 
-    public function fileExplorer(FileExplorer $fileExplorer): FileExplorer
+    public function table(Table $table): Table
     {
-        return $fileExplorer->directory(resource_path('views/components'));
-    }
+        return parent::table($table)
+            ->headerActions([
+                Tables\Actions\SelectAction::make('theme')
+                    ->options(inspirecms_templates()->getAvailableThemes())
+                    ->view('inspirecms::filament.actions.select-action', [
+                        'icon' => 'heroicon-o-paint-brush',
+                    ]),
+            ])
+            ->actions([
+                Tables\Actions\ViewAction::make()
+                    ->recordTitle(fn (Template $record) => $record->slug)
+                    ->modalWidth('7xl')
+                    ->slideOver()
+                    ->beforeFormFilled(function (Model | Template $record, Tables\Actions\Action $action) {
+                        try {
+                            $record->initializeTemplate($this->theme);
+                            $record->save();
+                        } catch (\Throwable $th) {
+                            Notification::make()
+                                ->title(__('inspirecms::notification.something_went_wrong.title'))
+                                ->body($th->getMessage())
+                                ->danger()
+                                ->send();
 
-    public function getActions(): array
-    {
-        return [
-            Action::make('openTemplateForm')
-                ->form(fn (Form $form) => $this->form($form))
-                ->slideOver()
-                ->modalWidth('7xl')
-                ->modalHeading(function (array $arguments) {
-
-                    $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
-
-                    if (blank($fullPath)) {
-                        return static::getTitle();
-                    }
-
-                    return basename($fullPath);
-                })
-                ->fillForm(function (array $arguments, Action $action) {
-
-                    $fullPath = $this->getSelectedFileItemPath() ?? $arguments['path'] ?? null;
-
-                    if (blank($fullPath)) {
-                        $action->halt();
-
-                        return [];
-                    }
-
-                    $content = $this->getFileContent($fullPath);
-
-                    return [
-                        'full_path' => $fullPath,
-                        'content' => $content,
-                    ];
-                })
-                ->disabledForm(! $this->canEditView())
-                ->modalSubmitAction(function ($action) {
-                    if (! $this->canEditView()) {
-                        return false;
-                    }
-
-                    return $action;
-                })
-                ->extraAttributes(['class' => 'hidden']) // keep it action but hidden on frontend
-                ->successNotificationTitle(__('inspirecms::notification.saved.title'))
-                ->modalSubmitActionLabel(__('inspirecms::actions.save.label'))
-                ->action(function (array $data, Action $action) {
-
-                    if (! isset($data['full_path']) || ! isset($data['content'])) {
-                        return;
-                    }
-
-                    TemplateResourceHelper::updateViewContentByPath($data['full_path'], $data['content']);
-
-                    $action->success();
-                }),
-        ];
-    }
-
-    public function form(Form $form): Form
-    {
-        return $form
-            ->columns(1)
-            ->schema([
-                Hidden::make('template_id'),
-                TextInput::make('full_path')
-                    ->hiddenLabel()
-                    ->disabled()
-                    ->dehydrated(),
-                TemplateResourceHelper::getPageComponentInstructionsFormComponent()
-                    ->visible(fn ($get) => filled($get('template_id'))),
-                TemplateResourceHelper::getContentFormComponent(),
+                            $action->cancel();
+                        }
+                    })
+                    ->form([
+                        TemplateResourceHelper::getThemeFormComponent()->disabled(),
+                        TemplateResourceHelper::getContentFormComponent(),
+                    ])
+                    ->mutateRecordDataUsing(fn (Template $record) => [
+                        'theme' => $this->theme,
+                        'content' => $record->getContent(theme: $this->theme),
+                    ]),
             ]);
-    }
-
-    #[On('selectFileExplorerItem')]
-    public function fileExplorerItemSelected($path)
-    {
-        $this->mountAction('openTemplateForm', ['path' => $path]);
-    }
-
-    protected function canEditView(): bool
-    {
-        return static::getResource()::can('updateView');
-    }
-
-    protected function configureEditAction(EditAction $action): void
-    {
-        parent::configureEditAction($action);
-
-        $action->mutateRecordDataUsing(function (array $data, Model $record) {
-            if (! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Template) {
-                return [];
-            }
-            $fullPath = $record->getFileFullPath();
-            $data['template_id'] = $record->getKey();
-            $data['full_path'] = $fullPath;
-            $data['content'] = $this->getFileContent($fullPath);
-
-            return $data;
-        });
-        $action->using(function (array $data, EditAction $action) {
-            if (! isset($data['full_path']) || ! isset($data['content'])) {
-                $action->cancel();
-
-                return;
-            }
-
-            TemplateResourceHelper::updateViewContentByPath($data['full_path'], $data['content']);
-
-        });
     }
 }

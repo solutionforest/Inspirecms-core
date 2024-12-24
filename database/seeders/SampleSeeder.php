@@ -85,623 +85,43 @@ class SampleSeeder extends Seeder
 
     protected function addSampleTemplates(): void
     {
-        $home = <<<'Html'
-@php
-    use Illuminate\Support\Arr;
-    $locale ??= $content->getLocale();
-    $hero_banner = $content->getPropertyGroup('hero_banner');
-    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue($locale);
-    if (is_array($hero_banner_brief)) {
-        $hero_banner_brief = Arr::first($hero_banner_brief);
-    }
-    $hero_banner_image_slider = $hero_banner?->getPropertyData('image_slider')?->getValue();
-    $profile = $content->getPropertyGroup('profile');
-    $profile_brief = $profile?->getPropertyData('brief')?->getValue($locale);
-    if (is_array($profile_brief)) {
-        $profile_brief = Arr::first($profile_brief);
-    }
-    $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
+        $allTemplates = app(\Illuminate\Filesystem\Filesystem::class)->allFiles(__DIR__ . '/../../stubs/SampleTemplates');
 
-    $blogPage = request()->query('blog_page', 1);
-    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->forPage($blogPage, 3);
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1>
-                {!! $hero_banner_brief !!}
-            </h1>
-        </div>
-    </section>
+        $getContent = function (string $slug, string $theme) use ($allTemplates) {
+            try {
+                $file = collect($allTemplates)
+                    ->first(fn (\SplFileInfo $file) => $file->getRelativePath() == $theme && $file->getFilenameWithoutExtension() == (string) str($slug)->title()->replace('-', ''));
 
-    <!-- Swiper Slider -->
-    <div class="swiper">
-        <div class="swiper-wrapper">
-            @foreach ($hero_banner_image_slider ?? [] as $item)
-                <div class="swiper-slide">
-                    <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
-                    <p>{{ $item->description }}</p>
-                </div>
-            @endforeach
-        </div>
-        <!-- <div class="swiper-pagination"></div> -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
-    </div>
+                if (! $file) {
 
-    <!-- Profile Section -->
-    <section class="profile-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 intro-title">
-                    <p>{{ $profile_brief }}</p>
-                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
-                </div>
-                <div class="col-md-6 intro-text">
-                    {{ $profile_description }}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Blog Section -->
-    <section class="blog-section">
-        <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-5 ">
-                <h2>Latest Posts</h2>
-                <a href="/blog" class="view-all-btn">View all
-                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
-                </a>
-            </div>
-            <div class="row">
-                @foreach ($blogs as $blog)
-                    @php
-                        $page_banner = $blog->getPropertyGroup('page_banner');
-                        $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-                        $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-                        $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-                        $blog_content = $blog->getPropertyGroup('blog_content');
-                        $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
-                        $publishTime = $blog->publishAt?->format('d M, Y');
-                    @endphp
-                    <div class="col-md-4">
-                        <div class="blog-card">
-                            @if ($page_banner_image)
-                                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                            @endif
-                            <div class="blog-meta">
-                                <span>{{ $blog_content_categories }}</span>
-                                <span>{{ $publishTime }}</span>
-                            </div>
-                            <h3>{{ $page_banner_title }}</h3>
-                            <p>{{ $page_banner_description }}</p>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
-    
-    @section('scripts')
-        <script>
-            const swiper = new Swiper('.swiper', {
-                slidesPerView: 'auto',
-                spaceBetween: 30,
-                centeredSlides: true,
-                loop: true,
-                // pagination: {
-                //     el: '.swiper-pagination',
-                //     clickable: true,
-                // },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
+                    return null;
                 }
-            });
-        </script>
-    @endsection
-</x-dynamic-component>
-Html;
 
-        $about = <<<'Html'
-@php
-    $locale ??= $content->getLocale();
-    $about_section = $content->getPropertyGroup('about_section');
-    $about_section_brief = $about_section?->getPropertyData('brief')?->getValue($locale);
-    $about_section_description = $about_section?->getPropertyData('description')?->getValue($locale);
-    $about_section_image = collect($about_section?->getPropertyData('image')?->getValue($locale))->first();
-    $about_section_resume = collect($about_section?->getPropertyData('resume')?->getValue())->first();
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <div class="about-container">
-        <div class="about-left">
-            <h1 class="about-title">{{ $content->getTitle($locale) }}</h1>
-            <div class="about-intro">
-                {{ $about_section_brief }}
-            </div>
-            
-            <div class="about-image">
-                <div class="image-wrapper">
-                    @if ($about_section_image)
-                        <img src="{{ $about_section_image->getUrl() }}" alt="{{ $about_section_image->caption }}">
-                    @endif
-                </div>
-            </div>
-        </div>
-    
-        <div class="about-right">
-            <div class="bio-content">
-                {{ $about_section_description }}
-    
-                @if ($about_section_resume)
-                    <button type="submit" class="send-button" onclick="window.open('{{ $about_section_resume->getUrl() }}')">
-                        resume
-                        <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
-                    </button>
-                @endif
-            </div>
-        </div>
-    </div>
-</x-dynamic-component> 
-Html;
+                return $file->getContents();
 
-        $contact = <<<'Html'
-@php
-    $locale ??= $content->getLocale();
+            } catch (\Throwable $th) {
+                return null;
+            }
+        };
 
-    $contact = $content?->getPropertyGroup('contact');
-    $contact_email = $contact?->getPropertyData('email')?->getValue();
-    $contact_phone = $contact?->getPropertyData('phone')?->getValue();
-    $contact_address = $contact?->getPropertyData('address')?->getValue($locale);
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-    
-    $config = inspirecms_page()->findContentByRealPath('config', $locale);
-    $sns = $config->getPropertyGroup('social_media');
-    $sns_email = $sns?->getPropertyData('email')?->getValue();
-    $sns_linkedin = $sns?->getPropertyData('linkedin')?->getValue();
-    $sns_twitter = $sns?->getPropertyData('twitter')?->getValue();
-    $sns_facebook = $sns?->getPropertyData('facebook')?->getValue();
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <div class="contact-header">
-        <div class="header-content">
-            <h1 class="contact-title">{{ $page_banner_title }}</h1>
-            <p class="contact-text">
-                {{ $page_banner_description }}
-            </p>
-        </div>
-    </div>
-
-    <div class="contact-container">
-        <div class="contact-left">
-            <div class="contact-info">
-                <h3>Contact information</h3>
-                <address>
-                    <p>{{ $contact_address }}</p>
-                </address>
-                <div class="contact-details">
-                    <p><img src="{{ asset('image/icon/tel.svg') }}" alt=""><a href="tel:{{ $contact_phone }}">{{ $contact_phone }}</a></p>
-                    <p><img src="{{ asset('image/icon/email.svg') }}" alt=""><a href="mailto:{{ $contact_email }}">{{ $contact_email }}</a></p>
-                </div>
-            </div>
-
-            <div class="follow-links">
-                <h3>Follow Us</h3>
-                <div class="social-icons">
-                   <a href="{{ $sns_facebook }}"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a>
-                   <a href="{{ $sns_twitter }}"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a>
-                   <a href="{{ $sns_linkedin }}"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a>
-                   <a href="{{ $sns_email }}"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a>
-                </div>
-            </div>
-        </div>
-
-        <div class="contact-right">
-            <form class="contact-form">
-                <div class="form-group">
-                    <label for="name">Name*</label>
-                    <input type="text" id="name" placeholder="Walter Moss" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="email">Email*</label>
-                    <input type="email" id="email" placeholder="info@manifest.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="reason">Reason for contact</label>
-                    <select id="reason">
-                        <option value="" disabled selected>Select reason</option>
-                        <option value="support">Technical Support</option>
-                        <option value="account">Account Issues</option>
-                        <option value="billing">Billing Questions</option>
-                        <option value="other">Other</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="message">Message*</label>
-                    <textarea id="message" placeholder="Hi there..." required></textarea>
-                </div>
-
-                <button type="submit" class="send-button">
-                    Send
-                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
-                </button>
-            </form>
-        </div>
-    </div>
-</x-dynamic-component>
-Html;
-
-        $case_studies = <<<'Html'
-@php
-    $locale ??= $content->getLocale();
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-
-    $cases = $content->getChildren()->paginate(3);
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <div class="contact-header">
-        <div class="header-content">
-            <h1 class="contact-title">{{ $page_banner_title }}</h1>
-            <p class="contact-text">
-                {{ $page_banner_description }}
-            </p>
-        </div>
-    </div>
-    <div class="works-container">
-        <div class="works-left">
-            <div class="works-list">
-                @foreach ($cases as $item)
-                    @php
-                        $page_banner = $item->getPropertyGroup('page_banner');
-                        $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue($locale))->first();
-                        $case_content = $item->getPropertyGroup('case_content');
-                        $case_content_category = $case_content?->getPropertyData('category')?->getValue($locale);
-                        $case_content_year = $case_content?->getPropertyData('year')?->getValue($locale);
-                    @endphp
-                    <article class="work-item">
-                        <div class="work-content">
-                            <h3>{{ $item->getTitle($locale) }}</h3>
-                            <div class="divider1"></div>
-                            <p class="category">{{ $case_content_category }}</p>
-                            <p class="year">{{ $case_content_year }}</p>
-                            
-                            <button type="submit" class="send-button" onclick="window.location.href = '{{ $item->getUrl() }}'">
-                                View More
-                                <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
-                            </button>
-                        </div>
-                        <div class="work-image">
-                            @if ($page_banner_image)
-                                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                            @endif
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        </div>
-    </div>
-</x-dynamic-component>
-Html;
-
-        $case_study = <<<'Html'
-@php
-    $locale ??= $content->getLocale();
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue($locale))->first();
-    $case_content = $content->getPropertyGroup('case_content');
-    $case_content_overview = $case_content?->getPropertyData('overview')?->getValue($locale);
-    $case_content_category = $case_content?->getPropertyData('category')?->getValue($locale);
-    $case_content_year = $case_content?->getPropertyData('year')?->getValue($locale);
-    $case_content_deliverables = $case_content?->getPropertyData('deliverables')?->getValue($locale);
-    $case_content_platforms = collect($case_content?->getPropertyData('platforms')?->getValue($locale))->implode(', ');
-    $case_content_roles = collect($case_content?->getPropertyData('roles')?->getValue($locale))->implode(', ');
-    $case_content_ = collect($case_content?->getPropertyData('roles')?->getValue($locale))->implode(', ');
-    $case_content_content = $case_content?->getPropertyData('content')?->getValue($locale);
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <div class="case-study-container">
-        <header class="case-study-header">
-            <p class="label">CASE STUDY</p>
-            <h1 class="title">{{ $page_banner_title }}</h1>
-
-            <div class="hero-image">
-                @if ($page_banner_image)
-                    <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                @endif
-            </div>
-        </header>
-
-        <div class="case-study-content">
-            <div class="main-content">
-                <div class="case-study-content">
-                    <div class="">
-                        <div class="row overview-section">
-                            <div class="col-md-8 overview-left">
-                                <h2>Project Overview</h2>
-                                {{ $case_content_overview }}
-                            </div>
-
-                            <div class="col-md-4 overview-right">
-                                <div class="details-grid">
-                                    <div class="detail-item">
-                                        <h3>Year</h3>
-                                        <p>{{ $case_content_year }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Platform</h3>
-                                        <p>{{ $case_content_platforms }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Role</h3>
-                                        <p>{{ $case_content_roles }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Deliverables</h3>
-                                        <p>{{ $case_content_deliverables }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{ $case_content_content }}
-                </div>
-            </div>
-        </div>
-    </div>
-</x-dynamic-component>
-Html;
-
-        $blogs = <<<'Html'
-@php
-    $blogPage = request()->query('page') ?? 1;
-    $featuredPage = request()->query('featured') ?? 1;
-
-    $locale ??= $content->getLocale();
-    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
-
-    $featured_blogs = $content->getPropertyGroup('featured_blogs');
-    $featured_blogs_blogs = collect($featured_blogs?->getPropertyData('blogs')?->getValue());
-    $featured_blogs_blog = $featured_blogs_blogs->forPage($featuredPage, 1)->first();
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <div class="page-main-container">
-        <section class="blog-section-ma">
-            <!-- Hero Section -->
-            <section class="hero-section">
-                <div class="container-fluid ps-0">
-                    <h1>{{ $content->getTitle($locale) }}</h1>
-                </div>
-            </section>
-            <div class="container ps-0">
-                <!-- Featured Blog Post -->
-                @php
-                    $featured_blog_page_banner = $featured_blogs_blog?->getPropertyGroup('page_banner');
-                    $featured_blog_page_banner_title = $featured_blog_page_banner?->getPropertyData('title')?->getValue($locale);
-                    $featured_blog_page_banner_description = $featured_blog_page_banner?->getPropertyData('description')?->getValue($locale);
-                    $featured_blog_page_banner_image = collect($featured_blog_page_banner?->getPropertyData('image')?->getValue())->first();
-                    $featured_blog_blog_content = $featured_blogs_blog?->getPropertyGroup('blog_content');
-                    $featured_blog_blog_content_categories = collect($featured_blog_blog_content?->getPropertyData('categories')->getValue());
-                    $publishTime = $featured_blogs_blog?->publishAt?->format('d M, Y');
-                @endphp
-                <div class="featured-post">
-                    <div class="row align-items-start">
-                        <div class="col-md-6">
-                            @if ($featured_blog_page_banner_image)
-                                <img src="{{ $featured_blog_page_banner_image->getUrl() }}" alt="{{ $featured_blog_page_banner_image->caption }}" class="featured-image">
-                            @endif
-                        </div>
-                        <div class="col-md-6">
-                            <div class="featured-content">
-                                <div class="post-categories">
-                                    @foreach ($featured_blog_blog_content_categories as $category)
-                                        <span class="category">{{ $category }}</span>
-                                        @if (!$loop->last)
-                                            <span class="separator">,</span>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <h2 class="featured-title">{{ $featured_blog_page_banner_title }}</h2>
-                                <div class="post-date">{{ $publishTime }}</div>
-                                <p class="featured-excerpt">
-                                    {{ $featured_blog_page_banner_description }}
-                                    <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
-                                </p>
-                                <div class="pagination">
-                                    @foreach ($featured_blogs_blogs as $item)
-                                        <a href="{{ request()->fullUrlWithQuery(['featured' => $loop->iteration]) }}" class="text-decoration-none text-dark">
-                                            <span @class(['active' => $featuredPage == $loop->iteration])>{{ $loop->iteration }}</span>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="categories-wrapper">
-                    <label class="categories-label">Categories:</label>
-                    <div class="categories-select">
-                        <select class="custom-select">
-                            <option value="interaction-design">Interaction Design</option>
-                            <option value="ui-design">UI Design</option>
-                            <option value="ux-design">UX Design</option>
-                            <option value="user-research">User Research</option>
-                        </select>
-                    </div>
-                </div>
-                <!-- Regular Blog Posts Grid -->
-                <div class="row blog-posts-grid">
-                    @foreach ($blogs as $blog)
-                        @php
-                            $page_banner = $blog->getPropertyGroup('page_banner');
-                            $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-                            $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-                            $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-                            $blog_content = $blog->getPropertyGroup('blog_content');
-                            $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
-                            $publishTime = $blog->publishAt?->format('d M, Y');
-                        @endphp
-                        <!-- Post -->
-                        <div class="col-12 col-md-6 mb-4">
-                            <a href="{{ $blog->getUrl() }}" class="text-decoration-none">
-                                <article class="blog-post">
-                                    @if ($page_banner_image)
-                                        <img src="{{ $page_banner_image?->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="blog-image">
-                                    @endif
-                                    <div class="post-content">
-                                        <div class="post-meta">
-                                            <span class="category">{{ $blog_content_categories }}</span>
-                                            <span class="date">{{ $publishTime }}</span>
-                                        </div>
-                                        <h3>{{ $page_banner_title }}</h3>
-                                        <p>{{ $page_banner_description }}</p>
-                                    </div>
-                                </article>
-                            </a>
-                        </div>
-                    @endforeach
-                </div>
-
-                <div class="pagination mt-4 mb-4">
-                    {{ $blogs->links('components.'.\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('pagination'), ['paginator' => $blogs]) }}
-                </div>
-            </div>
-        </section>
-    </div>
-</x-dynamic-component>
-Html;
-
-        $blog = <<<'Html'
-@php
-    $locale ??= $content->getLocale();
-
-    $social_media = $content->getPropertyGroup('social_media');
-    
-    $blog_content = $content->getPropertyGroup('blog_content');
-    $blog_content_content = $blog_content?->getPropertyData('content')?->getValue($locale);
-    $blog_content_categories = collect($blog_content?->getPropertyData('categories')?->getValue());
-    $blog_content_tags = collect($blog_content?->getPropertyData('tags')?->getValue());
-
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-
-    $publishTime = $content->publishAt?->format('d M, Y');
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    <article class="blog-post-single page-main-container">
-        <!-- Post Header - Full Width -->
-        <div class="container-fluid ps-0 pe-0">
-            <header class="post-header">
-                <div class="post-meta">
-                    @foreach ($blog_content_categories as $category)
-                        <span class="category">{{ $category }}</span>
-                        @if (!$loop->last)
-                            <span class="separator">,</span>
-                        @endif
-                    @endforeach
-                </div>
-                <h1 class="post-title">{{ $page_banner_title }}</h1>
-                <div class="header-meta">
-                    <span class="post-date">{{ $publishTime }}</span>
-                    <span class="post-date"> <img src="{{ asset('image/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
-                </div>
-
-            </header>
-
-            <!-- Featured Image - Full Width -->
-            <div class="post-featured-image">
-                @if ($page_banner_image)
-                    <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                @endif
-            </div>
-        </div>
-
-        <!-- Two Column Layout -->
-        <div class="post-content-wrapper">
-            <div class="container">
-                <div class="row">
-                    <!-- Left Column - Social Media -->
-                    <div class="col-md-1 ps-0 pe-0">
-                        <div class="social-share-fixed">
-                            <ul class="social-icons">
-                                <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Right Column - Main Content -->
-                    <div class="col-md-11 ps-0 pe-0">
-                        <div class="main-content">
-                            <!-- Author Info -->
-                            <div class="author-info">
-                                <img src="./assets/image/home/Img 01.png" alt="Author Avatar" class="author-avatar">
-                                <span class="author-name">Marina Silva</span>
-                            </div>
-                            <div class="mobile-social-icon">
-                                <ul class="social-icons">
-                                    <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
-                                </ul>
-                            </div>
-                            <!-- Post Content -->
-                            <div class="post-content">
-                                {{ $blog_content_content }}
-                            </div>
-                            <!-- tag -->
-                            <div class="tag-wrapper">
-                                <span>Tags: </span>
-                                <span class="post-tag">
-                                    @foreach ($blog_content_tags as $tag)
-                                        <span class="category">{{ $tag }}</span>
-                                        @if (!$loop->last)
-                                            <span class="separator">,</span>
-                                        @endif
-                                    @endforeach
-                                </span>
-                            </div>
-
-                            
-                            <x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('comments')" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </article>
-</x-dynamic-component>
-Html;
-
-        $items = [
-            'home' => $home,
-            'about' => $about,
-            'blog' => $blog,
-            'blogs' => $blogs,
-            'contact' => $contact,
-            'case-studies' => $case_studies,
-            'case-study' => $case_study,
+        $slugs = [
+            'home',
+            'about',
+            'blog',
+            'blogs',
+            'contact',
+            'case-studies',
+            'case-study',
         ];
-        foreach ($items as $slug => $content) {
-            $this->importDataService->addTemplate($slug, new ImportDataEntities\Template(slug: $slug, content: $content));
+        $themes = ['manifest', 'blogrock', 'know-press'];
+
+        foreach ($slugs as $slug) {
+            $themedContent = collect($themes)
+                ->mapWithKeys(fn ($theme) => [$theme => $getContent($slug, $theme)])
+                ->filter()
+                ->toArray();
+            $data = new ImportDataEntities\Template(slug: $slug, content: $themedContent);
+            $this->importDataService->addTemplate($slug, $data);
         }
     }
 
@@ -1064,6 +484,7 @@ Html;
                         'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
                         'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
                     ],
+                    'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
                 ],
                 'contact' => [
                     'email' => 'example@example.com',
@@ -1168,24 +589,42 @@ Html;
         ];
         $footerNav = [
             [
-                'title' => ['en' => 'Facebook', 'fr' => 'Facebook'],
-                'url' => 'https://facebook.com',
-                'type' => 'link',
+                'title' => ['en' => 'About', 'fr' => 'À propos'],
+                'type' => 'group',
+                'children' => [
+                    [
+                        'title' => ['en' => 'About', 'fr' => 'À propos'],
+                        'type' => 'content',
+                        'contentSlugPath' => 'home/about',
+                    ],
+                ],
             ],
             [
-                'title' => ['en' => 'Twitter', 'fr' => 'Twitter'],
-                'url' => 'https://twitter.com',
-                'type' => 'link',
+                'title' => ['en' => 'Resources', 'fr' => 'Ressources'],
+                'type' => 'group',
+                'children' => [
+                    [
+                        'title' => ['en' => 'Works', 'fr' => 'Travaux'],
+                        'type' => 'content',
+                        'contentSlugPath' => 'home/case-studies',
+                    ],
+                    [
+                        'title' => ['en' => 'Blog', 'fr' => 'Blog'],
+                        'type' => 'content',
+                        'contentSlugPath' => 'home/blog',
+                    ],
+                ],
             ],
             [
-                'title' => ['en' => 'Instagram', 'fr' => 'Instagram'],
-                'url' => 'https://instagram.com',
-                'type' => 'link',
-            ],
-            [
-                'title' => ['en' => 'LinkedIn', 'fr' => 'LinkedIn'],
-                'url' => 'https://linkedin.com',
-                'type' => 'link',
+                'title' => ['en' => 'Contact', 'fr' => 'Contact'],
+                'type' => 'group',
+                'children' => [
+                    [
+                        'title' => ['en' => 'Contact', 'fr' => 'Contact'],
+                        'type' => 'content',
+                        'contentSlugPath' => 'home/contact-us',
+                    ],
+                ],
             ],
         ];
         $tempId = 0;
@@ -1311,6 +750,11 @@ Html;
                 fn (Collection $collection) => $collection
                     ->where(fn (MediaAsset $asset) => Str::after($asset->title, '.') === $extension)
             )->values()->all();
+
+        if (count($items) < $total) {
+            return $items;
+        }
+
         $randIndexes = array_rand($items, $total);
 
         return array_map(fn ($index) => $items[$index], (array) $randIndexes);

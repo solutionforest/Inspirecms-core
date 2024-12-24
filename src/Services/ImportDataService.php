@@ -93,7 +93,10 @@ class ImportDataService implements ImportDataServiceInterface
     /** {@inheritDoc} */
     public function addTemplate(string $slug, Entities\Template $data)
     {
-        if (isset($this->pendingData['templates'][$slug])) {
+        // If the template already exists, merge the content
+        if ($existing = ($this->pendingData['templates'][$slug] ?? null)) {
+            $existing->content = array_merge($existing->content, $data->content);
+
             return;
         }
 
@@ -205,12 +208,9 @@ class ImportDataService implements ImportDataServiceInterface
                 $template = $this->findTemplates($slug)->first();
 
                 if (! $template) {
-                    $template = new $model($item->getDataForModel());
-                    if (filled($item->content)) {
-                        $template->preloadTemplateContentBeforeCreate($item->content);
-                    }
-                    $template->save();
-                    $template->refresh();
+                    $template = $model::create($item->getDataForModel());
+                } else {
+                    $template->update(Arr::except($item->getDataForModel(), ['slug']));
                 }
 
                 $this->finished['templates'][$slug] = $template;
@@ -237,7 +237,7 @@ class ImportDataService implements ImportDataServiceInterface
                 if (! $fieldGroup) {
                     $fieldGroup = $model::create($item->getDataForModel());
                 } else {
-                    $fieldGroup->update($item->getDataForModel());
+                    $fieldGroup->update(Arr::except($item->getDataForModel(), ['name']));
                 }
 
                 $this->finished['fieldGroups'][$name] = $fieldGroup;
@@ -476,14 +476,26 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $navigationData = $this->mutateNavigationData($item);
 
-                if (isset($item->id) && ($navigation = $model::find($item->id))) {
-                    $navigation->update($navigationData);
+                /**
+                 * @var null | (Model & \SolutionForest\InspireCms\Models\Contracts\Navigation)
+                 */
+                $navigation = isset($item->id) ? $model::find($item->id) : null;
+                if ($navigation) {
+                    $navigation->update(Arr::except($navigationData, ['id', 'children']));
                     $navigation->refresh();
                 } else {
-                    $navigation = $model::create($navigationData);
+                    /**
+                     * @var (Model & \SolutionForest\InspireCms\Models\Contracts\Navigation)
+                     */
+                    $navigation = $model::create(Arr::except($navigationData, ['children']));
                 }
 
-                if (isset($navigation)) {
+                if (! is_null($navigation)) {
+
+                    if (isset($navigationData['children']) && is_array($navigationData['children']) && ! empty($navigationData['children'])) {
+                        $model::rebuildSubtree($navigation, $navigationData['children']);
+                    }
+
                     $this->finished['navigation'][] = $navigation ?? null;
                 }
 
@@ -806,8 +818,10 @@ class ImportDataService implements ImportDataServiceInterface
         }
 
         if (! empty($item->children) && $item->type === 'group') {
-            $children = collect($item->children)->map(fn ($child) => $this->mutateNavigationData($child));
-            $data['children'] = $children->toArray();
+            $data['children'] = collect($item->children)
+                ->map(fn ($child) => $this->mutateNavigationData($child))
+                ->map(fn ($arr) => array_merge($arr, ['category' => $item->category]))
+                ->toArray();
         } else {
             $data['children'] = [];
         }

@@ -5,10 +5,21 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Documen
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Widgets\WidgetConfiguration;
+use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource\Widgets\AlertOverview;
 
 trait DocumentTypeDetailTrait
 {
+    use HasPreviewModal;
+
+    public function bootDocumentTypeDetailTrait()
+    {
+        \Pboivin\FilamentPeek\Support\Panel::ensurePluginIsLoaded();
+        \Pboivin\FilamentPeek\Support\Page::ensurePreviewModalSupport($this);
+        \Pboivin\FilamentPeek\Support\View::setupPreviewModal();
+        \Pboivin\FilamentPeek\Support\View::setupBuilderEditor();
+    }
+
     protected function getHeaderWidgets(): array
     {
         $widgets = [];

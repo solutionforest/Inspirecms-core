@@ -18,7 +18,7 @@
         <!-- Nested Reply -->
         <div class="comment-replies">
             @foreach ($replies as $reply)
-                <x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('comments.comment')" 
+                <x-dynamic-component component="comments.comment" 
                     :author="$reply['author']"
                     :date="$reply['date']"
                     :content="$reply['content']"

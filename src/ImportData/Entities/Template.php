@@ -9,7 +9,7 @@ class Template extends BaseEntity
 {
     protected static array $rules = [
         'slug' => 'required|string',
-        'content' => 'nullable|string',
+        'content' => 'nullable|array',
     ];
 
     public function __construct(
@@ -19,18 +19,24 @@ class Template extends BaseEntity
          * @var string
          */
         public $slug,
+
         /**
-         * The content of the template. Default is null.
+         * The content of the template with theme.
          *
-         * @var string|null
+         * @var array<string,string> | null
          */
-        public $content = null
-    ) {}
+        public $content = null,
+    ) {
+        if (is_null($this->content)) {
+            $this->content = [];
+        }
+    }
 
     public function getDataForModel(): array
     {
         return [
             'slug' => $this->slug,
+            'content' => $this->content ?? [],
         ];
     }
 }

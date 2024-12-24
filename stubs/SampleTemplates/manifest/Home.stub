@@ -1,0 +1,120 @@
+@php
+    use Illuminate\Support\Arr;
+    $locale ??= $content->getLocale();
+    $hero_banner = $content->getPropertyGroup('hero_banner');
+    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue($locale);
+    if (is_array($hero_banner_brief)) {
+        $hero_banner_brief = Arr::first($hero_banner_brief);
+    }
+    $hero_banner_image_slider = $hero_banner?->getPropertyData('image_slider')?->getValue();
+    $profile = $content->getPropertyGroup('profile');
+    $profile_brief = $profile?->getPropertyData('brief')?->getValue($locale);
+    if (is_array($profile_brief)) {
+        $profile_brief = Arr::first($profile_brief);
+    }
+    $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
+
+    $blogPage = request()->query('blog_page', 1);
+    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->forPage($blogPage, 3);
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1>
+                {!! $hero_banner_brief !!}
+            </h1>
+        </div>
+    </section>
+
+    <!-- Swiper Slider -->
+    <div class="swiper">
+        <div class="swiper-wrapper">
+            @foreach ($hero_banner_image_slider ?? [] as $item)
+                <div class="swiper-slide">
+                    <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+                    <p>{{ $item->description }}</p>
+                </div>
+            @endforeach
+        </div>
+        <!-- <div class="swiper-pagination"></div> -->
+        <div class="swiper-button-next"></div>
+        <div class="swiper-button-prev"></div>
+    </div>
+
+    <!-- Profile Section -->
+    <section class="profile-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 intro-title">
+                    <p>{{ $profile_brief }}</p>
+                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                </div>
+                <div class="col-md-6 intro-text">
+                    {{ $profile_description }}
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-5 ">
+                <h2>Latest Posts</h2>
+                <a href="/blog" class="view-all-btn">View all
+                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                </a>
+            </div>
+            <div class="row">
+                @foreach ($blogs as $blog)
+                    @php
+                        $page_banner = $blog->getPropertyGroup('page_banner');
+                        $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
+                        $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+                        $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
+                        $blog_content = $blog->getPropertyGroup('blog_content');
+                        $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
+                        $publishTime = $blog->publishAt?->format('d M, Y');
+                    @endphp
+                    <div class="col-md-4">
+                        <div class="blog-card">
+                            @if ($page_banner_image)
+                                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
+                            @endif
+                            <div class="blog-meta">
+                                <span>{{ $blog_content_categories }}</span>
+                                <span>{{ $publishTime }}</span>
+                            </div>
+                            <h3>{{ $page_banner_title }}</h3>
+                            <p>{{ $page_banner_description }}</p>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    
+    @section('scripts')
+        <script>
+            const swiper = new Swiper('.swiper', {
+                slidesPerView: 'auto',
+                spaceBetween: 30,
+                centeredSlides: true,
+                loop: true,
+                // pagination: {
+                //     el: '.swiper-pagination',
+                //     clickable: true,
+                // },
+                navigation: {
+                    nextEl: '.swiper-button-next',
+                    prevEl: '.swiper-button-prev',
+                },
+                autoplay: {
+                    delay: 3000,
+                    disableOnInteraction: false,
+                }
+            });
+        </script>
+    @endsection
+</x-dynamic-component>

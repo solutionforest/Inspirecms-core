@@ -1,0 +1,10 @@
+@php
+    $locale ??= $content->getLocale() ?? request()->getLocale();
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('layout')" :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
+    <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('header')" :locale="$locale" />
+
+    {{ $slot }}
+
+    <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('footer')" :locale="$locale" />
+</x-dynamic-component>

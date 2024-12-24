@@ -1,0 +1,39 @@
+@php
+    $locale ??= $content->getLocale();
+    $about_section = $content->getPropertyGroup('about_section');
+    $about_section_brief = $about_section?->getPropertyData('brief')?->getValue($locale);
+    $about_section_description = $about_section?->getPropertyData('description')?->getValue($locale);
+    $about_section_image = collect($about_section?->getPropertyData('image')?->getValue($locale))->first();
+    $about_section_resume = collect($about_section?->getPropertyData('resume')?->getValue())->first();
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+    <div class="about-container">
+        <div class="about-left">
+            <h1 class="about-title">{{ $content->getTitle($locale) }}</h1>
+            <div class="about-intro">
+                {{ $about_section_brief }}
+            </div>
+            
+            <div class="about-image">
+                <div class="image-wrapper">
+                    @if ($about_section_image)
+                        <img src="{{ $about_section_image->getUrl() }}" alt="{{ $about_section_image->caption }}">
+                    @endif
+                </div>
+            </div>
+        </div>
+    
+        <div class="about-right">
+            <div class="bio-content">
+                {{ $about_section_description }}
+    
+                @if ($about_section_resume)
+                    <button type="submit" class="send-button" onclick="window.open('{{ $about_section_resume->getUrl() }}')">
+                        resume
+                        <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                    </button>
+                @endif
+            </div>
+        </div>
+    </div>
+</x-dynamic-component> 

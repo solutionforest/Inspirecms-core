@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
+use Illuminate\Support\Facades\Blade;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
@@ -31,9 +32,9 @@ class ContentController extends Controller
             $locale = $this->getDefaultLocale();
         }
 
-        [$contentDto, $view] = $this->pageService->findContentAndView($slug, $locale);
+        [$contentDto, $templateDto] = $this->pageService->findContentAndTemplate($slug, $locale);
 
-        if (is_null($contentDto) || is_null($view)) {
+        if (is_null($contentDto) || is_null($templateDto)) {
             abort(404);
         }
 
@@ -49,9 +50,12 @@ class ContentController extends Controller
 
         }
 
-        return view($view, [
+        if (blank($templateDto->content)) {
+            abort(404);
+        }
+
+        return Blade::render($templateDto->content, [
             'content' => $contentDto,
-        ])->with([
             'locale' => $locale,
         ]);
     }

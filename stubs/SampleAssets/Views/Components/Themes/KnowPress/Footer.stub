@@ -1,0 +1,62 @@
+<!-- Newsletter and Footer -->
+<footer class="site-footer">
+
+
+    <!-- Main Footer -->
+    <div class="main-footer">
+        <div class="container">
+            <div class="row">
+                <!-- Brand Column -->
+                <div class="col-md-6">
+                    <div class="footer-brand">
+                        <h3><img src="./assets/image/logo.svg" alt=""></h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus. Sed ultrices mauris a facilisis varius.</p>
+                        <div class="social-links">
+                            <a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a>
+                            <a href="#"><img src="{{ asset('image/icon/x.svg') }}" alt=""></a>
+                            <a href="#"><img src="{{ asset('image/icon/ig.svg') }}" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- About Column -->
+                <div class="col-md-2">
+                    <h4>About me</h4>
+                    <ul>
+                        <li><a href="#">My Team</a></li>
+                        <li><a href="#">History</a></li>
+                        <li><a href="#">My Products</a></li>
+                        <li><a href="#">Blogging</a></li>
+                    </ul>
+                </div>
+
+                <!-- Resources Column -->
+                <div class="col-md-2">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Webinars</a></li>
+                        <li><a href="#">Courses</a></li>
+                        <li><a href="#">Books</a></li>
+                        <li><a href="#">Marketing</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact Column -->
+                <div class="col-md-2">
+                    <h4>Contact</h4>
+                    <ul>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of use</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Copyright -->
+    <div class="copyright">
+        <div class="container">
+            <p>Blog Rock © 2020 All Right Reserved</p>
+        </div>
+    </div>
+</footer>

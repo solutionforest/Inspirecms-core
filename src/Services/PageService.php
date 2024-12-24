@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use SolutionForest\InspireCms\Dtos\TemplateDto;
+
 class PageService implements PageServiceInterface
 {
     public function __construct(
@@ -9,7 +11,7 @@ class PageService implements PageServiceInterface
     ) {}
 
     /** {@inheritDoc} */
-    public function findContentAndView($fullPath, $locale)
+    public function findContentAndTemplate($fullPath, $locale)
     {
         $content = $this->findContentAndLangByFullPath($fullPath);
 
@@ -23,7 +25,14 @@ class PageService implements PageServiceInterface
 
         $template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
 
-        return [$content->toDto($locale), $template?->getViewFullName()];
+        $theme = inspirecms_templates()->getCurrentTheme();
+        $templateDto = $template ? TemplateDto::fromArray([
+            'slug' => $template->slug,
+            'theme' => $theme,
+            'content' => $template->getContent($theme),
+        ]) : null;
+
+        return [$content->toDto($locale), $templateDto];
     }
 
     /** {@inheritDoc} */

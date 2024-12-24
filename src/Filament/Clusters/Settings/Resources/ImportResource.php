@@ -149,7 +149,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                         ->color('warning')
                         ->url(function () {
                             try {
-                                return route('cms.import.sample');
+                                return filament()->getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route('import.sample');
                             } catch (RouteNotFoundException $th) {
                                 return null;
                             }

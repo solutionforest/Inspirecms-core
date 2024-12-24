@@ -58,7 +58,7 @@ class InspireCmsManager
 
     public function getInstallUrl(): ?string
     {
-        return Filament::getPanel(config('insiprecms.filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
+        return Filament::getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
     }
 
     public function getImportDataUrl(): ?string

@@ -48,7 +48,7 @@
     <div class="comments-list">
         <!-- Comment 1 with its reply -->
         @foreach ($comments as $comment)
-            <x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('comments.comment')" 
+            <x-dynamic-component component="comments.comment" 
                 :author="$comment['author']"
                 :date="$comment['date']"
                 :content="$comment['content']"

@@ -1,0 +1,141 @@
+@php
+    use Illuminate\Support\Arr;
+    $locale ??= $content->getLocale();
+    $hero_banner = $content->getPropertyGroup('hero_banner');
+    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue($locale);
+    if (is_array($hero_banner_brief)) {
+        $hero_banner_brief = Arr::first($hero_banner_brief);
+    }
+    $hero_banner_image_slider = $hero_banner?->getPropertyData('image_slider')?->getValue();
+    $profile = $content->getPropertyGroup('profile');
+    $profile_brief = $profile?->getPropertyData('brief')?->getValue($locale);
+    if (is_array($profile_brief)) {
+        $profile_brief = Arr::first($profile_brief);
+    }
+    $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
+
+    $blogPage = request()->query('blog_page', 1);
+    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->forPage($blogPage, 4);
+    
+    $banner_image = Arr::first($hero_banner_image_slider);
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+    
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-lg-6 content-left">
+                        <span class="badge1">Analytics</span>
+                        <h1>{{ $hero_banner_brief }}</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus. </p>
+                    </div>
+                    <div class="col-lg-6 ">
+                        <div class="image-wrapper-featured">
+                            @if ($banner_image)
+                                <img src="{{ $banner_image->getUrl() }}" alt="Hero" class="img-fluid">
+                            @endif
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="row text-center g-4">
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('image/icon/rseponsive.svg') }}" alt="Responsive">
+                            </div>
+                            <h3 class="feature-title">Fully Responsive</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('image/icon/seo.svg') }}" alt="SEO">
+                            </div>
+                            <h3 class="feature-title">SEO Friendly</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('image/icon/seo.svg') }}" alt="Customizable">
+                            </div>
+                            <h3 class="feature-title">Easily Customizable</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="latest-articles">
+            <div class="container">
+                <h3 class="text-center pb-4 mb-3">Latest Articles</h3>
+                <div class="row g-4">
+                    @foreach ($blogs as $blog)
+                    <!-- Article Card -->
+                    <div class="col-lg-6">
+                        <article class="article-card">
+                            <div class="article-image">
+                                <div class="image-wrapper">
+                                    @if ($banner_image)
+                                    <img src="{{$banner_image->getUrl()}}" alt="Desktop publishing">
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="article-content">
+                                  <span class="badge1">Analytics</span>
+                                <h3 class="article-title">
+                                    <a href="#">Many desktop publishing packages and web page</a>
+                                </h3>
+                                <div class="article-meta">
+                                    <span class="date">Added: 23 October 2020</span>
+                                    <span class="comments"><img src="{{ asset('image/icon/comment.svg') }}" alt=""></i> 23</span>
+                                </div>
+                                <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                                <div class="article-author">
+                                    <img src="{{ asset('image/avator.svg') }}" alt="Author" class="author-avatar">
+                                    <span class="author-name">Anna Profeska</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about-section">
+            <div class="container">
+                <div class="about-wrapper">
+                    <div class="about-image">
+                        @if ($banner_image)
+                        <img src="{{$banner_image->getUrl()}}" alt="About Us">
+                        @endif
+                    </div>
+                    <div class="about-content">
+                        <span class="section-label">About US</span>
+                        <h2 class="heading-title">{{ $profile_brief }}</h2>
+                        <p class="about-text">{{ $profile_description }}</p>
+                        <button class="styled-button green-btn">Learn More</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</x-dynamic-component>

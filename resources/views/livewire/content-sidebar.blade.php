@@ -34,14 +34,13 @@
 
             </div>
         </div>
-        
-        <div class="px-1 pb-2">
-            {{ $this->localeSwitcher }}
-        </div>
 
         <div class="navigation-custom-scrollbar" x-show="sidebarExpanded" @style([
             'display: block' => $sidebarExpanded,
         ])>
+            <div class="px-1 pb-2">
+                {{ $this->localeSwitcher }}
+            </div>
             <nav class="text-base lg:text-sm w-64 lg:block" x-data="{
                 expandedItems: @if (filled($expandedItemsStateKey)) $wire.entangle('{{ $expandedItemsStateKey }}') @else [] @endif,
                 async toggleItem(key, currDepth) {

@@ -21,4 +21,10 @@ return [
     'page_component_instructions' => [
         'label' => 'Page component instructions',
     ],
+    'theme' => [
+        'label' => '主題',
+    ],
+    'editor' => [
+        'title' => '模板編輯器',
+    ],
 ];

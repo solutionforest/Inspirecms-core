@@ -1,0 +1,138 @@
+@php
+    $blogPage = request()->query('page') ?? 1;
+
+    $locale ??= $content->getLocale();
+    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+    <main>
+        <section class="latest-articles">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-8">
+                        <div class="page-meta">
+                            <div class="line"></div>
+                            <span>{{ $content->getTitle($locale) }}</span>
+                        </div>
+                        @foreach ($blogs as $item)
+                            @php
+                                $blog_page_banner = $item->getPropertyGroup('page_banner');
+                                $blog_page_banner_title = $blog_page_banner?->getPropertyData('title')?->getValue();
+                                $blog_page_banner_image = collect($blog_page_banner?->getPropertyData('image')?->getValue($locale))->first();
+                                $blog_content = $item->getPropertyGroup('blog_content');
+                                $blog_content_category = $blog_content?->getPropertyData('categories')?->getValue();
+                                $blog_content_tags = $blog_content?->getPropertyData('tags')?->getValue();
+                                $blog_content_content = $blog_content?->getPropertyData('content')?->getValue($locale);
+                            @endphp
+                            <div class="">
+                                <article class="article-card">
+                                    <div class="article-image">
+                                        <div class="image-wrapper">
+                                            @if ($blog_page_banner_image)
+                                                <img src="{{ $blog_page_banner_image->getUrl() }}" alt="{{ $blog_page_banner_image->caption }}">
+                                            @endif
+                                        </div>
+                                    </div>
+                                    <div class="article-content">
+                                        <span class="badge1">Analytics</span>
+                                        <h3 class="article-title">
+                                            <a href="{{ $item->getUrl() }}">{{ $item->getTitle($locale) }}</a>
+                                        </h3>
+                                        <div class="article-meta">
+                                            <span class="date">Added: 23 October 2020</span>
+                                            <span class="comments"><img src="{{ asset('image/icon/comment.svg') }}" alt=""></i> 23</span>
+                                        </div>
+                                        <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                                        <div class="article-author">
+                                            <img src="{{ asset('image/avator.svg') }}" alt="Author" class="author-avatar">
+                                            <span class="author-name">Anna Profeska</span>
+                                        </div>
+                                    </div>
+                                </article>
+                            </div>
+                        @endforeach
+
+                        <div class="load-more">Loading More...</div>
+                    </div>
+                    <!-- Article Card -->
+                    <div class="col-md-4">
+                        <div class="sidebar">
+                            <!-- Follow Me Section -->
+                            <div class="follow-me mb-4">
+                                <div class="follow-me-title">Follow Me</div>
+                                <div class="social-icons">
+                                    <a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a>
+                                    <a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a>
+                                    <a href="#"><img src="{{ asset('image/icon/ig.svg') }}" alt=""></a>
+                                </div>
+                            </div>
+
+                            <!-- About Me Section -->
+                            <div class="follow-me mb-4">
+                                <div class="follow-me-title">About Me</div>
+                                <div class="profile-card">
+                                    <img src="{{ asset('image/profile-card-image.png') }}" alt="Profile" class="profile-img">
+                                    <p class="mt-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget massa sollicitudin, cursus risus eu, vehicula metus. </p>
+                                    <a href="#" class="read-more">Read More →</a>
+                                </div>
+                            </div>
+
+                            <!-- Quick Search -->
+                            <div class="follow-me quick-search mb-4">
+                                <div class="follow-me-title">Quick Search</div>
+                                <div class="search-box">
+                                    <input type="text" placeholder="Search for...">
+                                    <button class="search-button">
+                                        <img src="{{ asset('image/icon/search.svg') }}" alt="">
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Tags -->
+                            <div class=" follow-me tags mb-4">
+                                <div class="follow-me-title">Tags</div>
+                                <div class="tag-list">
+                                    <a href="#" class="tag">Carnival </a>
+                                    <a href="#" class="tag">Culture</a>
+                                    <a href="#" class="tag">Food</a>
+                                    <a href="#" class="tag">Analytics</a>
+                                    <a href="#" class="tag">Oriental</a>
+                                    <a href="#" class="tag">Motivation</a>
+                                </div>
+                            </div>
+
+                            <!-- Latest Articles -->
+                            <div class=" follow-me latest-articles mb-4">
+                                <div class="follow-me-title">Latest Articles</div>
+                                <div class="article-list">
+                                    <div class="article-item">
+                                        <span class="badge1">Analytics</span>
+                                        <div class="box-title">Many desktop publishing packages and web page </div>
+                                        <p class="box-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget massa sollicitudin, cursus risus eu, vehicula metus. </p>
+                                    </div>
+                                    <div class="article-item">
+                                        <span class="badge1">Analytics</span>
+                                        <div class="box-title">Many desktop publishing packages and web page </div>
+                                        <p class="box-content">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget massa sollicitudin, cursus risus eu, vehicula metus. </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Categories -->
+                            <div class="follow-me categories">
+                                <div class="follow-me-title">Categories</div>
+                                <ul class="category-list">
+                                    <li><a href="#">Category Item 1</a></li>
+                                    <li><a href="#">Category Item 2</a></li>
+                                    <li><a href="#">Category Item 3</a></li>
+                                    <li><a href="#">Category Item 4</a></li>
+                                    <li><a href="#">Category Item 5</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</x-dynamic-component>

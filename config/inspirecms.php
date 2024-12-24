@@ -17,6 +17,10 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 // config for SolutionForest/InspireCms
 return [
 
+    'override_plugins' => [
+        'field_group_models' => true,
+    ],
+
     'auth' => [
         'guard' => 'inspirecms',
         'failed_login_attempts' => 5,
@@ -128,10 +132,6 @@ return [
         ],
     ],
 
-    'override_plugins' => [
-        'field_group_models' => true,
-    ],
-
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [
@@ -144,9 +144,13 @@ return [
     ],
 
     'template' => [
-        'path' => resource_path('views/inspire-cms/templates'),
-        'theme' => 'default',
-        'component_prefix' => 'inspire-cms',
+        'theme' => 'manifest',
+        'themes' => [
+            'manifest' => 'Manifest',
+            'blogrock' => 'Blogrock',
+            'know-press' => 'Know Press',
+        ],
+        'component_prefix' => 'inspirecms',
     ],
 
     'resolvers' => [

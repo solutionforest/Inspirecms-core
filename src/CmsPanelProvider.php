@@ -20,6 +20,7 @@ use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
@@ -315,8 +316,10 @@ class CmsPanelProvider extends PanelProvider
     {
         return function (Panel $panel) {
 
-            \Illuminate\Support\Facades\Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)
-                ->name('install');
+            Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)->name('install');
+            Route::name('import.')->prefix('import')->group(function () {
+                Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
+            });
         };
     }
 }
