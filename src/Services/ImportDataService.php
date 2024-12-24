@@ -96,6 +96,7 @@ class ImportDataService implements ImportDataServiceInterface
         // If the template already exists, merge the content
         if ($existing = ($this->pendingData['templates'][$slug] ?? null)) {
             $existing->content = array_merge($existing->content, $data->content);
+
             return;
         }
 
@@ -490,7 +491,7 @@ class ImportDataService implements ImportDataServiceInterface
                 }
 
                 if (! is_null($navigation)) {
-                    
+
                     if (isset($navigationData['children']) && is_array($navigationData['children']) && ! empty($navigationData['children'])) {
                         $model::rebuildSubtree($navigation, $navigationData['children']);
                     }

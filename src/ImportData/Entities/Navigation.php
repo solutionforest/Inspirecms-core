@@ -65,11 +65,12 @@ class Navigation extends BaseEntity
          * @var Navigation[]
          */
         public array $children = [],
-    ) { }
+    ) {}
 
     public static function fromArray(array $parameters)
     {
         $parameters['children'] = collect($parameters['children'] ?? [])->map(fn ($child) => is_array($child) ? static::fromArray($child) : $child)->toArray();
+
         return parent::fromArray($parameters);
     }
 

@@ -22,12 +22,11 @@ class Template extends BaseEntity
 
         /**
          * The content of the template with theme.
-         * 
+         *
          * @var array<string,string> | null
          */
         public $content = null,
-    )
-    {
+    ) {
         if (is_null($this->content)) {
             $this->content = [];
         }

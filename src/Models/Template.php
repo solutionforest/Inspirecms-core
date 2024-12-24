@@ -20,19 +20,19 @@ class Template extends BaseModel implements TemplateContract
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
     }
 
-    /** @inheritDoc */
-    public function initializeTemplate(?string $theme  =null)
+    /** {@inheritDoc} */
+    public function initializeTemplate(?string $theme = null)
     {
         $templateContent = $this->content ?? [];
-        
-        if (!is_array($templateContent)) {
+
+        if (! is_array($templateContent)) {
             $templateContent = [];
         }
 
         $theme ??= inspirecms_templates()->getCurrentTheme();
 
-        if (empty($templateContent) || !isset($templateContent[$theme])) {
-        
+        if (empty($templateContent) || ! isset($templateContent[$theme])) {
+
             $templateContent[$theme] = inspirecms_templates()->retrieveDefaultContent();
 
             $this->content = $templateContent;
@@ -41,7 +41,7 @@ class Template extends BaseModel implements TemplateContract
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function getContent(?string $theme = null)
     {
         $theme ??= inspirecms_templates()->getCurrentTheme();
@@ -49,11 +49,11 @@ class Template extends BaseModel implements TemplateContract
         return data_get($this->content ?? [], $theme) ?? '';
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function updateContent($content, ?string $theme = null)
     {
         $templateContent = $this->content ?? [];
-        if (!is_array($templateContent)) {
+        if (! is_array($templateContent)) {
             $templateContent = [];
         }
 

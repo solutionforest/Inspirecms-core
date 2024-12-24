@@ -147,81 +147,83 @@ class ImportService implements ImportServiceInterface
         if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
 
             return static::fileProcessingWithCallback(
-                fs: $fs, 
-                folder: $folder, 
-                includeSubFolders: true, 
+                fs: $fs,
+                folder: $folder,
+                includeSubFolders: true,
                 neededExtensions: ['.blade.php'],
                 callback: function ($fs, $folder, $filePath) use ($forType) {
-                if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
-    
-                    [$slug, $theme] = static::extractTemplateSlugAndFilename($filePath, $folder);
-        
-                    $themeContent = $fs->get($filePath) ?? inspirecms_templates()->retrieveDefaultContent();
+                    if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
 
-                    $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
+                        [$slug, $theme] = static::extractTemplateSlugAndFilename($filePath, $folder);
 
-                    $this->importDataService->addTemplate(
-                        slug: $data->slug,
-                        data: $data
-                    );
-    
-                    return;
+                        $themeContent = $fs->get($filePath) ?? inspirecms_templates()->retrieveDefaultContent();
+
+                        $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
+
+                        $this->importDataService->addTemplate(
+                            slug: $data->slug,
+                            data: $data
+                        );
+
+                        return;
+                    }
+
                 }
-    
-            });
+            );
         }
 
         return static::fileProcessingWithCallback(
-            fs: $fs, 
-            folder: $folder, 
-            includeSubFolders: false, 
+            fs: $fs,
+            folder: $folder,
+            includeSubFolders: false,
             neededExtensions: ['.json'],
             callback: function ($fs, $folderPath, $file) use ($forType) {
 
-            $slug = Str::before(basename($file), '.');
+                $slug = Str::before(basename($file), '.');
 
-            $jsonData = $fs->json($file);
+                $jsonData = $fs->json($file);
 
-            if (is_null($jsonData)) {
-                throw new \Exception('Invalid JSON data.');
+                if (is_null($jsonData)) {
+                    throw new \Exception('Invalid JSON data.');
+                }
+
+                switch ($forType) {
+                    case ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE:
+                        $data = Entities\DocumentType::fromArray($jsonData);
+                        $this->importDataService->addDocumentType(
+                            slug: $slug,
+                            data: $data
+                        );
+
+                        break;
+                    case ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP:
+                        $data = Entities\FieldGroup::fromArray(Arr::except($jsonData, 'fields'));
+                        $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
+                        $this->importDataService->addFieldGroup(
+                            slug: $slug,
+                            data: $data,
+                            fields: $fields
+                        );
+
+                        break;
+                    case ImportDataHelper::FOLDER_IDENTIFIER_CONTENT:
+                        $data = Entities\Content::fromArray($jsonData);
+                        $this->importDataService->addContent(
+                            slug: $slug,
+                            parent: $data->parent,
+                            data: $data
+                        );
+
+                        break;
+                    case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
+                        $data = Entities\Navigation::fromArray($jsonData);
+                        $this->importDataService->addNavigation(data: $data);
+
+                        break;
+                }
+
             }
-
-            switch ($forType) {
-                case ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-                    $data = Entities\DocumentType::fromArray($jsonData);
-                    $this->importDataService->addDocumentType(
-                        slug: $slug,
-                        data: $data
-                    );
-
-                    break;
-                case ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP:
-                    $data = Entities\FieldGroup::fromArray(Arr::except($jsonData, 'fields'));
-                    $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
-                    $this->importDataService->addFieldGroup(
-                        slug: $slug,
-                        data: $data,
-                        fields: $fields
-                    );
-
-                    break;
-                case ImportDataHelper::FOLDER_IDENTIFIER_CONTENT:
-                    $data = Entities\Content::fromArray($jsonData);
-                    $this->importDataService->addContent(
-                        slug: $slug,
-                        parent: $data->parent,
-                        data: $data
-                    );
-
-                    break;
-                case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
-                    $data = Entities\Navigation::fromArray($jsonData);
-                    $this->importDataService->addNavigation(data: $data);
-
-                    break;
-            }
-
-        });
+        );
     }
 
     /**
@@ -235,19 +237,21 @@ class ImportService implements ImportServiceInterface
     protected function duplicateViewFiles($fs, $folder, $forType)
     {
         return static::fileProcessingWithCallback(
-            fs: $fs, 
-            folder: $folder, 
-            includeSubFolders: true, 
+            fs: $fs,
+            folder: $folder,
+            includeSubFolders: true,
             neededExtensions: ['.blade.php'],
             callback: function ($fs, $folder, $filePath) use ($forType) {
 
                 switch ($forType) {
                     case ImportDataHelper::FOLDER_IDENTIFIER_VIEW:
                         $toPath = resource_path('views/' . Str::of($filePath)->after($folder)->ltrim('/')->toString());
+
                         break;
-                    
+
                     default:
                         $toPath = null;
+
                         break;
                 }
 

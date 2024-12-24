@@ -87,8 +87,7 @@ class SampleSeeder extends Seeder
     {
         $allTemplates = app(\Illuminate\Filesystem\Filesystem::class)->allFiles(__DIR__ . '/../../stubs/SampleTemplates');
 
-        $getContent = function (string $slug, string $theme) use ($allTemplates)
-        {
+        $getContent = function (string $slug, string $theme) use ($allTemplates) {
             try {
                 $file = collect($allTemplates)
                     ->first(fn (\SplFileInfo $file) => $file->getRelativePath() == $theme && $file->getFilenameWithoutExtension() == (string) str($slug)->title()->replace('-', ''));
@@ -99,7 +98,7 @@ class SampleSeeder extends Seeder
                 }
 
                 return $file->getContents();
-                
+
             } catch (\Throwable $th) {
                 return null;
             }
@@ -597,8 +596,8 @@ class SampleSeeder extends Seeder
                         'title' => ['en' => 'About', 'fr' => 'À propos'],
                         'type' => 'content',
                         'contentSlugPath' => 'home/about',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'title' => ['en' => 'Resources', 'fr' => 'Ressources'],
@@ -613,8 +612,8 @@ class SampleSeeder extends Seeder
                         'title' => ['en' => 'Blog', 'fr' => 'Blog'],
                         'type' => 'content',
                         'contentSlugPath' => 'home/blog',
-                    ]
-                ]
+                    ],
+                ],
             ],
             [
                 'title' => ['en' => 'Contact', 'fr' => 'Contact'],
@@ -624,8 +623,8 @@ class SampleSeeder extends Seeder
                         'title' => ['en' => 'Contact', 'fr' => 'Contact'],
                         'type' => 'content',
                         'contentSlugPath' => 'home/contact-us',
-                    ]
-                ]
+                    ],
+                ],
             ],
         ];
         $tempId = 0;

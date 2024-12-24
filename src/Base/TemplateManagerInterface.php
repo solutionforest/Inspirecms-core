@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Base;
 interface TemplateManagerInterface
 {
     public function getCurrentTheme(): string;
-    
+
     public function getAvailableThemes(): array;
 
     public function getComponentPrefix(): string;
@@ -15,12 +15,12 @@ interface TemplateManagerInterface
     /**
      * Assigns a default template to the given templateable object if it is not already set.
      *
-     * @param HasTemplates&Model $templateable The object that can have a template assigned to it.
-     * @param string|int|(Model&Template) $template The default template to assign if none is set.
+     * @param  HasTemplates&Model  $templateable  The object that can have a template assigned to it.
+     * @param  string|int|(Model&Template)  $template  The default template to assign if none is set.
      * @return void
      */
     public function assignDefaultTemplateIfNotSet($templateable, $template);
-    
+
     /**
      * Retrieve the default content for the template.
      *

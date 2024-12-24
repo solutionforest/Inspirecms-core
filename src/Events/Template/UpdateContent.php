@@ -17,7 +17,7 @@ class UpdateContent
      * @var ?string
      */
     public $theme;
-    
+
     /**
      * @param  \SolutionForest\InspireCms\Models\Contracts\Template&\Illuminate\Database\Eloquent\Model  $model
      * @param  ?string  $theme

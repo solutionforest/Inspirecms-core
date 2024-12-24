@@ -53,7 +53,7 @@ class ListTemplates extends BaseListPage
                                 ->body($th->getMessage())
                                 ->danger()
                                 ->send();
-                
+
                             $action->cancel();
                         }
                     })

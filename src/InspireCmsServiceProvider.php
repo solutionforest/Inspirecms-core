@@ -16,7 +16,6 @@ use Illuminate\Support\Facades\Event;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
-use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -400,7 +399,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views') as $file) {
 
             $dir = str($file->getRelativePath())
-                ->replace(['Components/Themes'], ['components/'.inspirecms_templates()->getComponentPrefix()])
+                ->replace(['Components/Themes'], ['components/' . inspirecms_templates()->getComponentPrefix()])
                 ->explode('/')
                 ->map(fn ($path) => (string) str($path)->kebab())
                 ->implode('/');

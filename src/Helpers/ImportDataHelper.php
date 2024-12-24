@@ -74,7 +74,7 @@ class ImportDataHelper
             if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
 
                 $sampleFiles = array_merge(
-                    ['components' => $generateFiles('component', '.blade.php')], 
+                    ['components' => $generateFiles('component', '.blade.php')],
                     $generateFiles('sample', '.blade.php')
                 );
 

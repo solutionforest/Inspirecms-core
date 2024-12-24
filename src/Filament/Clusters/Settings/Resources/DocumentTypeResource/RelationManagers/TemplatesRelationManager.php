@@ -217,7 +217,7 @@ class TemplatesRelationManager extends RelationManager
                         ->body($th->getMessage())
                         ->danger()
                         ->send();
-        
+
                     $action->cancel();
                 }
             })
@@ -271,7 +271,7 @@ class TemplatesRelationManager extends RelationManager
          * @var null | (Model & Template)
          */
         $templateRecord = $this->cachedMountedTableActionRecord;
-        $theme = $this->theme?? inspirecms_templates()->getCurrentTheme();
+        $theme = $this->theme ?? inspirecms_templates()->getCurrentTheme();
         $editorData['theme'] = $theme;
         $editorData['record_id'] = $templateRecord?->getKey();
         $editorData['html_content'] = $templateRecord?->getContent($theme);

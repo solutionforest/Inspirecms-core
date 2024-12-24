@@ -28,7 +28,7 @@ class TemplateManager implements TemplateManagerInterface
     {
         return $this->theme;
     }
-    
+
     public function getAvailableThemes(): array
     {
         return $this->themes;
@@ -50,7 +50,7 @@ class TemplateManager implements TemplateManagerInterface
             ->toString();
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function assignDefaultTemplateIfNotSet($templateable, $template)
     {
         if (is_null($templateable->getDefaultTemplate())) {
@@ -58,7 +58,7 @@ class TemplateManager implements TemplateManagerInterface
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     public function retrieveDefaultContent()
     {
         return <<<'HTML'
