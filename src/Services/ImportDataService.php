@@ -483,17 +483,26 @@ class ImportDataService implements ImportDataServiceInterface
                 if ($navigation) {
                     $navigation->update(Arr::except($navigationData, ['id', 'children']));
                     $navigation->refresh();
+
                 } else {
                     /**
                      * @var (Model & \SolutionForest\InspireCms\Models\Contracts\Navigation)
                      */
                     $navigation = $model::create(Arr::except($navigationData, ['children']));
+                    $navigation->refresh();
                 }
 
                 if (! is_null($navigation)) {
 
-                    if (isset($navigationData['children']) && is_array($navigationData['children']) && ! empty($navigationData['children'])) {
-                        $model::rebuildSubtree($navigation, $navigationData['children']);
+                    // todo: handle level more than 1 ***
+                    if (isset($navigationData['children']) && is_array($navigationData['children'])) {
+                        foreach ($navigationData['children'] as $c) {
+                            // $navigation->children()->updateOrCreate(
+                            //     Arr::only($c, ['id']),
+                            //     Arr::except($c, ['id'])
+                            // );
+                            $navigation->prependNode($model::create(Arr::except($c, ['children'])));
+                        }
                     }
 
                     $this->finished['navigation'][] = $navigation ?? null;
