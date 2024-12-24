@@ -3,18 +3,26 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Helpers;
 
 use Filament\Forms;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates;
-use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateResourceHelper
 {
     /**
-     * @param  string  $name
      * @return Forms\Components\Field|Forms\Components\Component
+     */
+    public static function getThemeFormComponent()
+    {
+        return Forms\Components\Select::make('theme')
+            ->label(__('inspirecms::resources/template.theme.label'))
+            ->prefixIcon('heroicon-o-paint-brush')
+            ->options(inspirecms_templates()->getAvailableThemes());
+    }
+
+    /**
+     * @param  string  $name
+     * @return Forms\Components\Field|Forms\Components\Component|AceEditor
      */
     public static function getContentFormComponent($name = 'content')
     {
@@ -48,7 +56,10 @@ class TemplateResourceHelper
     {
         return Forms\Components\ViewField::make('property_type_instructions')
             ->label(__('inspirecms::resources/template.property_type_instructions.label'))
-            ->view('inspirecms::instructions.property-type-instructions');
+            ->view('inspirecms::instructions.property-type-instructions', [
+                'copiedMessage' => __('inspirecms::actions.copy.message'),
+                'copyButtonLabel' => __('inspirecms::actions.copy.label'),
+            ]);
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
@@ -60,52 +71,5 @@ class TemplateResourceHelper
                 'copiedMessage' => __('inspirecms::actions.copy.message'),
                 'copyButtonLabel' => __('inspirecms::actions.copy.label'),
             ]);
-    }
-
-    /**
-     * Updates the view content at the specified path with the given content.
-     *
-     * @param  string  $fullPath  The full path to the view component file.
-     * @param  string  $content  The new content to be written to the view component file.
-     * @return void
-     */
-    public static function updateViewContentByPath($fullPath, $content)
-    {
-        file_put_contents($fullPath, $content);
-    }
-
-    /**
-     * Retrieves the view content for the given record.
-     *
-     * @param  Template&Model  $record  The record for which to get the view component.
-     * @return string The view component associated with the given record.
-     */
-    public static function getViewContent($record)
-    {
-        return file_get_contents($record->getFileFullPath());
-    }
-
-    /**
-     * Updates the view content of a given record.
-     *
-     * @param  Template&Model  $record  The record to update.
-     * @param  string  $content  The new content to set for the record.
-     * @return void
-     */
-    public static function updateViewContent($record, $content)
-    {
-        static::updateViewContentByPath($record->getFileFullPath(), $content);
-    }
-
-    /**
-     * @param  HasTemplates&Model  $templateable
-     * @param  string|int|Model&Template  $template
-     * @return void
-     */
-    public static function setDefaultTemplateIfEmpty($templateable, $template)
-    {
-        if (is_null(value: $templateable->getDefaultTemplate())) {
-            $templateable->setAsDefaultTemplate($template);
-        }
     }
 }

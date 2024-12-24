@@ -141,11 +141,10 @@ class ContentDto extends BaseTranslatableModelDto
         }
 
         $model = $this->getModel();
+        
         if (is_null($model)) {
             $children = collect();
-        }
-
-        if (! $model?->relationLoaded('children')) {
+        } elseif (! $model->relationLoaded('children')) {
             $children = $model->children()->with(static::getNecessaryRelationships())->get() ?? collect();
         } else {
             $children = $model->children ?? collect();

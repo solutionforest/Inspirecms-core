@@ -3,37 +3,55 @@
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
-use SolutionForest\InspireCms\InspireCmsManager;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
-use SolutionForest\InspireCms\Services\AssetServiceInterface;
-use SolutionForest\InspireCms\Services\ContentServiceInterface;
-use SolutionForest\InspireCms\Services\PageServiceInterface;
 
 if (! function_exists('inspirecms')) {
-    function inspirecms(): InspireCmsManager
+    /**
+     * @return \SolutionForest\InspireCms\InspireCmsManager
+     */
+    function inspirecms()
     {
-        return app(InspireCmsManager::class);
+        return app(\SolutionForest\InspireCms\InspireCmsManager::class);
+    }
+}
+
+if (! function_exists('inspirecms_templates')) {
+    /**
+     * @return \SolutionForest\InspireCms\Base\TemplateManager
+     */
+    function inspirecms_templates()
+    {
+        return app(\SolutionForest\InspireCms\Base\TemplateManager::class);
     }
 }
 
 if (! function_exists('inspirecms_asset')) {
-    function inspirecms_asset(): AssetServiceInterface
+    /**
+     * @return \SolutionForest\InspireCms\Services\AssetServiceInterface
+     */
+    function inspirecms_asset()
     {
-        return app(AssetServiceInterface::class);
+        return app(\SolutionForest\InspireCms\Services\AssetServiceInterface::class);
     }
 }
 
 if (! function_exists('inspirecms_content')) {
-    function inspirecms_content(): ContentServiceInterface
+    /**
+     * @return \SolutionForest\InspireCms\Services\ContentServiceInterface
+     */
+    function inspirecms_content()
     {
-        return app(ContentServiceInterface::class);
+        return app(\SolutionForest\InspireCms\Services\ContentServiceInterface::class);
     }
 }
 
 if (! function_exists('inspirecms_page')) {
-    function inspirecms_page(): PageServiceInterface
+    /**
+     * @return \SolutionForest\InspireCms\Services\PageServiceInterface
+     */
+    function inspirecms_page()
     {
-        return app(PageServiceInterface::class);
+        return app(\SolutionForest\InspireCms\Services\PageServiceInterface::class);
     }
 }
 
@@ -47,21 +65,30 @@ if (! function_exists('is_inspirecms_user')) {
 }
 
 if (! function_exists('inspirecms_content_statuses')) {
-    function inspirecms_content_statuses(): ContentStatusManifestInterface
+    /**
+     * @return ContentStatusManifestInterface
+     */
+    function inspirecms_content_statuses()
     {
         return app(ContentStatusManifestInterface::class);
     }
 }
 
 if (! function_exists('inspirecms_permissions')) {
-    function inspirecms_permissions(): PermissionManifestInterface
+    /**
+     * @return PermissionManifestInterface
+     */
+    function inspirecms_permissions()
     {
         return app(PermissionManifestInterface::class);
     }
 }
 
 if (! function_exists('inspirecms_locales')) {
-    function inspirecms_locales(): LocaleManifestInterface
+    /**
+     * @return LocaleManifestInterface
+     */
+    function inspirecms_locales()
     {
         return app(LocaleManifestInterface::class);
     }

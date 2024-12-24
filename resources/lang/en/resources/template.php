@@ -21,4 +21,10 @@ return [
     'page_component_instructions' => [
         'label' => 'Page component instructions',
     ],
+    'theme' => [
+        'label' => 'Theme',
+    ],
+    'editor' => [
+        'title' => 'Template Editor',
+    ],
 ];

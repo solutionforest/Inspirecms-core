@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
-use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ImportService implements ImportServiceInterface
 {
@@ -50,9 +49,9 @@ class ImportService implements ImportServiceInterface
                     continue;
                 }
 
-                if (in_array($folderName, ImportDataHelper::FOLDER_HAS_VIEWS)) {
+                if (in_array($folderName, [ImportDataHelper::FOLDER_IDENTIFIER_VIEW])) {
 
-                    $failedForViews = $this->duplicateViewFiles(fs: $extractorFs, folderPath: $folderPath, forType: $folderName);
+                    $failedForViews = $this->duplicateViewFiles(fs: $extractorFs, folder: $folderPath, forType: $folderName);
                     if (! empty($failedForViews)) {
                         $message[] = [
                             'message' => "Failed to duplicate view files for {$folderName}.",
@@ -62,7 +61,7 @@ class ImportService implements ImportServiceInterface
 
                 }
 
-                $failedForImportData = $this->importDataForType($extractorFs, $folderPath, $folderName);
+                $failedForImportData = $this->importDataForType(fs: $extractorFs, folder: $folderPath, forType: $folderName);
                 if (! empty($failedForImportData)) {
                     $message[] = [
                         'message' => "Failed to import data for {$folderName}.",
@@ -133,11 +132,11 @@ class ImportService implements ImportServiceInterface
 
     /**
      * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
-     * @param  string  $folderPath  The path to the folder containing the view files to duplicate.
+     * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType
      * @return array|null Error message for the file or null
      */
-    protected function importDataForType($fs, $folderPath, $forType)
+    protected function importDataForType($fs, $folder, $forType)
     {
         $neededTypes = collect(array_flip(ImportDataHelper::FOLDER_STRUCTURE))->except(ImportDataHelper::FOLDER_IDENTIFIER_VIEW)->keys()->all();
 
@@ -145,20 +144,41 @@ class ImportService implements ImportServiceInterface
             return;
         }
 
-        return static::fileProcessingWithCallback(fs: $fs, folderPath: $folderPath, callback: function ($fs, $folderPath, $file) use ($forType) {
+        if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
+
+            return static::fileProcessingWithCallback(
+                fs: $fs, 
+                folder: $folder, 
+                includeSubFolders: true, 
+                neededExtensions: ['.blade.php'],
+                callback: function ($fs, $folder, $filePath) use ($forType) {
+                if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
+    
+                    [$slug, $theme] = static::extractTemplateSlugAndFilename($filePath, $folder);
+        
+                    $themeContent = $fs->get($filePath) ?? inspirecms_templates()->retrieveDefaultContent();
+
+                    $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
+
+                    $this->importDataService->addTemplate(
+                        slug: $data->slug,
+                        data: $data
+                    );
+    
+                    return;
+                }
+    
+            });
+        }
+
+        return static::fileProcessingWithCallback(
+            fs: $fs, 
+            folder: $folder, 
+            includeSubFolders: false, 
+            neededExtensions: ['.json'],
+            callback: function ($fs, $folderPath, $file) use ($forType) {
 
             $slug = Str::before(basename($file), '.');
-
-            // .blade.php files are for views
-            if ($forType == ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) {
-                $data = new Entities\Template(slug: $slug);
-                $this->importDataService->addTemplate(
-                    slug: $data->slug,
-                    data: $data
-                );
-
-                return;
-            }
 
             $jsonData = $fs->json($file);
 
@@ -201,30 +221,49 @@ class ImportService implements ImportServiceInterface
                     break;
             }
 
-        }, includeSubFolders: false, neededExtensions: ['.json', '.blade.php']);
+        });
     }
 
     /**
      * Duplicates view files from the specified folder path.
      *
      * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
-     * @param  string  $folderPath  The path to the folder containing the view files to duplicate.
+     * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType  The type of view files to duplicate.
      * @return array|null Error message for the file or null
      */
-    protected function duplicateViewFiles($fs, $folderPath, $forType)
+    protected function duplicateViewFiles($fs, $folder, $forType)
     {
-        return static::fileProcessingWithCallback(fs: $fs, folderPath: $folderPath, callback: function ($fs, $folderPath, $file) use ($forType) {
+        return static::fileProcessingWithCallback(
+            fs: $fs, 
+            folder: $folder, 
+            includeSubFolders: true, 
+            neededExtensions: ['.blade.php'],
+            callback: function ($fs, $folder, $filePath) use ($forType) {
 
-            $subPathRelativeToFolder = (string) Str::of($file)->after($folderPath)->ltrim('/');
+                switch ($forType) {
+                    case ImportDataHelper::FOLDER_IDENTIFIER_VIEW:
+                        $toPath = resource_path('views/' . Str::of($filePath)->after($folder)->ltrim('/')->toString());
+                        break;
+                    
+                    default:
+                        $toPath = null;
+                        break;
+                }
 
-            $toPath = self::getViewFolderMapFor($forType, $subPathRelativeToFolder);
+                if (is_null($toPath)) {
+                    return;
+                }
 
-            $content = $fs->get($file);
+                $content = $fs->get($filePath);
 
-            file_put_contents($toPath, $content);
+                // Create the directory if it does not exist
+                FileHelper::ensureDirectoryExists(dirname($toPath));
 
-        }, includeSubFolders: true, neededExtensions: ['.blade.php']);
+                file_put_contents($toPath, $content);
+
+            }
+        );
     }
 
     protected static function getFolderNameFromExtractedPath($extractedPath)
@@ -236,15 +275,15 @@ class ImportService implements ImportServiceInterface
      * Processes files in a specified folder and applies a callback function to each file.
      *
      * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance to use for file operations.
-     * @param  string  $folderPath  The path to the folder containing the files to process.
+     * @param  string  $folder  The path to the folder containing the files to process.
      * @param  callable(\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter, string, string): void  $callback  The callback function to apply to each file.
      * @param  bool  $includeSubFolders  Whether to include subfolders in the essing. Default is false.
      * @param  array  $neededExtensions  The file extension to filter files by. If empty, all files are processed.
      * @return array|null Error message for the file or null
      */
-    protected static function fileProcessingWithCallback($fs, $folderPath, $callback, bool $includeSubFolders = false, ?array $neededExtensions = null)
+    protected static function fileProcessingWithCallback($fs, $folder, $callback, bool $includeSubFolders = false, ?array $neededExtensions = null)
     {
-        $files = $includeSubFolders ? $fs->allFiles($folderPath) : $fs->files($folderPath);
+        $files = $includeSubFolders ? $fs->allFiles($folder) : $fs->files($folder);
 
         $failed = [];
 
@@ -265,7 +304,7 @@ class ImportService implements ImportServiceInterface
                     }
                 }
 
-                $callback($fs, $folderPath, $file);
+                $callback($fs, $folder, $file);
 
             } catch (\Throwable $th) {
 
@@ -281,12 +320,12 @@ class ImportService implements ImportServiceInterface
         return $failed;
     }
 
-    protected static function getViewFolderMapFor($forType, $fileRelativePath)
+    protected static function extractTemplateSlugAndFilename(string $file, string $folder)
     {
-        return match ($forType) {
-            ImportDataHelper::FOLDER_IDENTIFIER_VIEW => resource_path('views') . DIRECTORY_SEPARATOR . $fileRelativePath,
-            ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE => InspireCmsConfig::get('template.path') . DIRECTORY_SEPARATOR . $fileRelativePath,
-            default => null,
-        };
+        [$templateSlug, $themeFilename] = Str::of($file)->after($folder)->ltrim('/')->explode('/', 2);
+
+        $themeFilename = str($themeFilename)->replace('.blade.php', '')->toString();
+
+        return [$templateSlug, $themeFilename];
     }
 }

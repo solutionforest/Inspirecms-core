@@ -1,0 +1,42 @@
+@php
+    $locale ??= $content->getLocale();
+    $page_banner = $content->getPropertyGroup('page_banner');
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
+    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue($locale))->first();
+    $case_content = $content->getPropertyGroup('case_content');
+    $case_content_overview = $case_content?->getPropertyData('overview')?->getValue($locale);
+    $case_content_category = $case_content?->getPropertyData('category')?->getValue($locale);
+    $case_content_year = $case_content?->getPropertyData('year')?->getValue($locale);
+    $case_content_deliverables = $case_content?->getPropertyData('deliverables')?->getValue($locale);
+    $case_content_platforms = collect($case_content?->getPropertyData('platforms')?->getValue($locale))->implode(', ');
+    $case_content_roles = collect($case_content?->getPropertyData('roles')?->getValue($locale))->implode(', ');
+    $case_content_ = collect($case_content?->getPropertyData('roles')?->getValue($locale))->implode(', ');
+    $case_content_content = $case_content?->getPropertyData('content')?->getValue($locale);
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+    <article class="blog-post">
+        <!-- Header -->
+        <header class="post-header">
+            <h1 class="post-title">{{ $page_banner_title }}</h1>
+        </header>
+
+        <!-- Main Image -->
+        <div class="post-image">
+            @if ($page_banner_image)
+                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="img-fluid">
+            @endif
+        </div>
+
+        <!-- Content -->
+
+
+        <!-- Post Content -->
+        <div class="post-content-single">
+            {{ $case_content_content}}
+        </div>
+
+
+
+
+    </article>
+</x-dynamic-component>

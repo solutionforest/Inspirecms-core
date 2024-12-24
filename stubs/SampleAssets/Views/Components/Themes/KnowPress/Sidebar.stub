@@ -1,0 +1,114 @@
+<!-- Sidebar -->
+<aside class="sidebar">
+    <!-- Desktop Sidebar Content -->
+    <div class="desktop-sidebar">
+        <div class="sidebar-main-content">
+            <div class="vt">VT. Knowledge Base</div>
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <nav class="nav-menu">
+                <div class="nav-section">
+                    <div class="welcome">Welcome</div>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Installation and Setup (5)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Introduction</a></li>
+                        <li><a href="#">Quick Overview</a></li>
+                        <li><a href="#">Theme Installation</a></li>
+                        <li><a href="#">Plugin Installation</a></li>
+                        <li><a href="#">Demo Setup</a></li>
+                        <li><a href="#">Post-Installation Setup</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Content Editing (3)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Standard Posts and Pages</a></li>
+                        <li><a href="#">Knowledge Base</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Elements (4)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Typography</a></li>
+                        <li><a href="#">Components</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+        <div class="sidebar-footer">
+            <span class="theme-credit">Theme Name by VitaThemes</span>
+            <a href="#" class="privacy-policy">Privacy Policy</a>
+        </div>
+    </div>
+
+    <!-- Mobile Menu Button (Outside mobile-menu-wrapper) -->
+    <!-- Mobile Top Navigation -->
+    <div class="mobile-top-nav">
+        <button class="mobile-menu-btn">
+            <span class="hamburger"></span>
+        </button>
+        <span class="mobile-title">VT. Knowledge Base</span>
+        <button class="mobile-search-btn">
+            <img src="{{ asset('image/icon/search.svg') }}" alt="">
+        </button>
+    </div>
+
+
+    <!-- Mobile Menu Wrapper -->
+    <div class="mobile-menu-wrapper">
+        <div class="mobile-menu">
+            <div class="mobile-menu-header">
+                <span class="vt">VT. Knowledge Base</span>
+                <button class="close-menu"><img src="{{ asset('image/icon/larr.svg') }}" alt=""></button>
+            </div>
+
+            <div class="search-box">
+                <input type="text" placeholder="Search...">
+            </div>
+
+            <nav class="nav-menu">
+                <!-- Same content as desktop -->
+                <div class="nav-section">
+                    <div class="welcome">Welcome</div>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Installation and Setup (5)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Introduction</a></li>
+                        <li><a href="#">Quick Overview</a></li>
+                        <li><a href="#">Theme Installation</a></li>
+                        <li><a href="#">Plugin Installation</a></li>
+                        <li><a href="#">Demo Setup</a></li>
+                        <li><a href="#">Post-Installation Setup</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Content Editing (3)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Standard Posts and Pages</a></li>
+                        <li><a href="#">Knowledge Base</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+
+                <div class="nav-section">
+                    <h3 class="has-dropdown">Elements (4)</h3>
+                    <ul class="submenu">
+                        <li><a href="#">Typography</a></li>
+                        <li><a href="#">Components</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+    </div>
+</aside>

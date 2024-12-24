@@ -34,7 +34,6 @@ class TemplateResource extends Resource implements ClusterSectionResource
             'delete_any',
             'attach',
             'detach',
-            'update_view',
         ];
     }
 
@@ -51,11 +50,6 @@ class TemplateResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('slug')
                     ->label(__('inspirecms::resources/template.slug.label'))
                     ->weight('bold'),
-                Tables\Columns\TextColumn::make('path')
-                    ->label(__('inspirecms::resources/template.path.label')),
-            ])
-            ->actions([
-                Tables\Actions\EditAction::make()->slideOver()->modalWidth('7xl')->iconButton(),
             ]);
     }
 

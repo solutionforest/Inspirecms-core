@@ -33,6 +33,15 @@ class TemplatesRelationManager extends RelationManager
      */
     public $data = [];
 
+    public ?string $theme = null;
+
+    public function mount(): void
+    {
+        parent::mount();
+
+        $this->theme = inspirecms_templates()->getCurrentTheme();
+    }
+
     public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
     {
         if (! parent::canViewForRecord($ownerRecord, $pageClass)) {
@@ -51,28 +60,19 @@ class TemplatesRelationManager extends RelationManager
             ]);
     }
 
-    public function form(Form $form): Form
-    {
-        return $form
-            ->columns(1)
-            ->schema([
-                TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
-                TemplateResourceHelper::getContentFormComponent()
-                    ->afterStateHydrated(fn ($component, Template $record) => $component->state(TemplateResourceHelper::getViewContent($record)))
-                    ->dehydrateStateUsing(fn ($state, Template $record) => TemplateResourceHelper::updateViewContent($record, $state)),
-            ]);
-    }
-
     public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
     {
         return [
+            Forms\Components\Hidden::make('record_id'),
+            Forms\Components\Hidden::make('document_type_id'),
+            TemplateResourceHelper::getThemeFormComponent()->disabled(),
+            // todo: add to translation
             Forms\Components\Tabs::make()
                 ->tabs([
-                    // todo: add to translation
                     Forms\Components\Tabs\Tab::make('Content')
                         ->schema([
                             TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
-                            TemplateResourceHelper::getContentFormComponent('htmlContent'),
+                            TemplateResourceHelper::getContentFormComponent('html_content'),
                         ]),
                     Forms\Components\Tabs\Tab::make('Instructions')
                         ->schema([
@@ -85,24 +85,24 @@ class TemplatesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->contentGrid(['xl' => 3, 'lg' => 2, 'default' => 1])
-            ->recordTitle(fn ($record) => $record->path)
+            ->recordTitle(fn ($record) => $record->slug)
+            ->recordAction('editAndPreview')
             ->modelLabel(fn () => __('inspirecms::inspirecms.template'))
             ->description(fn () => __('inspirecms::resources/document-type.templates.description'))
             ->columns([
-                Tables\Columns\Layout\Split::make([
-                    Tables\Columns\TextColumn::make('slug')
-                        ->weight('bold')
-                        ->description(fn (Template $record) => $record->path)
-                        ->grow(),
-                    Tables\Columns\TextColumn::make('is_default')
-                        ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-x-circle')
-                        ->iconColor(fn ($state) => $state ? 'success' : 'danger')
-                        ->formatStateUsing(fn () => __('inspirecms::inspirecms.is_default'))
-                        ->grow(),
-                ])->from('md'),
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::resources/template.slug.label'))
+                    ->weight('bold'),
+                Tables\Columns\IconColumn::make('is_default')
+                    ->label(__('inspirecms::resources/template.is_default.label'))
+                    ->boolean(),
             ])
             ->headerActions([
+                Tables\Actions\SelectAction::make('theme')
+                    ->options(inspirecms_templates()->getAvailableThemes())
+                    ->view('inspirecms::filament.actions.select-action', [
+                        'icon' => 'heroicon-o-paint-brush',
+                    ]),
                 Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
@@ -124,8 +124,8 @@ class TemplatesRelationManager extends RelationManager
                         $this->dispatch('$refresh');
                     }),
                 Tables\Actions\ActionGroup::make([
+                    EditAndPreviewAction::make()->builderName('templateViewBuilder')->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record)),
                     Tables\Actions\EditAction::make(),
-                    EditAndPreviewAction::make()->builderName('templateViewBuilder'),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DetachAction::make(),
                 ]),
@@ -143,15 +143,6 @@ class TemplatesRelationManager extends RelationManager
         return __('inspirecms::resources/document-type.templates.label');
     }
 
-    protected function configureTableAction(Tables\Actions\Action $action): void
-    {
-        parent::configureTableAction($action);
-
-        if ($action instanceof EditAndPreviewAction) {
-            $action->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record));
-        }
-    }
-
     protected function configureCreateAction(CreateAction $action): void
     {
         parent::configureCreateAction($action);
@@ -161,8 +152,8 @@ class TemplatesRelationManager extends RelationManager
             ->createAnother(false)
             // Set the default template if it's not set
             ->after(function (Model $record) {
-                TemplateResourceHelper::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
-                $this->dispatch('refreshAlerts');
+                $this->assignDefaultTemplateIfNotSet($record);
+                $this->refreshPageAlerts();
             });
     }
 
@@ -177,8 +168,8 @@ class TemplatesRelationManager extends RelationManager
                 if (is_null($record)) {
                     $record = is_array($data['recordId'] ?? []) ? collect($data['recordId'] ?? [])->first() : $data['recordId'];
                 }
-                TemplateResourceHelper::setDefaultTemplateIfEmpty($this->getOwnerRecord(), $record);
-                $this->dispatch('refreshAlerts');
+                $this->assignDefaultTemplateIfNotSet($record);
+                $this->refreshPageAlerts();
             });
     }
 
@@ -186,62 +177,69 @@ class TemplatesRelationManager extends RelationManager
     {
         parent::configureDetachAction($action);
 
-        $action
-            ->after(function (Model $record) {
-                $this->dispatch('refreshAlerts');
-            });
+        $action->after(fn ($record) => $this->refreshPageAlerts());
     }
 
     protected function configureDeleteBulkAction(Tables\Actions\DeleteBulkAction $action): void
     {
         parent::configureDeleteBulkAction($action);
 
-        $action
-            ->after(function () {
-                $this->dispatch('refreshAlerts');
-            });
-    }
-
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
-    {
-        parent::configureEditAction($action);
-
-        $action
-            ->recordTitle(fn (Template $record) => $record->path)
-            ->modalWidth('7xl')
-            ->slideOver()
-            ->beforeFormFilled(fn (Template $record, Tables\Actions\Action $action) => $this->configureTemplateForm($record, $action));
+        $action->after(fn ($record) => $this->refreshPageAlerts());
     }
 
     protected function configureViewAction(Tables\Actions\ViewAction $action): void
     {
         parent::configureViewAction($action);
 
-        $action
-            ->recordTitle(fn (Template $record) => $record->path)
-            ->modalWidth('7xl')
-            ->slideOver()
-            ->hidden(fn ($record) => $this->canEdit($record))
-            ->beforeFormFilled(fn (Template $record, Tables\Actions\Action $action) => $this->configureTemplateForm($record, $action));
+        $this->configureViewOrEditAction($action);
     }
 
-    protected function configureTemplateForm(Template $record, Tables\Actions\Action $action)
+    protected function configureEditAction(Tables\Actions\EditAction $action): void
     {
-        try {
-            if (! $record->isFileCreated()) {
-                $record->createTemplateFile();
-            }
-        } catch (\Throwable $th) {
-            Notification::make()
-                ->title(__('inspirecms::notification.something_went_wrong.title'))
-                ->body($th->getMessage())
-                ->danger()
-                ->send();
+        parent::configureEditAction($action);
 
-            $action->cancel();
+        $this->configureViewOrEditAction($action);
+    }
+
+    protected function configureViewOrEditAction(Tables\Actions\Action $action)
+    {
+        $action
+            ->recordTitle(fn (Template $record) => $record->slug)
+            ->modalWidth('7xl')
+            ->slideOver()
+            ->beforeFormFilled(function (Model | Template $record, Tables\Actions\Action $action) {
+                try {
+                    $record->initializeTemplate($this->theme);
+                    $record->save();
+                } catch (\Throwable $th) {
+                    Notification::make()
+                        ->title(__('inspirecms::notification.something_went_wrong.title'))
+                        ->body($th->getMessage())
+                        ->danger()
+                        ->send();
+        
+                    $action->cancel();
+                }
+            })
+            ->form([
+                TemplateResourceHelper::getThemeFormComponent()->disabled(),
+                TemplateResourceHelper::getContentFormComponent()->hiddenLabel(),
+            ])
+            ->mutateRecordDataUsing(function (Template $record) {
+                return [
+                    'theme' => $this->theme,
+                    'content' => $record->getContent(theme: $this->theme),
+                ];
+            });
+
+        if ($action instanceof Tables\Actions\EditAction) {
+            $action->using(function (array $data, Model | Template $record) {
+                $record->updateContent($data['content'], $this->theme);
+            });
         }
     }
 
+    //region Preview
     protected function getBuilderPreviewView(string $builderName): ?string
     {
         $templateRecord = $this->cachedMountedTableActionRecord;
@@ -249,12 +247,12 @@ class TemplatesRelationManager extends RelationManager
             return null;
         }
 
-        return $templateRecord->getViewFullName();
+        return $templateRecord->slug;   // wouldn't use this, but it's required
     }
 
     public static function renderBuilderPreview(string $view, array $data): string
     {
-        $htmlContent = $data['htmlContent'] ?? '';
+        $htmlContent = $data['html_content'] ?? '';
 
         $documentType = $data['documentType'] ?? null;
 
@@ -269,13 +267,17 @@ class TemplatesRelationManager extends RelationManager
 
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
     {
+        /**
+         * @var null | (Model & Template)
+         */
         $templateRecord = $this->cachedMountedTableActionRecord;
-        $editorData['recordId'] = $templateRecord?->getKey();
-        if ($templateRecord instanceof Template) {
-            $editorData['htmlContent'] = TemplateResourceHelper::getViewContent($templateRecord);
-        }
+        $theme = $this->theme?? inspirecms_templates()->getCurrentTheme();
+        $editorData['theme'] = $theme;
+        $editorData['record_id'] = $templateRecord?->getKey();
+        $editorData['html_content'] = $templateRecord?->getContent($theme);
+
         $documentType = $this->getOwnerRecord();
-        $editorData['documentTypeId'] = $documentType->getKey();
+        $editorData['document_type_id'] = $documentType->getKey();
         $editorData['property_type_instructions'] = collect($documentType?->fields)
             ->map(fn ($field) => [
                 'dtoData' => $field->toDto(),
@@ -288,7 +290,7 @@ class TemplatesRelationManager extends RelationManager
 
     public static function mutateBuilderPreviewData(string $builderName, array $editorData, array $previewData): array
     {
-        $documentTypeId = $editorData['documentTypeId'] ?? null;
+        $documentTypeId = $editorData['document_type_id'] ?? null;
         $previewData['documentType'] = filled($documentTypeId)
             ? InspireCmsConfig::getDocumentTypeModelClass()::with('fields')->find($documentTypeId)
             : null;
@@ -298,8 +300,9 @@ class TemplatesRelationManager extends RelationManager
 
     public function updateBuilderFieldWithEditorData(string $builderName, array $editorData): void
     {
-        $htmlContent = $editorData['htmlContent'] ?? '';
-        $templateId = $editorData['recordId'] ?? null;
+        $htmlContent = $editorData['html_content'] ?? '';
+        $theme = $editorData['theme'] ?? $this->theme ?? inspirecms_templates()->getCurrentTheme();
+        $templateId = $editorData['record_id'] ?? null;
         if (! $templateId) {
             return;
         }
@@ -309,11 +312,29 @@ class TemplatesRelationManager extends RelationManager
             return;
         }
 
-        TemplateResourceHelper::updateViewContent($template, $htmlContent);
+        $template->updateContent($htmlContent, $theme);
 
         Notification::make()
             ->title(__('inspirecms::actions.edit_and_preview.notification.saved.title'))
             ->success()
             ->send();
     }
+
+    protected function getBuilderEditorTitle(): string
+    {
+        return __('inspirecms::resources/template.editor.title');
+    }
+    //endregion Preview
+
+    //region Helpers
+    protected function refreshPageAlerts(): void
+    {
+        $this->dispatch('refreshAlerts');
+    }
+
+    protected function assignDefaultTemplateIfNotSet($template): void
+    {
+        inspirecms_templates()->assignDefaultTemplateIfNotSet($this->getOwnerRecord(), $template);
+    }
+    //endregion Helpers
 }

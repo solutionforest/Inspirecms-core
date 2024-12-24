@@ -7,111 +7,61 @@ use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
 use SolutionForest\InspireCms\Observers\TemplateObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
-/**
- * @implements TemplateContract<Template>
- */
 class Template extends BaseModel implements TemplateContract
 {
     protected $guarded = ['id'];
 
-    protected ?string $preloadTemplateContent = null;
+    protected $casts = [
+        'content' => 'array',
+    ];
 
     public function templateable()
     {
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
     }
 
-    public function documentTypes()
+    /** @inheritDoc */
+    public function initializeTemplate(?string $theme  =null)
     {
-        return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
-    }
+        $templateContent = $this->content ?? [];
+        
+        if (!is_array($templateContent)) {
+            $templateContent = [];
+        }
 
-    public function content()
-    {
-        return $this->morphedByMany(InspireCmsConfig::getContentModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
-    }
+        $theme ??= inspirecms_templates()->getCurrentTheme();
 
-    public function isFileCreated()
-    {
-        $fullpath = $this->getFileFullPath();
+        if (empty($templateContent) || !isset($templateContent[$theme])) {
+        
+            $templateContent[$theme] = inspirecms_templates()->retrieveDefaultContent();
 
-        return file_exists($fullpath);
-    }
+            $this->content = $templateContent;
 
-    public function createTemplateFile()
-    {
-        $fullpath = $this->getFileFullPath();
-
-        // Create file if not exists
-        if (! file_exists($fullpath)) {
-
-            $content = $this->preloadTemplateContent;
-            if (blank($content)) {
-                $content = <<<'HTML'
-@php
-    $locale ??= $content->getLocale();
-@endphp
-<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('page')" :content="$content">
-    Template content
-</x-dynamic-component>
-HTML;
-            }
-            file_put_contents($fullpath, $content);
+            event(new \SolutionForest\InspireCms\Events\Template\UpdateContent($this->withoutRelations(), $theme));
         }
     }
 
-    public function getFileFullPath()
+    /** @inheritDoc */
+    public function getContent(?string $theme = null)
     {
-        return str($this->ensureDirectoryExists($this->getTemplateDirectory()))
-            ->rtrim('/')
-            ->finish('/')
-            ->finish($this->path)
-            ->toString();
+        $theme ??= inspirecms_templates()->getCurrentTheme();
+
+        return data_get($this->content ?? [], $theme) ?? '';
     }
 
-    public function getViewFullName()
+    /** @inheritDoc */
+    public function updateContent($content, ?string $theme = null)
     {
-        return str($this->getTemplateDirectory())
-            ->rtrim('/')
-            ->finish('/')
-            ->finish($this->slug)
-            ->after(resource_path('views'))
-            ->ltrim('/')
-            ->replace('/', '.')
-            ->toString();
-    }
-
-    public function retrieveTemplatePath()
-    {
-        return str($this->slug)
-            ->trim()
-            ->snake()
-            ->replace(['-', ' '], '-')
-            ->trim('.')
-            ->finish('.blade.php')
-            ->toString();
-    }
-
-    public function preloadTemplateContentBeforeCreate($content)
-    {
-        $this->preloadTemplateContent = $content;
-
-        return $this;
-    }
-
-    protected function ensureDirectoryExists(string $dir): string
-    {
-        // Create dir if not exists
-        if (! is_dir($dir)) {
-            mkdir($dir, 0777, true);
+        $templateContent = $this->content ?? [];
+        if (!is_array($templateContent)) {
+            $templateContent = [];
         }
 
-        return $dir;
-    }
+        $templateContent[$theme ?? inspirecms_templates()->getCurrentTheme()] = $content;
 
-    protected function getTemplateDirectory(): string
-    {
-        return InspireCmsConfig::get('template.path');
+        $this->content = $templateContent;
+
+        $this->save();
     }
 
     public static function boot()

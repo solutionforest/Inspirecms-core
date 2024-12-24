@@ -1,5 +1,5 @@
 @php
-$plaintext = '<x-dynamic-component :component="\\SolutionForest\\InspireCms\\InspireCmsConfig::getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">
+$plaintext = '<x-dynamic-component :component="\\SolutionForest\\InspireCms\\Helpers\\ThemeHelper::getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">
     Your content here
 </x-dynamic-component>';
 $instructions = str($plaintext)
@@ -44,7 +44,7 @@ $instructions = str($plaintext)
             <x-filament::icon
                 icon="heroicon-m-clipboard"
                 :label="$copyButtonLabel"
-                class="h-5 w-5"
+                class="h-4 w-4"
             />
         </button>
     </div>

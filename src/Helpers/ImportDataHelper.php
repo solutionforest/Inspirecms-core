@@ -73,13 +73,16 @@ class ImportDataHelper
 
             if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
 
-                $sampleFiles = array_merge([
-                    'components' => $generateFiles('component', '.blade.php'),
-                ], $generateFiles('sample', '.blade.php'));
+                $sampleFiles = array_merge(
+                    ['components' => $generateFiles('component', '.blade.php')], 
+                    $generateFiles('sample', '.blade.php')
+                );
 
-            } elseif (in_array($folder, self::FOLDER_HAS_VIEWS)) {
+            } elseif ($folder == self::FOLDER_IDENTIFIER_TEMPLATE) {
 
-                $sampleFiles = $generateFiles($folder, '.blade.php');
+                $sampleFiles = collect($generateFiles($folder, ''))
+                    ->mapWithKeys(fn ($templateFolder) => [$templateFolder => $generateFiles('theme', '.blade.php')])
+                    ->all();
 
             } else {
 
@@ -96,7 +99,7 @@ class ImportDataHelper
     {
         $generateOrder = [
             self::FOLDER_IDENTIFIER_FIELDGROUP => collect(range(1, 3))->map(fn ($i) => "field-group-{$i}.json")->all(),
-            self::FOLDER_IDENTIFIER_TEMPLATE => collect(range(1, 2))->map(fn ($i) => "template-{$i}.blade.php")->all(),
+            self::FOLDER_IDENTIFIER_TEMPLATE => collect(range(1, 2))->map(fn ($i) => array_map(fn ($j) => ["template-{$i}" . DIRECTORY_SEPARATOR . "theme-{$j}.blade.php"], range(1, 2)))->flatten()->all(),
             self::FOLDER_IDENTIFIER_DOCUMENTTYPE => collect(range(1, 4))->map(fn ($i) => "document-type-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_CONTENT => collect(range(1, 1))->map(fn ($i) => "content-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_NAVIGATION => collect(range(1, 1))->map(fn ($i) => "navigation-{$i}.json")->all(),
@@ -217,7 +220,7 @@ class ImportDataHelper
                 case self::FOLDER_IDENTIFIER_TEMPLATE:
 
                     $sequence = [
-                        '<x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">This is sample view</x-dynamic-component>',
+                        '<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">This is sample view</x-dynamic-component>',
                     ];
 
                     break;

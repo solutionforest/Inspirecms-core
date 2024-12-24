@@ -61,4 +61,14 @@ class FileHelper
             throw $th;
         }
     }
+
+    public static function ensureDirectoryExists(string $dir): string
+    {
+        // Create dir if not exists
+        if (! is_dir($dir)) {
+            mkdir($dir, 0777, true);
+        }
+
+        return $dir;
+    }
 }

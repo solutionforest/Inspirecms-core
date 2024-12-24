@@ -1,0 +1,17 @@
+@php
+    $locale ??= $content->getLocale() ?? request()->getLocale();
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('layout')" :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
+    <div class="documentation-layout">
+        <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('sidebar')" :locale="$locale" />
+        <div class="d-flex flex-column">
+            <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('topnav')" :locale="$locale" />
+            <!-- Main Content -->
+            <main class="main-content">
+                {{ $slot }}
+            </main>
+        </div>
+    </div>
+
+    <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('footer')" :locale="$locale" />
+</x-dynamic-component>

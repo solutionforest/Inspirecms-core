@@ -54,7 +54,7 @@ return new class extends BaseMigration
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();
             $table->string('slug');
-            $table->text('path');
+            $table->json('content')->nullable();
 
             $table->timestamps();
 

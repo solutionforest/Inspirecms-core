@@ -33,26 +33,6 @@ class InspireCmsConfig
         return static::get("filament.resources.{$key}", $default);
     }
 
-    public static function getTemplateTheme(): string
-    {
-        return trim(static::get('template.theme', 'default'));
-    }
-
-    public static function getTemplateComponentPrefix(): string
-    {
-        return trim(static::get('template.component_prefix', 'inspire-cms'));
-    }
-
-    public static function getComponentWithTheme(string $component): string
-    {
-        $componentPrefix = static::getTemplateComponentPrefix();
-
-        return str(static::getTemplateTheme())
-            ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
-            ->finish('.')
-            ->finish(trim($component));
-    }
-
     public static function getContentTableName(): string
     {
         return app(static::getContentModelClass())->getTable();
