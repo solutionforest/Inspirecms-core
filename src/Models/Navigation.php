@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Kalnoy\Nestedset\NodeTrait;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
-use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\InspireCmsConfig;

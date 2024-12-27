@@ -30,7 +30,7 @@ trait ContentPreviewEditorTrait
 
             throw new Halt;
         }
-        
+
         return $template->getContent();
     }
 
