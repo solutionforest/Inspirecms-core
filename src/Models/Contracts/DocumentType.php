@@ -80,7 +80,19 @@ interface DocumentType extends Base\HasTemplates
      */
     public function content();
 
+    /**
+     * Determine if the document type is a web page.
+     *
+     * @return bool True if the document type is a web page, false otherwise.
+     */
     public function isWebPageType();
+
+    /**
+     * Determine if the document type is a data type.
+     *
+     * @return bool
+     */
+    public function isDataType();
 
     /**
      * Get the class name of the type enumeration.

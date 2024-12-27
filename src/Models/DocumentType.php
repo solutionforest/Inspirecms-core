@@ -117,6 +117,11 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->category == DocumentTypeCategoryEnum::Web->value;
     }
 
+    public function isDataType()
+    {
+        return $this->category == DocumentTypeCategoryEnum::Data->value;
+    }
+
     public function inheritDocumentType($documentType)
     {
         try {
@@ -207,7 +212,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     public function canManageTemplates()
     {
-        return $this->exists && $this->isWebPageType();
+        return $this->exists && ($this->isWebPageType() || $this->isDataType());
     }
 
     //region Attribute(s)
