@@ -87,6 +87,11 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null);
 
     /**
+     * @return TDto The DTO representation of the model.
+     */
+    public function toDto(...$args);
+
+    /**
      * Retrieve the segments of slug for the content.
      *
      * @return array An array of segments.

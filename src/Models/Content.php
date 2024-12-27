@@ -158,6 +158,9 @@ class Content extends BaseModel implements ContentContract
         return ContentDto::class;
     }
 
+    /**
+     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     */
     public function toDto(...$args)
     {
         $fallbackLocale = $this->getFallbackLocale();
@@ -174,6 +177,9 @@ class Content extends BaseModel implements ContentContract
         );
     }
 
+    /**
+     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     */
     public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null)
     {
         $dtoClass = static::getDtoClass();
