@@ -54,11 +54,6 @@ class ContentDto extends BaseTranslatableModelDto
     public $seo;
 
     /**
-     * @var null|SupportCollection<ContentDto>|\SolutionForest\InspireCms\Collection\ContentDtoCollection
-     */
-    public $children = null;
-
-    /**
      * @var ?array<string,string>
      */
     public $redirectUrls;
@@ -67,6 +62,11 @@ class ContentDto extends BaseTranslatableModelDto
      * @var ?int
      */
     public $redirectType;
+
+    /**
+     * @var null|SupportCollection<ContentDto>
+     */
+    protected $children = null;
 
     protected array $translatableAttributes = ['title'];
 
@@ -132,7 +132,7 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @return SupportCollection<ContentDto>|\SolutionForest\InspireCms\Collection\ContentDtoCollection
+     * @return SupportCollection<ContentDto>
      */
     public function getChildren()
     {
@@ -149,11 +149,11 @@ class ContentDto extends BaseTranslatableModelDto
         } else {
             $children = $model->children ?? collect();
         }
-        $result = new \SolutionForest\InspireCms\Collection\ContentDtoCollection;
-        foreach ($children as $child) {
-            $propertyData = $child->getLatestPublishedPropertyData();
-            $result->push(static::make($child, $propertyData, $this->getLocale(), $child->getPublishTime()));
-        }
+
+        $currLocale = $this->getLocale();
+        $result = $children instanceof \SolutionForest\InspireCms\Collection\ContentCollection
+            ? $children->toDto($currLocale)
+            : (new \SolutionForest\InspireCms\Collection\ContentCollection($children))->toDto($currLocale);
 
         return $this->children = $result;
     }

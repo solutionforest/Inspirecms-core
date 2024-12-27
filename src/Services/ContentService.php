@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 /**
@@ -17,6 +18,14 @@ class ContentService implements ContentServiceInterface
     {
         return $this->getQuery()
             ->whereIsWebPage()
+            ->whereIsPublished()
+            ->find($id);
+    }
+
+    /** {@inheritDoc} */
+    public function findPublishedContentById($id)
+    {
+        return $this->getQuery()
             ->whereIsPublished()
             ->find($id);
     }
@@ -82,7 +91,7 @@ class ContentService implements ContentServiceInterface
     {
         $parent = $this->findByRealPath($slugPath);
         if (is_null($parent)) {
-            return collect();
+            return new ContentCollection();
         }
 
         return $parent->children()
@@ -90,7 +99,28 @@ class ContentService implements ContentServiceInterface
             ->when(! is_null($limit), fn ($q) => $q->limit($limit))
             ->get();
     }
+    
+    /** {@inheritDoc} */
+    public function getDefaultTemplateFor($content)
+    {
+        return $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
+    }
+    
+    /** {@inheritDoc} */
+    public function getTemplatesFor($content)
+    {
+        if (is_null($content)) {
+            return collect();
+        }
 
+        return collect($content->documentType?->getTemplates())->merge($content->getTemplates());
+    }
+
+    /** {@inheritDoc} */
+    public function getTemplateFor($content, $templateSlug)
+    {
+        return $this->getTemplatesFor($content)->first(fn ($template) => $template->slug === $templateSlug);
+    }
     //region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder

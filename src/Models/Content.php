@@ -60,6 +60,11 @@ class Content extends BaseModel implements ContentContract
 
     protected $table = 'content';
 
+    public function newCollection(array $models = [])
+    {
+        return new \SolutionForest\InspireCms\Collection\ContentCollection($models);
+    }
+
     public function documentType()
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');

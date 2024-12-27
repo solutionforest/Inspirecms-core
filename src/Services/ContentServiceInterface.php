@@ -3,9 +3,11 @@
 namespace SolutionForest\InspireCms\Services;
 
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 
 /**
- * @template TResult of \Illuminate\Database\Eloquent\Model|\SolutionForest\InspireCms\Models\Contracts\Content
+ * @template TResult of \Illuminate\Database\Eloquent\Model | \SolutionForest\InspireCms\Models\Contracts\Content
+ * @template TTemplate of \Illuminate\Database\Eloquent\Model | \SolutionForest\InspireCms\Models\Contracts\Template
  */
 interface ContentServiceInterface
 {
@@ -18,10 +20,18 @@ interface ContentServiceInterface
     public function findPublishedWebPageById($id);
 
     /**
+     * Find published content by their ID.
+     *
+     * @param  string  $id  The ID of the content to find.
+     * @return ?TResult The content item if found, or null if not found.
+     */
+    public function findPublishedContentById($id);
+
+    /**
      * Find published content by their IDs.
      *
      * @param  string  ...$ids  The IDs of the content to find.
-     * @return Collection<TResult> The published content corresponding to the given IDs.
+     * @return ContentCollection<TResult> The published content corresponding to the given IDs.
      */
     public function findPublishedContentByIds(...$ids);
 
@@ -45,7 +55,7 @@ interface ContentServiceInterface
      *
      * @param  string  $slugPath  The slug path of the content.
      * @param  array  $withRelations  Optional. An array of relations to load with the content.
-     * @return mixed The content found by the given slug path, or null if not found.
+     * @return ?TResult The content found by the given slug path, or null if not found.
      */
     public function findByRealPath(string $slugPath, $withRelations = []);
 
@@ -54,7 +64,7 @@ interface ContentServiceInterface
      *
      * @param  string  $slugPath  The slug path of the content to retrieve.
      * @param  array  $withRelations  The relations to load with the content.
-     * @return Collection<string,TResult> The content associated with the given slug path.
+     * @return ContentCollection<string,TResult> The content associated with the given slug path.
      */
     public function getByRealPath(string $slugPath, $withRelations = []);
 
@@ -64,7 +74,32 @@ interface ContentServiceInterface
      * @param  string  $slugPath  The slug path used to identify the parent content.
      * @param  int|null  $limit  The maximum number of content items to retrieve, or null for unlimited.
      * @param  array  $withRelations  The relations to load with the content.
-     * @return Collection<TResult>
+     * @return ContentCollection<TResult>
      */
     public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = []);
+
+    /**
+     * Get the default template for the given content.
+     *
+     * @param TResult $content The content for which to get the default template.
+     * @return null | (\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template) The default template for the given content.
+     */
+    public function getDefaultTemplateFor($content);
+    
+    /**
+     * Retrieve templates for the given content.
+     *
+     * @param TResult $content The content for which to retrieve templates.
+     * @return Collection<string,TTemplate> The list of templates associated with the content.
+     */
+    public function getTemplatesFor($content);
+
+    /**
+     * Retrieves the template for the given content and template slug.
+     *
+     * @param TResult $content The content for which the template is being retrieved.
+     * @param string $templateSlug The slug identifier for the template.
+     * @return null | TTemplate The template associated with the given content and template slug.
+     */
+    public function getTemplateFor($content, $templateSlug);
 }

@@ -15,7 +15,7 @@
     $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
 
     $blogPage = request()->query('blog_page', 1);
-    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->forPage($blogPage, 4);
+    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(page: $blogPage, perPage: 4);
     
     $banner_image = Arr::first($hero_banner_image_slider);
 @endphp

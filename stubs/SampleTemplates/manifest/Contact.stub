@@ -9,7 +9,7 @@
     $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
     $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
     
-    $config = inspirecms_page()->findContentByRealPath('config', $locale);
+    $config = inspirecms_content()->findByRealPath('config')->toDto($locale);
     $sns = $config->getPropertyGroup('social_media');
     $sns_email = $sns?->getPropertyData('email')?->getValue();
     $sns_linkedin = $sns?->getPropertyData('linkedin')?->getValue();

@@ -7,17 +7,17 @@ use Illuminate\Support\Facades\Blade;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
-use SolutionForest\InspireCms\Services\PageServiceInterface;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
 
 class ContentController extends Controller
 {
-    protected PageServiceInterface $pageService;
+    protected ContentServiceInterface $contentService;
 
     protected ContentUrlGeneratorInterface $urlGenerator;
 
-    public function __construct(PageServiceInterface $pageService)
+    public function __construct(ContentServiceInterface $contentService)
     {
-        $this->pageService = $pageService;
+        $this->contentService = $contentService;
 
         $this->urlGenerator = ContentUrlGeneratorFactory::create();
     }
@@ -27,12 +27,23 @@ class ContentController extends Controller
         $locale = $this->urlGenerator->getLocaleFromRequest(request());
         $slug = $this->urlGenerator->getSlugFromRequest(request(), $locale);
 
-        // Redirect to the localized URL if needed
         if (blank($locale)) {
             $locale = $this->getDefaultLocale();
         }
 
-        [$contentDto, $templateDto] = $this->pageService->findContentAndTemplate($slug, $locale);
+        $content = $this->findContentAndLangByFullPath($slug);
+        if (is_null($content)) {
+            abort(404);
+        }
+        if (! $content->isPublished() || ! $content->isWebPage()) {
+            abort(404);
+        }
+
+        /**
+         * @var \SolutionForest\InspireCms\Dtos\ContentDto $contentDto
+         */
+        $contentDto = $content->toDto($locale);
+        $templateDto = $this->getTemplateForContent($content);
 
         if (is_null($contentDto) || is_null($templateDto)) {
             abort(404);
@@ -63,5 +74,66 @@ class ContentController extends Controller
     protected function getDefaultLocale(): string
     {
         return InspireCms::getFallbackLanguage()?->code ?? app()->getLocale();
+    }
+
+    /**
+     * @param null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model $content
+     * @return null|\SolutionForest\InspireCms\Dtos\TemplateDto
+     */
+    protected function getTemplateForContent($content)
+    {
+        $template = $this->contentService->getDefaultTemplateFor($content);
+        
+        $theme = inspirecms_templates()->getCurrentTheme();
+
+        return $template?->toDto($theme);
+    }
+
+    /**
+     * @return null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model
+     */
+    protected function findContentAndLangByFullPath(?string $fullPath)
+    {
+        $relations = static::getDtoRelations();
+
+        // ensure the format of full path
+        $fullPath = $this->ensureFormatOfFullPath($fullPath ?? '');
+
+        // if the full path is the root path, return the index page
+        if (blank(trim($fullPath, '/'))) {
+            $content = $this->contentService->findDefaultWebPage();
+        } else {
+            $content = $this->contentService->findWebPageBySlugPath($fullPath);
+        }
+
+        if (is_null($content)) {
+            return null;
+        }
+
+        $content->loadMissing($relations);
+
+        return $content;
+    }
+
+    /**
+     * Ensures that the given full path is in the correct format.
+     *
+     * @param  string  $fullPath  The full path to be formatted.
+     * @return string The formatted full path.
+     */
+    protected function ensureFormatOfFullPath(string $fullPath): string
+    {
+        return (string) str($fullPath)->trim()->prepend('/');
+    }
+
+    protected static function getDtoRelations(): array
+    {
+        return [
+            'documentType.fields.group',
+            'documentType.templates',
+            'webSetting',
+            'publishedVersions',
+            'templates',
+        ];
     }
 }

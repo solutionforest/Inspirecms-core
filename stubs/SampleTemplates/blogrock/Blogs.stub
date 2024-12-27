@@ -2,7 +2,7 @@
     $blogPage = request()->query('page') ?? 1;
 
     $locale ??= $content->getLocale();
-    $blogs = inspirecms_page()->getContentUnderRealPath('blogs', $locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+    $blogs = inspirecms_content()->getPaginatorUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <main>
