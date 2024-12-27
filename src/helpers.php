@@ -45,16 +45,6 @@ if (! function_exists('inspirecms_content')) {
     }
 }
 
-if (! function_exists('inspirecms_page')) {
-    /**
-     * @return \SolutionForest\InspireCms\Services\PageServiceInterface
-     */
-    function inspirecms_page()
-    {
-        return app(\SolutionForest\InspireCms\Services\PageServiceInterface::class);
-    }
-}
-
 if (! function_exists('is_inspirecms_user')) {
     function is_inspirecms_user($user): bool
     {
