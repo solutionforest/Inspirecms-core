@@ -41,4 +41,15 @@ trait HasTemplates
 
         return $this->templates()->wherePivot('is_default', true)->first();
     }
+
+    public function getTemplates()
+    {
+        if ($this->relationLoaded('templates')) {
+            $templates =  $this->templates;
+        } else {
+            $templates = $this->templates()->get();
+        }
+
+        return collect($templates)->mapWithKeys(fn (Template $template) => [$template->slug => $template]);
+    }
 }

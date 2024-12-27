@@ -15,22 +15,16 @@ use SolutionForest\InspireCms\Models\Contracts\Templateable;
 interface HasTemplates
 {
     /**
-     * Get the templates associated with the document type.
-     *
-     * @return MorphToMany The templates associated with the document type.
+     * @return MorphToMany The templates associated with the model.
      */
     public function templates();
 
     /**
-     * Get the morph field templates associated with the document type.
-     *
-     * @return MorphMany The morph field templates associated with the document type.
+     * @return MorphMany The morph field templates associated with the model.
      */
     public function templateable();
 
     /**
-     * Set the specified template as the default for the document type.
-     *
      * @param  (Model&Template)|string|int  $template  The template to set as default, which can be a Template object, a string, or an integer.
      * @return void
      */
@@ -42,4 +36,9 @@ interface HasTemplates
      * @return null|(Model&Template) The default template or null if not set.
      */
     public function getDefaultTemplate();
+
+    /**
+     * @return \Illuminate\Support\Collection<string,(Model&Template)>
+     */
+    public function getTemplates();
 }
