@@ -158,6 +158,14 @@ class ContentDto extends BaseTranslatableModelDto
         return $this->children = $result;
     }
 
+    public function getTemplate($slug)
+    {
+        //todo: improve this
+        $content = $this->getModel();
+        $template = inspirecms_content()->getTemplateFor($content, $slug);
+        return $template?->toDto() ?? null;
+    }
+
     /**
      * Retrieves the property group associated with the given key.
      *

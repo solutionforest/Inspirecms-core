@@ -65,7 +65,7 @@ class ContentController extends Controller
             abort(404);
         }
 
-        return Blade::render($templateDto->content, [
+        return $templateDto->render([
             'content' => $contentDto,
             'locale' => $locale,
         ]);
