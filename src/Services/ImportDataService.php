@@ -476,7 +476,7 @@ class ImportDataService implements ImportDataServiceInterface
             foreach ($items as $item) {
                 try {
                     $item->validate();
-    
+
                     $navigationData = $this->mutateNavigationData($item);
                     $treeData[] = $navigationData;
                     $navigation = $model::updateOrCreate(
@@ -484,7 +484,7 @@ class ImportDataService implements ImportDataServiceInterface
                         Arr::except($navigationData, ['id', 'children'])
                     );
                     $this->finished['navigation'][] = $navigation ?? null;
-    
+
                 } catch (\Throwable $th) {
                     $this->processErrors['navigation'][] = $th->getMessage();
                 }
@@ -493,7 +493,7 @@ class ImportDataService implements ImportDataServiceInterface
             if (empty($treeData)) {
                 continue;
             }
-            
+
             try {
                 $model::scoped(['category' => $category])->rebuildTree($treeData, true);
             } catch (\Throwable $th) {

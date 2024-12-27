@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
