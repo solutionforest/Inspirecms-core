@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -40,6 +41,8 @@ class SampleSeeder extends Seeder
 
     public function run()
     {
+        $this->publishSampleRoutes();
+
         $this->makeSampleMedia();
 
         $this->makeSampleLanguages();
@@ -104,15 +107,7 @@ class SampleSeeder extends Seeder
             }
         };
 
-        $slugs = [
-            'home',
-            'about',
-            'blog',
-            'blogs',
-            'contact',
-            'case-studies',
-            'case-study',
-        ];
+        $slugs = collect($this->getSampleDocumentTypes())->flatMap(fn ($item) => $item->templates)->unique()->values()->toArray();
         $themes = ['manifest', 'blogrock', 'know-press'];
 
         foreach ($slugs as $slug) {
@@ -176,6 +171,7 @@ class SampleSeeder extends Seeder
                 new ImportDataEntities\Field(slug: 'categories', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'tags', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'post_date', type: 'dateTimePicker', config: ['hasTime' => true, 'hasDate' => true, 'displayFormat' => 'Y-m-d H:i:s']),
             ],
         ];
         $items[] = [
@@ -212,6 +208,16 @@ class SampleSeeder extends Seeder
     }
 
     protected function addSampleDocumentTypes(): void
+    {
+        foreach ($this->getSampleDocumentTypes() as $item) {
+            $this->importDataService->addDocumentType($item->slug, $item);
+        }
+    }
+
+    /**
+     * @return ImportDataEntities\DocumentType[]
+     */
+    protected function getSampleDocumentTypes()
     {
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'homepage',
@@ -320,13 +326,18 @@ class SampleSeeder extends Seeder
                 'social_media',
                 'blog_content',
             ],
-            templates: ['blog'],
-            defaultTemplate: 'blog',
+            templates: [
+                'blog-featured-item',
+                'blog-card-item',
+                'blog-grid-item',
+                'blog-page',
+            ],
+            defaultTemplate: 'blog-page',
             icon: 'heroicon-o-newspaper',
             rejected: ['homepage'],
         );
 
-        foreach ($items as $item) {
+        foreach ($items as &$item) {
             switch ($item->slug) {
                 case 'blog-management':
                     $item->rejected = collect($items)->map(fn ($item) => $item->slug)->filter(fn ($slug) => $slug !== 'blog')->toArray();
@@ -342,9 +353,8 @@ class SampleSeeder extends Seeder
 
                     break;
             }
-            $this->importDataService->addDocumentType($item->slug, $item);
         }
-
+        return $items;
     }
 
     protected function addSampleContent(): void
@@ -457,6 +467,7 @@ class SampleSeeder extends Seeder
                             'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
                             'fr' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
                         ],
+                        'post_date' => fake()->dateTimeThisYear()->format('Y-m-d H:i:s'),
                     ],
                     'social_media' => [
                         'facebook' => 'https://facebook.com',
@@ -669,7 +680,7 @@ class SampleSeeder extends Seeder
 
                 $fakeImageWord = "image-{$i}";
                 while ($fakeImage === false && $retry < $totalRetry) {
-                    $fakeImage = fake()->image(dir: $dir, width: 400, height: 400, word: $fakeImageWord, format: 'png');
+                    $fakeImage = fake()->image(dir: $dir, width: 150, height: 150, word: $fakeImageWord, format: 'png');
                     $retry++;
                 }
 
@@ -750,8 +761,20 @@ class SampleSeeder extends Seeder
                 fn (Collection $collection) => $collection
                     ->where(fn (MediaAsset $asset) => Str::after($asset->title, '.') === $extension)
             )->values()->all();
+        
+        if (empty($items)) {
+            return [];
+        }
 
         if (count($items) < $total) {
+            $tempItems = $items;
+            for ($i = 0; $i < $total - count($items); $i++) {
+                $randIndexes = array_rand($tempItems, 1);
+                $temp = $tempItems[$randIndexes] ?? null;
+                if ($temp) {
+                    $items[] = $temp;
+                }
+            }
             return $items;
         }
 
@@ -766,5 +789,30 @@ class SampleSeeder extends Seeder
         return collect($this->getRandomMediaAsset($total, $extension))
             ->map(fn (MediaAsset $asset) => $asset->getKey())
             ->all();
+    }
+
+    protected function publishSampleRoutes(): void
+    {
+        $web = base_path('routes/web.php');
+        if (! Str::contains(file_get_contents($web), '\Illuminate\Support\Facades\Route::name(\'sample_content\')')) {
+            $routes = <<<PHP
+
+// Sample InspireCMS routes
+\Illuminate\Support\Facades\Route::name('sample_content')->middleware(\SolutionForest\InspireCms\InspireCmsConfig::get('content.middlewares'))->get('blog/{slug}', function (\$slug) {
+    \$content = inspirecms_content()->getUnderRealPath('blogs')->firstWhere('slug', \$slug);
+    if (is_null(\$content) || ! \$content->isPublished()) {
+        abort(404);
+    }
+    /** @var \SolutionForest\InspireCms\Dtos\ContentDto */
+    \$dto = \$content->toDto();
+
+    return \$dto->getTemplate('blog-page')->render([
+        'content' => \$dto,
+    ]);
+});
+
+PHP;
+            (new Filesystem)->append($web, $routes);
+        }
     }
 }

@@ -15,7 +15,7 @@
     $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
 
     $blogPage = request()->query('blog_page', 1);
-    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(page: $blogPage, perPage: 3);
+    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(page: $blogPage, perPage: 3, pageName: 'blog_page');
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <!-- Hero Section -->
@@ -68,27 +68,8 @@
             </div>
             <div class="row">
                 @foreach ($blogs as $blog)
-                    @php
-                        $page_banner = $blog->getPropertyGroup('page_banner');
-                        $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-                        $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-                        $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-                        $blog_content = $blog->getPropertyGroup('blog_content');
-                        $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
-                        $publishTime = $blog->publishAt?->format('d M, Y');
-                    @endphp
                     <div class="col-md-4">
-                        <div class="blog-card">
-                            @if ($page_banner_image)
-                                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                            @endif
-                            <div class="blog-meta">
-                                <span>{{ $blog_content_categories }}</span>
-                                <span>{{ $publishTime }}</span>
-                            </div>
-                            <h3>{{ $page_banner_title }}</h3>
-                            <p>{{ $page_banner_description }}</p>
-                        </div>
+                        {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                     </div>
                 @endforeach
             </div>

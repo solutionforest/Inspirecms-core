@@ -165,21 +165,23 @@ class PropertyDataDto extends BaseDto
                     ->map(fn ($id) => $mediaAssets->first(fn ($v) => $v->getKey() == $id))
                     ->whereInstanceOf(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class)
                     ->map(fn ($m) => $m->toDto($locale))
-                    ->values()
-                    ->all();
+                    ->values();
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
                 //todo: improve performance
-                $content = inspirecms_content()->findPublishedContentByIds($sourceValue);
+                $content = inspirecms_content()->findPublishedContentByIds($sourceValue)
+                    ->filter(fn ($c) => in_array($c->getKey(), $sourceValue))
+                    ->sortBy(fn ($c) => array_search($c->getKey(), $sourceValue))
+                    ->values();
 
-                // sort the content based on the source value
-                return collect($sourceValue)
-                    ->map(fn ($id) => $content->first(fn ($c) => $c->getKey() == $id))
-                    ->whereInstanceOf(\SolutionForest\InspireCms\Models\Contracts\Content::class)
-                    ->map(fn ($c) => $c->toDto($locale))
-                    ->values()
-                    ->all();
+                if ($content instanceof \SolutionForest\InspireCms\Collection\ContentCollection) {
+                    $content = $content->toDto($locale);
+                } else {
+                    $content = new \SolutionForest\InspireCms\Collection\ContentCollection($content->map(fn ($c) => $c->toDto($locale))->values());
+                }
+                
+                return $content;
 
             default:
                 return $sourceValue;

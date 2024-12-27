@@ -17,13 +17,14 @@ class ImportDefaultData extends Command
     public function handle(): int
     {
         $this->publishAssets();
-        $this->publishRouteDefinition();
         $this->createSymlink();
 
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
         $this->importSampleData();
+        
+        $this->publishRouteDefinition();
 
         return static::SUCCESS;
     }

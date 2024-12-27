@@ -1,0 +1,36 @@
+@php
+    $locale ??= $content->getLocale();
+    
+    $page_banner = $content->getPropertyGroup('page_banner');
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
+    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
+    
+    $blog_content = $content->getPropertyGroup('blog_content');
+    $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
+    $blog_content_post_date = $blog_content?->getPropertyData('post_date')->getValue()?->format('d M, Y');
+@endphp
+<article class="article-card">
+    <div class="article-image">
+        <div class="image-wrapper">
+            @if ($page_banner_image)
+                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
+            @endif
+        </div>
+    </div>
+    <div class="article-content">
+        <span class="badge1">Analytics</span>
+        <h3 class="article-title">
+            <a href="/blog/{{ $content->slug }}">{{ $content->getTitle($locale) }}</a>
+        </h3>
+        <div class="article-meta">
+            <span class="date">Added: {{ $blog_content_post_date }}</span>
+            <span class="comments"><img src="{{ asset('image/icon/comment.svg') }}" alt=""></i> 23</span>
+        </div>
+        <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+        <div class="article-author">
+            <img src="{{ asset('image/avator.svg') }}" alt="Author" class="author-avatar">
+            <span class="author-name">Anna Profeska</span>
+        </div>
+    </div>
+</article>

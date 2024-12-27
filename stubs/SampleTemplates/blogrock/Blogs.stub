@@ -2,7 +2,7 @@
     $blogPage = request()->query('page') ?? 1;
 
     $locale ??= $content->getLocale();
-    $blogs = inspirecms_content()->getPaginatorUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <main>
@@ -14,41 +14,9 @@
                             <div class="line"></div>
                             <span>{{ $content->getTitle($locale) }}</span>
                         </div>
-                        @foreach ($blogs as $item)
-                            @php
-                                $blog_page_banner = $item->getPropertyGroup('page_banner');
-                                $blog_page_banner_title = $blog_page_banner?->getPropertyData('title')?->getValue();
-                                $blog_page_banner_image = collect($blog_page_banner?->getPropertyData('image')?->getValue($locale))->first();
-                                $blog_content = $item->getPropertyGroup('blog_content');
-                                $blog_content_category = $blog_content?->getPropertyData('categories')?->getValue();
-                                $blog_content_tags = $blog_content?->getPropertyData('tags')?->getValue();
-                                $blog_content_content = $blog_content?->getPropertyData('content')?->getValue($locale);
-                            @endphp
+                        @foreach ($blogs as $blog)
                             <div class="">
-                                <article class="article-card">
-                                    <div class="article-image">
-                                        <div class="image-wrapper">
-                                            @if ($blog_page_banner_image)
-                                                <img src="{{ $blog_page_banner_image->getUrl() }}" alt="{{ $blog_page_banner_image->caption }}">
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <div class="article-content">
-                                        <span class="badge1">Analytics</span>
-                                        <h3 class="article-title">
-                                            <a href="{{ $item->getUrl() }}">{{ $item->getTitle($locale) }}</a>
-                                        </h3>
-                                        <div class="article-meta">
-                                            <span class="date">Added: 23 October 2020</span>
-                                            <span class="comments"><img src="{{ asset('image/icon/comment.svg') }}" alt=""></i> 23</span>
-                                        </div>
-                                        <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
-                                        <div class="article-author">
-                                            <img src="{{ asset('image/avator.svg') }}" alt="Author" class="author-avatar">
-                                            <span class="author-name">Anna Profeska</span>
-                                        </div>
-                                    </div>
-                                </article>
+                                {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                             </div>
                         @endforeach
 

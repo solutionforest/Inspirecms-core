@@ -6,8 +6,8 @@
     $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 
     $featured_blogs = $content->getPropertyGroup('featured_blogs');
-    $featured_blogs_blogs = collect($featured_blogs?->getPropertyData('blogs')?->getValue());
-    $featured_blogs_blog = $featured_blogs_blogs->forPage($featuredPage, 1)->first();
+    $featured_blogs_blogs = $featured_blogs?->getPropertyData('blogs')?->getValue()?->paginate(perPage: 1, pageName: 'featured', page: $featuredPage);
+    $featured_blogs_blog = $featured_blogs_blogs?->isNotEmpty() ? ($featured_blogs_blogs?->items()[0] ?? null) : null;
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <div class="page-main-container">
@@ -19,50 +19,9 @@
                 </div>
             </section>
             <div class="container ps-0">
-                <!-- Featured Blog Post -->
-                @php
-                    $featured_blog_page_banner = $featured_blogs_blog?->getPropertyGroup('page_banner');
-                    $featured_blog_page_banner_title = $featured_blog_page_banner?->getPropertyData('title')?->getValue($locale);
-                    $featured_blog_page_banner_description = $featured_blog_page_banner?->getPropertyData('description')?->getValue($locale);
-                    $featured_blog_page_banner_image = collect($featured_blog_page_banner?->getPropertyData('image')?->getValue())->first();
-                    $featured_blog_blog_content = $featured_blogs_blog?->getPropertyGroup('blog_content');
-                    $featured_blog_blog_content_categories = collect($featured_blog_blog_content?->getPropertyData('categories')->getValue());
-                    $publishTime = $featured_blogs_blog?->publishAt?->format('d M, Y');
-                @endphp
-                <div class="featured-post">
-                    <div class="row align-items-start">
-                        <div class="col-md-6">
-                            @if ($featured_blog_page_banner_image)
-                                <img src="{{ $featured_blog_page_banner_image->getUrl() }}" alt="{{ $featured_blog_page_banner_image->caption }}" class="featured-image">
-                            @endif
-                        </div>
-                        <div class="col-md-6">
-                            <div class="featured-content">
-                                <div class="post-categories">
-                                    @foreach ($featured_blog_blog_content_categories as $category)
-                                        <span class="category">{{ $category }}</span>
-                                        @if (!$loop->last)
-                                            <span class="separator">,</span>
-                                        @endif
-                                    @endforeach
-                                </div>
-                                <h2 class="featured-title">{{ $featured_blog_page_banner_title }}</h2>
-                                <div class="post-date">{{ $publishTime }}</div>
-                                <p class="featured-excerpt">
-                                    {{ $featured_blog_page_banner_description }}
-                                    <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
-                                </p>
-                                <div class="pagination">
-                                    @foreach ($featured_blogs_blogs as $item)
-                                        <a href="{{ request()->fullUrlWithQuery(['featured' => $loop->iteration]) }}" class="text-decoration-none text-dark">
-                                            <span @class(['active' => $featuredPage == $loop->iteration])>{{ $loop->iteration }}</span>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                @if ($featured_blogs_blog)
+                    {!! $featured_blogs_blog->getTemplate('blog-featured-item')?->render(['content' => $featured_blogs_blog, 'locale' => $locale, 'pagination' => $featured_blogs_blogs]) !!}
+                @endif
 
                 <div class="categories-wrapper">
                     <label class="categories-label">Categories:</label>
@@ -78,31 +37,10 @@
                 <!-- Regular Blog Posts Grid -->
                 <div class="row blog-posts-grid">
                     @foreach ($blogs as $blog)
-                        @php
-                            $page_banner = $blog->getPropertyGroup('page_banner');
-                            $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-                            $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
-                            $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-                            $blog_content = $blog->getPropertyGroup('blog_content');
-                            $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
-                            $publishTime = $blog->publishAt?->format('d M, Y');
-                        @endphp
                         <!-- Post -->
                         <div class="col-12 col-md-6 mb-4">
-                            <a href="{{ $blog->getUrl() }}" class="text-decoration-none">
-                                <article class="blog-post">
-                                    @if ($page_banner_image)
-                                        <img src="{{ $page_banner_image?->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="blog-image">
-                                    @endif
-                                    <div class="post-content">
-                                        <div class="post-meta">
-                                            <span class="category">{{ $blog_content_categories }}</span>
-                                            <span class="date">{{ $publishTime }}</span>
-                                        </div>
-                                        <h3>{{ $page_banner_title }}</h3>
-                                        <p>{{ $page_banner_description }}</p>
-                                    </div>
-                                </article>
+                            <a href="/blog/{{ $blog->slug }}" class="text-decoration-none">
+                                {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                             </a>
                         </div>
                     @endforeach
