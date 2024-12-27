@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms;
 
 use Composer\InstalledVersions;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;
@@ -38,6 +39,9 @@ class InspireCmsConfig
         return app(static::getContentModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getContentModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Content::class, Models\Content::class);
@@ -50,6 +54,9 @@ class InspireCmsConfig
         return app(static::getContentPathModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getContentPathModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\ContentPath::class, Models\ContentPath::class);
@@ -62,6 +69,9 @@ class InspireCmsConfig
         return app(static::getFieldGroupableModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getFieldGroupableModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\FieldGroupable::class, Models\Polymorphic\FieldGroupable::class);
@@ -74,6 +84,9 @@ class InspireCmsConfig
         return app(static::getNestableTreeModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getNestableTreeModelClass(): string
     {
         $class = ModelManifest::get(SupportModels\Contracts\NestableTree::class, SupportModels\Polymorphic\NestableTree::class);
@@ -86,6 +99,9 @@ class InspireCmsConfig
         return app(static::getContentVersionModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getContentVersionModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\ContentVersion::class, Models\ContentVersion::class);
@@ -98,6 +114,9 @@ class InspireCmsConfig
         return app(static::getContentPublishVersionModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getContentPublishVersionModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\ContentPublishVersion::class, Models\ContentPublishVersion::class);
@@ -110,6 +129,9 @@ class InspireCmsConfig
         return app(static::getContentWebSettingModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getContentWebSettingModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\ContentWebSetting::class, Models\ContentWebSetting::class);
@@ -122,6 +144,9 @@ class InspireCmsConfig
         return app(static::getSitemapModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getSitemapModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Sitemap::class, Models\Sitemap::class);
@@ -134,6 +159,9 @@ class InspireCmsConfig
         return app(static::getDocumentTypeModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getDocumentTypeModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\DocumentType::class, Models\DocumentType::class);
@@ -146,6 +174,9 @@ class InspireCmsConfig
         return app(static::getDocumentTypeInheritanceModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getDocumentTypeInheritanceModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\DocumentTypeInheritance::class, Models\Pivot\DocumentTypeInheritance::class);
@@ -158,6 +189,9 @@ class InspireCmsConfig
         return app(static::getRejectedDocumentTypeModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getRejectedDocumentTypeModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\RejectedDocumentType::class, Models\Pivot\RejectedDocumentType::class);
@@ -170,6 +204,9 @@ class InspireCmsConfig
         return app(static::getFieldGroupModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getFieldGroupModelClass(): string
     {
         $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldGroupModelClass();
@@ -189,6 +226,9 @@ class InspireCmsConfig
         return app(static::getFieldModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getFieldModelClass(): string
     {
         $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldModelClass();
@@ -208,6 +248,9 @@ class InspireCmsConfig
         return app(static::getUserModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getUserModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\User::class, Models\User::class);
@@ -220,6 +263,9 @@ class InspireCmsConfig
         return app(static::getUserModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getUserLoginActivityModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\UserLoginActivity::class, Models\Users\UserLoginActivity::class);
@@ -232,6 +278,9 @@ class InspireCmsConfig
         return app(static::getRoleModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getRoleModelClass(): string
     {
         $class = app(PermissionRegistrar::class)->getRoleClass();
@@ -244,6 +293,9 @@ class InspireCmsConfig
         return app(static::getRoleModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getPermissionModelClass(): string
     {
         $class = app(PermissionRegistrar::class)->getPermissionClass();
@@ -256,6 +308,9 @@ class InspireCmsConfig
         return app(static::getLanguageModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getLanguageModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Language::class, Models\Language::class);
@@ -268,6 +323,9 @@ class InspireCmsConfig
         return app(static::getTemplateModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getTemplateModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Template::class, Models\Template::class);
@@ -280,6 +338,9 @@ class InspireCmsConfig
         return app(static::getTemplateableModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getTemplateableModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Templateable::class, Models\Polymorphic\Templateable::class);
@@ -292,6 +353,9 @@ class InspireCmsConfig
         return app(static::getMediaAssetModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getMediaAssetModelClass(): string
     {
         $class = ModelManifest::get(SupportModels\Contracts\MediaAsset::class, SupportModels\MediaAsset::class);
@@ -304,6 +368,9 @@ class InspireCmsConfig
         return app(static::getNavigationModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getNavigationModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Navigation::class, Models\Navigation::class);
@@ -316,6 +383,9 @@ class InspireCmsConfig
         return app(static::getImportModelClass())->getTable();
     }
 
+    /**
+     * @return class-string<Model>
+     */
     public static function getImportModelClass(): string
     {
         $class = ModelManifest::get(Models\Contracts\Import::class, Models\Import::class);
