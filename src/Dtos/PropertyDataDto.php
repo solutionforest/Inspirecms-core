@@ -129,6 +129,20 @@ class PropertyDataDto extends BaseDto
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:
                 return new HtmlString($sourceValue);
+            
+            case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker:
+
+                if (is_null($sourceValue)) {
+                    return null;
+                }
+
+                if (is_string($sourceValue) && filled($sourceValue)) {
+                    return \Carbon\Carbon::parse($sourceValue);
+                } elseif ($sourceValue instanceof \DateTimeInterface) {
+                    return $sourceValue;
+                } else {
+                    return null;
+                }
 
             case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image:
                 $disk = $propertyType->disk ?? config('filesystems.default');
@@ -218,9 +232,7 @@ class PropertyDataDto extends BaseDto
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Text => 'Lorem ipsum dolor sit amet',
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Number => 123,
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Boolean => true,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Date => now()->format('Y-m-d'),
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTime => now()->format('Y-m-d H:i:s'),
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Time => now()->format('H:i:s'),
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker => fake()->dateTime()->format($fieldType->format ?? 'Y-m-d H:i:s'),
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Select => $fieldType->options[0]['value'] ?? null,
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Radio => $fieldType->options[0]['value'] ?? null,
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Checkbox => $fieldType->options[0]['value'] ?? null,
