@@ -22,7 +22,6 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property ?int $parent_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read null | (NavigationCategoryEnumInterface & \BackedEnum) $display_category
  * @property-read null | (NavigationTypeEnumInterface & \BackedEnum) $display_type
  * @property-read null | Model & Content $content
  */
@@ -34,16 +33,6 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function content();
-
-    /**
-     * Get the class name of the NavigationCategoryEnum.
-     *
-     * This method returns the fully qualified class name of the enumeration
-     * that represents the different types of navigation.
-     *
-     * @return enum-string<NavigationCategoryEnumInterface> | class-string<\BackedEnum> The class name of the NavigationCategoryEnumInterface.
-     */
-    public static function getNavigationCategoryEnumClass();
 
     /**
      * Get the class name of the NavigationCategoryEnum.

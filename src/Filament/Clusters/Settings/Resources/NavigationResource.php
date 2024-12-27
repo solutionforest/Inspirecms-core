@@ -14,7 +14,6 @@ use SolutionForest\InspireCms\Base\Enums\NavigationType;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Pages;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
@@ -61,8 +60,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return $table
             ->groups([
                 Tables\Grouping\Group::make('category')
-                    ->label(__('inspirecms::resources/navigation.category.label'))
-                    ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_category?->getLabel()),
+                    ->label(__('inspirecms::resources/navigation.category.label')),
                 Tables\Grouping\Group::make('type')
                     ->label(__('inspirecms::resources/navigation.type.label'))
                     ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_type?->getLabel()),
@@ -74,7 +72,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
 
-                Tables\Columns\TextColumn::make('display_category')
+                Tables\Columns\TextColumn::make('category')
                     ->label(__('inspirecms::resources/navigation.category.label'))
                     ->badge()
                     ->width('5%'),
@@ -137,14 +135,6 @@ class NavigationResource extends Resource implements ClusterSectionResource
         }
 
         return $model;
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            Widgets\MainNavigation::class,
-            Widgets\FooterNavigation::class,
-        ];
     }
 
     public static function getModelLabel(): string
@@ -260,16 +250,15 @@ class NavigationResource extends Resource implements ClusterSectionResource
      */
     protected static function getCategoryFormComponent()
     {
-        $enumClass = static::getModel()::getNavigationCategoryEnumClass();
-
-        return Forms\Components\ToggleButtons::make('category')
+        return Forms\Components\TextInput::make('category')
             ->label(__('inspirecms::resources/navigation.category.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
             ->required()
-            ->options($enumClass)
-            ->default($enumClass::getDefaultValue())
-            ->live()
-            ->inline()->grouped();
+            ->datalist([
+                'main',
+                'footer',
+            ])
+            ->default('main');
     }
 
     /**

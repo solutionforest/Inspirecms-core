@@ -37,10 +37,8 @@ class ListNavigationTree extends BaseManagePage
             'translatableContentDriver' => $this->getFilamentTranslatableContentDriver(),
         ];
 
-        $widgets = collect(static::getResource()::getWidgets())
-            ->filter(fn ($fqcn) => is_a($fqcn, Widgets\BaseTreeNavigation::class, true))
-            ->values()
-            ->map(fn ($fqcn) => $fqcn::make($commonNavWidgetData))
+        $widgets = collect($this->getAllCategories())
+            ->map(fn ($c) => Widgets\TreeNavigation::make([...$commonNavWidgetData, 'category' => $c]))
             ->all();
 
         return $widgets;
@@ -60,5 +58,10 @@ class ListNavigationTree extends BaseManagePage
     public static function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
+    }
+
+    protected function getAllCategories(): array
+    {
+        return $this->getModel()::query()->groupBy('category')->pluck('category')->toArray();
     }
 }

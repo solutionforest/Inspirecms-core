@@ -7,22 +7,22 @@ use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Reactive;
 use SolutionForest\FilamentTree\Actions\EditAction;
 use SolutionForest\FilamentTree\Actions\ViewAction;
 use SolutionForest\FilamentTree\Widgets\Tree as BaseWidget;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 
-abstract class BaseTreeNavigation extends BaseWidget
+class TreeNavigation extends BaseWidget
 {
-    abstract protected function getNavigationCategory(): NavigationCategory;
-
     protected static int $maxDepth = 3;
 
     protected bool $enableTreeTitle = true;
 
     public string $resource = '';
+
+    public string $category = '';
 
     #[Reactive]
     public ?string $activeLocale = null;
@@ -31,6 +31,10 @@ abstract class BaseTreeNavigation extends BaseWidget
 
     public function mount()
     {
+        if (blank($this->category)) {
+            throw new \Exception('Category is required for TreeNavigation widget');
+        }
+
         if (blank($this->resource) || ! is_a($this->resource, Resource::class, true)) {
             throw new \Exception('Resource is required for TreeNavigation widget');
         }
@@ -64,9 +68,15 @@ abstract class BaseTreeNavigation extends BaseWidget
     }
 
     //region Tree Configuration
+
+    public function getTreeTitle(): ?string
+    {
+        return Str::title($this->category);
+    }
+
     protected function getTreeQuery(): Builder
     {
-        return $this->getModel()::scoped(['category' => $this->getNavigationCategory()->value])
+        return $this->getModel()::scoped(['category' => $this->category])
             ->withDepth();
     }
 

@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Kalnoy\Nestedset\NodeTrait;
-use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationCategory as NavigationCategoryEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\NavigationCategory as NavigationCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
@@ -109,20 +108,6 @@ class Navigation extends BaseModel implements NavigationContract
     }
 
     //region Attribute(s)
-    protected function displayCategory(): Attribute
-    {
-        return Attribute::make(
-            get: function () {
-                $category = $this->category;
-                if (filled($category)) {
-                    return static::getNavigationCategoryEnumClass()::tryFrom($category);
-                }
-
-                return null;
-            },
-        );
-    }
-
     protected function displayType(): Attribute
     {
         return Attribute::make(
@@ -143,17 +128,6 @@ class Navigation extends BaseModel implements NavigationContract
         parent::boot();
 
         static::observe(NavigationObserver::class);
-    }
-
-    public static function getNavigationCategoryEnumClass()
-    {
-        $class = NavigationCategoryEnum::class;
-
-        if (! in_array(NavigationCategoryEnumInterface::class, class_implements($class))) {
-            throw new \RuntimeException("{$class} must implement " . NavigationCategoryEnumInterface::class);
-        }
-
-        return $class;
     }
 
     public static function getNavigationTypeEnumClass()
