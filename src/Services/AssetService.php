@@ -20,7 +20,7 @@ class AssetService implements AssetServiceInterface
     /** {@inheritDoc} */
     public function findByKey(string | int $key)
     {
-        return static::getModel()::with('media')->find($key);
+        return $this->getQuery()->with('media')->find($key);
     }
 
     /** {@inheritDoc} */
@@ -28,7 +28,7 @@ class AssetService implements AssetServiceInterface
     {
         $keys = Arr::flatten($keys);
 
-        return static::getModel()::with('media')->findMany($keys);
+        return $this->getQuery()->with('media')->findMany($keys);
     }
 
     //region Helpers
