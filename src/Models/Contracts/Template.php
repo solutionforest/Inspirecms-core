@@ -7,7 +7,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
 /**
  * @template TDto of \SolutionForest\InspireCms\Dtos\TemplateDto
- * 
+ *
  * @property string $slug
  * @property null | array<string,string> $content
  * @property ?\Carbon\CarbonInterface $created_at

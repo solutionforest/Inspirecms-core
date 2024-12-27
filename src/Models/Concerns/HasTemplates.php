@@ -45,7 +45,7 @@ trait HasTemplates
     public function getTemplates()
     {
         if ($this->relationLoaded('templates')) {
-            $templates =  $this->templates;
+            $templates = $this->templates;
         } else {
             $templates = $this->templates()->get();
         }

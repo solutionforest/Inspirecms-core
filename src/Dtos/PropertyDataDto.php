@@ -129,7 +129,7 @@ class PropertyDataDto extends BaseDto
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor:
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor:
                 return new HtmlString($sourceValue);
-            
+
             case $propertyType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker:
 
                 if (is_null($sourceValue)) {
@@ -180,7 +180,7 @@ class PropertyDataDto extends BaseDto
                 } else {
                     $content = new \SolutionForest\InspireCms\Collection\ContentCollection($content->map(fn ($c) => $c->toDto($locale))->values());
                 }
-                
+
                 return $content;
 
             default:

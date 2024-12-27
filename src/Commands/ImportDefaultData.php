@@ -23,7 +23,7 @@ class ImportDefaultData extends Command
         $this->importLaravelPermissionData();
 
         $this->importSampleData();
-        
+
         $this->publishRouteDefinition();
 
         return static::SUCCESS;

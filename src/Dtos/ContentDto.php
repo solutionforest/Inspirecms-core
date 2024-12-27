@@ -163,6 +163,7 @@ class ContentDto extends BaseTranslatableModelDto
         //todo: improve this
         $content = $this->getModel();
         $template = inspirecms_content()->getTemplateFor($content, $slug);
+
         return $template?->toDto() ?? null;
     }
 
