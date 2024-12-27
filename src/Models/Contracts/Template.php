@@ -3,15 +3,18 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
 /**
+ * @template TDto of \SolutionForest\InspireCms\Dtos\TemplateDto
+ * 
  * @property string $slug
  * @property null | array<string,string> $content
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<Model> $templateable
  */
-interface Template
+interface Template extends HasDtoModel
 {
     /**
      * Initialize the template with the given theme.
@@ -44,4 +47,9 @@ interface Template
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function templateable();
+
+    /**
+     * @return TDto The DTO representation of the model.
+     */
+    public function toDto(...$args);
 }

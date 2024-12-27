@@ -64,6 +64,23 @@ class Template extends BaseModel implements TemplateContract
         $this->save();
     }
 
+    //region Dto
+    public function toDto(...$args)
+    {
+        $theme = $args[0] ?? inspirecms_templates()->getCurrentTheme();
+
+        return static::getDtoClass()::fromArray([
+            'slug' => $this->slug,
+            'theme' => $theme,
+            'content' => $this->getContent($theme),
+        ]);
+    }
+    public static function getDtoClass()
+    {
+        return \SolutionForest\InspireCms\Dtos\TemplateDto::class;
+    }
+    //endregion Dto
+
     public static function boot()
     {
         parent::boot();
