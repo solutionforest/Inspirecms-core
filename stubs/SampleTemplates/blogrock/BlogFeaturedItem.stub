@@ -35,14 +35,16 @@
                     <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
                 </p>
                 <div class="pagination">
-                    @for ($i = 1; $i <= 3; $i++)
-                        @php
-                            $page = $pagination->currentPage();
-                        @endphp
-                        <a href="{{ $pagination->url($i) }}" class="text-decoration-none text-dark">
-                            <span @class(['active' => $page == $i])>{{ $i }}</span>
-                        </a>
-                    @endfor
+                    @isset($pagination)
+                        @for ($i = 1; $i <= 3; $i++)
+                            @php
+                                $page = $pagination->currentPage();
+                            @endphp
+                            <a href="{{ $pagination->url($i) }}" class="text-decoration-none text-dark">
+                                <span @class(['active' => $page == $i])>{{ $i }}</span>
+                            </a>
+                        @endfor
+                    @endisset
                 </div>
             </div>
         </div>
