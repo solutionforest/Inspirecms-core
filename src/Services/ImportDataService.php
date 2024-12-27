@@ -469,45 +469,33 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        foreach ($this->pendingData['navigation'] ?? [] as $item) {
-            try {
+        $navData = collect($this->pendingData['navigation'] ?? [])->groupBy(fn ($d) => $d->category)->toArray();
 
-                $item->validate();
-
-                $navigationData = $this->mutateNavigationData($item);
-
-                /**
-                 * @var null | (Model & \SolutionForest\InspireCms\Models\Contracts\Navigation)
-                 */
-                $navigation = isset($item->id) ? $model::find($item->id) : null;
-                if ($navigation) {
-                    $navigation->update(Arr::except($navigationData, ['id', 'children']));
-                    $navigation->refresh();
-
-                } else {
-                    /**
-                     * @var (Model & \SolutionForest\InspireCms\Models\Contracts\Navigation)
-                     */
-                    $navigation = $model::create(Arr::except($navigationData, ['children']));
-                    $navigation->refresh();
-                }
-
-                if (! is_null($navigation)) {
-
-                    // todo: handle level more than 1 ***
-                    if (isset($navigationData['children']) && is_array($navigationData['children'])) {
-                        foreach ($navigationData['children'] as $c) {
-                            // $navigation->children()->updateOrCreate(
-                            //     Arr::only($c, ['id']),
-                            //     Arr::except($c, ['id'])
-                            // );
-                            $navigation->prependNode($model::create(Arr::except($c, ['children'])));
-                        }
-                    }
-
+        foreach ($navData as $category => $items) {
+            $treeData = [];
+            foreach ($items as $item) {
+                try {
+                    $item->validate();
+    
+                    $navigationData = $this->mutateNavigationData($item);
+                    $treeData[] = $navigationData;
+                    $navigation = $model::updateOrCreate(
+                        Arr::only($navigationData, ['id']),
+                        Arr::except($navigationData, ['id', 'children'])
+                    );
                     $this->finished['navigation'][] = $navigation ?? null;
+    
+                } catch (\Throwable $th) {
+                    $this->processErrors['navigation'][] = $th->getMessage();
                 }
+            }
 
+            if (empty($treeData)) {
+                continue;
+            }
+            
+            try {
+                $model::scoped(['category' => $category])->rebuildTree($treeData, true);
             } catch (\Throwable $th) {
                 $this->processErrors['navigation'][] = $th->getMessage();
             }

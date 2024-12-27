@@ -631,13 +631,13 @@ class SampleSeeder extends Seeder
         foreach ($mainNav as $data) {
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
                 'category' => 'main',
-                'id' => $tempId++,
+                'id' => $tempId+=1,
             ])));
         }
         foreach ($footerNav as $data) {
             $this->importDataService->addNavigation(ImportDataEntities\Navigation::fromArray(array_merge($data, [
                 'category' => 'footer',
-                'id' => $tempId++,
+                'id' => $tempId+=1,
             ])));
         }
     }
