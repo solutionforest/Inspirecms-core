@@ -94,7 +94,7 @@
                             </div>
 
                             
-                            <x-dynamic-component :component="\SolutionForest\InspireCms\InspireCmsConfig::getComponentWithTheme('comments')" />
+                            <x-dynamic-component component="comments" />
                         </div>
                     </div>
                 </div>
