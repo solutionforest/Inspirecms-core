@@ -24,9 +24,11 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findPublishedContentByIds(...$ids)
     {
+        $ids = Arr::flatten($ids);
+
         return $this->getQuery()
             ->whereIsPublished()
-            ->findMany(Arr::collapse($ids));
+            ->findMany($ids);
     }
 
     /** {@inheritDoc} */
