@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Support\Facades\Blade;
 use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
@@ -117,7 +118,12 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
             throw new Halt;
         }
 
-        return $template->getViewFullName();
+        return $template->getContent();
+    }
+
+    public static function renderPreviewModalView(string $view, array $data): string
+    {
+        return Blade::render($view, $data);
     }
 
     protected function mutatePreviewModalData(array $data): array

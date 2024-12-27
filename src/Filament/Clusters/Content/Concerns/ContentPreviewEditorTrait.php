@@ -6,6 +6,7 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Blade;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -29,8 +30,13 @@ trait ContentPreviewEditorTrait
 
             throw new Halt;
         }
+        
+        return $template->getContent();
+    }
 
-        return $template->getViewFullName();
+    public static function renderBuilderPreview(string $view, array $data): string
+    {
+        return Blade::render($view, $data);
     }
 
     public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
