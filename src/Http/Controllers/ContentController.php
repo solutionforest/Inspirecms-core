@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Blade;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
@@ -77,13 +76,13 @@ class ContentController extends Controller
     }
 
     /**
-     * @param null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model $content
+     * @param  null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model  $content
      * @return null|\SolutionForest\InspireCms\Dtos\TemplateDto
      */
     protected function getTemplateForContent($content)
     {
         $template = $this->contentService->getDefaultTemplateFor($content);
-        
+
         $theme = inspirecms_templates()->getCurrentTheme();
 
         return $template?->toDto($theme);

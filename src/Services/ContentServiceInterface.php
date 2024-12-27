@@ -81,15 +81,15 @@ interface ContentServiceInterface
     /**
      * Get the default template for the given content.
      *
-     * @param TResult $content The content for which to get the default template.
+     * @param  TResult  $content  The content for which to get the default template.
      * @return null | (\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template) The default template for the given content.
      */
     public function getDefaultTemplateFor($content);
-    
+
     /**
      * Retrieve templates for the given content.
      *
-     * @param TResult $content The content for which to retrieve templates.
+     * @param  TResult  $content  The content for which to retrieve templates.
      * @return Collection<string,TTemplate> The list of templates associated with the content.
      */
     public function getTemplatesFor($content);
@@ -97,8 +97,8 @@ interface ContentServiceInterface
     /**
      * Retrieves the template for the given content and template slug.
      *
-     * @param TResult $content The content for which the template is being retrieved.
-     * @param string $templateSlug The slug identifier for the template.
+     * @param  TResult  $content  The content for which the template is being retrieved.
+     * @param  string  $templateSlug  The slug identifier for the template.
      * @return null | TTemplate The template associated with the given content and template slug.
      */
     public function getTemplateFor($content, $templateSlug);

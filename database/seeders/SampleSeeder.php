@@ -354,6 +354,7 @@ class SampleSeeder extends Seeder
                     break;
             }
         }
+
         return $items;
     }
 
@@ -761,7 +762,7 @@ class SampleSeeder extends Seeder
                 fn (Collection $collection) => $collection
                     ->where(fn (MediaAsset $asset) => Str::after($asset->title, '.') === $extension)
             )->values()->all();
-        
+
         if (empty($items)) {
             return [];
         }
@@ -775,6 +776,7 @@ class SampleSeeder extends Seeder
                     $items[] = $temp;
                 }
             }
+
             return $items;
         }
 

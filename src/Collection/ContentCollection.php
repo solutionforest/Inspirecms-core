@@ -12,12 +12,12 @@ class ContentCollection extends Collection
 {
     public function toDto(...$args)
     {
-        $items = $this->map(fn ($item) => 
-            match (true) {
-                $item instanceof \SolutionForest\InspireCms\Models\Contracts\Content => $item->toDto(...$args),
-                default => $item,
-            })
+        $items = $this->map(fn ($item) => match (true) {
+            $item instanceof \SolutionForest\InspireCms\Models\Contracts\Content => $item->toDto(...$args),
+            default => $item,
+        })
             ->toArray();
+
         return new static($items);
     }
 
@@ -40,7 +40,7 @@ class ContentCollection extends Collection
 
         $perPage = $this->retrieveItemsPerPage($perPage);
 
-        $items = $total > 0 ? $this->forPage($page, $perPage) : new static();
+        $items = $total > 0 ? $this->forPage($page, $perPage) : new static;
 
         return $this->paginator($items, $total, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
@@ -65,7 +65,7 @@ class ContentCollection extends Collection
 
         $perPage = $this->retrieveItemsPerPage($perPage);
 
-        $items = $total > 0 ? $this->forPage($page, $perPage) : new static();
+        $items = $total > 0 ? $this->forPage($page, $perPage) : new static;
 
         return $this->simplePaginator($items, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
@@ -86,7 +86,11 @@ class ContentCollection extends Collection
     protected function paginator($items, $total, $perPage, $currentPage, $options)
     {
         return Container::getInstance()->makeWith(LengthAwarePaginator::class, compact(
-            'items', 'total', 'perPage', 'currentPage', 'options'
+            'items',
+            'total',
+            'perPage',
+            'currentPage',
+            'options'
         ));
     }
 
@@ -102,7 +106,10 @@ class ContentCollection extends Collection
     protected function simplePaginator($items, $perPage, $currentPage, $options)
     {
         return Container::getInstance()->makeWith(Paginator::class, compact(
-            'items', 'perPage', 'currentPage', 'options'
+            'items',
+            'perPage',
+            'currentPage',
+            'options'
         ));
     }
 
@@ -118,7 +125,7 @@ class ContentCollection extends Collection
     }
 
     /**
-     * @param null | int | Closure $perPage
+     * @param  null | int | Closure  $perPage
      * @return int
      */
     protected function retrieveItemsPerPage($perPage = null)
@@ -134,7 +141,7 @@ class ContentCollection extends Collection
         if (is_null($perPage)) {
             $perPage = $default;
         }
-        
+
         return $perPage;
     }
 }

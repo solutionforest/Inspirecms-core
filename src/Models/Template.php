@@ -75,6 +75,7 @@ class Template extends BaseModel implements TemplateContract
             'content' => $this->getContent($theme),
         ]);
     }
+
     public static function getDtoClass()
     {
         return \SolutionForest\InspireCms\Dtos\TemplateDto::class;

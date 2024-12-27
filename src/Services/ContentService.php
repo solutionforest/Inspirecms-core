@@ -91,7 +91,7 @@ class ContentService implements ContentServiceInterface
     {
         $parent = $this->findByRealPath($slugPath);
         if (is_null($parent)) {
-            return new ContentCollection();
+            return new ContentCollection;
         }
 
         return $parent->children()
@@ -99,13 +99,13 @@ class ContentService implements ContentServiceInterface
             ->when(! is_null($limit), fn ($q) => $q->limit($limit))
             ->get();
     }
-    
+
     /** {@inheritDoc} */
     public function getDefaultTemplateFor($content)
     {
         return $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
     }
-    
+
     /** {@inheritDoc} */
     public function getTemplatesFor($content)
     {
@@ -121,6 +121,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->getTemplatesFor($content)->first(fn ($template) => $template->slug === $templateSlug);
     }
+
     //region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
