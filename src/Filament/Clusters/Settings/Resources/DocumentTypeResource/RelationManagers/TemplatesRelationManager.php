@@ -255,9 +255,33 @@ class TemplatesRelationManager extends RelationManager
     {
         $htmlContent = $data['html_content'] ?? '';
 
+        /**
+         * @var null | \SolutionForest\InspireCms\Models\Contracts\DocumentType
+         */
         $documentType = $data['documentType'] ?? null;
 
+        if (! $documentType) {
+            return '';
+        }
+
         $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
+
+        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
+            // get the layout
+            $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
+            if (view()->exists("components." . $layoutName)) {
+                $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
+                    'content' => $dummyDto,
+                    'layoutName' => $layoutName,
+                    'slot' => ''
+                ]);
+
+                return Html::injectPreviewModalStyle(
+                    $newHtmlContent
+                );
+            }
+        }
+
 
         return Html::injectPreviewModalStyle(
             Blade::render($htmlContent, [
