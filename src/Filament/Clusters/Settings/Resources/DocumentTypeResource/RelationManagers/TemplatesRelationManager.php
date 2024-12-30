@@ -102,7 +102,8 @@ class TemplatesRelationManager extends RelationManager
                     ->options(inspirecms_templates()->getAvailableThemes())
                     ->view('inspirecms::filament.actions.select-action', [
                         'icon' => 'heroicon-o-paint-brush',
-                    ]),
+                    ])
+                    ->disabled(),
                 Tables\Actions\CreateAction::make(),
                 Tables\Actions\AttachAction::make()->preloadRecordSelect(),
             ])
