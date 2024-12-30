@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
+use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -36,7 +37,9 @@ trait ContentPreviewEditorTrait
 
     public static function renderBuilderPreview(string $view, array $data): string
     {
-        return Blade::render($view, $data);
+        return Html::injectPreviewModalStyle(
+            Blade::render($view, $data)
+        );
     }
 
     public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
