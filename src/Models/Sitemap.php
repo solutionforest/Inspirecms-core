@@ -91,12 +91,12 @@ class Sitemap extends BaseModel implements SitemapContract
         ];
     }
 
-    //regions Scope(s)
+    // regions Scope(s)
     public function scopeWhereEnabled($query, bool $condition = true)
     {
         return $query->where('enable', $condition);
     }
-    //endregions Scope(s)
+    // endregions Scope(s)
 
     public function setDisable(bool $save = true)
     {

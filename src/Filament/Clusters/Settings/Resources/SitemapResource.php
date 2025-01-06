@@ -95,12 +95,12 @@ class SitemapResource extends Resource implements ClusterSectionResource
         return __('inspirecms::inspirecms.sitemap');
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 
     public static function canEdit(Model $record): bool
     {
@@ -120,7 +120,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
         return parent::canDelete($record);
     }
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /** @return Forms\Components\Field | Forms\Components\Component */
     protected static function getUrlFormComponent()
     {
@@ -168,5 +168,5 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/sitemap.enable.validation_attribute'))
             ->default(true);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

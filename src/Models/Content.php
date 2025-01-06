@@ -157,7 +157,7 @@ class Content extends BaseModel implements ContentContract
         return $this->documentType?->isWebPageType() ?? false;
     }
 
-    //region Dto
+    // region Dto
     public static function getDtoClass()
     {
         return ContentDto::class;
@@ -235,9 +235,9 @@ class Content extends BaseModel implements ContentContract
         );
     }
 
-    //endregion Dto
+    // endregion Dto
 
-    //region Scope(s)
+    // region Scope(s)
     /**
      * Determine if this content is already published.
      */
@@ -284,9 +284,9 @@ class Content extends BaseModel implements ContentContract
     {
         return $query->where('is_default', $condition);
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 
-    //region Attribute(s)
+    // region Attribute(s)
     public function displayStatus(): Attribute
     {
         return Attribute::make(
@@ -300,9 +300,9 @@ class Content extends BaseModel implements ContentContract
             }
         );
     }
-    //endregion Attribute(s)
+    // endregion Attribute(s)
 
-    //region HasRecursiveRelationships
+    // region HasRecursiveRelationships
     public function getCustomPaths()
     {
         return [
@@ -334,9 +334,9 @@ class Content extends BaseModel implements ContentContract
     {
         return KeyHelper::generateMinUuid();
     }
-    //endregion HasRecursiveRelationships
+    // endregion HasRecursiveRelationships
 
-    //region ContentVersion
+    // region ContentVersion
     protected function prepareContentVersionData(): array
     {
         $data = $this->traitPrepareContentVersionData();
@@ -394,7 +394,7 @@ class Content extends BaseModel implements ContentContract
             'is_default',
         ];
     }
-    //endregion ContentVersion
+    // endregion ContentVersion
 
     public static function boot()
     {

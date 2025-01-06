@@ -122,7 +122,7 @@ class Translate extends Component
         ]);
     }
 
-    //region Helpers
+    // region Helpers
     protected function prepareTranslateLocaleComponent(Component &$component, string $locale): Component
     {
         $localeComponent = clone $component;
@@ -203,5 +203,5 @@ class Translate extends Component
 
         return $component;
     }
-    //endregion Helpers
+    // endregion Helpers
 }

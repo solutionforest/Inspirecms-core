@@ -147,14 +147,14 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return __('inspirecms::inspirecms.navigation');
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -312,5 +312,5 @@ class NavigationResource extends Resource implements ClusterSectionResource
             })
             ->dehydrated(true);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

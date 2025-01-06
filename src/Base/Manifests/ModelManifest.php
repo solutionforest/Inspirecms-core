@@ -102,7 +102,7 @@ class ModelManifest implements ModelManifestInterface
         return InspireCmsConfig::get('models.fqcn', []);
     }
 
-    //region Helper methods
+    // region Helper methods
     /**
      * Bind a model to the interface in the container.
      *
@@ -205,5 +205,5 @@ class ModelManifest implements ModelManifestInterface
             throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
         }
     }
-    //endregion Helper methods
+    // endregion Helper methods
 }

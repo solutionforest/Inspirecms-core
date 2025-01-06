@@ -130,7 +130,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->hint(__('inspirecms::resources/import.file_name.hint'))
                     ->disk(ImportDataHelper::getDiskDriver())
                     ->acceptedFileTypes([
-                        //zip
+                        // zip
                         ...[
                             'application/zip',
                             'application/octet-stream',
@@ -221,10 +221,10 @@ class ImportResource extends Resource implements ClusterSectionResource
         return __('inspirecms::inspirecms.import');
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 }

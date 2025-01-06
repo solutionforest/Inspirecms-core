@@ -67,7 +67,7 @@ class TreeNavigation extends BaseWidget
         return $this->getResource()::getModel();
     }
 
-    //region Tree Configuration
+    // region Tree Configuration
 
     public function getTreeTitle(): ?string
     {
@@ -169,9 +169,9 @@ class TreeNavigation extends BaseWidget
 
         return null;
     }
-    //endregion Tree Configuration
+    // endregion Tree Configuration
 
-    //region Helpers
+    // region Helpers
     protected function getResource(): string
     {
         return $this->resource;
@@ -187,9 +187,9 @@ class TreeNavigation extends BaseWidget
 
         return false;
     }
-    //endregion Helpers
+    // endregion Helpers
 
-    //region Action Configuration
+    // region Action Configuration
     protected function hasDeleteAction(): bool
     {
         return $this->authorizeAction('delete');
@@ -231,5 +231,5 @@ class TreeNavigation extends BaseWidget
 
         return $action;
     }
-    //endregion Action Configuration
+    // endregion Action Configuration
 }

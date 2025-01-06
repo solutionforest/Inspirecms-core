@@ -44,7 +44,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         }
     }
 
-    //region Locale config
+    // region Locale config
     public function localeSwitcher(): \Filament\Actions\Action
     {
         return \Filament\Actions\LocaleSwitcher::make();
@@ -62,7 +62,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         // dispatch event to page component
         $this->dispatch('changeActiveLocale', $locale);
     }
-    //endregion Locale config
+    // endregion Locale config
 
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {

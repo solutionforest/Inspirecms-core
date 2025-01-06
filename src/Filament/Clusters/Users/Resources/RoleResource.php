@@ -176,14 +176,14 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->where('guard_name', InspireCmsConfig::getGuardName());
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -267,5 +267,5 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
             ->all();
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

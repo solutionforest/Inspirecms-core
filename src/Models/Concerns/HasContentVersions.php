@@ -172,7 +172,7 @@ trait HasContentVersions
         $this->resetContentVersionData();
     }
 
-    //region Helper(s)
+    // region Helper(s)
     protected function performPublishableAction(array $data, ?ContentStatusOption $option)
     {
         if ($option) {
@@ -260,5 +260,5 @@ trait HasContentVersions
     {
         $this->publishableState = 'draft';
     }
-    //endregion Helper(s)
+    // endregion Helper(s)
 }

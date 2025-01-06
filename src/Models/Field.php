@@ -19,7 +19,7 @@ class Field extends BaseModel implements FieldContract
         return $fieldTypeConfig?->getConfigNames() ?? [];
     }
 
-    //region Dto
+    // region Dto
     public function toDto(...$args)
     {
         $dtoClass = static::getDtoClass();
@@ -35,9 +35,9 @@ class Field extends BaseModel implements FieldContract
     {
         return PropertyTypeDto::class;
     }
-    //endregion Dto
+    // endregion Dto
 
-    //region Scope(s)
+    // region Scope(s)
     /** {@inheritDoc} */
     public function scopeByGroup($query, string $group)
     {
@@ -64,7 +64,7 @@ class Field extends BaseModel implements FieldContract
 
         return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 
     public static function boot()
     {

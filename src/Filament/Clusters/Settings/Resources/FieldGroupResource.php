@@ -203,10 +203,10 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return $record->documentTypes->count() <= 0;
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 }

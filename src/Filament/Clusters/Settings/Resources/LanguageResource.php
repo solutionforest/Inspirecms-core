@@ -94,14 +94,14 @@ class LanguageResource extends Resource implements ClusterSectionResource
         return __('inspirecms::inspirecms.language');
     }
 
-    //region Global search
+    // region Global search
     public static function canGloballySearch(): bool
     {
         return false;
     }
-    //endregion Global search
+    // endregion Global search
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -125,5 +125,5 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/language.is_default.validation_attribute'))
             ->default(false);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

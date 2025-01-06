@@ -15,11 +15,11 @@ class DocumentTypeObserver
      */
     public function saving($model)
     {
-        //region Set default value
+        // region Set default value
         if (blank($model->category) || is_null($model->category)) {
             $model->category = DocumentTypeCategoryEnum::Web->value;
         }
-        //endregion Set default value
+        // endregion Set default value
 
         if (! ($model->display_category?->canInheriting() ?? false)) {
             $model->show_as_table = false;

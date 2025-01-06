@@ -92,7 +92,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->hasMany(InspireCmsConfig::getContentModelClass(), 'document_type_id');
     }
 
-    //region Scope(s)
+    // region Scope(s)
     public function scopeCanBeInherited($query)
     {
         return $query->where('category', static::getCategoryEnumClass()::allCanBeInherited());
@@ -110,7 +110,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             static::getCategoryEnumClass()::Data->value,
         ]);
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 
     public function isWebPageType()
     {
@@ -215,7 +215,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->exists && ($this->isWebPageType() || $this->isDataType());
     }
 
-    //region Attribute(s)
+    // region Attribute(s)
     protected function displayCategory(): Attribute
     {
         return Attribute::make(
@@ -229,7 +229,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             },
         );
     }
-    //endregion Attribute(s)
+    // endregion Attribute(s)
 
     public static function boot()
     {

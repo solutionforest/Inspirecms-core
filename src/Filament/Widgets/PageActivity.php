@@ -68,7 +68,7 @@ class PageActivity extends BaseWidget
         return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
     }
 
-    //region Table Configuration
+    // region Table Configuration
     protected function makeTable(): Table
     {
         return parent::makeTable()
@@ -84,5 +84,5 @@ class PageActivity extends BaseWidget
             'primary',
         );
     }
-    //endregion Table Configuration
+    // endregion Table Configuration
 }

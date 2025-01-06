@@ -56,7 +56,7 @@ class Navigation extends BaseModel implements NavigationContract
         }
     }
 
-    //region Scopes
+    // region Scopes
     public function scopeCategory($query, string $type)
     {
         return $query->where('category', $type);
@@ -66,24 +66,24 @@ class Navigation extends BaseModel implements NavigationContract
     {
         return $query->where('is_active', $condition);
     }
-    //endregion Scopes
+    // endregion Scopes
 
     public function isVisibility()
     {
         return $this->is_active;
     }
 
-    //region Enums
-    //endregion Enums
+    // region Enums
+    // endregion Enums
 
-    //region Node
+    // region Node
     protected function getScopeAttributes()
     {
         return [
             'category',
         ];
     }
-    //endregion Node
+    // endregion Node
 
     public static function defaultContentId()
     {
@@ -106,7 +106,7 @@ class Navigation extends BaseModel implements NavigationContract
         }
     }
 
-    //region Attribute(s)
+    // region Attribute(s)
     protected function displayType(): Attribute
     {
         return Attribute::make(
@@ -120,7 +120,7 @@ class Navigation extends BaseModel implements NavigationContract
             },
         );
     }
-    //endregion Attribute(s)
+    // endregion Attribute(s)
 
     public static function boot()
     {

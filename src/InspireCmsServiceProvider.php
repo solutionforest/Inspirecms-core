@@ -269,7 +269,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerEvents(): void
     {
-        //region User Auth Activity
+        // region User Auth Activity
         Event::listen(
             AuthEvents\Login::class,
             [Listeners\UserAuthActivityListener::class, 'login']
@@ -286,9 +286,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             AuthEvents\PasswordReset::class,
             [Listeners\UserAuthActivityListener::class, 'passwordReset']
         );
-        //endregion User Auth Activity
+        // endregion User Auth Activity
 
-        //region Content
+        // region Content
         Event::listen(
             Events\Content\UpdatePath::class,
             [Listeners\Content\ProcessContentPath::class, 'handleUpsert']
@@ -296,7 +296,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Event::listen(Events\Content\CreatingContentVersion::class, Listeners\Content\UnpubilshChildren::class);
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
         Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
-        //endregion Content
+        // endregion Content
     }
 
     protected function configureFilamentForm(): void

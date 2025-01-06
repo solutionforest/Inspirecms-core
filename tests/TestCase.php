@@ -76,15 +76,15 @@ abstract class TestCase extends Orchestra
         $app['config']->set('database.default', 'testing');
         $app['config']->set('app.key', 'base64:I4ofV4eI4v12PUp+g9ZahXUu0ZhPCbk1Q8iawecCtdw=');
 
-        //region inspirecms
+        // region inspirecms
         static::registerTestModels();
 
         // Extra resources
         $app['config']->set('inspirecms.filament.resources.custom_post', \SolutionForest\InspireCms\Tests\Support\Filament\Resources\PostResource::class);
 
-        //endregion inspirecms
+        // endregion inspirecms
 
-        //region inspirecms support
+        // region inspirecms support
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
         \SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
@@ -94,7 +94,7 @@ abstract class TestCase extends Orchestra
         \SolutionForest\InspireCms\Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
 
         \SolutionForest\InspireCms\Support\Facades\ResolverRegistry::set('user', InspireCmsConfig::get('resolvers.user', \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class));
-        //endregion inspirecms support
+        // endregion inspirecms support
 
         $migrations = [
             __DIR__ . '/../database/migrations/create_inspire-cms-core_table.php.stub',

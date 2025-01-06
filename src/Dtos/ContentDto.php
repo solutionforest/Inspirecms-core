@@ -160,7 +160,7 @@ class ContentDto extends BaseTranslatableModelDto
 
     public function getTemplate($slug)
     {
-        //todo: improve this
+        // todo: improve this
         $content = $this->getModel();
         $template = inspirecms_content()->getTemplateFor($content, $slug);
 
@@ -244,7 +244,7 @@ class ContentDto extends BaseTranslatableModelDto
         return $urls->get($locale ?? $this->getLocale()) ?? $urls->get($this->getFallbackLocale());
     }
 
-    //region Helpers
+    // region Helpers
     /**
      * @param  Model | \SolutionForest\InspireCms\Models\Contracts\Content  $record
      */
@@ -387,5 +387,5 @@ class ContentDto extends BaseTranslatableModelDto
             'documentType.fields.group',
         ];
     }
-    //endregion Helpers
+    // endregion Helpers
 }

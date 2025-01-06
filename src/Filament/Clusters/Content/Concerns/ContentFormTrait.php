@@ -191,7 +191,7 @@ trait ContentFormTrait
             } else {
                 $record->fill($data);
             }
-            //region Handle Record Creating
+            // region Handle Record Creating
 
             $record->setPublishableData($publishableData);
 
@@ -209,7 +209,7 @@ trait ContentFormTrait
             $record->save();
 
             $this->record = $record;
-            //endregion Handle Record Creating
+            // endregion Handle Record Creating
 
             $this->{$formName}->model($this->getRecord())->saveRelationships();
 
@@ -217,7 +217,7 @@ trait ContentFormTrait
 
         } else {
 
-            //region Handle Record Updating
+            // region Handle Record Updating
             /** @var Model&\SolutionForest\InspireCms\Models\Contracts\Content */
             $record = $this->getRecord();
 
@@ -226,7 +226,7 @@ trait ContentFormTrait
             $record->setPublishableState($publishableAction);
 
             $this->record = $this->handleRecordUpdate($record, $data);
-            //endregion Handle Record Updating
+            // endregion Handle Record Updating
 
             // Skip save relationships on `getPublishableFormDataBeforePublish`, and handle on this line
             $this->{$formName}->model($this->getRecord())->saveRelationships();
@@ -283,7 +283,7 @@ trait ContentFormTrait
         }
     }
 
-    //region Help functions
+    // region Help functions
     protected function getPublishFormAction(string $operation, string $model): Action
     {
         if (is_null($operation) || $operation === 'create') {
@@ -390,5 +390,5 @@ trait ContentFormTrait
 
         return true;
     }
-    //endregion Help functions
+    // endregion Help functions
 }

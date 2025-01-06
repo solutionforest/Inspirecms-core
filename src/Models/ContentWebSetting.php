@@ -22,7 +22,7 @@ class ContentWebSetting extends BaseModel implements ContentWebSettingContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'redirect_content_id');
     }
 
-    //region Dto
+    // region Dto
     public function toDto(...$args)
     {
         $dtoClass = static::getDtoClass();
@@ -54,5 +54,5 @@ class ContentWebSetting extends BaseModel implements ContentWebSettingContract
     {
         return SeoDto::class;
     }
-    //endregion Dto
+    // endregion Dto
 }

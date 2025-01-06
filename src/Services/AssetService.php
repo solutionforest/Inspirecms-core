@@ -31,7 +31,7 @@ class AssetService implements AssetServiceInterface
         return $this->getQuery()->with('media')->findMany($keys);
     }
 
-    //region Helpers
+    // region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -47,5 +47,5 @@ class AssetService implements AssetServiceInterface
     {
         return InspireCmsConfig::getMediaAssetModelClass();
     }
-    //endregion Helpers
+    // endregion Helpers
 }

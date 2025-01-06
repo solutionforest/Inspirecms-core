@@ -117,7 +117,7 @@ trait CmsUserTrait
         return false;
     }
 
-    //region Attributes
+    // region Attributes
     public function getIsActiveAttribute()
     {
         $lockoutDuration = InspireCmsConfig::get('auth.lockout_duration', 5);
@@ -133,7 +133,7 @@ trait CmsUserTrait
 
         return $this->last_lockouted_at->addMinutes($lockoutDuration)->isPast();
     }
-    //endregion Attributes
+    // endregion Attributes
 
     public static function boot()
     {

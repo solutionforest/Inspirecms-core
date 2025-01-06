@@ -244,7 +244,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return parent::canDelete($record);
     }
 
-    //region Global search
+    // region Global search
     public static function getGloballySearchableAttributes(): array
     {
         return ['slug'];
@@ -261,9 +261,9 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ]
         );
     }
-    //endregion Global search
+    // endregion Global search
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -492,5 +492,5 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ])
             ->extraAttributes(['class' => 'w-1/2']);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

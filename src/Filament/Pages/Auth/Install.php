@@ -130,7 +130,7 @@ class Install extends BasePage
         return $user;
     }
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field|Forms\Components\Component
      */
@@ -188,7 +188,7 @@ class Install extends BasePage
             ->required()
             ->dehydrated(false);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 
     public function getRegisterFormAction(): Action
     {

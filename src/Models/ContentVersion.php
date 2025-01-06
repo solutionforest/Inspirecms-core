@@ -59,7 +59,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         return $diff;
     }
 
-    //region Scopes
+    // region Scopes
     public function scopeWhereIsPublished($query, bool $condition = true)
     {
         if ($condition) {
@@ -72,9 +72,9 @@ class ContentVersion extends BaseModel implements ContentVersionContract
             });
         }
     }
-    //endregion Scopes
+    // endregion Scopes
 
-    //region Prunable
+    // region Prunable
     /**
      * Get the prunable model query.
      */
@@ -86,7 +86,7 @@ class ContentVersion extends BaseModel implements ContentVersionContract
             ->where('avoid_to_clean', false)
             ->where('created_at', '<', $dayAfter);
     }
-    //endregion Prunable
+    // endregion Prunable
 
     public static function boot()
     {

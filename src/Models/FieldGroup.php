@@ -51,13 +51,13 @@ class FieldGroup extends BaseModel implements FieldGroupContract
             ->schema($schema);
     }
 
-    //region Scopes
+    // region Scopes
     /** {@inheritDoc} */
     public function scopeWhereActive($query, bool $condition = true)
     {
         return $query->where('active', $condition);
     }
-    //endregion Scopes
+    // endregion Scopes
 
     public static function booting()
     {

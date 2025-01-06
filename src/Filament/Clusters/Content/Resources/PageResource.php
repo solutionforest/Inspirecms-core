@@ -46,7 +46,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
         return parent::getEloquentQuery()->whereHas('documentType', fn ($query) => $query->whereCanBeContent());
     }
 
-    //region Global search
+    // region Global search
     public static function getGloballySearchableAttributes(): array
     {
         /**
@@ -109,7 +109,7 @@ class PageResource extends BaseContentResource implements ClusterSectionResource
 
         return $query;
     }
-    //endregion Global search
+    // endregion Global search
 
     public static function getModelLabel(): string
     {

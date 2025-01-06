@@ -675,7 +675,7 @@ class SampleSeeder extends Seeder
                     mkdir($dir, 0777, true);
                 }
 
-                //Retry x-times to create fake image
+                // Retry x-times to create fake image
                 $fakeImage = false;
                 $retry = 0;
 

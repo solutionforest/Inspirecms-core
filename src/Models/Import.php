@@ -96,7 +96,7 @@ class Import extends BaseModel implements ImportContract
         parent::delete();
     }
 
-    //region Prunable
+    // region Prunable
     /**
      * Get the prunable model query.
      */
@@ -114,9 +114,9 @@ class Import extends BaseModel implements ImportContract
     {
         $this->deleteFile();
     }
-    //endregion Prunable
+    // endregion Prunable
 
-    //region Scope(s)
+    // region Scope(s)
     public function scopeWherePending($query, bool $condition = true)
     {
         if ($condition) {
@@ -142,7 +142,7 @@ class Import extends BaseModel implements ImportContract
             ->wherePending(false)
             ->where('created_at', '<', now()->subDays(ImportDataHelper::retrieveClearanceDaysInterval()));
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 
     public static function boot()
     {
@@ -151,7 +151,7 @@ class Import extends BaseModel implements ImportContract
         static::observe(ImportObserver::class);
     }
 
-    //region Helper(s)
+    // region Helper(s)
     /**
      * Get the storage disk used for the import job.
      *
@@ -188,5 +188,5 @@ class Import extends BaseModel implements ImportContract
 
         return true;
     }
-    //endregion Helper(s)
+    // endregion Helper(s)
 }

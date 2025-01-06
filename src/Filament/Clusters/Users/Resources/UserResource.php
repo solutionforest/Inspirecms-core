@@ -103,7 +103,7 @@ class UserResource extends Resource implements ClusterSectionResource
         return parent::getEloquentQuery()->with(['roles']);
     }
 
-    //region Global search
+    // region Global search
     public static function getGloballySearchableAttributes(): array
     {
         return ['id', 'email'];
@@ -116,9 +116,9 @@ class UserResource extends Resource implements ClusterSectionResource
             <p>{$record->name}</p>
         Html);
     }
-    //endregion Global search
+    // endregion Global search
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field|Forms\Components\Component
      */
@@ -183,5 +183,5 @@ class UserResource extends Resource implements ClusterSectionResource
             ->required()
             ->columnSpanFull();
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

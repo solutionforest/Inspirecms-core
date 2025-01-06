@@ -240,7 +240,7 @@ class TemplatesRelationManager extends RelationManager
         }
     }
 
-    //region Preview
+    // region Preview
     protected function getBuilderPreviewView(string $builderName): ?string
     {
         $templateRecord = $this->cachedMountedTableActionRecord;
@@ -269,11 +269,11 @@ class TemplatesRelationManager extends RelationManager
         if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
             // get the layout
             $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
-            if (view()->exists("components." . $layoutName)) {
+            if (view()->exists('components.' . $layoutName)) {
                 $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
                     'content' => $dummyDto,
                     'layoutName' => $layoutName,
-                    'slot' => ''
+                    'slot' => '',
                 ]);
 
                 return Html::injectPreviewModalStyle(
@@ -281,7 +281,6 @@ class TemplatesRelationManager extends RelationManager
                 );
             }
         }
-
 
         return Html::injectPreviewModalStyle(
             Blade::render($htmlContent, [
@@ -349,9 +348,9 @@ class TemplatesRelationManager extends RelationManager
     {
         return __('inspirecms::resources/template.editor.title');
     }
-    //endregion Preview
+    // endregion Preview
 
-    //region Helpers
+    // region Helpers
     protected function refreshPageAlerts(): void
     {
         $this->dispatch('refreshAlerts');
@@ -361,5 +360,5 @@ class TemplatesRelationManager extends RelationManager
     {
         inspirecms_templates()->assignDefaultTemplateIfNotSet($this->getOwnerRecord(), $template);
     }
-    //endregion Helpers
+    // endregion Helpers
 }

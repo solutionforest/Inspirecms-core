@@ -39,7 +39,7 @@ class InspireCmsManager
      */
     public function needInstall(): bool
     {
-        //region Check user table not empty
+        // region Check user table not empty
         $guard = InspireCmsConfig::getGuardName();
 
         /** @var ?EloquentUserProvider $provider */
@@ -51,7 +51,7 @@ class InspireCmsManager
         if ($provider->getModel()::count() <= 0) {
             return true;
         }
-        //endregion Check user table not empty
+        // endregion Check user table not empty
 
         return false;
     }
@@ -206,7 +206,7 @@ class InspireCmsManager
         $this->cacheManager->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
 
-    //region Helpers
+    // region Helpers
     private function getSerializedLanguagesForCache(): array
     {
         $attributes = ['id', 'code', 'is_default'];
@@ -306,5 +306,5 @@ class InspireCmsManager
         return array_values(array_unique(array_merge($attributes, $relations)));
     }
 
-    //endregion Helpers
+    // endregion Helpers
 }

@@ -369,7 +369,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         return app(static::getModel())->getQualifiedKeyName();
     }
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /**
      * @return Forms\Components\Field | Forms\Components\Component
      */
@@ -558,7 +558,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         };
 
         $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromDocumentType) {
-            if ($record) { //edit/view page
+            if ($record) { // edit/view page
                 $fieldGroups = collect($record->documentType->fieldGroups)->sortBy('pivot.order')->values();
             } elseif ($livewire instanceof ContentForm) { // create
                 $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
@@ -963,5 +963,5 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->required(),
             ]);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 }

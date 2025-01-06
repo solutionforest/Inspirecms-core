@@ -102,7 +102,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
         }
     }
 
-    //region Preview
+    // region Preview
     protected function getPreviewModalView(): ?string
     {
         $record = $this->getRecord();
@@ -139,9 +139,9 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
 
         return $data;
     }
-    //endregion Preview
+    // endregion Preview
 
-    //region Computed properties
+    // region Computed properties
     #[\Livewire\Attributes\Computed(persist: true, seconds: 7200)]
     public function contentDto()
     {
@@ -158,5 +158,5 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
 
         return null;
     }
-    //endregion Computed properties
+    // endregion Computed properties
 }

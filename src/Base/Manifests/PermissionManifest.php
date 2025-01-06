@@ -180,7 +180,7 @@ class PermissionManifest implements PermissionManifestInterface
         return auth()->user()?->can($permissionName);
     }
 
-    //region Helper methods
+    // region Helper methods
     protected function getDefaultPermissions(): array
     {
         return collect($this->getClusterSectionPermissions())->keys()
@@ -192,5 +192,5 @@ class PermissionManifest implements PermissionManifestInterface
             ->unique()
             ->toArray();
     }
-    //endregion Helper methods
+    // endregion Helper methods
 }

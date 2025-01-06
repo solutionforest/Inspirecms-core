@@ -26,10 +26,10 @@ class ContentPublishVersion extends BasePivotModel implements ContentPublishVers
         return $this->belongsTo(InspireCmsConfig::getContentVersionModelClass(), 'version_id');
     }
 
-    //region Scope(s)
+    // region Scope(s)
     public function scopeWhereIsPublished($query)
     {
         return $query->where('published_at', '<', now());
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 }

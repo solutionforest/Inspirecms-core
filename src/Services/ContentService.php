@@ -122,7 +122,7 @@ class ContentService implements ContentServiceInterface
         return $this->getTemplatesFor($content)->first(fn ($template) => $template->slug === $templateSlug);
     }
 
-    //region Helpers
+    // region Helpers
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -151,5 +151,5 @@ class ContentService implements ContentServiceInterface
     {
         return Str::of($slugPath)->trim('/')->prepend('/');
     }
-    //endregion Helpers
+    // endregion Helpers
 }

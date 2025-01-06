@@ -157,7 +157,7 @@ class PropertyDataDto extends BaseDto
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker:
 
-                //todo: improve performance
+                // todo: improve performance
                 $mediaAssets = inspirecms_asset()->findByKeys($sourceValue);
 
                 // sort the content based on the source value
@@ -169,7 +169,7 @@ class PropertyDataDto extends BaseDto
 
             case $propertyType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker:
 
-                //todo: improve performance
+                // todo: improve performance
                 $content = inspirecms_content()->findPublishedContentByIds($sourceValue)
                     ->filter(fn ($c) => in_array($c->getKey(), $sourceValue))
                     ->sortBy(fn ($c) => array_search($c->getKey(), $sourceValue))

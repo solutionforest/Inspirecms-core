@@ -64,7 +64,7 @@ class Template extends BaseModel implements TemplateContract
         $this->save();
     }
 
-    //region Dto
+    // region Dto
     public function toDto(...$args)
     {
         $theme = $args[0] ?? inspirecms_templates()->getCurrentTheme();
@@ -80,7 +80,7 @@ class Template extends BaseModel implements TemplateContract
     {
         return \SolutionForest\InspireCms\Dtos\TemplateDto::class;
     }
-    //endregion Dto
+    // endregion Dto
 
     public static function boot()
     {

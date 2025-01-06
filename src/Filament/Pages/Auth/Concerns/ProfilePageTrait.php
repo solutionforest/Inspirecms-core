@@ -58,7 +58,7 @@ trait ProfilePageTrait
             ]);
     }
 
-    //region Form field(s)/component(s)
+    // region Form field(s)/component(s)
     /** @return Forms\Components\Field|Forms\Components\Component */
     protected function getNameFormComponent(): Forms\Components\Component
     {
@@ -159,16 +159,16 @@ trait ProfilePageTrait
                 Forms\Components\Placeholder::make('updated_at')->label(__('inspirecms::inspirecms.last_updated_at'))->inlineLabel()->content(fn (User | Model $record) => $record->updated_at),
             ]);
     }
-    //endregion Form field(s)/component(s)
+    // endregion Form field(s)/component(s)
 
-    //region Form configs
+    // region Form configs
     public function getFormActionsAlignment(): string | Alignment
     {
         return Alignment::End;
     }
-    //endregion Form configs
+    // endregion Form configs
 
-    //region Page configs
+    // region Page configs
 
     public function getLayout(): string
     {
@@ -202,5 +202,5 @@ trait ProfilePageTrait
             'maxWidth' => $this->getMaxWidth(),
         ];
     }
-    //endregion Page configs
+    // endregion Page configs
 }
