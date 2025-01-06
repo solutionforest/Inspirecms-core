@@ -143,6 +143,7 @@ trait ProfilePageTrait
             ->label(__('inspirecms::resources/user.avatar.label'))
             ->validationAttribute(__('inspirecms::resources/user.avatar.validation_attribute'))
             ->disk(InspireCmsConfig::get('avatar.driver'))
+            ->directory(InspireCmsConfig::get('avatar.directory'))
             ->image();
     }
 

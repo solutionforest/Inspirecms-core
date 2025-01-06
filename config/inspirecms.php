@@ -32,6 +32,7 @@ return [
 
     'avatar' => [
         'driver' => 'public',
+        'directory' => 'avatars',
     ],
 
     'cache' => [
