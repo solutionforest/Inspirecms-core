@@ -75,8 +75,7 @@ class TemplateManager implements TemplateManagerInterface
     }
 
     /**
-     * @param Model & Template $template
-     * @return void
+     * @param  Model & Template  $template
      */
     public function exportTemplate($template, ?string $theme = null): void
     {

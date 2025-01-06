@@ -38,13 +38,15 @@ class ExportTemplateAction extends Action implements GuardAction
 
         $this->model(fn () => \SolutionForest\InspireCms\InspireCmsConfig::getTemplateModelClass());
 
-        $this->successNotification(fn (Notification $notification) => $notification
-            ->title(__('inspirecms::actions.export_templates.notification.success.title'))
-            ->body(__('inspirecms::actions.export_templates.notification.success.body'))
+        $this->successNotification(
+            fn (Notification $notification) => $notification
+                ->title(__('inspirecms::actions.export_templates.notification.success.title'))
+                ->body(__('inspirecms::actions.export_templates.notification.success.body'))
         );
 
-        $this->failureNotification(fn (Notification $notification) => $notification
-            ->title(__('inspirecms::actions.export_templates.notification.failure.title'))
+        $this->failureNotification(
+            fn (Notification $notification) => $notification
+                ->title(__('inspirecms::actions.export_templates.notification.failure.title'))
         );
 
         $this->action(function (?string $model, Action $action) {
@@ -57,7 +59,7 @@ class ExportTemplateAction extends Action implements GuardAction
             $failedTemplates = [];
 
             foreach (array_keys(inspirecms_templates()->getAvailableThemes()) as $theme) {
-                
+
                 foreach ($templates as $template) {
                     try {
                         inspirecms_templates()->exportTemplate($template, $theme);
