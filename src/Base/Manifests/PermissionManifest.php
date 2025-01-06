@@ -60,7 +60,7 @@ class PermissionManifest implements PermissionManifestInterface
             ->merge([
                 [
                     'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class),
-                    'permissionPrefixes' => ['view', 'create', 'update', 'delete'],
+                    'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
                 ],
             ])
             ->map(function (array $data) {

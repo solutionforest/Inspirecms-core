@@ -34,7 +34,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             $model = InspireCmsConfig::getDocumentTypeModelClass();
 
             return $model::query()
-                ->limit($component->getOptionsLimit())
+                ->limitDisplay($component->getOptionsLimit())
                 ->when(filled($search), function ($query) use ($search) {
                     $query->where('slug', 'like', "%$search%");
                 })

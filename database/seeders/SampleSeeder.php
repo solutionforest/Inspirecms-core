@@ -138,7 +138,7 @@ class SampleSeeder extends Seeder
             'data' => new ImportDataEntities\FieldGroup(slug: 'hero_banner'),
             'fields' => [
                 new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
-                new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['types' => ['image'], 'multiple' => true]),
             ],
         ];
         $items[] = [
@@ -153,8 +153,8 @@ class SampleSeeder extends Seeder
             'fields' => [
                 new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
                 new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
-                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
-                new ImportDataEntities\Field(slug: 'resume', type: 'mediaPicker', config: ['mimeTypes' => ['pdf'], 'multiple' => false]),
+                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['types' => ['image'], 'max' => 1]),
+                new ImportDataEntities\Field(slug: 'resume', type: 'mediaPicker', config: ['types' => ['pdf'], 'max' => 1]),
             ],
         ];
         $items[] = [
@@ -162,7 +162,7 @@ class SampleSeeder extends Seeder
             'fields' => [
                 new ImportDataEntities\Field(slug: 'title', type: 'text', config: ['translatable' => true]),
                 new ImportDataEntities\Field(slug: 'description', type: 'text', config: ['translatable' => true]),
-                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['mimeTypes' => ['image'], 'multiple' => false]),
+                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['types' => ['image'], 'max' => 1]),
             ],
         ];
         $items[] = [

@@ -37,6 +37,7 @@ use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker;
 
 abstract class BaseContentResource extends Resource implements ClusterSectionResource
 {
@@ -852,13 +853,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     ->limitLengthWithHint(120),
                             ],
                             'og_image' => [
-                                'field' => \SolutionForest\InspireCms\Support\Forms\Components\MediaPicker::class,
-                                'callback' => fn (\SolutionForest\InspireCms\Support\Forms\Components\MediaPicker $field) => $field
+                                'field' => MediaPicker::class,
+                                'callback' => fn (MediaPicker $field) => $field
                                     ->label(__('inspirecms::resources/content.seo.og_image.label'))
                                     ->validationAttribute(__('inspirecms::resources/content.seo.og_image.validation_attribute'))
                                     ->helperText(__('inspirecms::resources/content.seo.og_image.instructions'))
                                     ->image()
-                                    ->multiple(true),
+                                    ->max(1),
                             ],
                         ];
 

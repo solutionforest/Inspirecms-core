@@ -8,7 +8,8 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
-use SolutionForest\InspireCms\Support\Forms\Components\MediaPicker as MediaPickerComponent;
+use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker as MediaPickerComponent;
 
 #[ConfigName('mediaPicker', 'Media Picker', 'Picker', 'heroicon-o-pencil')]
 #[FormComponent(MediaPickerComponent::class)]
@@ -18,22 +19,27 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public array $types = [];
 
-    public bool $multiple = false;
+    public ?int $min = null;
+
+    public ?int $max = null;
 
     public function getFormSchema(): array
     {
         return [
             Forms\Components\Tabs::make('tabs')
                 ->tabs([
+                    Forms\Components\Tabs\Tab::make('Validation')
+                        ->schema([
+                            Forms\Components\TextInput::make('min')->numeric(),
+                            Forms\Components\TextInput::make('max')->numeric(),
+                        ]),
                     Forms\Components\Tabs\Tab::make('Presentation')
                         ->schema([
                             Forms\Components\Select::make('types')
                                 ->inlineLabel()
                                 ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
-                                ->options(__('inspirecms-support::media-library.filter.type.options'))
+                                ->options(FilterType::class)
                                 ->multiple(),
-                            Forms\Components\Toggle::make('multiple')
-                                ->default(false),
                         ]),
                 ]),
         ];
@@ -43,7 +49,12 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     {
         if ($component instanceof MediaPickerComponent) {
             $component->filterTypes($this->types);
-            $component->multiple($this->multiple);
+            if ($this->min) {
+                $component->min($this->min);
+            }
+            if ($this->max) {
+                $component->max($this->max);
+            }
         }
     }
 }
