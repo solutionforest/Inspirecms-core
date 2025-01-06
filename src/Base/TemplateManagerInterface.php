@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Base;
 
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates;
+use SolutionForest\InspireCms\Models\Contracts\Template;
+
 interface TemplateManagerInterface
 {
     public function getCurrentTheme(): string;
@@ -15,8 +19,8 @@ interface TemplateManagerInterface
     /**
      * Assigns a default template to the given templateable object if it is not already set.
      *
-     * @param  HasTemplates&Model  $templateable  The object that can have a template assigned to it.
-     * @param  string|int|(Model&Template)  $template  The default template to assign if none is set.
+     * @param  HasTemplates & Model  $templateable  The object that can have a template assigned to it.
+     * @param  string |int | (Model & Template)  $template  The default template to assign if none is set.
      * @return void
      */
     public function assignDefaultTemplateIfNotSet($templateable, $template);
@@ -31,4 +35,12 @@ interface TemplateManagerInterface
      * @return string The default content for the template.
      */
     public function retrieveDefaultContent();
+
+    /**
+     * @param Model & Template $template
+     * @return void
+     */
+    public function exportTemplate($template, ?string $theme = null): void;
+
+    public function getExportedTemplateDir(): string;
 }

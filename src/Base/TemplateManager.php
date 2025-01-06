@@ -3,7 +3,10 @@
 namespace SolutionForest\InspireCms\Base;
 
 use Illuminate\Cache\CacheManager;
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateManager implements TemplateManagerInterface
 {
@@ -69,6 +72,31 @@ class TemplateManager implements TemplateManagerInterface
             Template content
         </x-dynamic-component>
         HTML;
+    }
+
+    /**
+     * @param Model & Template $template
+     * @return void
+     */
+    public function exportTemplate($template, ?string $theme = null): void
+    {
+        $filename = "{$template->slug}.blade.php";
+
+        $path = str($this->getExportedTemplateDir())
+            ->rtrim('/')
+            ->finish('/')
+            ->finish(trim($theme ?? $this->getCurrentTheme()) . '/' . $filename);
+
+        $dir = dirname($path);
+        // create directory if not exists
+        FileHelper::ensureDirectoryExists($dir);
+
+        file_put_contents($path, $template->content);
+    }
+
+    public function getExportedTemplateDir(): string
+    {
+        return InspireCmsConfig::get('template.exported_template_dir', resource_path('views/inspirecms/templates'));
     }
 
     protected static function ensureTemplateNameFormat(string $slug): string

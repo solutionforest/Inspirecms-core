@@ -117,4 +117,30 @@ return [
         'label' => '選擇',
 
     ],
+
+    'export_templates' => [
+
+        'label' => '導出模板',
+
+        'permission_display_name' => '導出模板',
+
+        'notification' => [
+
+            'success' => [
+
+                'title' => '模板導出成功',
+
+                'body' => '所有模板已成功導出。請檢查存儲文件夾以獲取導出的模板。',
+
+            ],
+
+            'failure' => [
+
+                'title' => '導出模板失敗',
+
+                'body' => '一些模板導出失敗。請檢查日誌以獲取更多信息。',
+
+            ],
+        ],
+    ],
 ];
