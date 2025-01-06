@@ -32,6 +32,7 @@ return [
 
     'avatar' => [
         'driver' => 'public',
+        'directory' => 'avatars',
     ],
 
     'cache' => [
@@ -137,6 +138,7 @@ return [
         'guard_actions' => [
             \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
             \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
+            \SolutionForest\InspireCms\Filament\Actions\ExportTemplateAction::class,
 
             \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
             \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
@@ -151,6 +153,7 @@ return [
             'know-press' => 'Know Press',
         ],
         'component_prefix' => 'inspirecms',
+        'exported_template_dir' => resource_path('views/inspirecms/templates'),
     ],
 
     'resolvers' => [

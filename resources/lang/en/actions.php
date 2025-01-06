@@ -116,4 +116,30 @@ return [
         'label' => 'Choose',
 
     ],
+
+    'export_templates' => [
+
+        'label' => 'Export templates',
+
+        'permission_display_name' => 'Export templates',
+
+        'notification' => [
+
+            'success' => [
+
+                'title' => 'Templates exported',
+
+                'body' => 'All templates exported successfully. Please check the storage folder for the exported templates.',
+
+            ],
+
+            'failure' => [
+
+                'title' => 'Failed to export templates',
+
+                'body' => 'Some templates failed to export. Please check the logs for more information.',
+
+            ],
+        ],
+    ],
 ];

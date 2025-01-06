@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Forms\Form;
 use Filament\Resources\Components\Tab;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
+use SolutionForest\InspireCms\Filament\Actions\ExportTemplateAction;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -14,6 +15,7 @@ class ListDocumentTypes extends BaseListPage
     public function getActions(): array
     {
         return [
+            ExportTemplateAction::make(),
             Actions\CreateAction::make()->slideOver(),
         ];
     }

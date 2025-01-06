@@ -74,6 +74,7 @@ trait ProfilePageTrait
     {
         return Forms\Components\TextInput::make('email')
             ->label(__('inspirecms::resources/user.email.label'))
+            ->validationAttribute(__('inspirecms::resources/user.email.validation_attribute'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -85,6 +86,7 @@ trait ProfilePageTrait
     {
         return Forms\Components\TextInput::make('password')
             ->label(__('inspirecms::resources/user.password.label'))
+            ->validationAttribute(__('inspirecms::resources/user.password.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->rule(Password::default())
@@ -100,6 +102,7 @@ trait ProfilePageTrait
     {
         return Forms\Components\TextInput::make('passwordConfirmation')
             ->label(__('inspirecms::resources/user.password_confirmation.label'))
+            ->validationAttribute(__('inspirecms::resources/user.password_confirmation.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -114,6 +117,7 @@ trait ProfilePageTrait
     {
         return Forms\Components\Select::make('preferred_language')
             ->label(__('inspirecms::resources/user.preferred_language.label'))
+            ->validationAttribute(__('inspirecms::resources/user.preferred_language.validation_attribute'))
             ->options(LocaleManifest::selectOptions())
             ->searchable()
             ->required();
@@ -126,6 +130,7 @@ trait ProfilePageTrait
     {
         return UserRolePicker::make('roles')
             ->label(__('inspirecms::resources/user.roles.label'))
+            ->validationAttribute(__('inspirecms::resources/user.roles.validation_attribute'))
             ->required();
     }
 
@@ -136,7 +141,9 @@ trait ProfilePageTrait
     {
         return Forms\Components\FileUpload::make('avatar')
             ->label(__('inspirecms::resources/user.avatar.label'))
+            ->validationAttribute(__('inspirecms::resources/user.avatar.validation_attribute'))
             ->disk(InspireCmsConfig::get('avatar.driver'))
+            ->directory(InspireCmsConfig::get('avatar.directory'))
             ->image();
     }
 
