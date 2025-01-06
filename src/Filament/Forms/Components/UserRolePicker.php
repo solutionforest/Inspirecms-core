@@ -28,8 +28,16 @@ class UserRolePicker extends Repeater
             'roles',
         );
 
+        $permission = inspirecms_permissions()->getPermissionNameForModel('adjust_roles', InspireCmsConfig::getUserModelClass());
+
+        $this->deleteAction(
+            fn (Action $action) => $action
+                ->authorize($permission)
+        );
+
         $this->addAction(
             fn (Action $action) => $action
+                ->authorize($permission)
                 ->extraAttributes(['class' => 'w-full'], true)
                 ->label(fn () => __('inspirecms::actions.add.label_with_name', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
         );

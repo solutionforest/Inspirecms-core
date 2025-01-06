@@ -24,13 +24,21 @@ use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserResource extends Resource implements ClusterSectionResource
 {
-    use ClusterSectionResourceTrait;
+    use ClusterSectionResourceTrait {
+        ClusterSectionResourceTrait::getPermissionPrefixes as traitGetPermissionPrefixes;
+    }
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $cluster = Users::class;
+    
+
+    public static function getPermissionPrefixes(): array
+    {
+        return array_unique(array_merge(static::traitGetPermissionPrefixes(), ['adjust_roles']));
+    }
 
     public static function createForm(Form $form): Form
     {
