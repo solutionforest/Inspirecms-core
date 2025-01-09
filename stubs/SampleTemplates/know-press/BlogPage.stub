@@ -4,15 +4,15 @@
     $social_media = $content->getPropertyGroup('social_media');
     
     $blog_content = $content->getPropertyGroup('blog_content');
-    $blog_content_content = $blog_content?->getPropertyData('content')?->getValue($locale);
+    $blog_content_content = $blog_content?->getPropertyData('content')?->getValue();
     $blog_content_categories = collect($blog_content?->getPropertyData('categories')?->getValue());
     $blog_content_tags = collect($blog_content?->getPropertyData('tags')?->getValue());
     $blog_content_post_date = $blog_content?->getPropertyData('post_date')->getValue()?->format('d M, Y');
 
     $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
     $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <article class="blog-post-single page-main-container">

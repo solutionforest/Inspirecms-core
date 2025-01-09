@@ -4,10 +4,10 @@
     $contact = $content?->getPropertyGroup('contact');
     $contact_email = $contact?->getPropertyData('email')?->getValue();
     $contact_phone = $contact?->getPropertyData('phone')?->getValue();
-    $contact_address = $contact?->getPropertyData('address')?->getValue($locale);
+    $contact_address = $contact?->getPropertyData('address')?->getValue();
     $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
+    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
     
     $config = inspirecms_content()->findByRealPath('config')?->toDto($locale);
     $sns = $config->getPropertyGroup('social_media');

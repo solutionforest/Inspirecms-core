@@ -1,9 +1,9 @@
 @php
     $locale ??= $content->getLocale();
     $about_section = $content->getPropertyGroup('about_section');
-    $about_section_brief = $about_section?->getPropertyData('brief')?->getValue($locale);
-    $about_section_description = $about_section?->getPropertyData('description')?->getValue($locale);
-    $about_section_image = collect($about_section?->getPropertyData('image')?->getValue($locale))->first();
+    $about_section_brief = $about_section?->getPropertyData('brief')?->getValue();
+    $about_section_description = $about_section?->getPropertyData('description')?->getValue();
+    $about_section_image = collect($about_section?->getPropertyData('image')?->getValue())->first();
     $about_section_resume = collect($about_section?->getPropertyData('resume')?->getValue())->first();
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">

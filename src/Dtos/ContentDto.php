@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
+use SolutionForest\InspireCms\Dtos\Collection\PropertyGroupCollection;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Models\Content;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
@@ -44,7 +45,7 @@ class ContentDto extends BaseTranslatableModelDto
     public $propertyTypes;
 
     /**
-     * @var SupportCollection<PropertyDataGroupDto>
+     * @var PropertyGroupCollection
      */
     public $propertyData;
 
@@ -175,7 +176,16 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public function getPropertyGroup(string $key)
     {
-        return collect($this->propertyData)->first(fn (PropertyDataGroupDto $p) => $p->key === $key);
+        if (! $this->propertyData instanceof PropertyGroupCollection) {
+            $this->propertyData = new PropertyGroupCollection($this->propertyData);
+        }
+
+        $groups = clone $this->propertyData;
+        if (($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
+            $groups->setFallbackLocale($locale);
+        }
+
+        return $groups->get($key);
     }
 
     /**
@@ -186,25 +196,16 @@ class ContentDto extends BaseTranslatableModelDto
      */
     public function getPropertyData(string $key)
     {
-        $result = collect();
-
-        foreach ($this->propertyData ?? [] as $group) {
-
-            if (! $group instanceof PropertyDataGroupDto) {
-                continue;
-            }
-
-            // Determine the property group contains the property
-            $propertyData = collect($group->data)->first(fn (PropertyDataDto $d) => $d->key === $key);
-
-            if (! $propertyData) {
-                continue;
-            }
-
-            $result = $result->put($group->key, $propertyData);
+        if (! $this->propertyData instanceof PropertyGroupCollection) {
+            $this->propertyData = new PropertyGroupCollection($this->propertyData);
         }
 
-        return $result;
+        $groups = clone $this->propertyData;
+        if (($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
+            $groups->setFallbackLocale($locale);
+        }
+
+        return $groups->getPropertyData($key);
     }
 
     /**
@@ -289,12 +290,13 @@ class ContentDto extends BaseTranslatableModelDto
             ->values()
             ->toArray();
 
-        $parameters['propertyData'] = static::mutuatePropertyData($parameters['propertyData'] ?? [], $propertyTypes, $fallbackLocale);
         $parameters['seo'] = static::mutuateSeoData($parameters['seo'] ?? []);
 
         // Ensure is a collection
         $parameters['propertyTypes'] = collect($propertyTypes);
-        $parameters['propertyData'] = collect($parameters['propertyData'] ?? []);
+        $parameters['propertyData'] = new PropertyGroupCollection(
+            static::mutuatePropertyData($parameters['propertyData'] ?? [], $propertyTypes, $fallbackLocale)
+        );
         $parameters['seo'] = collect($parameters['seo'] ?? []);
 
         return $parameters;

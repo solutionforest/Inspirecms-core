@@ -1,8 +1,8 @@
 @php
     $locale ??= $content->getLocale();
     $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
+    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
 
     $cases = $content->getChildren()->paginate(3);
 @endphp
@@ -19,10 +19,10 @@
                         @foreach ($cases as $item)
                             @php
                                 $case_page_banner = $item->getPropertyGroup('page_banner');
-                                $case_page_banner_image = collect($case_page_banner?->getPropertyData('image')?->getValue($locale))->first();
+                                $case_page_banner_image = collect($case_page_banner?->getPropertyData('image')?->getValue())->first();
                                 $case_content = $item->getPropertyGroup('case_content');
-                                $case_content_category = $case_content?->getPropertyData('category')?->getValue($locale);
-                                $case_content_year = $case_content?->getPropertyData('year')?->getValue($locale);
+                                $case_content_category = $case_content?->getPropertyData('category')?->getValue();
+                                $case_content_year = $case_content?->getPropertyData('year')?->getValue();
                             @endphp
                             <div class="">
                                 <article class="article-card">

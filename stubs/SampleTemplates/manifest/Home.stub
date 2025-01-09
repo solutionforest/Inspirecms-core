@@ -2,17 +2,17 @@
     use Illuminate\Support\Arr;
     $locale ??= $content->getLocale();
     $hero_banner = $content->getPropertyGroup('hero_banner');
-    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue($locale);
+    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue();
     if (is_array($hero_banner_brief)) {
         $hero_banner_brief = Arr::first($hero_banner_brief);
     }
     $hero_banner_image_slider = $hero_banner?->getPropertyData('image_slider')?->getValue();
     $profile = $content->getPropertyGroup('profile');
-    $profile_brief = $profile?->getPropertyData('brief')?->getValue($locale);
+    $profile_brief = $profile?->getPropertyData('brief')?->getValue();
     if (is_array($profile_brief)) {
         $profile_brief = Arr::first($profile_brief);
     }
-    $profile_description = $profile?->getPropertyData('description')?->getValue($locale);
+    $profile_description = $profile?->getPropertyData('description')?->getValue();
 
     $blogPage = request()->query('blog_page', 1);
     $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(page: $blogPage, perPage: 3, pageName: 'blog_page');

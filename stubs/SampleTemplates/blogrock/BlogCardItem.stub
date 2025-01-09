@@ -2,8 +2,8 @@
     $locale ??= $content->getLocale();
     
     $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue($locale);
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue($locale);
+    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
+    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
     $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
     
     $blog_content = $content->getPropertyGroup('blog_content');
