@@ -20,6 +20,7 @@ class PropertyGroupCollection extends Collection
             if ($item instanceof PropertyDataGroupDto) {
                 return [$item->key => $item];
             }
+
             return [$key => $item];
         });
         parent::__construct($items);
@@ -29,7 +30,7 @@ class PropertyGroupCollection extends Collection
     {
         $result = parent::get($key, $default);
 
-        if (!is_null($result) && $result instanceof PropertyDataGroupDto && ($locale = $this->getFallbackLocale()) != null) {
+        if (! is_null($result) && $result instanceof PropertyDataGroupDto && ($locale = $this->getFallbackLocale()) != null) {
             $result->setFallbackLocale($locale);
         }
 
@@ -39,7 +40,7 @@ class PropertyGroupCollection extends Collection
     /**
      * Retrieve property data by key.
      *
-     * @param string $key The key of the property to retrieve.
+     * @param  string  $key  The key of the property to retrieve.
      * @return Collection<string,PropertyDataDto> The property data associated with the group key.
      */
     public function getPropertyData(string $key)
@@ -47,10 +48,11 @@ class PropertyGroupCollection extends Collection
         return $this
             ->whereInstanceOf(PropertyDataGroupDto::class)
             ->mapWithKeys(fn (PropertyDataGroupDto $group) => [
-                $group->key => $group->data->get($key)
+                $group->key => $group->data->get($key),
             ])
             ->filter()
-            ->map(fn (PropertyDataDto $d) => ($locale = $this->getFallbackLocale()) != null
+            ->map(
+                fn (PropertyDataDto $d) => ($locale = $this->getFallbackLocale()) != null
                 ? $d->setFallbackLocale($locale)
                 : $d
             )

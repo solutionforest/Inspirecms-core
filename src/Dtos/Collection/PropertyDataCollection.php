@@ -16,6 +16,7 @@ class PropertyDataCollection extends Collection
             if ($item instanceof PropertyDataDto) {
                 return [$item->key => $item];
             }
+
             return [$key => $item];
         });
         parent::__construct($items);

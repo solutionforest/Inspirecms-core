@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Support\Base\Dtos\Concerns\HasFallbackLocale;
 class PropertyDataGroupDto extends BaseDto
 {
     use HasFallbackLocale;
-    
+
     /**
      * @var string
      */
@@ -58,7 +58,7 @@ class PropertyDataGroupDto extends BaseDto
         if ($locale) {
             $data->setFallbackLocale($locale);
         }
-        
+
         return $data;
     }
 }
