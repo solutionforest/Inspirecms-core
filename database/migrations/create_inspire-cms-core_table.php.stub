@@ -49,7 +49,7 @@ return new class extends BaseMigration
             $table->timestamps();
 
             $table->unique('slug');
-            $table->index('type');
+            $table->index('category');
         });
         Schema::create($tableNames['template'], function (Blueprint $table) {
             $table->id();
