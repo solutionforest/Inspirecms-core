@@ -703,21 +703,21 @@ class SampleSeeder extends Seeder
                 //
             }
 
-            if (isset($mediaAsset) && !is_null($mediaAsset)) {
+            if (isset($mediaAsset) && ! is_null($mediaAsset)) {
                 $this->mediaAssets[] = $mediaAsset;
             }
         }
         // pdf
-        {
-            /** @var MediaAsset */
-            $mediaAsset = $model::create([
-                'title' => 'dummy.pdf',
-                'is_folder' => false,
-            ]);
 
-            $mediaAsset->addMedia(\Illuminate\Http\UploadedFile::fake()->create(name: 'dummy.pdf', mimeType: 'application/pdf'))->toMediaCollection();
-            $this->mediaAssets[] = $mediaAsset;
-        }
+        /** @var MediaAsset */
+        $mediaAsset = $model::create([
+            'title' => 'dummy.pdf',
+            'is_folder' => false,
+        ]);
+
+        $mediaAsset->addMedia(\Illuminate\Http\UploadedFile::fake()->create(name: 'dummy.pdf', mimeType: 'application/pdf'))->toMediaCollection();
+        $this->mediaAssets[] = $mediaAsset;
+
     }
 
     protected function makeSampleLanguages(): void

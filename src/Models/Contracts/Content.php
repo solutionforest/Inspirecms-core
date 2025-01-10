@@ -111,7 +111,7 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
      * @return bool True if the content is a web page, false otherwise.
      */
     public function isWebPage();
-    
+
     /**
      * Set the content as the default.
      *

@@ -143,7 +143,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     protected function refreshModelExplorerSidebar(): void
     {
         $record = static::isValidSelectableModelItem($this->selectedModelItemKey)
-            ? $this->resolveSelectedModelItem($this->selectedModelItemKey) 
+            ? $this->resolveSelectedModelItem($this->selectedModelItemKey)
             : null;
 
         if (! $record) {
@@ -188,8 +188,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     }
 
     /**
-     * @param string $key
-     * @param null | Model & Content $record
+     * @param  string  $key
+     * @param  null | Model & Content  $record
      */
     protected function cachedModelExplorerRecord($key, $record)
     {
@@ -320,15 +320,14 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     }
 
     /**
-     * @param null | string | int $key
-     * @return bool
+     * @param  null | string | int  $key
      */
     protected static function isValidSelectableModelItem($key): bool
     {
         if (is_string($key)) {
-            return filled($key) && 
+            return filled($key) &&
                 $key != null &&
-                $key != intval('') && 
+                $key != intval('') &&
                 $key != static::getModelRootLevelParentId();
         }
 
