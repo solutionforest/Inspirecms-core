@@ -703,7 +703,9 @@ class SampleSeeder extends Seeder
                 //
             }
 
-            $this->mediaAssets[] = $mediaAsset;
+            if (isset($mediaAsset)) {
+                $this->mediaAssets[] = $mediaAsset;
+            }
         }
 
         /** @var MediaAsset */
