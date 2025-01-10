@@ -314,9 +314,9 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         return InspireCmsConfig::getContentModelClass();
     }
 
-    protected static function getModelRootLevelParentId(): int
+    protected static function getModelRootLevelParentId(): int | string
     {
-        return app(static::getModel())->getNestableTreeRootLevelParentId();
+        return app(static::getModel())->getRootLevelParentId();
     }
 
     /**
