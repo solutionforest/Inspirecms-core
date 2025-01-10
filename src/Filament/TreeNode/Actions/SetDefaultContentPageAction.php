@@ -44,6 +44,10 @@ class SetDefaultContentPageAction extends Action implements GuardAction
                 throw new \Exception('The provided record is not an instance of the Content model.');
             }
 
+            if ($record->documentType?->isDataType() == true) {
+                return true;
+            }
+
             $rootLevelKey = $record->getNestableTreeRootLevelParentId();
 
             $nestableTreeParentId = isset($record->nestable_tree_parent_id)
@@ -56,8 +60,7 @@ class SetDefaultContentPageAction extends Action implements GuardAction
         $this->successNotificationTitle(__('inspirecms::resources/content.actions.set_default_content_page.notification.success.title'));
 
         $this->action(function (Content | Model $record, Action $action) {
-            $record->is_default = true;
-            $record->save();
+            $record->setAsDefault();
 
             $action->success();
         });

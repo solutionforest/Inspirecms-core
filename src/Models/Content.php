@@ -157,6 +157,12 @@ class Content extends BaseModel implements ContentContract
         return $this->documentType?->isWebPageType() ?? false;
     }
 
+    public function setAsDefault()
+    {
+        $this->is_default = true;
+        $this->save();
+    }
+
     // region Dto
     public static function getDtoClass()
     {

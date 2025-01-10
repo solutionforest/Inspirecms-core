@@ -13,9 +13,8 @@ class InstallRequirePacakges extends Command
     public function handle(): int
     {
         $this->installFieldGroupPackage();
-        $this->installSpatieLaravelPermissionPackage();
+        $this->installSpatiePackages();
         $this->installSupportPackage();
-        $this->installSpatieLaravelMediaLibraryPackage();
         $this->publishNotificationDataTable();
 
         return static::SUCCESS;
@@ -33,13 +32,15 @@ class InstallRequirePacakges extends Command
         });
     }
 
-    protected function installSpatieLaravelPermissionPackage()
+    protected function installSpatiePackages()
     {
+        // Has own custom migration for Spatie\\LaravelPermission package and Spatie\\MediaLibrary package
         $this->components->task('Install Spatie\\LaravelPermission package', function () {
 
             // Publish Spatie\\LaravelPermission package - migration
             Artisan::call('vendor:publish', [
                 '--provider' => 'Spatie\\Permission\\PermissionServiceProvider',
+                '--tag' => 'permission-config',
             ]);
 
         });
@@ -51,16 +52,6 @@ class InstallRequirePacakges extends Command
             Artisan::call('vendor:publish', [
                 '--provider' => 'SolutionForest\\InspireCms\\Support\\InspireCmsSupportServiceProvider',
                 '--tag' => 'inspirecms-support-migrations',
-            ]);
-        });
-    }
-
-    protected function installSpatieLaravelMediaLibraryPackage()
-    {
-        $this->components->task('Install Spatie\\MediaLibrary package', function () {
-            Artisan::call('vendor:publish', [
-                '--provider' => 'Spatie\\MediaLibrary\\MediaLibraryServiceProvider',
-                '--tag' => 'medialibrary-migrations',
             ]);
         });
     }

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -69,22 +70,23 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         $modelClass = static::getModel();
         $model = app($modelClass);
         $parentIdColumn = $model->getQualifiedParentKeyName();
-        $rootLevelKey = $model->getRootLevelParentId();
 
         return $modelExplorer
             ->model($modelClass)
             ->parentColumnName($parentIdColumn)
-            ->rootLevelKey($rootLevelKey)
+            ->rootLevelKey(static::getModelRootLevelParentId())
             ->modifyQueryUsing(
-                fn ($query) => $query
-                    ->sortedByTree()
+                fn (Builder $query) => $query
                     ->withCount([
                         'children',
                     ])
                     ->with([
                         'documentType',
+                        'path',
                     ])
+                    ->sortedByTree()
             )
+            ->resolveRecordUsing(fn (Builder $query, $key) => static::isValidSelectableModelItem($key) ? $query->find($key) : null)
             ->determineRecordLabelUsing(fn (Model | Content $record) => $record->title)
             ->determineRecordHasChildrenUsing(function (Model | Content $record) {
 
@@ -140,7 +142,9 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     protected function refreshModelExplorerSidebar(): void
     {
-        $record = filled($this->selectedModelItemKey) ? $this->resolveSelectedModelItem($this->selectedModelItemKey) : null;
+        $record = static::isValidSelectableModelItem($this->selectedModelItemKey)
+            ? $this->resolveSelectedModelItem($this->selectedModelItemKey) 
+            : null;
 
         if (! $record) {
             return;
@@ -176,7 +180,22 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             return $this->cachedModelExplorerRecords[$key];
         }
 
-        return $this->cachedModelExplorerRecords[$key] = $this->getModelExplorer()->findRecord($key);
+        if (static::isValidSelectableModelItem($key)) {
+            $this->cachedModelExplorerRecord($key, $this->getModelExplorer()->findRecord($key));
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $key
+     * @param null | Model & Content $record
+     */
+    protected function cachedModelExplorerRecord($key, $record)
+    {
+        if (! isset($this->cachedModelExplorerRecords[$key])) {
+            return $this->cachedModelExplorerRecords[$key] = $record;
+        }
     }
 
     protected function setSelectedModelItem(string | int | Model | null $record): void
@@ -201,13 +220,27 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
     {
-        $selectItem = $this->resolveSelectedModelItem($parentKey);
+        $selectItem = static::isValidSelectableModelItem($parentKey)
+            ? $this->resolveSelectedModelItem($parentKey)
+            : null;
 
         if ($selectItem?->documentType->show_as_table) {
             return [];
         }
 
         return parent::getModelExplorerItemsFrom($parentKey, $depth);
+    }
+
+    protected function mutuateModelExplorerNodes($records, string | int $parentKey, int $depth): array
+    {
+        foreach ($records as $record) {
+            if ($record instanceof Content && $record instanceof Model) {
+                $key = $record->getKey();
+                $this->cachedModelExplorerRecord($key, $record);
+            }
+        }
+
+        return parent::mutuateModelExplorerNodes($records, $parentKey, $depth);
     }
 
     protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
@@ -279,6 +312,31 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     protected static function getModel()
     {
         return InspireCmsConfig::getContentModelClass();
+    }
+
+    protected static function getModelRootLevelParentId(): int
+    {
+        return app(static::getModel())->getNestableTreeRootLevelParentId();
+    }
+
+    /**
+     * @param null | string | int $key
+     * @return bool
+     */
+    protected static function isValidSelectableModelItem($key): bool
+    {
+        if (is_string($key)) {
+            return filled($key) && 
+                $key != null &&
+                $key != intval('') && 
+                $key != static::getModelRootLevelParentId();
+        }
+
+        if (is_int($key)) {
+            return $key != 0;
+        }
+
+        return false;
     }
 
     protected function getRedirectUrlParameters()
