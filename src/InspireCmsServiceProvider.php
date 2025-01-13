@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
@@ -397,23 +398,38 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ], 'inspirecms-stubs');
         }
 
-        foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views') as $file) {
+        $getViewDirForStub = fn ($file) => str($file->getRelativePath())
+            ->trim('/')->trim()
+            ->explode('/')
+            ->map(fn ($path) => (string) str($path)->trim()->kebab())
+            ->implode('/');
+        $getViewFullPathForStub = fn ($file, $dir) => 
+            base_path('resources/views/' . trim(trim($dir), '/') . '/' . Str::kebab($file->getFilenameWithoutExtension()) . '.blade.php');
 
-            $dir = str($file->getRelativePath())
-                ->replace(['Components/Themes'], ['components/' . inspirecms_templates()->getComponentPrefix()])
-                ->explode('/')
-                ->map(fn ($path) => (string) str($path)->kebab())
-                ->implode('/');
-
-            $fullPath = (string) str(base_path('resources/views'))
-                ->finish('/')
-                ->when(filled($dir), fn ($str) => $str->finish($dir)->finish('/'))
-                ->finish(str($file->getFilenameWithoutExtension())->kebab()->finish('.blade.php'));
-
+        foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Components') as $file) {
+            if ($file->getRelativePath() == 'Themes') {
+                continue;
+            }
             $this->publishes([
-                $file->getRealPath() => $fullPath,
+                $file->getRealPath() => $getViewFullPathForStub($file, 'components/' . $getViewDirForStub($file)),
             ], 'inspirecms-sample-assets');
         }
+
+        foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Themes') as $file) {
+
+            $dir = trim(trim($getViewDirForStub($file), '/') );
+
+            $themeComponentPrefix = inspirecms_templates()->getComponentPrefix();
+
+            if (filled($themeComponentPrefix)) {
+                $dir = trim(trim($themeComponentPrefix, '/')) . '/' . $dir;
+            }
+
+            $this->publishes([
+                $file->getRealPath() => $getViewFullPathForStub($file, 'components/' . $dir),
+            ], 'inspirecms-sample-assets');
+        }
+
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Assets') as $file) {
             $dir = str($file->getRelativePath())->explode('/')
                 ->map(fn ($path) => (string) str($path)->kebab())

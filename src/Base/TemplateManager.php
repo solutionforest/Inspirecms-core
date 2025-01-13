@@ -46,7 +46,9 @@ class TemplateManager implements TemplateManagerInterface
     {
         $componentPrefix = static::getComponentPrefix();
 
-        return str($theme ?? static::getCurrentTheme())
+        $theme ??= static::getCurrentTheme();
+
+        return str($theme)
             ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
             ->finish('.')
             ->finish(trim($component))
