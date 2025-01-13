@@ -28,7 +28,10 @@ trait NavigationListPageTrait
 
                 return [
                     $key => Tab::make()
-                        ->label(__('inspirecms::inspirecms.' . $key)),
+                        ->label(__('inspirecms::inspirecms.' . $key))
+                        ->extraAttributes([
+                            'onclick' => 'window.location.href="' . FilamentResourceHelper::attemptToGetUrl(static::getResource(), $page, [], false) . '"',
+                        ]),
                 ];
             }
         )->all();

@@ -65,8 +65,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/navigation.type.label'))
                     ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_type?->getLabel()),
             ])
-            ->defaultGroup('category')
             ->modifyQueryUsing(fn ($query) => $query->with(['parent']))
+            ->defaultSort('created_at', 'desc')
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')
