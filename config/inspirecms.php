@@ -166,9 +166,7 @@ return [
     ],
 
     'content' => [
-        'middlewares' => [
-            'web',
-        ],
+        'middlewares' => [],
         'sitemap' => [
             'file_path' => public_path('sitemap.xml'),
         ],
