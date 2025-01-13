@@ -2,21 +2,12 @@
 
 namespace SolutionForest\InspireCms\Services;
 
-use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class AssetService implements AssetServiceInterface
 {
-    // todo: performance improvement
-    // protected CacheManager $cacheManager;
-
-    // public function __construct(CacheManager $cacheManager)
-    // {
-    //     $this->cacheManager = $cacheManager;
-    // }
-
     /** {@inheritDoc} */
     public function findByKey(string | int $key)
     {
@@ -26,8 +17,12 @@ class AssetService implements AssetServiceInterface
     /** {@inheritDoc} */
     public function findByKeys(...$keys)
     {
-        $keys = Arr::flatten($keys);
+        $keys = array_filter(Arr::flatten($keys));
 
+        if (count($keys) === 0) {
+            return collect();
+        }
+        
         return $this->getQuery()->with('media')->findMany($keys);
     }
 

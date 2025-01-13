@@ -7,6 +7,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Scopes\ContentPathScope;
 
 /**
  * @implements ContentServiceInterface<\SolutionForest\InspireCms\Models\Content>
@@ -59,15 +60,15 @@ class ContentService implements ContentServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function findByRealPath(string $slugPath, $withRelations = [])
+    public function findByRealPath(string $realPath, $withRelations = [])
     {
-        return $this->getByRealPath($slugPath, $withRelations)->get(trim($slugPath, '/'));
+        return $this->getByRealPath($realPath, $withRelations)->get(trim($realPath, '/'));
     }
 
     /** {@inheritDoc} */
-    public function getByRealPath(string $slugPath, $withRelations = [])
+    public function getByRealPath(string $realPath, $withRelations = [])
     {
-        $content = $this->getFindByRealPathQuery($slugPath)->with($withRelations)->get();
+        $content = $this->getFindByRealPathQuery($realPath)->with($withRelations)->get();
 
         // Find similar content by slug path
         return collect($content)
@@ -87,9 +88,9 @@ class ContentService implements ContentServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function getUnderRealPath(string $slugPath, $limit = null, $withRelations = [])
+    public function getUnderRealPath(string $realPath, $limit = null, $withRelations = [])
     {
-        $parent = $this->findByRealPath($slugPath);
+        $parent = $this->findByRealPath($realPath);
         if (is_null($parent)) {
             return new ContentCollection;
         }
@@ -98,6 +99,19 @@ class ContentService implements ContentServiceInterface
             ->with($withRelations)
             ->when(! is_null($limit), fn ($q) => $q->limit($limit))
             ->get();
+    }
+
+    /** {@inheritDoc} */
+    public function findBySlugUnderRealPath(string $realPath, string $slug)
+    {
+        $parent = $this->findByRealPath($realPath);
+        if (is_null($parent)) {
+            return null;
+        }
+
+        return $parent->children()
+            ->where('slug', $slug)
+            ->first();
     }
 
     /** {@inheritDoc} */
@@ -119,7 +133,28 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function getTemplateFor($content, $templateSlug)
     {
-        return $this->getTemplatesFor($content)->first(fn ($template) => $template->slug === $templateSlug);
+        // Get the templates from the document type
+        if ($content->documentType?->relationLoaded('templates')) {
+            //
+        } elseif ($content->relationLoaded('documentType')) {
+            $content->documentType->load('templates');
+        } else {
+            $content->load('documentType.templates');
+        }
+        $templates = $content->documentType?->getTemplates()?->keyBy('slug') ?? collect();
+
+        // Get the templates from the content
+        if ($content->relationLoaded('templates')) {
+            //
+        } else {
+            $content->loadMissing('templates');
+        }
+
+        if (($contentTemplates = $content->getTemplates()) && $contentTemplates->isNotEmpty()) {
+            $templates = $templates->merge($contentTemplates->keyBy('slug'));
+        }
+
+        return $templates->get($templateSlug);
     }
 
     // region Helpers
@@ -136,7 +171,10 @@ class ContentService implements ContentServiceInterface
         // Find a content by read slug
         $trueSlug = Str::afterLast($slugPath, '/');
 
-        return $this->getQuery()->with('ancestorsAndSelf')->where('slug', $trueSlug);
+        return $this->getQuery()
+            ->with('ancestorsAndSelf', fn ($q) => $q->withoutGlobalScope(ContentPathScope::class))
+            ->withoutGlobalScope(ContentPathScope::class)
+            ->where('slug', $trueSlug);
     }
 
     /**

@@ -3,7 +3,7 @@
     $featuredPage = request()->query('featured') ?? 1;
 
     $locale ??= $content->getLocale();
-    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+    $blogs = inspirecms_content()->getUnderRealPath('blogs', null, ['documentType.templates', 'templates'])->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 
     $featured_blogs = $content->getPropertyGroup('featured_blogs');
     $featured_blogs_blogs = $featured_blogs?->getPropertyData('blogs')?->getValue()?->paginate(perPage: 1, pageName: 'featured', page: $featuredPage);
