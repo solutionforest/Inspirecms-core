@@ -22,7 +22,7 @@ class AssetService implements AssetServiceInterface
         if (count($keys) === 0) {
             return collect();
         }
-        
+
         return $this->getQuery()->with('media')->findMany($keys);
     }
 
