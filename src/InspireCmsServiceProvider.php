@@ -406,15 +406,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $getViewFullPathForStub = fn ($file, $dir) => 
             base_path('resources/views/' . trim(trim($dir), '/') . '/' . Str::kebab($file->getFilenameWithoutExtension()) . '.blade.php');
 
-        foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Components') as $file) {
-            if ($file->getRelativePath() == 'Themes') {
-                continue;
-            }
-            $this->publishes([
-                $file->getRealPath() => $getViewFullPathForStub($file, 'components/' . $getViewDirForStub($file)),
-            ], 'inspirecms-sample-assets');
-        }
-
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Themes') as $file) {
 
             $dir = trim(trim($getViewDirForStub($file), '/') );

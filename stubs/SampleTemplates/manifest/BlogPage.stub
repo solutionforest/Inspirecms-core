@@ -64,7 +64,7 @@
                         <div class="main-content">
                             <!-- Author Info -->
                             <div class="author-info">
-                                <img src="./assets/image/home/Img 01.png" alt="Author Avatar" class="author-avatar">
+                                <img src="{{ asset('image/avator.svg') }} " alt="Author Avatar" class="author-avatar">
                                 <span class="author-name">Marina Silva</span>
                             </div>
                             <div class="mobile-social-icon">
@@ -92,8 +92,100 @@
                                 </span>
                             </div>
 
-                            
-                            <x-dynamic-component component="comments" />
+                            <!-- Comment Section -->
+                            <div class="comments-section">
+                                <!-- Leave a Reply -->
+                                <div class="leave-reply-section">
+                                    <h2>Leave a Reply</h2>
+                                    <p class="required-notice">Required fields are marked *</p>
+
+                                    <form class="reply-form">
+                                        <div class="form-row">
+                                            <div class="form-group">
+                                                <label for="name">Name*</label>
+                                                <input type="text" id="name" placeholder="Walter Moss">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="email">Email*</label>
+                                                <input type="email" id="email" placeholder="info@manifest.com">
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="website">Website</label>
+                                                <input type="url" id="website" placeholder="www.manifest.com">
+                                            </div>
+                                        </div>
+                                        <div class="form-checkbox">
+                                            <input type="checkbox" id="save-info">
+                                            <label for="save-info">Save my name, email, and website in this browser for the next time I comment</label>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label for="comment">Comment*</label>
+                                            <textarea id="comment" placeholder="Hi there ..."></textarea>
+                                        </div>
+
+
+                                        <button type="submit" class="post-button">Post</button>
+                                    </form>
+                                </div>
+
+                                <!-- Comments List -->
+                                <h3 class="comment-h3">Commments</h3>
+                                <div class="comments-list">
+                                    <!-- Comment 1 with its reply -->
+                                    <div class="comment-thread">
+                                        <div class="comment">
+                                            <div class="comment-avatar">
+                                                <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                            </div>
+                                            <div class="comment-content">
+                                                <div class="comment-header">
+                                                    <div class="comment-username">Scarlet witich</div>
+                                                    <span class="comment-date">6 May, 2020</span>
+                                                </div>
+                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                                <button class="reply-btn">Reply</button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Nested Reply -->
+                                        <div class="comment-replies">
+                                            <div class="comment">
+                                                <div class="comment-avatar">
+                                                    <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                                </div>
+                                                <div class="comment-content">
+                                                    <div class="comment-header">
+                                                        <div class="comment-username">Kate Moss</div>
+                                                        <span class="comment-date">6 May, 2020</span>
+                                                    </div>
+                                                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                                    <button class="reply-btn">Reply</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Comment 2 -->
+                                    <div class="comment-thread">
+                                        <div class="comment">
+                                            <div class="comment-avatar">
+                                                <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                            </div>
+                                            <div class="comment-content">
+                                                <div class="comment-header">
+                                                    <div class="comment-username">Scarlet witich</div>
+                                                    <span class="comment-date">6 May, 2020</span>
+                                                </div>
+                                                <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+                                                <button class="reply-btn">Reply</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

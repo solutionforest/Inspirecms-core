@@ -15,88 +15,15 @@
     $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
 @endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
-    <article class="blog-post-single page-main-container">
-        <!-- Post Header - Full Width -->
-        <div class="container-fluid ps-0 pe-0">
-            <header class="post-header">
-                <div class="post-meta">
-                    @foreach ($blog_content_categories as $category)
-                        <span class="category">{{ $category }}</span>
-                        @if (!$loop->last)
-                            <span class="separator">,</span>
-                        @endif
-                    @endforeach
-                </div>
-                <h1 class="post-title">{{ $page_banner_title }}</h1>
-                <div class="header-meta">
-                    <span class="post-date">{{ $blog_content_post_date }}</span>
-                    <span class="post-date"> <img src="{{ asset('image/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
-                </div>
 
-            </header>
+    <!-- Content Area -->
+    <div class="content-area">
+        <!-- Main Content -->
+        <div class="content-main">
 
-            <!-- Featured Image - Full Width -->
-            <div class="post-featured-image">
-                @if ($page_banner_image)
-                    <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                @endif
-            </div>
+            <h1>{{ $page_banner_title }}</h1>
+            {{ $blog_content_content }}
+
         </div>
-
-        <!-- Two Column Layout -->
-        <div class="post-content-wrapper">
-            <div class="container">
-                <div class="row">
-                    <!-- Left Column - Social Media -->
-                    <div class="col-md-1 ps-0 pe-0">
-                        <div class="social-share-fixed">
-                            <ul class="social-icons">
-                                <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Right Column - Main Content -->
-                    <div class="col-md-11 ps-0 pe-0">
-                        <div class="main-content">
-                            <!-- Author Info -->
-                            <div class="author-info">
-                                <img src="./assets/image/home/Img 01.png" alt="Author Avatar" class="author-avatar">
-                                <span class="author-name">Marina Silva</span>
-                            </div>
-                            <div class="mobile-social-icon">
-                                <ul class="social-icons">
-                                    <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
-                                </ul>
-                            </div>
-                            <!-- Post Content -->
-                            <div class="post-content">
-                                {{ $blog_content_content }}
-                            </div>
-                            <!-- tag -->
-                            <div class="tag-wrapper">
-                                <span>Tags: </span>
-                                <span class="post-tag">
-                                    @foreach ($blog_content_tags as $tag)
-                                        <span class="category">{{ $tag }}</span>
-                                        @if (!$loop->last)
-                                            <span class="separator">,</span>
-                                        @endif
-                                    @endforeach
-                                </span>
-                            </div>
-
-                            
-                            <x-dynamic-component component="comments" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-    </article>
+    </div>
 </x-dynamic-component>

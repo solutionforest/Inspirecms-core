@@ -38,8 +38,8 @@
             @endforeach
         </div>
         <!-- <div class="swiper-pagination"></div> -->
-        <div class="swiper-button-next"></div>
-        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next" style="--icon-url:'{{ asset('image/icon/arrow1.svg') }}'"></div>
+        <div class="swiper-button-prev" style="--icon-url:'{{ asset('image/icon/arrow1.svg') }}'"></div>
     </div>
 
     <!-- Profile Section -->

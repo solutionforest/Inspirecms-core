@@ -43,10 +43,35 @@
                     @endforeach
                 </div>
 
-                <div class="pagination mt-4 mb-4">
-                    {{ $blogs->links('components.pagination', ['paginator' => $blogs]) }}
+                <div class="text-center mt-4">
+                    <button class="load-more" data-link="{{ url()->current() . '?page=' }}" data-page="@js($blogs->hasMorePages() ? ($blogs->currentPage() + 1) : null)">Load More</button>
                 </div>
             </div>
         </section>
     </div>
+
+    @section('scripts')
+        <script type="text/javascript">
+            $(function() {
+
+                $("button.load-more").click(function() {
+
+                    let link = $(this).data("link");
+                    let page = $(this).data("page");
+
+                    $.get(link + page, function (response) {
+
+                        let html = $(response).find(".blog-posts-grid").html();
+
+                        $(".blog-posts-grid").append(html);
+
+                    })
+                    .then((data) => $(this).data('page', $(data).find("button.load-more")?.data("page")))
+                    .then((btn) => $(btn).data("page") == null ? $(btn).hide() : "");
+
+                });
+            });
+        </script>
+    @endsection
+
 </x-dynamic-component>

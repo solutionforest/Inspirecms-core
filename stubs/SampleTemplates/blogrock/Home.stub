@@ -49,7 +49,7 @@
                     <div class="col-md-4">
                         <div class="feature-item">
                             <div class="feature-icon">
-                                <img src="{{ asset('image/icon/rseponsive.svg') }}" alt="Responsive">
+                                <img src="{{ asset('image/icon/responsive.svg') }}" alt="Responsive">
                             </div>
                             <h3 class="feature-title">Fully Responsive</h3>
                             <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
