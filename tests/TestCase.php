@@ -75,7 +75,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('app.key', 'base64:I4ofV4eI4v12PUp+g9ZahXUu0ZhPCbk1Q8iawecCtdw=');
 
         $this->registerTestModels($app);
-        
+
         $app['config']->set('auth.providers.inspirecms', [
             'driver' => 'eloquent',
             'model' => $app['config']->get('inspirecms.models.fqcn.user'),
@@ -105,7 +105,7 @@ abstract class TestCase extends Orchestra
             if (in_array($key, ['media_asset', 'nestable_tree'])) {
                 $testModel = "SolutionForest\\InspireCms\\Support\\Tests\\TestModels\\{$guessName}";
                 \SolutionForest\InspireCms\Support\Facades\ModelRegistry::replace(
-                    "SolutionForest\\InspireCms\\Support\\Models\\Contracts\\{$guessName}", 
+                    "SolutionForest\\InspireCms\\Support\\Models\\Contracts\\{$guessName}",
                     $testModel
                 );
                 include_once __DIR__ . '/../vendor/solution-forest/inspirecms-support/tests/TestModels/' . $guessName . '.php';
@@ -115,8 +115,7 @@ abstract class TestCase extends Orchestra
         }
     }
 
-    
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     protected function defineDatabaseMigrations()
     {
         $schema = $this->app['db']->connection()->getSchemaBuilder();
@@ -133,7 +132,7 @@ abstract class TestCase extends Orchestra
         }
     }
 
-    /** @inheritDoc */
+    /** {@inheritDoc} */
     protected function destroyDatabaseMigrations()
     {
         //

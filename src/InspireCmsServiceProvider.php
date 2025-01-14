@@ -115,7 +115,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         Facades\ModelManifest::registerMorphMap();
         Facades\ModelManifest::registerPolices();
-        
+
         $this->registerEvents();
 
         $this->registerScheduleCommands();
@@ -338,51 +338,50 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function registerSupport(): void
     {
         // Model
-        {
-            Support\Facades\ModelRegistry::replace(
-                SupportModels\Contracts\MediaAsset::class,
-                Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
-            );
-            Support\Facades\ModelRegistry::replace(
-                SupportModels\Contracts\NestableTree::class,
-                Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
-            );
-        }
+
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\MediaAsset::class,
+            Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
+        );
+        Support\Facades\ModelRegistry::replace(
+            SupportModels\Contracts\NestableTree::class,
+            Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
+        );
+
         // Media Library
-        {
-            Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
-            Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
-            Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
-            Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
-        }
+
+        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
+        Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
+        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
+        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
+
         // Support
-        {
-            Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
-            Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
-    
-        }
+
+        Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
+        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
+
         // Resolvers
-        {
-            foreach (InspireCmsConfig::get('resolvers', []) as $name => $resolver) {
-                if (is_null($resolver)) {
-                    continue;
-                }
-                $interface = match ($name) {
-                    'user' => Support\Resolvers\UserResolverInterface::class,
-                    // 'content_page' => Resolvers\ContentPageResolverInterface::class,
-                    default => null,
-                };
-                if (is_null($interface)) {
-                    $guessName = (string) str($name)->studly()->replace(' ', '')->append('ResolverInterface')->prepend('SolutionForest\\InspireCms\\Resolvers\\');
-                    if (! interface_exists($guessName)) {
-                        $guessName = null;
-                    }
-                    $interface = $guessName;
-                }
-                Support\Facades\ResolverRegistry::set($interface, $resolver);
+
+        foreach (InspireCmsConfig::get('resolvers', []) as $name => $resolver) {
+            if (is_null($resolver)) {
+                continue;
             }
-            Support\Facades\ResolverRegistry::register($this->app);
+            $interface = match ($name) {
+                'user' => Support\Resolvers\UserResolverInterface::class,
+                // 'content_page' => Resolvers\ContentPageResolverInterface::class,
+                default => null,
+            };
+            if (is_null($interface)) {
+                $guessName = (string) str($name)->studly()->replace(' ', '')->append('ResolverInterface')->prepend('SolutionForest\\InspireCms\\Resolvers\\');
+                if (! interface_exists($guessName)) {
+                    $guessName = null;
+                }
+                $interface = $guessName;
+            }
+            Support\Facades\ResolverRegistry::set($interface, $resolver);
         }
+        Support\Facades\ResolverRegistry::register($this->app);
+
     }
 
     protected function getConfigSupoortModels(): array

@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Resolvers;
 
 use SolutionForest\InspireCms\Dtos\ContentPageDto;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
 use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
-use SolutionForest\InspireCms\Facades\InspireCms;
 
 class ContentPageResolver implements ContentPageResolverInterface
 {
@@ -21,7 +21,7 @@ class ContentPageResolver implements ContentPageResolverInterface
         $this->urlGenerator = ContentUrlGeneratorFactory::create();
     }
 
-    public function resolve(... $args)
+    public function resolve(...$args)
     {
         /**
          * @var ?\Illuminate\Http\Request
