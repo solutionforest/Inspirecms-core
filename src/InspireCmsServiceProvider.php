@@ -44,7 +44,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $command
                     ->publishConfigFile()
                     ->publishMigrations()
-                    ->askToStarRepoOnGitHub('solution-forest/inspirecms')
                     ->startWith(function (InstallCommand $command) {
                         $command->call(Commands\InstallRequirePacakges::class);
                     })
@@ -75,6 +74,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
+    public function registeringPackage(): void
+    {
+        //
+    }
+
     public function packageRegistered(): void
     {
         $this->registerPolymorphism();
@@ -96,27 +100,21 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
-        Facades\ModelManifest::register();
-        $supportModels = $this->getConfigSupoortModels();
-        Facades\ModelManifest::replace(
-            SupportModels\Contracts\MediaAsset::class,
-            $supportModels['media_asset']
-        );
-        Facades\ModelManifest::replace(
-            SupportModels\Contracts\NestableTree::class,
-            $supportModels['nestable_tree']
-        );
+        $this->registerModels();
 
         $this->customPlugins();
+
+        $this->registerSupport();
+
+        $this->registerAuthGuard();
+
     }
 
     public function bootingPackage(): void
     {
         Facades\ModelManifest::registerMorphMap();
         Facades\ModelManifest::registerPolices();
-        $this->registerSupport();
-        $this->registerAuthGuard();
-
+        
         $this->registerEvents();
 
         $this->registerScheduleCommands();
@@ -241,6 +239,21 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
     }
 
+    protected function registerModels(): void
+    {
+        Facades\ModelManifest::register();
+
+        $supportModels = $this->getConfigSupoortModels();
+        Facades\ModelManifest::replace(
+            SupportModels\Contracts\MediaAsset::class,
+            $supportModels['media_asset']
+        );
+        Facades\ModelManifest::replace(
+            SupportModels\Contracts\NestableTree::class,
+            $supportModels['nestable_tree']
+        );
+    }
+
     protected function customPlugins(): void
     {
         if (InspireCmsConfig::get('override_plugins.field_group_models', false)) {
@@ -257,14 +270,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerAuthGuard(): void
     {
-        config()->set('auth.providers.inspirecms', [
+        $this->app['config']->set('auth.providers.inspirecms', [
             'driver' => 'eloquent',
             'model' => Facades\ModelManifest::get(
                 \SolutionForest\InspireCms\Models\Contracts\User::class,
                 \SolutionForest\InspireCms\Models\User::class,
             ),
         ]);
-        config()->set('auth.guards.inspirecms', [
+        $this->app['config']->set('auth.guards.inspirecms', [
             'driver' => 'session',
             'provider' => InspireCmsConfig::getGuardName(),
         ]);
@@ -323,23 +336,42 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerSupport(): void
     {
-        Support\Facades\ModelRegistry::replace(
-            SupportModels\Contracts\MediaAsset::class,
-            Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
-        );
-        Support\Facades\ModelRegistry::replace(
-            SupportModels\Contracts\NestableTree::class,
-            Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
-        );
-        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
-        Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
-        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
-        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
-
-        Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
-
-        Support\Facades\ResolverRegistry::set('user', InspireCmsConfig::get('resolvers.user', \SolutionForest\InspireCms\Support\Resolver\UserResolver::class));
+        // Model
+        {
+            $modelRegistry = $this->app->get(Support\Base\Manifests\ModelRegistry::class);
+            $modelRegistry->replace(
+                SupportModels\Contracts\MediaAsset::class,
+                Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
+            );
+            $modelRegistry->replace(
+                SupportModels\Contracts\NestableTree::class,
+                Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
+            );
+        }
+        // Media Library
+        {
+            $mediaLibraryRegistry = $this->app->get(Support\Base\Manifests\MediaLibraryRegistry::class);
+            $mediaLibraryRegistry->setDisk(InspireCmsConfig::get('media_library.disk'));
+            $mediaLibraryRegistry->setDirectory(InspireCmsConfig::get('media_library.directory'));
+            $mediaLibraryRegistry->setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
+            $mediaLibraryRegistry->setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
+        }
+        // Support
+        {
+            Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
+            Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
+    
+        }
+        // Resolvers
+        {
+            $resolverRegistry = $this->app->get(Support\Base\Manifests\ResolverRegistry::class);
+            foreach (InspireCmsConfig::get('resolvers', []) as $interface => $resolver) {
+                if (is_null($resolver)) {
+                    continue;
+                }
+                $resolverRegistry->set($interface, $resolver);
+            }
+        }
     }
 
     protected function getConfigSupoortModels(): array

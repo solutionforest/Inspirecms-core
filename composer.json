@@ -24,7 +24,6 @@
     "require": {
         "php": "^8.2",
         "laravel/framework": "^11.0",
-        "filament/filament": "^3.0",
         "filament/spatie-laravel-translatable-plugin": "^3.2",
         "guava/filament-icon-picker": "^2.0",
         "kalnoy/nestedset": "^6.0",
@@ -38,8 +37,8 @@
     },
     "require-dev": {
         "laravel/pint": "^1.0",
-        "nunomaduro/collision": "^7.9",
-        "orchestra/testbench": "^8.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^9.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-arch": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
@@ -57,7 +56,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Tests\\": "tests/"
+            "SolutionForest\\InspireCms\\Tests\\": "tests/",
+            "SolutionForest\\InspireCms\\Support\\": "vendor/solution-forest/inspirecms-support/src/",
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/"
         }
     },
     "scripts": {

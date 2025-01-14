@@ -23,7 +23,6 @@ class ModelManifest implements ModelManifestInterface
         foreach ($modelClasses as $modelClass) {
             $interfaceClass = $this->guessContractClass($modelClass);
             $this->models[$interfaceClass] = $modelClass;
-            $this->bindModel($interfaceClass, $modelClass);
         }
     }
 
@@ -76,8 +75,6 @@ class ModelManifest implements ModelManifestInterface
         $this->validateClassIsEloquentModel($modelClass);
 
         $this->models[$interfaceClass] = $modelClass;
-
-        $this->bindModel($interfaceClass, $modelClass);
     }
 
     /** {@inheritDoc} */
@@ -103,16 +100,6 @@ class ModelManifest implements ModelManifestInterface
     }
 
     // region Helper methods
-    /**
-     * Bind a model to the interface in the container.
-     *
-     * @param  string  $interfaceClass  The interface class to bind.
-     * @param  string  $modelClass  The model class to bind.
-     */
-    protected function bindModel(string $interfaceClass, string $modelClass): void
-    {
-        app()->bind($interfaceClass, $modelClass);
-    }
 
     /**
      * Guess the contract class for a given model class.

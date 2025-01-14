@@ -19,20 +19,6 @@ class ExecuteImportJobTest extends TestCase
             ->assertExitCode(Command::SUCCESS);
     }
 
-    // todo: fix this test
-    // public function test_handle_executes_pending_jobs()
-    // {
-    //     $job = $this->createImportJobWithFakeFile('test.zip');
-
-    //     $this->artisan(static::$command)
-    //         ->expectsOutput("Executing job {$job->getKey()} ...")
-    //         ->assertExitCode(Command::SUCCESS);
-
-    //     $job->refresh();
-
-    //     $this->assertTrue($job->finished_at != null);
-    // }
-
     public function test_handle_job_execution_fails()
     {
         $job = $this->createImportJobWithFakeFile('test.csv');
