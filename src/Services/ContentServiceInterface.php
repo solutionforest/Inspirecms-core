@@ -81,8 +81,8 @@ interface ContentServiceInterface
     /**
      * Find content by slug under the specified real path.
      *
-     * @param string $realPath The real path under which to search for the content.
-     * @param string $slug The slug of the content to find.
+     * @param  string  $realPath  The real path under which to search for the content.
+     * @param  string  $slug  The slug of the content to find.
      * @return null | TResult The content found by the slug under the specified real path.
      */
     public function findBySlugUnderRealPath(string $realPath, string $slug);

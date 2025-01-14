@@ -446,12 +446,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ->explode('/')
             ->map(fn ($path) => (string) str($path)->trim()->kebab())
             ->implode('/');
-        $getViewFullPathForStub = fn ($file, $dir) => 
-            base_path('resources/views/' . trim(trim($dir), '/') . '/' . Str::kebab($file->getFilenameWithoutExtension()) . '.blade.php');
+        $getViewFullPathForStub = fn ($file, $dir) => base_path('resources/views/' . trim(trim($dir), '/') . '/' . Str::kebab($file->getFilenameWithoutExtension()) . '.blade.php');
 
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Themes') as $file) {
 
-            $dir = trim(trim($getViewDirForStub($file), '/') );
+            $dir = trim(trim($getViewDirForStub($file), '/'));
 
             $themeComponentPrefix = inspirecms_templates()->getComponentPrefix();
 
