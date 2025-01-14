@@ -158,6 +158,7 @@ return [
 
     'resolvers' => [
         'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
+        'content_page' => \SolutionForest\InspireCms\Resolvers\ContentPageResolver::class,
     ],
 
     'generators' => [

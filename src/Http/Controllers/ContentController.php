@@ -3,46 +3,29 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
-use SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGeneratorInterface;
-use SolutionForest\InspireCms\Services\ContentServiceInterface;
+use SolutionForest\InspireCms\Resolvers\ContentPageResolverInterface;
+use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 
 class ContentController extends Controller
 {
-    protected ContentServiceInterface $contentService;
+    protected ContentPageResolverInterface $contentPageResolver;
 
-    protected ContentUrlGeneratorInterface $urlGenerator;
-
-    public function __construct(ContentServiceInterface $contentService)
+    public function __construct()
     {
-        $this->contentService = $contentService;
-
-        $this->urlGenerator = ContentUrlGeneratorFactory::create();
+        $this->contentPageResolver = ResolverRegistry::get(ContentPageResolverInterface::class);
     }
 
-    public function __invoke()
+    public function __invoke(...$args)
     {
-        $locale = $this->urlGenerator->getLocaleFromRequest(request());
-        $slug = $this->urlGenerator->getSlugFromRequest(request(), $locale);
+        $dto = $this->contentPageResolver->resolve(request(), ...$args);
 
-        if (blank($locale)) {
-            $locale = $this->getDefaultLocale();
-        }
-
-        $content = $this->findContentAndLangByFullPath($slug);
-        if (is_null($content)) {
-            abort(404);
-        }
-        if (! $content->isPublished() || ! $content->isWebPage()) {
+        if (is_null($dto)) {
             abort(404);
         }
 
-        /**
-         * @var \SolutionForest\InspireCms\Dtos\ContentDto $contentDto
-         */
-        $contentDto = $content->toDto($locale);
-        $templateDto = $this->getTemplateForContent($content);
+        $contentDto = $dto->content;
+        $templateDto = $dto->template;
+        $locale = $dto->locale;
 
         if (is_null($contentDto) || is_null($templateDto)) {
             abort(404);
@@ -68,71 +51,5 @@ class ContentController extends Controller
             'content' => $contentDto,
             'locale' => $locale,
         ]);
-    }
-
-    protected function getDefaultLocale(): string
-    {
-        return InspireCms::getFallbackLanguage()?->code ?? app()->getLocale();
-    }
-
-    /**
-     * @param  null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model  $content
-     * @return null|\SolutionForest\InspireCms\Dtos\TemplateDto
-     */
-    protected function getTemplateForContent($content)
-    {
-        $template = $this->contentService->getDefaultTemplateFor($content);
-
-        $theme = inspirecms_templates()->getCurrentTheme();
-
-        return $template?->toDto($theme);
-    }
-
-    /**
-     * @return null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model
-     */
-    protected function findContentAndLangByFullPath(?string $fullPath)
-    {
-        $relations = static::getDtoRelations();
-
-        // ensure the format of full path
-        $fullPath = $this->ensureFormatOfFullPath($fullPath ?? '');
-
-        // if the full path is the root path, return the index page
-        if (blank(trim($fullPath, '/'))) {
-            $content = $this->contentService->findDefaultWebPage();
-        } else {
-            $content = $this->contentService->findWebPageBySlugPath($fullPath);
-        }
-
-        if (is_null($content)) {
-            return null;
-        }
-
-        $content->loadMissing($relations);
-
-        return $content;
-    }
-
-    /**
-     * Ensures that the given full path is in the correct format.
-     *
-     * @param  string  $fullPath  The full path to be formatted.
-     * @return string The formatted full path.
-     */
-    protected function ensureFormatOfFullPath(string $fullPath): string
-    {
-        return (string) str($fullPath)->trim()->prepend('/');
-    }
-
-    protected static function getDtoRelations(): array
-    {
-        return [
-            'documentType.fields.group',
-            'documentType.templates',
-            'webSetting',
-            'publishedVersions',
-            'templates',
-        ];
     }
 }

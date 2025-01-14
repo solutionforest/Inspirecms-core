@@ -15,6 +15,11 @@ class InspireCmsConfig
         return config("inspirecms.{$key}", $default);
     }
 
+    public static function set(string $key, mixed $value): void
+    {
+        config()->set("inspirecms.{$key}", $value);
+    }
+
     public static function getVersion(): string
     {
         return InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core');

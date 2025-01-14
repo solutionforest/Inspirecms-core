@@ -122,8 +122,6 @@ class InspireCmsManager
             $contentUrlGenerator = ContentUrlGeneratorFactory::create();
             $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;
 
-            Route::name('inspirecms.content.index')
-                ->get('/', $controller);
             Route::name($contentUrlGenerator->getRouteName())
                 ->get($contentUrlGenerator->getPathPattern(), $controller)
                 ->where('slug', '.*');

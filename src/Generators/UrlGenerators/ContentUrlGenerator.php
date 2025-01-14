@@ -86,13 +86,12 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
     /** {@inheritDoc} */
     public function getSlugFromRequest($request, $locale): ?string
     {
-        $path = $request->path();
-        $parts = explode('/', $path);
-        $segmentCount = count($parts);
+        $segments = $request->segments();
+        $segmentCount = count($segments);
 
         // Only one segment, it's the slug
         if ($segmentCount <= 1) {
-            $slug = $parts[0] ?? null;
+            $slug = $segments[0] ?? null;
 
             // If the locale is the same as the slug, return null
             if ($locale == $slug) {
@@ -104,7 +103,7 @@ class ContentUrlGenerator implements ContentUrlGeneratorInterface
 
         // More than one segment, the last segment is the slug without locale
         $filteredParts = [];
-        foreach ($parts as $i => $path) {
+        foreach ($segments as $i => $path) {
 
             if ($i === 0 && $path === $locale) {
                 continue;

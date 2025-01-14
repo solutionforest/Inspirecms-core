@@ -381,6 +381,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 }
                 Support\Facades\ResolverRegistry::set($interface, $resolver);
             }
+            Support\Facades\ResolverRegistry::register($this->app);
         }
     }
 
