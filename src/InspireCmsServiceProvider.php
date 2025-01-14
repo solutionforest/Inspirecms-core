@@ -76,7 +76,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function registeringPackage(): void
     {
-        //
+        // Register support package first
+        $this->app->register(Support\InspireCmsSupportServiceProvider::class);
     }
 
     public function packageRegistered(): void
@@ -338,23 +339,21 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         // Model
         {
-            $modelRegistry = $this->app->get(Support\Base\Manifests\ModelRegistry::class);
-            $modelRegistry->replace(
+            Support\Facades\ModelRegistry::replace(
                 SupportModels\Contracts\MediaAsset::class,
                 Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
             );
-            $modelRegistry->replace(
+            Support\Facades\ModelRegistry::replace(
                 SupportModels\Contracts\NestableTree::class,
                 Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
             );
         }
         // Media Library
         {
-            $mediaLibraryRegistry = $this->app->get(Support\Base\Manifests\MediaLibraryRegistry::class);
-            $mediaLibraryRegistry->setDisk(InspireCmsConfig::get('media_library.disk'));
-            $mediaLibraryRegistry->setDirectory(InspireCmsConfig::get('media_library.directory'));
-            $mediaLibraryRegistry->setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
-            $mediaLibraryRegistry->setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
+            Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
+            Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
+            Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
+            Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
         }
         // Support
         {
@@ -364,12 +363,23 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
         // Resolvers
         {
-            $resolverRegistry = $this->app->get(Support\Base\Manifests\ResolverRegistry::class);
-            foreach (InspireCmsConfig::get('resolvers', []) as $interface => $resolver) {
+            foreach (InspireCmsConfig::get('resolvers', []) as $name => $resolver) {
                 if (is_null($resolver)) {
                     continue;
                 }
-                $resolverRegistry->set($interface, $resolver);
+                $interface = match ($name) {
+                    'user' => Support\Resolvers\UserResolverInterface::class,
+                    // 'content_page' => Resolvers\ContentPageResolverInterface::class,
+                    default => null,
+                };
+                if (is_null($interface)) {
+                    $guessName = (string) str($name)->studly()->replace(' ', '')->append('ResolverInterface')->prepend('SolutionForest\\InspireCms\\Resolvers\\');
+                    if (! interface_exists($guessName)) {
+                        $guessName = null;
+                    }
+                    $interface = $guessName;
+                }
+                Support\Facades\ResolverRegistry::set($interface, $resolver);
             }
         }
     }
