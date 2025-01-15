@@ -1,12 +1,12 @@
 <?php
 
-namespace SolutionForest\InspireCms\Generators;
+namespace SolutionForest\InspireCms\Generators\Interfaces;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
-interface SitemapGeneratorInterface
+interface SitemapGenerator
 {
     /**
      * Generates the sitemap file.

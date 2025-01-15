@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Generators;
 
 use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
+use SolutionForest\InspireCms\Generators\Interfaces\SitemapGenerator as SitemapGeneratorInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 
@@ -25,6 +26,7 @@ class SitemapGenerator implements SitemapGeneratorInterface
 
     public function createFailedNotification()
     {
+        // todo: add translation
         return \Filament\Notifications\Notification::make()
             ->title('Sitemap Generation Failed')
             ->danger();

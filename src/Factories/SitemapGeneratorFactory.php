@@ -2,12 +2,13 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Generators\SitemapGeneratorInterface;
+use SolutionForest\InspireCms\Generators\Interfaces\SitemapGenerator;
+use SolutionForest\InspireCms\Generators\Interfaces\SitemapGenerator as SitemapGeneratorInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class SitemapGeneratorFactory
 {
-    public static function create(): SitemapGeneratorInterface
+    public static function create(): SitemapGenerator
     {
         $sitemapGeneratorClass = InspireCmsConfig::get('generators.sitemap_generator');
 
@@ -18,7 +19,7 @@ class SitemapGeneratorFactory
 
     protected static function guardAgainstInvalidSitemapGenerator(string $sitemapGeneratorClass): void
     {
-        if (! is_subclass_of($sitemapGeneratorClass, SitemapGeneratorInterface::class)) {
+        if (! in_array(SitemapGeneratorInterface::class, class_implements($sitemapGeneratorClass))) {
             throw new \InvalidArgumentException('Sitemap generator class must implement ' . SitemapGeneratorInterface::class);
         }
     }
