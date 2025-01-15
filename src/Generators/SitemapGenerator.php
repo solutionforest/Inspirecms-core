@@ -24,17 +24,12 @@ class SitemapGenerator implements SitemapGeneratorInterface
         event(new SitemapGenerated($fullFilePath));
     }
 
-    public function createFailedNotification()
-    {
-        // todo: add translation
-        return \Filament\Notifications\Notification::make()
-            ->title('Sitemap Generation Failed')
-            ->danger();
-    }
-
     public function sendFailedNotification(\Throwable $exception, $notifiables = []): void
     {
-        $this->createFailedNotification()
+        // todo: add translation
+        \Filament\Notifications\Notification::make()
+            ->title('Sitemap Generation Failed')
+            ->danger()
             ->body($exception->getMessage())
             ->send();
     }

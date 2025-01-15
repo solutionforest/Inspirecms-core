@@ -17,11 +17,6 @@ interface SitemapGenerator
     public function generateSitemapFile(): void;
 
     /**
-     * @return \Illuminate\Notifications\Notification|\Filament\Notifications\Notification
-     */
-    public function createFailedNotification();
-
-    /**
      * Sends a notification when a process fails.
      *
      * @param  \Throwable  $exception  The exception that caused the failure.
