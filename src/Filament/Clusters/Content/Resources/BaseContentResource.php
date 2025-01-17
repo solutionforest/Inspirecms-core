@@ -909,6 +909,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     $component->state($state);
                                 }
                             })
+                            ->paginationOptions(static::getModel()::query()->whereIsWebPage())
                             ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
                             ->maxItems(1)
                             ->minItems(0),
