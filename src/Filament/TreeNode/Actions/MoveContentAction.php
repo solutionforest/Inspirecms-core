@@ -42,7 +42,6 @@ class MoveContentAction extends Action
             return false;
         });
 
-
         $this->form(function (null | Model | Content $record, string $model) {
             if ($this->isMoveUnderRoot()) {
                 return null;
@@ -50,6 +49,7 @@ class MoveContentAction extends Action
             if (! $record) {
                 return [];
             }
+
             return [
                 // TODO: fix nextpage
                 PaginationCheckboxList::make('target')
@@ -61,11 +61,11 @@ class MoveContentAction extends Action
                         TextColumn::make('title')->label(__('inspirecms::resources/content.title.label')),
                         TextColumn::make('slug')->label(__('inspirecms::resources/content.slug.label'))->badge(),
                     ])
-                    ->maxItems(1)
+                    ->maxItems(1),
             ];
         });
 
-        $this->slideOver(fn () => !$this->isMoveUnderRoot());
+        $this->slideOver(fn () => ! $this->isMoveUnderRoot());
 
         $this->modalFooterActionsAlignment(Alignment::Right);
 
@@ -79,11 +79,11 @@ class MoveContentAction extends Action
             }
 
             if ($this->isMoveUnderRoot()) {
-                
+
                 $record->asRoot();
                 $action->success();
 
-            } else if (! empty($data['target'])) {
+            } elseif (! empty($data['target'])) {
                 $target = $data['target'][0];
                 if ($target != null && $target != $record->getParentId()) {
                     $record->setParentNode($target, true);

@@ -136,7 +136,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 CreateContentItemAction::make(),
                 ReorderContentItemAction::make('reorder_content_item'),
                 ActionGroup::make([
-                    
+
                     SetDefaultContentPageAction::make(),
                     UpdateContentItemRouteAction::make(),
 
@@ -153,7 +153,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                         // todo: add  translation
                         ->label('Move to ... ')
                         ->extraAttributes(['class' => 'w-full justify-between']),
-                    
+
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
@@ -407,12 +407,11 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
                 break;
 
-
             case $action instanceof UpdateContentItemRouteAction:
-                    $action
-                        ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
-    
-                    break;
+                $action
+                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
+
+                break;
 
             case $action instanceof ReorderContentItemAction:
 
