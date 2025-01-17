@@ -271,17 +271,31 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerAuthGuard(): void
     {
-        $this->app['config']->set('auth.providers.inspirecms', [
-            'driver' => 'eloquent',
-            'model' => Facades\ModelManifest::get(
-                \SolutionForest\InspireCms\Models\Contracts\User::class,
-                \SolutionForest\InspireCms\Models\User::class,
-            ),
-        ]);
-        $this->app['config']->set('auth.guards.inspirecms', [
-            'driver' => 'session',
-            'provider' => InspireCmsConfig::getGuardName(),
-        ]);
+        $guardName = InspireCmsConfig::getGuardName();
+        $authProvider = InspireCmsConfig::getAuthProvider();
+
+        if (! array_key_exists($authProvider, config('auth.providers'))) {
+            
+            $providerConfig = Arr::only(InspireCmsConfig::get('auth.provider', [
+                'driver' => 'eloquent',
+                'model' => Facades\ModelManifest::get(
+                    \SolutionForest\InspireCms\Models\Contracts\User::class,
+                    \SolutionForest\InspireCms\Models\User::class,
+                ),
+            ]), ['driver', 'model']);
+
+            config()->set('auth.providers.' . $authProvider, $providerConfig);
+        }
+
+        if (!array_key_exists($guardName, config('auth.guards'))) {
+            
+            $guardConfig = Arr::only(InspireCmsConfig::get('auth.guard', [
+                'driver' => 'session',
+                'provider' => $authProvider,
+            ]), ['driver', 'provider']);
+
+            config()->set('auth.guards.' . $guardName, $guardConfig);
+        }
     }
 
     protected function registerEvents(): void
@@ -358,7 +372,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Support
 
         Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard'));
+        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
 
         // Resolvers
 

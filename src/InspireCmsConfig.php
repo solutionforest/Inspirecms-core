@@ -27,7 +27,12 @@ class InspireCmsConfig
 
     public static function getGuardName(): string
     {
-        return static::get('auth.guard', 'inspirecms');
+        return static::get('auth.guard.name', 'inspirecms');
+    }
+
+    public static function getAuthProvider(): string
+    {
+        return static::get('auth.provider.name', 'cms_users');
     }
 
     /**

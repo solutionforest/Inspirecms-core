@@ -22,7 +22,16 @@ return [
     ],
 
     'auth' => [
-        'guard' => 'inspirecms',
+        'guard' => [
+            'name' => 'inspirecms',
+            'driver' => 'session',
+            'provider' => 'cms_users',
+        ],
+        'provider' => [
+            'name' => 'cms_users',
+            'driver' => 'eloquent',
+            'model' => \SolutionForest\InspireCms\Models\User::class,
+        ],
         'failed_login_attempts' => 5,
         /**
          * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
