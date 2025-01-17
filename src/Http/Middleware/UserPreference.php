@@ -10,7 +10,7 @@ class UserPreference
     public function handle(Request $request, \Closure $next)
     {
         $guard = Filament::auth();
-        
+
         if ($guard->check() && ($user = $guard->user()) && is_inspirecms_user($user)) {
 
             $locale = $user->preferred_language ?? config('app.locale');
