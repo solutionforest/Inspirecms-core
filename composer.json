@@ -91,7 +91,7 @@
     "repositories": [
         {
             "type": "path",
-            "url": "~/html/packages/*",
+            "url": "../inspirecms-support",
             "options": {
                 "versions": {
                     "solution-forest/inspirecms-support": "dev-main"
