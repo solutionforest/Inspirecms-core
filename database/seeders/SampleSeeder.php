@@ -708,41 +708,26 @@ class SampleSeeder extends Seeder
             return;
         }
 
-        $totalRetry = 5;
-
+        // image
         foreach (range(1, 3) as $i) {
 
             try {
 
-                $dir = storage_path('app/temp');
-
-                if (! is_dir($dir)) {
-                    mkdir($dir, 0777, true);
-                }
-
-                // Retry x-times to create fake image
-                $fakeImage = false;
-                $retry = 0;
-
-                $fakeImageWord = "image-{$i}";
-                while ($fakeImage === false && $retry < $totalRetry) {
-                    $fakeImage = fake()->image(dir: $dir, width: 150, height: 150, word: $fakeImageWord, format: 'png');
-                    $retry++;
-                }
-
-                if (! $fakeImage) {
-                    continue;
-                }
-
-                $filename = pathinfo($fakeImage, PATHINFO_BASENAME);
+                $fakeName = "image-{$i}";
 
                 /** @var MediaAsset */
                 $mediaAsset = $model::create([
-                    'title' => $filename,
+                    'title' => $fakeName,
                     'is_folder' => false,
                 ]);
 
-                $mediaAsset->addMedia($fakeImage)->toMediaCollection();
+                [$base64, $mime] = $this->generateBase64Image(150, 150, $fakeName);
+
+                $mediaAsset
+                    ->addMediaFromBase64(
+                        $base64,
+                        ['mime_type' => $mime, 'name' => $fakeName]
+                    )->toMediaCollection();
 
             } catch (\Throwable $th) {
                 //
@@ -752,16 +737,23 @@ class SampleSeeder extends Seeder
                 $this->mediaAssets[] = $mediaAsset;
             }
         }
-        // pdf
+        // document
+        {
+            $fakeName = 'dummy.txt';
 
-        /** @var MediaAsset */
-        $mediaAsset = $model::create([
-            'title' => 'dummy.pdf',
-            'is_folder' => false,
-        ]);
+            /** @var MediaAsset */
+            $mediaAsset = $model::create([
+                'title' => $fakeName,
+                'is_folder' => false,
+            ]);
 
-        $mediaAsset->addMedia(\Illuminate\Http\UploadedFile::fake()->create(name: 'dummy.pdf', mimeType: 'application/pdf'))->toMediaCollection();
-        $this->mediaAssets[] = $mediaAsset;
+            $mediaAsset
+                ->addMediaFromString('dummy content')
+                ->usingFileName($fakeName)
+                ->toMediaCollection();
+
+            $this->mediaAssets[] = $mediaAsset;
+        }
 
     }
 
@@ -840,5 +832,24 @@ class SampleSeeder extends Seeder
         return collect($this->getRandomMediaAsset($total, $extension))
             ->map(fn (MediaAsset $asset) => $asset->getKey())
             ->all();
+    }
+
+    protected function generateBase64Image($width = 150, $height = 150, $word = null)
+    {
+        $image = imagecreatetruecolor($width, $height);
+        // random color
+        [$red, $green, $blue] = [rand(0, 255), rand(0, 255), rand(0, 255)];
+        $color = imagecolorallocate($image, $red, $green, $blue);
+        imagestring($image, 5, 0, 0, $word ?? 'Sample', $color);
+        ob_start();
+        imagepng($image);
+        $imageData = ob_get_contents();
+        ob_end_clean();
+
+        $base64 = 'data:image/png;base64,' . base64_encode($imageData);
+
+        $mime = 'image/png';
+
+        return [$base64, $mime];
     }
 }
