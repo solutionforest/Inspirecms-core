@@ -110,7 +110,7 @@ return [
             'content_path' => Models\ContentPath::class,
             'content_version' => Models\ContentVersion::class,
             'content_web_setting' => Models\ContentWebSetting::class,
-            'content_segment' => Models\ContentRoute::class,
+            'content_route' => Models\ContentRoute::class,
             'document_type' => Models\DocumentType::class,
             'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
             'language' => Models\Language::class,
