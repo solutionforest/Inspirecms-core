@@ -160,6 +160,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         $this->selectedModelItem($record);
 
         $ancestorsAndSelf = collect($record->ancestorsAndSelf)->reverse()->values();
+        ray($ancestorsAndSelf);
         foreach ($ancestorsAndSelf as $index => $item) {
             $this->cacheModelExplorerNodesOn($item->getParentId(), $index);
             if ($item->getKey() !== $record->getKey()) {
@@ -185,7 +186,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             $this->cachedModelExplorerRecord($key, $this->getModelExplorer()->findRecord($key));
         }
 
-        return null;
+        return $this->cachedModelExplorerRecords[$key] ?? null;
     }
 
     /**
