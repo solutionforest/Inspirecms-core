@@ -205,7 +205,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getRoutes(): array
     {
-        return ['cms'];
+        return [];
     }
 
     /**

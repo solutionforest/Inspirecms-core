@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms;
 
 use Closure;
-use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
@@ -26,7 +25,9 @@ use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
-use SolutionForest\InspireCms\Http\Middlewares\UserPreference;
+use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
+use SolutionForest\InspireCms\Http\Middleware\CheckCmsInstall;
+use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -39,6 +40,7 @@ class CmsPanelProvider extends PanelProvider
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->authGuard(InspireCmsConfig::getGuardName())
             ->login(Pages\Auth\Login::class)
+            ->registration(Pages\Auth\Install::class)
             ->profile(Pages\Auth\EditProfile::class)
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
@@ -83,7 +85,7 @@ class CmsPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                Authenticate::class,
+                CmsAuthenticate::class,
                 UserPreference::class,
             ])
             ->bootUsing(function () {
@@ -317,7 +319,9 @@ class CmsPanelProvider extends PanelProvider
     {
         return function (Panel $panel) {
 
-            Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)->name('install');
+            Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)
+                ->name('install');
+
             Route::name('import.')->prefix('import')->group(function () {
                 Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
             });

@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
+use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -56,11 +57,19 @@ class Install extends BasePage
 
     public function mount(): void
     {
-        if (! inspirecms()->needInstall()) {
-            redirect()->intended(filament()->getUrl());
+        if (InspireCms::needInstall()) {
+            return;
+        }
+        
+        if (Filament::auth()->check()) {
+            redirect()->intended(Filament::getUrl());
         }
 
-        parent::mount();
+        $this->callHook('beforeFill');
+
+        $this->form->fill();
+
+        $this->callHook('afterFill');
     }
 
     public function register(): ?RegistrationResponse

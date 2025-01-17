@@ -26,21 +26,6 @@ class Login extends BasePage
 
     protected ?string $maxWidth = '4xl';
 
-    public function mount(): void
-    {
-        $installUrl = inspirecms()->getInstallUrl();
-
-        if (inspirecms()->needInstall() && ! blank($installUrl)) {
-            redirect()->intended($installUrl);
-        }
-
-        if (Filament::auth()->check()) {
-            redirect()->intended(Filament::getUrl());
-        }
-
-        parent::mount();
-    }
-
     public function authenticate(): ?LoginResponse
     {
         try {
