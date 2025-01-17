@@ -738,22 +738,21 @@ class SampleSeeder extends Seeder
             }
         }
         // document
-        {
-            $fakeName = 'dummy.txt';
 
-            /** @var MediaAsset */
-            $mediaAsset = $model::create([
-                'title' => $fakeName,
-                'is_folder' => false,
-            ]);
+        $fakeName = 'dummy.txt';
 
-            $mediaAsset
-                ->addMediaFromString('dummy content')
-                ->usingFileName($fakeName)
-                ->toMediaCollection();
+        /** @var MediaAsset */
+        $mediaAsset = $model::create([
+            'title' => $fakeName,
+            'is_folder' => false,
+        ]);
 
-            $this->mediaAssets[] = $mediaAsset;
-        }
+        $mediaAsset
+            ->addMediaFromString('dummy content')
+            ->usingFileName($fakeName)
+            ->toMediaCollection();
+
+        $this->mediaAssets[] = $mediaAsset;
 
     }
 

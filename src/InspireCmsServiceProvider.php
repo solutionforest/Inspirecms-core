@@ -275,7 +275,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $authProvider = InspireCmsConfig::getAuthProvider();
 
         if (! array_key_exists($authProvider, config('auth.providers'))) {
-            
+
             $providerConfig = Arr::only(InspireCmsConfig::get('auth.provider', [
                 'driver' => 'eloquent',
                 'model' => Facades\ModelManifest::get(
@@ -287,8 +287,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             config()->set('auth.providers.' . $authProvider, $providerConfig);
         }
 
-        if (!array_key_exists($guardName, config('auth.guards'))) {
-            
+        if (! array_key_exists($guardName, config('auth.guards'))) {
+
             $guardConfig = Arr::only(InspireCmsConfig::get('auth.guard', [
                 'driver' => 'session',
                 'provider' => $authProvider,
