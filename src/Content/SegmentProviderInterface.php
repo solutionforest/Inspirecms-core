@@ -11,27 +11,26 @@ interface SegmentProviderInterface
     /**
      * Generate the URL segment for the given content.
      *
-     * @param Model & Content $content
-     * @param null|string|LanguageDto $locale 
-     * 
+     * @param  Model & Content  $content
+     * @param  null|string|LanguageDto  $locale
      * @return ?string The generated URL segment.
      */
     public function getUrlSegment($content, $locale = null);
 
     /**
-     * @param Model & Content $content
+     * @param  Model & Content  $content
      * @return string
      */
     public function getSegment($content);
 
     /**
-     * @param Model & Content $content
+     * @param  Model & Content  $content
      * @return array
      */
     public function getSegments($content);
 
     /**
-     * @param Model & Content $content
+     * @param  Model & Content  $content
      * @return string
      */
     public function getPath($content);
@@ -49,11 +48,11 @@ interface SegmentProviderInterface
      * @return array The default route constraints.
      */
     public function getDefaultRouteConstraints();
-    
+
     /**
      * Get the URL segment from the default route.
      *
-     * @param \Illuminate\Routing\Route $route The route instance.
+     * @param  \Illuminate\Routing\Route  $route  The route instance.
      * @return string The URL segment derived from the default route.
      */
     public function getUrlSegmentFromDefaultRoute($route);
@@ -61,7 +60,7 @@ interface SegmentProviderInterface
     /**
      * Retrieve the locale from the default route.
      *
-     * @param \Illuminate\Routing\Route $route The route instance.
+     * @param  \Illuminate\Routing\Route  $route  The route instance.
      * @return string The locale extracted from the route.
      */
     public function getLocaleFromDefaultRoute($route);

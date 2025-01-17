@@ -60,7 +60,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
                 ])->dropdown(false),
-            ]),  
+            ]),
         ];
     }
 

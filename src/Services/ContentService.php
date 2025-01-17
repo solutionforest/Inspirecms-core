@@ -50,9 +50,10 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findWebPageAndLangIdByDefaultRoute($urlSegment)
     {
-        $content = $this->buildFindWebPageByRouteQuery(fn ($q) => $q
-            ->where('uri', $urlSegment)
-            ->whereIsDefaultPattern()
+        $content = $this->buildFindWebPageByRouteQuery(
+            fn ($q) => $q
+                ->where('uri', $urlSegment)
+                ->whereIsDefaultPattern()
         )->first();
 
         return [$content, $content?->__route_language_id];
@@ -61,8 +62,9 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findWebPageAndLangIdByRoutePattern($routePattern)
     {
-        $content = $this->buildFindWebPageByRouteQuery(fn ($q) => $q
-            ->where('uri', $routePattern)
+        $content = $this->buildFindWebPageByRouteQuery(
+            fn ($q) => $q
+                ->where('uri', $routePattern)
         )->first();
 
         return [$content, $content?->__route_language_id];
@@ -87,6 +89,7 @@ class ContentService implements ContentServiceInterface
             ->with($withRelations)
             ->with('path')
             ->get();
+
         // Key the result by the path
         return $result->keyBy(fn ($content) => $content->path->value);
     }
@@ -172,6 +175,7 @@ class ContentService implements ContentServiceInterface
     protected function buildFindWebPageByRouteQuery(\Closure $routeQueryCallback)
     {
         $model = app($this->getModel())->routes()->getRelated();
+
         return $this->buildWebPageQuery()
             ->joinRelationship(
                 relationName: 'routes',
@@ -184,29 +188,30 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildBaseQuery()
             ->whereHas(
-                'parent', 
+                'parent',
                 fn ($q) => $q
                     ->whereHas(
-                        'path', 
+                        'path',
                         fn ($subQ) => $subQ
                             ->where('value', $path)
                     )
             );
     }
 
-    protected function buildFindByPathQuery(string|array $path)
+    protected function buildFindByPathQuery(string | array $path)
     {
         if (is_array($path)) {
             return $this->buildBaseQuery()
                 ->whereHas(
-                    'path', 
+                    'path',
                     fn ($q) => $q
                         ->whereIn('value', $path)
                 );
         }
+
         return $this->buildBaseQuery()
             ->whereHas(
-                'path', 
+                'path',
                 fn ($q) => $q
                     ->where('value', $path)
             );

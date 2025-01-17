@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Models\Contracts\ContentPath as ContentPathContract;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class ContentPath extends BaseModel implements ContentPathContract
 {

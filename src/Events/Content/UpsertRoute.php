@@ -14,17 +14,18 @@ class UpsertRoute
      * @var Model & Content
      */
     public $content;
+
     public array $data = [];
+
     /**
      * The id to be removed.
-     * @var array
      */
     public array $toRemove = [];
 
     /**
-     * @param Model & Content $content The content to be upserted.
-     * @param array $data A group of data to be upserted.
-     * @param array $toRemove A group of id to be removed.
+     * @param  Model & Content  $content  The content to be upserted.
+     * @param  array  $data  A group of data to be upserted.
+     * @param  array  $toRemove  A group of id to be removed.
      */
     public function __construct($content, $data = [], $toRemove = [])
     {

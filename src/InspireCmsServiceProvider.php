@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms;
 
-use Dotenv\Loader\Resolver;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;

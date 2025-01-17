@@ -111,7 +111,7 @@ class InspireCmsManager
      * This method is responsible for defining the routes that will be used
      * by the Inspire CMS. It should be called during the application's
      * bootstrapping process to ensure that all necessary routes are available.
-    */
+     */
     public function routes(): void
     {
         Route::name('inspirecms.asset')
@@ -122,25 +122,25 @@ class InspireCmsManager
             ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
 
         Route::name('inspirecms.content.')
-        ->middleware(InspireCmsConfig::get('content.routes.middlewares', []))
-        ->group(function () {
+            ->middleware(InspireCmsConfig::get('content.routes.middlewares', []))
+            ->group(function () {
 
-            $factory = ContentSegmentFactory::create();
+                $factory = ContentSegmentFactory::create();
 
-            if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
-                
-                foreach ($this->getContentRoutes() as $index => $item) {
-                    Route::get($item['uri'], ContentController::class)
-                        ->where($item['regex_constraints'] ?? [])
-                        ->name($item['alias'] ?? 'content_' . $index);
+                if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
+
+                    foreach ($this->getContentRoutes() as $index => $item) {
+                        Route::get($item['uri'], ContentController::class)
+                            ->where($item['regex_constraints'] ?? [])
+                            ->name($item['alias'] ?? 'content_' . $index);
+                    }
                 }
-            }
-            
-            // default route
-            Route::get($factory->getDefaultRoutePattern(), ContentController::class)
-                ->where($factory->getDefaultRouteConstraints())
-                ->name('default');
-        });
+
+                // default route
+                Route::get($factory->getDefaultRoutePattern(), ContentController::class)
+                    ->where($factory->getDefaultRouteConstraints())
+                    ->name('default');
+            });
     }
 
     public function addSection(ClusterSection $section): void
@@ -218,7 +218,7 @@ class InspireCmsManager
     {
         $this->cacheManager->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
-    
+
     /**
      * @return array
      */
@@ -231,6 +231,7 @@ class InspireCmsManager
                 fn () => $this->getSerializedContentRoutesForCache()
             );
         }
+
         return collect($this->cachedContentRoutes['routes'] ?? [])
             ->map(fn ($arr) => array_combine($this->cachedContentRoutes['alias'] ?? [], $arr))
             ->all();

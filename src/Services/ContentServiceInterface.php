@@ -38,7 +38,7 @@ interface ContentServiceInterface
     /**
      * Find the web page and language ID by the default URL segment route.
      *
-     * @param string $urlSegment The URL segment to search for.
+     * @param  string  $urlSegment  The URL segment to search for.
      * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
      */
     public function findWebPageAndLangIdByDefaultRoute($urlSegment);
@@ -46,7 +46,7 @@ interface ContentServiceInterface
     /**
      * Find the web page and language ID by the given route pattern.
      *
-     * @param string $routePattern The route pattern to search for.
+     * @param  string  $routePattern  The route pattern to search for.
      * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
      */
     public function findWebPageAndLangIdByRoutePattern($routePattern);
@@ -54,15 +54,14 @@ interface ContentServiceInterface
     /**
      * Find content by its path.
      *
-     * @param  string  $path
-     * @return ?TResult 
+     * @return ?TResult
      */
     public function findByRealPath(string $path);
 
     /**
      * Retrieve content by its paths.
      *
-     * @param  string[]  $paths 
+     * @param  string[]  $paths
      * @param  array  $withRelations  The relations to load with the content.
      * @return ContentCollection<string,TResult>
      */
@@ -71,7 +70,6 @@ interface ContentServiceInterface
     /**
      * Retrieve the content under the content with the provided real path.
      *
-     * @param  string  $path  
      * @param  int|null  $limit  The maximum number of content items to retrieve, or null for unlimited.
      * @param  array  $withRelations  The relations to load with the content.
      * @return ContentCollection<TResult>
@@ -81,9 +79,8 @@ interface ContentServiceInterface
     /**
      * Find content by slug under the its path.
      *
-     * @param  string  $path  
      * @param  string  $slug  The slug of the content to find.
-     * @return null | TResult 
+     * @return null | TResult
      */
     public function findBySlugUnderRealPath(string $path, string $slug);
 

@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $key The ID of the content.
  * @property string $value
- * 
  * @property-read null | Model & Content $content
  */
 interface ContentPath

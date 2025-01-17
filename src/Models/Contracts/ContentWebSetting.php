@@ -12,7 +12,6 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property ?string $redirect_path
  * @property ?string $redirect_content_id
  * @property ?int $redirect_type
- * 
  * @property-read null | Model & Content $redirectContent
  */
 interface ContentWebSetting extends HasDtoModel

@@ -26,9 +26,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
  * @property ?\Carbon\CarbonInterface $deleted_at
- * 
  * @property-read null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
- * 
  * @property-read null | Model & ContentPath $path
  * @property-read null | Model & DocumentType $documentType
  * @property-read null | Model & Sitemap $sitemap

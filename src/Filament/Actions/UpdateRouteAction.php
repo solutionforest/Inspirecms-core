@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\UpdateContentRouteA
 class UpdateRouteAction extends Action
 {
     use UpdateContentRouteActionTrait;
-    
+
     public static function getDefaultName(): ?string
     {
         return 'update_route';

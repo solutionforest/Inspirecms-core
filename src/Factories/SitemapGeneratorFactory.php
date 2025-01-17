@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
-use SolutionForest\InspireCms\Sitemap\SitemapGeneratorInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Sitemap\SitemapGeneratorInterface;
 
 class SitemapGeneratorFactory
 {

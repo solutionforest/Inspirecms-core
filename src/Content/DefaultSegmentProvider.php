@@ -36,7 +36,7 @@ class DefaultSegmentProvider implements SegmentProviderInterface
             if ($targetRoute->is_default_pattern) {
                 return str($this->getDefaultRoutePattern())
                     ->replace(
-                        ['{locale?}', '{locale}'], 
+                        ['{locale?}', '{locale}'],
                         $locale != $this->getDefaultLocale() ? (trim($locale, '/')) : ''
                     )
                     ->replace(['{slug?}', '{slug}'], trim($targetRoute->uri, '/'))
@@ -100,8 +100,8 @@ class DefaultSegmentProvider implements SegmentProviderInterface
             } else {
                 $slug = $locale;
             }
-        } 
-        
+        }
+
         return $this->ensureSegmentFormat(array_filter([$slug]));
     }
 
@@ -153,7 +153,7 @@ class DefaultSegmentProvider implements SegmentProviderInterface
     }
 
     /**
-     * @param null|string|LanguageDto $locale
+     * @param  null|string|LanguageDto  $locale
      */
     protected function resolveLocale($locale): ?string
     {

@@ -139,7 +139,7 @@ class ContentObserver
 
     /**
      * @param  Content & Model  $model
-     * @param  SegmentProviderInterface $provider
+     * @param  SegmentProviderInterface  $provider
      */
     protected function createDefaultRoute($model, $provider)
     {
@@ -154,7 +154,7 @@ class ContentObserver
                     'language_id' => null,
                     'uri' => $provider->getSegment($model),
                     'is_default_pattern' => true,
-                ]
+                ],
             ]
         ));
     }

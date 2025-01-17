@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Services\ContentServiceInterface;
 class PublishedContentResolver implements PublishedContentResolverInterface
 {
     protected ContentServiceInterface $contentService;
+
     protected SegmentProviderInterface $segmentProvider;
 
     public function __construct(ContentServiceInterface $contentService)
@@ -35,7 +36,7 @@ class PublishedContentResolver implements PublishedContentResolverInterface
         if (is_null($requestRoute)) {
             return null;
         }
-        
+
         [$content, $locale] = $this->getContentAndLocaleByRoute($requestRoute);
 
         if (is_null($content)) {
@@ -64,7 +65,7 @@ class PublishedContentResolver implements PublishedContentResolverInterface
         if ($routePatternToCheck == $this->segmentProvider->getDefaultRoutePattern()) {
             $urlSegmentToFind = $this->segmentProvider->getUrlSegmentFromDefaultRoute($route);
             [$content, $landId] = $this->contentService->findWebPageAndLangIdByDefaultRoute($urlSegmentToFind);
-            
+
             // Check locale from the route if not set lang for the content's route
             if (is_null($landId)) {
                 $locale = $this->segmentProvider->getLocaleFromDefaultRoute($route);
@@ -76,7 +77,7 @@ class PublishedContentResolver implements PublishedContentResolverInterface
         if (! isset($locale)) {
             $locale = (($landId !== null) ? $this->getLocaleById($landId) : null) ?? $this->getDefualtLocale();
         }
-        
+
         return [$content, $locale];
     }
 

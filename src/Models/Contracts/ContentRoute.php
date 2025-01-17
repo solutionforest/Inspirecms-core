@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $uri
  * @property bool $is_default_pattern
  * @property ?array $regex_constraints
- * 
  * @property-read null | Model & Content $content
  * @property-read null | Model & Language $language
  */
@@ -30,8 +29,7 @@ interface ContentRoute
     /**
      * Scope a query to only include routes that are the default pattern.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsDefaultPattern($query, bool $condition = true);

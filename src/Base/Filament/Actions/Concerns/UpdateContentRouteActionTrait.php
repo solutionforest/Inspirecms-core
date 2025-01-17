@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -26,7 +25,7 @@ trait UpdateContentRouteActionTrait
         $this->groupedIcon('heroicon-o-globe-alt');
 
         $this->label('Update Route');
-        
+
         $this->authorize('update');
 
         $this->successNotificationTitle('Route updated!');
@@ -81,6 +80,7 @@ trait UpdateContentRouteActionTrait
                                 if ($state) {
                                     return 'Pattern: ' . $factory->getDefaultRoutePattern();
                                 }
+
                                 return null;
                             })
                             ->onColor('success')
@@ -108,7 +108,7 @@ trait UpdateContentRouteActionTrait
                             ->reorderable()
                             ->hint(implode(' ', [
                                 'Add regex constraints to the route pattern.',
-                                'Example: ' . collect($factory->getDefaultRouteConstraints())->map(fn ($value, $key) => '{'. $key . '} => ' . $value)->take(2)->values()->join(', '),
+                                'Example: ' . collect($factory->getDefaultRouteConstraints())->map(fn ($value, $key) => '{' . $key . '} => ' . $value)->take(2)->values()->join(', '),
                                 '. . . ',
                             ])),
 

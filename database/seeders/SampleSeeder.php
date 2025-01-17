@@ -81,36 +81,35 @@ class SampleSeeder extends Seeder
             $field->save();
         }
 
-
         // temp for update content route
         // todo: move to import data
-        {
-            $dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page');
-            if ($dynamicBlogPage) {
-                event(
-                    new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
-                        $dynamicBlogPage->withoutRelations(),
+
+        $dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page');
+        if ($dynamicBlogPage) {
+            event(
+                new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
+                    $dynamicBlogPage->withoutRelations(),
+                    [
                         [
-                            [
-                                'language_id' => null,
-                                'uri' => 'blog/{slug}',
-                                'is_default_pattern' => false,
-                            ],
-                            [
-                                'language_id' => 1,
-                                'uri' => 'en/blog/{slug}',
-                                'is_default_pattern' => false,
-                            ],
-                            [
-                                'language_id' => 2,
-                                'uri' => 'fr/blog/{slug}',
-                                'is_default_pattern' => false,
-                            ],
-                        ]
-                    )
-                );
-            }
+                            'language_id' => null,
+                            'uri' => 'blog/{slug}',
+                            'is_default_pattern' => false,
+                        ],
+                        [
+                            'language_id' => 1,
+                            'uri' => 'en/blog/{slug}',
+                            'is_default_pattern' => false,
+                        ],
+                        [
+                            'language_id' => 2,
+                            'uri' => 'fr/blog/{slug}',
+                            'is_default_pattern' => false,
+                        ],
+                    ]
+                )
+            );
         }
+
     }
 
     protected function addSampleTemplates(): void

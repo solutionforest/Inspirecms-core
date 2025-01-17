@@ -50,7 +50,7 @@ class ContentController extends Controller
         return $templateDto->render([
             'content' => $contentDto,
             'locale' => $locale,
-            ... $dto->parameters,
+            ...$dto->parameters,
         ]);
     }
 }
