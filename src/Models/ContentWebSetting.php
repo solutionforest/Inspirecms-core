@@ -12,6 +12,8 @@ class ContentWebSetting extends BaseModel implements ContentWebSettingContract
 {
     protected $guarded = ['id'];
 
+    public $timestamps = false;
+    
     protected $casts = [
         'seo' => 'json',
         'robots' => 'json',

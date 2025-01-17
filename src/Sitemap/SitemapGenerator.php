@@ -1,21 +1,16 @@
 <?php
 
-namespace SolutionForest\InspireCms\Generators;
+namespace SolutionForest\InspireCms\Sitemap;
 
 use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
-use SolutionForest\InspireCms\Generators\Interfaces\SitemapGenerator as SitemapGeneratorInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 
 class SitemapGenerator implements SitemapGeneratorInterface
 {
-    public function generateSitemapFile(): void
+    public function generateSitemapFile()
     {
-        $fullFilePath = InspireCmsConfig::get('content.sitemap.file_path');
-
-        if (! $fullFilePath) {
-            throw new \Exception('Sitemap file path is not set in the config file.');
-        }
+        $fullFilePath = $this->getFilePath();
 
         $this->ensureDirectoryExists($fullFilePath);
 
@@ -24,7 +19,18 @@ class SitemapGenerator implements SitemapGeneratorInterface
         event(new SitemapGenerated($fullFilePath));
     }
 
-    public function sendFailedNotification(\Throwable $exception, $notifiables = []): void
+    public function getFilePath()
+    {
+        $path = InspireCmsConfig::get('sitemap.file_path');
+        
+        if (! $path) {
+            throw new \Exception('Sitemap file path is not set in the config file.');
+        }
+
+        return $path;
+    }
+
+    public function sendFailedNotification(\Throwable $exception, $notifiables = [])
     {
         // todo: add translation
         \Filament\Notifications\Notification::make()

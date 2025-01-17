@@ -33,6 +33,15 @@ class LanguageObserver
      * @param  Language&Model  $model
      * @return void
      */
+    public function updating($model)
+    {
+        $this->updateRelatedContentRoutes($model);
+    }
+
+    /**
+     * @param  Language&Model  $model
+     * @return void
+     */
     public function updated($model)
     {
         event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
@@ -49,12 +58,44 @@ class LanguageObserver
         }
 
         event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));
+
         $this->clearCached();
+
+        $this->deleteRelatedModels($model);
     }
 
     protected function clearCached()
     {
         InspireCms::forgetCachedLanguages();
         InspireCms::forgetCachedNavigation();
+    }
+
+    /**
+     * @param  Language&Model  $model
+     * @return void
+     */
+    protected function deleteRelatedModels($model)
+    {
+        $model->contentSegments()->delete();
+    }
+
+    /**
+     * @param  Language&Model  $model
+     * @return void
+     */
+    protected function updateRelatedContentRoutes($model)
+    {
+        if (! $model->isDirty(['code'])) {
+            return;
+        }
+
+        $oldCode = $model->getOriginal('code');
+        $newCode = $model->code;
+
+        $contentRouteModel = $model->contentSegments()->getRelated();
+
+        $contentRouteModel->newQuery()
+            ->where('locale', $oldCode)
+            ->update(['locale' => $newCode]);
     }
 }

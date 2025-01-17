@@ -36,56 +36,56 @@ interface ContentServiceInterface
     public function findPublishedContentByIds(...$ids);
 
     /**
-     * Find the default web page.
+     * Find the web page and language ID by the default URL segment route.
      *
-     * @return ?TResult The index web page.
+     * @param string $urlSegment The URL segment to search for.
+     * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
      */
-    public function findDefaultWebPage();
+    public function findWebPageAndLangIdByDefaultRoute($urlSegment);
 
     /**
-     * Find a web page by its slug path.
+     * Find the web page and language ID by the given route pattern.
      *
-     * @param  string  $slugPath  The slug path of the web page.
-     * @return ?TResult The web page object or null if not found.
+     * @param string $routePattern The route pattern to search for.
+     * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
      */
-    public function findWebPageBySlugPath(string $slugPath);
+    public function findWebPageAndLangIdByRoutePattern($routePattern);
 
     /**
-     * Find content by its real path.
+     * Find content by its path.
      *
-     * @param  string  $realPath  The slug path of the content.
-     * @param  array  $withRelations  Optional. An array of relations to load with the content.
-     * @return ?TResult The content found by the given slug path, or null if not found.
+     * @param  string  $path
+     * @return ?TResult 
      */
-    public function findByRealPath(string $realPath, $withRelations = []);
+    public function findByRealPath(string $path);
 
     /**
-     * Retrieve content by its real path.
+     * Retrieve content by its paths.
      *
-     * @param  string  $realPath  The slug path of the content to retrieve.
+     * @param  string[]  $paths 
      * @param  array  $withRelations  The relations to load with the content.
-     * @return ContentCollection<string,TResult> The content associated with the given slug path.
+     * @return ContentCollection<string,TResult>
      */
-    public function getByRealPath(string $realPath, $withRelations = []);
+    public function getByRealPath($paths, $withRelations = []);
 
     /**
      * Retrieve the content under the content with the provided real path.
      *
-     * @param  string  $realPath  The slug path used to identify the parent content.
+     * @param  string  $path  
      * @param  int|null  $limit  The maximum number of content items to retrieve, or null for unlimited.
      * @param  array  $withRelations  The relations to load with the content.
      * @return ContentCollection<TResult>
      */
-    public function getUnderRealPath(string $realPath, $limit = null, $withRelations = []);
+    public function getUnderRealPath(string $path, $limit = null, $withRelations = []);
 
     /**
-     * Find content by slug under the specified real path.
+     * Find content by slug under the its path.
      *
-     * @param  string  $realPath  The real path under which to search for the content.
+     * @param  string  $path  
      * @param  string  $slug  The slug of the content to find.
-     * @return null | TResult The content found by the slug under the specified real path.
+     * @return null | TResult 
      */
-    public function findBySlugUnderRealPath(string $realPath, string $slug);
+    public function findBySlugUnderRealPath(string $path, string $slug);
 
     /**
      * Get the default template for the given content.

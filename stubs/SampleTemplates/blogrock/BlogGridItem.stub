@@ -10,7 +10,7 @@
     $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
     $blog_content_post_date = $blog_content?->getPropertyData('post_date')->getValue()?->format('d M, Y');
 @endphp
-<a href="/blog/{{ $content->slug }}" class="text-decoration-none">
+<a href="{{ url("/$locale/blog/$content->slug") }}" class="text-decoration-none">
     <article class="blog-post">
         @if ($page_banner_image)
             <img src="{{ $page_banner_image?->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="blog-image">

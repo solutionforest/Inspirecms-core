@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
+use SolutionForest\InspireCms\Filament\Actions\UpdateRouteAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
@@ -55,10 +56,11 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                     Actions\ForceDeleteAction::make(),
                 ])->dropdown(false),
                 Actions\ActionGroup::make([
+                    UpdateRouteAction::make(),
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
                 ])->dropdown(false),
-            ]),
+            ]),  
         ];
     }
 

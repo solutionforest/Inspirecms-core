@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
 use SolutionForest\InspireCms\Observers\LanguageObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -9,6 +10,11 @@ use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
+
+    public function contentRoutes()
+    {
+        return $this->hasMany(InspireCmsConfig::getContentRouteModelClass(), 'language_id');
+    }
 
     public function getCode()
     {

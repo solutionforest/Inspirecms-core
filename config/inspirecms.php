@@ -44,6 +44,10 @@ return [
             'key' => 'inspirecms.navigation',
             'ttl' => 60 * 60 * 24,
         ],
+        'content_routes' => [
+            'key' => 'inspirecms.content_routes',
+            'ttl' => 120 * 60 * 24,
+        ],
     ],
 
     'filament' => [
@@ -103,9 +107,10 @@ return [
         'morph_map_prefix' => 'cms_',
         'fqcn' => [
             'content' => Models\Content::class,
+            'content_path' => Models\ContentPath::class,
             'content_version' => Models\ContentVersion::class,
             'content_web_setting' => Models\ContentWebSetting::class,
-            'content_path' => Models\ContentPath::class,
+            'content_segment' => Models\ContentRoute::class,
             'document_type' => Models\DocumentType::class,
             'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
             'language' => Models\Language::class,
@@ -158,19 +163,19 @@ return [
 
     'resolvers' => [
         'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
-        'content_page' => \SolutionForest\InspireCms\Resolvers\ContentPageResolver::class,
-    ],
-
-    'generators' => [
-        'content_url_generator' => \SolutionForest\InspireCms\Generators\UrlGenerators\ContentUrlGenerator::class,
-        'sitemap_generator' => \SolutionForest\InspireCms\Generators\SitemapGenerator::class,
+        'published_content' => \SolutionForest\InspireCms\Resolvers\PublishedContentResolver::class,
     ],
 
     'content' => [
-        'middlewares' => [],
-        'sitemap' => [
-            'file_path' => public_path('sitemap.xml'),
+        'routes' => [
+            'middleware' => [],
         ],
+        'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
+    ],
+
+    'sitemap' => [
+        'generator' => \SolutionForest\InspireCms\Sitemap\SitemapGenerator::class,
+        'file_path' => public_path('sitemap.xml'),
     ],
 
     'scheduled_tasks' => [

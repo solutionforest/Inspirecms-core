@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static void forgetCachedLanguages()
  * @method static \SolutionForest\InspireCms\Dtos\NavigationDto[] getNavigation(string $category, ?string $locale = null)
  * @method static void forgetCachedNavigation()
+ * @method static array getContentRoutes()
+ * @method static void forgetCachedContentRoutes()
  *
  * @see \SolutionForest\InspireCms\InspireCmsManager
  */

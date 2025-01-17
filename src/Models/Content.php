@@ -6,13 +6,11 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
-use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
+use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
-use SolutionForest\InspireCms\Models\Scopes\ContentPathScope;
 use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
@@ -65,6 +63,11 @@ class Content extends BaseModel implements ContentContract
         return new \SolutionForest\InspireCms\Collection\ContentCollection($models);
     }
 
+    public function path()
+    {
+        return $this->hasOne(InspireCmsConfig::getContentPathModelClass(), 'key', 'id');
+    }
+
     public function documentType()
     {
         return $this->belongsTo(InspireCmsConfig::getDocumentTypeModelClass(), 'document_type_id');
@@ -85,49 +88,20 @@ class Content extends BaseModel implements ContentContract
         return $this->hasOne(InspireCmsConfig::getNavigationModelClass(), 'content_id');
     }
 
-    public function path()
+    public function routes()
     {
-        return $this->hasOne(InspireCmsConfig::getContentPathModelClass(), 'content_id');
+        return $this->hasMany(InspireCmsConfig::getContentRouteModelClass(), 'content_id');
     }
 
     public function getUrl($locale = null)
     {
-        return ContentUrlGeneratorFactory::create()->getUrl($this, $locale) ?? '';
-    }
+        $path = ContentSegmentFactory::create()->getUrlSegment($this, $locale);
 
-    public function generateSlugPath()
-    {
-        $ancestorsAndSelf = collect($this->ancestorsAndSelf)->reverse()->values();
-
-        $slugs = [];
-
-        foreach ($ancestorsAndSelf as $index => $item) {
-
-            // Skip the default item
-            // e.g. format: "/" instead of "/home"
-            if ($item->is_default) {
-                continue;
-            }
-
-            $slugs[] = $item->slug;
+        if (is_null($path)) {
+            return null;
         }
 
-        return (string) Str::of(implode('/', $slugs))->prepend('/');
-    }
-
-    public function getSegments()
-    {
-        $this->loadMissing('ancestorsAndSelf');
-
-        $ancestorsAndSelf = collect($this->ancestorsAndSelf)->reverse()->values();
-
-        $slugs = [];
-
-        foreach ($ancestorsAndSelf as $index => $item) {
-            $slugs[] = $item->slug;
-        }
-
-        return $slugs;
+        return url($path);
     }
 
     public function isPublished(): bool
@@ -407,7 +381,5 @@ class Content extends BaseModel implements ContentContract
         parent::boot();
 
         static::observe(ContentObserver::class);
-
-        static::addGlobalScope(new ContentPathScope);
     }
 }

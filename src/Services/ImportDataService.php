@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -441,7 +442,7 @@ class ImportDataService implements ImportDataServiceInterface
                     $content->refresh();
                 }
 
-                if ($content->documentType?->display_category == \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web) {
+                if ($content->documentType?->display_category == DocumentTypeCategory::Web) {
                     $content->webSetting()->updateOrCreate([], $item->getWebSettingData());
                     $content->sitemap()->updateOrCreate([], $item->getSitemapData());
                 }
@@ -731,17 +732,15 @@ class ImportDataService implements ImportDataServiceInterface
 
             $this->guardAgaintsTableExist($model);
 
-            foreach ($missing as $slugPathToFind) {
+            $found = $this->contentService->getByRealPath($missing);
 
-                $found = $this->contentService->getByRealPath($slugPathToFind);
+            if ($found->isNotEmpty()) {
 
-                if ($found->isNotEmpty()) {
+                $existing = $existing->merge($found);
 
-                    $existing = $existing->merge($found);
-
-                    $this->tempModels[$type] = $existing;
-                }
+                $this->tempModels[$type] = $existing;
             }
+            
         }
 
         return collect($existing)->where(fn ($v, $k) => in_array($k, $slugs));

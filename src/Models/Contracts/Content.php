@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
@@ -25,12 +26,15 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
  * @property ?\Carbon\CarbonInterface $deleted_at
+ * 
  * @property-read null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
+ * 
+ * @property-read null | Model & ContentPath $path
  * @property-read null | Model & DocumentType $documentType
  * @property-read null | Model & Sitemap $sitemap
  * @property-read null | Model & Content $trashedParent
  * @property-read null | Model & Navigation $navigation
- * @property-read null | Model & ContentPath $path
+ * @property-read Collection<Model & ContentRoute> $routes
  * @property-read Collection<Model & Content> $ancestors
  * @property-read Collection<Model & Content> $ancestorsAndSelf
  * @property-read Collection<Model & Content> $bloodline
@@ -42,6 +46,11 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  */
 interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
+    /**
+     * @return HasOne
+     */
+    public function path();
+
     /**
      * Return the document type relation.
      *
@@ -71,9 +80,9 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
     public function navigation();
 
     /**
-     * @return HasOne
+     * @return HasMany
      */
-    public function path();
+    public function routes();
 
     /**
      * Converts the given record and property data to a preview DTO.
@@ -90,20 +99,6 @@ interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Ba
      * @return TDto The DTO representation of the model.
      */
     public function toDto(...$args);
-
-    /**
-     * Retrieve the segments of slug for the content.
-     *
-     * @return array An array of segments.
-     */
-    public function getSegments();
-
-    /**
-     * Generate the full slug for the content.
-     *
-     * @return string The generated full slug.
-     */
-    public function generateSlugPath();
 
     /**
      * Determine if the content is a web page.

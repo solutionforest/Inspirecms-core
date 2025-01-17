@@ -31,12 +31,22 @@ return new class extends BaseMigration
         });
         Schema::create($tableNames['content_path'], function (Blueprint $table) use ($tableNames) {
             $table->id();
-            $table->foreignUuid('content_id')->references('id')->on($tableNames['content'])->onDelete('cascade');
-            $table->string('slug_path');
-            $table->string('encoded_path');
+            $table->foreignUuid('key')->references('id')->on($tableNames['content'])->cascadeOnDelete();
+            $table->string('value');
 
-            $table->index('slug_path');
-            $table->index('encoded_path');
+            $table->index('value');
+        });
+        Schema::create($tableNames['content_route'], function (Blueprint $table) use ($tableNames) {
+            $table->id();
+            $table->foreignUuid('content_id')->references('id')->on($tableNames['content'])->cascadeOnDelete();
+            $table->unsignedBigInteger('language_id')->nullable();
+            $table->string('uri');
+
+            $table->boolean('is_default_pattern')->default(true);
+            $table->json('regex_constraints')->nullable();
+
+            $table->index('uri');
+            $table->index('language_id');
         });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
@@ -100,8 +110,6 @@ return new class extends BaseMigration
             $table->string('redirect_path')->nullable();
             $table->uuid('redirect_content_id')->default(0);
             $table->integer('redirect_type')->unsigned()->nullable();
-
-            $table->timestamps();
 
             $table->index('content_id');
             $table->index('redirect_content_id');
@@ -172,7 +180,7 @@ return new class extends BaseMigration
         });
         Schema::create($tableNames['language'], function (Blueprint $table) {
             $table->id();
-            $table->string('code');
+            $table->string('code', 50);
             $table->boolean('is_default')->default(false);
 
             $table->timestamps();
@@ -244,6 +252,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['template']);
 
         Schema::dropIfExists($tableNames['document_type']);
+        Schema::dropIfExists($tableNames['content_route']);
         Schema::dropIfExists($tableNames['content_path']);
         Schema::dropIfExists($tableNames['content']);
     }
@@ -255,6 +264,7 @@ return new class extends BaseMigration
             'content_version' => $this->prefix . 'content_versions',
             'content_publish_version' => $this->prefix . 'content_publish_version',
             'content_path' => $this->prefix . 'content_paths',
+            'content_route' => $this->prefix . 'content_routes',
             'content' => $this->prefix . 'content',
             'document_type' => $this->prefix . 'document_types',
             'document_type_inheritance' => $this->prefix . 'document_type_inheritance',

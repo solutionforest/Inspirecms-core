@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\ContentPath as ContentPathContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
+use SolutionForest\InspireCms\Models\Contracts\ContentPath as ContentPathContract;
 
 class ContentPath extends BaseModel implements ContentPathContract
 {
@@ -14,6 +14,6 @@ class ContentPath extends BaseModel implements ContentPathContract
 
     public function content()
     {
-        return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'content_id');
+        return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'key');
     }
 }

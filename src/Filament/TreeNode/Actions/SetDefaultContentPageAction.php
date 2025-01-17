@@ -33,7 +33,7 @@ class SetDefaultContentPageAction extends Action implements GuardAction
 
         $this->label(__('inspirecms::resources/content.actions.set_default_content_page.label'));
 
-        $this->icon('heroicon-o-globe-alt');
+        $this->icon('heroicon-o-viewfinder-circle');
 
         $this->hidden(function (null | Content | Model $record) {
             if (is_null($record) || $record->is_default) {

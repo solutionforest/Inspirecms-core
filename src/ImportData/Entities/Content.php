@@ -18,6 +18,7 @@ class Content extends BaseEntity
         'publishState' => 'required|string',
         'sitemap' => 'nullable|array',
         'webSetting' => 'nullable|array',
+        'routes' => 'nullable|array',
         'parent' => 'nullable|string',
         'template' => 'nullable|string',
     ];
@@ -71,6 +72,12 @@ class Content extends BaseEntity
          * @var array
          */
         public $webSetting = [],
+        /**
+         * The routes for the content.
+         *
+         * @var array
+         */
+        public $routes = [],
         /**
          * The parent content's slug path. Null if no parent.
          *

@@ -3,7 +3,7 @@
     $featuredPage = request()->query('featured') ?? 1;
 
     $locale ??= $content->getLocale();
-    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+    $blogs = inspirecms_content()->getUnderRealPath('blogs', null, ['documentType.templates', 'templates'])->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 
     $featured_blogs = $content->getPropertyGroup('featured_blogs');
     $featured_blogs_blogs = $featured_blogs?->getPropertyData('blogs')?->getValue()?->paginate(perPage: 1, pageName: 'featured', page: $featuredPage);
@@ -12,7 +12,6 @@
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
     <div class="page-main-container">
         <section class="blog-section-ma">
-            <!-- Hero Section -->
             <section class="hero-section">
                 <div class="container-fluid ps-0">
                     <h1>{{ $content->getTitle($locale) }}</h1>
@@ -39,17 +38,40 @@
                     @foreach ($blogs as $blog)
                         <!-- Post -->
                         <div class="col-12 col-md-6 mb-4">
-                            <a href="/blog/{{ $blog->slug }}" class="text-decoration-none">
-                                {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
-                            </a>
+                            {!! $blog->getTemplate('blog-grid-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                         </div>
                     @endforeach
                 </div>
 
-                <div class="pagination mt-4 mb-4">
-                    {{ $blogs->links('components.pagination', ['paginator' => $blogs]) }}
+                <div class="text-center mt-4">
+                    <button class="load-more" data-link="{{ url()->current() . '?page=' }}" data-page="@js($blogs->hasMorePages() ? ($blogs->currentPage() + 1) : null)">Load More</button>
                 </div>
             </div>
         </section>
     </div>
+
+    @section('scripts')
+        <script type="text/javascript">
+            $(function() {
+
+                $("button.load-more").click(function() {
+
+                    let link = $(this).data("link");
+                    let page = $(this).data("page");
+
+                    $.get(link + page, function (response) {
+
+                        let html = $(response).find(".blog-posts-grid").html();
+
+                        $(".blog-posts-grid").append(html);
+
+                    })
+                    .then((data) => $(this).data('page', $(data).find("button.load-more")?.data("page")))
+                    .then((btn) => $(btn).data("page") == null ? $(btn).hide() : "");
+
+                });
+            });
+        </script>
+    @endsection
+
 </x-dynamic-component>

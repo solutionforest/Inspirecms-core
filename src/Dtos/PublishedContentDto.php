@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
-class ContentPageDto extends BaseDto
+class PublishedContentDto extends BaseDto
 {
     /**
      * @var ContentDto
@@ -20,4 +20,6 @@ class ContentPageDto extends BaseDto
      * @var string
      */
     public $locale;
+
+    public $parameters = [];
 }

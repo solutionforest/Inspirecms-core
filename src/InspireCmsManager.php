@@ -8,12 +8,14 @@ use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
-use SolutionForest\InspireCms\Factories\ContentUrlGeneratorFactory;
+use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Http\Controllers\ContentController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
@@ -26,6 +28,8 @@ class InspireCmsManager
     protected ?array $cachedLanguages = null;
 
     protected ?array $cachedNavigation = null;
+
+    protected ?array $cachedContentRoutes = null;
 
     public function __construct(CacheManager $cacheManager)
     {
@@ -107,7 +111,7 @@ class InspireCmsManager
      * This method is responsible for defining the routes that will be used
      * by the Inspire CMS. It should be called during the application's
      * bootstrapping process to ensure that all necessary routes are available.
-     */
+    */
     public function routes(): void
     {
         Route::name('inspirecms.asset')
@@ -117,14 +121,25 @@ class InspireCmsManager
         Route::name('inspirecms.sitemap')
             ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
 
-        Route::group(['middleware' => InspireCmsConfig::get('content.middlewares')], function () {
+        Route::name('inspirecms.content.')
+        ->middleware(InspireCmsConfig::get('content.routes.middlewares', []))
+        ->group(function () {
 
-            $contentUrlGenerator = ContentUrlGeneratorFactory::create();
-            $controller = \SolutionForest\InspireCms\Http\Controllers\ContentController::class;
+            $factory = ContentSegmentFactory::create();
 
-            Route::name($contentUrlGenerator->getRouteName())
-                ->get($contentUrlGenerator->getPathPattern(), $controller)
-                ->where('slug', '.*');
+            if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
+                
+                foreach ($this->getContentRoutes() as $index => $item) {
+                    Route::get($item['uri'], ContentController::class)
+                        ->where($item['regex_constraints'] ?? [])
+                        ->name($item['alias'] ?? 'content_' . $index);
+                }
+            }
+            
+            // default route
+            Route::get($factory->getDefaultRoutePattern(), ContentController::class)
+                ->where($factory->getDefaultRouteConstraints())
+                ->name('default');
         });
     }
 
@@ -203,6 +218,28 @@ class InspireCmsManager
     {
         $this->cacheManager->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
+    
+    /**
+     * @return array
+     */
+    public function getContentRoutes()
+    {
+        if (! $this->cachedContentRoutes) {
+            $this->cachedContentRoutes = $this->cacheManager->remember(
+                InspireCmsConfig::get('cache.content_routes.key'),
+                InspireCmsConfig::get('cache.content_routes.ttl'),
+                fn () => $this->getSerializedContentRoutesForCache()
+            );
+        }
+        return collect($this->cachedContentRoutes['routes'] ?? [])
+            ->map(fn ($arr) => array_combine($this->cachedContentRoutes['alias'] ?? [], $arr))
+            ->all();
+    }
+
+    public function forgetCachedContentRoutes(): void
+    {
+        $this->cacheManager->forget(InspireCmsConfig::get('cache.content_routes.key'));
+    }
 
     // region Helpers
     private function getSerializedLanguagesForCache(): array
@@ -237,6 +274,24 @@ class InspireCmsManager
         }
 
         return compact('alias', 'navigation');
+    }
+
+    private function getSerializedContentRoutesForCache(): array
+    {
+        $attributes = ['uri', 'regex_constraints'];
+
+        $alias = $this->aliasModelFields($attributes);
+
+        $records = InspireCmsConfig::getContentRouteModelClass()::query()
+            ->whereIsDefaultPattern(false)
+            ->distinct('uri')
+            ->get($attributes);
+
+        $routes = $records
+            ->map(fn ($m) => $this->aliasedModel($alias, $m))
+            ->all();
+
+        return compact('alias', 'routes');
     }
 
     private function getSortedLanguages(): Collection

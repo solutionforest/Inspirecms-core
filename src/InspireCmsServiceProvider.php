@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Dotenv\Loader\Resolver;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
@@ -307,8 +308,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         // region Content
         Event::listen(
-            Events\Content\UpdatePath::class,
-            [Listeners\Content\ProcessContentPath::class, 'handleUpsert']
+            Events\Content\UpsertRoute::class,
+            [Listeners\Content\ProcessContentRoute::class, 'upsert']
         );
         Event::listen(Events\Content\CreatingContentVersion::class, Listeners\Content\UnpubilshChildren::class);
         Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
@@ -368,7 +369,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             }
             $interface = match ($name) {
                 'user' => Support\Resolvers\UserResolverInterface::class,
-                // 'content_page' => Resolvers\ContentPageResolverInterface::class,
+                'published_content' => Resolvers\PublishedContentResolverInterface::class,
                 default => null,
             };
             if (is_null($interface)) {

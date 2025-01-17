@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -41,8 +40,6 @@ class SampleSeeder extends Seeder
 
     public function run()
     {
-        $this->publishSampleRoutes();
-
         $this->makeSampleMedia();
 
         $this->makeSampleLanguages();
@@ -84,6 +81,36 @@ class SampleSeeder extends Seeder
             $field->save();
         }
 
+
+        // temp for update content route
+        // todo: move to import data
+        {
+            $dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page');
+            if ($dynamicBlogPage) {
+                event(
+                    new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
+                        $dynamicBlogPage->withoutRelations(),
+                        [
+                            [
+                                'language_id' => null,
+                                'uri' => 'blog/{slug}',
+                                'is_default_pattern' => false,
+                            ],
+                            [
+                                'language_id' => 1,
+                                'uri' => 'en/blog/{slug}',
+                                'is_default_pattern' => false,
+                            ],
+                            [
+                                'language_id' => 2,
+                                'uri' => 'fr/blog/{slug}',
+                                'is_default_pattern' => false,
+                            ],
+                        ]
+                    )
+                );
+            }
+        }
     }
 
     protected function addSampleTemplates(): void
@@ -330,6 +357,17 @@ class SampleSeeder extends Seeder
                 'blog-featured-item',
                 'blog-card-item',
                 'blog-grid-item',
+            ],
+            defaultTemplate: null,
+            icon: 'heroicon-o-newspaper',
+            rejected: ['homepage'],
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'dynamic-blog-page',
+            showAsTable: false,
+            category: 'web',
+            fieldGroups: [],
+            templates: [
                 'blog-page',
             ],
             defaultTemplate: 'blog-page',
@@ -435,7 +473,7 @@ class SampleSeeder extends Seeder
         );
         $items[] = new ImportDataEntities\Content(
             slug: 'blog',
-            title: ['en' => 'Blog', 'fr' => 'Blog'],
+            title: ['en' => 'Blogs', 'fr' => 'Blogs'],
             documentType: 'blogs',
             properties: [
                 'featured_blogs' => [],
@@ -524,6 +562,14 @@ class SampleSeeder extends Seeder
                     ],
                 ],
             ],
+            publishState: 'publish',
+            parent: 'home',
+        );
+
+        $items[] = new ImportDataEntities\Content(
+            slug: 'dynamic-blog-page',
+            title: ['en' => 'Blog', 'fr' => 'Blog'],
+            documentType: 'dynamic-blog-page',
             publishState: 'publish',
             parent: 'home',
         );
@@ -795,30 +841,5 @@ class SampleSeeder extends Seeder
         return collect($this->getRandomMediaAsset($total, $extension))
             ->map(fn (MediaAsset $asset) => $asset->getKey())
             ->all();
-    }
-
-    protected function publishSampleRoutes(): void
-    {
-        $web = base_path('routes/web.php');
-        if (! Str::contains(file_get_contents($web), '\Illuminate\Support\Facades\Route::name(\'sample_content\')')) {
-            $routes = <<<PHP
-
-// Sample InspireCMS routes
-\Illuminate\Support\Facades\Route::name('sample_content')->middleware(\SolutionForest\InspireCms\InspireCmsConfig::get('content.middlewares'))->get('blog/{slug}', function (\$slug) {
-    \$content = inspirecms_content()->getUnderRealPath('blogs')->firstWhere('slug', \$slug);
-    if (is_null(\$content) || ! \$content->isPublished()) {
-        abort(404);
-    }
-    /** @var \SolutionForest\InspireCms\Dtos\ContentDto */
-    \$dto = \$content->toDto();
-
-    return \$dto->getTemplate('blog-page')->render([
-        'content' => \$dto,
-    ]);
-});
-
-PHP;
-            (new Filesystem)->append($web, $routes);
-        }
     }
 }

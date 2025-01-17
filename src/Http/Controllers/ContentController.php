@@ -3,21 +3,21 @@
 namespace SolutionForest\InspireCms\Http\Controllers;
 
 use Illuminate\Routing\Controller;
-use SolutionForest\InspireCms\Resolvers\ContentPageResolverInterface;
+use SolutionForest\InspireCms\Resolvers\PublishedContentResolverInterface;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 
 class ContentController extends Controller
 {
-    protected ContentPageResolverInterface $contentPageResolver;
+    protected PublishedContentResolverInterface $publishedContentResolver;
 
     public function __construct()
     {
-        $this->contentPageResolver = ResolverRegistry::get(ContentPageResolverInterface::class);
+        $this->publishedContentResolver = ResolverRegistry::get(PublishedContentResolverInterface::class);
     }
 
     public function __invoke(...$args)
     {
-        $dto = $this->contentPageResolver->resolve(request(), ...$args);
+        $dto = $this->publishedContentResolver->resolve(request(), ...$args);
 
         if (is_null($dto)) {
             abort(404);
@@ -50,6 +50,7 @@ class ContentController extends Controller
         return $templateDto->render([
             'content' => $contentDto,
             'locale' => $locale,
+            ... $dto->parameters,
         ]);
     }
 }

@@ -15,12 +15,18 @@
                             <span>{{ $content->getTitle($locale) }}</span>
                         </div>
                         @foreach ($blogs as $blog)
-                            <div class="">
+                            <div class="blog-posts-grid">
                                 {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                             </div>
                         @endforeach
 
-                        <div class="load-more">Loading More...</div>
+                        <div class="load-more" 
+                            style="cursor:pointer;"
+                             data-link="{{ url()->current() . '?page=' }}" 
+                             data-page="@js($blogs->hasMorePages() ? ($blogs->currentPage() + 1) : null)"
+                        >
+                            Loading More...
+                        </div>
                     </div>
                     <!-- Article Card -->
                     <div class="col-md-4">
@@ -103,4 +109,29 @@
             </div>
         </section>
     </main>
+
+    @section('scripts')
+        <script type="text/javascript">
+            $(function() {
+
+                $(".load-more").click(function() {
+
+                    let link = $(this).data("link");
+                    let page = $(this).data("page");
+
+                    $.get(link + page, function (response) {
+
+                        let html = $(response).find(".blog-posts-grid").html();
+
+                        $(".blog-posts-grid").append(html);
+
+                    })
+                    .then((data) => $(this).data('page', $(data).find(".load-more")?.data("page")))
+                    .then((div) => $(div).data("page") == null ? $(div).hide() : "");
+
+                });
+            });
+        </script>
+    @endsection
+
 </x-dynamic-component>

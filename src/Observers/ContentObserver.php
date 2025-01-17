@@ -3,9 +3,11 @@
 namespace SolutionForest\InspireCms\Observers;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\Events\Content\ChangeStatus;
-use SolutionForest\InspireCms\Events\Content\UpdatePath;
+use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentObserver
@@ -30,7 +32,13 @@ class ContentObserver
      */
     public function created($model)
     {
-        $this->createOrUpdateDefaultPath($model);
+        $provider = ContentSegmentFactory::create();
+
+        $model->path()->updateOrCreate([], [
+            'value' => $provider->getPath($model),
+        ]);
+
+        $this->createDefaultRoute($model, $provider);
     }
 
     /**
@@ -73,12 +81,6 @@ class ContentObserver
 
             // Unload the relations to prevent large amounts of unnecessary data from being serialized.
             event(new ChangeStatus($model->withoutRelations(), $oldStatus, $status));
-        }
-
-        $slugDiff = [$model->getOriginal('slug'), $model->getAttribute('slug')];
-        $isDefaultDiff = [$model->getOriginal('is_default'), $model->getAttribute('is_default')];
-        if ($slugDiff[0] !== $slugDiff[1] || $isDefaultDiff[0] !== $isDefaultDiff[1]) {
-            $this->createOrUpdateDefaultPath($model);
         }
     }
 
@@ -131,15 +133,30 @@ class ContentObserver
     protected function clearCached()
     {
         InspireCms::forgetCachedNavigation();
+        InspireCms::forgetCachedLanguages();
+        InspireCms::forgetCachedContentRoutes();
     }
 
-    protected function createOrUpdateDefaultPath($model)
+    /**
+     * @param  Content & Model  $model
+     * @param  SegmentProviderInterface $provider
+     */
+    protected function createDefaultRoute($model, $provider)
     {
-        event(new UpdatePath($model->withoutRelations()));
+        if (! $model->isWebPage()) {
+            return;
+        }
 
-        $model->children->each(function ($child) {
-            $this->createOrUpdateDefaultPath($child);
-        });
+        event(new UpsertRoute(
+            $model->withoutRelations(),
+            [
+                [
+                    'language_id' => null,
+                    'uri' => $provider->getSegment($model),
+                    'is_default_pattern' => true,
+                ]
+            ]
+        ));
     }
 
     /**

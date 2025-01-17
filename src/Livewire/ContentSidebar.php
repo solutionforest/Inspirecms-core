@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\UpdateContentItemRouteAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -82,7 +83,6 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     ])
                     ->with([
                         'documentType',
-                        'path',
                     ])
                     ->sortedByTree()
             )
@@ -135,6 +135,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 ReorderContentItemAction::make('reorder_content_item'),
                 ActionGroup::make([
                     SetDefaultContentPageAction::make(),
+                    UpdateContentItemRouteAction::make(),
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
@@ -419,6 +420,12 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
                         return null;
                     });
+
+                break;
+
+            case $action instanceof UpdateContentItemRouteAction:
+                $action
+                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
 
                 break;
             default:

@@ -4,21 +4,27 @@ namespace SolutionForest\InspireCms\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Collection\ContentCollection;
+use SolutionForest\InspireCms\Content\SegmentProviderInterface;
+use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Scopes\ContentPathScope;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 
 /**
  * @implements ContentServiceInterface<\SolutionForest\InspireCms\Models\Content>
  */
 class ContentService implements ContentServiceInterface
 {
+    protected SegmentProviderInterface $segmentProvider;
+
+    public function __construct()
+    {
+        $this->segmentProvider = ContentSegmentFactory::create();
+    }
+
     /** {@inheritDoc} */
     public function findPublishedWebPageById($id)
     {
-        return $this->getQuery()
-            ->whereIsWebPage()
+        return $this->buildWebPageQuery()
             ->whereIsPublished()
             ->find($id);
     }
@@ -26,7 +32,7 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findPublishedContentById($id)
     {
-        return $this->getQuery()
+        return $this->buildBaseQuery()
             ->whereIsPublished()
             ->find($id);
     }
@@ -36,80 +42,68 @@ class ContentService implements ContentServiceInterface
     {
         $ids = Arr::flatten($ids);
 
-        return $this->getQuery()
+        return $this->buildBaseQuery()
             ->whereIsPublished()
             ->findMany($ids);
     }
 
     /** {@inheritDoc} */
-    public function findDefaultWebPage()
+    public function findWebPageAndLangIdByDefaultRoute($urlSegment)
     {
-        return $this->getQuery()
-            ->where('is_default', true)
-            ->whereIsWebPage()
+        $content = $this->buildFindWebPageByRouteQuery(fn ($q) => $q
+            ->where('uri', $urlSegment)
+            ->whereIsDefaultPattern()
+        )->first();
+
+        return [$content, $content?->__route_language_id];
+    }
+
+    /** {@inheritDoc} */
+    public function findWebPageAndLangIdByRoutePattern($routePattern)
+    {
+        $content = $this->buildFindWebPageByRouteQuery(fn ($q) => $q
+            ->where('uri', $routePattern)
+        )->first();
+
+        return [$content, $content?->__route_language_id];
+    }
+
+    /** {@inheritDoc} */
+    public function findByRealPath(string $path)
+    {
+        return $this->buildFindByPathQuery(trim($path, '/'))
             ->first();
     }
 
     /** {@inheritDoc} */
-    public function findWebPageBySlugPath(string $slugPath)
+    public function getByRealPath($paths, $withRelations = [])
     {
-        return $this->getQuery()
-            ->whereHas('path', fn ($q) => $q->where('slug_path', static::ensureSlugPath($slugPath)))
-            ->whereIsWebPage()
-            ->first();
+        $paths = collect($paths)
+            ->flatten()
+            ->map(fn ($path) => trim($path, '/'))
+            ->all();
+
+        $result = $this->buildFindByPathQuery($paths)
+            ->with($withRelations)
+            ->with('path')
+            ->get();
+        // Key the result by the path
+        return $result->keyBy(fn ($content) => $content->path->value);
     }
 
     /** {@inheritDoc} */
-    public function findByRealPath(string $realPath, $withRelations = [])
+    public function getUnderRealPath(string $path, $limit = null, $withRelations = [])
     {
-        return $this->getByRealPath($realPath, $withRelations)->get(trim($realPath, '/'));
-    }
-
-    /** {@inheritDoc} */
-    public function getByRealPath(string $realPath, $withRelations = [])
-    {
-        $content = $this->getFindByRealPathQuery($realPath)->with($withRelations)->get();
-
-        // Find similar content by slug path
-        return collect($content)
-            ->map(function ($item) {
-
-                // Get the root content
-                $root = collect($item->ancestorsAndSelf)->sortBy('depth')->first();
-                $slugPathForContent = $root?->reverse_slug_path;
-
-                return [
-                    'item' => $item,
-                    'slugPath' => $slugPathForContent,
-                ];
-            })
-            ->filter(fn ($arr) => isset($arr['slugPath']) && filled($arr['slugPath']))
-            ->pluck('item', 'slugPath');
-    }
-
-    /** {@inheritDoc} */
-    public function getUnderRealPath(string $realPath, $limit = null, $withRelations = [])
-    {
-        $parent = $this->findByRealPath($realPath);
-        if (is_null($parent)) {
-            return new ContentCollection;
-        }
-
-        return $parent->children()
+        return $this->buildUnderPathQuery($path)
             ->with($withRelations)
             ->when(! is_null($limit), fn ($q) => $q->limit($limit))
             ->get();
     }
 
     /** {@inheritDoc} */
-    public function findBySlugUnderRealPath(string $realPath, string $slug)
+    public function findBySlugUnderRealPath(string $path, string $slug)
     {
-        $parent = $this->findByRealPath($realPath);
-        if (is_null($parent)) {
-            return null;
-        }
-
-        return $parent->children()
+        return $this->buildUnderPathQuery($path)
             ->where('slug', $slug)
             ->first();
     }
@@ -161,33 +155,69 @@ class ContentService implements ContentServiceInterface
     /**
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    protected function getQuery()
+    protected function buildBaseQuery()
     {
         return static::getModel()::query();
     }
 
-    protected function getFindByRealPathQuery(string $slugPath)
+    /**
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function buildWebPageQuery()
     {
-        // Find a content by read slug
-        $trueSlug = Str::afterLast($slugPath, '/');
+        return $this->buildBaseQuery()
+            ->whereIsWebPage();
+    }
 
-        return $this->getQuery()
-            ->with('ancestorsAndSelf', fn ($q) => $q->withoutGlobalScope(ContentPathScope::class))
-            ->withoutGlobalScope(ContentPathScope::class)
-            ->where('slug', $trueSlug);
+    protected function buildFindWebPageByRouteQuery(\Closure $routeQueryCallback)
+    {
+        $model = app($this->getModel())->routes()->getRelated();
+        return $this->buildWebPageQuery()
+            ->joinRelationship(
+                relationName: 'routes',
+                callback: fn ($q) => $routeQueryCallback($q)
+            )
+            ->addSelect($model->qualifyColumn('language_id as __route_language_id'));
+    }
+
+    protected function buildUnderPathQuery(string $path)
+    {
+        return $this->buildBaseQuery()
+            ->whereHas(
+                'parent', 
+                fn ($q) => $q
+                    ->whereHas(
+                        'path', 
+                        fn ($subQ) => $subQ
+                            ->where('value', $path)
+                    )
+            );
+    }
+
+    protected function buildFindByPathQuery(string|array $path)
+    {
+        if (is_array($path)) {
+            return $this->buildBaseQuery()
+                ->whereHas(
+                    'path', 
+                    fn ($q) => $q
+                        ->whereIn('value', $path)
+                );
+        }
+        return $this->buildBaseQuery()
+            ->whereHas(
+                'path', 
+                fn ($q) => $q
+                    ->where('value', $path)
+            );
     }
 
     /**
-     * @return class-string<Model>
+     * @return class-string<Model & Content>
      */
     protected static function getModel()
     {
         return InspireCmsConfig::getContentModelClass();
-    }
-
-    protected static function ensureSlugPath($slugPath)
-    {
-        return Str::of($slugPath)->trim('/')->prepend('/');
     }
     // endregion Helpers
 }
