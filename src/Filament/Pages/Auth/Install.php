@@ -60,7 +60,7 @@ class Install extends BasePage
         if (InspireCms::needInstall()) {
             return;
         }
-        
+
         if (Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }

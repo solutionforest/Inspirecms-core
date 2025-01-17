@@ -26,7 +26,6 @@ use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
-use SolutionForest\InspireCms\Http\Middleware\CheckCmsInstall;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 
 class CmsPanelProvider extends PanelProvider
