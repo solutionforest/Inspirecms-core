@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
+use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -10,6 +11,7 @@ use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
+use SolutionForest\InspireCms\Filament\TreeNode\Actions\MoveContentAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\UpdateContentItemRouteAction;
@@ -134,8 +136,24 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 CreateContentItemAction::make(),
                 ReorderContentItemAction::make('reorder_content_item'),
                 ActionGroup::make([
+                    
                     SetDefaultContentPageAction::make(),
                     UpdateContentItemRouteAction::make(),
+
+                    ActionGroup::make([
+                        MoveContentAction::make('move_content_to_under_root')->moveUnderRoot(true),
+                        MoveContentAction::make()->moveUnderRoot(false),
+                    ])
+                        ->button()
+                        ->color('gray')
+                        ->icon(null)
+                        ->iconPosition(IconPosition::After)
+                        ->icon('heroicon-o-arrow-right')
+                        ->dropdownPlacement('right-start')
+                        // todo: add  translation
+                        ->label('Move to ... ')
+                        ->extraAttributes(['class' => 'w-full justify-between']),
+                    
                     DeleteContentItemAction::make(),
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
@@ -381,12 +399,20 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 break;
             case $action instanceof DeleteContentItemAction:
             case $action instanceof SetDefaultContentPageAction:
+            case $action instanceof MoveContentAction:
 
                 $action
                     ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', $this->getRedirectUrlParameters(), false));
 
                 break;
+
+
+            case $action instanceof UpdateContentItemRouteAction:
+                    $action
+                        ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
+    
+                    break;
 
             case $action instanceof ReorderContentItemAction:
 
@@ -421,12 +447,6 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
                         return null;
                     });
-
-                break;
-
-            case $action instanceof UpdateContentItemRouteAction:
-                $action
-                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
 
                 break;
             default:
