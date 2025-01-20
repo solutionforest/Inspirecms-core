@@ -35,7 +35,7 @@ class MoveContentAction extends Action
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
-        $this->hidden(function (?Model $record) use ($contentResource) : bool {
+        $this->hidden(function (?Model $record) use ($contentResource): bool {
             if (! $record || ! $record instanceof Content) {
                 return true;
             }
