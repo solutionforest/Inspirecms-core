@@ -17,6 +17,7 @@ use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
@@ -138,6 +139,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             $this->getScriptData(),
             $this->getAssetPackageName()
         );
+        
+        \Livewire\Livewire::addPersistentMiddleware([
+            CmsAuthenticate::class,
+        ]);
 
         // Icon Registration
         FilamentIcon::register($this->getIcons());
