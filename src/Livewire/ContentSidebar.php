@@ -85,6 +85,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     ])
                     ->with([
                         'documentType',
+                        'nestableTree',
                     ])
                     ->sortedByTree()
             )
