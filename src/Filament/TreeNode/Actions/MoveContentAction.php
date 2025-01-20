@@ -60,13 +60,15 @@ class MoveContentAction extends Action
                 PaginationCheckboxList::make('target')
                     ->hiddenLabel()
                     ->validationAttribute('target')
-                    ->paginationOptions(fn () => $model::query()
-                        ->whereKeyNot($record->getKey())
-                        ->whereNotIn('document_type_id', fn (\Illuminate\Database\Query\Builder $query) => 
-                            $query->from(InspireCmsConfig::getRejectedDocumentTypeTableName())
-                                ->select('document_type_id')
-                                ->where('rejected_document_type_id', $record->document_type_id)
-                        )
+                    ->paginationOptions(
+                        fn () => $model::query()
+                            ->whereKeyNot($record->getKey())
+                            ->whereNotIn(
+                                'document_type_id',
+                                fn (\Illuminate\Database\Query\Builder $query) => $query->from(InspireCmsConfig::getRejectedDocumentTypeTableName())
+                                    ->select('document_type_id')
+                                    ->where('rejected_document_type_id', $record->document_type_id)
+                            )
                     )
                     ->perPage(20)
                     ->tableColumns([

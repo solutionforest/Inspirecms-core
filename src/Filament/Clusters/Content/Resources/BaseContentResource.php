@@ -203,6 +203,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                 if ($livewire instanceof ChildrenRelationManager) {
                     $query->with('parent');
                 }
+
                 return $query;
             })
             ->columns([
