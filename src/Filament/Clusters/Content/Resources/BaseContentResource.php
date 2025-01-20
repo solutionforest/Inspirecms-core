@@ -198,7 +198,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->modifyQueryUsing(fn ($query) => $query->with('publishedVersions'))
+            ->modifyQueryUsing(function ($query, $livewire) {
+                $query->with('publishedVersions');
+                if ($livewire instanceof ChildrenRelationManager) {
+                    $query->with('parent');
+                }
+                return $query;
+            })
             ->columns([
 
                 Tables\Columns\ViewColumn::make('documentType.icon')
