@@ -333,7 +333,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function configureFilamentForm(): void
     {
         \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int | \Closure $length) {
-            return $this->live()
+            if ($this->isLive == null) {
+                $this->lazy();
+            }
+             return $this
                 ->hint(function ($state, $component) {
                     if (! is_string($state)) {
                         return '';
