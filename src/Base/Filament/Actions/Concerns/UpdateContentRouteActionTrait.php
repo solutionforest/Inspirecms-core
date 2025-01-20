@@ -6,6 +6,8 @@ use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\ContentRoute;
 
@@ -19,6 +21,7 @@ trait UpdateContentRouteActionTrait
     protected function setUpAction(): void
     {
         // todo: add translation
+        $contentResource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
         $this->color('gray');
 
@@ -26,11 +29,9 @@ trait UpdateContentRouteActionTrait
 
         $this->label('Update Route');
 
-        $this->authorize('update');
-
         $this->successNotificationTitle('Route updated!');
 
-        $this->hidden(static function (?Model $record): bool {
+        $this->hidden(static function (?Model $record) use ($contentResource): bool {
             if (! $record) {
                 return true;
             }
@@ -40,6 +41,10 @@ trait UpdateContentRouteActionTrait
             }
 
             if (! $record->isWebPage()) {
+                return true;
+            }
+
+            if (! $contentResource::can('update', $record)) {
                 return true;
             }
 

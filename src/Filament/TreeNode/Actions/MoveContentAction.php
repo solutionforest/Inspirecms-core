@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 use Filament\Support\Enums\Alignment;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\PaginationCheckboxList;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -26,7 +27,7 @@ class MoveContentAction extends Action
 
         parent::setUp();
 
-        $this->authorize('update');
+        $contentResource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
 
         $this->label(fn () => $this->isMoveUnderRoot() ? 'Move under root' : 'Move under content');
 
@@ -34,8 +35,12 @@ class MoveContentAction extends Action
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
-        $this->hidden(function (?Model $record): bool {
+        $this->hidden(function (?Model $record) use ($contentResource) : bool {
             if (! $record || ! $record instanceof Content) {
+                return true;
+            }
+
+            if (! $contentResource::can('update', $record)) {
                 return true;
             }
 
