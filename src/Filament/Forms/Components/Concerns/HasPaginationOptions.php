@@ -14,6 +14,8 @@ trait HasPaginationOptions
 
     protected int | string $perPage = 10;
 
+    public int $currentPage = 1;
+
     public function paginationOptions(Closure | Builder $options): static
     {
         $this->paginationOptions = $options;
@@ -35,24 +37,24 @@ trait HasPaginationOptions
 
     public function getPaginationOptions(): LengthAwarePaginator | ContractsPaginator
     {
-        $pageName = $this->getPaginationName();
-
         $paginationOptions = $this->getPaginationOptionsQuery();
 
         if (! $paginationOptions) {
-            return new Paginator([], $this->perPage, options: ['pageName' => $pageName]);
+            return new Paginator(
+                items: [], 
+                perPage: $this->perPage, 
+                currentPage: $this->currentPage
+            );
         }
 
-        return $paginationOptions->paginate($this->perPage, pageName: $pageName);
+        return $paginationOptions->paginate(
+            perPage:$this->perPage, 
+            page: $this->currentPage,
+        );
     }
 
     public function getPerPage(): int | string
     {
         return $this->perPage;
-    }
-
-    public function getPaginationName(): string
-    {
-        return 'mountFormComponentPagination_' . $this->getName();
     }
 }

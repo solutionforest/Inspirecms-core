@@ -56,7 +56,6 @@ class MoveContentAction extends Action
             }
 
             return [
-                // TODO: fix nextpage
                 PaginationCheckboxList::make('target')
                     ->hiddenLabel()
                     ->validationAttribute('target')
@@ -68,7 +67,6 @@ class MoveContentAction extends Action
                                 ->where('rejected_document_type_id', $record->document_type_id)
                         )
                     )
-                    ->perPage(20)
                     ->tableColumns([
                         TextColumn::make('id')->label(__('inspirecms::inspirecms.id')),
                         TextColumn::make('title')->label(__('inspirecms::resources/content.title.label')),
@@ -80,7 +78,7 @@ class MoveContentAction extends Action
 
         $this->slideOver(fn () => ! $this->isMoveUnderRoot());
 
-        $this->modalFooterActionsAlignment(Alignment::Right);
+        $this->modalFooterActionsAlignment(Alignment::End);
 
         $this->requiresConfirmation(fn () => $this->isMoveUnderRoot());
 

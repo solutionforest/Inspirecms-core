@@ -9,7 +9,6 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
-use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
@@ -32,7 +31,6 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
         ContentFormTrait::updatedActiveLocale insteadof EditRecord\Concerns\Translatable;
         ContentFormTrait::fillForm insteadof EditRecord\Concerns\Translatable;
     }
-    use WithPagination;
 
     public function booted(): void
     {

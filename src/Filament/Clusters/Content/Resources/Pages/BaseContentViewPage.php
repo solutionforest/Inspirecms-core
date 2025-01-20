@@ -7,7 +7,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
 use Illuminate\Support\Facades\Blade;
-use Livewire\WithPagination;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
@@ -30,7 +29,6 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
         ContentFormTrait::updatedActiveLocale insteadof ViewRecord\Concerns\Translatable;
         ContentFormTrait::fillForm insteadof ViewRecord\Concerns\Translatable;
     }
-    use WithPagination;
 
     protected function getHeaderActions(): array
     {

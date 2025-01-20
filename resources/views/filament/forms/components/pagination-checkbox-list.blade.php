@@ -272,13 +272,13 @@
 
             @if ((($records instanceof \Illuminate\Contracts\Pagination\Paginator) || ($records instanceof \Illuminate\Contracts\Pagination\CursorPaginator)) &&
                 ((! ($records instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator)) || $records->total()))
-                <x-filament::pagination
+                <x-inspirecms::forms.components.pagination
                     :paginator="$records"
+                    :state-path="$statePath"
                     extreme-links
-                    class="fi-ta-pagination px-3 py-3 sm:px-6"
+                    class="px-3 py-3 sm:px-6"
                 />
             @endif
-            
         </x-filament-tables::container>
     </div>
 </div>

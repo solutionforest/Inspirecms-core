@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
+use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Field;
 
@@ -29,6 +30,16 @@ class PaginationCheckboxList extends Field
 
             $component->state([]);
         });
+
+        $this->registerActions([
+            'gotoPage' => Action::make('gotoPage')
+                ->action(function (PaginationCheckboxList $component, $arguments) {
+                    $page = $arguments['page'] ?? null;
+                    if (is_int($page) && $page > 0) {
+                        $component->currentPage = $page;
+                    }
+                }),
+        ]);
     }
 
     public function isMultiple(): bool
