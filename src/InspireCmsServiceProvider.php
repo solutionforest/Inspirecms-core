@@ -139,7 +139,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             $this->getScriptData(),
             $this->getAssetPackageName()
         );
-        
+
         \Livewire\Livewire::addPersistentMiddleware([
             CmsAuthenticate::class,
         ]);
