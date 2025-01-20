@@ -41,14 +41,14 @@ trait HasPaginationOptions
 
         if (! $paginationOptions) {
             return new Paginator(
-                items: [], 
-                perPage: $this->perPage, 
+                items: [],
+                perPage: $this->perPage,
                 currentPage: $this->currentPage
             );
         }
 
         return $paginationOptions->paginate(
-            perPage:$this->perPage, 
+            perPage: $this->perPage,
             page: $this->currentPage,
         );
     }
