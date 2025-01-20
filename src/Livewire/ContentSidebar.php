@@ -155,7 +155,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                         ->extraAttributes(['class' => 'w-full justify-between']),
 
                     DeleteContentItemAction::make(),
-                    
+
                 ])->dropdown(false)->hidden(fn ($itemKey) => $itemKey === 'root'),
             ]);
     }

@@ -336,7 +336,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             if ($this->isLive == null) {
                 $this->lazy();
             }
-             return $this
+
+            return $this
                 ->hint(function ($state, $component) {
                     if (! is_string($state)) {
                         return '';
