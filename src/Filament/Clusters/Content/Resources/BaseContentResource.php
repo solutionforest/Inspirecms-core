@@ -351,6 +351,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'publishedVersions', // To get published version, and determine is published
             'documentType.templates', // For template use
             'parent', // To get parent title
+            'webSetting', 
+            'sitemap',
         ]);
     }
 
@@ -566,6 +568,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
 
         $getFieldGroupsFromLivewireOrRecord = function (ContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromDocumentType) {
             if ($record) { // edit/view page
+                $record->documentType?->loadMissing('fieldGroups.fields');
                 $fieldGroups = collect($record->documentType->fieldGroups)->sortBy('pivot.order')->values();
             } elseif ($livewire instanceof ContentForm) { // create
                 $fieldGroups = $getFieldGroupsFromDocumentType($livewire->getDocumentType() ?? null);
