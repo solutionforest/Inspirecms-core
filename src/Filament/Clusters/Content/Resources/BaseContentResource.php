@@ -351,7 +351,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'publishedVersions', // To get published version, and determine is published
             'documentType.templates', // For template use
             'parent', // To get parent title
-            'webSetting', 
+            'webSetting',
             'sitemap',
         ]);
     }
