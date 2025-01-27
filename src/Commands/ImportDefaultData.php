@@ -126,11 +126,11 @@ class ImportDefaultData extends Command
     {
         // Copy routes to user's routes/web.php
         $this->components->task('Publish route definition', function () {
-            $destination = base_path('routes/web.php');
+            $routeFile = base_path('routes/web.php');
+           
+            // Replace content
+            file_put_contents($routeFile, $this->cmsRouteDefinition());
 
-            if (! Str::contains(file_get_contents($destination), 'InspireCms::routes()')) {
-                (new Filesystem)->append($destination, $this->cmsRouteDefinition());
-            }
         });
     }
 
@@ -158,6 +158,9 @@ class ImportDefaultData extends Command
     protected function cmsRouteDefinition(): string
     {
         return <<<PHP
+<?php
+
+use Illuminate\Support\Facades\Route;
 
 // InspireCMS routes
 \SolutionForest\InspireCms\Facades\InspireCms::routes();
