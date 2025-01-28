@@ -1,6 +1,5 @@
 @php
     $statePath = $getStatePath();
-    ray($getFilters());
 @endphp
 <x-dynamic-component
     :component="$getFieldWrapperView()"
