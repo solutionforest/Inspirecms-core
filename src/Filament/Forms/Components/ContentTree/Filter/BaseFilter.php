@@ -8,8 +8,8 @@ use Livewire\Wireable;
 abstract class BaseFilter implements Wireable
 {
     /**
-     * @param Builder $query
+     * @param  Builder  $query
      * @return Builder
      */
-    public abstract function applyToQuery($query);
+    abstract public function applyToQuery($query);
 }

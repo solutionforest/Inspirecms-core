@@ -64,7 +64,7 @@ class MoveContentAction extends Action
                     ->validationAttribute('target')
                     ->whereKeyNot($record->getKey())
                     ->whereNotIn(
-                        'document_type_id', 
+                        'document_type_id',
                         $restrictedDocumentTypeIds,
                     )
                     ->maxItem(1)

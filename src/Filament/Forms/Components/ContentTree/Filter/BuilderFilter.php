@@ -2,14 +2,12 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter;
 
-use Livewire\Wireable;
-
 class BuilderFilter extends BaseFilter
 {
     public function __construct(
         protected string $method,
         protected ?array $parameters = null,
-    ) { }
+    ) {}
 
     public function toLivewire()
     {
@@ -18,7 +16,7 @@ class BuilderFilter extends BaseFilter
             'parameters' => $this->parameters,
         ];
     }
- 
+
     public static function fromLivewire($value)
     {
         return new static($value['method'], $value['parameters'] ?? null);
@@ -32,6 +30,7 @@ class BuilderFilter extends BaseFilter
         } else {
             $query->{$method}();
         }
+
         return $query;
     }
 }

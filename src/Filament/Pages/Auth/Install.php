@@ -57,7 +57,7 @@ class Install extends BasePage
 
     public function mount(): void
     {
-        if (!InspireCms::needInstall() || Filament::auth()->check()) {
+        if (! InspireCms::needInstall() || Filament::auth()->check()) {
             redirect()->intended(Filament::getUrl());
         }
 

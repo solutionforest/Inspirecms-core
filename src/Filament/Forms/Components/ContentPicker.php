@@ -20,15 +20,15 @@ use function Filament\Forms\array_move_before;
 
 class ContentPicker extends Field
 {
-    use HasPlaceholder;
     use CanLimitItemsLength;
     use HasContentTreeFilter;
-    
+    use HasPlaceholder;
+
     /**
      * @var view-string
      */
     protected string $view = 'inspirecms::filament.forms.components.content-picker';
-    
+
     protected ?Closure $recordTitleUsing = null;
 
     protected bool $isReorderable = true;

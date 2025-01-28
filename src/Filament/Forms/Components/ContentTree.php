@@ -37,7 +37,7 @@ class ContentTree extends Field
     {
         return $this->state($config);
     }
-    
+
     public function startNode(string $parentId): static
     {
         $this->startNode = $parentId;
@@ -49,7 +49,7 @@ class ContentTree extends Field
     {
         return $this->startNode;
     }
-    
+
     public function getLimits(): array
     {
         return [

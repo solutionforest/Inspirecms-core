@@ -45,7 +45,7 @@ trait HasContentTreeFilter
                 $key,
                 $operator,
                 $value,
-            ]
+            ],
         ], true);
     }
 
