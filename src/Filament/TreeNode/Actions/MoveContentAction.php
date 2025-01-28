@@ -67,8 +67,8 @@ class MoveContentAction extends Action
                         'document_type_id', 
                         $restrictedDocumentTypeIds,
                     )
-                    ->maxItem(1)
-                    ->minItem(1),
+                    ->maxItems(1)
+                    ->minItems(1),
             ];
         });
 
