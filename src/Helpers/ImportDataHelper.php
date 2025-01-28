@@ -79,6 +79,7 @@ class ImportDataHelper
                         $icon = null;
                         $iconAlias = 'inspirecms::json-file';
                     }
+
                     return [$icon, $iconAlias];
                 };
 
@@ -92,9 +93,9 @@ class ImportDataHelper
 
                     $children = collect([
                         array_merge(
-                            $getReturnValue('component', 'heroicon-o-folder'), 
+                            $getReturnValue('component', 'heroicon-o-folder'),
                             ['children' => collect($generateFiles('component', '.blade.php'))->map(fn ($filename) => $getReturnValue($filename))->all()]
-                        )
+                        ),
                     ])
                         ->merge(
                             collect($generateFiles('sample', '.blade.php'))

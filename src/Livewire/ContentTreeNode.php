@@ -27,6 +27,7 @@ class ContentTreeNode extends \Livewire\Component
             'records' => $this->getRecords(),
         ]);
     }
+
     public function placeholder()
     {
         return <<<'HTML'
@@ -51,7 +52,7 @@ class ContentTreeNode extends \Livewire\Component
          */
         $subQ = $contentModel->newQuery() // Without soft delete
             ->when(
-                filled($this->search), 
+                filled($this->search),
                 fn ($query) => $query->where('slug', 'like', "%{$this->search}%")
             )
             ->select([
@@ -60,9 +61,9 @@ class ContentTreeNode extends \Livewire\Component
                 'title as content_title',
             ]);
 
-        if (!empty($this->filters)) {
+        if (! empty($this->filters)) {
             foreach ($this->filters as $filter) {
-                
+
                 [$column, $operator, $value] = $filter;
 
                 $this->applyFilterOnQuery($subQ, $column, $operator, $value);

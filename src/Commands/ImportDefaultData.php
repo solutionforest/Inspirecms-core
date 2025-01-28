@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
@@ -127,7 +126,7 @@ class ImportDefaultData extends Command
         // Copy routes to user's routes/web.php
         $this->components->task('Publish route definition', function () {
             $routeFile = base_path('routes/web.php');
-           
+
             // Replace content
             file_put_contents($routeFile, $this->cmsRouteDefinition());
 

@@ -921,7 +921,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     $component->state($state);
                                 }
                             })
-                            ->modifySelectActionSelectorUsing(function (Forms\Components\Field|Forms\Components\Component|ContentTree $selector, $livewire) {
+                            ->modifySelectActionSelectorUsing(function (Forms\Components\Field | Forms\Components\Component | ContentTree $selector, $livewire) {
                                 if ($selector instanceof ContentTree) {
                                     if (($currRecord = $livewire?->getRecord()) && $currRecord != null) {
                                         $selector = $selector->whereKeyNot($currRecord instanceof Model ? $currRecord->getKey() : $currRecord);
