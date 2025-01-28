@@ -3,16 +3,39 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
-use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Concerns\CanLimitItemsLength;
+use Filament\Forms\Components\Concerns\HasPlaceholder;
+use Filament\Forms\Components\Field;
+use Filament\Support\Enums\ActionSize;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\HasContentTreeFilter;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ContentPicker extends PaginationPicker
-{
-    protected ?Closure $modifyPaginationOptionsUsing = null;
+use function Filament\Forms\array_move_after;
+use function Filament\Forms\array_move_before;
 
-    protected null | Model | string | int | array | Closure $exceptRecord = null;
+class ContentPicker extends Field
+{
+    use HasPlaceholder;
+    use CanLimitItemsLength;
+    use HasContentTreeFilter;
+    
+    /**
+     * @var view-string
+     */
+    protected string $view = 'inspirecms::filament.forms.components.content-picker';
+    
+    protected ?Closure $recordTitleUsing = null;
+
+    protected bool $isReorderable = true;
+
+    protected bool $isDeletable = true;
+
+    protected ?Closure $modifySelectActionSelectorUsing = null;
 
     protected function setUp(): void
     {
@@ -20,60 +43,206 @@ class ContentPicker extends PaginationPicker
 
         $this->default([]);
 
-        $this->tableColumns([
-            TextColumn::make('id')->label(__('inspirecms::inspirecms.id')),
-            TextColumn::make('title')->label(__('inspirecms::resources/content.title.label')),
-            TextColumn::make('slug')->label(__('inspirecms::resources/content.slug.label'))->badge(),
+        $this->registerActions([
+            $this->getSelectAction(),
+            $this->getClearAction(),
+            $this->getMoveUpAction(),
+            $this->getMoveDownAction(),
+            $this->getDeleteAction(),
         ]);
-
-        $this->recordTitleUsing(fn ($record) => $record->title);
     }
 
-    public function modifyPaginationOptionsUsing(Closure $callback): static
+    public function recordTitleUsing(Closure $callback): static
     {
-        $this->modifyPaginationOptionsUsing = $callback;
+        $this->recordTitleUsing = $callback;
 
         return $this;
     }
 
-    public function exceptRecord(Model | string | int | array | Closure $record): static
+    public function reorderable(bool $condition = true): static
     {
-        $this->exceptRecord = $record;
+        $this->isReorderable = $condition;
 
         return $this;
     }
 
-    protected function getPaginationOptionsQuery(): ?Builder
+    public function deletable(bool $condition = true): static
     {
-        $query = $this->evaluate($this->paginationOptions);
+        $this->isDeletable = $condition;
 
-        if (! $query) {
-            $query = InspireCmsConfig::getContentModelClass()::query();
+        return $this;
+    }
+
+    public function getFormattedStateForDisplay($state = null)
+    {
+        $state ??= $this->getState();
+
+        if (! $state) {
+            return [];
         }
 
-        if ($this->exceptRecord) {
-            $record = $this->evaluate($this->exceptRecord);
+        $records = $this->getEloquentQuery()?->whereKey($state)->get();
 
-            if ($record instanceof Model) {
-                $query = $query->whereKeyNot($record->getKey());
-            } elseif (is_array($record)) {
-                $recordKeys = collect($record)
-                    ->map(fn ($record) => $record instanceof Model ? $record->getKey() : $record)
-                    ->filter()
-                    ->unique()
-                    ->all();
-                $query = $query->whereKeyNot($recordKeys);
-            } elseif (is_string($record) || is_int($record)) {
-                $query = $query->whereKeyNot($record);
+        $formattedState = $records
+            ->mapWithKeys(fn (Model $record) => [
+                $record->getKey() => $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey()),
+            ])
+            ->toArray() ?? [];
+
+        $orderedState = [];
+        foreach ($state as $key) {
+            if (array_key_exists($key, $formattedState)) {
+                $orderedState[$key] = $formattedState[$key];
             }
         }
 
-        if ($this->modifyPaginationOptionsUsing) {
-            $query = $this->evaluate($this->modifyPaginationOptionsUsing, [
-                'query' => $query,
-            ]);
-        }
+        return $orderedState;
+    }
 
-        return $query;
+    public function isMultiple(): bool
+    {
+        return $this->getMaxItems() !== 1;
+    }
+
+    public function modifySelectActionSelectorUsing(Closure $callback): static
+    {
+        $this->modifySelectActionSelectorUsing = $callback;
+
+        return $this;
+    }
+
+    public function getRecordTitle(Model $record): ?string
+    {
+        return $this->evaluate($this->recordTitleUsing, [
+            'record' => $record,
+        ]);
+    }
+
+    public function isReorderable(): bool
+    {
+        return boolval($this->evaluate($this->isReorderable));
+    }
+
+    public function isDeletable(): bool
+    {
+        return boolval($this->evaluate($this->isDeletable));
+    }
+
+    public function getSelectAction(): Action
+    {
+        return Action::make('select')
+            ->label(__('inspirecms::actions.select.label'))
+            ->modalSubmitActionLabel(__('inspirecms::actions.choose.label'))
+            ->modalWidth('7xl')
+            ->stickyModalHeader()->stickyModalFooter()
+            ->fillForm(fn () => ['records' => $this->getState()])
+            ->form(function () {
+                $selector = ContentTree::make('records')
+                    ->hiddenLabel()
+                    // todo: add translations
+                    ->validationAttribute('records')
+                    ->filter($this->getFilters());
+
+                if ($this->minItems != null) {
+                    $selector->minItems($this->minItems);
+                }
+
+                if ($this->maxItems != null) {
+                    $selector->maxItems($this->maxItems);
+                }
+
+                if ($this->modifySelectActionSelectorUsing) {
+                    $selector = $this->evaluate($this->modifySelectActionSelectorUsing, [
+                        'selector' => $selector,
+                    ]) ?? $selector;
+                }
+
+                return [$selector];
+            })
+            ->action(function (array $data) {
+                $recordKeys = array_filter($data['records'] ?? []);
+                $this->state($recordKeys);
+            });
+    }
+
+    public function getClearAction(): Action
+    {
+        return Action::make('clear')
+            ->label(__('inspirecms::actions.clear.label'))
+            ->color('gray')
+            ->action(function () {
+                $this->state([]);
+            });
+    }
+
+    public function getMoveUpAction(): Action
+    {
+        return Action::make('moveUp')
+            ->label(__('filament-forms::components.repeater.actions.move_up.label'))
+            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.move-up') ?? 'heroicon-m-arrow-up')
+            ->color('gray')
+            ->action(function (array $arguments, ContentPicker $component): void {
+
+                $formattedState = Arr::mapWithKeys($component->getState(), fn ($key) => [$key => $key]);
+
+                $items = array_move_before($formattedState, $arguments['item']);
+
+                $component->state(array_values($items));
+
+                $component->callAfterStateUpdated();
+            })
+            ->iconButton()
+            ->size(ActionSize::Small)
+            ->disabled(fn (array $arguments) => $arguments['disabled'] === true)
+            ->visible(fn (ContentPicker $component): bool => $component->isReorderable());
+    }
+
+    public function getMoveDownAction(): Action
+    {
+        return Action::make('moveDown')
+            ->label(__('filament-forms::components.repeater.actions.move_down.label'))
+            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.move-down') ?? 'heroicon-m-arrow-down')
+            ->color('gray')
+            ->action(function (array $arguments, ContentPicker $component): void {
+
+                $formattedState = Arr::mapWithKeys($component->getState(), fn ($key) => [$key => $key]);
+                $items = array_move_after($formattedState, $arguments['item']);
+
+                $component->state(array_values($items));
+
+                $component->callAfterStateUpdated();
+            })
+            ->iconButton()
+            ->size(ActionSize::Small)
+            ->disabled(fn (array $arguments) => $arguments['disabled'] === true)
+            ->visible(fn (ContentPicker $component): bool => $component->isReorderable());
+    }
+
+    public function getDeleteAction(): Action
+    {
+        return Action::make('delete')
+            ->label(__('filament-forms::components.repeater.actions.delete.label'))
+            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.delete') ?? 'heroicon-m-trash')
+            ->color('danger')
+            ->action(function (array $arguments, ContentPicker $component): void {
+                $items = $component->getState();
+
+                $items = Arr::where($items, fn ($key) => $key != $arguments['item']);
+
+                $component->state(array_values($items));
+
+                $component->callAfterStateUpdated();
+            })
+            ->iconButton()
+            ->size(ActionSize::Small)
+            ->visible(fn (ContentPicker $component): bool => $component->isDeletable());
+    }
+
+    /**
+     * @return Builder
+     */
+    protected function getEloquentQuery()
+    {
+        return InspireCmsConfig::getContentModelClass()::query();
     }
 }

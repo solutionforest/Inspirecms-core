@@ -20,8 +20,6 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 #[DbType('sqlite', 'text')]
 class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
-    public ?string $perPage = null;
-
     public ?int $max = null;
 
     public ?int $min = null;
@@ -34,7 +32,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             $model = InspireCmsConfig::getDocumentTypeModelClass();
 
             return $model::query()
-                ->limitDisplay($component->getOptionsLimit())
+                ->take($component->getOptionsLimit())
                 ->when(filled($search), function ($query) use ($search) {
                     $query->where('slug', 'like', "%$search%");
                 })
@@ -61,8 +59,6 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                         ]),
                     Forms\Components\Tabs\Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\TextInput::make('perPage')
-                                ->inlineLabel(),
                             Forms\Components\Select::make('documentType')
                                 ->inlineLabel()
                                 ->searchable()
@@ -80,16 +76,8 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     {
         if ($component instanceof ContentPickerComponent) {
 
-            $component->modifyPaginationOptionsUsing(function ($query) {
-                if ($this->documentType) {
-                    $query->where('document_type_id', $this->documentType);
-                }
-
-                return $query;
-            });
-
-            if ($this->perPage) {
-                $component->perPage($this->perPage);
+            if ($this->documentType != null) {
+                $component->where('document_type_id', $this->documentType);
             }
 
             if ($this->max) {

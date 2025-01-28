@@ -224,7 +224,7 @@ class SampleSeeder extends Seeder
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'featured_blogs'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'allowedDocumentTypes' => ['blog'], 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'documentType' => ['blog']]),
             ],
         ];
         foreach ($items as $item) {

@@ -127,6 +127,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->configureFilamentForm();
 
         \Livewire\Livewire::component('inspirecms::content-sidebar', \SolutionForest\InspireCms\Livewire\ContentSidebar::class);
+        \Livewire\Livewire::component('inspirecms::content-tree-node', \SolutionForest\InspireCms\Livewire\ContentTreeNode::class);
         \Livewire\Livewire::component('inspirecms::document-type-paginator', \SolutionForest\InspireCms\Livewire\DocumentTypePaginator::class);
 
         // Asset Registration

@@ -29,6 +29,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeR
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\ResetAction;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\ContentResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -903,7 +905,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                             ->validationAttribute(__('inspirecms::resources/content.redirect.redirect_path.validation_attribute'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_path.placeholder'))
                             ->helperText(__('inspirecms::resources/content.redirect.redirect_path.instructions')),
-                        \SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker::make('redirect_content_id')
+                        ContentPicker::make('redirect_content_id')
                             ->label(__('inspirecms::resources/content.redirect.redirect_content.label'))
                             ->validationAttribute(__('inspirecms::resources/content.redirect.redirect_content.validation_attribute'))
                             ->placeholder(__('inspirecms::resources/content.redirect.redirect_content.placeholder'))
@@ -919,8 +921,16 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                     $component->state($state);
                                 }
                             })
-                            ->paginationOptions(static::getModel()::query()->whereIsWebPage())
-                            ->exceptRecord(fn ($livewire) => $livewire?->getRecord())
+                            ->modifySelectActionSelectorUsing(function (Forms\Components\Field|Forms\Components\Component|ContentTree $selector, $livewire) {
+                                if ($selector instanceof ContentTree) {
+                                    if (($currRecord = $livewire?->getRecord()) && $currRecord != null) {
+                                        $selector = $selector->whereKeyNot($currRecord instanceof Model ? $currRecord->getKey() : $currRecord);
+                                    }
+                                    $selector = $selector->where(new ContentTree\Filter\BuilderFilter('whereIsWebPage'));
+                                }
+
+                                return $selector;
+                            })
                             ->maxItems(1)
                             ->minItems(0),
                         Forms\Components\Select::make('redirect_type')
