@@ -133,8 +133,8 @@ class ContentPicker extends Field
         return Action::make('select')
             ->label(__('inspirecms::actions.select.label'))
             ->modalSubmitActionLabel(__('inspirecms::actions.choose.label'))
-            ->modalWidth('7xl')
-            ->stickyModalHeader()->stickyModalFooter()
+            ->modalWidth('5xl')
+            ->slideOver()
             ->fillForm(fn () => ['records' => $this->getState()])
             ->form(function () {
                 $selector = ContentTree::make('records')
