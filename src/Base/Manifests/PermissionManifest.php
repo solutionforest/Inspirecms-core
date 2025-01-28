@@ -122,6 +122,14 @@ class PermissionManifest implements PermissionManifestInterface
             ->toArray();
     }
 
+    public function getTieredPermissions(string $type): array
+    {
+        return match ($type) {
+            'content' => $this->getTieredContentPermissions(),
+            default => [],
+        };
+    }
+
     /**
      * Get the permission name for a given model and ability.
      *

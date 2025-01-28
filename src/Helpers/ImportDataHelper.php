@@ -51,48 +51,77 @@ class ImportDataHelper
      */
     public static function getSampleFileStructure()
     {
-        return collect(self::FOLDER_STRUCTURE)->mapWithKeys(function ($folder) {
+        return collect(self::FOLDER_STRUCTURE)
+            ->map(function ($folder) {
 
-            $sampleFiles = [];
+                $children = [];
 
-            $maxRandomFiles = 2;
+                $maxRandomFiles = 2;
 
-            $generateFiles = function ($filenamePrefix, $extension) use ($maxRandomFiles) {
+                $generateFiles = function ($filenamePrefix, $extension) use ($maxRandomFiles) {
 
-                return collect(range(1, $maxRandomFiles))
-                    ->map(function ($i) use ($filenamePrefix, $extension) {
+                    return collect(range(1, $maxRandomFiles))
+                        ->map(function ($i) use ($filenamePrefix, $extension) {
 
-                        $name = (string) Str::of($filenamePrefix)->snake()->singular()->replaceMatches('/[^a-z0-9]/', '-');
+                            $name = (string) Str::of($filenamePrefix)->snake()->singular()->replaceMatches('/[^a-z0-9]/', '-');
 
-                        return "{$name}-{$i}{$extension}";
+                            return "{$name}-{$i}{$extension}";
 
-                    })
-                    ->values()
-                    ->all();
-            };
+                        })
+                        ->values()
+                        ->all();
+                };
 
-            if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
+                $getItemIcon = function ($file) {
+                    $icon = 'heroicon-o-document';
+                    $iconAlias = null;
+                    if (Str::endsWith($file, '.json')) {
+                        $icon = null;
+                        $iconAlias = 'inspirecms::json-file';
+                    }
+                    return [$icon, $iconAlias];
+                };
 
-                $sampleFiles = array_merge(
-                    ['components' => $generateFiles('component', '.blade.php')],
-                    $generateFiles('sample', '.blade.php')
-                );
+                $getReturnValue = fn ($filename, $icon = null) => [
+                    'title' => $filename,
+                    'icon' => $icon ?? $getItemIcon($filename)[0],
+                    'iconAlias' => $icon ?? $getItemIcon($filename)[1],
+                ];
 
-            } elseif ($folder == self::FOLDER_IDENTIFIER_TEMPLATE) {
+                if ($folder == self::FOLDER_IDENTIFIER_VIEW) {
 
-                $sampleFiles = collect($generateFiles($folder, ''))
-                    ->mapWithKeys(fn ($templateFolder) => [$templateFolder => $generateFiles('theme', '.blade.php')])
-                    ->all();
+                    $children = collect([
+                        array_merge(
+                            $getReturnValue('component', 'heroicon-o-folder'), 
+                            ['children' => collect($generateFiles('component', '.blade.php'))->map(fn ($filename) => $getReturnValue($filename))->all()]
+                        )
+                    ])
+                        ->merge(
+                            collect($generateFiles('sample', '.blade.php'))
+                                ->map(fn ($filename) => $getReturnValue($filename))
+                        )
+                        ->all();
 
-            } else {
+                } elseif ($folder == self::FOLDER_IDENTIFIER_TEMPLATE) {
 
-                $sampleFiles = $generateFiles($folder, '.json');
+                    $children = collect($generateFiles($folder, ''))
+                        ->map(fn ($templateFolder) => array_merge(
+                            $getReturnValue($templateFolder, 'heroicon-o-folder'),
+                            ['children' => collect($generateFiles('theme', '.blade.php'))->map(fn ($filename) => $getReturnValue($filename))->all()]
+                        ))
+                        ->all();
 
-            }
+                } else {
 
-            return [$folder => $sampleFiles];
+                    $children = collect($generateFiles($folder, '.json'))
+                        ->map(fn ($filename) => $getReturnValue($filename))
+                        ->all();
+                }
 
-        })->all();
+                return array_merge($getReturnValue($folder, 'heroicon-o-folder'), ['children' => $children]);
+
+            })
+            ->all();
     }
 
     public static function generateSampleData()
