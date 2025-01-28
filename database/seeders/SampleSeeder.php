@@ -224,7 +224,7 @@ class SampleSeeder extends Seeder
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'featured_blogs'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'allowedDocumentTypes' => ['blog'], 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'documentType' => ['blog']]),
             ],
         ];
         foreach ($items as $item) {
@@ -374,19 +374,25 @@ class SampleSeeder extends Seeder
             rejected: ['homepage'],
         );
 
+        $allSlugs = collect($items)->map(fn ($item) => $item->slug)->values()->toArray();
+
         foreach ($items as &$item) {
             switch ($item->slug) {
                 case 'blog-management':
-                    $item->rejected = collect($items)->map(fn ($item) => $item->slug)->filter(fn ($slug) => $slug !== 'blog')->toArray();
+                    $item->rejected = Arr::except($allSlugs, ['blog']);
 
                     break;
                 case 'blog':
                 case 'config':
-                    $item->rejected = collect($items)->map(fn ($item) => $item->slug)->toArray();
+                    $item->rejected = $allSlugs;
+
+                    break;
+                case 'homepage':
+                    $item->rejected = array_unique(array_merge($item->rejected, ['blog']));
 
                     break;
                 default:
-                    $item->rejected = array_unique(array_merge($item->rejected, ['blog']));
+                    $item->rejected = array_unique(array_merge($item->rejected, ['blog', 'blog-management']));
 
                     break;
             }

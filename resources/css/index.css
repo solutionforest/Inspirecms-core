@@ -153,3 +153,8 @@
 .split-image-layout {
     @apply bg-center bg-no-repeat bg-cover bg-[image:var(--panel-background-image)] bg-blend-multiply;
 }
+
+/* Modal */
+.fi-modal-footer-actions {
+    @apply flex flex-row-reverse flex-wrap items-center;
+}

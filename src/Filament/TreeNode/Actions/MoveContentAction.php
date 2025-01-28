@@ -2,11 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use Filament\Support\Enums\Alignment;
-use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\PaginationCheckboxList;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
@@ -55,32 +53,26 @@ class MoveContentAction extends Action
                 return [];
             }
 
+            $restrictedDocumentTypeIds = InspireCmsConfig::getRejectedDocumentTypeModelClass()::query()
+                ->where('rejected_document_type_id', $record->document_type_id)
+                ->pluck('document_type_id')
+                ->all();
+
             return [
-                PaginationCheckboxList::make('target')
+                ContentTree::make('target')
                     ->hiddenLabel()
                     ->validationAttribute('target')
-                    ->paginationOptions(
-                        fn () => $model::query()
-                            ->whereKeyNot($record->getKey())
-                            ->whereNotIn(
-                                'document_type_id',
-                                fn (\Illuminate\Database\Query\Builder $query) => $query->from(InspireCmsConfig::getRejectedDocumentTypeTableName())
-                                    ->select('document_type_id')
-                                    ->where('rejected_document_type_id', $record->document_type_id)
-                            )
+                    ->whereKeyNot($record->getKey())
+                    ->whereNotIn(
+                        'document_type_id',
+                        $restrictedDocumentTypeIds,
                     )
-                    ->tableColumns([
-                        TextColumn::make('id')->label(__('inspirecms::inspirecms.id')),
-                        TextColumn::make('title')->label(__('inspirecms::resources/content.title.label')),
-                        TextColumn::make('slug')->label(__('inspirecms::resources/content.slug.label'))->badge(),
-                    ])
-                    ->maxItems(1),
+                    ->maxItems(1)
+                    ->minItems(1),
             ];
         });
 
         $this->slideOver(fn () => ! $this->isMoveUnderRoot());
-
-        $this->modalFooterActionsAlignment(Alignment::End);
 
         $this->requiresConfirmation(fn () => $this->isMoveUnderRoot());
 
@@ -96,12 +88,9 @@ class MoveContentAction extends Action
                 $record->asRoot();
                 $action->success();
 
-            } elseif (! empty($data['target'])) {
-                $target = $data['target'][0];
-                if ($target != null && $target != $record->getParentId()) {
-                    $record->setParentNode($target, true);
-                    $action->success();
-                }
+            } elseif (($target = $data['target'][0] ?? null) && $target != null && $target != $record->getParentId()) {
+                $record->setParentNode($target, true);
+                $action->success();
             }
         });
     }

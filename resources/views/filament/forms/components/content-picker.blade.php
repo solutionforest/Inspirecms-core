@@ -24,7 +24,7 @@
             $attributes
                 ->merge($getExtraAttributes(), escape: false)
                 ->class([
-                    'fi-fo-pagination-picker',
+                    'fi-fo-content-picker',
                 ])
         }}
     >
