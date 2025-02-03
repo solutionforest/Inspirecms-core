@@ -5,27 +5,14 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
-use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
-class ContentHistoryAction extends Action implements GuardAction
+class ContentHistoryAction extends Action
 {
-    use CanCustomizeAuthorizedGuardActionProcess;
-
     public static function getDefaultName(): ?string
     {
         return 'contentHistory';
-    }
-
-    public static function getPermissionName(): string
-    {
-        return 'action_view_content_history';
-    }
-
-    public static function getPermissionDisplayName(): string
-    {
-        return __('inspirecms::resources/content.actions.content_history.permission_display_name');
     }
 
     protected function setUp(): void
@@ -35,6 +22,10 @@ class ContentHistoryAction extends Action implements GuardAction
         $this->label(fn () => __('inspirecms::resources/content.actions.content_history.label'));
 
         $this->hidden(fn (null | Model | Content $record) => is_null($record));
+
+        $this->authorize('viewHistory');
+
+        $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->slideOver();
 

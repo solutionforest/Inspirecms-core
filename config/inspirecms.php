@@ -150,11 +150,8 @@ return [
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [
-            \SolutionForest\InspireCms\Filament\Actions\ReorderContentAction::class,
-            \SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction::class,
             \SolutionForest\InspireCms\Filament\Actions\ExportTemplateAction::class,
 
-            \SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction::class,
             \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
         ],
     ],

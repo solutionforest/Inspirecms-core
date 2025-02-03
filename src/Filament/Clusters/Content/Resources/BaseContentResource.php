@@ -61,6 +61,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'force_delete_any',
             'publish',
             'unpublish',
+            'reorder_children',
+            'view_history',
+            'set_as_default',
         ];
     }
 

@@ -104,4 +104,19 @@ class ContentPolicy extends BasePolicy
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
     }
+
+    public function reorderChildren($user, $content = null)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    public function viewHistory($user, $content = null)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
+
+    public function setAsDefault($user, $content = null)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+    }
 }

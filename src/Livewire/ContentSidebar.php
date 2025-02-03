@@ -418,6 +418,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             case $action instanceof ReorderContentItemAction:
 
                 $action
+                    ->record(fn ($model, $itemKey) => $itemKey == 'root' ? null : static::getModel()::find($itemKey))
                     ->nodeParentId(function ($itemKey) {
                         if ($itemKey === 'root' || blank($itemKey)) {
                             return app(static::getModel())->getNestableTreeRootLevelParentId();
