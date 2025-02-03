@@ -1,5 +1,6 @@
 @php
     $statePath = $getStatePath();
+    $isDisabled = $isDisabled();
 @endphp
 <x-dynamic-component
     :component="$getFieldWrapperView()"
@@ -13,5 +14,6 @@
         :parent-id="$getStartNode()"
         :filters="$getFilters()"
         :limits="$getLimits()"
+        :is-disabled="$isDisabled"
     /> 
 </x-dynamic-component>

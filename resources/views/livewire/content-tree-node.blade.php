@@ -15,6 +15,7 @@
             :modelable="$modelable"
             :max="$limits['max'] ?? null"
             :min="$limits['min'] ?? null"
+            :is-disabled="$isDisabled"
             collapsable
         />
     @else

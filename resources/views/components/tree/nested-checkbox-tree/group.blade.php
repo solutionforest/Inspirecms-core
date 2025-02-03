@@ -6,6 +6,7 @@
     'groupKey' => null,
     'collapsable' => false,
     'description' => null,
+    'isDisabled' => false,
 ])
 <div role="treeitem" {{ $attributes }}>
     
@@ -16,6 +17,7 @@
         :group-key="$groupKey"
         :collapsable="$collapsable"
         :description="$description"
+        :is-disabled="$isDisabled"
     />
 
     @if (count($children) > 0)
@@ -34,6 +36,7 @@
                         :description="$item['description'] ?? null"
                         :group-key="$key"
                         :collapsable="$collapsable"
+                        :is-disabled="$isDisabled"
                 />
                 @endforeach
             </div>

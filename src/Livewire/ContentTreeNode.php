@@ -21,6 +21,8 @@ class ContentTreeNode extends \Livewire\Component
 
     public array $limits = [];
 
+    public bool $isDisabled = false;
+
     public function render()
     {
         return view('inspirecms::livewire.content-tree-node', [
