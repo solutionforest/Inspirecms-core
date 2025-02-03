@@ -6,9 +6,6 @@
     'collapsable' => false,
     'isDisabled' => false,
 ])
-@php
-    ray($isDisabled);
-@endphp
 
 <div class="py-0.5 flex items-center gap-x-0.5 w-full">
     <div class="grow px-1.5 rounded-md">
