@@ -69,11 +69,11 @@ class PermissionManifest implements PermissionManifestInterface
                 $modelShortName = class_basename($model);
 
                 $permissionNames = collect($data['permissionPrefixes'])
-                    ->mapWithKeys(function (string $prefix) use ($model) {
+                    ->mapWithKeys(function (string $suffix) use ($model) {
 
-                        $permissionName = $this->getPermissionNameForModel($prefix, $model);
+                        $permissionName = $this->getPermissionNameForModel($suffix, $model);
 
-                        $permissionLabel = str($prefix)
+                        $permissionLabel = str($suffix)
                             ->kebab()
                             ->replace(['-', '_'], ' ')
                             ->ucfirst()
@@ -122,14 +122,6 @@ class PermissionManifest implements PermissionManifestInterface
             ->toArray();
     }
 
-    public function getTieredPermissions(string $type): array
-    {
-        return match ($type) {
-            'content' => $this->getTieredContentPermissions(),
-            default => [],
-        };
-    }
-
     /**
      * Get the permission name for a given model and ability.
      *
@@ -144,8 +136,8 @@ class PermissionManifest implements PermissionManifestInterface
         return str($modelShortName)
             ->lower()
             ->snake('_')
-            ->prepend('_')
-            ->prepend($ability)
+            ->finish('.')
+            ->finish($ability)
             ->toString();
     }
 
