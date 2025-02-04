@@ -7,7 +7,7 @@ use Filament\Actions\ActionGroup;
 class FilamentActionHelper
 {
     /**
-     * @param ActionGroup $actionGroup
+     * @param  ActionGroup  $actionGroup
      * @return bool
      */
     public static function isAnyVisibleActionInActionGroup($actionGroup)
@@ -16,8 +16,10 @@ class FilamentActionHelper
             if ($action->isHiddenInGroup()) {
                 continue;
             }
+
             return false;
         }
+
         return true;
     }
 }

@@ -19,7 +19,7 @@ class ViewNavigation extends BaseViewPage
             Actions\EditAction::make()->iconButton(),
         ];
     }
-    
+
     public static function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);

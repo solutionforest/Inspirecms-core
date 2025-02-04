@@ -173,7 +173,7 @@ class TreeNavigation extends BaseWidget
 
     // region Helpers
     /**
-     * @return class-string<Resource>
+     * @return class-string<resource>
      */
     protected function getResource(): string
     {
@@ -211,7 +211,6 @@ class TreeNavigation extends BaseWidget
     protected function configureEditAction(EditAction $action): EditAction
     {
         parent::configureEditAction($action);
-
 
         $resource = $this->getResource();
 

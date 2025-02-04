@@ -76,11 +76,10 @@ class ImportDefaultData extends Command
             $reviewer->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        (
-                            Str::startsWith($permission->name, 'view') && 
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => (
+                            Str::startsWith($permission->name, 'view') &&
                             ! (
-                                Str::endsWith($permission->name, 'user') || 
+                                Str::endsWith($permission->name, 'user') ||
                                 Str::endsWith($permission->name, 'role')
                             )
                         ) ||
@@ -93,8 +92,7 @@ class ImportDefaultData extends Command
             $writer->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        str_starts_with($permission->name, 'widgets') ||
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
                         $modelPermissionFilter($permission->name, 'view', ['content']) ||
                         $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
                         $modelPermissionFilter($permission->name, 'update', ['content']) ||
@@ -107,8 +105,7 @@ class ImportDefaultData extends Command
             $editor->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => 
-                        str_starts_with($permission->name, 'widgets') ||
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
                         $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||

@@ -2,10 +2,10 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\RelationManagers;
 
+use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Filament\Forms;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\SearchHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
@@ -31,51 +31,53 @@ class UsersRelationManager extends RelationManager
                             ->circular()
                             ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record))
                             ->columnSpan(['default' => 1]),
-                    
+
                         Tables\Columns\Layout\Stack::make([
                             Tables\Columns\TextColumn::make('name'),
                             Tables\Columns\TextColumn::make('email')->copyable()->icon('heroicon-m-envelope'),
                         ])
-                        ->columnSpan(['default' => 3]),
+                            ->columnSpan(['default' => 3]),
                     ]),
             ])
             ->headerActions([
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
                     ->slideOver()
-                    ->recordSelect(function (Forms\Components\Select $select) {
+                    ->recordSelect(
+                        function (Forms\Components\Select $select) {
 
-                        $searchColumns = [
-                            'name',
-                            'email',
-                        ];
+                            $searchColumns = [
+                                'name',
+                                'email',
+                            ];
 
-                        $getOptions = fn ($search = null) => SearchHelper::getAttachOptions(
-                            relationship: $this->getRelationship(), 
-                            inverseRelationshipName: 'roles', 
-                            optionsLimit: 50, 
-                            getRecordTitleUsing: function (Model|User $record) {
+                            $getOptions = fn ($search = null) => SearchHelper::getAttachOptions(
+                                relationship: $this->getRelationship(),
+                                inverseRelationshipName: 'roles',
+                                optionsLimit: 50,
+                                getRecordTitleUsing: function (Model | User $record) {
 
-                                $avatar = ($record instanceof User ? ($record->getFilamentAvatarUrl() ?? $record->getFilamentFallbackAvatarUrl()) : null) ?? '';
-                                $name = $record->getFilamentName();
-                                $avatarHtml = UIHelper::generateCircularImage($avatar ?? '' , $name, ['class' => ['flex-shrink-0 w-8 h-8']])->toHtml();
-                                $text = UIHelper::generateTextWithDescription($name, $record->email)->toHtml();
-                                return <<<Html
+                                    $avatar = ($record instanceof User ? ($record->getFilamentAvatarUrl() ?? $record->getFilamentFallbackAvatarUrl()) : null) ?? '';
+                                    $name = $record->getFilamentName();
+                                    $avatarHtml = UIHelper::generateCircularImage($avatar ?? '', $name, ['class' => ['flex-shrink-0 w-8 h-8']])->toHtml();
+                                    $text = UIHelper::generateTextWithDescription($name, $record->email)->toHtml();
+
+                                    return <<<Html
                                     <div class="flex items-center gap-2">
                                         {$avatarHtml}
                                         {$text}
                                     </div>
                                 Html;
-                            }, 
-                            search: $search,
-                            searchColumns: $searchColumns,
-                        );
+                                },
+                                search: $search,
+                                searchColumns: $searchColumns,
+                            );
 
-                        return $select
-                            ->allowHtml()
-                            ->options($getOptions())
-                            ->getSearchResultsUsing(fn ($search) => $getOptions($search));
-                    }
+                            return $select
+                                ->allowHtml()
+                                ->options($getOptions())
+                                ->getSearchResultsUsing(fn ($search) => $getOptions($search));
+                        }
                     )
                     ->multiple(),
             ])

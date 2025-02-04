@@ -11,9 +11,10 @@ trait ClusterSectionResourceTrait
 
     /**
      * Get the cluster section.
-     * 
-     * @throws \Exception
+     *
      * @return class-string<ClusterSection>
+     *
+     * @throws \Exception
      */
     public static function getClusterSection(): string
     {
@@ -24,7 +25,7 @@ trait ClusterSectionResourceTrait
         }
 
         if (! in_array(ClusterSection::class, class_implements($cluster))) {
-            throw new \Exception("The cluster must implement the ClusterSection interface.");
+            throw new \Exception('The cluster must implement the ClusterSection interface.');
         }
 
         return $cluster;

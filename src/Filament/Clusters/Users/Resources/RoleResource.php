@@ -172,6 +172,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                                         ->collapse()
                                         ->all();
                                 }
+
                                 return $permissions;
                             })
                             ->collapse()
@@ -309,7 +310,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                             'default' => 2,
                             'md' => 2,
                             'lg' => 3,
-                        ])
+                        ]),
                 ]);
 
         }
@@ -340,7 +341,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                     TieredPermissionsRepeater::make($key)
                         ->hiddenLabel()
                         ->tieredModel($model)
-                        ->permissions($items)
+                        ->permissions($items),
                 ]);
         }
 
