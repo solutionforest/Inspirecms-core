@@ -23,7 +23,6 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property ?\Carbon\CarbonInterface $email_confirmed_at
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read bool $is_active
  */
 interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
@@ -39,8 +38,6 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
 
     /**
      * Check if the user account is verified.
-     *
-     * @return bool 
      */
     public function isAccountVerified(): bool;
 
