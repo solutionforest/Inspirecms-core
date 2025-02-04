@@ -19,6 +19,7 @@ return [
 
     'override_plugins' => [
         'field_group_models' => true,
+        'spatie_permission' => true,
     ],
 
     'auth' => [
@@ -151,8 +152,9 @@ return [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [
             \SolutionForest\InspireCms\Filament\Actions\ExportTemplateAction::class,
-
-            \SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction::class,
+        ],
+        'guard_widgets' => [
+            \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
         ],
     ],
 

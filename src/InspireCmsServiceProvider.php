@@ -24,6 +24,7 @@ use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Spatie\Permission\PermissionRegistrar;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
@@ -272,6 +273,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
             );
+        }
+        if (InspireCmsConfig::get('override_plugins.spatie_permission', false)) {
+            
+            config()->set('permission.enable_wildcard_permission', true);
+
         }
     }
 

@@ -8,6 +8,8 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters;
@@ -15,6 +17,8 @@ use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pag
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Forms\Components\TieredPermissionsRepeater;
+use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Contracts\Role as RoleContract;
 use Spatie\Permission\Models\Role;
@@ -46,27 +50,35 @@ class RoleResource extends Resource implements ClusterSectionResource
                             ->heading(__('inspirecms::resources/role.cluster_section_access.section.heading'))
                             ->description(__('inspirecms::resources/role.cluster_section_access.section.description'))
                             ->collapsible()
-                            ->statePath('cluster_section_access')
                             ->columns(2)
-                            ->schema(static::getFormComponentsForClusterSection()),
+                            ->schema([static::getFormComponentForClusterSection()]),
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::resources/role.action_permissions.section.heading'))
                             ->description(__('inspirecms::resources/role.action_permissions.section.description'))
                             ->collapsible()
-                            ->statePath('action_permissions')
-                            ->schema(static::getFormComponentsForActionPermissionsSection()),
+                            ->schema([static::getFormComponentForActionSection()]),
+                        Forms\Components\Section::make()
+                            ->heading(__('inspirecms::resources/role.widget_permissions.section.heading'))
+                            ->description(__('inspirecms::resources/role.widget_permissions.section.description'))
+                            ->collapsible()
+                            ->schema([static::getFormComponentForWidgetSection()]),
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::resources/role.page_permissions.section.heading'))
                             ->description(__('inspirecms::resources/role.page_permissions.section.description'))
                             ->collapsible()
-                            ->statePath('page_permissions')
-                            ->schema(static::getFormComponentsForPagePermissionsSection()),
+                            ->schema([static::getFormComponentForPageSection()]),
                         Forms\Components\Section::make()
                             ->heading(__('inspirecms::resources/role.resource_permissions.section.heading'))
                             ->description(__('inspirecms::resources/role.resource_permissions.section.description'))
                             ->collapsible()
                             ->statePath('resource_permissions')
                             ->schema(static::getFormComponentForResourcePermissionsSection()),
+                        Forms\Components\Section::make()
+                            ->heading(__('inspirecms::resources/role.tiered_permissions.section.heading'))
+                            ->description(__('inspirecms::resources/role.tiered_permissions.section.description'))
+                            ->collapsible()
+                            ->statePath('tiered_permissions')
+                            ->schema(static::getFormComponentForTieredPermissionsSection()),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
                         if (is_null($record)) {
@@ -77,35 +89,73 @@ class RoleResource extends Resource implements ClusterSectionResource
 
                         $permissionNames = $record->permissions->pluck('name');
                         $state = [];
+
+                        $resourcePermissions = PermissionManifest::getResourcePermissions();
+                        $tieredPermissions = PermissionManifest::getTieredPermissions();
+
                         $clusterSectionPermissions = PermissionManifest::getClusterSectionPermissions();
-                        $resourcePermissions = collect(PermissionManifest::getResourcePermissions())->collapse()->all();
+                        $wrapedResourcePermissions = collect($resourcePermissions)->collapse()->all();
                         $actionPermissions = PermissionManifest::getActionPermissions();
+                        $widgetPermissions = PermissionManifest::getWidgetPermissions();
                         $pagePermissions = PermissionManifest::getPagePermissions();
+                        $wrapedTieredPermissions = collect($tieredPermissions)->collapse()->keys()->all();
+
+                        $getModelPermissionKey = fn ($model) => Str::lower($model);
 
                         foreach ($permissionNames as $permissionName) {
 
+                            $permissionParts = explode('.', $permissionName);
+                            $modelPermissionKey = $getModelPermissionKey($permissionParts[0]);
+
+                            if (count($permissionParts) == 3 && in_array(implode('.', Arr::only($permissionParts, [0, 1])), $wrapedTieredPermissions)) {
+                                $state['tiered_permissions'][$modelPermissionKey][] = $permissionName;
+
+                                continue;
+                            }
+
                             if (array_key_exists($permissionName, $clusterSectionPermissions)) {
-                                $state['cluster_section_access'][$permissionName] = true;
+                                $state['cluster_section_access'][] = $permissionName;
 
                                 continue;
                             }
 
                             if (array_key_exists($permissionName, $actionPermissions)) {
-                                $state['action_permissions'][$permissionName] = true;
+                                $state['action_permissions'][] = $permissionName;
+
+                                continue;
+                            }
+
+                            if (array_key_exists($permissionName, $widgetPermissions)) {
+                                $state['widget_permissions'][] = $permissionName;
 
                                 continue;
                             }
 
                             if (array_key_exists($permissionName, $pagePermissions)) {
-                                $state['page_permissions'][$permissionName] = true;
+                                $state['page_permissions'][] = $permissionName;
 
                                 continue;
                             }
 
-                            if (array_key_exists($permissionName, $resourcePermissions)) {
-                                $state['resource_permissions'][$permissionName] = true;
+                            if (array_key_exists($permissionName, $wrapedResourcePermissions) && count($permissionParts) > 1) {
+                                $state['resource_permissions'][$modelPermissionKey][] = $permissionName;
 
                                 continue;
+                            }
+                        }
+
+                        // Ensure all keys are set for CheckboxList components
+                        foreach (['cluster_section_access', 'action_permissions', 'page_permissions', 'widget_permissions'] as $key) {
+                            if (! isset($state[$key])) {
+                                $state[$key] = [];
+                            }
+                        }
+                        foreach (['resource_permissions' => $resourcePermissions, 'tiered_permissions' => $tieredPermissions] as $group => $groupedModelPermissions) {
+                            foreach (array_map(fn ($n) => Str::lower($n), array_keys($groupedModelPermissions)) as $modelLabelForResource) {
+                                $modelPermissionKey = $getModelPermissionKey($modelLabelForResource);
+                                if (! isset($state[$group][$modelPermissionKey])) {
+                                    $state[$group][$modelPermissionKey] = [];
+                                }
                             }
                         }
 
@@ -113,7 +163,19 @@ class RoleResource extends Resource implements ClusterSectionResource
                     })
                     ->dehydrated(false) // handle on `saveRelationshipsUsing`
                     ->saveRelationshipsUsing(function (Role | RoleContract $record, array $state) {
-                        $permissionNames = collect($state)->collapse()->filter()->keys()->all();
+                        $permissionNames = collect($state)
+                            ->map(function ($permissions, $group) {
+                                if ($group == 'tiered_permissions') {
+                                    return PermissionHelper::ensureTieredPermissions($permissions);
+                                } elseif ($group == 'resource_permissions') {
+                                    return collect($permissions)
+                                        ->collapse()
+                                        ->all();
+                                }
+                                return $permissions;
+                            })
+                            ->collapse()
+                            ->all();
                         $record->syncPermissions($permissionNames);
                     }),
             ]);
@@ -208,19 +270,22 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->dehydrateStateUsing(fn () => InspireCmsConfig::getGuardName());
     }
 
-    /**
-     * @return array
-     */
-    protected static function getFormComponentsForClusterSection()
+    protected static function getFormComponentForClusterSection($name = 'cluster_section_access')
     {
-        return collect(PermissionManifest::getClusterSectionPermissions())
-            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-            ->all();
+        return Forms\Components\CheckboxList::make($name)
+            ->validationAttribute(__('inspirecms::resources/role.cluster_section_access.validation_attribute'))
+            ->hiddenLabel()
+            ->searchable()
+            ->options(PermissionManifest::getClusterSectionPermissions())
+            ->bulkToggleable()
+            ->gridDirection('row')
+            ->columnSpanFull()->columns([
+                'default' => 2,
+                'md' => 2,
+                'lg' => 4,
+            ]);
     }
 
-    /**
-     * @return array
-     */
     protected static function getFormComponentForResourcePermissionsSection()
     {
         $modelPermissions = PermissionManifest::getResourcePermissions();
@@ -229,18 +294,22 @@ class RoleResource extends Resource implements ClusterSectionResource
 
         foreach ($modelPermissions as $model => $resourcePermissionOptions) {
 
+            $key = Str::lower($model);
             $components[] = Forms\Components\Section::make()
-                ->heading($model)
-                ->schema(
-                    collect($resourcePermissionOptions)
-                        ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-                        ->all()
-                )
                 ->aside()
-                ->columnSpanFull()->columns([
-                    'default' => 2,
-                    'md' => 2,
-                    'lg' => 3,
+                ->heading($model)
+                ->schema([
+                    Forms\Components\CheckboxList::make($key)
+                        ->hiddenLabel()
+                        ->searchable()
+                        ->options($resourcePermissionOptions)
+                        ->bulkToggleable()
+                        ->gridDirection('row')
+                        ->columnSpanFull()->columns([
+                            'default' => 2,
+                            'md' => 2,
+                            'lg' => 3,
+                        ])
                 ]);
 
         }
@@ -251,21 +320,79 @@ class RoleResource extends Resource implements ClusterSectionResource
     /**
      * @return array
      */
-    protected static function getFormComponentsForActionPermissionsSection()
+    protected static function getFormComponentForTieredPermissionsSection()
     {
-        return collect(PermissionManifest::getActionPermissions())
-            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-            ->all();
+        $tieredPermissions = PermissionManifest::getTieredPermissions();
+        $components = [];
+
+        foreach ($tieredPermissions as $label => $items) {
+
+            $model = PermissionManifest::getModelForTieredPermission($label);
+            if (! $model) {
+                continue;
+            }
+
+            $key = Str::lower($label);
+            $components[] = Forms\Components\Section::make()
+                ->aside()
+                ->heading($label)
+                ->schema([
+                    TieredPermissionsRepeater::make($key)
+                        ->hiddenLabel()
+                        ->tieredModel($model)
+                        ->permissions($items)
+                ]);
+        }
+
+        return $components;
     }
 
-    /**
-     * @return array
-     */
-    protected static function getFormComponentsForPagePermissionsSection()
+    protected static function getFormComponentForActionSection($name = 'action_permissions')
     {
-        return collect(PermissionManifest::getPagePermissions())
-            ->map(fn ($label, $value) => Forms\Components\Toggle::make($value)->label($label))
-            ->all();
+        return Forms\Components\CheckboxList::make($name)
+            ->validationAttribute(__('inspirecms::resources/role.action_permissions.validation_attribute'))
+            ->hiddenLabel()
+            ->searchable()
+            ->options(PermissionManifest::getActionPermissions())
+            ->bulkToggleable()
+            ->gridDirection('row')
+            ->columnSpanFull()->columns([
+                'default' => 2,
+                'md' => 2,
+                'lg' => 4,
+            ]);
+    }
+
+    protected static function getFormComponentForWidgetSection($name = 'widget_permissions')
+    {
+        return Forms\Components\CheckboxList::make($name)
+            ->validationAttribute(__('inspirecms::resources/role.widget_permissions.validation_attribute'))
+            ->hiddenLabel()
+            ->searchable()
+            ->options(PermissionManifest::getWidgetPermissions())
+            ->bulkToggleable()
+            ->gridDirection('row')
+            ->columnSpanFull()->columns([
+                'default' => 2,
+                'md' => 2,
+                'lg' => 4,
+            ]);
+    }
+
+    protected static function getFormComponentForPageSection($name = 'page_permissions')
+    {
+        return Forms\Components\CheckboxList::make($name)
+            ->validationAttribute(__('inspirecms::resources/role.page_permissions.validation_attribute'))
+            ->hiddenLabel()
+            ->searchable()
+            ->options(PermissionManifest::getPagePermissions())
+            ->bulkToggleable()
+            ->gridDirection('row')
+            ->columnSpanFull()->columns([
+                'default' => 2,
+                'md' => 2,
+                'lg' => 4,
+            ]);
     }
     // endregion Form field(s)/component(s)
 }

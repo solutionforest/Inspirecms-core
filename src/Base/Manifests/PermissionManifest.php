@@ -6,7 +6,12 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
+use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class PermissionManifest implements PermissionManifestInterface
 {
@@ -48,21 +53,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getResourcePermissions(): array
     {
-        return collect(InspireCmsConfig::get('filament.resources'))
-            ->where(
-                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
-                in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource::class, class_implements($fqcn))
-            )
-            ->map(fn (string $fqcn) => [
-                'model' => $fqcn::getModel(),
-                'permissionPrefixes' => $fqcn::getPermissionPrefixes(),
-            ])
-            ->merge([
-                [
-                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset::class),
-                    'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
-                ],
-            ])
+        return collect($this->getResourceData())
             ->map(function (array $data) {
 
                 $model = $data['model'];
@@ -104,10 +95,19 @@ class PermissionManifest implements PermissionManifestInterface
             });
     }
 
+    public function getWidgetPermissions(): array
+    {
+        return collect(InspireCmsConfig::get('permissions.guard_widgets'))
+            ->where(fn ($fqcn) => in_array(GuardWidget::class, class_implements($fqcn)))
+            ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
+            ->sortKeys()
+            ->toArray();
+    }
+
     public function getActionPermissions(): array
     {
         return collect(InspireCmsConfig::get('permissions.guard_actions'))
-            ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($fqcn)))
+            ->where(fn ($fqcn) => in_array(GuardAction::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()
             ->toArray();
@@ -116,10 +116,38 @@ class PermissionManifest implements PermissionManifestInterface
     public function getPagePermissions(): array
     {
         return collect(InspireCmsConfig::get('filament.pages'))
-            ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardPage::class, class_implements($fqcn)))
+            ->where(fn ($fqcn) => in_array(GuardPage::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()
             ->toArray();
+    }
+
+    public function getTieredPermissions(): array
+    {
+        return collect($this->getResourcePermissions())
+            ->only(['Content'])
+            // filter out "any" permissions
+            ->map(fn ($permissions) => collect($permissions)
+                ->filter(fn ($label, $name) => $this->isAbilityGrantedWithTier(Str::afterLast($name, '.')))
+                ->all()
+            )
+            ->all();
+    }
+
+    public function getModelForTieredPermission(string $label): ?string
+    {
+        return match (Str::of($label)->trim()->lower()->toString()) {
+            'content' => InspireCmsConfig::getContentModelClass(),
+            default => null,
+        };
+    }
+
+    public function isTieredPermissionGranted(string $model): bool
+    {
+        return in_array(Str::of($model)->trim()->lower()->toString(), [
+            // Only support content for now
+            'content',
+        ]);
     }
 
     /**
@@ -141,7 +169,12 @@ class PermissionManifest implements PermissionManifestInterface
             ->toString();
     }
 
-    public function authorizeModel(string $ability, string $model, bool $checkExist = true): ?bool
+    public function getTieredPermissionNameForModel(string $ability, string $model, $id): string
+    {
+        return implode('.', [$this->getPermissionNameForModel($ability, $model), $id]);
+    }
+
+    public function authorizeModel(string $ability, string $model, bool $checkExist = true, $id = null): ?bool
     {
         $modelShortName = class_basename($model);
 
@@ -160,18 +193,49 @@ class PermissionManifest implements PermissionManifestInterface
             }
         }
 
+        $user = auth()->user();
+        if (! $user) {
+            return null;
+        }
+
+        // Check tiered permission if needed
+        if ($id != null 
+            && $this->isTieredPermissionGranted($modelShortName)
+            && $this->isAbilityGrantedWithTier($ability)
+            && ($tieredPermission = $this->getTieredPermissionNameForModel($ability, $model, $id))
+            && $tieredPermission != null
+            && $user->can($tieredPermission) == true
+        ) {
+            return true;
+        }
+
         $permissionName = $this->getPermissionNameForModel(Str::snake($ability), $model);
 
-        return auth()->user()?->can($permissionName);
+        return $user->can($permissionName);
     }
 
     public function authorizeAction(string $actionFqcn): ?bool
     {
-        if (! class_exists($actionFqcn) || ! in_array(\SolutionForest\InspireCms\Filament\Contracts\GuardAction::class, class_implements($actionFqcn))) {
+        if (! class_exists($actionFqcn) || ! in_array(GuardAction::class, class_implements($actionFqcn))) {
             return null;
         }
 
         $permissionName = $actionFqcn::getPermissionName();
+
+        if (blank($permissionName)) {
+            return null;
+        }
+
+        return auth()->user()?->can($permissionName);
+    }
+
+    public function authorizeWidget(string $widgetFqcn): ?bool
+    {
+        if (! class_exists($widgetFqcn) || ! in_array(GuardWidget::class, class_implements($widgetFqcn))) {
+            return null;
+        }
+
+        $permissionName = $widgetFqcn::getPermissionName();
 
         if (blank($permissionName)) {
             return null;
@@ -187,10 +251,36 @@ class PermissionManifest implements PermissionManifestInterface
             ->merge(collect($this->getResourcePermissions())->collapse()->keys())
             ->merge(collect($this->getActionPermissions())->keys())
             ->merge(collect($this->getPagePermissions())->keys())
+            ->merge(collect($this->getWidgetPermissions())->keys())
             ->map(fn ($permission) => str($permission)->lower()->toString())
             ->values()
             ->unique()
             ->toArray();
+    }
+
+    protected function getResourceData(): array
+    {
+        return collect(InspireCmsConfig::get('filament.resources'))
+            ->where(
+                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
+                in_array(ClusterSectionResource::class, class_implements($fqcn))
+            )
+            ->map(fn (string $fqcn) => [
+                'model' => $fqcn::getModel(),
+                'permissionPrefixes' => $fqcn::getPermissionPrefixes(),
+            ])
+            ->merge([
+                [
+                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(MediaAsset::class),
+                    'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
+                ],
+            ])
+            ->toArray();
+    }
+
+    protected function isAbilityGrantedWithTier($ability): bool
+    {
+        return ! Str::endsWith($ability, '_any') && $ability != 'create';
     }
     // endregion Helper methods
 }

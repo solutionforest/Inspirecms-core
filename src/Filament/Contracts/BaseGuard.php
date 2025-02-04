@@ -2,6 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Contracts;
 
-interface GuardPage extends AuthGuardInterface
+interface AuthGuardInterface
 {
 }

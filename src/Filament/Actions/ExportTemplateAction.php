@@ -18,7 +18,7 @@ class ExportTemplateAction extends Action implements GuardAction
 
     public static function getPermissionName(): string
     {
-        return 'action_export_templates';
+        return 'actions_export_templates';
     }
 
     public static function getPermissionDisplayName(): string

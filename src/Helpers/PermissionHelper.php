@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Helpers;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -61,5 +62,21 @@ class PermissionHelper
         return PermissionManifest::permissions()->map(
             fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, $guardName)
         );
+    }
+
+    public static function ensureTieredPermissions(array $permissions)
+    {
+        $permissions = collect($permissions)
+            ->flatten()
+            ->values()
+            ->filter(fn ($permission) => count(explode('.', $permission)) === 3)
+            ->values();
+        
+        $guardName = InspireCmsConfig::getGuardName();
+        $permissionClass = InspireCmsConfig::getPermissionModelClass();
+        
+        return collect($permissions)->map(
+            fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, $guardName)
+        )->pluck('name')->all();
     }
 }

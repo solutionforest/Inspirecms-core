@@ -2,9 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Contracts;
 
-interface GuardAction
+interface GuardAction extends AuthGuardInterface
 {
-    public static function getPermissionName(): string;
-
-    public static function getPermissionDisplayName(): string;
 }

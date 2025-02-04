@@ -15,7 +15,7 @@ class ContentStatusPolicy extends ContentPolicy
      */
     public function publish($user, $content = null)
     {
-        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+        return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 
     /**
@@ -25,6 +25,6 @@ class ContentStatusPolicy extends ContentPolicy
      */
     public function unpublish($user, $content)
     {
-        return $user?->can(static::guessPermissionName(__FUNCTION__, Content::class));
+        return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 }
