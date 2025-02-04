@@ -17,7 +17,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function whereKey($key): static
     {
@@ -25,7 +25,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function whereKeyNot($key): static
     {
@@ -33,7 +33,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function whereIn($key, $values): static
     {
@@ -41,7 +41,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function whereNotIn($key, $values): static
     {
@@ -49,7 +49,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function whereNot($key, $value): static
     {
@@ -57,7 +57,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter | Closure $key
+     * @param  string | BaseFilter | Closure  $key
      */
     public function where($key, $operator = null, $value = null): static
     {
@@ -74,6 +74,7 @@ trait HasContentTreeFilter
     {
         return array_filter(array_map(function ($filter) {
             [$key, $operator, $value] = $filter;
+
             return $key instanceof Closure ? $this->evaluate($key, [
                 'filter' => $filter,
             ]) : $filter;

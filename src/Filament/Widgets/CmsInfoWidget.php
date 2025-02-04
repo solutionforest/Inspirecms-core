@@ -9,13 +9,13 @@ use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
 class CmsInfoWidget extends Widget implements GuardWidget
 {
     use GuardWidgetTrait;
-    
+
     protected static string $view = 'inspirecms::filament.widgets.cms-info';
 
     protected int | string | array $columnSpan = 'full';
 
     protected static bool $isLazy = false;
-    
+
     public static function getPermissionName(): string
     {
         return 'widgets_view-cms-info';

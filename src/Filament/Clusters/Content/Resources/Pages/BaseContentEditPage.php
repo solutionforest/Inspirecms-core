@@ -55,14 +55,14 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                     Actions\ForceDeleteAction::make(),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action)  => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
                 Actions\ActionGroup::make([
                     UpdateRouteAction::make(),
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action)  => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }

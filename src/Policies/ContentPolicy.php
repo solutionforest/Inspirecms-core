@@ -119,6 +119,7 @@ class ContentPolicy extends BasePolicy
         if (PermissionManifest::isTieredPermissionGranted(class_basename(Content::class))) {
             return PermissionManifest::getTieredPermissionNameForModel($ability, Content::class, $id);
         }
+
         return null;
     }
 

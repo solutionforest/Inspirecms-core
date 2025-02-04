@@ -17,7 +17,7 @@ trait GuardWidgetTrait
 
         return parent::canView();
     }
-    
+
     public static function getPermissionName(): string
     {
         return Str::of(static::class)->classBasename()->snake()->prepend('widgets_')->toString();

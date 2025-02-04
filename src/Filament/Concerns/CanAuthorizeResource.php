@@ -20,7 +20,7 @@ trait CanAuthorizeResource
         if (in_array(ClusterSectionResource::class, class_implements(static::class))) {
             $cluster = static::getClusterSection();
             $permissionName = ! blank($cluster) ? $cluster::getAccessRightPermissionName() : null;
-            
+
             if (! blank($permissionName)) {
 
                 $user = Filament::auth()->user();
@@ -40,7 +40,7 @@ trait CanAuthorizeResource
             $model = $record ? get_class($record) : static::getModel();
 
             $id = $record != null ? $record->getKey() : null;
-            
+
             $result = PermissionManifest::authorizeModel($action, $model, false, $id);
 
             if ($result !== null) {

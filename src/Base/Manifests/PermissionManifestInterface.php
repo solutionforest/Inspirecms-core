@@ -20,17 +20,17 @@ interface PermissionManifestInterface
     public function getResourcePermissions(): array;
 
     public function getWidgetPermissions(): array;
-    
+
     public function getActionPermissions(): array;
 
     public function getTieredPermissions(): array;
-    
+
     public function isTieredPermissionGranted(string $model): bool;
 
     /**
      * Retrieve the model associated with a tiered permission based on the provided label.
      *
-     * @param string $label The label of the tiered permission.
+     * @param  string  $label  The label of the tiered permission.
      * @return string|null The model associated with the tiered permission, or null if not found.
      */
     public function getModelForTieredPermission(string $label): ?string;
@@ -47,9 +47,9 @@ interface PermissionManifestInterface
     /**
      * Get the tiered permission name for a specific model.
      *
-     * @param string $ability The ability or action for which the permission is being checked.
-     * @param string $model The name of the model for which the permission is being checked.
-     * @param string|int $id The identifier of the specific model instance.
+     * @param  string  $ability  The ability or action for which the permission is being checked.
+     * @param  string  $model  The name of the model for which the permission is being checked.
+     * @param  string|int  $id  The identifier of the specific model instance.
      * @return string The tiered permission name for the specified model and ability.
      */
     public function getTieredPermissionNameForModel(string $ability, string $model, $id): string;

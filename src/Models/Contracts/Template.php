@@ -12,7 +12,6 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property null | array<string,string> $content
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
  * @property-read \Illuminate\Database\Eloquent\Collection<Model & DocumentType> $documentTypes
  * @property-read \Illuminate\Database\Eloquent\Collection<Model & Content> $content

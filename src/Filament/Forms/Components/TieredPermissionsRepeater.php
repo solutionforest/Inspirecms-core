@@ -96,7 +96,7 @@ class TieredPermissionsRepeater extends Field
                 $record->getKey() => $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey()),
             ])
             ->toArray() ?? [];
-        
+
         $results = [];
 
         foreach ($groupedPermissions as $key => $permissionNames) {
@@ -105,7 +105,7 @@ class TieredPermissionsRepeater extends Field
                 'title' => $recordTitles[$key] ?? $key,
                 'permissions' => collect($permissionNames)
                     ->mapWithKeys(fn ($name) => [
-                        $name => $this->getPermissionDisplayName($name)
+                        $name => $this->getPermissionDisplayName($name),
                     ])->toArray(),
             ];
         }
@@ -123,7 +123,7 @@ class TieredPermissionsRepeater extends Field
                 'class' => 'w-full',
             ])
             ->slideOver()->modalWidth('5xl')
-            ->steps(fn (TieredPermissionsRepeater $component) =>  static::getSteps($component->getPermissions(), 'create'))
+            ->steps(fn (TieredPermissionsRepeater $component) => static::getSteps($component->getPermissions(), 'create'))
             ->action(function (array $data, TieredPermissionsRepeater $component) {
                 $permissions = $data['permissions'] ?? [];
                 $id = $data['target'][0] ?? null;
@@ -148,7 +148,7 @@ class TieredPermissionsRepeater extends Field
                 if (is_null($itemKey)) {
                     return [];
                 }
-                
+
                 $targetPermissions = collect($component->getState())
                     ->filter(fn ($name) => Str::endsWith($name, '.' . $itemKey))
                     ->map(fn ($name) => Str::beforeLast($name, '.'))
@@ -161,7 +161,7 @@ class TieredPermissionsRepeater extends Field
             })
             ->skippableSteps()
             ->startOnStep(2)
-            ->steps(fn (TieredPermissionsRepeater $component) =>  static::getSteps($component->getPermissions(), 'edit'))
+            ->steps(fn (TieredPermissionsRepeater $component) => static::getSteps($component->getPermissions(), 'edit'))
             ->action(function (array $arguments, array $data, TieredPermissionsRepeater $component) {
                 $permissions = $data['permissions'] ?? [];
                 $id = $arguments['itemKey'] ?? null;
@@ -186,7 +186,7 @@ class TieredPermissionsRepeater extends Field
                 $newState = collect($current)
                     ->filter(fn ($name) => ! Str::endsWith($name, '.' . $id))
                     ->toArray();
-                
+
                 $component->state($newState);
             });
     }
@@ -213,6 +213,7 @@ class TieredPermissionsRepeater extends Field
     protected function getPermissionDisplayName(string $permission): string
     {
         $checkKey = Str::beforeLast($permission, '.');
+
         return $this->getPermissions()[$checkKey] ?? $permission;
     }
 
@@ -245,7 +246,7 @@ class TieredPermissionsRepeater extends Field
     protected static function mergeStateWithPermissions(TieredPermissionsRepeater $component, array $permissions)
     {
         $state = $component->getState() ?? [];
-                
+
         foreach ($permissions as $permission) {
             if (! in_array($permission, $state)) {
                 $state[] = $permission;

@@ -127,9 +127,10 @@ class PermissionManifest implements PermissionManifestInterface
         return collect($this->getResourcePermissions())
             ->only(['Content'])
             // filter out "any" permissions
-            ->map(fn ($permissions) => collect($permissions)
-                ->filter(fn ($label, $name) => $this->isAbilityGrantedWithTier(Str::afterLast($name, '.')))
-                ->all()
+            ->map(
+                fn ($permissions) => collect($permissions)
+                    ->filter(fn ($label, $name) => $this->isAbilityGrantedWithTier(Str::afterLast($name, '.')))
+                    ->all()
             )
             ->all();
     }
@@ -199,7 +200,7 @@ class PermissionManifest implements PermissionManifestInterface
         }
 
         // Check tiered permission if needed
-        if ($id != null 
+        if ($id != null
             && $this->isTieredPermissionGranted($modelShortName)
             && $this->isAbilityGrantedWithTier($ability)
             && ($tieredPermission = $this->getTieredPermissionNameForModel($ability, $model, $id))

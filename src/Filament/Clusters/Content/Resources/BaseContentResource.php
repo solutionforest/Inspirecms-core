@@ -78,6 +78,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
         if (! blank($permissionName)) {
             return filament()->auth()->user()?->can($permissionName) ?? false;
         }
+
         return false;
     }
 

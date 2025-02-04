@@ -2,6 +2,4 @@
 
 namespace SolutionForest\InspireCms\Filament\Contracts;
 
-interface AuthGuardInterface
-{
-}
+interface AuthGuardInterface {}
