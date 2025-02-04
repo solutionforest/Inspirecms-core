@@ -5,13 +5,13 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Navigat
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
 use Livewire\Attributes\On;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ListNavigationTree extends BaseManagePage
+class ListNavigationTree extends BaseListPage
 {
     use NavigationListPageTrait;
     use Translatable;
@@ -25,7 +25,7 @@ class ListNavigationTree extends BaseManagePage
     {
         return [
             Actions\LocaleSwitcher::make(),
-            Actions\CreateAction::make()->slideOver()->after(fn () => $this->redirectIntended($this->getUrl())),
+            Actions\CreateAction::make(),
         ];
     }
 

@@ -12,10 +12,30 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property null | array<string,string> $content
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<Model> $templateable
+ * 
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & DocumentType> $documentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & Content> $content
  */
 interface Template extends HasDtoModel
 {
+    /**
+     * Define a one-to-many relationship.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function templateable();
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function documentTypes();
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     */
+    public function content();
+
     /**
      * Initialize the template with the given theme.
      *
@@ -40,13 +60,6 @@ interface Template extends HasDtoModel
      * @return void
      */
     public function updateContent($content, ?string $theme = null);
-
-    /**
-     * Define a one-to-many relationship.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function templateable();
 
     /**
      * @return TDto The DTO representation of the model.

@@ -264,4 +264,54 @@ class UIHelper
             'badgeClass' => \Illuminate\Support\Arr::toCssClasses($attibutes['badge']['class'] ?? []),
         ]));
     }
+
+    public static function generateCircularImage(string $src, string $alt, array $containerAttributes = [], array $imgAttributes = []): HtmlString
+    {
+        $filterAndWrap = fn (array $data) => collect($data)->flatten()->filter()->values()->all();
+
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="{{ $ctnClasses }}" style="{{ $ctnStyles }}">
+                <x-filament::avatar
+                    src="{{$src}}"
+                    alt="{{$alt}}"
+                    class="{{ $imgClasses }}"
+                    style="{{ $imgStyles }}"
+                />
+            </div>
+        blade, [
+            'src' => $src,
+            'alt' => $alt,
+            'ctnClasses' => Arr::toCssClasses($filterAndWrap([
+                'bg-gray-200 rounded-full overflow-hidden',
+                $containerAttributes['class'] ?? null,
+            ])),
+            'ctnStyles' => Arr::toCssStyles($filterAndWrap([
+                $containerAttributes['style'] ?? null,
+            ])),
+            'imgClasses' => Arr::toCssClasses($filterAndWrap([
+                'rounded-full object-cover',
+                $imgAttributes['class'] ?? null,
+            ])),
+            'imgStyles' => Arr::toCssStyles($filterAndWrap([
+                $imgAttributes['style'] ?? null,
+            ])),
+        ]));
+    }
+
+    public static function generateTextWithDescription(string $text, string $description): HtmlString
+    {
+        return new HtmlString(Blade::render(<<<'blade'
+            <div class="flex flex-col">
+                <span>
+                    {{$text}}
+                </span>
+                <span class="text-xs text-gray-500">
+                    {{$description}}
+                </span>
+            </div>
+        blade, [
+            'text' => $text,
+            'description' => $description,
+        ]));
+    }
 }

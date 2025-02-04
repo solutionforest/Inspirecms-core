@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Models\Polymorphic;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Models\Contracts\Templateable as TemplateableContract;
 use SolutionForest\InspireCms\Support\Base\Models\BaseMorphPivotModel;
@@ -22,8 +21,8 @@ class Templateable extends BaseMorphPivotModel implements TemplateableContract
         return $this->morphTo();
     }
 
-    public function scopeIsDefault(Builder $query): void
+    public function scopeIsDefault($query)
     {
-        $query->where('is_default');
+        return $query->where('is_default');
     }
 }

@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -55,11 +56,15 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
                     Actions\DeleteAction::make(),
                     Actions\RestoreAction::make(),
                     Actions\ForceDeleteAction::make(),
-                ])->dropdown(false),
+                ])
+                    ->dropdown(false)
+                    ->hidden(fn (Actions\ActionGroup $action)  => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
                 Actions\ActionGroup::make([
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
-                ])->dropdown(false),
+                ])
+                    ->dropdown(false)
+                    ->hidden(fn (Actions\ActionGroup $action)  => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }

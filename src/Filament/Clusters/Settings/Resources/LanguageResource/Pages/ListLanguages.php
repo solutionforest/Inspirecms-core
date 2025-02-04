@@ -12,7 +12,7 @@ class ListLanguages extends BaseListPage
     public function getActions(): array
     {
         return [
-            Actions\CreateAction::make()->slideOver(),
+            Actions\CreateAction::make(),
         ];
     }
 

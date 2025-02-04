@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Concerns;
 
+use Closure;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BaseFilter;
 
 trait HasContentTreeFilter
@@ -16,7 +17,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function whereKey($key): static
     {
@@ -24,7 +25,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function whereKeyNot($key): static
     {
@@ -32,7 +33,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function whereIn($key, $values): static
     {
@@ -40,7 +41,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function whereNotIn($key, $values): static
     {
@@ -48,7 +49,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function whereNot($key, $value): static
     {
@@ -56,7 +57,7 @@ trait HasContentTreeFilter
     }
 
     /**
-     * @param string | BaseFilter $key
+     * @param string | BaseFilter | Closure $key
      */
     public function where($key, $operator = null, $value = null): static
     {
@@ -71,6 +72,11 @@ trait HasContentTreeFilter
 
     public function getFilters(): array
     {
-        return $this->filters;
+        return array_filter(array_map(function ($filter) {
+            [$key, $operator, $value] = $filter;
+            return $key instanceof Closure ? $this->evaluate($key, [
+                'filter' => $filter,
+            ]) : $filter;
+        }, $this->filters));
     }
 }
