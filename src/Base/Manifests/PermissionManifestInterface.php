@@ -73,5 +73,12 @@ interface PermissionManifestInterface
      */
     public function authorizeAction(string $actionFqcn): ?bool;
 
+    /**
+     * Authorizes the given widget based on its fully qualified class name (FQCN).
+     *
+     * @param string $widgetFqcn The fully qualified class name of the widget to authorize.
+     * @return bool|null Returns true if the widget is authorized, false if not authorized, 
+     *                   or null if the authorization status cannot be determined.
+     */
     public function authorizeWidget(string $widgetFqcn): ?bool;
 }
