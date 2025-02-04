@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
@@ -15,6 +16,7 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\MoveContentAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\UpdateContentItemRouteAction;
+use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -267,38 +269,47 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
     {
-        foreach ($items as $parentKey => &$nodes) {
-            foreach ($nodes as &$node) {
-                if (! isset($node['pageType'])) {
-                    continue;
-                }
+        $outputArray = [];
+        foreach ($items as $parentKey => $nodes) {
 
-                $itemUrlParams = array_merge([
-                    'record' => $node['key'],
-                    'activeRelationManager' => 0,
-                ], $this->redirectUrlParameters, [
-                    'locale' => $this->activeLocale,
-                ]);
+            $outputNodes = collect($nodes)
+                // Add link to the node
+                ->map(function (array $data) {
+                    if (!isset($data['pageType'])) {
+                        return $data;
+                    }
 
-                $node['link'] = FilamentResourceHelper::attemptToGetUrl(
-                    static::getResource(),
-                    $node['pageType'],
-                    $itemUrlParams,
-                    false
-                );
-                unset($node['pageType']);
-            }
+                    $itemUrlParams = array_merge([
+                        'record' => $data['key'],
+                        'activeRelationManager' => 0,
+                    ], $this->redirectUrlParameters, [
+                        'locale' => $this->activeLocale,
+                    ]);
+    
+                    $data['link'] = FilamentResourceHelper::attemptToGetUrl(
+                        static::getResource(),
+                        $data['pageType'],
+                        $itemUrlParams,
+                        false
+                    );
+                    unset($data['pageType']);
+
+                    return $data;
+                })
+                ->all();
+                
+            $outputArray[$parentKey] = $outputNodes;
         }
 
-        return $items;
+        return $outputArray;
     }
 
     public function getGroupedNodeItems()
     {
-        $items = parent::getGroupedNodeItems();
-
-        return array_merge([
-            [
+        return collect(parent::getGroupedNodeItems())
+            // Filter out base on user permission
+            ->filter(fn (array $data) => ContentHelper::havePermissionToViewNode($data['key']))
+            ->prepend([
                 'key' => 'root',
                 'parentKey' => -1,
                 'label' => __('inspirecms::inspirecms.root'),
@@ -306,8 +317,8 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                 'depth' => -1,
                 'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                 'documentTypeKey' => null,
-            ],
-        ], $items);
+            ])
+            ->all();
     }
 
     public function render()

@@ -5,7 +5,9 @@ namespace SolutionForest\InspireCms\Helpers;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentHelper
@@ -47,5 +49,43 @@ class ContentHelper
         }
 
         return true;
+    }
+
+    public static function havePermissionToViewNode($id, $user = null)
+    {
+        $user ??= filament()->auth()->user();
+        if (! $user || ($user != null && ! is_inspirecms_user($user))) {
+            return false;
+        }
+
+        if ($user->isSuperAdmin()) {
+            return true;
+        } 
+
+        /** @var class-string<Model | Content> */
+        $model = InspireCmsConfig::getContentModelClass();
+        $rootId = app($model)->getRootLevelParentId();
+        if ($id == $rootId) {
+            return true;
+        }
+
+        $coreCheck = PermissionManifest::authorizeModel(
+            ability: 'view',
+            model: $model,
+        );
+        if ($coreCheck === true) {
+            return true;
+        }
+
+        $tieredCheck = PermissionManifest::authorizeModel(
+            ability: 'view',
+            model: $model,
+            id: $id,
+        );
+        if ($tieredCheck === true) {
+            return true;
+        }
+
+        return false;
     }
 }
