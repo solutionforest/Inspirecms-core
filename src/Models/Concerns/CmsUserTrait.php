@@ -18,6 +18,11 @@ trait CmsUserTrait
 
     public function canAccessPanel(Panel $panel): bool
     {
+        return $this->isAccountVerified();
+    }
+
+    public function isAccountVerified(): bool
+    {
         if ($this->isSuperAdmin()) {
             return true;
         }

@@ -22,7 +22,9 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property ?\Carbon\CarbonInterface $last_logged_in_at
  * @property ?\Carbon\CarbonInterface $email_confirmed_at
  * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\Carbon $updated_at
+ * @property ?\Carbon\CarbonInterface $updated_at
+ * 
+ * @property-read bool $is_active
  */
 interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
 {
@@ -34,6 +36,13 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     public function userActivity();
     
     public function getFilamentFallbackAvatarUrl(): ?string;
+
+    /**
+     * Check if the user account is verified.
+     *
+     * @return bool 
+     */
+    public function isAccountVerified(): bool;
 
     /**
      * Determine if the user is a super admin.
