@@ -276,6 +276,7 @@ class TemplatesRelationManager extends RelationManager
             if (view()->exists('components.' . $layoutName)) {
                 $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
                     'content' => $dummyDto,
+                    'locale' => $dummyDto->getLocale(),
                     'layoutName' => $layoutName,
                     'slot' => '',
                 ]);
