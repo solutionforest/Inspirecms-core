@@ -16,15 +16,16 @@ trait EditorBasicTrait
 
     protected static function getEditorBasicTraitComponent($name)
     {
+        $defaultDisk = config('filesystems.default', 'public');
         return match ($name) {
             'toolbarButtons' => Forms\Components\CheckboxList::make('toolbarButtons')
                 ->options(static::getAllAvailableToolbarButtons())
                 ->bulkToggleable()
                 ->columns(3),
 
-            'fileAttachmentsDisk' => Forms\Components\TextInput::make('fileAttachmentsDisk')->label('Disk'),
+            'fileAttachmentsDisk' => Forms\Components\TextInput::make('fileAttachmentsDisk')->label('Disk')->default($defaultDisk),
             'fileAttachmentsDirectory' => Forms\Components\TextInput::make('fileAttachmentsDirectory')->label('Directory'),
-            'fileAttachmentsVisibility' => Forms\Components\TextInput::make('fileAttachmentsVisibility')->label('Visibility'),
+            'fileAttachmentsVisibility' => Forms\Components\TextInput::make('fileAttachmentsVisibility')->label('Visibility')->default(config("filesystems.disks.{$defaultDisk}.visibility")),
             default => null,
         };
     }
