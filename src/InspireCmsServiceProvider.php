@@ -12,6 +12,7 @@ use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
@@ -21,6 +22,7 @@ use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
+use SolutionForest\InspireCms\View\Components\Template;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -116,6 +118,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         Facades\ModelManifest::registerMorphMap();
         Facades\ModelManifest::registerPolices();
+
+        $this->registerComponentAndDirectives();
 
         $this->registerEvents();
 
@@ -502,5 +506,61 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 $file->getRealPath() => $fullPath,
             ], 'inspirecms-sample-assets');
         }
+    }
+
+    protected function registerComponentAndDirectives(): void
+    {
+        Blade::component('cms-template', Template::class);
+
+        Blade::directive('propertyGroup', function ($expression) {
+            $explodedValues = array_map('trim', explode(',', $expression));
+            if (count($explodedValues) > 1) {
+                [$group, $dtoVar] = $explodedValues;
+                $propertyGroupsVar = $explodedValues[2] ?? null;
+            } else {
+                $group = $expression;
+            }
+            $dtoVar ??= '$content';
+            $propertyGroupsVar ??= '$propertyGroups';
+            return "<?php {$propertyGroupsVar}[{$group}] = {$dtoVar}->getPropertyGroup({$group}); ?>";
+        });
+
+        $propertyExpressionHandler = function ($expression) {
+            $explodedValues = array_map('trim', explode(',', $expression));
+            if (count($explodedValues) > 2) {
+                [$group, $property, $propertyGroupsVar] = $explodedValues;
+            } else {
+                [$group, $property] = $explodedValues;
+                $propertyGroupsVar = '$propertyGroups';
+            }
+
+            return [$group, $property, $propertyGroupsVar];
+        };
+        
+        Blade::directive('property', function ($expression) use ($propertyExpressionHandler) {
+            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
+            
+            return "<?php 
+                \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
+                echo is_array(\$propertyValue) ? \\Illuminate\\Support\\Arr::first(\$propertyValue) : \$propertyValue;
+            ?>";
+        });
+        Blade::directive('propertyArray', function ($expression) use ($propertyExpressionHandler) {
+            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
+
+            return "<?php \$propertyArray = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue(); ?>";
+        });
+
+        Blade::directive('propertyNotEmpty', function ($expression) use ($propertyExpressionHandler) {
+            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
+            
+            return "<?php 
+                \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
+                if (\$propertyValue != null && !empty(\$propertyValue)):
+            ?>";
+        });
+        Blade::directive('endpropertyNotEmpty', function () {
+            return "<?php endif; ?>";
+        });
     }
 }

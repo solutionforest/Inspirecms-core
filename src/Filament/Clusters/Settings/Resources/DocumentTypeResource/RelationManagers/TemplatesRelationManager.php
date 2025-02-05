@@ -289,6 +289,7 @@ class TemplatesRelationManager extends RelationManager
         return Html::injectPreviewModalStyle(
             Blade::render($htmlContent, [
                 'content' => $dummyDto,
+                'locale' => $dummyDto->getLocale(),
             ])
         );
     }

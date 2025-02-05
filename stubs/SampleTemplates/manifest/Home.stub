@@ -1,35 +1,26 @@
-@php
-    use Illuminate\Support\Arr;
-    $locale ??= $content->getLocale();
-    $hero_banner = $content->getPropertyGroup('hero_banner');
-    $hero_banner_brief = $hero_banner?->getPropertyData('brief')?->getValue();
-    if (is_array($hero_banner_brief)) {
-        $hero_banner_brief = Arr::first($hero_banner_brief);
-    }
-    $hero_banner_image_slider = $hero_banner?->getPropertyData('image_slider')?->getValue();
-    $profile = $content->getPropertyGroup('profile');
-    $profile_brief = $profile?->getPropertyData('brief')?->getValue();
-    if (is_array($profile_brief)) {
-        $profile_brief = Arr::first($profile_brief);
-    }
-    $profile_description = $profile?->getPropertyData('description')?->getValue();
 
+@php
     $blogs = inspirecms_content()->getUnderRealPath('blogs', 3, ['documentType.templates', 'templates'])->toDto($locale);
 @endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+
+@propertyGroup('hero_banner')
+@propertyGroup('profile')
+
+<x-cms-template :content="$content" type="page">
     <!-- Hero Section -->
     <section class="hero-section">
         <div class="container">
             <h1>
-                {!! $hero_banner_brief !!}
+                @property('hero_banner', 'brief')
             </h1>
         </div>
     </section>
-
+    
     <!-- Swiper Slider -->
     <div class="swiper">
         <div class="swiper-wrapper">
-            @foreach ($hero_banner_image_slider ?? [] as $item)
+            @propertyArray('hero_banner', 'image_slider')
+            @foreach ($propertyArray ?? [] as $item)
                 <div class="swiper-slide">
                     <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
                     <p>{{ $item->description }}</p>
@@ -46,11 +37,11 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6 intro-title">
-                    <p>{{ $profile_brief }}</p>
+                    <p>@property('profile', 'brief')</p>
                     <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
                 </div>
                 <div class="col-md-6 intro-text">
-                    {{ $profile_description }}
+                    @property('profile', 'description')
                 </div>
             </div>
         </div>
@@ -97,4 +88,4 @@
             });
         </script>
     @endsection
-</x-dynamic-component>
+</x-cms-template>

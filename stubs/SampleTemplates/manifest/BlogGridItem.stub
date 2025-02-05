@@ -1,27 +1,24 @@
-@php
-    $locale ??= $content->getLocale();
-    
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    
-    $blog_content = $content->getPropertyGroup('blog_content');
-    $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue())->implode(', ');
-    $blog_content_post_date = $blog_content?->getPropertyData('post_date')->getValue()?->format('d M, Y');
-@endphp
+@propertyGroup('page_banner')
+@propertyGroup('blog_content')
+
 <a href="{{ url("/$locale/blog/$content->slug") }}" class="text-decoration-none">
     <article class="blog-post">
-        @if ($page_banner_image)
-            <img src="{{ $page_banner_image?->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="blog-image">
+        @propertyArray('page_banner', 'image')
+        @if (($media = collect($propertyArray)->first()))
+            <img src="{{ $media?->getUrl() }}" alt="{{ $media->caption }}" class="blog-image">
         @endif
         <div class="post-content">
             <div class="post-meta">
-                <span class="category">{{ $blog_content_categories }}</span>
-                <span class="date">{{ $blog_content_post_date }}</span>
+                @propertyArray('blog_content', 'categories')
+                <span class="category">{{ implode(', ', $propertyArray ?? []) }}</span>
+                <span class="date">
+                    @propertyNotEmpty('blog_content', 'post_date')
+                        {{ $propertyValue->format('d M, Y') }}
+                    @endpropertyNotEmpty
+                </span>
             </div>
-            <h3>{{ $page_banner_title }}</h3>
-            <p>{{ $page_banner_description }}</p>
+            <h3>@property('page_banner', 'title')</h3>
+            <p>@property('page_banner', 'description')</p>
         </div>
     </article>
 </a>
