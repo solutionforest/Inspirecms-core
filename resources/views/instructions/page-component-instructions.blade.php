@@ -1,5 +1,5 @@
 @php
-$plaintext = '<x-dynamic-component :component="\\SolutionForest\\InspireCms\\Helpers\\ThemeHelper::getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">
+$plaintext = '<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">
     Your content here
 </x-dynamic-component>';
 $instructions = str($plaintext)
