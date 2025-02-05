@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'content' => 'Content',
     'children' => 'Children',
+    'content' => 'Content',
     'created_at' => 'Created at',
     'dashboard' => 'Dashboard',
     'default' => 'Default',
@@ -28,6 +28,7 @@ return [
     'template' => 'Template',
     'total_xxx_have_used' => 'Total :name has been used',
     'total_xxx_selected' => 'Total :count selected',
+    'translatable' => 'Translatable',
     'trash_bin' => 'Trash Bin',
     'tree' => 'Tree',
     'url' => 'URL',
