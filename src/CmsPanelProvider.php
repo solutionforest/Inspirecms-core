@@ -27,6 +27,7 @@ use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
+use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -217,13 +218,7 @@ class CmsPanelProvider extends PanelProvider
                     return $tmp;
                 });
 
-                Blade::component('filament-panels::topbar', \SolutionForest\InspireCms\View\Components\TopBar::class);
-                Blade::component('filament-panels::sidebar', \SolutionForest\InspireCms\View\Components\Sidebar::class);
-                Blade::component('filament-panels::sidebar.group', \SolutionForest\InspireCms\View\Components\SidebarGroup::class);
-
-                Blade::component('filament-panels::user-menu', \SolutionForest\InspireCms\View\Components\UserMenu::class);
-
-                Blade::component('filament-panels::resources.relation-managers', \SolutionForest\InspireCms\View\Components\Resources\RelationManagers::class);
+                $this->replaceViewComponents();
 
                 \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
                     $action->extraAttributes([
@@ -325,5 +320,17 @@ class CmsPanelProvider extends PanelProvider
                 Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
             });
         };
+    }
+
+    protected function replaceViewComponents()
+    {
+        Blade::component('filament-panels::topbar', ViewComponents\Filament\TopBar::class);
+        Blade::component('filament-panels::sidebar', ViewComponents\Filament\Sidebar::class);
+        Blade::component('filament-panels::sidebar.group', ViewComponents\Filament\SidebarGroup::class);
+
+        Blade::component('filament-panels::user-menu', ViewComponents\Filament\UserMenu::class);
+
+        Blade::component('filament-panels::resources.relation-managers', ViewComponents\Filament\Resources\RelationManagers::class);
+
     }
 }

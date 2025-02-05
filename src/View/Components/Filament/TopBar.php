@@ -1,10 +1,10 @@
 <?php
 
-namespace SolutionForest\InspireCms\View\Components;
+namespace SolutionForest\InspireCms\View\Components\Filament;
 
 use Illuminate\View\Component;
 
-class Sidebar extends Component
+class TopBar extends Component
 {
     public function __construct(
         public $navigation
@@ -12,7 +12,7 @@ class Sidebar extends Component
 
     public function render()
     {
-        return view('inspirecms::components.sidebar.index', [
+        return view('inspirecms::components.topbar.index', [
             'navigation' => $this->navigation,
         ]);
     }

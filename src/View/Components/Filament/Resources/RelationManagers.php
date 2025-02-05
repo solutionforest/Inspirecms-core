@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\View\Components\Resources;
+namespace SolutionForest\InspireCms\View\Components\Filament\Resources;
 
 use Illuminate\View\Component;
 
