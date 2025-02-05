@@ -208,7 +208,7 @@ return new class extends BaseMigration
 
             $table->index('content_id');
             $table->index('type');
-            $table->index('is_active');
+            $table->index('category');
         });
 
         Schema::create($tableNames['import'], function (Blueprint $table) {
