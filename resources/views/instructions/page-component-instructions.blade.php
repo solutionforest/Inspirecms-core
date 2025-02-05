@@ -1,7 +1,7 @@
 @php
-$plaintext = '<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">
+$plaintext = '<x-cms-template :content="$content" type="page">
     Your content here
-</x-dynamic-component>';
+</x-cms-template>';
 $instructions = str($plaintext)
     ->explode("\r\n")
     ->map(fn ($line) => str($line)
