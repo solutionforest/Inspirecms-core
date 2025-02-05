@@ -522,6 +522,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             }
             $dtoVar ??= '$content';
             $propertyGroupsVar ??= '$propertyGroups';
+
             return "<?php {$propertyGroupsVar}[{$group}] = {$dtoVar}->getPropertyGroup({$group}); ?>";
         });
 
@@ -536,10 +537,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             return [$group, $property, $propertyGroupsVar];
         };
-        
+
         Blade::directive('property', function ($expression) use ($propertyExpressionHandler) {
             [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
-            
+
             return "<?php 
                 \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
                 echo is_array(\$propertyValue) ? \\Illuminate\\Support\\Arr::first(\$propertyValue) : \$propertyValue;
@@ -553,14 +554,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         Blade::directive('propertyNotEmpty', function ($expression) use ($propertyExpressionHandler) {
             [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
-            
+
             return "<?php 
                 \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
                 if (\$propertyValue != null && !empty(\$propertyValue)):
             ?>";
         });
         Blade::directive('endpropertyNotEmpty', function () {
-            return "<?php endif; ?>";
+            return '<?php endif; ?>';
         });
     }
 }

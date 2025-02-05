@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\View\Components;
 
-
 use Illuminate\View\Component;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 
@@ -22,7 +21,8 @@ class Template extends Component
         if ($this->content instanceof ContentDto) {
             $locale = $this->content->getLocale();
         }
-        return view('components.'.$component, [
+
+        return view('components.' . $component, [
             'content' => $this->content,
             'locale' => $locale ?? app()->getLocale(),
         ]);
