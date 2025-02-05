@@ -2,18 +2,30 @@
 
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ClusterSectionResourceTrait
 {
     use CanAuthorizeResource;
 
+    /**
+     * Get the cluster section.
+     *
+     * @return class-string<ClusterSection>
+     *
+     * @throws \Exception
+     */
     public static function getClusterSection(): string
     {
         $cluster = static::getCluster();
 
         if (blank($cluster)) {
             throw new \Exception('The section cluster is not defined. Please ensure that the cluster configuration is set correctly.');
+        }
+
+        if (! in_array(ClusterSection::class, class_implements($cluster))) {
+            throw new \Exception('The cluster must implement the ClusterSection interface.');
         }
 
         return $cluster;

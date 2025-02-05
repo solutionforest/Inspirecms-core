@@ -137,7 +137,7 @@ class FieldGroupsRelationManager extends RelationManager
                 Tables\Actions\AttachAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectSearchColumns(['title', 'name'])
-                    ->recordTitle(fn ($record) => UIHelper::generateTextWithBadge($record->title, $record->name)->toHtml())
+                    ->recordTitle(fn ($record) => UIHelper::generateTextWithDescription($record->title, $record->name)->toHtml())
                     ->recordSelect(
                         fn (Select $select) => $select
                             ->searchable()
@@ -198,7 +198,6 @@ class FieldGroupsRelationManager extends RelationManager
         $action
             ->multiple()
             ->slideOver()
-            ->modalWidth('lg')
             ->after(function (array $data) {
                 $this->dispatch('refreshAlerts');
             });

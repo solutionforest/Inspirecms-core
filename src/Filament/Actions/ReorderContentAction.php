@@ -3,13 +3,10 @@
 namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
-use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\ReorderContentActionTrait;
-use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 
-class ReorderContentAction extends Action implements GuardAction
+class ReorderContentAction extends Action
 {
-    use CanCustomizeAuthorizedGuardActionProcess;
     use ReorderContentActionTrait;
 
     protected function setUp(): void

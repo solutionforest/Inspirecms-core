@@ -62,4 +62,20 @@ class PermissionHelper
             fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, $guardName)
         );
     }
+
+    public static function ensureTieredPermissions(array $permissions)
+    {
+        $permissions = collect($permissions)
+            ->flatten()
+            ->values()
+            ->filter(fn ($permission) => count(explode('.', $permission)) === 3)
+            ->values();
+
+        $guardName = InspireCmsConfig::getGuardName();
+        $permissionClass = InspireCmsConfig::getPermissionModelClass();
+
+        return collect($permissions)->map(
+            fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, $guardName)
+        )->pluck('name')->all();
+    }
 }

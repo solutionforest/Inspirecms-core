@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 use function Filament\Support\is_app_url;
@@ -52,12 +53,16 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                     Actions\DeleteAction::make(),
                     Actions\RestoreAction::make(),
                     Actions\ForceDeleteAction::make(),
-                ])->dropdown(false),
+                ])
+                    ->dropdown(false)
+                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
                 Actions\ActionGroup::make([
                     UpdateRouteAction::make(),
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
-                ])->dropdown(false),
+                ])
+                    ->dropdown(false)
+                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }

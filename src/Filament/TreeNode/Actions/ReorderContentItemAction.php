@@ -2,14 +2,11 @@
 
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CanCustomizeAuthorizedGuardActionProcess;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\ReorderContentActionTrait;
-use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 
-class ReorderContentItemAction extends Action implements GuardAction
+class ReorderContentItemAction extends Action
 {
-    use CanCustomizeAuthorizedGuardActionProcess;
     use ReorderContentActionTrait;
 
     public static function getDefaultName(): ?string

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'content' => '內容',
     'children' => '子項目',
+    'content' => '內容',
     'created_at' => '創建於',
     'dashboard' => '儀表板',
     'default' => '默認',
@@ -28,6 +28,7 @@ return [
     'template' => '模板',
     'total_xxx_have_used' => '總共使用了 :name',
     'total_xxx_selected' => '總共選擇了 :count',
+    'translatable' => '可翻譯',
     'trash_bin' => '垃圾桶',
     'tree' => '樹',
     'url' => 'URL',

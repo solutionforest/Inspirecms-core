@@ -12,20 +12,20 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\HtmlString;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserResource extends Resource implements ClusterSectionResource
 {
     use ClusterSectionResourceTrait {
-        ClusterSectionResourceTrait::getPermissionPrefixes as traitGetPermissionPrefixes;
+        ClusterSectionResourceTrait::getPermissionPrefixes as protected traitGetPermissionPrefixes;
     }
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
@@ -118,10 +118,7 @@ class UserResource extends Resource implements ClusterSectionResource
 
     public static function getGlobalSearchResultTitle(Model $record): string | Htmlable
     {
-        return new HtmlString(<<<Html
-            <p>{$record->email}</p>
-            <p>{$record->name}</p>
-        Html);
+        return UIHelper::generateTextWithDescription($record->name, $record->email);
     }
     // endregion Global search
 

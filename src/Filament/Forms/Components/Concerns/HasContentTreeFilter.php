@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Concerns;
 
+use Closure;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BaseFilter;
+
 trait HasContentTreeFilter
 {
     public array $filters = [];
@@ -13,31 +16,49 @@ trait HasContentTreeFilter
         return $this;
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function whereKey($key): static
     {
         return $this->where('id', '==', $key);
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function whereKeyNot($key): static
     {
         return $this->whereNot('id', $key);
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function whereIn($key, $values): static
     {
         return $this->where($key, 'in', $values);
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function whereNotIn($key, $values): static
     {
         return $this->where($key, 'not in', $values);
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function whereNot($key, $value): static
     {
         return $this->where($key, 'not', $value);
     }
 
+    /**
+     * @param  string | BaseFilter | Closure  $key
+     */
     public function where($key, $operator = null, $value = null): static
     {
         return $this->filter([
@@ -51,6 +72,12 @@ trait HasContentTreeFilter
 
     public function getFilters(): array
     {
-        return $this->filters;
+        return array_filter(array_map(function ($filter) {
+            [$key, $operator, $value] = $filter;
+
+            return $key instanceof Closure ? $this->evaluate($key, [
+                'filter' => $filter,
+            ]) : $filter;
+        }, $this->filters));
     }
 }

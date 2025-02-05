@@ -68,7 +68,7 @@ class ImportDefaultData extends Command
             $guardName = InspireCmsConfig::getGuardName();
             $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
 
-            $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::startsWith($permissionName, $action) && in_array(Str::afterLast($permissionName, '_'), $models);
+            $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);
             $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
 
             /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
@@ -76,7 +76,14 @@ class ImportDefaultData extends Command
             $reviewer->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => (Str::startsWith($permission->name, 'view') && ! (Str::endsWith($permission->name, 'user') || Str::endsWith($permission->name, 'role'))) ||
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => (
+                            Str::startsWith($permission->name, 'view') &&
+                            ! (
+                                Str::endsWith($permission->name, 'user') ||
+                                Str::endsWith($permission->name, 'role')
+                            )
+                        ) ||
+                        str_starts_with($permission->name, 'widgets') ||
                         $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
                     )
             );
@@ -85,7 +92,9 @@ class ImportDefaultData extends Command
             $writer->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content']) ||
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                        $modelPermissionFilter($permission->name, 'view', ['content']) ||
+                        $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
                         $modelPermissionFilter($permission->name, 'update', ['content']) ||
                         $modelPermissionFilter($permission->name, 'create', ['content']) ||
                         $clusterPermissionFilter($permission->name, ['content'])
@@ -96,7 +105,9 @@ class ImportDefaultData extends Command
             $editor->givePermissionTo(
                 $allPermissions
                     ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
+                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                        $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
+                        $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
                         $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
                         $clusterPermissionFilter($permission->name, ['content', 'media'])

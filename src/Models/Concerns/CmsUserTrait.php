@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
+use Filament\AvatarProviders\Contracts\AvatarProvider;
 use Filament\Panel;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +17,11 @@ trait CmsUserTrait
     use Notifiable;
 
     public function canAccessPanel(Panel $panel): bool
+    {
+        return $this->isAccountVerified();
+    }
+
+    public function isAccountVerified(): bool
     {
         if ($this->isSuperAdmin()) {
             return true;
@@ -38,6 +44,18 @@ trait CmsUserTrait
     {
         if (filled($this->avatar)) {
             return Storage::disk(InspireCmsConfig::get('avatar.driver'))->url($this->avatar);
+        }
+
+        return null;
+    }
+
+    public function getFilamentFallbackAvatarUrl(): ?string
+    {
+        if (($providerClass = filament()->getCurrentPanel()?->getDefaultAvatarProvider())
+            && class_exists($providerClass)
+            && is_a($providerClass, AvatarProvider::class, true)
+        ) {
+            return app($providerClass)->get($this);
         }
 
         return null;

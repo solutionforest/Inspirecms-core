@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationRes
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter as ContentPickerFilters;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 
@@ -41,17 +42,26 @@ class NavigationResource extends Resource implements ClusterSectionResource
     public static function form(Form $form): Form
     {
         return $form
+            ->columns(1)
             ->schema([
-                static::getCategoryFormComponent(),
-                Forms\Components\Grid::make(2)
+                Forms\Components\Section::make()
+                    ->columns(2)
                     ->schema([
-                        static::getTitleFormComponent(),
-                        static::getIsActiveFormComponent(),
+                        static::getCategoryFormComponent(),
+                        Forms\Components\Grid::make(2)
+                            ->schema([
+                                static::getTitleFormComponent(),
+                                static::getIsActiveFormComponent(),
+                            ]),
                     ]),
-                static::getTypeFormComponent(),
-                static::getContentFormComponent(),
-                static::getUrlFormComponent(),
-                static::getTargetFormComponent(),
+                Forms\Components\Section::make()
+                    ->columns(2)
+                    ->schema([
+                        static::getTypeFormComponent(),
+                        static::getContentFormComponent(),
+                        static::getUrlFormComponent(),
+                        static::getTargetFormComponent(),
+                    ]),
             ]);
     }
 
@@ -109,6 +119,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return [
             'index' => Pages\ListNavigationTree::route('/tree'),
             'table' => Pages\ListNavigationTable::route('/table'),
+            'create' => Pages\CreateNavigation::route('/create'),
+            'edit' => Pages\EditNavigation::route('/{record}/edit'),
+            'view' => Pages\ViewNavigation::route('/{record}'),
         ];
     }
 
@@ -205,7 +218,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     null;
             })
             // display deleted content
-            ->modifyPaginationOptionsUsing(fn ($query, null | Model | Navigation $record) => $isRelatedRecordDeleted($record) ? $query->withTrashed() : $query)
+            ->where(fn (null | Model | Navigation $record) => $isRelatedRecordDeleted($record) ? new ContentPickerFilters\BuilderFilter('withTrashed') : null)
             // disable if content is deleted
             ->disabled(fn (null | Model | Navigation $record) => $isRelatedRecordDeleted($record));
     }

@@ -16,7 +16,7 @@ class ListDocumentTypes extends BaseListPage
     {
         return [
             ExportTemplateAction::make(),
-            Actions\CreateAction::make()->slideOver(),
+            Actions\CreateAction::make(),
         ];
     }
 

@@ -5,6 +5,7 @@
     'modelable' => null,
     'max' => null,
     'min' => null,
+    'isDisabled' => false,
 ])
 
 <div role="tree" 
@@ -32,6 +33,7 @@
                 :description="$item['description'] ?? null"
                 :children="$item['children'] ?? []"
                 :collapsable="$collapsable"
+                :is-disabled="$isDisabled"
             />
         @endforeach
     </div>

@@ -20,6 +20,16 @@ class Template extends BaseModel implements TemplateContract
         return $this->hasMany(InspireCmsConfig::getTemplateableModelClass(), 'template_id');
     }
 
+    public function documentTypes()
+    {
+        return $this->morphedByMany(InspireCmsConfig::getDocumentTypeModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
+    }
+
+    public function content()
+    {
+        return $this->morphedByMany(InspireCmsConfig::getContentModelClass(), 'templateable', InspireCmsConfig::getTemplateableTableName());
+    }
+
     /** {@inheritDoc} */
     public function initializeTemplate(?string $theme = null)
     {

@@ -28,6 +28,8 @@ class TemplatesRelationManager extends RelationManager
 
     protected static string $relationship = 'templates';
 
+    protected static ?string $inverseRelationship = 'documentTypes';
+
     /**
      * @var array An array to store preview editor data.
      */
@@ -105,7 +107,9 @@ class TemplatesRelationManager extends RelationManager
                     ])
                     ->disabled(),
                 Tables\Actions\CreateAction::make(),
-                Tables\Actions\AttachAction::make()->preloadRecordSelect(),
+                Tables\Actions\AttachAction::make()
+                    ->slideOver()
+                    ->preloadRecordSelect(),
             ])
             ->actions([
                 Tables\Actions\Action::make('set_as_default')

@@ -3,22 +3,20 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Pages;
 
 use Filament\Actions;
-use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
+use Filament\Resources\Pages\ViewRecord\Concerns\Translatable;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ListNavigationTable extends BaseManagePage
+class ViewNavigation extends BaseViewPage
 {
-    use NavigationListPageTrait;
     use Translatable;
 
-    protected function getHeaderActions(): array
+    public function getActions(): array
     {
         return [
             Actions\LocaleSwitcher::make(),
-            Actions\CreateAction::make(),
+            Actions\EditAction::make()->iconButton(),
         ];
     }
 

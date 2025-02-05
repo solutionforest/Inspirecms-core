@@ -18,4 +18,12 @@ interface Templateable
      * @return MorphTo The templateable entity.
      */
     public function templateable(): MorphTo;
+
+    /**
+     * Scope a query to only include default templates.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeIsDefault($query);
 }

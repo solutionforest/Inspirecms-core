@@ -172,6 +172,9 @@ class TreeNavigation extends BaseWidget
     // endregion Tree Configuration
 
     // region Helpers
+    /**
+     * @return class-string<resource>
+     */
     protected function getResource(): string
     {
         return $this->resource;
@@ -209,14 +212,13 @@ class TreeNavigation extends BaseWidget
     {
         parent::configureEditAction($action);
 
-        $action->form(fn ($form) => $this->getResource()::form($form));
+        $resource = $this->getResource();
 
-        $action->slideOver();
-
-        $action->after(function () {
-            // refresh other tree widget
-            $this->dispatch('refreshAllTree');
-        });
+        if ($resource::hasPage('edit')) {
+            $action->url(fn (Model $record): string => $resource::getUrl('edit', ['record' => $record]));
+        } else {
+            $action->hidden();
+        }
 
         return $action;
     }
@@ -225,9 +227,13 @@ class TreeNavigation extends BaseWidget
     {
         parent::configureViewAction($action);
 
-        $action->form(fn ($form) => $this->getResource()::form($form));
+        $resource = $this->getResource();
 
-        $action->slideOver();
+        if ($resource::hasPage('view')) {
+            $action->url(fn (Model $record): string => $resource::getUrl('view', ['record' => $record]));
+        } else {
+            $action->hidden();
+        }
 
         return $action;
     }

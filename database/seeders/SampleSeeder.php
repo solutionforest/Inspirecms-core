@@ -149,6 +149,10 @@ class SampleSeeder extends Seeder
     protected function addSampleFields(): void
     {
         $toolbarButtonsForRichEditor = array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons());
+        $extraConfigForRichEditor = [
+            'fileAttachmentsDisk' => 'public',
+            'fileAttachmentsVisibility' => 'public',
+        ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'social_media'),
             'fields' => [
@@ -163,22 +167,22 @@ class SampleSeeder extends Seeder
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'hero_banner'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['types' => ['image'], 'multiple' => true]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'profile'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
-                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
+                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'about_section'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
-                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
+                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['types' => ['image'], 'max' => 1]),
                 new ImportDataEntities\Field(slug: 'resume', type: 'mediaPicker', config: ['types' => ['pdf'], 'max' => 1]),
             ],
@@ -196,14 +200,14 @@ class SampleSeeder extends Seeder
             'fields' => [
                 new ImportDataEntities\Field(slug: 'categories', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'tags', type: 'tags', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'post_date', type: 'dateTimePicker', config: ['hasTime' => true, 'hasDate' => true, 'displayFormat' => 'Y-m-d H:i:s']),
             ],
         ];
         $items[] = [
             'data' => new ImportDataEntities\FieldGroup(slug: 'contact'),
             'fields' => [
-                new ImportDataEntities\Field(slug: 'address', type: 'richEditor', config: ['translatable' => false, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'address', type: 'richEditor', config: ['translatable' => false, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'phone', type: 'text'),
                 new ImportDataEntities\Field(slug: 'email', type: 'text'),
                 new ImportDataEntities\Field(slug: 'map', type: 'text'),
@@ -213,12 +217,12 @@ class SampleSeeder extends Seeder
             'data' => new ImportDataEntities\FieldGroup(slug: 'case_content'),
             'fields' => [
                 new ImportDataEntities\Field(slug: 'category', type: 'text', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'overview', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'overview', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'year', type: 'dateTimePicker', config: ['hasTime' => false, 'hasDate' => true, 'displayFormat' => 'Y']),
                 new ImportDataEntities\Field(slug: 'platforms', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'roles', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'deliverables', type: 'url', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor]),
+                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
             ],
         ];
         $items[] = [

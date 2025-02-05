@@ -273,6 +273,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
+        if (InspireCmsConfig::get('override_plugins.spatie_permission', false)) {
+
+            config()->set('permission.enable_wildcard_permission', true);
+
+        }
     }
 
     protected function registerAuthGuard(): void

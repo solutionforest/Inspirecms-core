@@ -146,26 +146,27 @@ class FieldTypeHelper
      */
     public static function getFieldConfigFormSchemaForFieldType($typeName)
     {
-        if (blank($typeName)) {
-            return [];
+        if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName))) {
+            // hidden "translatable" field for the field type
+            if ($fieldTypeConfig instanceof Repeater) {
+                return $fieldTypeConfig->getFormSchema();
+            }
+
+            // display "translatable" field for the field type
+            return $fieldTypeConfig->getEnhancedFormSchema();
         }
 
-        /**
-         * @var ?\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig
-         */
-        $fieldTypeConfig = FilamentFieldGroup::getFieldTypeConfig($typeName);
+        return [];
+    }
 
-        if (! $fieldTypeConfig) {
-            return [];
+    public static function getRepeaterFieldConfigSchemaForFieldType($typeName)
+    {
+        if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName)) && ! $fieldTypeConfig instanceof Repeater) {
+            // display "translatable" field for the field type
+            return $fieldTypeConfig->getEnhancedFormSchema();
         }
 
-        // hidden "translatable" field for the field type
-        if ($fieldTypeConfig instanceof Repeater) {
-            return $fieldTypeConfig->getFormSchema();
-        }
-
-        // display "translatable" field for the field type
-        return $fieldTypeConfig->getEnhancedFormSchema();
+        return [];
     }
 
     public static function getFieldTypeConfig(string $typeName, array $config = []): ?FieldTypeConfig
@@ -176,5 +177,18 @@ class FieldTypeHelper
     public static function getFieldTypeOptions(?string $search = null, array $excepts = []): array
     {
         return FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions($search, $excepts);
+    }
+
+    public static function getFieldTypeIcon(string $typeName): null | string | array
+    {
+        $config = static::getFieldTypeConfig($typeName)?->getConfigNames() ?? [];
+
+        $icons = collect($config)->pluck('icon')->filter()->unique()->values();
+
+        if ($icons->count() > 1) {
+            return $icons->toArray();
+        } else {
+            return $icons->first();
+        }
     }
 }

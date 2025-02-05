@@ -49,7 +49,6 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     public static function getBasePermissionPrefixes(): array
     {
         return [
-            'view_any',
             'view',
             'create',
             'update',
@@ -61,12 +60,31 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'force_delete_any',
             'publish',
             'unpublish',
+            'reorder_children',
+            'view_history',
+            'set_as_default',
         ];
     }
 
     public static function getTranslatableLocales(): array
     {
         return array_keys(InspireCms::getAllAvailableLanguages());
+    }
+
+    public static function canAccess(): bool
+    {
+        $cluster = static::getClusterSection();
+        $permissionName = ! blank($cluster) ? $cluster::getAccessRightPermissionName() : null;
+        if (! blank($permissionName)) {
+            return filament()->auth()->user()?->can($permissionName) ?? false;
+        }
+
+        return false;
+    }
+
+    public static function canViewAny(): bool
+    {
+        return true;
     }
 
     public static function form(Form $form): Form

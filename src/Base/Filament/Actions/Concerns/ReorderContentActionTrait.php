@@ -22,16 +22,6 @@ trait ReorderContentActionTrait
         return 'reorder_content_children';
     }
 
-    public static function getPermissionName(): string
-    {
-        return 'action_reorder_content_children';
-    }
-
-    public static function getPermissionDisplayName(): string
-    {
-        return __('inspirecms::resources/content.actions.reorder_children.permission_display_name');
-    }
-
     public function nodeParentId(Closure | string | int $nodeParentId): static
     {
         $this->nodeParentId = $nodeParentId;
@@ -62,6 +52,10 @@ trait ReorderContentActionTrait
         $nestableTreeModel = InspireCmsConfig::getNestableTreeModelClass();
 
         $this->slideOver();
+
+        $this->authorize('reorderChildren');
+
+        $this->model($contentModel);
 
         $this->fillForm(fn ($action) => [
             'contents' => $contentModel::query()
