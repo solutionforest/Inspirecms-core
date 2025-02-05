@@ -94,6 +94,11 @@ class DefaultSegmentProvider implements SegmentProviderInterface
         $slug = $routeParameters['slug'] ?? null;
         $locale = $routeParameters['locale'] ?? null;
 
+        // e.g. /case-studies/case-study-1
+        if ($locale && ! in_array($locale, $this->getAvailabledLocales())) {
+            $slug = str($slug)->explode('/')->filter()->prepend($locale)->implode('/');
+        }
+
         if ($locale && ! $slug) {
             if ($locale === $this->getLocaleFromDefaultRoute($route)) {
                 $slug = null;
