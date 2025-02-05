@@ -1,7 +1,11 @@
 @php
-    $blog = isset($slug)
-        ? inspirecms_content()->findByRealPath("blogs/{$slug}")?->toDto($locale)
-        : null;
+    if (isset($isPeekPreviewModal)) {
+        $blog = inspirecms_content()->getUnderRealPath("blogs", 1)?->first()?->toDto($locale);
+    } else {
+        $blog = isset($slug)
+            ? inspirecms_content()->findByRealPath("blogs/{$slug}")?->toDto($locale)
+            : null;
+    }
     if (is_null($blog)) {
         abort(404);
     }

@@ -279,6 +279,7 @@ class TemplatesRelationManager extends RelationManager
                     'locale' => $dummyDto->getLocale(),
                     'layoutName' => $layoutName,
                     'slot' => '',
+                    'isPeekPreviewModal' => true,
                 ]);
 
                 return Html::injectPreviewModalStyle(
@@ -291,6 +292,7 @@ class TemplatesRelationManager extends RelationManager
             Blade::render($htmlContent, [
                 'content' => $dummyDto,
                 'locale' => $dummyDto->getLocale(),
+                'isPeekPreviewModal' => true,
             ])
         );
     }
