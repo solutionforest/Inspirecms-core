@@ -27,16 +27,15 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
         $getItemKeyForRepeaterAction = fn (array $arguments): string => $arguments['item'];
 
-        $getItemStateForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): array => 
-            $component->getRawItemState($getItemKeyForRepeaterAction($arguments));
+        $getItemStateForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): array => $component->getRawItemState($getItemKeyForRepeaterAction($arguments));
 
-        $getFieldForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): ?string => 
-            $getItemStateForRepeaterAction($arguments, $component)['field'] ?? null;
+        $getFieldForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): ?string => $getItemStateForRepeaterAction($arguments, $component)['field'] ?? null;
 
         $getFieldIconForRepeaterAction = function (array $arguments, Forms\Components\Repeater $component) use ($getFieldForRepeaterAction): ?string {
             if (($field = $getFieldForRepeaterAction($arguments, $component)) && ($icons = FieldTypeHelper::getFieldTypeIcon($field))) {
                 return is_array($icons) ? $icons[0] : $icons;
             }
+
             return null;
         };
 
@@ -84,8 +83,9 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->modalHeading(fn (array $arguments, Forms\Components\Repeater $component) => str_replace([':field'], [$getFieldForRepeaterAction($arguments, $component) ?? 'Field'], 'Edit :field configuration'))
                         ->modalIcon(fn (array $arguments, Forms\Components\Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
                         ->disabled(fn (array $arguments, Forms\Components\Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
-                        ->form(fn (Forms\Form $form, array $arguments, Forms\Components\Repeater $component) => $form
-                            ->schema(FieldTypeHelper::getRepeaterFieldConfigSchemaForFieldType($getFieldForRepeaterAction($arguments, $component)))
+                        ->form(
+                            fn (Forms\Form $form, array $arguments, Forms\Components\Repeater $component) => $form
+                                ->schema(FieldTypeHelper::getRepeaterFieldConfigSchemaForFieldType($getFieldForRepeaterAction($arguments, $component)))
                         )
                         ->fillForm(function (array $arguments, Forms\Components\Repeater $component) use ($getItemStateForRepeaterAction) {
                             $existingFieldConfig = $getItemStateForRepeaterAction($arguments, $component)['fieldConfig'];
@@ -100,13 +100,13 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                             $itemState = $component->getRawItemState($itemKey);
 
                             $itemState['fieldConfig'] = $data;
-                            
+
                             $component->getChildComponentContainer($itemKey)->fill($itemState);
-            
+
                             $component->collapsed(false, shouldMakeComponentCollapsible: false);
-            
+
                             $component->callAfterStateUpdated();
-                        })
+                        }),
                 ]),
         ];
     }

@@ -17,6 +17,7 @@ trait EditorBasicTrait
     protected static function getEditorBasicTraitComponent($name)
     {
         $defaultDisk = config('filesystems.default', 'public');
+
         return match ($name) {
             'toolbarButtons' => Forms\Components\CheckboxList::make('toolbarButtons')
                 ->options(static::getAllAvailableToolbarButtons())

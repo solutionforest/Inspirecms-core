@@ -151,11 +151,11 @@ class FieldTypeHelper
             if ($fieldTypeConfig instanceof Repeater) {
                 return $fieldTypeConfig->getFormSchema();
             }
-    
+
             // display "translatable" field for the field type
             return $fieldTypeConfig->getEnhancedFormSchema();
         }
-        
+
         return [];
     }
 
@@ -164,8 +164,8 @@ class FieldTypeHelper
         if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName)) && ! $fieldTypeConfig instanceof Repeater) {
             // display "translatable" field for the field type
             return $fieldTypeConfig->getEnhancedFormSchema();
-        } 
-        
+        }
+
         return [];
     }
 
@@ -179,7 +179,7 @@ class FieldTypeHelper
         return FilamentFieldGroup::getFieldTypeGroupedKeyValueWithIconOptions($search, $excepts);
     }
 
-    public static function getFieldTypeIcon(string $typeName): null|string|array
+    public static function getFieldTypeIcon(string $typeName): null | string | array
     {
         $config = static::getFieldTypeConfig($typeName)?->getConfigNames() ?? [];
 
