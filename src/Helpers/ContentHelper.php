@@ -60,7 +60,7 @@ class ContentHelper
 
         if ($user->isSuperAdmin()) {
             return true;
-        } 
+        }
 
         /** @var class-string<Model | Content> */
         $model = InspireCmsConfig::getContentModelClass();

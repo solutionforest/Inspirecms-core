@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
@@ -275,7 +274,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             $outputNodes = collect($nodes)
                 // Add link to the node
                 ->map(function (array $data) {
-                    if (!isset($data['pageType'])) {
+                    if (! isset($data['pageType'])) {
                         return $data;
                     }
 
@@ -285,7 +284,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     ], $this->redirectUrlParameters, [
                         'locale' => $this->activeLocale,
                     ]);
-    
+
                     $data['link'] = FilamentResourceHelper::attemptToGetUrl(
                         static::getResource(),
                         $data['pageType'],
@@ -297,7 +296,7 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                     return $data;
                 })
                 ->all();
-                
+
             $outputArray[$parentKey] = $outputNodes;
         }
 
