@@ -184,6 +184,7 @@ class ContentDto extends BaseTranslatableModelDto
         if ($target && ($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
             $target->setFallbackLocale($locale);
         }
+
         return $target;
     }
 
