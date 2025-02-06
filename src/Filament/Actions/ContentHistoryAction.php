@@ -5,11 +5,14 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\WithPagination;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentHistoryAction extends Action
 {
+    use WithPagination;
+
     public static function getDefaultName(): ?string
     {
         return 'contentHistory';
@@ -18,6 +21,9 @@ class ContentHistoryAction extends Action
     protected function setUp(): void
     {
         parent::setUp();
+
+        $this->setPerPage(5);
+        $this->setPageOptions([5, 10, 20, 100, 'all']);
 
         $this->label(fn () => __('inspirecms::resources/content.actions.content_history.label'));
 
@@ -29,12 +35,26 @@ class ContentHistoryAction extends Action
 
         $this->slideOver();
 
-        $this->modalContent(
-            fn (Model | Content $record, $action) => view('inspirecms::filament.actions.content-history', [
-                'record' => $record,
+        $this->modalContent(function (Model | Content $record, ContentHistoryAction $action, array $arguments) {
+            
+            $pageName = 'page';
+            $page = $action->getPage($pageName) ?? 1;
+            $perPage = $action->getPerPage();
+
+            return view('inspirecms::filament.actions.content-history', [
+                'page' => $page,
+                'perPage' => $perPage,
+                'paginator' => $record->contentVersions()
+                    ->with(['publishLog', 'author'])
+                    ->orderByDesc('created_at')
+                    ->paginate(
+                        perPage: $perPage === 'all' ? null : $perPage,
+                        pageName: $pageName,
+                        page: $page,
+                    ),
                 'action' => $action,
-            ])
-        );
+            ]);
+        });
 
         $this->icon('heroicon-o-clock');
 
@@ -50,11 +70,11 @@ class ContentHistoryAction extends Action
         $this->registerModalActions([
             Action::make('toggleAvoidToClear')
                 ->size('xs')
-                ->hidden(fn ($arguments) => ! isset($arguments['item']))
-                ->label(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')
-                ->color(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'gray' : 'danger')
+                ->hidden(fn ($arguments) => ! isset($arguments['itemKey']))
+                ->label(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')
+                ->color(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'gray' : 'danger')
                 ->outlined()
-                ->successNotificationTitle(fn ($arguments) => ($arguments['item']['avoidToClear'] ?? false) ? 'Now avoiding to clean' : 'Now waiting to clean')
+                ->successNotificationTitle(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Now avoiding to clean' : 'Now waiting to clean')
                 ->successNotification(
                     fn (Notification $notification) => $notification
                         ->icon('heroicon-o-exclamation-triangle')
@@ -62,11 +82,11 @@ class ContentHistoryAction extends Action
                         ->iconColor('warning')
                 )
                 ->action(function (array $arguments, Action $action, Model | Content $record) {
-                    if (! isset($arguments['item']['id'])) {
+                    if (! isset($arguments['itemKey'])) {
                         return;
                     }
 
-                    $contentVersion = $record->contentVersions()->find($arguments['item']['id']);
+                    $contentVersion = $record->contentVersions()->find($arguments['itemKey']);
                     if (! $contentVersion) {
                         return;
                     }
@@ -76,6 +96,7 @@ class ContentHistoryAction extends Action
 
                     $action->success();
                 }),
+            ... $this->getPaginationActions(),
         ]);
     }
 }
