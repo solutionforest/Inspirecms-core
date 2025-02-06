@@ -560,8 +560,5 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 if (\$propertyValue != null && !empty(\$propertyValue)):
             ?>";
         });
-        Blade::directive('endpropertyNotEmpty', function () {
-            return '<?php endif; ?>';
-        });
     }
 }

@@ -14,7 +14,7 @@
                 <span class="date">
                     @propertyNotEmpty('blog_content', 'post_date')
                         {{ $propertyValue->format('d M, Y') }}
-                    @endpropertyNotEmpty
+                    @endif
                 </span>
             </div>
             <h3>@property('page_banner', 'title')</h3>

@@ -26,7 +26,7 @@
                 <div class="contact-details">
                     @propertyNotEmpty('contact', 'phone')
                         <p><img src="{{ asset('image/icon/tel.svg') }}" alt=""><a href="tel:{{ $propertyValue }}">{{ $propertyValue }}</a></p>
-                    @endpropertyNotEmpty
+                    @endif
                     @propertyNotEmpty('contact', 'email')
                         <p><img src="{{ asset('image/icon/email.svg') }}" alt=""><a href="tel:{{ $propertyValue }}">{{ $propertyValue }}</a></p>
                     @endpropertyNotEmpty

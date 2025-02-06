@@ -34,7 +34,7 @@
                     <span class="post-date">
                         @propertyNotEmpty('blog_content', 'post_date')
                             {{ $propertyValue->format('d M, Y') }}
-                        @endpropertyNotEmpty
+                        @endif
                     </span>
                     <span class="post-date"> <img src="{{ asset('image/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
                 </div>

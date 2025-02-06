@@ -11,7 +11,7 @@
         <span>{{ implode(', ', $propertyArray ?? []) }}</span>
         @propertyNotEmpty('blog_content', 'post_date')
             <span>{{ $propertyValue->format('d M, Y') }}</span>
-        @endpropertyNotEmpty
+        @endif
     </div>
     <h3>@property('page_banner', 'title')</h3>
     <p>@property('page_banner', 'description')</p>
