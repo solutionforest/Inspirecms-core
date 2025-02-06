@@ -8,6 +8,37 @@
         $data['config'] = FieldTypeHelper::getFieldTypeConfig($arr['fieldType'], $data['config'] ?? []);
         return PropertyTypeDto::fromArray($data);
     })->groupBy('group')->sortKeys();
+
+    $getDisplayInstruction = fn ($text) => str($text)
+        ->explode("\r\n")
+        ->map(fn ($line) => str($line)
+            ->replaceMatches('/\s\s+/', '&nbsp;&nbsp;')
+            ->inlineMarkdown([
+                'html_input' => 'escape',
+                'allow_unsafe_links' => false,
+            ])
+        );
+    $getPlainTextAndSampleCodeForField = function ($fieldType, $group, $field) use ($getDisplayInstruction) {
+
+        $translatable = $fieldType?->isTranslatable() ?? false;
+
+        $valueType = FieldTypeHelper::resolveFieldReturnType($fieldType);
+
+        if ($valueType != 'array' || $translatable) {
+            $result[] = "@property('{$group}', '{$field}')";
+        } else {
+            $result[] = "@propertyArray('{$group}', '{$field}')
+@foreach (\$propertyArray ?? [] as \$item)
+    //
+@endforeach";
+        }
+            $result[] = "@propertyNotEmpty('{$group}', '{$field}')
+    // \$propertyValue = ...
+@endif";
+
+        return $result;
+    };
+ 
     //todo: add translation
 @endphp
 
@@ -26,6 +57,30 @@
                     Group
                 </x-slot>
 
+                <div class="pb-4">
+                    <p>Add @@propertyGroup before adding fields.</p>
+                    @php
+                        $plaintext = "@propertyGroup('$group')";
+                    @endphp
+                    <x-filament::section compact>
+                        <div class="flex gap-x-2 justify-between">
+                            <code class="text-xs">
+                                @foreach ($getDisplayInstruction($plaintext) as $line)
+                                    <div class="line whitespace-nowrap">
+                                        {!! $line !!}
+                                    </div>
+                                @endforeach
+                            </code>
+
+                            <x-inspirecms::buttons.copy-button
+                                :plaintext="$plaintext"
+                                :label="$copyButtonLabel"
+                                :message="$copiedMessage"
+                            />
+                        </div>
+                    </x-filament::section>
+                </div>
+
                 <div class="flex flex-col gap-y-2">
                     @foreach ($propertyTypes as $propertyType)
                         @php
@@ -34,11 +89,11 @@
                             $fieldTypeConfig = $fieldType ? Arr::first($fieldType->getConfigNames()) : [];
                             $fieldTypeName = $fieldTypeConfig['name'] ?? null;
                             $icon = $fieldTypeConfig['icon'] ?? null;
+                            $fieldKey = $propertyType->key;
 
                             $translatable = $fieldType?->isTranslatable() ?? false;
-
-                            $plaintext = '$content->getPropertyGroup(\'' . $propertyType->group . '\')?->getPropertyData(\'' . $propertyType->key . '\')?->getValue(' . ($translatable ? html_entity_decode('$locale') : '') . ');';
                         @endphp
+                            
                         <x-filament::section 
                             collapsible
                             :icon="$icon"
@@ -51,43 +106,42 @@
                             }"  
                         >
                             <x-slot name="heading">
-                                Field: {{ $propertyType->key }}
+                                {{ $fieldKey }}
                             </x-slot>
-                            @if ($translatable)
-                                <x-slot name="headerEnd">
+                            <x-slot name="headerEnd">
+                                @if ($translatable)
                                     <x-filament::icon-button
                                         icon="heroicon-o-language"
                                         color="gray"
                                         tooltip="Translatable"
                                     />
-                                </x-slot>
-                            @endif
-                        
-                            
-                            <div class="flex gap-x-2 justify-between">
-                                <p class="font-mono text-xs">
-                                   {{ $plaintext }}
-                                </p>
+                                @endif
+                                <span>Field</span>
+                            </x-slot>
+                                
+                            <ol class="flex gap-y-2 flex-col">
+                                @foreach ($getPlainTextAndSampleCodeForField($fieldType, $propertyType->group, $fieldKey) as $text)
+                                    <li class="flex gap-x-2 justify-between">
+                                        <code class="text-xs">
+                                            @foreach ($getDisplayInstruction($text) as $line)
+                                                <div class="line whitespace-nowrap">
+                                                    {!! $line !!}
+                                                </div>
+                                            @endforeach
+                                        </code>
+                                        
+                                        <x-inspirecms::buttons.copy-button
+                                            :plaintext="$text"
+                                            :label="$copyButtonLabel"
+                                            :message="$copiedMessage"
+                                        />
+                                    </li>
 
-                                <button type="button"
-                                    class="fi-icon-btn relative flex items-center justify-center rounded-lg outline-none  transition duration-75 focus-visible:ring-2 h-9 w-9 text-gray-400 hover:text-gray-500 focus-visible:ring-primary-600 dark:text-gray-500 dark:hover:text-gray-400 dark:focus-visible:ring-primary-500 -m-2"
-                                    title="{{ $copyButtonLabel }}"
-                                    x-on:click="
-                                        window.navigator.clipboard.writeText(@js($plaintext));
-                                            $tooltip('{{ $copiedMessage }}', {
-                                            theme: $store.theme,
-                                            timeout: 2000,
-                                        })
-                                    "
-                                >
-                                    <span class="sr-only">{{ $copyButtonLabel }}</span>
-                                    <x-filament::icon
-                                        icon="heroicon-m-clipboard"
-                                        :label="$copyButtonLabel"
-                                        class="h-4 w-4"
-                                    />
-                                </button>
-                            </div>
+                                    @if (!$loop->last)
+                                        <hr class="border-gray-200 dark:border-gray-700">
+                                    @endif
+                                @endforeach
+                            </ol>
                         </x-filament::section>
                     @endforeach
                 </div>

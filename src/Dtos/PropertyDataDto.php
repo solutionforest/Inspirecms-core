@@ -223,21 +223,43 @@ class PropertyDataDto extends BaseDto
     protected static function getFakeValueForBasicFieldType($fieldType)
     {
         return match (true) {
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Textarea => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p><p>Curabitur non nulla sit amet nisl <b>tempus</b> convallis quis ac lectus.</p>',
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Url => 'https://example.com',
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Text => 'Lorem ipsum dolor sit amet',
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Number => 123,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Boolean => true,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker => fake()->dateTime()->format($fieldType->format ?? 'Y-m-d H:i:s'),
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Select => $fieldType->options[0]['value'] ?? null,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Radio => $fieldType->options[0]['value'] ?? null,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Checkbox => $fieldType->options[0]['value'] ?? null,
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\ColorPicker => '#000000',
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker => [KeyHelper::generateMinUuid()],
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker => [],
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker => fake()->dateTime(),
+            
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Email => fake()->email(),
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File,
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image => $fieldType->multiple
+                ? collect(range(1, 3))->map(fn () => fake()->filePath())->values()->toArray()
+                : fake()->filePath(),
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Number => 123,
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Password => 'password',
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Radio => array_key_first($fieldType->options),
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Select => $fieldType->multiple
+                ? collect($fieldType->options)->take(3)->keys()->toArray()
+                : array_key_first($fieldType->options),
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Text => 'Lorem ipsum dolor sit amet',
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Textarea => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Toggle => fake()->boolean(),
+
+            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Url => 'https://example.com',
+
+            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker,
+            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker => [KeyHelper::generateMinUuid()],
+
+            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor,
+            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p><p>Curabitur non nulla sit amet nisl <b>tempus</b> convallis quis ac lectus.</p>',
+
             $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\Tags => ['tag1', 'tag2'],
+            
             default => null,
         };
     }
