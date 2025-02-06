@@ -7,7 +7,7 @@ class TemplateHelper
     /**
      * Splits a Blade expression into its individual components.
      *
-     * @param string $bladeExpression The Blade expression to be split.
+     * @param  string  $bladeExpression  The Blade expression to be split.
      * @return array An array containing the split components of the Blade expression.
      */
     public static function splitBladeExpression(string $bladeExpression)

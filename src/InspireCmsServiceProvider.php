@@ -513,7 +513,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         Blade::component('cms-template', Template::class);
 
-        Blade::directive('property', function ($expression)  {
+        Blade::directive('property', function ($expression) {
             [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
 
             return "<?php 
@@ -521,7 +521,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 echo is_array(\${$propertyVarName}) ? \\Illuminate\\Support\\Arr::first(\${$propertyVarName}) : \${$propertyVarName};
             ?>";
         });
-        Blade::directive('propertyArray', function ($expression)  {
+        Blade::directive('propertyArray', function ($expression) {
             [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
 
             return "<?php 
@@ -529,7 +529,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ?>";
         });
 
-        Blade::directive('propertyNotEmpty', function ($expression)  {
+        Blade::directive('propertyNotEmpty', function ($expression) {
             [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
 
             return "<?php 
