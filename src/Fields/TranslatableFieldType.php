@@ -5,9 +5,6 @@ namespace SolutionForest\InspireCms\Fields;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 
-/**
- * @mixin \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig
- */
 class TranslatableFieldType
 {
     public function getEnhancedFormSchema()
