@@ -195,7 +195,7 @@ class FieldTypeHelper
     }
 
     /**
-     * @param FieldTypeConfig $fieldType
+     * @param  FieldTypeConfig  $fieldType
      */
     public static function resolveFieldReturnType($fieldType)
     {
@@ -206,6 +206,7 @@ class FieldTypeHelper
         ]);
         $fakeValue = PropertyDataDto::fakeValueForPropertyType($fakePropertyType, array_keys(inspirecms()->getAllAvailableLanguages()));
         $propertyValueType = gettype($fakeValue);
+
         return $propertyValueType;
     }
 }

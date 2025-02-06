@@ -36,7 +36,7 @@ class ContentHistoryAction extends Action
         $this->slideOver();
 
         $this->modalContent(function (Model | Content $record, ContentHistoryAction $action, array $arguments) {
-            
+
             $pageName = 'page';
             $page = $action->getPage($pageName) ?? 1;
             $perPage = $action->getPerPage();
@@ -96,7 +96,7 @@ class ContentHistoryAction extends Action
 
                     $action->success();
                 }),
-            ... $this->getPaginationActions(),
+            ...$this->getPaginationActions(),
         ]);
     }
 }

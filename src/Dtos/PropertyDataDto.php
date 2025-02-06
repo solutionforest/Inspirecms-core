@@ -226,7 +226,7 @@ class PropertyDataDto extends BaseDto
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\ColorPicker => '#000000',
 
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker => fake()->dateTime(),
-            
+
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Email => fake()->email(),
 
             $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File,
@@ -259,7 +259,7 @@ class PropertyDataDto extends BaseDto
             $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p><p>Curabitur non nulla sit amet nisl <b>tempus</b> convallis quis ac lectus.</p>',
 
             $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\Tags => ['tag1', 'tag2'],
-            
+
             default => null,
         };
     }

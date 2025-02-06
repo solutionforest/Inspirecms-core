@@ -43,7 +43,7 @@ trait WithPagination
         return $this->pageOptions;
     }
 
-    public function setPerPage(null | string | int  $perPage)
+    public function setPerPage(null | string | int $perPage)
     {
         $this->perPage = $perPage;
 
