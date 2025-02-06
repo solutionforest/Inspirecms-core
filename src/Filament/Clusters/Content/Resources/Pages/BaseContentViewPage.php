@@ -133,12 +133,14 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
     {
         $contentDto = $this->contentDto;
 
+        $locale = $this->getActiveFormsLocale();
         if ($contentDto instanceof ContentDto) {
             // Set the locale of the content dto to the active locale
-            $contentDto->setLocale($this->getActiveFormsLocale());
+            $contentDto->setLocale($locale);
         }
 
         $data['content'] = $contentDto;
+        $data['locale'] = $locale;
 
         return $data;
     }

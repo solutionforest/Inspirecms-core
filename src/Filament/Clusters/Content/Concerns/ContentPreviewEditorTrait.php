@@ -92,6 +92,7 @@ trait ContentPreviewEditorTrait
         );
 
         $previewData['content'] = $contentDto;
+        $previewData['locale'] = $editorData['activeLocale'] ?? app()->getLocale();
 
         return $previewData;
     }
