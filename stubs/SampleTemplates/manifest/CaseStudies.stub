@@ -1,5 +1,3 @@
-@propertyGroup('page_banner')
-
 <x-cms-template :content="$content" type="page">
     <div class="contact-header">
         <div class="header-content">
@@ -15,19 +13,18 @@
         <div class="works-left">
             <div class="works-list">
                 @foreach ($content->getChildren()->paginate(3) as $item)
-                    
-                    @propertyGroup('page_banner', $item, $caseItemPropertyGroups)
-                    @propertyGroup('case_content', $item, $caseItemPropertyGroups)
 
                     <article class="work-item">
                         <div class="work-content">
                             <h3>{{ $item->getTitle($locale) }}</h3>
                             <div class="divider1"></div>
                             <p class="category">
-                                @property('case_content', 'category', $caseItemPropertyGroups)
+                                @property('case_content', 'category', 'c', $item)
                             </p>
                             <p class="year">
-                                @property('case_content', 'year', $caseItemPropertyGroups)
+                                @propertyNotEmpty('case_content', 'year', 'item_year', $item)
+                                    {{ $item_year->format('d M, Y') }}
+                                @endif
                             </p>
                             
                             <button type="submit" class="send-button" onclick="window.location.href = '{{ $item->getUrl() }}'">
@@ -36,8 +33,8 @@
                             </button>
                         </div>
                         <div class="work-image">
-                            @propertyArray('page_banner', 'image', $caseItemPropertyGroups)
-                            @if (($media = collect($propertyArray)->first()))
+                            @propertyArray('page_banner', 'image', 'page_banner_image', $item)
+                            @if (($media = collect($page_banner_image)->first()))
                                 <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                             @endif
                         </div>

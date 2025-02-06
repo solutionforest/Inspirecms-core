@@ -27,13 +27,15 @@
         if ($valueType != 'array' || $translatable) {
             $result[] = "@property('{$group}', '{$field}')";
         } else {
-            $result[] = "@propertyArray('{$group}', '{$field}')
-@foreach (\$propertyArray ?? [] as \$item)
+            $result[] = "
+@propertyArray('{$group}', '{$field}')
+@foreach (\${$group}_{$field} ?? [] as \$item)
     //
 @endforeach";
         }
-            $result[] = "@propertyNotEmpty('{$group}', '{$field}')
-    // \$propertyValue = ...
+            $result[] = "
+@propertyNotEmpty('{$group}', '{$field}')
+    // \${$group}_{$field} = ...
 @endif";
 
         return $result;
@@ -56,30 +58,6 @@
                 <x-slot name="headerEnd">
                     Group
                 </x-slot>
-
-                <div class="pb-4">
-                    <p>Add @@propertyGroup before adding fields.</p>
-                    @php
-                        $plaintext = "@propertyGroup('$group')";
-                    @endphp
-                    <x-filament::section compact>
-                        <div class="flex gap-x-2 justify-between">
-                            <code class="text-xs">
-                                @foreach ($getDisplayInstruction($plaintext) as $line)
-                                    <div class="line whitespace-nowrap">
-                                        {!! $line !!}
-                                    </div>
-                                @endforeach
-                            </code>
-
-                            <x-inspirecms::buttons.copy-button
-                                :plaintext="$plaintext"
-                                :label="$copyButtonLabel"
-                                :message="$copiedMessage"
-                            />
-                        </div>
-                    </x-filament::section>
-                </div>
 
                 <div class="flex flex-col gap-y-2">
                     @foreach ($propertyTypes as $propertyType)

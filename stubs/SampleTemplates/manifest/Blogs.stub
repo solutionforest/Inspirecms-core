@@ -8,8 +8,6 @@
         ->paginate(perPage: 4, pageName: 'page', page: $blogPage);
 @endphp
 
-@propertyGroup('featured_blogs')
-
 <x-cms-template :content="$content" type="page">
     <div class="page-main-container">
         <section class="blog-section-ma">
@@ -21,7 +19,7 @@
             <div class="container ps-0">
                 @propertyArray('featured_blogs', 'blogs')
                 @php
-                    $featuredBlog = collect($propertyArray)->skip($featuredPage - 1)->first();
+                    $featuredBlog = collect($featured_blogs_blogs)->skip($featuredPage - 1)->first();
                     $featuredBlogTemplate = $featuredBlog?->getTemplate('blog-featured-item');
                 @endphp
                 @if ($featuredBlogTemplate)

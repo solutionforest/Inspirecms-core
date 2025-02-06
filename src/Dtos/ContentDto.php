@@ -180,12 +180,11 @@ class ContentDto extends BaseTranslatableModelDto
             $this->propertyData = new PropertyGroupCollection($this->propertyData);
         }
 
-        $groups = clone $this->propertyData;
-        if (($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
-            $groups->setFallbackLocale($locale);
+        $target = $this->propertyData->get($key);
+        if ($target && ($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
+            $target->setFallbackLocale($locale);
         }
-
-        return $groups->get($key);
+        return $target;
     }
 
     /**

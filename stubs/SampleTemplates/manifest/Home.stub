@@ -3,9 +3,6 @@
     $blogs = inspirecms_content()->getUnderRealPath('blogs', 3, ['documentType.templates', 'templates'])->toDto($locale);
 @endphp
 
-@propertyGroup('hero_banner')
-@propertyGroup('profile')
-
 <x-cms-template :content="$content" type="page">
     <!-- Hero Section -->
     <section class="hero-section">
@@ -20,7 +17,7 @@
     <div class="swiper">
         <div class="swiper-wrapper">
             @propertyArray('hero_banner', 'image_slider')
-            @foreach ($propertyArray ?? [] as $item)
+            @foreach ($hero_banner_image_slider ?? [] as $item)
                 <div class="swiper-slide">
                     <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
                     <p>{{ $item->description }}</p>

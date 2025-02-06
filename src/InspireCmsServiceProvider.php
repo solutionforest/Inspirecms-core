@@ -18,6 +18,7 @@ use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -512,52 +513,29 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         Blade::component('cms-template', Template::class);
 
-        Blade::directive('propertyGroup', function ($expression) {
-            $explodedValues = array_map('trim', explode(',', $expression));
-            if (count($explodedValues) > 1) {
-                [$group, $dtoVar] = $explodedValues;
-                $propertyGroupsVar = $explodedValues[2] ?? null;
-            } else {
-                $group = $expression;
-            }
-            $dtoVar ??= '$content';
-            $propertyGroupsVar ??= '$propertyGroups';
-
-            return "<?php {$propertyGroupsVar}[{$group}] = {$dtoVar}->getPropertyGroup({$group}); ?>";
-        });
-
-        $propertyExpressionHandler = function ($expression) {
-            $explodedValues = array_map('trim', explode(',', $expression));
-            if (count($explodedValues) > 2) {
-                [$group, $property, $propertyGroupsVar] = $explodedValues;
-            } else {
-                [$group, $property] = $explodedValues;
-                $propertyGroupsVar = '$propertyGroups';
-            }
-
-            return [$group, $property, $propertyGroupsVar];
-        };
-
-        Blade::directive('property', function ($expression) use ($propertyExpressionHandler) {
-            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
+        Blade::directive('property', function ($expression)  {
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
 
             return "<?php 
-                \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
-                echo is_array(\$propertyValue) ? \\Illuminate\\Support\\Arr::first(\$propertyValue) : \$propertyValue;
+                \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
+                echo is_array(\${$propertyVarName}) ? \\Illuminate\\Support\\Arr::first(\${$propertyVarName}) : \${$propertyVarName};
             ?>";
         });
-        Blade::directive('propertyArray', function ($expression) use ($propertyExpressionHandler) {
-            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
-
-            return "<?php \$propertyArray = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue(); ?>";
-        });
-
-        Blade::directive('propertyNotEmpty', function ($expression) use ($propertyExpressionHandler) {
-            [$group, $property, $propertyGroupsVar] = $propertyExpressionHandler($expression);
+        Blade::directive('propertyArray', function ($expression)  {
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
 
             return "<?php 
-                \$propertyValue = ({$propertyGroupsVar}[{$group}] ?? null)?->getPropertyData({$property})?->getValue();
-                if (\$propertyValue != null && !empty(\$propertyValue)):
+                \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
+            ?>";
+        });
+
+        Blade::directive('propertyNotEmpty', function ($expression)  {
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
+
+            return "<?php 
+                \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
+                if (\${$propertyVarName} != null && !empty(\${$propertyVarName})):
+                    ray(\${$propertyVarName});
             ?>";
         });
     }

@@ -1,6 +1,3 @@
-@propertyGroup('page_banner')
-@propertyGroup('case_content')
-
 <x-cms-template :content="$content" type="page">
     <div class="case-study-container">
         <header class="case-study-header">
@@ -9,7 +6,7 @@
 
             <div class="hero-image">
                 @propertyArray('page_banner', 'image')
-                @if (($page_banner_image = collect($propertyArray)->first()))
+                @if (($page_banner_image = collect($page_banner_image)->first()))
                     <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
                 @endif
             </div>
@@ -29,7 +26,11 @@
                                 <div class="details-grid">
                                     <div class="detail-item">
                                         <h3>Year</h3>
-                                        <p>@property('case_content', 'year')</p>
+                                        <p>
+                                            @propertyNotEmpty('case_content', 'year')
+                                                {{ $case_content_year->format(' Y') }}
+                                            @endif
+                                        </p>
                                     </div>
                                     <div class="detail-item">
                                         <h3>Platform</h3>

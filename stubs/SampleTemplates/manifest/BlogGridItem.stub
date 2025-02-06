@@ -1,19 +1,16 @@
-@propertyGroup('page_banner')
-@propertyGroup('blog_content')
-
 <a href="{{ url("/$locale/blog/$content->slug") }}" class="text-decoration-none">
     <article class="blog-post">
         @propertyArray('page_banner', 'image')
-        @if (($media = collect($propertyArray)->first()))
+        @if (($media = collect($page_banner_image)->first()))
             <img src="{{ $media?->getUrl() }}" alt="{{ $media->caption }}" class="blog-image">
         @endif
         <div class="post-content">
             <div class="post-meta">
                 @propertyArray('blog_content', 'categories')
-                <span class="category">{{ implode(', ', $propertyArray ?? []) }}</span>
+                <span class="category">{{ implode(', ', $blog_content_categories ?? []) }}</span>
                 <span class="date">
                     @propertyNotEmpty('blog_content', 'post_date')
-                        {{ $propertyValue->format('d M, Y') }}
+                        {{ $blog_content_post_date->format('d M, Y') }}
                     @endif
                 </span>
             </div>

@@ -1,13 +1,9 @@
 <!-- Featured Blog Post -->
-
-@propertyGroup('page_banner')
-@propertyGroup('blog_content')
-
 <div class="featured-post">
     <div class="row align-items-start">
         <div class="col-md-6">
             @propertyArray('page_banner', 'image')
-            @if (($media = collect($propertyArray)->first()))
+            @if (($media = collect($page_banner_image)->first()))
                 <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}" class="featured-image">
             @endif
         </div>
@@ -15,7 +11,7 @@
             <div class="featured-content">
                 <div class="post-categories">
                     @propertyArray('blog_content', 'categories')
-                    @foreach ($propertyArray ?? [] as $category)
+                    @foreach ($blog_content_categories ?? [] as $category)
                         <span class="category">{{ $category }}</span>
                         @if (!$loop->last)
                             <span class="separator">,</span>
