@@ -514,7 +514,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Blade::component('cms-template', Template::class);
 
         Blade::directive('property', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
@@ -522,7 +522,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ?>";
         });
         Blade::directive('propertyArray', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
@@ -530,7 +530,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('propertyNotEmpty', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpression($expression);
+            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
