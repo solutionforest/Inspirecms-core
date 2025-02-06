@@ -30,4 +30,17 @@ return [
             'description' => '選擇此角色對每個資源的權限。',
         ],
     ],
+    'widget_permissions' => [
+        'validation_attribute' => '小工具權限',
+        'section' => [
+            'heading' => '小工具權限',
+            'description' => '選擇此角色對每個小工具的權限。',
+        ],
+    ],
+    'tiered_permissions' => [
+        'section' => [
+            'heading' => '分層權限',
+            'description' => '選擇此角色對每個層級的權限。',
+        ],
+    ],
 ];

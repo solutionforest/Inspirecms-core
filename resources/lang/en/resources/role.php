@@ -30,4 +30,17 @@ return [
             'description' => 'Select the permissions that this role has for each resource.',
         ],
     ],
+    'widget_permissions' => [
+        'validation_attribute' => 'widget permissions',
+        'section' => [
+            'heading' => 'Widget Permissions',
+            'description' => 'Select the permissions that this role has for each widget.',
+        ],
+    ],
+    'tiered_permissions' => [
+        'section' => [
+            'heading' => 'Tiered Permissions',
+            'description' => 'Select the permissions that this role has for each tier.',
+        ],
+    ],
 ];
