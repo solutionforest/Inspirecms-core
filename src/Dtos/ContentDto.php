@@ -286,7 +286,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         $propertyTypes = collect($parameters['propertyTypes'] ?? [])
             ->map(fn ($propertyType) => is_array($propertyType) ? PropertyTypeDto::fromArray($propertyType) : $propertyType)
-            ->where(fn ($propertyType) => $propertyType instanceof PropertyTypeDto)
+            ->whereInstanceOf(PropertyTypeDto::class)
             ->values()
             ->toArray();
 
@@ -318,11 +318,14 @@ class ContentDto extends BaseTranslatableModelDto
 
             $propertyDataItems = [];
 
-            $groupPropertyTypes = collect($propertyTypes)->where(fn (PropertyTypeDto $p) => $p->group === $groupName)->values();
+            $groupPropertyTypes = collect($propertyTypes)
+                ->where(fn (PropertyTypeDto $p) => $p->group === $groupName)
+                ->values()
+                ->mapWithKeys(fn (PropertyTypeDto $p) => [$p->key => $p]);
 
             foreach ($item as $key => $value) {
 
-                $propertyType = collect($groupPropertyTypes)->first(fn (PropertyTypeDto $p) => $p->key === $key);
+                $propertyType = $groupPropertyTypes->get($key);
 
                 /** @var PropertyDataDto */
                 $propertyDataItem = PropertyDataDto::fromArray([

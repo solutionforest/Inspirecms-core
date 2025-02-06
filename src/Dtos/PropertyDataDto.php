@@ -71,13 +71,13 @@ class PropertyDataDto extends BaseDto
                     $field = collect($propertyType->fields)->firstWhere('name', $key);
 
                     if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
-                        return null;
+                        continue;
                     }
 
                     $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
 
                     if (is_null($innerPropertyType)) {
-                        return null;
+                        continue;
                     }
 
                     $finalValue = $this->transformPropertyValueWithTranslatable($value, $innerPropertyType, $locale);
@@ -100,7 +100,7 @@ class PropertyDataDto extends BaseDto
                     'key' => $i,
                     'data' => $result,
                     'propertyTypes' => $propertyTypes,
-                ]);
+                ])->setFallbackLocale($this->getFallbackLocale());
 
             })->toArray();
 
