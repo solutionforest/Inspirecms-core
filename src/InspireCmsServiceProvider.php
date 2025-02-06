@@ -535,7 +535,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
                 if (\${$propertyVarName} != null && !empty(\${$propertyVarName})):
-                    ray(\${$propertyVarName});
             ?>";
         });
     }
