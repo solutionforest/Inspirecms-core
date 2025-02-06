@@ -10,7 +10,7 @@ class TemplateHelper
      * This method takes a Blade expression as input and splits it to retrieve
      * the property specified within the expression.
      *
-     * @param string $bladeExpression The Blade expression to be split.
+     * @param  string  $bladeExpression  The Blade expression to be split.
      * @return array An array containing the split parts of the Blade expression.
      */
     public static function splitBladeExpressionForProperty(string $bladeExpression)
@@ -37,8 +37,8 @@ class TemplateHelper
     /**
      * Generates a variable name for a given property within a specified group.
      *
-     * @param string $group The group to which the property belongs.
-     * @param string $property The property for which the variable name is generated.
+     * @param  string  $group  The group to which the property belongs.
+     * @param  string  $property  The property for which the variable name is generated.
      * @return string The generated variable name.
      */
     public static function generatePropertyVarName($group, $property)
