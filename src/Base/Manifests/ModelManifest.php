@@ -138,12 +138,13 @@ class ModelManifest implements ModelManifestInterface
     {
         if (
             ! class_exists($modelContract) &&
-            $morphedClass = Relation::morphMap()[$modelContract] ?? null
+            ($morphedClass = Relation::morphMap()[$modelContract] ?? null) && 
+            class_exists($modelContract)
         ) {
             return $morphedClass;
         }
 
-        $shortName = (new \ReflectionClass($modelContract))->getShortName();
+        $shortName = class_basename($modelContract);
 
         return 'SolutionForest\\InspireCms\\Models\\' . $shortName;
     }
@@ -156,7 +157,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected function guessPolicyClass(string $modelContract): string
     {
-        $shortName = (new \ReflectionClass($modelContract))->getShortName();
+        $shortName = class_basename($modelContract);
 
         return 'SolutionForest\\InspireCms\\Policies\\' . $shortName . 'Policy';
     }
@@ -188,7 +189,7 @@ class ModelManifest implements ModelManifestInterface
      */
     private function validateClassIsEloquentModel(string $class): void
     {
-        if (! is_subclass_of($class, Model::class)) {
+        if (! is_a($class, Model::class, true)) {
             throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
         }
     }

@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
+use SolutionForest\InspireCms\Events\Relations\Synced;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pages;
@@ -273,18 +274,7 @@ class RoleResource extends Resource implements ClusterSectionResource
 
     protected static function getFormComponentForClusterSection($name = 'cluster_section_access')
     {
-        return Forms\Components\CheckboxList::make($name)
-            ->validationAttribute(__('inspirecms::resources/role.cluster_section_access.validation_attribute'))
-            ->hiddenLabel()
-            ->searchable()
-            ->options(PermissionManifest::getClusterSectionPermissions())
-            ->bulkToggleable()
-            ->gridDirection('row')
-            ->columnSpanFull()->columns([
-                'default' => 2,
-                'md' => 2,
-                'lg' => 4,
-            ]);
+        return static::getCommonCheckboxListForSection($name, __('inspirecms::resources/role.cluster_section_access.validation_attribute'), PermissionManifest::getClusterSectionPermissions());
     }
 
     protected static function getFormComponentForResourcePermissionsSection()
@@ -300,12 +290,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                 ->aside()
                 ->heading($model)
                 ->schema([
-                    Forms\Components\CheckboxList::make($key)
-                        ->hiddenLabel()
-                        ->searchable()
-                        ->options($resourcePermissionOptions)
-                        ->bulkToggleable()
-                        ->gridDirection('row')
+                    static::getCommonCheckboxListForSection($key, __('inspirecms::resources/role.resource_permissions.validation_attribute'), $resourcePermissionOptions)
                         ->columnSpanFull()->columns([
                             'default' => 2,
                             'md' => 2,
@@ -350,43 +335,26 @@ class RoleResource extends Resource implements ClusterSectionResource
 
     protected static function getFormComponentForActionSection($name = 'action_permissions')
     {
-        return Forms\Components\CheckboxList::make($name)
-            ->validationAttribute(__('inspirecms::resources/role.action_permissions.validation_attribute'))
-            ->hiddenLabel()
-            ->searchable()
-            ->options(PermissionManifest::getActionPermissions())
-            ->bulkToggleable()
-            ->gridDirection('row')
-            ->columnSpanFull()->columns([
-                'default' => 2,
-                'md' => 2,
-                'lg' => 4,
-            ]);
+        return static::getCommonCheckboxListForSection($name, __('inspirecms::resources/role.action_permissions.validation_attribute'), PermissionManifest::getActionPermissions());
     }
 
     protected static function getFormComponentForWidgetSection($name = 'widget_permissions')
     {
-        return Forms\Components\CheckboxList::make($name)
-            ->validationAttribute(__('inspirecms::resources/role.widget_permissions.validation_attribute'))
-            ->hiddenLabel()
-            ->searchable()
-            ->options(PermissionManifest::getWidgetPermissions())
-            ->bulkToggleable()
-            ->gridDirection('row')
-            ->columnSpanFull()->columns([
-                'default' => 2,
-                'md' => 2,
-                'lg' => 4,
-            ]);
+        return static::getCommonCheckboxListForSection($name, __('inspirecms::resources/role.widget_permissions.validation_attribute'), PermissionManifest::getWidgetPermissions());
     }
 
     protected static function getFormComponentForPageSection($name = 'page_permissions')
     {
+        return static::getCommonCheckboxListForSection($name, __('inspirecms::resources/role.page_permissions.validation_attribute'), PermissionManifest::getPagePermissions());
+    }
+
+    private static function getCommonCheckboxListForSection($name, $attribute, $options)
+    {
         return Forms\Components\CheckboxList::make($name)
-            ->validationAttribute(__('inspirecms::resources/role.page_permissions.validation_attribute'))
+            ->validationAttribute($attribute)
             ->hiddenLabel()
             ->searchable()
-            ->options(PermissionManifest::getPagePermissions())
+            ->options($options)
             ->bulkToggleable()
             ->gridDirection('row')
             ->columnSpanFull()->columns([

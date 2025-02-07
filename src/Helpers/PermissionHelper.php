@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
@@ -68,14 +69,65 @@ class PermissionHelper
         $permissions = collect($permissions)
             ->flatten()
             ->values()
-            ->filter(fn ($permission) => count(explode('.', $permission)) === 3)
+            ->filter(fn ($permission) => static::isWildcardPattern($permission))
             ->values();
+
+        $allPermissions = static::getCachedPermissions();
+
+        static::cleanUnusedWildcardPermissions($permissions->all());
+        
+        $result = $allPermissions->whereIn('name', $permissions->all())->pluck('name')->all();
+
+        $missing = array_diff($permissions->toArray(), $result);
 
         $guardName = InspireCmsConfig::getGuardName();
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
 
-        return collect($permissions)->map(
-            fn (string $permissionName) => $permissionClass::findOrCreate($permissionName, $guardName)
-        )->pluck('name')->all();
+        foreach ($missing as $permissionName) {
+            $permissionClass::findOrCreate($permissionName, $guardName);
+            $result[] = $permissionName;
+        }
+
+        return $result;
+    }
+
+    public static function cleanUnusedWildcardPermissions(array $excepts = [])
+    {
+        $existingWildcardPermissions = static::getCachedPermissions()
+            ->keyBy(fn ($permission) => $permission->name)
+            ->where(fn ($permission, $name) => static::isWildcardPattern($name))
+            ->except($excepts)
+            ->keyBy(fn ($permission) => $permission->getKey());
+            
+        $guardName = InspireCmsConfig::getGuardName();
+        $permissionClass = InspireCmsConfig::getPermissionModelClass();
+        /**
+         * @var Builder
+         */
+        $query = app($permissionClass, ['attributes' => ['guard_name' => $guardName]])
+            ->newQuery()
+            ->where('guard_name', $guardName)
+            ->whereKey($existingWildcardPermissions->keys()->all())
+            ->where(fn ($query) => $query
+                ->orDoesntHave('roles')
+                ->orDoesntHave('users')
+            );
+
+        $query->cursor()->each->delete();
+    }
+
+    private static function isWildcardPattern(string $name)
+    {
+        return count(explode('.', $name)) === 3;
+    }
+
+    /**
+     * @return Collection
+     */
+    private static function getCachedPermissions()
+    {
+        $guardName = InspireCmsConfig::getGuardName();
+
+        return app(PermissionRegistrar::class)->getPermissions(['guard_name' => $guardName]);
     }
 }
