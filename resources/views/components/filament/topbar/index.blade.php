@@ -91,13 +91,13 @@
                                 :attributes="\Filament\Support\prepare_inherited_attributes($group->getExtraTopbarAttributeBag())"
                             >
                                 <x-slot name="trigger">
-                                    <x-inspirecms::topbar.item
+                                    <x-inspirecms::filament.topbar.item
                                         :active="$group->isActive()"
                                         :icon="$group->getIcon()"
                                         :nav-key="$ensureNavSectionKey($navKey, $group)"
                                     >
                                         {{ $groupLabel }}
-                                    </x-inspirecms::topbar.item>
+                                    </x-inspirecms::filament.topbar.item>
                                 </x-slot>
 
                                 @php
@@ -154,7 +154,7 @@
                             </x-filament::dropdown>
                         @else
                             @foreach ($group->getItems() as $navKey => $item)
-                                <x-inspirecms::topbar.item
+                                <x-inspirecms::filament.topbar.item
                                     :active="$item->isActive()"
                                     :active-icon="$item->getActiveIcon()"
                                     :badge="$item->getBadge()"
@@ -166,7 +166,7 @@
                                     :nav-key="$ensureNavSectionKey($navKey, $item)"
                                 >
                                     {{ $item->getLabel() }}
-                                </x-inspirecms::topbar.item>
+                                </x-inspirecms::filament.topbar.item>
                             @endforeach
                         @endif
                     @endforeach

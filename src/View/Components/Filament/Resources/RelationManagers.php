@@ -20,7 +20,7 @@ class RelationManagers extends Component
 
     public function render()
     {
-        return view('inspirecms::components.resources.relation-managers', [
+        return view('inspirecms::components.filament.resources.relation-managers', [
             'managers' => $this->managers,
             'ownerRecord' => $this->ownerRecord,
             'pageClass' => $this->pageClass,

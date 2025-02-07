@@ -18,7 +18,7 @@ class SidebarGroup extends Component
 
     public function render()
     {
-        return view('inspirecms::components.sidebar.group', [
+        return view('inspirecms::components.filament.sidebar.group', [
             'active' => $this->active,
             'collapsible' => $this->collapsible,
             'icon' => $this->icon,
