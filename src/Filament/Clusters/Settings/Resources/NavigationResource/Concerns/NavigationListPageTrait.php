@@ -2,50 +2,56 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns;
 
-use Filament\Resources\Components\Tab;
+use Filament\Resources\Pages\PageRegistration;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HasExtraSubNavigation;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Pages\ListNavigationTable;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Pages\ListNavigationTree;
-use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
 trait NavigationListPageTrait
 {
-    public function updatingActiveTab($value): void
+    use HasExtraSubNavigation;
+
+    protected function getExtraSubNavigationComponents(): array
     {
-        if ($value == 'tree') {
-            $value = 'index';
-        }
-        $url = FilamentResourceHelper::attemptToGetUrl(static::getResource(), $value, [], false);
-        $this->redirect($url);
+        $resource = static::getResource();
+        
+        return collect($resource::getPages())
+            ->only(['index', 'table'])
+            ->whereInstanceOf(PageRegistration::class)
+            ->map(fn (PageRegistration $v) => $v->getPage())
+            ->values()
+            ->all();
     }
 
-    public function getTabs(): array
+    public static function getNavigationLabel(): string
     {
-        $pages = ['index', 'table'];
-
-        return collect($pages)->mapWithKeys(
-            function ($page) {
-                $key = ($page == 'index' ? 'tree' : $page);
-
-                return [
-                    $key => Tab::make()
-                        ->label(__('inspirecms::inspirecms.' . $key))
-                        ->extraAttributes([
-                            'onclick' => 'window.location.href="' . FilamentResourceHelper::attemptToGetUrl(static::getResource(), $page, [], false) . '"',
-                        ]),
-                ];
-            }
-        )->all();
+        return static::$navigationLabel ?? static::$title ?? str(class_basename(static::class))
+            ->kebab()
+            ->afterLast('-')
+            ->title();
     }
 
-    public function getDefaultActiveTab(): string | int | null
+    public function getBreadcrumb(): ?string
     {
-        switch (true) {
-            case $this instanceof ListNavigationTree:
-                return 'tree';
-            case $this instanceof ListNavigationTable:
-                return 'table';
-            default:
-                return null;
-        }
+        return static::$breadcrumb ?? str(class_basename(static::class))
+            ->kebab()
+            ->afterLast('-')
+            ->title();
+    }
+
+    public function getView(): string
+    {
+        return 'inspirecms::filament.pages.list-navigation';
+    }
+
+    protected function getViewData(): array
+    {
+        return [
+            'navigationPageType' => match (true) {
+                $this instanceof ListNavigationTree => 'tree',
+                $this instanceof ListNavigationTable => 'table',
+                default => 'index',
+            },
+        ];
     }
 }

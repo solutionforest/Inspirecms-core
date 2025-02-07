@@ -4,12 +4,12 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\Navigat
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseManagePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ListNavigationTable extends BaseManagePage
+class ListNavigationTable extends BaseListPage
 {
     use NavigationListPageTrait;
     use Translatable;
