@@ -23,7 +23,6 @@ class PermissionHelper
      */
     public static function setupSuperAdminRole()
     {
-        $guardName = InspireCmsConfig::getGuardName();
         $superAdminRoleName = PermissionManifest::getSuperAdminRoleName();
 
         // Reset cached roles and permissions
@@ -34,7 +33,7 @@ class PermissionHelper
         $permissions = static::setupPermissions();
 
         // create roles and assign created permissions
-        $adminRole = $roleClass::findOrCreate($superAdminRoleName, $guardName);
+        $adminRole = $roleClass::findOrCreate($superAdminRoleName, static::getDefaultGuardName());
 
         // assign all permissions for "admin" role.
         $adminRole->syncPermissions($permissions);
@@ -52,7 +51,7 @@ class PermissionHelper
      */
     public static function setupPermissions()
     {
-        $guardName = InspireCmsConfig::getGuardName();
+        $guardName = static::getDefaultGuardName();
 
         // Reset cached roles and permissions
         app(PermissionRegistrar::class)->forgetCachedPermissions();
@@ -122,12 +121,15 @@ class PermissionHelper
     }
 
     /**
-     * @return Collection
+     * @return Collection<Model>
      */
-    private static function getCachedPermissions()
+    public static function getCachedPermissions()
     {
-        $guardName = InspireCmsConfig::getGuardName();
+        return app(PermissionRegistrar::class)->getPermissions(['guard_name' => static::getDefaultGuardName()]);
+    }
 
-        return app(PermissionRegistrar::class)->getPermissions(['guard_name' => $guardName]);
+    private static function getDefaultGuardName()
+    {
+        return InspireCmsConfig::getGuardName();
     }
 }
