@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentRoute as ContentRouteContract;
+use SolutionForest\InspireCms\Observers\ContentRouteObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class ContentRoute extends BaseModel implements ContentRouteContract
@@ -30,5 +31,12 @@ class ContentRoute extends BaseModel implements ContentRouteContract
     public function scopeWhereIsDefaultPattern($query, $condition = true)
     {
         return $query->where('is_default_pattern', $condition);
+    }
+
+    public static function boot()
+    {
+        parent::boot();
+
+        static::observe(ContentRouteObserver::class);
     }
 }
