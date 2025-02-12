@@ -25,7 +25,7 @@ class BuilderFilter extends BaseFilter
     public function applyToQuery($query)
     {
         $method = $this->scopeMethod;
-        
+
         $query = call_user_func_array([$query, $method], $this->scopeParameters ?? []);
 
         return $query;

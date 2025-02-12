@@ -12,7 +12,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollec
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
-class ContentTreeNode  extends BaseContentTreeNode
+class ContentTreeNode extends BaseContentTreeNode
 {
     use WithPagination;
 
@@ -69,6 +69,7 @@ class ContentTreeNode  extends BaseContentTreeNode
                 if (isset($record->children_count)) {
                     return $record->children_count > 0;
                 }
+
                 return $record->ancestorsAndSelf->last()?->children_count > 0;
             })
             ->determineItemDescriptionUsing(fn (Model | Content $record) => $record->slug);
@@ -76,7 +77,7 @@ class ContentTreeNode  extends BaseContentTreeNode
 
     protected function getSearchRecords()
     {
-        if (!$this->isFilteringBySearch()) {
+        if (! $this->isFilteringBySearch()) {
             return new LengthAwarePaginator([], 0, $this->perPage);
         }
 
@@ -84,16 +85,17 @@ class ContentTreeNode  extends BaseContentTreeNode
 
         $baseQuery = $modelExplorer->getModelExplorerQuery()
             ->where('slug', 'like', "%{$this->search}%");
-            
+
         if ($this->filter?->isNotEmpty()) {
             $this->filter->applyOnQuery($baseQuery);
         }
-            
+
         $records = $baseQuery->paginate(perPage: $this->perPage, page: $this->getPage());
 
         $records->tap(function ($paginator) use ($modelExplorer) {
             $items = $modelExplorer->parseAsItems($paginator->getCollection(), $this->getModelExplorerRootLevelId());
             $paginator->setCollection($items);
+
             return $paginator;
         });
 
@@ -111,17 +113,16 @@ class ContentTreeNode  extends BaseContentTreeNode
         // filter records
         if ($this->filter?->isNotEmpty()) {
 
-            $constraint  = function ($query) {
-    
+            $constraint = function ($query) {
+
                 if (filled($this->startNode)) {
                     $query->whereParent($this->startNode);
                 }
 
                 $this->filter->applyOnQuery($query);
-    
+
                 return $query;
             };
-            
 
             $tree = $this->modifyModelExplorerQuery($modelExplorer->getModel()::treeOf($constraint))->get();
 
@@ -134,11 +135,11 @@ class ContentTreeNode  extends BaseContentTreeNode
                         ->sortBy(fn ($record) => $record->nestableTree?->_lft)
                         ->values();
                 });
-                
+
             foreach ($groupedByParentKey as $itemParentKey => $records) {
-                
+
                 $nodeItems = $this->mutuateModelExplorerNodes($records, $itemParentKey);
-                
+
                 $this->cacheModelItemNode($itemParentKey, $nodeItems);
 
                 if ($parentKey == $itemParentKey) {
@@ -146,10 +147,10 @@ class ContentTreeNode  extends BaseContentTreeNode
                 }
             }
 
-            if (!isset($items)) {
+            if (! isset($items)) {
                 $items = [];
             }
-    
+
         } else {
 
             $records = $modelExplorer->getRecordsFrom($parentKey);

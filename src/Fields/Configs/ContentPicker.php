@@ -74,7 +74,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->maxItems(1)
                                 ->filteringByPermission(false)
                                 ->afterStateHydrated(function (ContentPickerComponent $component, $state) {
-                                    if (!is_array($state)) {
+                                    if (! is_array($state)) {
                                         $state = [$state];
                                     }
                                     $state = collect($state)->flatten()->filter()->values()->all();
@@ -87,7 +87,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                 ]),
         ];
     }
-    
+
     public function applyConfig(Forms\Components\Component $component): void
     {
         if ($component instanceof ContentPickerComponent) {

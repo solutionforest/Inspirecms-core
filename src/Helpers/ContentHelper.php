@@ -82,12 +82,12 @@ class ContentHelper
         // if ($coreCheck->isNotEmpty()) {
         //     return true;
         // }
-        
+
         return PermissionHelper::getWildcardPermissions(static::getModel())
             ->map(function (Model | Permission $permission) {
-        
+
                 $accessibleActions = ['view', 'update'];
-                
+
                 $list = PermissionHelper::explodeWildcardPermission($permission->name);
 
                 if (isset($list['action']) && in_array($list['action'], $accessibleActions)) {
@@ -107,7 +107,6 @@ class ContentHelper
      */
     private static function getModel()
     {
-        return InspireCmsConfig::getContentModelClass();;
+        return InspireCmsConfig::getContentModelClass();
     }
-
 }

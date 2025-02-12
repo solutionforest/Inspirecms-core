@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 trait WithContentTreeNode
 {
     use HasContentTreeFilter;
-    
+
     public null | Closure | string $startNode = null;
 
     public bool $filteringByPermission = true;
@@ -57,9 +57,9 @@ trait WithContentTreeNode
         $filter = $this->getFilter();
 
         if ($startNode != null || $filter->isNotEmpty()) {
-            
+
             if ($filter->isNotEmpty()) {
-    
+
                 $this->getFilter()->applyOnQuery($query);
 
             }
@@ -80,9 +80,9 @@ trait WithContentTreeNode
         $filter = $this->getFilter();
 
         if ($startNode != null || $filter->isNotEmpty()) {
-    
+
             $filterRecordKeys = $this->getEloquentQuery()->whereKey($keys)->pluck($query->getModel()->getKeyName())->all();
-            
+
             return $filterRecordKeys;
         }
 

@@ -17,7 +17,7 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
     public array $cachedModelExplorerRecords = [];
 
     public bool $filterByPermission = true;
-    
+
     public function placeholder()
     {
         return <<<'HTML'
@@ -41,7 +41,7 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
                         'children',
                     ])
                     ->with([
-                         // To expand its ancestors
+                        // To expand its ancestors
                         'ancestorsAndSelf' => fn ($q) => $q->breadthFirst(),
                         'documentType',
                         'nestableTree',
@@ -100,7 +100,7 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
             ->all();
     }
 
-    protected function resolveSelectedModelItems(... $keys)
+    protected function resolveSelectedModelItems(...$keys)
     {
         $keys = collect($keys)->flatten()->unique()->all();
 
@@ -115,11 +115,11 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
 
         if ($recordsToCache != null) {
             foreach ($recordsToCache as $record) {
-                
+
                 $key = $record->getKey();
 
                 $this->cachedModelExplorerRecord(key: $key, record: $record);
-                
+
                 $result[$key] = $record;
             }
         }
@@ -161,11 +161,11 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
         return $this->getModelRootLevelParentId();
     }
 
-    protected function getAncestorsFor(... $keys): array
+    protected function getAncestorsFor(...$keys): array
     {
         return collect($this->resolveSelectedModelItems($keys))
             ->map(function (Model | Content $self) {
-                
+
                 return collect($self->ancestorsAndSelf)
                     ->reverse()
                     ->values()

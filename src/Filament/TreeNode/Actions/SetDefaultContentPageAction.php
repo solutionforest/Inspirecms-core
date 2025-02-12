@@ -2,9 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
@@ -28,7 +26,7 @@ class SetDefaultContentPageAction extends Action
         $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->hidden(function ($itemKey, HasModelExplorer $livewire) {
-            
+
             $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
 
             if (! is_array($item)) {
@@ -48,9 +46,9 @@ class SetDefaultContentPageAction extends Action
         $this->action(function ($model, $itemKey, Action $action) {
 
             if (($record = $model->find($itemKey))) {
-                
+
                 $record->setAsDefault();
-                
+
                 $action->success();
             }
         });

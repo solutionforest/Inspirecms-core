@@ -19,8 +19,8 @@ use function Filament\Forms\array_move_before;
 class ContentPicker extends Field
 {
     use CanLimitItemsLength;
-    use WithContentTreeNode;
     use HasPlaceholder;
+    use WithContentTreeNode;
 
     /**
      * @var view-string
@@ -91,7 +91,7 @@ class ContentPicker extends Field
         foreach ($state as $key) {
             if (array_key_exists($key, $formattedState)) {
                 $orderedState[$key] = $formattedState[$key];
-            } 
+            }
         }
 
         return $orderedState;

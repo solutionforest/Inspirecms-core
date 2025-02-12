@@ -74,7 +74,7 @@ class PermissionHelper
         $allPermissions = static::getCachedPermissions();
 
         static::cleanUnusedWildcardPermissions($permissions->all());
-        
+
         $result = $allPermissions->whereIn('name', $permissions->all())->pluck('name')->all();
 
         $missing = array_diff($permissions->toArray(), $result);
@@ -94,7 +94,7 @@ class PermissionHelper
     {
         $existingWildcardPermissions = collect(static::getWildcardPermissions())
             ->where(fn (Model $permission) => ! in_array($permission->name, $excepts));
-            
+
         $guardName = InspireCmsConfig::getGuardName();
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
         /**
@@ -104,9 +104,10 @@ class PermissionHelper
             ->newQuery()
             ->where('guard_name', $guardName)
             ->whereKey($existingWildcardPermissions->keys()->all())
-            ->where(fn ($query) => $query
-                ->orDoesntHave('roles')
-                ->orDoesntHave('users')
+            ->where(
+                fn ($query) => $query
+                    ->orDoesntHave('roles')
+                    ->orDoesntHave('users')
             );
 
         $query->cursor()->each->delete();
@@ -121,9 +122,9 @@ class PermissionHelper
             ->where(fn (Model $permission) => static::isWildcardPattern($permission->name))
             ->keyBy(fn (Model $permission) => $permission->getKey())
             ->when(
-                $model, 
+                $model,
                 function (Collection $collection, $value) {
-                    
+
                     $prefix = str($value)->classBasename()->trim()->lower()->toString() . '.';
 
                     return $collection->where(fn ($permission) => str($permission->name)->startsWith($prefix));
@@ -134,14 +135,13 @@ class PermissionHelper
     /**
      * Explodes a wildcard permission string into its components.
      *
-     * @param string $permissionName The permission string in the format 'model.action.id'.
-     * 
+     * @param  string  $permissionName  The permission string in the format 'model.action.id'.
      * @return array<string, string> An associative array with keys 'model', 'action', and optionally 'id'.
      */
     public static function explodeWildcardPermission(string $permissionName)
     {
         $list = explode('.', $permissionName);
-        
+
         $result = [];
         if (isset($list[0])) {
             $result['model'] = $list[0];
@@ -152,6 +152,7 @@ class PermissionHelper
         if (isset($list[2])) {
             $result['id'] = $list[2];
         }
+
         return $result;
     }
 

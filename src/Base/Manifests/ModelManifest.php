@@ -138,7 +138,7 @@ class ModelManifest implements ModelManifestInterface
     {
         if (
             ! class_exists($modelContract) &&
-            ($morphedClass = Relation::morphMap()[$modelContract] ?? null) && 
+            ($morphedClass = Relation::morphMap()[$modelContract] ?? null) &&
             class_exists($modelContract)
         ) {
             return $morphedClass;

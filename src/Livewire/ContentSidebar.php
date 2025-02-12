@@ -89,14 +89,14 @@ class ContentSidebar extends BaseContentTreeNode
             })
             ->determineItemIconUsing(fn (Model | Content $record) => $record->documentType?->icon)
             ->determineItemUrlUsing(function (Model | Content $record) {
-                
+
                 $itemUrlParams = array_merge([
                     'record' => $record->getKey(),
                     'activeRelationManager' => 0,
                 ], $this->redirectUrlParameters, [
                     'locale' => $this->activeLocale,
                 ]);
-                
+
                 $resource = static::getResource();
                 // authorize user to view/edit the record
                 $page = FilamentResourceHelper::retrieveFirstAccessiblePage($resource, ['edit', 'view'], ['record' => $record]);
@@ -255,12 +255,12 @@ class ContentSidebar extends BaseContentTreeNode
             $action instanceof DeleteContentItemAction ||
             $action instanceof SetDefaultContentPageAction ||
             $action instanceof MoveContentAction ||
-            $action instanceof UpdateContentItemRouteAction || 
+            $action instanceof UpdateContentItemRouteAction ||
             $action instanceof ReorderContentItemAction
         ) {
 
             $action->record(function ($action, $itemKey, $treeNode, $livewire) {
-                
+
                 if ($itemKey == 'root') {
                     return null;
                 }
@@ -315,10 +315,10 @@ class ContentSidebar extends BaseContentTreeNode
 
                 $action
                     ->nodeParentId(function ($itemKey, $treeNode, $record, $livewire) {
-                        
+
                         $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
 
-                        if ($itemKey === 'root' || blank($itemKey) || !isset($item['tree_id'])) {
+                        if ($itemKey === 'root' || blank($itemKey) || ! isset($item['tree_id'])) {
                             return app(static::getModel())->getNestableTreeRootLevelParentId();
                         } else {
                             return $item['tree_id'];

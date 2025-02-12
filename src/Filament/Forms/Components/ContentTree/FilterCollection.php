@@ -27,9 +27,10 @@ class FilterCollection extends Collection implements Wireable
 
             if ($column instanceof BaseFilter) {
                 $query = $column->applyToQuery($query);
+
                 return;
-            } 
-    
+            }
+
             if ($column === 'id') {
                 if ($operator == 'not') {
                     $query->whereKeyNot($value);
@@ -53,11 +54,11 @@ class FilterCollection extends Collection implements Wireable
         foreach ($this->items as $item) {
 
             [$column, $operator, $value] = $item;
-    
+
             if ($column instanceof BaseFilter) {
                 return true;
-            } 
-    
+            }
+
             if ($column === 'id') {
                 if ($operator == 'not') {
                     return $record->getKey() != $value;
@@ -69,10 +70,10 @@ class FilterCollection extends Collection implements Wireable
             } elseif ($operator == 'in') {
                 return in_array($record->{$column}, $value);
             } elseif ($operator == 'not in') {
-                return !in_array($record->{$column}, $value);
+                return ! in_array($record->{$column}, $value);
             } else {
                 return $record->{$column} == ($value ?? $operator);
-            } 
+            }
         }
     }
 }

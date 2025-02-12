@@ -14,7 +14,7 @@ trait NavigationListPageTrait
     protected function getExtraSubNavigationComponents(): array
     {
         $resource = static::getResource();
-        
+
         return collect($resource::getPages())
             ->only(['index', 'table'])
             ->whereInstanceOf(PageRegistration::class)

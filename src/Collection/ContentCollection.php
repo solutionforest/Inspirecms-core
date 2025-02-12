@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Collection;
 
 use Closure;
 use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 

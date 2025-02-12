@@ -20,7 +20,7 @@ class FilamentResourceHelper
         }
 
         try {
-            
+
             if ($autorizeAction) {
 
                 $page = static::retrieveFirstAccessiblePage($resource, $pages, $parameters);
@@ -30,11 +30,10 @@ class FilamentResourceHelper
                 $page = collect($pages)->where(fn ($page) => $resource::hasPage($page))->first();
 
             }
-             
+
             if ($page) {
                 return $resource::getUrl($page, $parameters);
             }
-
 
         } catch (\Throwable $th) {
             //

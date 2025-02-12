@@ -18,7 +18,6 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use Spatie\Permission\PermissionRegistrar;
 
 // todo: need redo the layout
 class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
