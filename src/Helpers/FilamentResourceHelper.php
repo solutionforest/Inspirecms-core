@@ -15,42 +15,57 @@ class FilamentResourceHelper
      */
     public static function attemptToGetUrl(string $resource, array | string $pages, array $parameters, bool $autorizeAction): ?string
     {
-        $url = null;
-
         if (is_string($pages)) {
             $pages = [$pages];
         }
 
         try {
-            foreach ($pages as $page) {
-                if (filled($url)) {
-                    continue;
-                }
+            
+            if ($autorizeAction) {
 
-                if (! $resource::hasPage($page)) {
-                    continue;
-                }
+                $page = static::retrieveFirstAccessiblePage($resource, $pages, $parameters);
 
-                $record = $parameters['record'] ?? null;
+            } else {
 
-                if ($autorizeAction) {
+                $page = collect($pages)->where(fn ($page) => $resource::hasPage($page))->first();
 
-                    $action = $page === 'index' ? 'access' : $page;
-
-                    $method = (string) str($action)->studly()->prepend('can');
-
-                    if (! $resource::{$method}($record)) {
-                        continue;
-                    }
-                }
-
-                $url = $resource::getUrl($page, $parameters);
             }
+             
+            if ($page) {
+                return $resource::getUrl($page, $parameters);
+            }
+
 
         } catch (\Throwable $th) {
             //
         }
 
-        return $url;
+        return null;
+    }
+
+    public static function retrieveFirstAccessiblePage(string $resource, array | string $pages, array $parameters): ?string
+    {
+        if (is_string($pages)) {
+            $pages = [$pages];
+        }
+
+        foreach ($pages as $page) {
+
+            if (! $resource::hasPage($page)) {
+                continue;
+            }
+
+            $record = $parameters['record'] ?? null;
+
+            $action = $page === 'index' ? 'access' : $page;
+
+            $method = (string) str($action)->studly()->prepend('can');
+
+            if ($resource::{$method}($record)) {
+                return $page;
+            }
+        }
+
+        return null;
     }
 }

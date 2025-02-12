@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Unique;
-use SolutionForest\InspireCms\Events\Relations\Synced;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters;
 use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource\Pages;

@@ -92,11 +92,8 @@ class PermissionHelper
 
     public static function cleanUnusedWildcardPermissions(array $excepts = [])
     {
-        $existingWildcardPermissions = static::getCachedPermissions()
-            ->keyBy(fn ($permission) => $permission->name)
-            ->where(fn ($permission, $name) => static::isWildcardPattern($name))
-            ->except($excepts)
-            ->keyBy(fn ($permission) => $permission->getKey());
+        $existingWildcardPermissions = collect(static::getWildcardPermissions())
+            ->where(fn (Model $permission) => ! in_array($permission->name, $excepts));
             
         $guardName = InspireCmsConfig::getGuardName();
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
@@ -115,9 +112,47 @@ class PermissionHelper
         $query->cursor()->each->delete();
     }
 
-    private static function isWildcardPattern(string $name)
+    /**
+     * @return Collection<string|int, Model>
+     */
+    public static function getWildcardPermissions(?string $model = null)
     {
-        return count(explode('.', $name)) === 3;
+        return static::getCachedPermissions()
+            ->where(fn (Model $permission) => static::isWildcardPattern($permission->name))
+            ->keyBy(fn (Model $permission) => $permission->getKey())
+            ->when(
+                $model, 
+                function (Collection $collection, $value) {
+                    
+                    $prefix = str($value)->classBasename()->trim()->lower()->toString() . '.';
+
+                    return $collection->where(fn ($permission) => str($permission->name)->startsWith($prefix));
+                }
+            );
+    }
+
+    /**
+     * Explodes a wildcard permission string into its components.
+     *
+     * @param string $permissionName The permission string in the format 'model.action.id'.
+     * 
+     * @return array<string, string> An associative array with keys 'model', 'action', and optionally 'id'.
+     */
+    public static function explodeWildcardPermission(string $permissionName)
+    {
+        $list = explode('.', $permissionName);
+        
+        $result = [];
+        if (isset($list[0])) {
+            $result['model'] = $list[0];
+        }
+        if (isset($list[1])) {
+            $result['action'] = $list[1];
+        }
+        if (isset($list[2])) {
+            $result['id'] = $list[2];
+        }
+        return $result;
     }
 
     /**
@@ -131,5 +166,10 @@ class PermissionHelper
     private static function getDefaultGuardName()
     {
         return InspireCmsConfig::getGuardName();
+    }
+
+    private static function isWildcardPattern(string $name)
+    {
+        return count(static::explodeWildcardPermission($name)) === 3;
     }
 }

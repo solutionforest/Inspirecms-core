@@ -234,7 +234,8 @@ class TieredPermissionsRepeater extends Field
                         ->maxItems(1)
                         ->minItems(1)
                         ->required()
-                        ->disabled(fn () => $operation === 'edit'),
+                        ->disabled(fn () => $operation === 'edit')
+                        ->filteringByPermission(false),
                 ]),
             Step::make('Access Control')
                 ->schema([

@@ -1,16 +1,16 @@
 @php
     $items = $this->getGroupedNodeItems();
-    $selectedKey = $this->selectedModelItemKey;
     $translatable ??= false;
-    $expandedItemsStateKey ??= null;
     $translatableLocale ??= null;
     $isExpandedSidebar ??= false;
     $sidebarExpanded = true;
 @endphp
 
-<div class="model-explorer relative block flex-none bg-white dark:bg-gray-900 shadow-lg  px-2" x-data="{
-    sidebarExpanded: @js($sidebarExpanded),
-}">
+<div class="model-explorer relative block flex-none bg-white dark:bg-gray-900 shadow-lg px-2" 
+    x-data="{
+        sidebarExpanded: @js($sidebarExpanded),
+    }"
+    >
     <div class="top-0 z-20 -ml-0.5 h-screen overflow-y-auto overflow-x-hidden pb-16">
         <div x-bind:class="{
             '!w-12': !sidebarExpanded,
@@ -41,48 +41,20 @@
             <div class="px-1 pb-2">
                 {{ $this->localeSwitcher }}
             </div>
-            <nav class="text-base lg:text-sm w-64 lg:block" x-data="{
-                expandedItems: @if (filled($expandedItemsStateKey)) $wire.entangle('{{ $expandedItemsStateKey }}') @else [] @endif,
-                async toggleItem(key, currDepth) {
-                    if (this.expandedItems.includes(key)) {
-                        this.expandedItems = this.expandedItems.filter(item => item !== key);
-                    } else {
-                        this.expandedItems.push(key);
-                    }
-
-                    await this.fetchNodes(key, currDepth + 1);
-                },
-                selectItem(key) {            
-                    this.isExpandedSidebar = false
-                    Livewire.dispatch('selectItem', [key])
-                },
-                isExpanded(key) {
-                    return this.expandedItems.includes(key);
-                },
-                async fetchNodes(key, depth) {
-                    Livewire.dispatch('getNodes', [key, depth])
-                    while (this.fetching) {
-                        await new Promise(resolve => setTimeout(resolve, 100));
-                    }
-                },
-                init() {
-                    //
-                }
-            }">
-                <ul class="flex flex-col gap-y-1" role="list" aria-expanded="{{ $isExpandedSidebar }}">
-                    @foreach ($items as $item)
-                        <x-inspirecms-support::model-explorer.item  
-                            :item="$item" 
-                            :selected-key="$selectedKey"
-                            :model-explorer="$modelExplorer"
-                            :translatable="$translatable"
-                            :translatable-locale="$translatableLocale"
-                            :spa-mode="$isSpaMode ?? false"
-                        />
-                    @endforeach
-                </ul>
-            </nav>
+            
+            <x-inspirecms-support::model-explorer
+                class="text-base lg:text-sm w-64 lg:block"
+                :livewire-key="$this->getId()"
+                :livewire-name="$this->getName()"
+                :items="$items" 
+                :model-explorer="$modelExplorer"
+                :translatable="$translatable"
+                :translatable-locale="$translatableLocale"
+                :spa-mode="$isSpaMode ?? false"
+            />
         </div>
     </div>
+
+    <x-filament-actions::modals />
     <x-inspirecms-support::tree-node.actions.modals />
 </div>

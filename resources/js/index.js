@@ -1,5 +1,4 @@
 import "./tour-guide";
-import "./tree-node";
 
 // Function to disable links within the iframe
 function disableIframeLinks(iframe) {

@@ -5,31 +5,28 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter
 class BuilderFilter extends BaseFilter
 {
     public function __construct(
-        protected string $method,
-        protected ?array $parameters = null,
+        protected string $scopeMethod,
+        protected ?array $scopeParameters = null,
     ) {}
 
     public function toLivewire()
     {
         return [
-            'method' => $this->method,
-            'parameters' => $this->parameters,
+            'scopeMethod' => $this->scopeMethod,
+            'scopeParameters' => $this->scopeParameters,
         ];
     }
 
     public static function fromLivewire($value)
     {
-        return new static($value['method'], $value['parameters'] ?? null);
+        return new static($value['scopeMethod'], $value['scopeParameters'] ?? null);
     }
 
     public function applyToQuery($query)
     {
-        $method = $this->method;
-        if ($this->parameters != null) {
-            $query->{$method}($this->parameters);
-        } else {
-            $query->{$method}();
-        }
+        $method = $this->scopeMethod;
+        
+        $query = call_user_func_array([$query, $method], $this->scopeParameters ?? []);
 
         return $query;
     }

@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 
 class DeleteContentItemAction extends Action
@@ -20,6 +21,8 @@ class DeleteContentItemAction extends Action
         $this->label(__('filament-actions::delete.single.label'));
 
         $this->authorize('delete');
+
+        $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->modalHeading(fn (): string => __('filament-actions::delete.single.label'));
 

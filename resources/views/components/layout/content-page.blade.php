@@ -46,7 +46,8 @@
                 @livewire('inspirecms::content-sidebar', [
                     'redirectUrlParameters' => $redirectUrlParameters ?? [],
                     'activeLocale' => $activeLocale ?? null,
-                    'selectedModelItemKey' => $selectedModelItemKey ?? '0',
+                    'selectedModelItemKeys' => $selectedModelItemKeys,
+                    'expandedModelItemKeys' => $expandedModelItemKeys,
                     'pageName' => $pageName ?? null,
                 ])
 

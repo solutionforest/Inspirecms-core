@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
 
-class ContentCollection extends Collection
+class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection
 {
     public function toDto(...$args)
     {

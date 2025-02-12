@@ -1,6 +1,5 @@
 @php
     $statePath = $getStatePath();
-    $isDisabled = $isDisabled();
 @endphp
 <x-dynamic-component
     :component="$getFieldWrapperView()"
@@ -9,11 +8,12 @@
         state: $wire.$entangle('{{ $statePath }}'), 
     }"
 >
-    <livewire:inspirecms::content-tree-node 
-        modelable="state" 
-        :parent-id="$getStartNode()"
-        :filters="$getFilters()"
-        :limits="$getLimits()"
-        :is-disabled="$isDisabled"
-    /> 
+    @livewire('inspirecms::content-tree-node', [
+        'modelable' => 'state',
+        'startNode' => $getStartNode(),
+        'filter' => $getFilter(),
+        'limits' => $getLimits(),
+        'isDisabled' => $isDisabled(),
+        'filterByPermission' => $isFilteringByPermission(),
+    ])
 </x-dynamic-component>

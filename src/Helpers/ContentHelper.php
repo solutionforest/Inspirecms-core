@@ -9,6 +9,7 @@ use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
+use Spatie\Permission\Contracts\Permission;
 
 class ContentHelper
 {
@@ -51,41 +52,62 @@ class ContentHelper
         return true;
     }
 
-    public static function havePermissionToViewNode($id, $user = null)
+    /**
+     * @return true|array Returns true if the user has permission to all content, or an array of accessible content IDs if the user has limited permissions.
+     */
+    public static function getAccessibleContentIds($user = null)
     {
         $user ??= filament()->auth()->user();
-        if (! $user || ($user != null && ! is_inspirecms_user($user))) {
-            return false;
-        }
+        // if (! $user || ($user != null && ! is_inspirecms_user($user))) {
+        //     return false;
+        // }
 
-        if ($user->isSuperAdmin()) {
-            return true;
-        }
-
-        /** @var class-string<Model | Content> */
-        $model = InspireCmsConfig::getContentModelClass();
-        $rootId = app($model)->getRootLevelParentId();
-        if ($id == $rootId) {
-            return true;
-        }
+        // if ($user->isSuperAdmin()) {
+        //     return true;
+        // }
 
         $coreCheck = PermissionManifest::authorizeModel(
             ability: 'view',
-            model: $model,
+            model: static::getModel(),
         );
         if ($coreCheck === true) {
             return true;
         }
+        // $coreCheck = collect($accessibleActions)
+        //     ->map(fn ($action) => PermissionManifest::authorizeModel(
+        //         ability: $action,
+        //         model: static::getModel(),
+        //     ))
+        //     ->where(fn ($result) => $result === true);
+        // if ($coreCheck->isNotEmpty()) {
+        //     return true;
+        // }
+        
+        return PermissionHelper::getWildcardPermissions(static::getModel())
+            ->map(function (Model | Permission $permission) {
+        
+                $accessibleActions = ['view', 'update'];
+                
+                $list = PermissionHelper::explodeWildcardPermission($permission->name);
 
-        $tieredCheck = PermissionManifest::authorizeModel(
-            ability: 'view',
-            model: $model,
-            id: $id,
-        );
-        if ($tieredCheck === true) {
-            return true;
-        }
+                if (isset($list['action']) && in_array($list['action'], $accessibleActions)) {
+                    return $list['id'] ?? null;
+                }
 
-        return false;
+                return null;
+            })
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
+
+    /**
+     * @return class-string<Model | Content>
+     */
+    private static function getModel()
+    {
+        return InspireCmsConfig::getContentModelClass();;
+    }
+
 }
