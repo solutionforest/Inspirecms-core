@@ -6,6 +6,14 @@
     :field="$field"
     x-data="{ 
         state: $wire.$entangle('{{ $statePath }}'), 
+        selected: [],
+        expanded: [],
+        isExpanded(key) {
+            return false;
+        },
+        isSelected(key) {
+            return false;
+        },
     }"
 >
     @livewire('inspirecms::content-tree-node', [

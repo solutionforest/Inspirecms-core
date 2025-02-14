@@ -1,4 +1,12 @@
-<div class="flex flex-col space-y-2">
+<div class="flex flex-col space-y-2"
+    ax-load
+    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
+    x-modelable="selected" x-model="{{ $modelable }}"
+    x-data="treeNode({
+        selected: $wire.entangle('selectedModelItemKeys').live,
+        expanded: $wire.entangle('expandedModelItemKeys').live,
+    })"
+>
     @if (! $isDisabled)
         
         <x-filament::input.wrapper>
@@ -20,13 +28,6 @@
                 :items="$items" 
                 :model-explorer="$this->getModelExplorer()"
                 :is-disabled="$isDisabled"
-                ax-load
-                ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
-                x-modelable="selected" x-model="{{ $this->modelable }}"
-                x-data="treeNode({
-                    selected: $wire.entangle('selectedModelItemKeys'),
-                    expanded: [],
-                })"
             />
             <x-filament::pagination 
                 class="pt-2"
@@ -37,7 +38,7 @@
             />
         @else
             <x-inspirecms-support::model-explorer
-                x-modelable="selected" x-model="{{ $this->modelable }}"
+                skip-alpine="true"
                 :items="$items" 
                 :model-explorer="$this->getModelExplorer()"
                 :is-disabled="$isDisabled"

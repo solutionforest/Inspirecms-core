@@ -66,6 +66,9 @@ class ContentTreeNode extends BaseContentTreeNode
                 return false;
             })
             ->determineItemHasChildrenUsing(function (Model | Content $record) {
+                if ($this->isFilteringBySearch()) {
+                    return false;
+                }
                 if (isset($record->children_count)) {
                     return $record->children_count > 0;
                 }
