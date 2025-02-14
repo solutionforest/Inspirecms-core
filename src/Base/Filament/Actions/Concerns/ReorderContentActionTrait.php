@@ -59,6 +59,7 @@ trait ReorderContentActionTrait
             if ($record && ($record->isLocked() || $record->trashed())) {
                 return true;
             }
+
             return false;
         });
 

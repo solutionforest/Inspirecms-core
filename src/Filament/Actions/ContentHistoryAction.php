@@ -74,7 +74,7 @@ class ContentHistoryAction extends Action
                     if ($record?->isLocked() || $record?->trashed()) {
                         return true;
                     }
-                    
+
                     return ! isset($arguments['itemKey']);
                 })
                 ->label(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')

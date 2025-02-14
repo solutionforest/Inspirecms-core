@@ -21,11 +21,11 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 class Content extends BaseModel implements ContentContract
 {
     use BelongsToNestableTree;
+    use Concerns\CanLockContent;
     use Concerns\HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
     use Concerns\HasContentWebSetting;
-    use Concerns\CanLockContent;
     use Concerns\HasTemplates;
     use Concerns\HasTranslations {
         setTranslation as protected traitSetTranslation;

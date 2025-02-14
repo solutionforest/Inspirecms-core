@@ -31,6 +31,7 @@ class LockAction extends Action
             if ($record->trashed()) {
                 return false;
             }
+
             return ! $record->isLocked();
         });
 

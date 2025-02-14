@@ -28,13 +28,13 @@ trait ContentPageTrait
         }
     }
 
-    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
+    public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
     {
         $title = parent::getTitle();
 
         if (($this instanceof EditRecord || $this instanceof ViewRecord) && $this->getRecord()->isLocked()) {
             return UIHelper::generateTextWithBadge(
-                text: $title, 
+                text: $title,
                 badgeText: 'Locked',  // todo: add translation
                 color: 'warning',
                 icon: 'heroicon-o-lock-closed'

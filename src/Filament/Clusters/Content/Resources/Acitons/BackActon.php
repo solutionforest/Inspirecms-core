@@ -47,7 +47,6 @@ class BackActon extends Action
                 return null;
             }
 
-
             $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
             $parameters = [

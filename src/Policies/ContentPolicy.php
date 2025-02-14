@@ -51,6 +51,7 @@ class ContentPolicy extends BasePolicy
         if ($content->isLocked()) {
             return false;
         }
+
         return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 

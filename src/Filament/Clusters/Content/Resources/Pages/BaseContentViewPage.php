@@ -37,7 +37,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
     protected function getHeaderActions(): array
     {
         return [
-            
+
             BackActon::make(),
 
             PreviewAction::make()
@@ -56,15 +56,15 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
                     Actions\RestoreAction::make(),
 
                     Actions\ForceDeleteAction::make(),
-                        
+
                     LockAction::make()
                         // refresh title
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
 
-                UnlockAction::make()
-                        // refresh title
+                    UnlockAction::make()
+                            // refresh title
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
-            ])
+                ])
                     ->dropdown(false)
                     ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 

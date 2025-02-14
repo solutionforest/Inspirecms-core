@@ -43,7 +43,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property-read null | Model & Content $parent
  * @property-read Collection<Model & Content> $parentAndSelf
  */
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, Base\CanLockContent, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
+interface Content extends Base\CanLockContent, Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
     /**
      * @return HasOne

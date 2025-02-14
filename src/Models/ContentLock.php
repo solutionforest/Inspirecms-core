@@ -32,7 +32,7 @@ class ContentLock extends BaseModel implements ContentLockContract
     {
         $user = $this->retrieveOwner($user);
 
-        return $this->owner_id === $user->getKey() && 
+        return $this->owner_id === $user->getKey() &&
             $this->owner_type === $user->getMorphClass();
     }
 
