@@ -97,10 +97,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->disabled(function (null | Model | ModelsContent $record, $livewire) {
                 if ($record?->isLocked()) {
                     return true;
-                } 
+                }
                 if ($livewire instanceof ViewRecord) {
                     return true;
                 }
+
                 return false;
             })
             ->schema([
@@ -113,7 +114,8 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     ->hidden(function (null | Model | ModelsContent $record, $livewire) {
                         if ($record?->isLocked()) {
                             return true;
-                        } 
+                        }
+
                         return $livewire instanceof ViewPage;
                     }),
                 Forms\Components\Tabs::make()
@@ -721,7 +723,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
      */
     protected static function getLockDetailGroupedFormComponent()
     {
-        // todo: add translations 
+        // todo: add translations
         return Forms\Components\Section::make()
             ->visible(fn (null | Model | ModelsContent $record) => $record != null && $record->isLocked())
             ->schema([

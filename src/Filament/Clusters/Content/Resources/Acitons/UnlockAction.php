@@ -33,6 +33,7 @@ class UnlockAction extends Action
             if ($record->trashed()) {
                 return false;
             }
+
             return $record->isLocked() && $record->isOwnerForLock();
         });
 
@@ -42,6 +43,7 @@ class UnlockAction extends Action
             try {
                 if ($record->unlock() == true) {
                     $action->success();
+
                     return;
                 }
             } catch (UnauthorizedOwnerException $th) {
@@ -50,6 +52,7 @@ class UnlockAction extends Action
                     ->body('You are not the owner of the lock.')
                     ->danger()
                     ->send();
+
                 return;
             }
             $action->failure();

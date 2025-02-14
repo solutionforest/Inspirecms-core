@@ -48,11 +48,11 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     protected function getHeaderActions(): array
     {
         return [
-            
+
             BackActon::make(),
 
             Actions\ActionGroup::make([
-                
+
                 Actions\ActionGroup::make([
 
                     Actions\ViewAction::make(),
@@ -61,9 +61,9 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                         ->visible(fn (Model $record) => ! $record->isLocked()),
 
                     Actions\RestoreAction::make(),
-                        
+
                     Actions\ForceDeleteAction::make(),
-                        
+
                     LockAction::make()
                         // refresh title
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
@@ -122,7 +122,7 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                 ->label(__('inspirecms::resources/content.actions.more_actions.label'))
                 ->button()
                 ->color('gray'),
-                
+
             $this->getCancelFormAction(),
         ];
     }
