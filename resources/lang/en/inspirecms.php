@@ -8,6 +8,7 @@ return [
     'default' => 'Default',
     'deleted_at' => 'Deleted at',
     'document_type' => 'Document Type',
+    'export' => 'Export',
     'field_group' => 'Custom Fields',
     'id' => 'ID',
     'import' => 'Import',

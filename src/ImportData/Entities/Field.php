@@ -2,6 +2,11 @@
 
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Models\Contracts\Field as ContractsField;
+
+
 /**
  * @extends BaseEntity<Field>
  */
@@ -49,5 +54,25 @@ class Field extends BaseEntity
             'config' => $this->config,
             'label' => $this->label ?? (string) str($this->slug)->title()->replace('_', ' '),
         ];
+    }
+
+    /**
+     * @param ContractsField|Model $record
+     */
+    public static function fromRecord($record)
+    {
+        $data = Arr::only($record->toArray(), ['config', 'type', 'label']);
+        $data['slug'] = $record->name;
+        return static::fromArray($data);
+    }
+
+    public function toExportArray(): array
+    {
+        $arrayOrder = ['slug', 'type', 'config', 'label'];
+
+        return collect(parent::toArray())
+            ->only($arrayOrder)
+            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
+            ->all();
     }
 }

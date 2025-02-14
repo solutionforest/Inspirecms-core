@@ -70,7 +70,7 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addFieldGroup(string $slug, Entities\FieldGroup $data, array $fields)
+    public function addFieldGroup(string $slug, Entities\FieldGroup $data)
     {
         if (isset($this->pendingData['fieldGroups'][$slug])) {
             return;
@@ -79,7 +79,7 @@ class ImportDataService implements ImportDataServiceInterface
         $data->slug = $slug;
         $this->pendingData['fieldGroups'][$slug] = $data;
 
-        foreach ($fields as $item) {
+        foreach ($data->fields as $item) {
 
             $fieldKey = $data->slug . '.' . $item->slug;
 

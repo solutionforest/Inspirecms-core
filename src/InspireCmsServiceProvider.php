@@ -98,6 +98,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
         $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
         $this->app->singleton(Services\ImportServiceInterface::class, fn () => $this->app->make(Services\ImportService::class));
+        $this->app->singleton(Services\ExportServiceInterface::class, fn () => $this->app->make(Services\ExportService::class));
 
         $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
 
@@ -187,6 +188,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
             Commands\ExecuteImport::class,
+            Commands\ExecuteExport::class,
             Commands\DataCleanup::class,
             Commands\RepairPermissionsCommand::class,
         ];
@@ -235,6 +237,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             'create_inspire-cms-core_table',
             'create_inspire-cms-content-locks_table',
+            'create_inspire-cms-import_and_export_table',
             'create_custom_spatie_permission_table',
             'update_sessions_table',
         ];

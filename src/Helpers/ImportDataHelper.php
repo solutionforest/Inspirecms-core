@@ -144,7 +144,6 @@ class ImportDataHelper
 
             switch ($folder) {
                 case self::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-                    $arrayOrder = ['title', 'showAsTable', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'rejected'];
                     $sequence = collect([
                         [
                             'showAsTable' => false,
@@ -175,8 +174,9 @@ class ImportDataHelper
                             fn (array $item): array => collect(['defaultTemplate' => Arr::first($item['templates'] ?? null)])
                                 ->merge(['title' => null, 'icon' => null, 'rejected' => []])
                                 ->merge($item)
-                                ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))->all()
+                                ->all()
                         )
+                        ->map(fn (array $item) => Entities\DocumentType::fromArray($item)->toArray())
                         ->all();
 
                     break;
@@ -250,7 +250,7 @@ class ImportDataHelper
                 case self::FOLDER_IDENTIFIER_TEMPLATE:
 
                     $sequence = [
-                        '<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme(\'page\')" :content="$content" :locale="$locale ?? $content->getLocale()">This is sample view</x-dynamic-component>',
+                        '<x-cms-template :content="$content" type="page">This is sample view</x-cms-template>',
                     ];
 
                     break;

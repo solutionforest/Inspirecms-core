@@ -433,6 +433,17 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'Import model');
     }
 
+    public static function getExportTableName(): string
+    {
+        return app(static::getExportModelClass())->getTable();
+    }
+
+    public static function getExportModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\Export::class, Models\Export::class);
+
+        return self::ensureClassExists($class, 'Export model');
+    }
     /**
      * Ensure that a class exists, or throw an exception.
      *

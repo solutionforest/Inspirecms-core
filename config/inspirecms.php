@@ -2,6 +2,7 @@
 
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
@@ -79,7 +80,8 @@ return [
             'role' => RoleResource::class,
             'navigation' => NavigationResource::class,
             'sitemap' => SitemapResource::class,
-            'import_job' => ImportResource::class,
+            'import' => ImportResource::class,
+            'export' => ExportResource::class,
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
@@ -112,6 +114,10 @@ return [
         'temp_directory' => 'temp/imports',
     ],
 
+    'exports' => [
+        'disk' => 'local',
+    ],
+
     'models' => [
         'table_name_prefix' => 'cms_',
         'morph_map_prefix' => 'cms_',
@@ -135,6 +141,7 @@ return [
             'media_asset' => SupportModels\MediaAsset::class,
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
             'import' => Models\Import::class,
+            'export' => Models\Export::class,
         ],
         'policies' => [
             'content' => Policies\ContentStatusPolicy::class,
@@ -144,6 +151,9 @@ return [
                 'interval' => 30,
             ],
             'import' => [
+                'interval' => 5,
+            ],
+            'export' => [
                 'interval' => 5,
             ],
         ],
@@ -192,6 +202,14 @@ return [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
             'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
+            'arguments' => [
+                '--limit 50', // limit
+            ],
+        ],
+        'execute_export_job' => [
+            'enabled' => true,
+            'schedule' => 'everyFiveMinutes',
+            'command' => \SolutionForest\InspireCms\Commands\ExecuteExport::class,
             'arguments' => [
                 '--limit 50', // limit
             ],
