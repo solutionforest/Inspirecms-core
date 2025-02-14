@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components\Concerns;
 
 use Closure;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BaseFilter;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
 
 trait HasContentTreeFilter
 {
@@ -70,14 +71,16 @@ trait HasContentTreeFilter
         ], true);
     }
 
-    public function getFilters(): array
+    public function getFilter(): FilterCollection
     {
-        return array_filter(array_map(function ($filter) {
+        $items = array_map(function ($filter) {
             [$key, $operator, $value] = $filter;
 
             return $key instanceof Closure ? $this->evaluate($key, [
                 'filter' => $filter,
             ]) : $filter;
-        }, $this->filters));
+        }, $this->filters);
+
+        return new FilterCollection($items);
     }
 }

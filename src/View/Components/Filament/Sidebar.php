@@ -12,7 +12,7 @@ class Sidebar extends Component
 
     public function render()
     {
-        return view('inspirecms::components.sidebar.index', [
+        return view('inspirecms::components.filament.sidebar.index', [
             'navigation' => $this->navigation,
         ]);
     }

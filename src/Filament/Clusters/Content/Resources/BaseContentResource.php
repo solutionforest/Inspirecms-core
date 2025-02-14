@@ -50,6 +50,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return [
             'view',
+            'view_any',
             'create',
             'update',
             'delete',

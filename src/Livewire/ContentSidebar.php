@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
 use Filament\Support\Enums\IconPosition;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
@@ -15,7 +14,6 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\MoveContentAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\ReorderContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\SetDefaultContentPageAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\UpdateContentItemRouteAction;
-use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -23,7 +21,7 @@ use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
 use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
 
-class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent
+class ContentSidebar extends BaseContentTreeNode
 {
     public array $redirectUrlParameters = [];
 
@@ -31,19 +29,23 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     public ?string $pageName = null;
 
-    public array $expandedModelExplorerItems = [];
-
-    public array $cachedModelExplorerRecords = [];
-
     public bool $isExpandedSidebar = true;
 
     public bool $isSpaMode = true;
 
     public function mount()
     {
-        if (filled($this->selectedModelItemKey)) {
-            $this->refreshModelExplorerSidebar();
+        $this->cacheModelExplorerNodesOn(parentKey: $this->getModelRootLevelParentId());
+
+        if (! empty($this->selectedModelItemKeys)) {
+            $record = $this->resolveSelectedModelItems($this->selectedModelItemKeys)->first();
+            if ($this->isDisplayChildrenAsTable($record?->parent)) {
+                $this->setSelectedModelItem([$record->parent->getKey()], merge: false, replace: true);
+            } else {
+                $this->expandParentModelItemIfSelected($this->selectedModelItemKeys);
+            }
         }
+
         if (! isset($this->activeLocale)) { // set default locale if not set
             $this->activeLocale = Arr::first($this->getTranslatableLocales());
         }
@@ -63,7 +65,6 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
     public function updatedActiveLocale(string $locale): void
     {
         $this->activeLocale = $locale;
-        $this->refreshModelExplorerSidebar();
         // dispatch event to page component
         $this->dispatch('changeActiveLocale', $locale);
     }
@@ -71,75 +72,79 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
     {
-        $modelClass = static::getModel();
-        $model = app($modelClass);
-        $parentIdColumn = $model->getQualifiedParentKeyName();
+        return parent::modelExplorer($modelExplorer)
+            ->maxSelectItem(1)
+            ->resolveRecordUsing(function ($query, $key) {
+                return $query
+                    ->with('parent.documentType') // for checking is table node
+                    ->find($key);
+            })
+            ->determineItemHasChildrenUsing(function (Model | Content $record) {
 
-        return $modelExplorer
-            ->model($modelClass)
-            ->parentColumnName($parentIdColumn)
-            ->rootLevelKey(static::getModelRootLevelParentId())
-            ->modifyQueryUsing(
-                fn (Builder $query) => $query
-                    ->withCount([
-                        'children',
-                    ])
-                    ->with([
-                        'documentType',
-                        'nestableTree',
-                    ])
-                    ->sortedByTree()
-            )
-            ->resolveRecordUsing(fn (Builder $query, $key) => static::isValidSelectableModelItem($key) ? $query->find($key) : null)
-            ->determineRecordLabelUsing(fn (Model | Content $record) => $record->title)
-            ->determineRecordHasChildrenUsing(function (Model | Content $record) {
-
-                if ($record->documentType?->show_as_table) {
+                if ($this->isDisplayChildrenAsTable($record)) {
                     return false;
                 }
 
                 return $record->children_count > 0;
             })
+            ->determineItemIconUsing(fn (Model | Content $record) => $record->documentType?->icon)
+            ->determineItemUrlUsing(function (Model | Content $record) {
+
+                $itemUrlParams = array_merge([
+                    'record' => $record->getKey(),
+                    'activeRelationManager' => 0,
+                ], $this->redirectUrlParameters, [
+                    'locale' => $this->activeLocale,
+                ]);
+
+                $resource = static::getResource();
+                // authorize user to view/edit the record
+                $page = FilamentResourceHelper::retrieveFirstAccessiblePage($resource, ['edit', 'view'], ['record' => $record]);
+
+                if (! $page) {
+                    return null;
+                }
+
+                return FilamentResourceHelper::attemptToGetUrl(
+                    $resource,
+                    $page,
+                    $itemUrlParams,
+                    false
+                );
+            })
             ->mutuateNodeItemsUsing(function (array $item, Model | Content $record): array {
 
-                // authorize user to view/edit the record
-                $pageType = null;
-                $resource = static::getResource();
-                foreach (['edit', 'view'] as $action) {
-                    $method = 'can' . ucfirst($action);
-                    if ($resource::{$method}($record)) {
-                        $pageType = $action;
-
-                        break;
-                    }
-                }
-                $item['pageType'] = $pageType;
-
                 if (in_array('Spatie\Translatable\HasTranslations', class_uses_recursive($record))) {
-                    $item['label'] = $record->getTranslations('title');
-                    $item['fallbackLabel'] = $record->getTranslation('title', $record->getFallbackLocale());
-                    if (blank($item['fallbackLabel'])) {
-                        $item['fallbackLabel'] = collect($record->getTranslations('title'))->filter()->first();
+                    $item['title'] = $record->getTranslations('title');
+                    $item['fallbackTitle'] = $record->getTranslation('title', $record->getFallbackLocale());
+                    if (blank($item['fallbackTitle'])) {
+                        $item['fallbackTitle'] = collect($record->getTranslations('title'))->filter()->first();
                     }
                 }
 
-                $item['icon'] = $record->documentType?->icon;
                 $item['documentTypeKey'] = $record->document_type_id;
+                $item['documentTypeCat'] = $record->documentType?->category;
 
                 if ($record->display_status?->getName() !== 'publish') {
-                    $item['extraAttributes']['class'] = [
+                    $item['extraAttributes']['title']['class'] = [
                         '!text-gray-400',
                     ];
                 }
+
+                $item['tree_id'] = isset($record->nestable_tree_id)
+                    ? $record->nestable_tree_id
+                    : ($record->nestableTree ? $record->nestableTree->getKey() : 'na');
 
                 return $item;
             })
             ->actions([
                 CreateContentItemAction::make(),
                 ReorderContentItemAction::make('reorder_content_item'),
+
                 ActionGroup::make([
 
                     SetDefaultContentPageAction::make(),
+
                     UpdateContentItemRouteAction::make(),
 
                     ActionGroup::make([
@@ -162,99 +167,23 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             ]);
     }
 
-    protected function refreshModelExplorerSidebar(): void
+    protected function getModelExplorerItemsFrom(string | int $parentKey): array
     {
-        $record = static::isValidSelectableModelItem($this->selectedModelItemKey)
-            ? $this->resolveSelectedModelItem($this->selectedModelItemKey)
-            : null;
-
-        if (! $record) {
-            return;
-        }
-
-        if ($record->trashed()) {
-            $this->expandedModelExplorerItems = [];
-
-            return;
-        }
-
-        $this->selectedModelItem($record);
-
-        $ancestorsAndSelf = collect($record->ancestorsAndSelf)->reverse()->values();
-
-        foreach ($ancestorsAndSelf as $index => $item) {
-            $this->cacheModelExplorerNodesOn($item->getParentId(), $index);
-            if ($item->getKey() !== $record->getKey()) {
-                $this->expandedModelExplorerItems[] = $item->getKey();
-            }
-        }
-    }
-
-    /**
-     * @return null | Model & Content
-     */
-    protected function resolveSelectedModelItem(string | int $key): ?Model
-    {
-        if (in_array($key, ['root'])) {
-            return null;
-        }
-
-        if (isset($this->cachedModelExplorerRecords[$key])) {
-            return $this->cachedModelExplorerRecords[$key];
-        }
-
-        if (static::isValidSelectableModelItem($key)) {
-            $this->cachedModelExplorerRecord($key, $this->getModelExplorer()->findRecord($key));
-        }
-
-        return $this->cachedModelExplorerRecords[$key] ?? null;
-    }
-
-    /**
-     * @param  string  $key
-     * @param  null | Model & Content  $record
-     */
-    protected function cachedModelExplorerRecord($key, $record)
-    {
-        if (! isset($this->cachedModelExplorerRecords[$key])) {
-            return $this->cachedModelExplorerRecords[$key] = $record;
-        }
-    }
-
-    protected function setSelectedModelItem(string | int | Model | null $record): void
-    {
-        if ($record) {
-
-            /**
-             * @var null | Model & Content $item
-             */
-            $item = $record instanceof Model ? $record : $this->resolveSelectedModelItem($record);
-
-            if ($item?->parent?->documentType->show_as_table) {
-                parent::setSelectedModelItem($item->parent);
-
-                return;
-            }
-        }
-
-        parent::setSelectedModelItem($item);
-
-    }
-
-    protected function getModelExplorerItemsFrom(string | int $parentKey, int $depth): array
-    {
-        $selectItem = static::isValidSelectableModelItem($parentKey)
-            ? $this->resolveSelectedModelItem($parentKey)
-            : null;
-
-        if ($selectItem?->documentType->show_as_table) {
+        if (! $this->isValidSelectableModelItemKey($parentKey)) {
             return [];
         }
 
-        return parent::getModelExplorerItemsFrom($parentKey, $depth);
+        $selectItem = $this->resolveSelectedModelItems($parentKey)->first();
+
+        // Hide children
+        if ($this->isDisplayChildrenAsTable($selectItem)) {
+            return [];
+        }
+
+        return parent::getModelExplorerItemsFrom($parentKey);
     }
 
-    protected function mutuateModelExplorerNodes($records, string | int $parentKey, int $depth): array
+    protected function mutuateModelExplorerNodes($records, string | int $parentKey): array
     {
         foreach ($records as $record) {
             if ($record instanceof Content && $record instanceof Model) {
@@ -263,59 +192,24 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             }
         }
 
-        return parent::mutuateModelExplorerNodes($records, $parentKey, $depth);
-    }
-
-    protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
-    {
-        $outputArray = [];
-        foreach ($items as $parentKey => $nodes) {
-
-            $outputNodes = collect($nodes)
-                // Add link to the node
-                ->map(function (array $data) {
-                    if (! isset($data['pageType'])) {
-                        return $data;
-                    }
-
-                    $itemUrlParams = array_merge([
-                        'record' => $data['key'],
-                        'activeRelationManager' => 0,
-                    ], $this->redirectUrlParameters, [
-                        'locale' => $this->activeLocale,
-                    ]);
-
-                    $data['link'] = FilamentResourceHelper::attemptToGetUrl(
-                        static::getResource(),
-                        $data['pageType'],
-                        $itemUrlParams,
-                        false
-                    );
-                    unset($data['pageType']);
-
-                    return $data;
-                })
-                ->all();
-
-            $outputArray[$parentKey] = $outputNodes;
-        }
-
-        return $outputArray;
+        return parent::mutuateModelExplorerNodes($records, $parentKey);
     }
 
     public function getGroupedNodeItems()
     {
         return collect(parent::getGroupedNodeItems())
-            // Filter out base on user permission
-            ->filter(fn (array $data) => ContentHelper::havePermissionToViewNode($data['key']))
             ->prepend([
                 'key' => 'root',
                 'parentKey' => -1,
-                'label' => __('inspirecms::inspirecms.root'),
-                'hasChildren' => false,
                 'depth' => -1,
+                'title' => __('inspirecms::inspirecms.root'),
+                'hasChildren' => false,
                 'link' => FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['index'], $this->getRedirectUrlParameters(), false),
                 'documentTypeKey' => null,
+                'extraAttributes' => [
+                    'title' => ['class' => ['font-bold']],
+                    'ctn' => ['class' => ['h-11 shadow']],
+                ],
             ])
             ->all();
     }
@@ -326,7 +220,6 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
             'translatableLocale' => $this->activeLocale,
             'translatable' => filled($this->activeLocale),
             'modelExplorer' => $this->getModelExplorer(),
-            'expandedItemsStateKey' => 'expandedModelExplorerItems',
         ]);
     }
 
@@ -338,36 +231,14 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
         return InspireCmsConfig::get('filament.resources.page', PageResource::class);
     }
 
-    /**
-     * @return class-string<\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Content>
-     */
-    protected static function getModel()
-    {
-        return InspireCmsConfig::getContentModelClass();
-    }
-
-    protected static function getModelRootLevelParentId(): int | string
-    {
-        return app(static::getModel())->getRootLevelParentId();
-    }
-
-    /**
-     * @param  null | string | int  $key
-     */
-    protected static function isValidSelectableModelItem($key): bool
+    protected function isValidSelectableModelItemKey($key): bool
     {
         if (is_string($key)) {
-            return filled($key) &&
-                $key != null &&
-                $key != intval('') &&
-                $key != static::getModelRootLevelParentId();
+            return parent::isValidSelectableModelItemKey($key) &&
+                $key != 'root';
         }
 
-        if (is_int($key)) {
-            return $key != 0;
-        }
-
-        return false;
+        return parent::isValidSelectableModelItemKey($key);
     }
 
     protected function getRedirectUrlParameters()
@@ -379,6 +250,26 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
     protected function configureSelectedModelItemFormAction(Actions\Action | TreeNodeAction $action): void
     {
+        // mount record
+        if (
+            $action instanceof DeleteContentItemAction ||
+            $action instanceof SetDefaultContentPageAction ||
+            $action instanceof MoveContentAction ||
+            $action instanceof UpdateContentItemRouteAction ||
+            $action instanceof ReorderContentItemAction
+        ) {
+
+            $action->record(function ($action, $itemKey, $treeNode, $livewire) {
+
+                if ($itemKey == 'root') {
+                    return null;
+                }
+
+                return $this->resolveSelectedModelItems($itemKey)->first();
+
+            });
+        }
+
         switch (true) {
             case $action instanceof CreateContentItemAction:
 
@@ -392,65 +283,55 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
                         return $itemKey;
                     })
                     ->parentDocumentType(fn ($itemKey) => data_get($this->getCacheModelItemNode($itemKey) ?? [], 'documentTypeKey'))
-                    ->nodeTitleUsing(function ($itemKey, $livewire) {
+                    ->nodeTitleUsing(function ($itemKey, $livewire, $treeNode) {
+
+                        if ($itemKey === 'root') {
+                            return __('inspirecms::inspirecms.root');
+                        }
+
                         $item = $livewire->getCacheModelItemNode($itemKey);
 
-                        $itemLabel = $item['label'] ?? null;
+                        if (! is_array($item)) {
+                            return null;
+                        }
 
                         $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
-                        if (! blank($translatableLocale) && $itemLabel && is_array($itemLabel)) {
-                            $itemLabel = $itemLabel[$translatableLocale] ?? $item['fallbackLabel'] ?? null;
-                        } elseif (is_array($itemLabel)) {
-                            $itemLabel = reset($itemLabel);
-                        }
-
-                        return $itemLabel;
+                        return $treeNode->getTitleForItem($item, $translatableLocale);
                     });
 
                 break;
+
             case $action instanceof DeleteContentItemAction:
             case $action instanceof SetDefaultContentPageAction:
             case $action instanceof MoveContentAction:
 
                 $action
-                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey))
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'index', $this->getRedirectUrlParameters(), false));
-
-                break;
-
-            case $action instanceof UpdateContentItemRouteAction:
-                $action
-                    ->record(fn ($itemKey) => $this->resolveSelectedModelItem($itemKey));
 
                 break;
 
             case $action instanceof ReorderContentItemAction:
 
                 $action
-                    ->record(fn ($model, $itemKey) => $itemKey == 'root' ? null : static::getModel()::find($itemKey))
-                    ->nodeParentId(function ($itemKey) {
-                        if ($itemKey === 'root' || blank($itemKey)) {
+                    ->nodeParentId(function ($itemKey, $treeNode, $record, $livewire) {
+
+                        $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
+
+                        if ($itemKey === 'root' || blank($itemKey) || ! isset($item['tree_id'])) {
                             return app(static::getModel())->getNestableTreeRootLevelParentId();
                         } else {
-                            $record = $this->resolveSelectedModelItem($itemKey);
-
-                            if (! $record instanceof Content) {
-                                throw new \Exception('The provided record is not an instance of the Content model.');
-                            }
-
-                            return isset($record->nestable_tree_id)
-                                ? $record->nestable_tree_id
-                                : ($record->nestableTree?->getKey() ?? 0);
+                            return $item['tree_id'];
                         }
                     })
                     ->successRedirectUrl(function () {
                         $pageName = $this->pageName ?? 'index';
-                        if (filled($this->selectedModelItemKey) && in_array($pageName, ['edit', 'view'])) {
+                        $recordKey = Arr::last($this->selectedModelItemKeys);
+                        if ($recordKey && in_array($pageName, ['edit', 'view'])) {
                             return FilamentResourceHelper::attemptToGetUrl(
                                 static::getResource(),
                                 $pageName,
-                                ['record' => $this->selectedModelItemKey, ...$this->getRedirectUrlParameters()],
+                                ['record' => $recordKey, ...$this->getRedirectUrlParameters()],
                                 false
                             );
                         } elseif (filled($pageName)) {
@@ -467,5 +348,10 @@ class ContentSidebar extends \SolutionForest\InspireCms\Support\TreeNodes\ModelE
 
         $this->cacheAction($action);
 
+    }
+
+    private function isDisplayChildrenAsTable($record): bool
+    {
+        return $record && $record->documentType->show_as_table;
     }
 }

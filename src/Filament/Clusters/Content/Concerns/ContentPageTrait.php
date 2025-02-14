@@ -59,9 +59,12 @@ trait ContentPageTrait
     protected function getLayoutData(): array
     {
         $selectedModelItemKey = null;
+        $expandedModelItemKeys = [];
 
         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
-            $selectedModelItemKey = $this->getRecord()->getKey();
+            $record = $this->getRecord();
+            $selectedModelItemKey = $record->getKey();
+            $expandedModelItemKeys[] = $record->parent_id;
         } elseif ($this instanceof BaseContentCreatePage) {
             $selectedModelItemKey = $this->parent;
         }
@@ -69,7 +72,8 @@ trait ContentPageTrait
         return [
             'redirectUrlParameters' => $this->getRedirectUrlParameters(),
             'activeLocale' => $this->activeLocale, // from queryString
-            'selectedModelItemKey' => $selectedModelItemKey,
+            'selectedModelItemKeys' => array_filter([$selectedModelItemKey]),
+            'expandedModelItemKeys' => $expandedModelItemKeys,
             'pageName' => match (true) {
                 $this instanceof EditRecord => 'edit',
                 $this instanceof ViewRecord => 'view',

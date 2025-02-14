@@ -9,11 +9,9 @@ use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Facades\FilamentIcon;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\HasContentTreeFilter;
-use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\WithContentTreeNode;
 
 use function Filament\Forms\array_move_after;
 use function Filament\Forms\array_move_before;
@@ -21,8 +19,8 @@ use function Filament\Forms\array_move_before;
 class ContentPicker extends Field
 {
     use CanLimitItemsLength;
-    use HasContentTreeFilter;
     use HasPlaceholder;
+    use WithContentTreeNode;
 
     /**
      * @var view-string
@@ -141,7 +139,8 @@ class ContentPicker extends Field
                     ->hiddenLabel()
                     // todo: add translations
                     ->validationAttribute('records')
-                    ->filter($this->getFilters());
+                    ->filter($this->getFilter()->toArray())
+                    ->filteringByPermission($this->isFilteringByPermission());
 
                 if ($this->minItems != null) {
                     $selector->minItems($this->minItems);
@@ -149,6 +148,10 @@ class ContentPicker extends Field
 
                 if ($this->maxItems != null) {
                     $selector->maxItems($this->maxItems);
+                }
+
+                if ($this->startNode != null) {
+                    $selector->startNode($this->startNode);
                 }
 
                 if ($this->modifySelectActionSelectorUsing) {
@@ -236,13 +239,5 @@ class ContentPicker extends Field
             ->iconButton()
             ->size(ActionSize::Small)
             ->visible(fn (ContentPicker $component): bool => $component->isDeletable());
-    }
-
-    /**
-     * @return Builder
-     */
-    protected function getEloquentQuery()
-    {
-        return InspireCmsConfig::getContentModelClass()::query();
     }
 }

@@ -30,6 +30,8 @@ trait CreateContentActionTrait
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
+        $this->authorize('create');
+
         $this->label(__('inspirecms::resources/content.actions.create_content.label'));
 
         $this->icon('heroicon-o-plus');

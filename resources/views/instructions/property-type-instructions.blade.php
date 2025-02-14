@@ -2,6 +2,7 @@
     use Illuminate\Support\Arr;
     use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
     use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
+    use SolutionForest\InspireCms\Helpers\TemplateHelper;
 
     $groupedPropertyTypes = collect($getState())->map(function ($arr) {
         $data = $arr['dtoData'] ?? [];
@@ -24,18 +25,19 @@
 
         $valueType = FieldTypeHelper::resolveFieldReturnType($fieldType);
 
+        $propertyVarName = TemplateHelper::generatePropertyVarName($group, $field);
         if ($valueType != 'array' || $translatable) {
             $result[] = "@property('{$group}', '{$field}')";
         } else {
             $result[] = "
 @propertyArray('{$group}', '{$field}')
-@foreach (\${$group}_{$field} ?? [] as \$item)
+@foreach (\${$propertyVarName})} ?? [] as \$item)
     //
 @endforeach";
         }
             $result[] = "
 @propertyNotEmpty('{$group}', '{$field}')
-    // \${$group}_{$field} = ...
+    // \${$propertyVarName} = ...
 @endif";
 
         return $result;

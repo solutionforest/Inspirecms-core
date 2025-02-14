@@ -18,7 +18,6 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use Spatie\Permission\PermissionRegistrar;
 
 // todo: need redo the layout
 class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
@@ -126,7 +125,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     private function getMissingPermissions(array $permissions = []): array
     {
         // check permissions exist
-        $permissionModel = app(PermissionRegistrar::class)->getPermissionClass();
+        $permissionModel = InspireCmsConfig::getPermissionModelClass();
         $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
 
         return array_diff($permissions, $existingPermissions);

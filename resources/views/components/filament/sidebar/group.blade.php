@@ -209,7 +209,7 @@
                 }
             @endphp
 
-            <x-inspirecms::sidebar.item
+            <x-inspirecms::filament.sidebar.item
                 :active="$item->isActive()"
                 :active-child-items="$item->isChildItemsActive()"
                 :active-icon="$itemActiveIcon"
@@ -240,7 +240,7 @@
                         {{ $itemActiveIcon }}
                     </x-slot>
                 @endif
-            </x-inspirecms::sidebar.item>
+            </x-inspirecms::filament.sidebar.item>
         @endforeach
     </ul>
 </li>

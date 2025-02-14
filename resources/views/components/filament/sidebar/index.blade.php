@@ -122,7 +122,7 @@
 
         <ul class="fi-sidebar-nav-groups -mx-2 flex flex-col gap-y-7">
             @foreach ($navigation as $group)
-                <x-inspirecms::sidebar.group
+                <x-inspirecms::filament.sidebar.group
                     :active="$group->isActive()"
                     :collapsible="$group->isCollapsible()"
                     :icon="$group->getIcon()"

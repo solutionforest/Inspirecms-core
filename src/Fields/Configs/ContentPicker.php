@@ -26,6 +26,8 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public ?string $documentType = null;
 
+    public ?string $startNode = null;
+
     public function getFormSchema(): array
     {
         $documentTypeOptions = function ($component, $search) {
@@ -67,6 +69,20 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
                                 ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search))
                                 ->live(),
+                            ContentPickerComponent::make('startNode')
+                                ->inlineLabel()
+                                ->maxItems(1)
+                                ->filteringByPermission(false)
+                                ->afterStateHydrated(function (ContentPickerComponent $component, $state) {
+                                    if (! is_array($state)) {
+                                        $state = [$state];
+                                    }
+                                    $state = collect($state)->flatten()->filter()->values()->all();
+                                    $component->state($state);
+                                })
+                                ->dehydrateStateUsing(function ($state) {
+                                    return collect($state)->filter()->first();
+                                }),
                         ]),
                 ]),
         ];
@@ -86,6 +102,10 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
             if ($this->min) {
                 $component->minItems($this->min);
+            }
+
+            if ($this->startNode) {
+                $component->startNode($this->startNode);
             }
         }
     }

@@ -12,7 +12,7 @@ class TopBar extends Component
 
     public function render()
     {
-        return view('inspirecms::components.topbar.index', [
+        return view('inspirecms::components.filament.topbar.index', [
             'navigation' => $this->navigation,
         ]);
     }

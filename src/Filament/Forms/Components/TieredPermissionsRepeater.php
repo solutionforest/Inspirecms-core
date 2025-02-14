@@ -131,7 +131,13 @@ class TieredPermissionsRepeater extends Field
                     return;
                 }
 
-                static::mergeStateWithPermissions($component, Arr::map($permissions, fn ($name) => $name . '.' . $id));
+                $state = collect(static::dehydratedPermissionNameForItem($permissions, $id))
+                    ->merge($component->getState())
+                    ->unique()
+                    ->values()
+                    ->all();
+
+                $component->state($state);
             });
     }
 
@@ -169,7 +175,7 @@ class TieredPermissionsRepeater extends Field
                     return;
                 }
 
-                static::mergeStateWithPermissions($component, Arr::map($permissions, fn ($name) => $name . '.' . $id));
+                $component->state(static::dehydratedPermissionNameForItem($permissions, $id));
             });
     }
 
@@ -228,7 +234,8 @@ class TieredPermissionsRepeater extends Field
                         ->maxItems(1)
                         ->minItems(1)
                         ->required()
-                        ->disabled(fn () => $operation === 'edit'),
+                        ->disabled(fn () => $operation === 'edit')
+                        ->filteringByPermission(false),
                 ]),
             Step::make('Access Control')
                 ->schema([
@@ -243,16 +250,13 @@ class TieredPermissionsRepeater extends Field
         ];
     }
 
-    protected static function mergeStateWithPermissions(TieredPermissionsRepeater $component, array $permissions)
+    protected static function dehydratedPermissionNameForItem(array $permissions, $id)
     {
-        $state = $component->getState() ?? [];
-
-        foreach ($permissions as $permission) {
-            if (! in_array($permission, $state)) {
-                $state[] = $permission;
-            }
-        }
-
-        $component->state($state);
+        return collect($permissions)
+            ->map(fn ($name) => implode('.', [$name, $id]))
+            ->unique()
+            ->filter()
+            ->values()
+            ->all();
     }
 }

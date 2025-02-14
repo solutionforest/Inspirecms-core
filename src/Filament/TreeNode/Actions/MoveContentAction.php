@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -25,20 +24,16 @@ class MoveContentAction extends Action
 
         parent::setUp();
 
-        $contentResource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
-
         $this->label(fn () => $this->isMoveUnderRoot() ? 'Move under root' : 'Move under content');
 
         $this->modalHeading(fn () => $this->isMoveUnderRoot() ? 'Move under root' : 'Move under content');
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
-        $this->hidden(function (?Model $record) use ($contentResource): bool {
-            if (! $record || ! $record instanceof Content) {
-                return true;
-            }
+        $this->authorize('update');
 
-            if (! $contentResource::can('update', $record)) {
+        $this->hidden(function (?Model $record): bool {
+            if (! $record || ! $record instanceof Content) {
                 return true;
             }
 

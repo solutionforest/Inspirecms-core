@@ -1,9 +1,6 @@
 @props([
     'items' => [],
 ])
-@php
-    //todo: js
-@endphp
 
 <div role="tree" 
     aria-orientation="vertical" 

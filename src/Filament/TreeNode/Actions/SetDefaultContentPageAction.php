@@ -2,10 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
-use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
 
 class SetDefaultContentPageAction extends Action
 {
@@ -26,34 +25,32 @@ class SetDefaultContentPageAction extends Action
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
-        $this->hidden(function (null | Content | Model $record) {
-            if (is_null($record) || $record->is_default) {
+        $this->hidden(function ($itemKey, HasModelExplorer $livewire) {
+
+            $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
+
+            if (! is_array($item)) {
                 return true;
             }
 
-            if (! $record instanceof Content) {
-                throw new \Exception('The provided record is not an instance of the Content model.');
-            }
-
-            if ($record->documentType?->isDataType() == true) {
+            if (($item['documentTypeCat'] ?? null) != 'web') {
                 return true;
             }
 
-            $rootLevelKey = $record->getNestableTreeRootLevelParentId();
+            return ($item['depth'] ?? 1) != 0;
 
-            $nestableTreeParentId = isset($record->nestable_tree_parent_id)
-                ? $record->nestable_tree_parent_id
-                : ($record->nestableTree?->parent_id ?? 0);
-
-            return $nestableTreeParentId !== $rootLevelKey;
         });
 
         $this->successNotificationTitle(__('inspirecms::resources/content.actions.set_default_content_page.notification.success.title'));
 
-        $this->action(function (Content | Model $record, Action $action) {
-            $record->setAsDefault();
+        $this->action(function ($model, $itemKey, Action $action) {
 
-            $action->success();
+            if (($record = $model->find($itemKey))) {
+
+                $record->setAsDefault();
+
+                $action->success();
+            }
         });
     }
 }
