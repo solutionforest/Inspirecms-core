@@ -6,17 +6,20 @@ use Filament\Actions;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Exceptions\Halt;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewPage;
 use SolutionForest\InspireCms\Dtos\ContentDto;
-use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\BackActon;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\LockAction;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\UnlockAction;
 use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -34,31 +37,37 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
     protected function getHeaderActions(): array
     {
         return [
-            Actions\Action::make('back')
-                ->label(__('inspirecms::resources/content.actions.back.label'))
-                ->color('gray')
-                ->url(function ($record) {
-                    if ($record->trashed()) {
-                        return FilamentResourceHelper::attemptToGetUrl(static::getResource(), ['trash', 'index'], [], false);
-                    }
+            
+            BackActon::make(),
 
-                    return null;
-                })
-                ->visible(function (Actions\Action $action) {
-                    return filled($action->getUrl());
-                }),
-            BackToParentContentAction::make(),
             PreviewAction::make()
-                ->label(__('inspirecms::resources/content.actions.preview.label')),
+                ->label(__('inspirecms::resources/content.actions.preview.label'))
+                ->hidden(fn (Model $record) => $record->trashed()),
+
             Actions\EditAction::make()->iconButton(),
+
             Actions\ActionGroup::make([
+
                 Actions\ActionGroup::make([
-                    Actions\DeleteAction::make(),
+
+                    Actions\DeleteAction::make()
+                        ->visible(fn (Model $record) => ! $record->isLocked()),
+
                     Actions\RestoreAction::make(),
+
                     Actions\ForceDeleteAction::make(),
-                ])
+                        
+                    LockAction::make()
+                        // refresh title
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+
+                UnlockAction::make()
+                        // refresh title
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+            ])
                     ->dropdown(false)
                     ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+
                 Actions\ActionGroup::make([
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),

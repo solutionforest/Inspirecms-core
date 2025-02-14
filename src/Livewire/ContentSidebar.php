@@ -76,6 +76,7 @@ class ContentSidebar extends BaseContentTreeNode
             ->maxSelectItem(1)
             ->resolveRecordUsing(function ($query, $key) {
                 return $query
+                    ->with('locked')
                     ->with('parent.documentType') // for checking is table node
                     ->find($key);
             })
@@ -125,17 +126,14 @@ class ContentSidebar extends BaseContentTreeNode
                 $item['documentTypeKey'] = $record->document_type_id;
                 $item['documentTypeCat'] = $record->documentType?->category;
 
-                if ($record->display_status?->getName() !== 'publish') {
-                    $item['extraAttributes']['title']['class'] = [
-                        '!text-gray-400',
-                    ];
-                }
-
                 $item['tree_id'] = isset($record->nestable_tree_id)
                     ? $record->nestable_tree_id
                     : ($record->nestableTree ? $record->nestableTree->getKey() : 'na');
 
                 return $item;
+            })
+            ->determineItemIsDisabledUsing(function (Model | Content $record) {
+                return $record->isLocked();
             })
             ->actions([
                 CreateContentItemAction::make(),

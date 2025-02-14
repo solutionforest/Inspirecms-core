@@ -74,6 +74,21 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'ContentPath model');
     }
 
+    public static function getContentLockTableName(): string
+    {
+        return app(static::getContentLockModelClass())->getTable();
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    public static function getContentLockModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\ContentLock::class, Models\ContentLock::class);
+
+        return self::ensureClassExists($class, 'ContentLock model');
+    }
+
     public static function getContentRouteTableName(): string
     {
         return app(static::getContentRouteModelClass())->getTable();

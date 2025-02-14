@@ -10,7 +10,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditPage;
-use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Actions\UpdateRouteAction;
@@ -18,6 +17,9 @@ use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentFormTrai
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\BackActon;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\LockAction;
+use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons\UnlockAction;
 use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 
@@ -46,16 +48,33 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
     protected function getHeaderActions(): array
     {
         return [
-            BackToParentContentAction::make(),
+            
+            BackActon::make(),
+
             Actions\ActionGroup::make([
+                
                 Actions\ActionGroup::make([
+
                     Actions\ViewAction::make(),
-                    Actions\DeleteAction::make(),
+
+                    Actions\DeleteAction::make()
+                        ->visible(fn (Model $record) => ! $record->isLocked()),
+
                     Actions\RestoreAction::make(),
+                        
                     Actions\ForceDeleteAction::make(),
+                        
+                    LockAction::make()
+                        // refresh title
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+
+                    UnlockAction::make()
+                        // refresh title
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
                 ])
                     ->dropdown(false)
                     ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+
                 Actions\ActionGroup::make([
                     UpdateRouteAction::make(),
                     ContentHistoryAction::make(),
@@ -69,8 +88,15 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
 
     protected function getFormActions(): array
     {
+        $record = $this->getRecord();
+
         // Guard 2 for trashed record, If the record is trashed, don't show the form actions
-        if ($this->getRecord()->trashed()) {
+        if ($record->trashed()) {
+            return [];
+        }
+
+        // Guard 3 for locked record, If the record is locked by another user, don't show the form actions
+        if ($record->isLocked()) {
             return [];
         }
 
@@ -86,12 +112,17 @@ abstract class BaseContentEditPage extends BaseEditPage implements ContentForm
                     ->keyBindings(null)
                     ->color('gray')
                     ->action(fn (array $data, $action) => $this->publish($data, $action, true)),
-            ])->label(__('inspirecms::resources/content.actions.publish.label'))->button(),
+            ])
+                ->label(__('inspirecms::resources/content.actions.publish.label'))
+                ->button(),
+
             $this->getSaveFormAction(),
+
             \Filament\Actions\ActionGroup::make(inspirecms_content_statuses()->getFormActions())
                 ->label(__('inspirecms::resources/content.actions.more_actions.label'))
                 ->button()
                 ->color('gray'),
+                
             $this->getCancelFormAction(),
         ];
     }
