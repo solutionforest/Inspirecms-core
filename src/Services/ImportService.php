@@ -201,7 +201,7 @@ class ImportService implements ImportServiceInterface
                         $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
                         $data->fields = $fields;
                         $this->importDataService->addFieldGroup(
-                            slug: $slug,
+                            slug: $data->slug,
                             data: $data,
                         );
 
