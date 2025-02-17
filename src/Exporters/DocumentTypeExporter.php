@@ -54,6 +54,6 @@ class DocumentTypeExporter extends BaseExporter
 
     protected function getFileNameForRecord($record)
     {
-        return $record->slug '.json';
+        return $record->slug . '.json';
     }
 }
