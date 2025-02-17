@@ -1,3 +1,10 @@
+@php
+    $locale ??= request()->getLocale();
+    $nav = inspirecms()->getNavigation('sidebar', $locale);
+    $allLocales = collect(inspirecms()->getAllAvailableLanguages())
+      ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
+      ->all();
+@endphp
 <!-- Sidebar -->
 <aside class="sidebar">
     <!-- Desktop Sidebar Content -->
@@ -9,38 +16,23 @@
             </div>
 
             <nav class="nav-menu">
-                <div class="nav-section">
-                    <div class="welcome">Welcome</div>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Installation and Setup (5)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Introduction</a></li>
-                        <li><a href="#">Quick Overview</a></li>
-                        <li><a href="#">Theme Installation</a></li>
-                        <li><a href="#">Plugin Installation</a></li>
-                        <li><a href="#">Demo Setup</a></li>
-                        <li><a href="#">Post-Installation Setup</a></li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Content Editing (3)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Standard Posts and Pages</a></li>
-                        <li><a href="#">Knowledge Base</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Elements (4)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Typography</a></li>
-                        <li><a href="#">Components</a></li>
-                    </ul>
-                </div>
+                @foreach ($nav as $item)
+                    <div class="nav-section">
+                        @if ($item->hasChildren())
+                        
+                            <h3 class="has-dropdown">$item->getTitle()</h3>
+                            <ul class="submenu">
+                                @foreach ($item->children as $child)
+                                    <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div>
+                                <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             </nav>
         </div>
         <div class="sidebar-footer">
@@ -76,38 +68,23 @@
 
             <nav class="nav-menu">
                 <!-- Same content as desktop -->
-                <div class="nav-section">
-                    <div class="welcome">Welcome</div>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Installation and Setup (5)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Introduction</a></li>
-                        <li><a href="#">Quick Overview</a></li>
-                        <li><a href="#">Theme Installation</a></li>
-                        <li><a href="#">Plugin Installation</a></li>
-                        <li><a href="#">Demo Setup</a></li>
-                        <li><a href="#">Post-Installation Setup</a></li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Content Editing (3)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Standard Posts and Pages</a></li>
-                        <li><a href="#">Knowledge Base</a></li>
-                        <li><a href="#">FAQ</a></li>
-                    </ul>
-                </div>
-
-                <div class="nav-section">
-                    <h3 class="has-dropdown">Elements (4)</h3>
-                    <ul class="submenu">
-                        <li><a href="#">Typography</a></li>
-                        <li><a href="#">Components</a></li>
-                    </ul>
-                </div>
+                @foreach ($nav as $item)
+                    <div class="nav-section">
+                        @if ($item->hasChildren())
+                        
+                            <h3 class="has-dropdown">{{ $item->getTitle() }}</h3>
+                            <ul class="submenu">
+                                @foreach ($item->children as $child)
+                                    <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                                @endforeach
+                            </ul>
+                        @else
+                            <div>
+                                <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+                            </div>
+                        @endif
+                    </div>
+                @endforeach
             </nav>
         </div>
     </div>
