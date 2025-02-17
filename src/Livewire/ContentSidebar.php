@@ -281,7 +281,7 @@ class ContentSidebar extends BaseContentTreeNode
                         return $itemKey;
                     })
                     ->parentDocumentType(function ($itemKey, $livewire) {
-                        
+
                         $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
 
                         return $item['documentTypeKey'] ?? null;
