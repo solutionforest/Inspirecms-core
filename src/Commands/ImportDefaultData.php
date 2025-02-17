@@ -30,9 +30,7 @@ class ImportDefaultData extends Command
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
-        if (! $this->option('skip-samples')) {
-            $this->importSampleData();
-        }
+        $this->importSampleData();
 
         $this->publishRouteDefinition();
 
@@ -136,9 +134,11 @@ class ImportDefaultData extends Command
             '--force' => true,
         ]);
 
-        $this->call('db:seed', [
-            '--class' => SampleSeeder::class,
-        ]);
+        if (! $this->option('skip-samples')) {
+            $this->call('db:seed', [
+                '--class' => SampleSeeder::class,
+            ]);
+        }
 
         $this->components->info('Sample data imported successfully.');
     }
