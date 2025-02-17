@@ -108,6 +108,11 @@ class ExportResource extends Resource implements ClusterSectionResource
                         Infolists\Components\TextEntry::make('author.name')->inlineLabel()->copyable(),
                         Infolists\Components\TextEntry::make('author.email')->inlineLabel()->copyable(),
                     ]),
+
+                \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
+                    ->label(__('inspirecms::resources/import.payload.label'))
+                    ->columnSpanFull()
+                    ->darkTheme('tomorrow_night_eighties'),
             ]);
     }
 
@@ -120,8 +125,9 @@ class ExportResource extends Resource implements ClusterSectionResource
                         collect([
                             \SolutionForest\InspireCms\Exporters\DocumentTypeExporter::class,
                             \SolutionForest\InspireCms\Exporters\FieldGroupExporter::class,
+                            \SolutionForest\InspireCms\Exporters\TemplateExporter::class,
                         ])
-                            ->mapWithKeys(fn ($exporter) => [$exporter => class_basename($exporter)])
+                            ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
                             ->all()
                     )
                     ->required()

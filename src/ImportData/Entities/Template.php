@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
+use SolutionForest\InspireCms\Models\Contracts\Template as ContractsTemplate;
+
 /**
  * @extends BaseEntity<Template>
  */
@@ -38,5 +40,33 @@ class Template extends BaseEntity
             'slug' => $this->slug,
             'content' => $this->content ?? [],
         ];
+    }
+
+    /**
+     * @param ContractsTemplate|Model $record
+     */
+    public static function fromRecord($record)
+    {
+        $data = Arr::only($record->toArray(), ['title']);
+        $data['slug'] = $record->name;
+        $data['fields'] = $record->fields
+            ->map(fn ($field) => Field::fromRecord($field))
+            ->toArray();
+        return static::fromArray($data);
+    }
+
+    public function toExportArray(): array
+    {
+        $arrayOrder = ['slug', 'title', 'fields'];
+
+        $list = parent::toArray();
+        $list['fields'] = collect($this->fields ?? [])
+            ->map(fn ($field) => $field->toExportArray())
+            ->toArray();
+
+        return collect($list)
+            ->only($arrayOrder)
+            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
+            ->all();
     }
 }

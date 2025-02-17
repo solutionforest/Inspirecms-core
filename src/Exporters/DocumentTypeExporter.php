@@ -2,57 +2,72 @@
 
 namespace SolutionForest\InspireCms\Exporters;
 
-use SolutionForest\InspireCms\Helpers\FileHelper;
+use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\ImportData\Entities\DocumentType;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-/**
- * @todo Handle if have large data in db
- */
 class DocumentTypeExporter extends BaseExporter
 {
     public function export()
     {
-        $folderName = 'export-document-types' . uniqid();
-        [$fs, $fullPath] = $this->generateTempFolder($folderName);
+        $folderName = 'export-document-types-' . uniqid();
+        [$fs, $fullPath, $subFolders] = $this->generateTempFolderForImport($folderName, [
+            ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE,
+        ]);
 
-        $records = $this->getRecords();
+        $perPage = $this->export->payload['perPage'] ?? 1000;
+        $page = $this->export->payload['page'] ?? 1;
+        $records = $this->getRecords(perPage: $perPage, page: $page);
+        $errors = [];
 
-        $list = collect($records)
-            ->mapWithKeys(fn ($record) => [
-                $this->getFileNameForRecord($record) => $this->convertToExportContent($record)
-            ])
-            ->toArray();
+        foreach ($records->items() as $record) {
 
-        foreach ($list as $filename => $content) {
-            $fs->put("{$folderName}/{$filename}", $content);
+            try {
+
+                $filename = $this->getFileNameForRecord($record);
+                $content = $this->convertToExportContent($record);
+                $path = (Arr::first($subFolders) ?? $folderName) . '/'. $filename;
+
+                $fs->put($path, $content);
+
+            } catch (\Throwable $th) {
+                $errors[] = [
+                    'record' => $record->getKey(),
+                    'message' => $th->getMessage(),
+                ];
+            }
         }
-     
-        $zipPath = $folderName . '.zip';
-        $zipFullPath = $fullPath . '.zip';
-        FileHelper::buildZipFromFolder($fullPath, $zipFullPath);
 
-        // remove temp folder
-        $fs->deleteDirectory($folderName);
+        // pause
+        if ($page < $records->lastPage()) {
+            $payload = [
+                'page' => $page + 1,
+                'perPage' => $perPage,
+                'errors' => array_merge($this->export->payload['errors'] ?? [], $errors),
+            ];
+            $this->export->markAsPaused($payload);
+            return null;
+        }
 
-        return $zipPath;
+        return $this->zipTempFolder($folderName);
     }
 
-    protected function getRecords()
+    private function getRecords($perPage, $page)
     {
         return InspireCmsConfig::getDocumentTypeModelClass()::query()
             ->with(['fieldGroups', 'templates', 'rejectedDocumentTypes'])
-            ->get();
+            ->paginate(perPage: $perPage, page: $page);
     }
 
-    protected function convertToExportContent($record)
+    private function convertToExportContent($record)
     {
         $array = DocumentType::fromRecord($record)->toExportArray();
 
         return json_encode($array, JSON_PRETTY_PRINT);
     }
 
-    protected function getFileNameForRecord($record)
+    private function getFileNameForRecord($record)
     {
         return $record->slug . '.json';
     }

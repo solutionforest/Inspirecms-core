@@ -23,7 +23,11 @@ class ExportService implements ExportServiceInterface
 
             $filename = $exporter->export();
 
-            $export->markAsCompleted($filename);
+            if (filled($filename)) {
+                $export->markAsCompleted($filename);
+            } else {
+                // Not finish yet
+            }
 
         } catch (\Throwable $th) {
 

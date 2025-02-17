@@ -51,6 +51,13 @@ class Export extends BaseModel implements ExportContract
         ]);
     }
 
+    public function markAsPaused($payload)
+    {
+        $this->update([
+            'payload' => $payload,
+        ]);
+    }
+
     public function delete()
     {
         $this->deleteFile();

@@ -14,7 +14,7 @@ class ListExports extends BaseListPage
         return [
             Actions\CreateAction::make()
                 ->createAnother(false)
-                ->modalWidth('4xl')
+                ->modalWidth('lg')
                 ->stickyModalHeader()->stickyModalHeader()
                 ->slideOver()
                 // todo: add translations

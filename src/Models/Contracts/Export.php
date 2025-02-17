@@ -47,6 +47,14 @@ interface Export extends CanPrunable, HasAuthor
     public function markAsCompleted($filename, $msg = null);
 
     /**
+     * Marks the current process as paused.
+     *
+     * @param array $payload Data or context needed to mark the process as paused.
+     * @return void
+     */
+    public function markAsPaused($payload);
+
+    /**
      * Scope a query to only include pending items.
      *
      * @param \Illuminate\Database\Eloquent\Builder $query
