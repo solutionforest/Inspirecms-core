@@ -133,6 +133,7 @@ class TemplatesRelationManager extends RelationManager
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\DetachAction::make(),
+                    Tables\Actions\DeleteAction::make(),
                 ]),
             ])
             ->bulkActions([
@@ -182,14 +183,21 @@ class TemplatesRelationManager extends RelationManager
     {
         parent::configureDetachAction($action);
 
-        $action->after(fn ($record) => $this->refreshPageAlerts());
+        $action->after(fn () => $this->refreshPageAlerts());
+    }
+
+    protected function configureDeleteAction(Tables\Actions\DeleteAction $action): void
+    {
+        parent::configureDeleteAction($action);
+
+        $action->after(fn () => $this->refreshPageAlerts());
     }
 
     protected function configureDeleteBulkAction(Tables\Actions\DeleteBulkAction $action): void
     {
         parent::configureDeleteBulkAction($action);
 
-        $action->after(fn ($record) => $this->refreshPageAlerts());
+        $action->after(fn () => $this->refreshPageAlerts());
     }
 
     protected function configureViewAction(Tables\Actions\ViewAction $action): void
