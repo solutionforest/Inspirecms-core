@@ -130,13 +130,13 @@ class ExportResource extends Resource implements ClusterSectionResource
                             ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
                             ->all()
                     )
-                    ->required()
+                    ->required(),
             ]);
     }
 
     public static function table(Table $table): Table
     {
-        //todo: add translations
+        // todo: add translations
         return $table
             ->defaultSort('created_at', 'desc')
             ->emptyStateIcon('heroicon-o-arrow-down-on-square')
@@ -145,6 +145,7 @@ class ExportResource extends Resource implements ClusterSectionResource
             ->modifyQueryUsing(function ($query) {
                 $currentUser = auth()->user();
                 $isSuperAdmin = $currentUser != null && is_inspirecms_user($currentUser) && $currentUser->isSuperAdmin();
+
                 return $query
                     ->with([
                         'author' => fn ($userQ) => $userQ
@@ -205,7 +206,6 @@ class ExportResource extends Resource implements ClusterSectionResource
     {
         return __('inspirecms::inspirecms.export');
     }
-    
 
     public static function getEloquentQuery(): Builder
     {
@@ -214,13 +214,13 @@ class ExportResource extends Resource implements ClusterSectionResource
                 'author',
             ])
             ->whereHas('author', function (Builder $query) {
-                
+
                 $currentUser = auth()->user();
 
-                if ($currentUser != null && (is_inspirecms_user($currentUser) && !$currentUser->isSuperAdmin())) {
+                if ($currentUser != null && (is_inspirecms_user($currentUser) && ! $currentUser->isSuperAdmin())) {
                     return $query->whereKey($currentUser->getKey());
                 }
-                    
+
                 return $query;
             });
     }

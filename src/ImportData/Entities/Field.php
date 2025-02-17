@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Models\Contracts\Field as ContractsField;
 
-
 /**
  * @extends BaseEntity<Field>
  */
@@ -57,12 +56,13 @@ class Field extends BaseEntity
     }
 
     /**
-     * @param ContractsField|Model $record
+     * @param  ContractsField|Model  $record
      */
     public static function fromRecord($record)
     {
         $data = Arr::only($record->toArray(), ['config', 'type', 'label']);
         $data['slug'] = $record->name;
+
         return static::fromArray($data);
     }
 

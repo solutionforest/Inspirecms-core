@@ -64,7 +64,7 @@ class FieldGroupExporter extends BaseExporter
     private function convertToExportContent($record)
     {
         $array = FieldGroup::fromRecord($record)->toExportArray();
-        
+
         return json_encode($array, JSON_PRETTY_PRINT);
     }
 

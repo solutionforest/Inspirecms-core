@@ -64,7 +64,7 @@ class Export extends BaseModel implements ExportContract
 
         parent::delete();
     }
-    
+
     /**
      * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
      *
@@ -81,7 +81,7 @@ class Export extends BaseModel implements ExportContract
         return Storage::disk($disk);
     }
 
-    //region Prunable
+    // region Prunable
     /**
      * Get the prunable model query.
      */
@@ -99,9 +99,9 @@ class Export extends BaseModel implements ExportContract
     {
         $this->deleteFile();
     }
-    //endregion Prunable
+    // endregion Prunable
 
-    //region Scope(s)
+    // region Scope(s)
     public function scopeWherePending($query, bool $condition = true)
     {
         if ($condition) {
@@ -120,7 +120,7 @@ class Export extends BaseModel implements ExportContract
     {
         return $query->whereNotNull('failed_at');
     }
-    //endregion Scope(s)
+    // endregion Scope(s)
 
     public static function boot()
     {
@@ -129,7 +129,7 @@ class Export extends BaseModel implements ExportContract
         static::observe(ExportObserver::class);
     }
 
-    //region Helper(s)
+    // region Helper(s)
 
     /**
      * Deletes the file associated with the import job.
@@ -149,5 +149,5 @@ class Export extends BaseModel implements ExportContract
 
         return true;
     }
-    //endregion Helper(s)
+    // endregion Helper(s)
 }

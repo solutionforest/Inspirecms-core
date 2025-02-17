@@ -22,7 +22,7 @@ class ListExports extends BaseListPage
                 ->modalSubmitActionLabel('Export')
                 ->successNotificationTitle('Queued for export, please wait for the download link.')
                 ->using(function ($action, $data, $model) {
-                    
+
                     $user = auth()->user();
                     $exporter = $data['exporter'] ?? null;
 

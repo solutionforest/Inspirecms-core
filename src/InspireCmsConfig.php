@@ -444,6 +444,7 @@ class InspireCmsConfig
 
         return self::ensureClassExists($class, 'Export model');
     }
+
     /**
      * Ensure that a class exists, or throw an exception.
      *
