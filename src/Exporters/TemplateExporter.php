@@ -20,7 +20,6 @@ class TemplateExporter extends BaseExporter
         $records = $this->getRecords(perPage: $perPage, page: $page);
         $errors = [];
 
-
         foreach ($records->items() as $record) {
 
             $pathAndContent = $this->getFilePathAndContent($record);
@@ -28,8 +27,8 @@ class TemplateExporter extends BaseExporter
             foreach ($pathAndContent as $filePath => $content) {
 
                 try {
-                    
-                    $path = (Arr::first($subFolders) ?? $folderName) . '/'. $filePath;
+
+                    $path = (Arr::first($subFolders) ?? $folderName) . '/' . $filePath;
 
                     $fs->put($path, $content);
 
@@ -51,9 +50,10 @@ class TemplateExporter extends BaseExporter
                 'errors' => array_merge($this->export->payload['errors'] ?? [], $errors),
             ];
             $this->export->markAsPaused($payload);
+
             return null;
         }
-     
+
         return $this->zipTempFolder($folderName);
     }
 
@@ -68,9 +68,9 @@ class TemplateExporter extends BaseExporter
         $slug = $record->slug;
 
         $themeContent = $record->content;
-        if (!is_array($themeContent)) {
+        if (! is_array($themeContent)) {
             $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
-        } 
+        }
 
         $result = [];
 

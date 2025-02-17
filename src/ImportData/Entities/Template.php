@@ -43,7 +43,7 @@ class Template extends BaseEntity
     }
 
     /**
-     * @param ContractsTemplate|Model $record
+     * @param  ContractsTemplate|Model  $record
      */
     public static function fromRecord($record)
     {
@@ -52,6 +52,7 @@ class Template extends BaseEntity
         $data['fields'] = $record->fields
             ->map(fn ($field) => Field::fromRecord($field))
             ->toArray();
+
         return static::fromArray($data);
     }
 

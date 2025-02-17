@@ -42,7 +42,7 @@ abstract class BaseExporter
 
     protected function generateTempFolderForImport($folderName, array $importTypes = [])
     {
-        [$fs, $fullPath] =  $this->generateTempFolder($folderName);
+        [$fs, $fullPath] = $this->generateTempFolder($folderName);
 
         $subFolders = [];
         foreach ($importTypes as $importType) {

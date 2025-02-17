@@ -49,7 +49,7 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Marks the current process as paused.
      *
-     * @param array $payload Data or context needed to mark the process as paused.
+     * @param  array  $payload  Data or context needed to mark the process as paused.
      * @return void
      */
     public function markAsPaused($payload);
