@@ -199,10 +199,10 @@ class ImportService implements ImportServiceInterface
                     case ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP:
                         $data = Entities\FieldGroup::fromArray(Arr::except($jsonData, 'fields'));
                         $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
+                        $data->fields = $fields;
                         $this->importDataService->addFieldGroup(
-                            slug: $slug,
+                            slug: $data->slug,
                             data: $data,
-                            fields: $fields
                         );
 
                         break;

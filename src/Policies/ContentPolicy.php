@@ -48,6 +48,10 @@ class ContentPolicy extends BasePolicy
      */
     public function delete($user, Content $content)
     {
+        if ($content->isLocked()) {
+            return false;
+        }
+
         return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 
@@ -105,11 +109,15 @@ class ContentPolicy extends BasePolicy
 
     public function viewHistory($user, $content = null)
     {
-        // dd(static::guessTieredPermissionName(__FUNCTION__, $content?->getKey()));
         return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 
     public function setAsDefault($user, $content = null)
+    {
+        return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
+    }
+
+    public function lock($user, $content = null)
     {
         return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }

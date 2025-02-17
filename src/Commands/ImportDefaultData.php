@@ -13,6 +13,15 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
 class ImportDefaultData extends Command
 {
+    protected function configure()
+    {
+        $this->addOption(
+            name: 'skip-samples',
+            shortcut: 's',
+            description: 'Skip importing sample data',
+        );
+    }
+
     public function handle(): int
     {
         $this->publishAssets();
@@ -125,9 +134,11 @@ class ImportDefaultData extends Command
             '--force' => true,
         ]);
 
-        $this->call('db:seed', [
-            '--class' => SampleSeeder::class,
-        ]);
+        if (! $this->option('skip-samples')) {
+            $this->call('db:seed', [
+                '--class' => SampleSeeder::class,
+            ]);
+        }
 
         $this->components->info('Sample data imported successfully.');
     }

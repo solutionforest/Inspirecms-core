@@ -20,10 +20,9 @@ interface ImportDataServiceInterface
      *
      * @param  string  $slug  The unique identifier for the field group.
      * @param  Entities\FieldGroup  $data  The field group entity containing the data.
-     * @param  Entities\Field[]  $fields  An array of fields associated with the field group.
      * @return void
      */
-    public function addFieldGroup(string $slug, Entities\FieldGroup $data, array $fields);
+    public function addFieldGroup(string $slug, Entities\FieldGroup $data);
 
     /**
      * Adds a template to the system.

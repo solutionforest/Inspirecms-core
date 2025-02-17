@@ -32,6 +32,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property-read null | Model & Sitemap $sitemap
  * @property-read null | Model & Content $trashedParent
  * @property-read null | Model & Navigation $navigation
+ * @property-read null | Model & ContentLock $locked
  * @property-read Collection<Model & ContentRoute> $routes
  * @property-read Collection<Model & Content> $ancestors
  * @property-read Collection<Model & Content> $ancestorsAndSelf
@@ -42,7 +43,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property-read null | Model & Content $parent
  * @property-read Collection<Model & Content> $parentAndSelf
  */
-interface Content extends Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
+interface Content extends Base\CanLockContent, Base\HasContentVersions, Base\HasContentWebSetting, Base\HasTemplates, BelongsToNestableTree, HasAuthor, HasDtoModel, HasLocaleUrl, HasRecursiveRelationshipsInterface
 {
     /**
      * @return HasOne

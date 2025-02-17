@@ -70,9 +70,9 @@ class TemplateManager implements TemplateManagerInterface
         @php
             $locale ??= $content->getLocale();
         @endphp
-        <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
-            Template content
-        </x-dynamic-component>
+        <x-cms-template :content="$content" type="page">
+            Your content here
+        </x-cms-template>
         HTML;
     }
 

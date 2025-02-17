@@ -6,6 +6,7 @@ use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Concerns\Translatable;
+use Filament\Resources\Pages\ViewRecord;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
@@ -64,6 +65,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             'reorder_children',
             'view_history',
             'set_as_default',
+            'lock',
         ];
     }
 
@@ -92,6 +94,16 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
     {
         return $form
             ->columns(1)
+            ->disabled(function (null | Model | ModelsContent $record, $livewire) {
+                if ($record?->isLocked()) {
+                    return true;
+                }
+                if ($livewire instanceof ViewRecord) {
+                    return true;
+                }
+
+                return false;
+            })
             ->schema([
                 Forms\Components\Actions::make([
                     \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::make()
@@ -99,7 +111,13 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         ->builderName('propertyData'),
                 ])
                     ->alignEnd()
-                    ->hidden(fn ($livewire) => $livewire instanceof ViewPage),
+                    ->hidden(function (null | Model | ModelsContent $record, $livewire) {
+                        if ($record?->isLocked()) {
+                            return true;
+                        }
+
+                        return $livewire instanceof ViewPage;
+                    }),
                 Forms\Components\Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
@@ -165,6 +183,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                                             ->schema([
                                                 static::getTimestampsGroupedFormComponent()->columnSpan(1),
                                                 static::getPublishDetailGroupedFormComponent()->columnSpan(1),
+                                                static::getLockDetailGroupedFormComponent()->columnSpan(1),
                                             ]),
                                     ]),
                             ]);
@@ -323,6 +342,9 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     Tables\Actions\RestoreBulkAction::make(),
                 ])->iconButton(),
             ])
+            ->checkIfRecordIsSelectableUsing(
+                fn (Model | ModelsContent $record): bool => static::canDelete($record),
+            )
             ->filters([
                 Tables\Filters\TernaryFilter::make('is_published')
                     ->label(__('inspirecms::resources/content.is_published.label'))
@@ -694,6 +716,28 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                     }),
             ])
             ->columns(['default' => 1]);
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getLockDetailGroupedFormComponent()
+    {
+        // todo: add translations
+        return Forms\Components\Section::make()
+            ->visible(fn (null | Model | ModelsContent $record) => $record != null && $record->isLocked())
+            ->schema([
+                Forms\Components\Placeholder::make('display_locked_at')
+                    ->content(fn (Model | ModelsContent $record) => $record->locked?->locked_at->diffForHumans())
+                    // ->label(__('inspirecms::resources/content.locked_at.label'))
+                    ->label('Locked At')
+                    ->inlineLabel(),
+                Forms\Components\Placeholder::make('display_locked_by')
+                    ->content(fn (Model | ModelsContent $record) => $record->locked?->owner->name)
+                    // ->label(__('inspirecms::resources/content.locked_by.label'))
+                    ->label('Locked By')
+                    ->inlineLabel(),
+            ]);
     }
 
     /**

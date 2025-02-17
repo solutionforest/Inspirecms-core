@@ -70,7 +70,13 @@ class ContentHistoryAction extends Action
         $this->registerModalActions([
             Action::make('toggleAvoidToClear')
                 ->size('xs')
-                ->hidden(fn ($arguments) => ! isset($arguments['itemKey']))
+                ->hidden(function (?Model $record, $arguments) {
+                    if ($record?->isLocked() || $record?->trashed()) {
+                        return true;
+                    }
+
+                    return ! isset($arguments['itemKey']);
+                })
                 ->label(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')
                 ->color(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'gray' : 'danger')
                 ->outlined()

@@ -47,6 +47,10 @@ trait UpdateContentRouteActionTrait
                 return true;
             }
 
+            if ($record->isLocked()) {
+                return true;
+            }
+
             return false;
         });
 

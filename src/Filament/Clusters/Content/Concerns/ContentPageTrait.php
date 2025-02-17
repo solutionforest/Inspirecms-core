@@ -2,9 +2,11 @@
 
 namespace SolutionForest\InspireCms\Filament\Clusters\Content\Concerns;
 
+use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 
 trait ContentPageTrait
 {
@@ -18,12 +20,28 @@ trait ContentPageTrait
     public function mountContentPageTrait(): void
     {
         if (blank($this->activeLocale)) {
-            if ($this instanceof \Filament\Resources\Pages\CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
+            if ($this instanceof CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
                 $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
             } else {
                 $this->activeLocale = $this->getDefaultTranslatableLocale();
             }
         }
+    }
+
+    public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
+    {
+        $title = parent::getTitle();
+
+        if (($this instanceof EditRecord || $this instanceof ViewRecord) && $this->getRecord()->isLocked()) {
+            return UIHelper::generateTextWithBadge(
+                text: $title,
+                badgeText: 'Locked',  // todo: add translation
+                color: 'warning',
+                icon: 'heroicon-o-lock-closed'
+            );
+        }
+
+        return $title;
     }
 
     public function changeActiveLocale(string $locale)

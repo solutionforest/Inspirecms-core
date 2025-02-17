@@ -55,6 +55,14 @@ trait ReorderContentActionTrait
 
         $this->authorize('reorderChildren');
 
+        $this->hidden(function (?Model $record) {
+            if ($record && ($record->isLocked() || $record->trashed())) {
+                return true;
+            }
+
+            return false;
+        });
+
         $this->model($contentModel);
 
         $this->fillForm(fn ($action) => [

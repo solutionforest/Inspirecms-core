@@ -21,6 +21,7 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 class Content extends BaseModel implements ContentContract
 {
     use BelongsToNestableTree;
+    use Concerns\CanLockContent;
     use Concerns\HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }

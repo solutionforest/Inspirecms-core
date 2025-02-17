@@ -7,6 +7,7 @@ return [
     'dashboard' => '儀表板',
     'default' => '默認',
     'deleted_at' => '刪除於',
+    'export' => '匯出',
     'document_type' => '文件類型',
     'field_group' => '自定義字段',
     'id' => 'ID',

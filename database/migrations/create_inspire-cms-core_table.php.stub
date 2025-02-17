@@ -210,29 +210,11 @@ return new class extends BaseMigration
             $table->index('type');
             $table->index('category');
         });
-
-        Schema::create($tableNames['import'], function (Blueprint $table) {
-            $table->uuid('id')->primary();
-
-            $table->string('file_disk');
-            $table->string('file_name');
-
-            $table->longText('payload')->nullable();
-
-            $table->unsignedInteger('available_at')->index();
-            $table->unsignedInteger('created_at');
-            $table->unsignedInteger('finished_at')->nullable()->index();
-            $table->unsignedInteger('failed_at')->nullable();
-
-            $table->author(userType: 'uuid', nullable: true);
-        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
-
-        Schema::dropIfExists($tableNames['import']);
 
         Schema::dropIfExists($tableNames['navigation']);
         Schema::dropIfExists($tableNames['language']);
@@ -277,7 +259,6 @@ return new class extends BaseMigration
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'sitemap' => $this->prefix . 'sitemaps',
             'navigation' => $this->prefix . 'navigation',
-            'import' => $this->prefix . 'imports',
         ];
     }
 };

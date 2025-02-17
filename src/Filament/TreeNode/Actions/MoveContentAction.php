@@ -37,6 +37,10 @@ class MoveContentAction extends Action
                 return true;
             }
 
+            if ($record->isLocked()) {
+                return true;
+            }
+
             return false;
         });
 
