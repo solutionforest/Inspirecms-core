@@ -111,7 +111,7 @@ class DocumentType extends BaseEntity
     }
 
     /**
-     * @param ContractsDocumentType|Model $record
+     * @param  ContractsDocumentType|Model  $record
      */
     public static function fromRecord($record)
     {
@@ -120,8 +120,8 @@ class DocumentType extends BaseEntity
         if (($defaultTemplate = $record->getDefaultTemplate())) {
             $data['defaultTemplate'] = $defaultTemplate->slug;
         }
-        $data['templates'] =  $record->templates->pluck('slug')->toArray();
-        $data['rejected'] =  $record->rejectedDocumentTypes->pluck('slug')->toArray();
+        $data['templates'] = $record->templates->pluck('slug')->toArray();
+        $data['rejected'] = $record->rejectedDocumentTypes->pluck('slug')->toArray();
         $data['fieldGroups'] = $record->fieldGroups->pluck('name')->toArray();
 
         $data['showAsTable'] = $record->show_as_table ?? false;
@@ -133,7 +133,7 @@ class DocumentType extends BaseEntity
     public function toExportArray(): array
     {
         $arrayOrder = ['slug', 'title', 'showAsTable', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'rejected'];
-        
+
         return collect(parent::toArray())
             ->only(static::limitFields())
             ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))

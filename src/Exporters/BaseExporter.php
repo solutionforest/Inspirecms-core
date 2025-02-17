@@ -8,11 +8,11 @@ use SolutionForest\InspireCms\Models\Contracts\Export;
 abstract class BaseExporter
 {
     /**
-     * @param Export & Model $export
+     * @param  Export & Model  $export
      */
     public function __construct(
         protected $export,
-    ) { }
+    ) {}
 
     /**
      * @return string The result filename.

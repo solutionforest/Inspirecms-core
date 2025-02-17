@@ -40,7 +40,7 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Marks the export process as completed.
      *
-     * @param string $filename The name of the file that was exported.
+     * @param  string  $filename  The name of the file that was exported.
      * @param  string|array|null  $msg  Optional message to be associated with the completion status.
      * @return void
      */
@@ -49,8 +49,7 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Scope a query to only include pending items.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param bool $condition
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWherePending($query, bool $condition = true);
@@ -58,7 +57,7 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Scope a query to only include completed items.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereCompleted($query);
@@ -66,7 +65,7 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Scope a query to only include records where the export has failed.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereFailed($query);

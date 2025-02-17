@@ -48,7 +48,7 @@ class FieldGroup extends BaseEntity
     }
 
     /**
-     * @param ContractsFieldGroup|Model $record
+     * @param  ContractsFieldGroup|Model  $record
      */
     public static function fromRecord($record)
     {
@@ -57,6 +57,7 @@ class FieldGroup extends BaseEntity
         $data['fields'] = $record->fields
             ->map(fn ($field) => Field::fromRecord($field))
             ->toArray();
+
         return static::fromArray($data);
     }
 

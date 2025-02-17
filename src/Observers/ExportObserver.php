@@ -39,7 +39,7 @@ class ExportObserver
     protected function dispatchComplete($model)
     {
         event(new \SolutionForest\InspireCms\Events\Export\Completed($model->withoutRelations()));
-        
+
         try {
             // Notify the user that the import job has completed
             if (($author = $model->author)) {

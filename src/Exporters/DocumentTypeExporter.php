@@ -20,14 +20,14 @@ class DocumentTypeExporter extends BaseExporter
 
         $list = collect($records)
             ->mapWithKeys(fn ($record) => [
-                $this->getFileNameForRecord($record) => $this->convertToExportContent($record)
+                $this->getFileNameForRecord($record) => $this->convertToExportContent($record),
             ])
             ->toArray();
 
         foreach ($list as $filename => $content) {
             $fs->put("{$folderName}/{$filename}", $content);
         }
-     
+
         $zipPath = $folderName . '.zip';
         $zipFullPath = $fullPath . '.zip';
         FileHelper::buildZipFromFolder($fullPath, $zipFullPath);

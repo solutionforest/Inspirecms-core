@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Models\Contracts\Export;
 class ExportService implements ExportServiceInterface
 {
     /**
-     * @param Export & Model $export
+     * @param  Export & Model  $export
      * @return void
      */
     public function execute($export)
@@ -28,7 +28,7 @@ class ExportService implements ExportServiceInterface
         } catch (\Throwable $th) {
 
             $export->markAsFailed($th);
-            
+
         }
     }
 }
