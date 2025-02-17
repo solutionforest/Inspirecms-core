@@ -13,6 +13,15 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
 class ImportDefaultData extends Command
 {
+    protected function configure()
+    {
+        $this->addOption(
+            name: 'skip-samples',
+            shortcut: 's',
+            description: 'Skip importing sample data',
+        );
+    }
+
     public function handle(): int
     {
         $this->publishAssets();
@@ -21,7 +30,9 @@ class ImportDefaultData extends Command
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
-        $this->importSampleData();
+        if (! $this->option('skip-samples')) {
+            $this->importSampleData();
+        }
 
         $this->publishRouteDefinition();
 

@@ -46,6 +46,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ->hasRoutes($this->getRoutes())
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
+                    ->addOption(
+                        name: 'skip-samples', 
+                        shortcut: 's', 
+                        description: 'Skip importing sample data',
+                    )
                     ->publishConfigFile()
                     ->publishMigrations()
                     ->startWith(function (InstallCommand $command) {
@@ -54,7 +59,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->endWith(function (InstallCommand $command) {
                         $command->call('migrate');
                         $command->call(Commands\PublishPanel::class);
-                        $command->call(Commands\ImportDefaultData::class);
+                        $command->call(Commands\ImportDefaultData::class, [
+                            '--skip-samples' => $command->option('skip-samples'),
+                        ]);
                     });
 
             });
