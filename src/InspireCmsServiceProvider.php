@@ -47,8 +47,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ->hasInstallCommand(function (InstallCommand $command) {
                 $command
                     ->addOption(
-                        name: 'skip-samples', 
-                        shortcut: 's', 
+                        name: 'skip-samples',
+                        shortcut: 's',
                         description: 'Skip importing sample data',
                     )
                     ->publishConfigFile()

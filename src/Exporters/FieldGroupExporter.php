@@ -28,7 +28,7 @@ class FieldGroupExporter extends BaseExporter
 
                 $filename = $this->getFileNameForRecord($record);
                 $content = $this->convertToExportContent($record);
-                $path = (Arr::first($subFolders) ?? $folderName) . '/'. $filename;
+                $path = (Arr::first($subFolders) ?? $folderName) . '/' . $filename;
 
                 $fs->put($path, $content);
 
@@ -48,9 +48,10 @@ class FieldGroupExporter extends BaseExporter
                 'errors' => array_merge($this->export->payload['errors'] ?? [], $errors),
             ];
             $this->export->markAsPaused($payload);
+
             return null;
         }
-     
+
         return $this->zipTempFolder($folderName);
     }
 
