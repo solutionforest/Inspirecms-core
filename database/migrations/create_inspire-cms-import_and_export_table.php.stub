@@ -19,7 +19,7 @@ return new class extends BaseMigration
             $table->longText('payload')->nullable();
 
             $table->timestamp('available_at')->index();
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->nullable();
             $table->timestamp('finished_at')->nullable()->index();
             $table->timestamp('failed_at')->nullable();
 
@@ -33,7 +33,7 @@ return new class extends BaseMigration
             $table->string('file_name')->nullable();
             $table->string('exporter')->index();
 
-            $table->timestamp('created_at');
+            $table->timestamp('created_at')->nullable();
             $table->timestamp('finished_at')->nullable()->index();
             $table->timestamp('failed_at')->nullable();
             
