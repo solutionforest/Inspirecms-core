@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.28 - 2025-02-21
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.27...0.0.28
+
+1. Fix: document type records of create content action
+2. Update know-press sample layout
+3. Fix: import/export migration table column
+4. Fix: markdown field display value
+5. Fix: Translatable field bug
+6. Fix: missing models and migrations for test case
+7. Add logic while represent FileDto as string
+
 ## 0.0.27 - 2025-02-17
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.26...0.0.27
