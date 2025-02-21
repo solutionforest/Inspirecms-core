@@ -59,6 +59,7 @@ class FieldTypeHelper
     public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
         $fieldType = static::getFieldTypeConfig($fieldTypeName, $fieldTypeConfig);
+
         $fiFormComponent = static::performFormFieldFromConfig(
             typeName: $fieldTypeName,
             config: $fieldTypeConfig,
@@ -85,6 +86,10 @@ class FieldTypeHelper
 
             },
         );
+
+        if (!$fieldType) {
+            return null;
+        }
 
         // if the field is translatable
         if ($fieldType->isTranslatable()) {
