@@ -8,4 +8,3 @@ class ContentLock extends \SolutionForest\InspireCms\Models\ContentLock
 {
     use HasFactory;
 }
-
