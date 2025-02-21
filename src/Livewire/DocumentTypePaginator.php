@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Livewire;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
 use Livewire\WithPagination;
@@ -73,10 +74,12 @@ class DocumentTypePaginator extends \Livewire\Component
         $query = InspireCmsConfig::getDocumentTypeModelClass()::whereCanBeContent();
 
         if ($this->parentDocumentTypeId !== null) {
-            $query->whereDoesntHave(
-                'rejectingDocumentTypes',
-                fn ($query) => $query->whereKey($this->parentDocumentTypeId)
-            );
+            $query
+                ->whereKeyNot($this->parentDocumentTypeId)
+                ->whereDoesntHave(
+                    'rejectingDocumentTypes',
+                    fn ($query) => $query->whereKey($this->parentDocumentTypeId)
+                );
         }
 
         return $query->paginate(perPage: 15, pageName: 'documentTypesPage');

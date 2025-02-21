@@ -186,6 +186,8 @@ abstract class TestCase extends Orchestra
         return [
             __DIR__ . '/../database/migrations/create_custom_spatie_permission_table.php.stub',
             __DIR__ . '/../database/migrations/create_inspire-cms-core_table.php.stub',
+            __DIR__ . '/../database/migrations/create_inspire-cms-content-locks_table.php.stub',
+            __DIR__ . '/../database/migrations/create_inspire-cms-import_and_export_table.php.stub',
             __DIR__ . '/../database/migrations/update_sessions_table.php.stub',
             __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_custom_spatie_media_table.php.stub',
             __DIR__ . '/../vendor/solution-forest/inspirecms-support/database/migrations/create_nestable-trees_table.php.stub',

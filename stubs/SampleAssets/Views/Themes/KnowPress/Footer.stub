@@ -1,3 +1,7 @@
+@php
+    $locale ??= request()->getLocale();
+    $nav = inspirecms()->getNavigation('footer', $locale);
+@endphp
 <!-- Newsletter and Footer -->
 <footer class="site-footer">
 
@@ -19,36 +23,18 @@
                     </div>
                 </div>
 
-                <!-- About Column -->
-                <div class="col-md-2">
-                    <h4>About me</h4>
-                    <ul>
-                        <li><a href="#">My Team</a></li>
-                        <li><a href="#">History</a></li>
-                        <li><a href="#">My Products</a></li>
-                        <li><a href="#">Blogging</a></li>
-                    </ul>
-                </div>
-
-                <!-- Resources Column -->
-                <div class="col-md-2">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">Webinars</a></li>
-                        <li><a href="#">Courses</a></li>
-                        <li><a href="#">Books</a></li>
-                        <li><a href="#">Marketing</a></li>
-                    </ul>
-                </div>
-
-                <!-- Contact Column -->
-                <div class="col-md-2">
-                    <h4>Contact</h4>
-                    <ul>
-                        <li><a href="#">Privacy Policy</a></li>
-                        <li><a href="#">Terms of use</a></li>
-                    </ul>
-                </div>
+                @foreach ($nav as $item)
+                    <div class="col-md-2">
+                        <h4>{{ $item->getTitle() }}</h4>
+                        @if ($item->hasChildren())
+                            <ul>
+                                @foreach ($item->children as $child)
+                                    <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                                @endforeach
+                            </ul>
+                        @endif
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>

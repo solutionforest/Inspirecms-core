@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Fields\Dtos;
 
+use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
 class FileDto extends BaseDto
@@ -24,5 +25,17 @@ class FileDto extends BaseDto
     public function getFullPath()
     {
         return $this->directory ? $this->directory . '/' . $this->path : $this->path;
+    }
+
+    public function getUrl(): ?string
+    {
+        $fs = filled($this->disk) ? Storage::disk($this->disk) : Storage::getDriver();
+
+        return $fs->url($this->getFullPath());
+    }
+
+    public function __toString()
+    {
+        return $this->getUrl();
     }
 }

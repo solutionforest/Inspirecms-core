@@ -27,7 +27,6 @@ trait Translatable
         if (empty($this->activeLocale)) {
             $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
         }
-        // $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
     }
 
     public function getTranslatableLocales(): array
@@ -42,8 +41,6 @@ trait Translatable
         $translatableAttributes = static::getResource()::getTranslatableAttributes();
 
         $record->fill(Arr::except($data, $translatableAttributes));
-
-        // dd($data, $translatableAttributes, $this->activeLocale, $this);
 
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
             $record->setTranslation($key, $this->activeLocale, $value);
