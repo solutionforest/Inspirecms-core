@@ -38,7 +38,7 @@ class FieldTypeHelper
         if (! $fiFormComponent) {
             throw new \Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
         }
-        
+
         $fiFormConfig->applyConfig($fiFormComponent);
 
         return $fiFormComponent;
@@ -62,7 +62,7 @@ class FieldTypeHelper
         $fiFormComponent = static::performFormFieldFromConfig(
             typeName: $fieldTypeName,
             config: $fieldTypeConfig,
-            createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config) use ($fieldTypeName, $name, $label, $helperText, $required, $groupName) {
+            createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config) use ($name, $label, $helperText, $required, $groupName) {
                 if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
 
                     $fiFormComponent = $fiFormComponentFQCN::make($name);
