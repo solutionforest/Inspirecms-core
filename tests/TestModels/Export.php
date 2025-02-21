@@ -8,4 +8,3 @@ class Export extends \SolutionForest\InspireCms\Models\Export
 {
     use HasFactory;
 }
-
