@@ -14,7 +14,7 @@ class RichEditorConverter extends BaseConverter
             return $value;
         }
 
-        if (!$this->isFieldTypeTranslatable() && is_array($value)) {
+        if (! $this->isFieldTypeTranslatable() && is_array($value)) {
             $value = Arr::first($value);
         }
 
@@ -29,9 +29,10 @@ class RichEditorConverter extends BaseConverter
 
     private function convertHtml($value)
     {
-        if (!is_string($value)) {
+        if (! is_string($value)) {
             return $value;
         }
+
         return str($value)->toHtmlString();
     }
 }

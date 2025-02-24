@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Fields\Configs\Attributes;
 
 use Attribute;
 use SolutionForest\InspireCms\Fields\Converters\BaseConverter;
+
 /**
  * @property class-string<BaseConvert> $converter The converter class to use for this field type.
  */

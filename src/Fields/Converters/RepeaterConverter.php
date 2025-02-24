@@ -12,112 +12,112 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
 class RepeaterConverter extends BaseConverter
 {
-	public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
-	{
+    public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
+    {
 
-		$fieldTypeConfig = $this->fieldTypeConfig;
+        $fieldTypeConfig = $this->fieldTypeConfig;
 
-		if (! $fieldTypeConfig instanceof Repeater) {
-			return [];
-		}
+        if (! $fieldTypeConfig instanceof Repeater) {
+            return [];
+        }
 
-		if (! is_array($sourceValue)) {
-			$sourceValue = [];
-		}
+        if (! is_array($sourceValue)) {
+            $sourceValue = [];
+        }
 
-		$newValue = [];
+        $newValue = [];
 
-		foreach ($sourceValue as $i => $data) {
+        foreach ($sourceValue as $i => $data) {
 
-			$propData = PropertyDataCollection::make();
+            $propData = PropertyDataCollection::make();
 
-			foreach ($data as $key => $value) {
+            foreach ($data as $key => $value) {
 
-				$field = collect($fieldTypeConfig->fields)->firstWhere('name', $key);
+                $field = collect($fieldTypeConfig->fields)->firstWhere('name', $key);
 
-				if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
-					continue;
-				}
+                if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
+                    continue;
+                }
 
-				$innerFieldTypeName = $field['field'];
+                $innerFieldTypeName = $field['field'];
 
-				$innerPropertyType = FieldTypeHelper::getFieldTypeConfig($innerFieldTypeName, $field['fieldConfig'] ?? []);
-				if (is_null($innerPropertyType)) {
-					continue;
-				}
+                $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($innerFieldTypeName, $field['fieldConfig'] ?? []);
+                if (is_null($innerPropertyType)) {
+                    continue;
+                }
 
-				$innerFieldConverter = $this->tryGetConverterForInnerField($innerPropertyType);
-				if (is_null($innerFieldConverter)) {
-					continue;
-				}
+                $innerFieldConverter = $this->tryGetConverterForInnerField($innerPropertyType);
+                if (is_null($innerFieldConverter)) {
+                    continue;
+                }
 
-				$finalValue = null;
-				$attempt = $this->tryGetDisplayValueForInnerField($innerFieldConverter, $value, $locale, $fallbackLocale, $finalValue);
+                $finalValue = null;
+                $attempt = $this->tryGetDisplayValueForInnerField($innerFieldConverter, $value, $locale, $fallbackLocale, $finalValue);
 
-				$innerPropTypeDto = PropertyTypeDto::fromArray([
-					'key' => $key,
-					'group' => $i,
-					'config' => $innerPropertyType,
-				]);
-				$newInnerValue = PropertyDataDto::fromArray([
-					'key' => $key,
-					'value' => $finalValue,
-					'propertyType' => $innerPropTypeDto,
-				])
-				->setFallbackLocale($fallbackLocale);
+                $innerPropTypeDto = PropertyTypeDto::fromArray([
+                    'key' => $key,
+                    'group' => $i,
+                    'config' => $innerPropertyType,
+                ]);
+                $newInnerValue = PropertyDataDto::fromArray([
+                    'key' => $key,
+                    'value' => $finalValue,
+                    'propertyType' => $innerPropTypeDto,
+                ])
+                    ->setFallbackLocale($fallbackLocale);
 
-				$propData->push($newInnerValue);
+                $propData->push($newInnerValue);
 
-			}
+            }
 
-			$newValue[$i] = PropertyDataGroupDto::fromArray([
-				'key' => $i,
-				'data' => $propData,
-				'propertyTypes' => collect($propData)
-					->mapWithKeys(fn ($p) => [
-						$p->key => $p->propertyType,
-					]),
-			]);
-		}
+            $newValue[$i] = PropertyDataGroupDto::fromArray([
+                'key' => $i,
+                'data' => $propData,
+                'propertyTypes' => collect($propData)
+                    ->mapWithKeys(fn ($p) => [
+                        $p->key => $p->propertyType,
+                    ]),
+            ]);
+        }
 
-		return $newValue;
-	}
+        return $newValue;
+    }
 
-	/**
-	 * @param BaseConverter $convert
-	 * @param mixed $sourceValue
-	 * @param ?string $locale
-	 * @param ?string $fallbackLocale
-	 * @param mixed $finalValue
-	 * @return bool
-	 */
-	private function tryGetDisplayValueForInnerField($convert, $sourceValue, $locale, $fallbackLocale, &$finalValue = null)
-	{
-		try {
-			
-			$finalValue = $convert->toDisplayValue($sourceValue, $locale, $fallbackLocale);
+    /**
+     * @param  BaseConverter  $convert
+     * @param  mixed  $sourceValue
+     * @param  ?string  $locale
+     * @param  ?string  $fallbackLocale
+     * @param  mixed  $finalValue
+     * @return bool
+     */
+    private function tryGetDisplayValueForInnerField($convert, $sourceValue, $locale, $fallbackLocale, &$finalValue = null)
+    {
+        try {
 
-			return true;
+            $finalValue = $convert->toDisplayValue($sourceValue, $locale, $fallbackLocale);
 
-		} catch (\Throwable $th) {
-			
-			return false;
+            return true;
 
-		}
-	}
+        } catch (\Throwable $th) {
 
-	private function tryGetConverterForInnerField($fieldTypeConfig): ?BaseConverter
-	{
-		try {
-			
-			$transformer = app(PropertyValueTransformerInterface::class);
-	
-			return $transformer->getConverter($fieldTypeConfig);
+            return false;
 
-		} catch (\Throwable $th) {
-			
-			return null;
+        }
+    }
 
-		}
-	}
+    private function tryGetConverterForInnerField($fieldTypeConfig): ?BaseConverter
+    {
+        try {
+
+            $transformer = app(PropertyValueTransformerInterface::class);
+
+            return $transformer->getConverter($fieldTypeConfig);
+
+        } catch (\Throwable $th) {
+
+            return null;
+
+        }
+    }
 }

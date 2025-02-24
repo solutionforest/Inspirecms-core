@@ -4,24 +4,24 @@ namespace SolutionForest\InspireCms\Fields\Converters;
 
 class DateTimeConverter extends BaseConverter
 {
-	public function toDisplayValue(mixed $sourceValue, string|null $locale, string|null $fallbackLocale)
-	{
-		if (is_null($sourceValue)) {
-			return null;
-		}
+    public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
+    {
+        if (is_null($sourceValue)) {
+            return null;
+        }
 
-		if (is_string($sourceValue) && filled($sourceValue)) {
-			
-			return \Carbon\Carbon::parse($sourceValue);
+        if (is_string($sourceValue) && filled($sourceValue)) {
 
-		} elseif ($sourceValue instanceof \DateTimeInterface) {
-			
-			return $sourceValue;
+            return \Carbon\Carbon::parse($sourceValue);
 
-		} else {
+        } elseif ($sourceValue instanceof \DateTimeInterface) {
 
-			return null;
-			
-		}
-	}
+            return $sourceValue;
+
+        } else {
+
+            return null;
+
+        }
+    }
 }
