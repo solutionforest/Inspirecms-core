@@ -8,12 +8,15 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\EditorBasicTrait;
+use SolutionForest\InspireCms\Fields\Converters\MarkdownConverter;
 
 #[ConfigName('markdownEditor', 'Markdown Editor', 'Rich', 'heroicon-o-document-text')]
 #[FormComponent(Forms\Components\MarkdownEditor::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
+#[Converter(MarkdownConverter::class)]
 class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     use EditorBasicTrait;

@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Fields;
+namespace SolutionForest\InspireCms\Fields\Mixins;
 
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;

@@ -9,12 +9,15 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
+use SolutionForest\InspireCms\Fields\Converters\RepeaterConverter;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
 #[ConfigName('repeater', 'Repeater', 'List', 'heroicon-o-queue-list')]
 #[FormComponent(Forms\Components\Repeater::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
+#[Converter(RepeaterConverter::class)]
 class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public array $fields = [];

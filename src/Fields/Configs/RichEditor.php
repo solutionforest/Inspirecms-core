@@ -8,12 +8,15 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\EditorBasicTrait;
+use SolutionForest\InspireCms\Fields\Converters\RichEditorConverter;
 
 #[ConfigName('richEditor', 'Rich Editor', 'Rich', 'heroicon-o-document-text')]
 #[FormComponent(Forms\Components\RichEditor::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
+#[Converter(RichEditorConverter::class)]
 class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     use EditorBasicTrait;

@@ -18,6 +18,8 @@ use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
+use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
@@ -107,9 +109,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(Services\ImportServiceInterface::class, fn () => $this->app->make(Services\ImportService::class));
         $this->app->singleton(Services\ExportServiceInterface::class, fn () => $this->app->make(Services\ExportService::class));
 
+        $this->app->singleton(PropertyValueTransformerInterface::class, PropertyValueTransformer::class);
+
         $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
 
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\TranslatableFieldType);
+        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\TranslatableFieldType);
+        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeConverter);
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
