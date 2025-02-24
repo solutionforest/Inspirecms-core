@@ -126,6 +126,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
                         $documentType = $livewire->getDocumentType();
 
                         $tabs[] = static::getPropertyDataValueComponent(isTab: true);
+                        
                         if ($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data) {
                             $tabs[] = Forms\Components\Tabs\Tab::make('seo')
                                 ->label(__('inspirecms::resources/content.seo.tab.label'))
@@ -628,10 +629,11 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             $fieldGroups = $getFieldGroupsFromLivewireOrRecord($livewire, $record);
 
             $groupComponents = [];
-
+            
             foreach ($fieldGroups as $fieldGroupModel) {
 
                 $groupComponents[] = $fieldGroupModel->toFilamentComponent();
+
             }
 
             return $groupComponents;

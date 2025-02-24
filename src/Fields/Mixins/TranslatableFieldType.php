@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Fields\Mixins;
 
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Translatable;
 
 class TranslatableFieldType
 {
@@ -29,6 +30,21 @@ class TranslatableFieldType
     {
         return function () {
             return isset($this->translatable) && $this->translatable === true;
+        };
+    }
+
+    public function isFieldTypeTranslatable()
+    {
+        return function () {
+            $translatable = collect($this->getTargetAttributes(Translatable::class))
+                ->map(fn (Translatable $attribute) => $attribute->translatable)
+                ->first();
+
+            if (is_null($translatable)) {
+                return true;
+            }
+
+            return $translatable;
         };
     }
 }
