@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Fields\Mixins;
 
-use ReflectionClass;
 use ReflectionAttribute;
+use ReflectionClass;
 
 class SimpleFieldDefinition
 {
@@ -11,7 +11,7 @@ class SimpleFieldDefinition
     {
         return function () {
             $reflection = new ReflectionClass(static::class);
-    
+
             return $reflection->getAttributes();
         };
     }

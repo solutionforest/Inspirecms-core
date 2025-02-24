@@ -12,5 +12,5 @@ class Translatable
 {
     public function __construct(
         public bool $translatable = true,
-    ) { }
+    ) {}
 }

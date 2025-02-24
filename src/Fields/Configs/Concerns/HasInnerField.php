@@ -29,58 +29,58 @@ trait HasInnerField
         };
 
         return Forms\Components\Repeater::make('fields')
-                ->columnSpanFull()
-                ->collapsible()
-                ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
-                ->addActionLabel('Add Field')
-                ->schema(static::getHasInnerFieldFieldsSchema())
-                ->defaultItems(1)
-                ->extraItemActions([
-                    Forms\Components\Actions\Action::make('editConfig')
-                        ->icon('heroicon-s-cog-8-tooth')
-                        ->slideOver()
-                        // todo: add translation
-                        ->modalHeading(fn (array $arguments, Forms\Components\Repeater $component) => str_replace([':field'], [$getFieldForRepeaterAction($arguments, $component) ?? 'Field'], 'Edit :field configuration'))
-                        ->modalIcon(fn (array $arguments, Forms\Components\Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
-                        ->disabled(fn (array $arguments, Forms\Components\Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
-                        ->form(function (Forms\Form $form, array $arguments, Forms\Components\Repeater $component) use ($getFieldForRepeaterAction) {
-                            
-                            $innerFieldTypeName = $getFieldForRepeaterAction($arguments, $component);
-                            
-                            if (filled($innerFieldTypeName) && 
-                                ($fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($innerFieldTypeName)) 
-                            ) {
-                                if ($fieldTypeConfig->isFieldTypeTranslatable()) {
-                                    // display "translatable" field for the field type
-                                    return $fieldTypeConfig->getEnhancedFormSchema();
-                                } else {
-                                    return $fieldTypeConfig->getFormSchema();
-                                }
+            ->columnSpanFull()
+            ->collapsible()
+            ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
+            ->addActionLabel('Add Field')
+            ->schema(static::getHasInnerFieldFieldsSchema())
+            ->defaultItems(1)
+            ->extraItemActions([
+                Forms\Components\Actions\Action::make('editConfig')
+                    ->icon('heroicon-s-cog-8-tooth')
+                    ->slideOver()
+                    // todo: add translation
+                    ->modalHeading(fn (array $arguments, Forms\Components\Repeater $component) => str_replace([':field'], [$getFieldForRepeaterAction($arguments, $component) ?? 'Field'], 'Edit :field configuration'))
+                    ->modalIcon(fn (array $arguments, Forms\Components\Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
+                    ->disabled(fn (array $arguments, Forms\Components\Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
+                    ->form(function (Forms\Form $form, array $arguments, Forms\Components\Repeater $component) use ($getFieldForRepeaterAction) {
+
+                        $innerFieldTypeName = $getFieldForRepeaterAction($arguments, $component);
+
+                        if (filled($innerFieldTypeName) &&
+                            ($fieldTypeConfig = FieldTypeHelper::getFieldTypeConfig($innerFieldTypeName))
+                        ) {
+                            if ($fieldTypeConfig->isFieldTypeTranslatable()) {
+                                // display "translatable" field for the field type
+                                return $fieldTypeConfig->getEnhancedFormSchema();
+                            } else {
+                                return $fieldTypeConfig->getFormSchema();
                             }
+                        }
 
-                            return [];
-                        })
-                        ->fillForm(function (array $arguments, Forms\Components\Repeater $component) use ($getItemStateForRepeaterAction) {
-                            $existingFieldConfig = $getItemStateForRepeaterAction($arguments, $component)['fieldConfig'];
-                            if (! empty($existingFieldConfig)) {
-                                return $existingFieldConfig;
-                            }
-                        })
-                        ->action(function (array $data, array $arguments, Forms\Components\Repeater $component) use ($getItemKeyForRepeaterAction) {
+                        return [];
+                    })
+                    ->fillForm(function (array $arguments, Forms\Components\Repeater $component) use ($getItemStateForRepeaterAction) {
+                        $existingFieldConfig = $getItemStateForRepeaterAction($arguments, $component)['fieldConfig'];
+                        if (! empty($existingFieldConfig)) {
+                            return $existingFieldConfig;
+                        }
+                    })
+                    ->action(function (array $data, array $arguments, Forms\Components\Repeater $component) use ($getItemKeyForRepeaterAction) {
 
-                            $itemKey = $getItemKeyForRepeaterAction($arguments);
+                        $itemKey = $getItemKeyForRepeaterAction($arguments);
 
-                            $itemState = $component->getRawItemState($itemKey);
+                        $itemState = $component->getRawItemState($itemKey);
 
-                            $itemState['fieldConfig'] = $data;
+                        $itemState['fieldConfig'] = $data;
 
-                            $component->getChildComponentContainer($itemKey)->fill($itemState);
+                        $component->getChildComponentContainer($itemKey)->fill($itemState);
 
-                            $component->collapsed(false, shouldMakeComponentCollapsible: false);
+                        $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
-                            $component->callAfterStateUpdated();
-                        }),
-                ]);
+                        $component->callAfterStateUpdated();
+                    }),
+            ]);
     }
 
     protected static function getHasInnerFieldFieldsSchema(): array
@@ -108,7 +108,7 @@ trait HasInnerField
                 ->required()
                 ->helperText('Label for the field')
                 ->live()->afterStateUpdated(fn ($state, $set) => $state ? $set('name', Str::slug($state)) : null),
-                
+
             Forms\Components\TextInput::make('name')
                 ->required()
                 ->helperText('Unique name for the field'),
