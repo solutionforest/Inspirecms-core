@@ -13,8 +13,8 @@ abstract class BaseConverter
     {
         $this->fieldTypeConfig = $fieldTypeConfig;
     }
-    
-    public abstract function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale);
+
+    abstract public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale);
 
     protected function applyLocaleConversion(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
     {

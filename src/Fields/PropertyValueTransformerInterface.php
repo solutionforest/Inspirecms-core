@@ -15,9 +15,9 @@ interface PropertyValueTransformerInterface
     /**
      * Get the converter for the specified field type.
      *
-     * @param ?FieldTypeConfig $fieldType The type of the field for which the converter is needed.
+     * @param  ?FieldTypeConfig  $fieldType  The type of the field for which the converter is needed.
      * @return BaseConverter The converter for the specified field type.
-     * 
+     *
      * @throws \InvalidArgumentException If no field type is specified, or if no converter is found for the specified field type.
      */
     public function getConverter($fieldType);

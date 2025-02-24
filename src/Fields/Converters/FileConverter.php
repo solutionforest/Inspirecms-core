@@ -6,8 +6,8 @@ use SolutionForest\InspireCms\Fields\Dtos\FileDto;
 
 class FileConverter extends BaseConverter
 {
-	public function toDisplayValue(mixed $sourceValue, string|null $locale, string|null $fallbackLocale)
-	{
+    public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
+    {
         $disk = $this->fieldTypeConfig->disk ?? config('filesystems.default');
         $directory = $this->fieldTypeConfig->directory;
 
@@ -23,5 +23,5 @@ class FileConverter extends BaseConverter
             ]))
             ->values()
             ->all();
-	}
+    }
 }

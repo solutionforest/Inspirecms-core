@@ -51,7 +51,7 @@ trait ContentPageTrait
     public function getBreadcrumbs(): array
     {
         /**
-         * @var class-string<Resource>
+         * @var class-string<resource>
          */
         $resource = static::getResource();
 
@@ -60,7 +60,7 @@ trait ContentPageTrait
         ];
 
         if (method_exists($this, 'getRecord')) {
-        
+
             $record = $this->getRecord();
 
             if (($parentRecord = $record?->parent) && $resource::hasRecordTitle()) {

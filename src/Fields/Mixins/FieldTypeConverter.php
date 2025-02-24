@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Fields\Mixins;
 
-use ReflectionClass;
 use ReflectionAttribute;
+use ReflectionClass;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Converters\DefaultConverter;
 
@@ -20,7 +20,7 @@ class FieldTypeConverter
     {
         return function () {
             $reflection = new ReflectionClass(static::class);
-    
+
             return $reflection->getAttributes();
         };
     }

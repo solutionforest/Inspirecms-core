@@ -6,8 +6,8 @@ use SolutionForest\InspireCms\Collection\ContentCollection;
 
 class ContentPickerConverter extends BaseConverter
 {
-	public function toDisplayValue(mixed $sourceValue, string|null $locale, string|null $fallbackLocale)
-	{
+    public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
+    {
         // todo: improve performance
         $content = inspirecms_content()->findPublishedContentByIds($sourceValue)
             ->filter(fn ($c) => in_array($c->getKey(), $sourceValue))
@@ -25,5 +25,5 @@ class ContentPickerConverter extends BaseConverter
         }
 
         return $content;
-	}
+    }
 }
