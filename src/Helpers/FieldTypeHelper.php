@@ -87,7 +87,7 @@ class FieldTypeHelper
             },
         );
 
-        if (!$fieldType) {
+        if (! $fieldType) {
             return null;
         }
 
