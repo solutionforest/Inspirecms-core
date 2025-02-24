@@ -5,8 +5,17 @@
             ->map(fn ($component) => $component->getStatePath())
             ->all();
 
+    $allErrorKeys = collect($errors->getBags())->flatMap(fn ($item) => $item->keys());
+
     $childComponentHasErrors = collect($childComponentsStatePath)
-        ->filter(fn ($statePath) => $errors->has($statePath))
+        ->where(function ($statePath) use ($allErrorKeys) {
+
+            $relativePath = str($statePath)->beforeLast(".")->finish(".")->toString();
+
+            return collect($allErrorKeys)
+                ->filter(fn ($key) => str($key)->startsWith($relativePath))
+                ->isNotEmpty();
+        })
         ->isNotEmpty();
 @endphp
 <div @class([
