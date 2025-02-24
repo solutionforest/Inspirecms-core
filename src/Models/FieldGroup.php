@@ -48,6 +48,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
         }
 
         return \Filament\Forms\Components\Section::make($this->title)
+            ->collapsible()
             ->schema($schema);
     }
 
