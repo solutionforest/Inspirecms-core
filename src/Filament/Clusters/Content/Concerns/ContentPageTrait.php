@@ -77,7 +77,7 @@ trait ContentPageTrait
                 }
             }
 
-            if ($record->exists && $resource::hasRecordTitle()) {
+            if ($record?->exists && $resource::hasRecordTitle()) {
                 if ($resource::hasPage('view') && $resource::canView($record)) {
                     $breadcrumbs[
                         $resource::getUrl('view', ['record' => $record, ...$this->getRedirectUrlParameters()])
