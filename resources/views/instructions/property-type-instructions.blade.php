@@ -10,16 +10,7 @@
         return PropertyTypeDto::fromArray($data);
     })->groupBy('group')->sortKeys();
 
-    $getDisplayInstruction = fn ($text) => str($text)
-        ->explode("\r\n")
-        ->map(fn ($line) => str($line)
-            ->replaceMatches('/\s\s+/', '&nbsp;&nbsp;')
-            ->inlineMarkdown([
-                'html_input' => 'escape',
-                'allow_unsafe_links' => false,
-            ])
-        );
-    $getPlainTextAndSampleCodeForField = function ($fieldType, $group, $field) use ($getDisplayInstruction) {
+    $getPlainTextAndSampleCodeForField = function ($fieldType, $group, $field) {
 
         $translatable = $fieldType?->isTranslatable() ?? false;
 
@@ -27,7 +18,8 @@
 
         $propertyVarName = TemplateHelper::generatePropertyVarName($group, $field);
         if ($valueType != 'array' || $translatable) {
-            $result[] = "@property('{$group}', '{$field}')";
+            $result[] = "
+@property('{$group}', '{$field}')";
         } else {
             $result[] = "
 @propertyArray('{$group}', '{$field}')
@@ -102,13 +94,17 @@
                             <ol class="flex gap-y-2 flex-col">
                                 @foreach ($getPlainTextAndSampleCodeForField($fieldType, $propertyType->group, $fieldKey) as $text)
                                     <li class="flex gap-x-2 justify-between">
-                                        <code class="text-xs">
-                                            @foreach ($getDisplayInstruction($text) as $line)
-                                                <div class="line whitespace-nowrap">
-                                                    {!! $line !!}
-                                                </div>
-                                            @endforeach
-                                        </code>
+                                        <pre class="overflow-auto m-0 p-0">
+                                            <code class="text-xs text-mono break-words">
+                                                @php
+                                                    $displayText = str($text)
+                                                        ->trim() // Remove whitespace
+                                                        ->prepend(PHP_EOL) // Add a newline at the start
+                                                        ->toString();
+                                                @endphp
+                                                {{ $displayText }}
+                                            </code>
+                                        </pre>
                                         
                                         <x-inspirecms::buttons.copy-button
                                             :plaintext="$text"

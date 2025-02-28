@@ -8,6 +8,8 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
+use SolutionForest\InspireCms\Fields\Converters\MediaPickerConverter;
 use SolutionForest\InspireCms\Support\MediaLibrary\FilterType;
 use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker as MediaPickerComponent;
 
@@ -15,6 +17,7 @@ use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker 
 #[FormComponent(MediaPickerComponent::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
+#[Converter(MediaPickerConverter::class)]
 class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public array $types = [];

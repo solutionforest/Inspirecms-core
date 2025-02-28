@@ -7,7 +7,6 @@ use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\InspireCms\Dtos\PropertyDataDto;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
-use SolutionForest\InspireCms\Fields\Configs\Repeater;
 use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
 
 class FieldTypeHelper
@@ -59,6 +58,7 @@ class FieldTypeHelper
     public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
         $fieldType = static::getFieldTypeConfig($fieldTypeName, $fieldTypeConfig);
+
         $fiFormComponent = static::performFormFieldFromConfig(
             typeName: $fieldTypeName,
             config: $fieldTypeConfig,
@@ -86,6 +86,10 @@ class FieldTypeHelper
             },
         );
 
+        if (! $fieldType) {
+            return null;
+        }
+
         // if the field is translatable
         if ($fieldType->isTranslatable()) {
 
@@ -111,20 +115,10 @@ class FieldTypeHelper
     {
         if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName))) {
             // hidden "translatable" field for the field type
-            if ($fieldTypeConfig instanceof Repeater) {
+            if (! $fieldTypeConfig->isFieldTypeTranslatable()) {
                 return $fieldTypeConfig->getFormSchema();
             }
 
-            // display "translatable" field for the field type
-            return $fieldTypeConfig->getEnhancedFormSchema();
-        }
-
-        return [];
-    }
-
-    public static function getRepeaterFieldConfigSchemaForFieldType($typeName)
-    {
-        if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName)) && ! $fieldTypeConfig instanceof Repeater) {
             // display "translatable" field for the field type
             return $fieldTypeConfig->getEnhancedFormSchema();
         }
