@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Composer\InstalledVersions;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
@@ -11,6 +12,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -167,6 +169,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Icon Registration
         FilamentIcon::register($this->getIcons());
 
+        $this->addAboutPluginInfo();
+
         if (app()->runningInConsole()) {
             $this->registerStubs();
         }
@@ -197,6 +201,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
+            Commands\AboutCommand::class,
+            Commands\UpdatePluginCommand::class,
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
@@ -554,5 +560,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 if (\${$propertyVarName} != null && !empty(\${$propertyVarName})):
             ?>";
         });
+    }
+
+    private function addAboutPluginInfo()
+    {
+        AboutCommand::add('InspireCms', [
+            'Version' => InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core'),
+        ]);
     }
 }
