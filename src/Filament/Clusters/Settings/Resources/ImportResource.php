@@ -10,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\Rules\In;
 use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource\Pages;
@@ -29,6 +30,8 @@ class ImportResource extends Resource implements ClusterSectionResource
     protected static ?string $navigationIcon = 'heroicon-c-arrow-up-tray';
 
     protected static ?string $cluster = Settings::class;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function getPermissionPrefixes(): array
     {
@@ -199,16 +202,25 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/import.clear_at.label'))
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
             ])
+            ->recordAction('view')
+            ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->createAnother(false)
+                    ->modalWidth('7xl')
+                    ->stickyModalHeader()->stickyModalHeader()
+                    ->slideOver()
+                    ->label(__('inspirecms::resources/import.actions.import.label'))
+                    ->modalSubmitActionLabel(__('inspirecms::resources/import.actions.import.modal.actions.submit.label')),
+            ])
             ->actions([
-                Tables\Actions\ViewAction::make()->iconButton()->slideOver(),
+                Tables\Actions\ViewAction::make()
+                    ->iconButton()->slideOver(),
             ]);
     }
 
     public static function getPages(): array
     {
-        return [
-            'index' => Pages\ListImports::route('/'),
-        ];
+        return [];
     }
 
     public static function getModel(): string

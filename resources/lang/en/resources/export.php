@@ -1,6 +1,17 @@
 <?php
 
 return [
+
+    'exporter' => [
+        'label' => 'Exporter',
+    ],
+    'message' => [
+        'label' => 'Message',
+    ],
+    'result' => [
+        'label' => 'Result',
+    ],
+
     'notification' => [
 
         'completed' => [

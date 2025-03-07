@@ -6,14 +6,16 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -28,6 +30,8 @@ class ExportResource extends Resource implements ClusterSectionResource
     protected static ?string $navigationIcon = 'heroicon-c-arrow-down-tray';
 
     protected static ?string $cluster = Settings::class;
+
+    protected static bool $shouldRegisterNavigation = false;
 
     public static function getPermissionPrefixes(): array
     {
@@ -109,28 +113,72 @@ class ExportResource extends Resource implements ClusterSectionResource
                         Infolists\Components\TextEntry::make('author.email')->inlineLabel()->copyable(),
                     ]),
 
-                \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
-                    ->label(__('inspirecms::resources/import.payload.label'))
+                Infolists\Components\Section::make()
+                    ->heading('Detail')
+                    ->collapsible()
                     ->columnSpanFull()
-                    ->darkTheme('tomorrow_night_eighties'),
+                    ->columns(1)
+                    ->schema([
+                        Infolists\Components\TextEntry::make('exporter')
+                            ->label(__('inspirecms::resources/export.exporter.label'))
+                            ->inlineLabel()
+                            ->formatStateUsing(function ($state) {
+                                if (is_string($state) && class_exists($state)) {
+                                    return $state::getLabel();
+                                }
+                                return $state;
+                            }),
+
+                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
+                            ->label(__('inspirecms::resources/export.message.label'))
+                            ->columnSpanFull()
+                            ->darkTheme('tomorrow_night_eighties')
+                            ->getStateUsing(function ($record) {
+                                $payload = $record->payload;
+                                return collect($payload)->except('result')->all();
+                            }),
+
+                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload.result')
+                            ->label(__('inspirecms::resources/export.result.label'))
+                            ->columnSpanFull()
+                            ->darkTheme('tomorrow_night_eighties'),
+                    ]),
             ]);
     }
 
     public static function form(Form $form): Form
     {
+        $exporters = collect([
+            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
+            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
+            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+        ])
+            ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
+            ->all();
+
         return $form
+            ->columns(1)
             ->schema([
-                Forms\Components\ToggleButtons::make('exporter')
-                    ->options(
-                        collect([
-                            \SolutionForest\InspireCms\Exporters\DocumentTypeExporter::class,
-                            \SolutionForest\InspireCms\Exporters\FieldGroupExporter::class,
-                            \SolutionForest\InspireCms\Exporters\TemplateExporter::class,
-                        ])
-                            ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
-                            ->all()
-                    )
-                    ->required(),
+                Forms\Components\Select::make('exporter')
+                    ->options($exporters)
+                    ->required()
+                    ->live(),
+
+                Forms\Components\Group::make()
+                    ->statePath('payload.args')
+                    ->dehydrated(true)
+                    ->schema(function (Forms\Get $get) {
+
+                        $exporter = $get('exporter');
+
+                        if ($exporter && is_string($exporter) && class_exists($exporter) && is_a($exporter, BaseExporter::class, true)) {
+                            $fields = $exporter::getArgsFormFields();
+
+                            return $fields;
+                        }
+                        
+                        return [];
+                    }),
             ]);
     }
 
@@ -185,6 +233,36 @@ class ExportResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::inspirecms.created_at'))
                     ->sortable(),
             ])
+            ->recordAction('view')
+            ->headerActions([
+                Tables\Actions\CreateAction::make()
+                    ->createAnother(false)
+                    ->modalWidth('lg')
+                    ->stickyModalHeader()->stickyModalHeader()
+                    ->slideOver()
+                    ->form(fn (Form $form) => static::form($form))
+                    // todo: add translations
+                    ->label('Add')
+                    ->modalSubmitActionLabel('Export')
+                    ->successNotificationTitle('Queued for export, please wait for the download link.')
+                    ->failureNotificationTitle('Missing required data, failed to export.')
+                    ->failureNotification(fn (Notification $notification) => $notification->warning())
+                    ->using(function (Tables\Actions\CreateAction $action, array $data, string $model) {
+
+                        $user = auth()->user();
+                        $exporter = $data['exporter'] ?? null;
+
+                        if (! $user || ! filled($exporter)) {
+                            $action->sendFailureNotification();
+                            return $action->cancel();
+                        }
+                        $export = app($model, ['attributes' => Arr::only($data, ['exporter', 'payload'])]);
+                        $export->author()->associate($user);
+                        $export->save();
+
+                        return $export;
+                    }),
+            ])
             ->actions([
                 Tables\Actions\ViewAction::make()->iconButton()->slideOver()->authorize(null),
             ]);
@@ -192,9 +270,7 @@ class ExportResource extends Resource implements ClusterSectionResource
 
     public static function getPages(): array
     {
-        return [
-            'index' => Pages\ListExports::route('/'),
-        ];
+        return [];
     }
 
     public static function getModel(): string

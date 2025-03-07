@@ -85,6 +85,7 @@ return [
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
+            'package' => \SolutionForest\InspireCms\Filament\Pages\Package::class,
             'health' => \SolutionForest\InspireCms\Filament\Pages\Health::class,
         ],
         'clusters' => [
