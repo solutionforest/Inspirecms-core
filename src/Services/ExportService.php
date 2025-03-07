@@ -25,9 +25,9 @@ class ExportService implements ExportServiceInterface
 
             if ($result->status->isPaused()) {
                 $export->markAsPaused($result->message);
-            } else if ($result->status->isFailed()) {
+            } elseif ($result->status->isFailed()) {
                 $export->markAsFailed($result->message);
-            } else if ($result->status->isCompleted()) {
+            } elseif ($result->status->isCompleted()) {
                 $export->markAsCompleted($result->filename, $result->message);
             }
 

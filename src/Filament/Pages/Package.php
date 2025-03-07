@@ -17,14 +17,14 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ListPackages;
 
-class Package extends Page implements ClusterSectionPage, HasForms, HasActions, HasInfolists
+class Package extends Page implements ClusterSectionPage, HasActions, HasForms, HasInfolists
 {
     use ClusterSectionPageTrait {
         ClusterSectionPageTrait::canAccess as traitCanAccess;
     }
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithInfolists;
-    use InteractsWithActions;
 
     public static string $view = 'inspirecms::filament.pages.package';
 
@@ -43,7 +43,7 @@ class Package extends Page implements ClusterSectionPage, HasForms, HasActions, 
 
         if (static::getImportResource()::canViewAny()) {
             $components[] = [
-            'component' => ListPackages::class,
+                'component' => ListPackages::class,
                 'data' => [
                     'type' => 'import',
                     'title' => __('inspirecms::pages/package.import_title'),
@@ -53,7 +53,7 @@ class Package extends Page implements ClusterSectionPage, HasForms, HasActions, 
 
         if (static::getExportResource()::canViewAny()) {
             $components[] = [
-            'component' => ListPackages::class,
+                'component' => ListPackages::class,
                 'data' => [
                     'type' => 'export',
                     'title' => __('inspirecms::pages/package.export_title'),

@@ -14,7 +14,7 @@ class TemplateExporter extends BaseExporter
     {
         return [];
     }
-    
+
     public function export()
     {
         [$folderName, $fs, $fullPath, $subFolders] = $this->ensureTempFolderForExport('export-templates', [
@@ -35,7 +35,7 @@ class TemplateExporter extends BaseExporter
         }
 
         $processingErrors = array_merge(
-            $this->record->getProcessingMessages()['errors'] ?? [], 
+            $this->record->getProcessingMessages()['errors'] ?? [],
             $errors,
         );
 
@@ -47,7 +47,6 @@ class TemplateExporter extends BaseExporter
             $this->buildProcessingData($page, $perPage, $processingErrors, $folderName),
         );
     }
-
 
     private function getTemplateRecords()
     {

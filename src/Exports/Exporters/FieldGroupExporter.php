@@ -15,6 +15,7 @@ class FieldGroupExporter extends BaseExporter
         $records = collect(static::getModel()::all())->mapWithKeys(fn ($record) => [$record->getKey() => $record]);
         $options = $records->map(fn ($record) => $record->title)->all();
         $descriptions = $records->map(fn ($record) => $record->name)->all();
+
         return [
             CheckboxList::make('filter_record')
                 ->label('Filter Records')
@@ -25,7 +26,7 @@ class FieldGroupExporter extends BaseExporter
                 ->descriptions($descriptions),
         ];
     }
-    
+
     public function export()
     {
         [$folderName, $fs, $fullPath, $subFolders] = $this->ensureTempFolderForExport('export-fields', [
@@ -46,7 +47,7 @@ class FieldGroupExporter extends BaseExporter
         }
 
         $processingErrors = array_merge(
-            $this->record->getProcessingMessages()['errors'] ?? [], 
+            $this->record->getProcessingMessages()['errors'] ?? [],
             $errors,
         );
 
@@ -72,7 +73,7 @@ class FieldGroupExporter extends BaseExporter
 
         $query = static::getModel()::query()->with(['fields']);
 
-        if (!empty($args['filter_record'])) {
+        if (! empty($args['filter_record'])) {
             $query->whereKey($args['filter_record']);
         }
 

@@ -126,6 +126,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                 if (is_string($state) && class_exists($state)) {
                                     return $state::getLabel();
                                 }
+
                                 return $state;
                             }),
 
@@ -135,6 +136,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                             ->darkTheme('tomorrow_night_eighties')
                             ->getStateUsing(function ($record) {
                                 $payload = $record->payload;
+
                                 return collect($payload)->except('result')->all();
                             }),
 
@@ -176,7 +178,7 @@ class ExportResource extends Resource implements ClusterSectionResource
 
                             return $fields;
                         }
-                        
+
                         return [];
                     }),
             ]);
@@ -254,6 +256,7 @@ class ExportResource extends Resource implements ClusterSectionResource
 
                         if (! $user || ! filled($exporter)) {
                             $action->sendFailureNotification();
+
                             return $action->cancel();
                         }
                         $export = app($model, ['attributes' => Arr::only($data, ['exporter', 'payload'])]);

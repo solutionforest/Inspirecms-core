@@ -11,11 +11,10 @@ class ExportResult
          * @var null | string | array | \Exception
          */
         public $message = null,
-    ) { }
+    ) {}
 
     /**
-     * @param string $filename
-     * @param null | string | array $message
+     * @param  null | string | array  $message
      * @return ExportResult
      */
     public static function completed(string $filename, $message = null)
@@ -24,7 +23,7 @@ class ExportResult
     }
 
     /**
-     * @param null | string | array | \Exception $message
+     * @param  null | string | array | \Exception  $message
      * @return ExportResult
      */
     public static function failed($message)
@@ -33,7 +32,7 @@ class ExportResult
     }
 
     /**
-     * @param array $messages Processing messages
+     * @param  array  $messages  Processing messages
      * @return ExportResult
      */
     public static function paused($messages)

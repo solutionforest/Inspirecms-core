@@ -64,10 +64,10 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Get the arguments required for the exporter.
      *
-     * @return array 
+     * @return array
      */
     public function getArgsForExporter();
-    
+
     public function isCompleted(): bool;
 
     /**

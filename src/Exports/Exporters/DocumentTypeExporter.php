@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
-use Filament\Forms as FilamentForms;
 use Filament\Forms\Components\CheckboxList;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
@@ -16,6 +15,7 @@ class DocumentTypeExporter extends BaseExporter
         $records = collect(static::getModel()::all())->mapWithKeys(fn ($record) => [$record->getKey() => $record]);
         $options = $records->map(fn ($record) => $record->title)->all();
         $descriptions = $records->map(fn ($record) => $record->slug)->all();
+
         return [
             CheckboxList::make('filter_record')
                 ->label('Filter Records')
@@ -47,7 +47,7 @@ class DocumentTypeExporter extends BaseExporter
         }
 
         $processingErrors = array_merge(
-            $this->record->getProcessingMessages()['errors'] ?? [], 
+            $this->record->getProcessingMessages()['errors'] ?? [],
             $errors,
         );
 
@@ -73,7 +73,7 @@ class DocumentTypeExporter extends BaseExporter
 
         $query = static::getModel()::query()->with(['fieldGroups', 'templates', 'rejectedDocumentTypes']);
 
-        if (!empty($args['filter_record'])) {
+        if (! empty($args['filter_record'])) {
             $query->whereKey($args['filter_record']);
         }
 

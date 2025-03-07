@@ -26,17 +26,17 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResourc
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ListPackages extends Component implements HasForms, HasTable, HasInfolists, HasActions
+class ListPackages extends Component implements HasActions, HasForms, HasInfolists, HasTable
 {
-    use InteractsWithTable;
+    use InteractsWithActions;
     use InteractsWithForms;
     use InteractsWithInfolists;
-    use InteractsWithActions;
+    use InteractsWithTable;
 
     public string $type;
 
     public ?string $title = null;
-    
+
     public function table(Table $table): Table
     {
         $resource = $this->getResource();
@@ -50,28 +50,28 @@ class ListPackages extends Component implements HasForms, HasTable, HasInfolists
             ->heading($this->title ?? Str::title($this->type))
             ->query($resource::getEloquentQuery());
     }
-    
+
     public function render()
     {
         return view('inspirecms::livewire.list-packages');
     }
 
     /**
-     * @return class-string<Resource>
+     * @return class-string<resource>
      */
     protected function getResource(): string
     {
-        return match($this->type) {
+        return match ($this->type) {
             'export' => InspireCmsConfig::getFilamentResource('export', ExportResource::class),
             default => InspireCmsConfig::getFilamentResource('import', ImportResource::class),
         };
     }
-    
+
     protected function getModel(): string
     {
         return $this->getResource()::getModel();
     }
-    
+
     protected function getModelLabel(): string
     {
         return $this->getResource()::getModelLabel();

@@ -89,7 +89,7 @@ abstract class BaseExporter
     protected function ensureTempFolderForExport(string $folderPrefix, array $subFolders = [])
     {
         $processingData = $this->record->getProcessingMessages();
-        
+
         if (! empty($processingData['folderName'])) {
             $folderName = $processingData['folderName'];
         } else {
@@ -110,17 +110,17 @@ abstract class BaseExporter
             case $record instanceof FieldGroup:
                 return Str::replace('_', '-', $record->name) . '.json';
 
-            // case $record instanceof Template:
-            //     if (is_array($record->content)) {
-            //         $themes = array_keys($record->content);
-            //     } else {
-            //         $themes = [inspirecms_templates()->getCurrentTheme()];
-            //     }
-            //     return collect($themes)
-            //         ->filter()
-            //         ->unique()
-            //         ->map(fn ($theme) => $record->slug . '/' . "$theme.blade.php")
-            //         ->toArray();
+                // case $record instanceof Template:
+                //     if (is_array($record->content)) {
+                //         $themes = array_keys($record->content);
+                //     } else {
+                //         $themes = [inspirecms_templates()->getCurrentTheme()];
+                //     }
+                //     return collect($themes)
+                //         ->filter()
+                //         ->unique()
+                //         ->map(fn ($theme) => $record->slug . '/' . "$theme.blade.php")
+                //         ->toArray();
         }
 
         return $record->getKey() . '.json';
@@ -136,16 +136,17 @@ abstract class BaseExporter
 
             case $record instanceof FieldGroup:
                 $array = ImportDataEntities\FieldGroup::fromRecord($record)->toExportArray();
-        
+
                 return json_encode($array, JSON_PRETTY_PRINT);
-                
-            // case $record instanceof Template:
-            //     $themeContent = $record->content;
-            //     if (! is_array($themeContent)) {
-            //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
-            //     }
-            //     return $themeContent;
+
+                // case $record instanceof Template:
+                //     $themeContent = $record->content;
+                //     if (! is_array($themeContent)) {
+                //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
+                //     }
+                //     return $themeContent;
         }
+
         return '';
     }
 
@@ -169,7 +170,7 @@ abstract class BaseExporter
         $zippedFile = $this->zipTempFolder($folderName);
 
         $completedMessage = null;
-        if (!empty($processingErrors)) {
+        if (! empty($processingErrors)) {
             $completedMessage = [
                 'processing_errors' => $processingErrors,
             ];

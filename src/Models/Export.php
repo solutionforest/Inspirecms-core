@@ -36,7 +36,7 @@ class Export extends BaseModel implements ExportContract
                 'exTrace' => ThrowableHelper::getTraceAsString($msg, 5),
             ];
         }
-        
+
         $payload = $this->mergeResultToPayload($msg);
 
         $this->update([
@@ -173,26 +173,28 @@ class Export extends BaseModel implements ExportContract
     }
 
     /**
-     * @param mixed $msg
+     * @param  mixed  $msg
      * @return array
      */
     private function mergeResultToPayload($msg)
     {
         $payload = $this->payload ?? [];
-        if (!is_array($msg)) {
+        if (! is_array($msg)) {
             $msg = ['messages' => $msg];
         }
         $payload['result'] = array_merge($payload['result'] ?? [], $msg ?? []);
+
         return $payload;
     }
 
     private function mergeProcessingToPayload($msg)
     {
         $payload = $this->payload ?? [];
-        if (!is_array($msg)) {
+        if (! is_array($msg)) {
             $msg = ['messages' => $msg];
         }
         $payload['processing'] = array_merge($payload['processing'] ?? [], $msg);
+
         return $payload;
     }
     // endregion Helper(s)
