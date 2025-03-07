@@ -10,7 +10,7 @@ class DocumentTypeFactory extends Factory
     {
         return [
             'title' => $this->faker->sentence(1),
-            'slug' => $this->faker->slug(1),
+            'slug' => $this->faker->unique()->slug(1),
             'category' => 'web',
             'show_as_table' => false,
             'icon' => null,
