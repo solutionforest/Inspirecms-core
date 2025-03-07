@@ -36,26 +36,43 @@ class Export extends BaseModel implements ExportContract
                 'exTrace' => ThrowableHelper::getTraceAsString($msg, 5),
             ];
         }
+        
+        $payload = $this->mergeResultToPayload($msg);
+
         $this->update([
             'failed_at' => now(),
-            'payload' => $msg,
+            'payload' => $payload,
         ]);
     }
 
     public function markAsCompleted($filename, $msg = null)
     {
+        $payload = $this->mergeResultToPayload($msg);
+        // Remove processing data
+        unset($payload['processing']);
+
         $this->update([
             'file_name' => $filename,
             'finished_at' => now(),
-            'payload' => $msg,
+            'payload' => $payload,
         ]);
     }
 
-    public function markAsPaused($payload)
+    public function markAsPaused($messages)
     {
         $this->update([
-            'payload' => $payload,
+            'payload' => $this->mergeProcessingToPayload($messages),
         ]);
+    }
+
+    public function getProcessingMessages()
+    {
+        return $this->payload['processing'] ?? [];
+    }
+
+    public function getArgsForExporter()
+    {
+        return $this->payload['args'] ?? [];
     }
 
     public function delete()
@@ -79,6 +96,11 @@ class Export extends BaseModel implements ExportContract
         }
 
         return Storage::disk($disk);
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->finished_at !== null;
     }
 
     // region Prunable
@@ -148,6 +170,30 @@ class Export extends BaseModel implements ExportContract
         }
 
         return true;
+    }
+
+    /**
+     * @param mixed $msg
+     * @return array
+     */
+    private function mergeResultToPayload($msg)
+    {
+        $payload = $this->payload ?? [];
+        if (!is_array($msg)) {
+            $msg = ['messages' => $msg];
+        }
+        $payload['result'] = array_merge($payload['result'] ?? [], $msg ?? []);
+        return $payload;
+    }
+
+    private function mergeProcessingToPayload($msg)
+    {
+        $payload = $this->payload ?? [];
+        if (!is_array($msg)) {
+            $msg = ['messages' => $msg];
+        }
+        $payload['processing'] = array_merge($payload['processing'] ?? [], $msg);
+        return $payload;
     }
     // endregion Helper(s)
 }

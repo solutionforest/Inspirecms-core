@@ -38,7 +38,11 @@ class ExecuteExport extends Command
             try {
                 $exportService->execute($record);
 
-                $this->info("Job {$record->getKey()} completed successfully.");
+                if ($record->isCompleted()) {
+                    $this->info("Job {$record->getKey()} completed successfully.");
+                } else {
+                    $this->info("Job {$record->getKey()} done in this iteration.");
+                }
             } catch (\Exception $e) {
                 $this->error("Job {$record->getKey()} failed: {$e->getMessage()}");
             }
@@ -63,6 +67,10 @@ class ExecuteExport extends Command
             $query->limit($limit);
         }
 
-        return $query->wherePending()->get();
+        // Get pending & latest jobs
+        return $query
+            ->wherePending()
+            ->latest()
+            ->get();
     }
 }

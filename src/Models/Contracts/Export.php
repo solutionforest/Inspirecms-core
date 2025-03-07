@@ -10,7 +10,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property string $file_disk
  * @property ?string $file_name
  * @property string $exporter
- * @property ?string $payload
+ * @property ?array $payload
  * @property ?\Carbon\Carbon $created_at
  * @property ?\Carbon\Carbon $finished_at
  * @property ?\Carbon\Carbon $failed_at
@@ -49,10 +49,26 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Marks the current process as paused.
      *
-     * @param  array  $payload  Data or context needed to mark the process as paused.
+     * @param  array  $messages  Data or context needed to mark the process as paused.
      * @return void
      */
-    public function markAsPaused($payload);
+    public function markAsPaused($messages);
+
+    /**
+     * Retrieve the processing messages.
+     *
+     * @return array The processing messages.
+     */
+    public function getProcessingMessages();
+
+    /**
+     * Get the arguments required for the exporter.
+     *
+     * @return array 
+     */
+    public function getArgsForExporter();
+    
+    public function isCompleted(): bool;
 
     /**
      * Scope a query to only include pending items.

@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Services;
 
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Exporters\BaseExporter;
+use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Models\Contracts\Export;
 
 class ExportService implements ExportServiceInterface
@@ -17,20 +17,21 @@ class ExportService implements ExportServiceInterface
         /**
          * @var BaseExporter
          */
-        $exporter = app($export->exporter, ['export' => $export]);
+        $exporter = app($export->exporter, ['record' => $export]);
 
         try {
 
-            $filename = $exporter->export();
+            $result = $exporter->export();
 
-            if (filled($filename)) {
-                $export->markAsCompleted($filename);
-            } else {
-                // Not finish yet
+            if ($result->status->isPaused()) {
+                $export->markAsPaused($result->message);
+            } else if ($result->status->isFailed()) {
+                $export->markAsFailed($result->message);
+            } else if ($result->status->isCompleted()) {
+                $export->markAsCompleted($result->filename, $result->message);
             }
 
         } catch (\Throwable $th) {
-
             $export->markAsFailed($th);
 
         }
