@@ -55,9 +55,9 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Tests\\": "tests/",
+            "SolutionForest\\InspireCms\\Tests\\": "tests/src",
             "SolutionForest\\InspireCms\\Support\\": "vendor/solution-forest/inspirecms-support/src/",
-            "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/src/"
         }
     },
     "scripts": {
