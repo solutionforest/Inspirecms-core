@@ -130,7 +130,7 @@ abstract class TestCase extends Orchestra
                 if ($migrationPath == false) {
                     continue;
                 }
-    
+
                 // Load .stub files
                 foreach (glob("{$migrationPath}/*.php.stub") as $path) {
                     $migration = include $path;
@@ -147,8 +147,7 @@ abstract class TestCase extends Orchestra
                 $migration = include $path;
                 $migration->up();
             }
-        }
-        else {
+        } else {
             parent::loadMigrationsFrom($paths);
         }
     }
@@ -156,7 +155,7 @@ abstract class TestCase extends Orchestra
     /** {@inheritDoc} */
     protected function defineDatabaseMigrations()
     {
-        //plugin migrations
+        // plugin migrations
         $this->loadMigrationsFrom([
             __DIR__ . '/../../vendor/solution-forest/inspirecms-support/database/migrations',
             // __DIR__ . '/../../vendor/spatie/laravel-permission/database/migrations',

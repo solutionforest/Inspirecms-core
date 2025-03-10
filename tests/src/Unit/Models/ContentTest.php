@@ -20,14 +20,14 @@ describe('content model', function () {
             'slug' => 'test-content',
         ]);
         $content->refresh();
-    
+
         $contentKey = $content->getKey();
-    
+
         // Assert
         $this->assertDatabaseHas('content', ['id' => $contentKey]);
         $this->assertDatabaseHas('content_versions', ['content_id' => $contentKey]);
         $this->assertDatabaseHas('nestable_trees', ['nestable_id' => $contentKey, 'nestable_type' => $content->getMorphClass()]);
-    
+
         // Create publish version
         $status = ContentStatusManifest::getOption('publish');
         $content->status = $status->getValue();
@@ -38,14 +38,13 @@ describe('content model', function () {
         ]);
         $content->setPublishableState($status->getName());
         $content->save();
-    
+
         $content->refresh();
-    
+
         $this->assertDatabaseHas('content_publish_version', ['content_id' => $contentKey]);
     });
-    
+
     it('create or delete related routes and paths', function () {
-        
 
         $webTypeDocumentType = DocumentType::factory()->create()->refresh();
         $content = Content::factory()->create([
@@ -59,7 +58,7 @@ describe('content model', function () {
         $this->assertDatabaseHas('content', ['id' => $contentId]);
         $this->assertDatabaseHas('content_paths', ['key' => $contentId]);
         $this->assertDatabaseHas('content_routes', ['content_id' => $contentId]);
-    
+
         // Act 1: soft delete
         $content->delete();
 
@@ -76,7 +75,7 @@ describe('content model', function () {
         $this->assertDatabaseMissing('content_paths', ['key' => $contentId]);
         $this->assertDatabaseMissing('content_routes', ['content_id' => $contentId]);
     });
-    
+
     it('deletes children if parent is deleted', function () {
         // Arrange
         $parent = Content::factory()->create([
@@ -88,34 +87,33 @@ describe('content model', function () {
             'parent_id' => $parent->id,
         ]);
         $child->refresh();
-    
+
         // Act
         $parent->delete();
-    
+
         // Assert
         $this->assertSoftDeleted('content', ['id' => $child->id]);
     });
-    
+
     it('deletes content versions and nestable tree if content is deleted', function () {
         // Arrange
         $content = Content::factory()->havePropertyData([
             'test' => 'test',
         ])->create(['slug' => 'test-force-delete']);
         $content->refresh();
-    
+
         // Assert 1
         $this->assertDatabaseHas('content', ['id' => $content->id]);
         $this->assertDatabaseHas('content_versions', ['content_id' => $content->id]);
         $this->assertDatabaseHas('nestable_trees', ['nestable_id' => $content->id, 'nestable_type' => $content->getMorphClass()]);
-    
+
         // Act
         $content->forceDelete();
-    
+
         // Assert 2
         $this->assertDatabaseMissing('content', ['id' => $content->id]);
         $this->assertDatabaseMissing('content_versions', ['content_id' => $content->id]);
         $this->assertDatabaseMissing('nestable_trees', ['content_id' => $content->id]);
     });
 
-    
 })->group('unit', 'model');
