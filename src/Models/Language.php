@@ -11,6 +11,10 @@ class Language extends BaseModel implements LanguageContract
 {
     protected $guarded = ['id'];
 
+    protected $casts = [
+        'is_default' => 'boolean',
+    ];
+
     public function contentRoutes()
     {
         return $this->hasMany(InspireCmsConfig::getContentRouteModelClass(), 'language_id');

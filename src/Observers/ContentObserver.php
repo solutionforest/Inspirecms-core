@@ -107,6 +107,9 @@ class ContentObserver
 
         $model->navigation()->delete();
 
+        $model->path()->delete();
+        $model->routes()->delete();
+
         $this->clearCached(); // Since the navigation is deleted, we need to clear the cache.
     }
 
