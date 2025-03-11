@@ -42,6 +42,13 @@ class TemplateManager implements TemplateManagerInterface
         return trim(InspireCmsConfig::get('template.component_prefix', 'inspirecms'));
     }
 
+    public function isThemeExists(string $theme): bool
+    {
+        // check view.components directory
+        
+        return is_dir(resource_path("views/components/{$theme}"));
+    }
+
     public function getComponentWithTheme(string $component, ?string $theme = null): string
     {
         $componentPrefix = static::getComponentPrefix();
@@ -52,6 +59,18 @@ class TemplateManager implements TemplateManagerInterface
             ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
             ->finish('.')
             ->finish(trim($component))
+            ->toString();
+    }
+
+    public function getComponentDirectoryForTheme(?string $theme = null): string
+    {
+        $componentPrefix = static::getComponentPrefix();
+
+        $theme ??= static::getCurrentTheme();
+        
+        return str($theme)
+            ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
+            ->finish('.')
             ->toString();
     }
 

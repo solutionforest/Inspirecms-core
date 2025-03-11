@@ -563,8 +563,18 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     private function addAboutPluginInfo()
     {
+        $currentTheme = inspirecms_templates()->getCurrentTheme();
+
         AboutCommand::add('InspireCms', [
             'Version' => InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core'),
+            'Theme' => collect(inspirecms_templates()->getAvailableThemes())
+                ->keys()
+                ->merge([$currentTheme])
+                ->map(fn ($theme) => $theme == $currentTheme ? "<fg=green;options=bold>{$theme}</>" : $theme)
+                ->implode(' / '),
+            'Theme Ready' => inspirecms_templates()->isThemeExists($currentTheme) 
+                ? '<fg=green;options=bold>READY</>' 
+                : '<fg=yellow;options=bold>NOT READY YET</>',
         ]);
     }
 }

@@ -12,9 +12,13 @@ interface TemplateManagerInterface
 
     public function getAvailableThemes(): array;
 
+    public function isThemeExists(string $theme): bool;
+
     public function getComponentPrefix(): string;
 
     public function getComponentWithTheme(string $component, ?string $theme = null): string;
+    
+    public function getComponentDirectoryForTheme(?string $theme = null): string;
 
     /**
      * Assigns a default template to the given templateable object if it is not already set.
