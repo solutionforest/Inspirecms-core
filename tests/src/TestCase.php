@@ -75,6 +75,10 @@ abstract class TestCase extends Orchestra
         $app['config']->set('database.default', 'testing');
         $app['config']->set('app.key', 'base64:I4ofV4eI4v12PUp+g9ZahXUu0ZhPCbk1Q8iawecCtdw=');
 
+        // Avoid migration for 'cache', 'sessions', to avoid migration error
+        $app['config']->set('session.driver', 'array');
+        $app['config']->set('cache.default', 'array');
+
         $this->registerTestModels($app);
 
         $app['config']->set('auth.providers.inspirecms', [
@@ -130,20 +134,23 @@ abstract class TestCase extends Orchestra
                 if ($migrationPath == false) {
                     continue;
                 }
-    
+
                 // Load .stub files
                 foreach (glob("{$migrationPath}/*.php.stub") as $path) {
+                    // echo "Loading migration from stub file: $path\n";
+
                     $migration = include $path;
                     $migration->up();
                 }
             }
 
         }
-        // End with '/../database/migrations'
+        // Is tests migrations
         elseif (is_string($paths) && str($paths)->endsWith('/../database/migrations')) {
             $migrationPath = realpath(__DIR__ . '/../database/migrations');
 
             foreach (glob("{$migrationPath}/*.php") as $path) {
+
                 $migration = include $path;
                 $migration->up();
             }
@@ -156,6 +163,8 @@ abstract class TestCase extends Orchestra
     /** {@inheritDoc} */
     protected function defineDatabaseMigrations()
     {
+        // $this->loadLaravelMigrations(); 
+
         //plugin migrations
         $this->loadMigrationsFrom([
             __DIR__ . '/../../vendor/solution-forest/inspirecms-support/database/migrations',
@@ -168,13 +177,6 @@ abstract class TestCase extends Orchestra
         // test migrations
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         // $this->artisan('migrate', ['--database' => 'testbench'])->run();
-
-    }
-
-    /** {@inheritDoc} */
-    protected function destroyDatabaseMigrations()
-    {
-        //
     }
 
     protected function getTable($table)
