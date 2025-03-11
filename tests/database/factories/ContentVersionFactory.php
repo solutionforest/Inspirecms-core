@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Database\Factories;
+namespace SolutionForest\InspireCms\Tests\Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use SolutionForest\InspireCms\Models\ContentVersion;

@@ -32,7 +32,7 @@ abstract class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => '\\SolutionForest\\InspireCms\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => '\\SolutionForest\\InspireCms\\Tests\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
         );
         Factory::guessModelNamesUsing(
             fn ($factory) => 'SolutionForest\\InspireCms\\Tests\\Models\\' . str_replace('Factory', '', class_basename($factory))
