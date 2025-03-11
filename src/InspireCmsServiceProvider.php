@@ -404,6 +404,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             SupportModels\Contracts\NestableTree::class,
             Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
+        Support\Facades\ModelRegistry::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
 
         // Media Library
 
@@ -412,10 +413,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
         Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        // Support
-
-        Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
+        // auth guard
+        Support\Facades\AuthenticationManager::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
 
         // Resolvers
 
