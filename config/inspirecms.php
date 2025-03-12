@@ -59,6 +59,9 @@ return [
             'key' => 'inspirecms.content_routes',
             'ttl' => 120 * 60 * 24,
         ],
+        'key_value' => [
+            'ttl' => 60 * 60 * 24,
+        ],
     ],
 
     'filament' => [

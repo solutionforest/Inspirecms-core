@@ -29,7 +29,7 @@ class KeyValueCache
     public function __construct($cacheManager, \DateInterval|int|null $ttl = null)
     {
         $this->cacheManager = $cacheManager;
-        $this->cacheExpirationTime = $ttl ?? \DateInterval::createFromDateString('24 hours');
+        $this->cacheExpirationTime = $ttl ?? InspireCmsConfig::get('cache.key_value.ttl') ?? \DateInterval::createFromDateString('24 hours');
     }
 
     /**
