@@ -8,17 +8,28 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 
 interface TemplateManagerInterface
 {
-    public function getCurrentTheme(): string;
+    /**
+     * Get the current theme.
+     *
+     * @return string|null The current theme name, or null if no theme is set.
+     */
+    public function getCurrentTheme(): ?string;
 
     public function getAvailableThemes(): array;
 
     public function isThemeExists(string $theme): bool;
 
+    public function clearCurrentThemeCache(): void;
+
+    public function resetCurrentTheme(): void;
+
     public function getComponentPrefix(): string;
 
     public function getComponentWithTheme(string $component, ?string $theme = null): string;
     
-    public function getComponentDirectoryForTheme(?string $theme = null): string;
+    public function getComponentDirectoryForTheme(?string $theme = null, ?string $component = null): string;
+
+    public function getThemeDefaultLayoutPath(?string $theme = null): string;
 
     /**
      * Assigns a default template to the given templateable object if it is not already set.
@@ -46,4 +57,15 @@ interface TemplateManagerInterface
     public function exportTemplate($template, ?string $theme = null): void;
 
     public function getExportedTemplateDir(): string;
+
+    /**
+     * Ensures that the theme layout component exists.
+     *
+     * This method checks if the specified theme layout component exists. If not, will create it.
+     *
+     * @param string $theme The name of the theme.
+     * @param string|null $component The name of the component. If null, a default component will be used.
+     * @return void
+     */
+    public function ensureThemeLayoutComponentExists(string $theme, ?string $component = null): void;
 }

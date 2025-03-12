@@ -68,6 +68,7 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
                 Widgets\AlertOverview::class,
+                Widgets\TemplateInfo::class,
                 \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets\TreeNavigation::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')

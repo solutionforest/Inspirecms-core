@@ -232,6 +232,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
             'inspirecms::add' => 'heroicon-o-plus-small',
             'inspirecms::attach' => 'heroicon-o-link',
+            'inspirecms::edit' => 'heroicon-m-pencil-square',
+            'inspirecms::delete' => 'heroicon-o-trash',
+            'inspirecms::download' => 'heroicon-m-arrow-down-tray',
+            'inspirecms::export' => 'heroicon-m-arrow-top-right-on-square',
             'inspirecms::json-file' => view('inspirecms::icons.json-file'),
             'inspirecms::fields' => view('inspirecms::icons.fields'),
             'inspirecms::templates' => view('inspirecms::icons.templates'),
@@ -573,14 +577,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $currentTheme = inspirecms_templates()->getCurrentTheme();
 
-        AboutCommand::add('InspireCms', [
+        AboutCommand::add('InspireCms', fn () => [
             'Version' => InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core'),
-            'Theme' => collect(inspirecms_templates()->getAvailableThemes())
-                ->keys()
-                ->merge([$currentTheme])
-                ->map(fn ($theme) => $theme == $currentTheme ? "<fg=green;options=bold>{$theme}</>" : $theme)
-                ->implode(' / '),
-            'Theme Ready' => inspirecms_templates()->isThemeExists($currentTheme) 
+            'Theme' => filled($currentTheme) 
+                ? "<fg=green;options=bold>{$currentTheme}</>"
+                : '<fg=yellow;options=bold>NOT SET</>',
+            'Theme Ready' => filled($currentTheme) && inspirecms_templates()->isThemeExists($currentTheme) 
                 ? '<fg=green;options=bold>READY</>' 
                 : '<fg=yellow;options=bold>NOT READY YET</>',
         ]);

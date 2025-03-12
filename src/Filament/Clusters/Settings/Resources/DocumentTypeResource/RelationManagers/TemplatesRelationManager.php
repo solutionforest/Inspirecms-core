@@ -101,7 +101,7 @@ class TemplatesRelationManager extends RelationManager
             ])
             ->headerActions([
                 Tables\Actions\SelectAction::make('theme')
-                    ->options(inspirecms_templates()->getAvailableThemes())
+                    ->options(TemplateResourceHelper::getThemeSelectOptions())
                     ->view('inspirecms::filament.actions.select-action', [
                         'icon' => 'heroicon-o-paint-brush',
                     ])

@@ -9,15 +9,28 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResourceHelper
 {
+    public static function getThemeSelectOptions(?string $currentTheme = null): array
+    {
+        $currentTheme ??= inspirecms_templates()->getCurrentTheme();
+
+        return collect(inspirecms_templates()->getAvailableThemes())
+            ->when(
+                fn ($collection) => filled($currentTheme) && ! $collection->has($currentTheme), 
+                fn ($collection) => $collection->prepend($currentTheme, $currentTheme)
+            )
+            ->all();
+    }
+
     /**
      * @return Forms\Components\Field|Forms\Components\Component
      */
     public static function getThemeFormComponent()
     {
+        $currentTheme = inspirecms_templates()->getCurrentTheme();
         return Forms\Components\Select::make('theme')
             ->label(__('inspirecms::resources/template.theme.label'))
             ->prefixIcon('heroicon-o-paint-brush')
-            ->options(inspirecms_templates()->getAvailableThemes());
+            ->options(static::getThemeSelectOptions());
     }
 
     /**

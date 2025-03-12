@@ -164,10 +164,11 @@ return [
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [
-            \SolutionForest\InspireCms\Filament\Actions\ExportTemplateAction::class,
+            
         ],
         'guard_widgets' => [
             \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
+            \SolutionForest\InspireCms\Filament\Widgets\TemplateInfo::class,
         ],
     ],
 

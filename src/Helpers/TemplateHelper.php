@@ -2,8 +2,39 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use SolutionForest\InspireCms\Base\Enums\CacheKeys;
+use SolutionForest\InspireCms\InspireCmsConfig;
+
 class TemplateHelper
 {
+    public static function setupKeyValueForCurrentTemplate()
+    {
+        $model = InspireCmsConfig::getKeyValueModelClass();
+        $tableName = app($model)->getTable();
+
+        if (ModelHelper::isTableExists($tableName)) {
+            $model::query()->firstOrCreate(
+                ['key' => static::getCurrentThemeKey()], 
+                ['value' => static::getDefaultTemplateTheme()]
+            );
+        }
+    }
+
+    /**
+     * Get the default template theme from the configuration file.
+     *
+     * @return string The name of the default template theme.
+     */
+    public static function getDefaultTemplateTheme(): string
+    {
+        return trim(InspireCmsConfig::get('template.theme', 'manifest'));
+    }
+
+    public static function getCurrentThemeKey(): string
+    {
+        return CacheKeys::CURRENT_THEME->value;
+    }
+
     /**
      * Splits a Blade expression to extract a property.
      *
