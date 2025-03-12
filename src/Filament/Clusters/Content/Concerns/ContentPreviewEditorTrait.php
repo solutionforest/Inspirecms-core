@@ -22,17 +22,21 @@ trait ContentPreviewEditorTrait
     {
         $template = filled($this->data['template_id'] ?? null) ? InspireCmsConfig::getTemplateModelClass()::find($this->data['template_id']) : null;
         $template ??= $this->getDocumentType()?->getDefaultTemplate();
-        if (! $template) {
+
+        $templateContent = $template?->getContent();
+
+        if (! $template || blank($templateContent)) {
             Notification::make()
-                ->title(__('inspirecms::notification.template_file_not_found.title'))
-                ->body(__('inspirecms::notification.template_file_not_found.body'))
+                ->title(__('inspirecms::notification.template_not_found.title'))
+                ->body(__('inspirecms::notification.template_not_found.body'))
                 ->danger()
+                ->seconds(60)
                 ->send();
 
             throw new Halt;
         }
 
-        return $template->getContent();
+        return $templateContent;
     }
 
     public static function renderBuilderPreview(string $view, array $data): string

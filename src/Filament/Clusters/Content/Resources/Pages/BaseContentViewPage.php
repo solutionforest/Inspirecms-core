@@ -120,17 +120,21 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
         $record = $this->getRecord();
         $template = $record->getDefaultTemplate();
         $template ??= $this->getDocumentType()?->getDefaultTemplate();
-        if (! $template) {
+        
+        $templateContent = $template?->getContent();
+
+        if (! $template || blank($templateContent)) {
             Notification::make()
-                ->title(__('inspirecms::notification.template_file_not_found.title'))
-                ->body(__('inspirecms::notification.template_file_not_found.body'))
+                ->title(__('inspirecms::notification.template_not_found.title'))
+                ->body(__('inspirecms::notification.template_not_found.body'))
                 ->danger()
+                ->seconds(60)
                 ->send();
 
             throw new Halt;
         }
 
-        return $template->getContent();
+        return $templateContent;
     }
 
     public static function renderPreviewModalView(string $view, array $data): string

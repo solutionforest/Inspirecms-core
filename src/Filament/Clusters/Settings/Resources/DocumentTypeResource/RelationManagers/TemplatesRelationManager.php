@@ -23,7 +23,9 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 class TemplatesRelationManager extends RelationManager
 {
     use CanAuthorizeRelationManager;
-    use HasBuilderPreview;
+    use HasBuilderPreview {
+        openPreviewModalForBuidler as protected traitOpenPreviewModalForBuidler;
+    }
     use HasPreviewModal;
 
     protected static string $relationship = 'templates';
@@ -263,45 +265,37 @@ class TemplatesRelationManager extends RelationManager
         return $templateRecord->slug;   // wouldn't use this, but it's required
     }
 
-    public static function renderBuilderPreview(string $view, array $data): string
+    public function openPreviewModalForBuidler(string $builderName): void
     {
-        $htmlContent = $data['html_content'] ?? '';
+        $this->checkCustomListener();
 
-        /**
-         * @var null | \SolutionForest\InspireCms\Models\Contracts\DocumentType
-         */
-        $documentType = $data['documentType'] ?? null;
+        $editorData = $this->mutateInitialBuilderEditorData(
+            $builderName,
+            $this->prepareBuilderEditorData($builderName)
+        );
 
-        if (! $documentType) {
-            return '';
+        if (!isset($editorData['html_content']) || blank($editorData['html_content'])) {
+            
+            Notification::make()
+                ->title(__('inspirecms::notification.template_not_found.title'))
+                ->body(__('inspirecms::notification.template_not_found.body'))
+                ->danger()
+                ->seconds(60)
+                ->send();
+
+            // Avoid opening the modal if the template is not found
+            return;
         }
 
-        $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
-
-        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
-            // get the layout
-            $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
-            if (view()->exists('components.' . $layoutName)) {
-                $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
-                    'content' => $dummyDto,
-                    'locale' => $dummyDto->getLocale(),
-                    'layoutName' => $layoutName,
-                    'slot' => '',
-                    'isPeekPreviewModal' => true,
-                ]);
-
-                return Html::injectPreviewModalStyle(
-                    $newHtmlContent
-                );
-            }
-        }
-
-        return Html::injectPreviewModalStyle(
-            Blade::render($htmlContent, [
-                'content' => $dummyDto,
-                'locale' => $dummyDto->getLocale(),
-                'isPeekPreviewModal' => true,
-            ])
+        $this->dispatch(
+            'openBuilderEditor',
+            previewView: $this->getBuilderPreviewView($builderName),
+            previewUrl: $this->getBuilderPreviewUrl($builderName),
+            modalTitle: $this->getPreviewModalTitle(),
+            editorTitle: $this->getBuilderEditorTitle(),
+            editorData: $editorData,
+            builderName: $builderName,
+            pageClass: static::class,
         );
     }
 
@@ -314,6 +308,7 @@ class TemplatesRelationManager extends RelationManager
         $theme = $this->theme ?? inspirecms_templates()->getCurrentTheme();
         $editorData['theme'] = $theme;
         $editorData['record_id'] = $templateRecord?->getKey();
+        
         $editorData['html_content'] = $templateRecord?->getContent($theme);
 
         $documentType = $this->getOwnerRecord();
@@ -336,6 +331,50 @@ class TemplatesRelationManager extends RelationManager
             : null;
 
         return $previewData;
+    }
+
+    public static function renderBuilderPreview(string $view, array $data): string
+    {
+        $htmlContent = $data['html_content'] ?? '';
+
+        /**
+         * @var null | \SolutionForest\InspireCms\Models\Contracts\DocumentType
+         */
+        $documentType = $data['documentType'] ?? null;
+
+        if (! $documentType) {
+            return '';
+        }
+
+        $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
+
+        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
+            
+            // get the layout
+            $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
+
+            if (view()->exists('components.' . $layoutName)) {
+                $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
+                    'content' => $dummyDto,
+                    'locale' => $dummyDto->getLocale(),
+                    'layoutName' => $layoutName,
+                    'slot' => '',
+                    'isPeekPreviewModal' => true,
+                ]);
+
+                return Html::injectPreviewModalStyle(
+                    $newHtmlContent
+                );
+            }
+        }
+
+        return Html::injectPreviewModalStyle(
+            Blade::render($htmlContent, [
+                'content' => $dummyDto,
+                'locale' => $dummyDto->getLocale(),
+                'isPeekPreviewModal' => true,
+            ])
+        );
     }
 
     public function updateBuilderFieldWithEditorData(string $builderName, array $editorData): void
