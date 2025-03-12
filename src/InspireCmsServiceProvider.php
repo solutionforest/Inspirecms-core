@@ -103,7 +103,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
+        
         $this->app->singleton(InspireCmsBase\TemplateManagerInterface::class, fn () => $this->app->make(InspireCmsBase\TemplateManager::class));
+
+        $this->app->singleton(InspireCmsBase\KeyValueCache::class, function () {
+            return new InspireCmsBase\KeyValueCache(
+                $this->app['cache'],
+            );
+        });
 
         $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
@@ -257,6 +264,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'create_inspire-cms-core_table',
             'create_inspire-cms-content-locks_table',
             'create_inspire-cms-import_and_export_table',
+            'create_key_values_table',
             'create_custom_spatie_permission_table',
             'update_sessions_table',
         ];

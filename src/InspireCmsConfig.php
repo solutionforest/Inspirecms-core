@@ -403,6 +403,21 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'MediaAsset model');
     }
 
+    public static function getKeyValueTableName(): string
+    {
+        return app(static::getKeyValueModelClass())->getTable();
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    public static function getKeyValueModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\KeyValue::class, Models\KeyValue::class);
+
+        return self::ensureClassExists($class, 'KeyValue model');
+    }
+
     public static function getNavigationTableName(): string
     {
         return app(static::getNavigationModelClass())->getTable();

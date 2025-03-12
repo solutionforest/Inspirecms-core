@@ -143,6 +143,7 @@ return [
             'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
             'import' => Models\Import::class,
             'export' => Models\Export::class,
+            'key_value' => Models\KeyValue::class,
         ],
         'policies' => [
             'content' => Policies\ContentStatusPolicy::class,
