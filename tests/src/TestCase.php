@@ -137,7 +137,6 @@ abstract class TestCase extends Orchestra
 
                 // Load .stub files
                 foreach (glob("{$migrationPath}/*.php.stub") as $path) {
-                    // echo "Loading migration from stub file: $path\n";
 
                     $migration = include $path;
                     $migration->up();

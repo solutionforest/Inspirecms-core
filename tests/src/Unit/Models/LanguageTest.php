@@ -5,8 +5,6 @@ use SolutionForest\InspireCms\Tests\Models\ContentRoute;
 use SolutionForest\InspireCms\Tests\Models\Language;
 use SolutionForest\InspireCms\Tests\TestCase;
 
-use function Pest\Laravel\json;
-
 uses(TestCase::class);
 
 describe('language model', function () {
