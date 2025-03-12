@@ -16,6 +16,12 @@ class UpdatePluginCommand extends Command
 
     public function handle()
     {
+        // publish migrations
+        $this->call('vendor:publish', [
+            '--provider' => 'SolutionForest\\InspireCms\\InspireCmsServiceProvider',
+            '--tag' => 'inspirecms-migrations',
+        ]);
+
         // Call install command
         $this->call('inspirecms:install');
 
