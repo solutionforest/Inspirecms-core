@@ -10,7 +10,7 @@ return [
 
     ],
 
-    'template_file_not_found' => [
+    'template_not_found' => [
 
         'title' => '找不到模板文件',
 
