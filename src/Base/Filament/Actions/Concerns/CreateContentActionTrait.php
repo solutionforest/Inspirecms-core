@@ -42,7 +42,7 @@ trait CreateContentActionTrait
 
         $this->modal();
 
-        $this->modalWidth('lg');
+        $this->modalWidth('5xl');
 
         $this->stickyModalHeader();
 
@@ -74,6 +74,7 @@ trait CreateContentActionTrait
         });
 
         $this->modalSubmitAction(false);
+        $this->modalCancelAction(false);
     }
 
     public function parentContentKey(Closure | string | int | null $parentContentKey): static
