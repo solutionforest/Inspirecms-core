@@ -20,6 +20,7 @@ class FieldGroupExporter extends BaseExporter
             CheckboxList::make('filter_record')
                 ->label('Filter Records')
                 ->hint('Keep empty to export all records.')
+                ->gridDirection('row')
                 ->columns(3)
                 ->searchable()
                 ->options($options)

@@ -13,6 +13,10 @@ return [
         'label' => 'Category',
         'validation_attribute' => 'category',
     ],
+    'show_at_root' => [
+        'label' => 'Show at root',
+        'validation_attribute' => 'show at root',
+    ],
     'show_as_table' => [
         'label' => 'Show as table',
         'validation_attribute' => 'show as table',
@@ -55,9 +59,14 @@ return [
         'label' => 'Inheriting to :name',
         'description' => 'The document types that inherit from this document type.',
     ],
-    'rejected_document_types' => [
-        'label' => 'Rejected document types',
-        'validation_attribute' => 'rejected document types',
+    
+    'allowed_document_types' => [
+        'label' => 'Allowed document types',
+        'description' => 'The document types that are allowed as child items.',
+    ],
+    'allowing_document_types' => [
+        'label' => 'Allowing document types',
+        'description' => 'The document types that allow this document type.',
     ],
 
     'categories' => [
@@ -91,14 +100,10 @@ return [
             'heading' => 'General',
         ],
     ],
-    'rejected' => [
+    'display' => [
         'section' => [
-            'heading' => 'Restricted document types',
-            'description' => 'Document types that are not allowed as child items',
+            'heading' => 'Display',
+            'description' => 'Settings that determine how this document type is displayed when creating content.',
         ],
-    ],
-    'rejecting' => [
-        'label' => 'Restricting document types',
-        'description' => 'The document types that restrict this document type.',
     ],
 ];

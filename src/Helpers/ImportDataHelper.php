@@ -147,24 +147,28 @@ class ImportDataHelper
                     $sequence = collect([
                         [
                             'showAsTable' => false,
+                            'showAtRoot' => true,
                             'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
                         ],
                         [
                             'showAsTable' => true,
+                            'showAtRoot' => true,
                             'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                         ],
                         [
                             'showAsTable' => false,
+                            'showAtRoot' => false,
                             'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data->value,
                             'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 2),
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
                         ],
                         [
                             'showAsTable' => false,
+                            'showAtRoot' => false,
                             'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
                             'templates' => [],
                             'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
@@ -172,7 +176,7 @@ class ImportDataHelper
                     ])
                         ->map(
                             fn (array $item): array => collect(['defaultTemplate' => Arr::first($item['templates'] ?? null)])
-                                ->merge(['title' => null, 'icon' => null, 'rejected' => []])
+                                ->merge(['title' => null, 'icon' => null, 'allowed' => []])
                                 ->merge($item)
                                 ->all()
                         )

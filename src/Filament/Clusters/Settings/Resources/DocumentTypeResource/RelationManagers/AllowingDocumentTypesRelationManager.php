@@ -13,9 +13,9 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
-class RejectingDocumentTypesRelationManager extends RelationManager
+class AllowingDocumentTypesRelationManager extends RelationManager
 {
-    protected static string $relationship = 'rejectingDocumentTypes';
+    protected static string $relationship = 'allowingDocumentTypes';
 
     public function table(Table $table): Table
     {
@@ -29,7 +29,7 @@ class RejectingDocumentTypesRelationManager extends RelationManager
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->openRecordUrlInNewTab()
-            ->description(fn () => __('inspirecms::resources/document-type.rejecting.description'))
+            ->description(fn () => __('inspirecms::resources/document-type.allowing_document_types.description'))
             ->actions([
                 Tables\Actions\Action::make('open')
                     ->label(__('inspirecms::actions.open.label'))
@@ -49,9 +49,7 @@ class RejectingDocumentTypesRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::resources/document-type.rejecting.label', [
-            'name' => static::getModelLabel(),
-        ]);
+        return __('inspirecms::resources/document-type.allowing_document_types.label');
     }
 
     protected static function getModelLabel(): ?string

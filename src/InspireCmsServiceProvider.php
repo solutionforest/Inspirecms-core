@@ -232,6 +232,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
             'inspirecms::add' => 'heroicon-o-plus-small',
             'inspirecms::attach' => 'heroicon-o-link',
+            'inspirecms::detach' => 'heroicon-m-x-mark',
             'inspirecms::edit' => 'heroicon-m-pencil-square',
             'inspirecms::delete' => 'heroicon-o-trash',
             'inspirecms::download' => 'heroicon-m-arrow-down-tray',

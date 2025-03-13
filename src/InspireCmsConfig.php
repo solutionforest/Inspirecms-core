@@ -224,19 +224,19 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'DocumentTypeInheritance model');
     }
 
-    public static function getRejectedDocumentTypeTableName(): string
+    public static function getAllowedDocumentTypeTableName(): string
     {
-        return app(static::getRejectedDocumentTypeModelClass())->getTable();
+        return app(static::getAllowedDocumentTypeModelClass())->getTable();
     }
 
     /**
      * @return class-string<Model>
      */
-    public static function getRejectedDocumentTypeModelClass(): string
+    public static function getAllowedDocumentTypeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\RejectedDocumentType::class, Models\Pivot\RejectedDocumentType::class);
+        $class = ModelManifest::get(Models\Contracts\AllowedDocumentType::class, Models\Pivot\AllowedDocumentType::class);
 
-        return self::ensureClassExists($class, 'RejectedDocumentType model');
+        return self::ensureClassExists($class, 'AllowedDocumentType model');
     }
 
     public static function getFieldGroupTableName(): string

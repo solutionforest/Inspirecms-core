@@ -11,8 +11,13 @@ class DocumentTypeFactory extends Factory
         return [
             'title' => $this->faker->sentence(1),
             'slug' => $this->faker->unique()->slug(1),
-            'category' => 'web',
-            'show_as_table' => false,
+            'category' => $this->faker->randomElement([
+                'web', 
+                'data', 
+                // 'inheritance',
+            ]),
+            'show_as_table' => $this->faker->boolean(),
+            'show_at_root' => $this->faker->boolean(),
             'icon' => null,
         ];
     }

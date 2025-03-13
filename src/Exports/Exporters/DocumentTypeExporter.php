@@ -20,6 +20,7 @@ class DocumentTypeExporter extends BaseExporter
             CheckboxList::make('filter_record')
                 ->label('Filter Records')
                 ->hint('Keep empty to export all records.')
+                ->gridDirection('row')
                 ->columns(3)
                 ->searchable()
                 ->options($options)
@@ -71,7 +72,7 @@ class DocumentTypeExporter extends BaseExporter
 
         $args = $this->record->getArgsForExporter();
 
-        $query = static::getModel()::query()->with(['fieldGroups', 'templates', 'rejectedDocumentTypes']);
+        $query = static::getModel()::query()->with(['fieldGroups', 'templates', 'allowedDocumentTypes']);
 
         if (! empty($args['filter_record'])) {
             $query->whereKey($args['filter_record']);

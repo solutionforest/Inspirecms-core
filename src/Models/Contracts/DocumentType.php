@@ -8,18 +8,20 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property string $slug
  * @property string $category
  * @property bool $show_as_table Determine if the children should be displayed as a table
+ * @property bool $show_at_root
  * @property ?string $icon
  * @property int|string|null $parent_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
+ * 
  * @property-read null | (\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory & \BackedEnum) $display_category
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritedDocumentTypes
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritingDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectedDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $rejectingDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $allowedDocumentTypes
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $allowingDocumentTypes
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&Content> $content
  */
 interface DocumentType extends Base\HasTemplates
@@ -60,18 +62,18 @@ interface DocumentType extends Base\HasTemplates
     public function inheritingDocumentTypes();
 
     /**
-     * Retrieve the document types that are rejected by the current doucment type.
+     * Retrieve the document types that are allowed by the current document type.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
      */
-    public function rejectedDocumentTypes();
+    public function allowedDocumentTypes();
 
     /**
-     * Retrieve the document types that reject the current document type.
+     * Retrieve the document types that allow the current document type.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
      */
-    public function rejectingDocumentTypes();
+    public function allowingDocumentTypes();
 
     /**
      * Get the content associated with the document type.

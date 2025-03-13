@@ -13,6 +13,10 @@ return [
         'label' => '類別',
         'validation_attribute' => '類別',
     ],
+    'show_at_root' => [
+        'label' => '顯示在根目錄',
+        'validation_attribute' => '顯示在根目錄',
+    ],
     'show_as_table' => [
         'label' => '顯示為表格',
         'validation_attribute' => '顯示為表格',
@@ -55,9 +59,10 @@ return [
         'label' => '繼承至 :name',
         'description' => '繼承此文件類型的文件類型。',
     ],
-    'rejected_document_types' => [
-        'label' => '被拒絕的文件類型',
-        'validation_attribute' => '被拒絕的文件類型',
+    
+    'allowed_document_types' => [
+        'label' => '允許的文件類型',
+        'description' => '作為子項允許的文件類型。',
     ],
 
     'categories' => [
@@ -91,14 +96,10 @@ return [
             'heading' => '一般',
         ],
     ],
-    'rejected' => [
+    'display' => [
         'section' => [
-            'heading' => '受限制的文件類型',
-            'description' => '不允許作為子項的文件類型',
+            'heading' => '顯示',
+            'description' => '設定在創建內容時如何顯示此文件類型。',
         ],
-    ],
-    'rejecting' => [
-        'label' => '限制此文件',
-        'description' => '限制此文件類型的文件類型。',
     ],
 ];
