@@ -139,14 +139,14 @@ class InspireCms
                 if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
 
                     foreach ($this->getContentRoutes() as $index => $item) {
-                        Route::get($item['uri'], ContentController::class)
+                        Route::any($item['uri'], ContentController::class)
                             ->where($item['regex_constraints'] ?? [])
                             ->name($item['alias'] ?? 'content_' . $index);
                     }
                 }
 
                 // default route
-                Route::get($factory->getDefaultRoutePattern(), ContentController::class)
+                Route::any($factory->getDefaultRoutePattern(), ContentController::class)
                     ->where($factory->getDefaultRouteConstraints())
                     ->name('default');
             });
