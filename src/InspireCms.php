@@ -23,6 +23,7 @@ use Symfony\Component\Routing\Exception\RouteNotFoundException;
 class InspireCms
 {
     const CORE_SLUG = 'inspirecms';
+
     const PACKAGE = 'solution-forest/inspirecms-core';
 
     protected CacheManager $cacheManager;
@@ -42,7 +43,7 @@ class InspireCms
         $this->sections = collect(InspireCmsConfig::get('filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
     }
 
-    public static function version(): string|null
+    public static function version(): ?string
     {
         return InstalledVersions::getPrettyVersion(static::PACKAGE);
     }
