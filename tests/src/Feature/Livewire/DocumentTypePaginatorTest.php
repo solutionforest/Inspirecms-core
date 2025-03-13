@@ -10,7 +10,7 @@ uses(TestCase::class);
 // uses(RefreshDatabase::class);
 
 describe('document type paginator', function () {
-    
+
     it('can paginate document types', function () {
         DocumentType::factory(['show_at_root' => true])
             ->count(30)
@@ -31,7 +31,7 @@ describe('document type paginator', function () {
     });
 
     it('resets page when search is updated', function () {
-        
+
         DocumentType::factory(['show_at_root' => true])
             ->count(30)
             ->create();

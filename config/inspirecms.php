@@ -167,7 +167,7 @@ return [
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [
-            
+
         ],
         'guard_widgets' => [
             \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,

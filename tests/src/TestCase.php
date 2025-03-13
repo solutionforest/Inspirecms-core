@@ -161,9 +161,9 @@ abstract class TestCase extends Orchestra
     /** {@inheritDoc} */
     protected function defineDatabaseMigrations()
     {
-        // $this->loadLaravelMigrations(); 
+        // $this->loadLaravelMigrations();
 
-        //plugin migrations
+        // plugin migrations
         $this->loadMigrationsFrom([
             __DIR__ . '/../../vendor/solution-forest/inspirecms-support/database/migrations',
             // __DIR__ . '/../../vendor/spatie/laravel-permission/database/migrations',

@@ -11,11 +11,11 @@ class KeyValue extends BaseModel implements KeyValueContract
     protected $primaryKey = 'key';
 
     protected $keyType = 'string';
-    
+
     public $incrementing = false;
 
     protected $guarded = [];
-    
+
     public static function findKeyValue($key)
     {
         return static::find($key);

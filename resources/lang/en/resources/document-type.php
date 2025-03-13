@@ -59,7 +59,7 @@ return [
         'label' => 'Inheriting to :name',
         'description' => 'The document types that inherit from this document type.',
     ],
-    
+
     'allowed_document_types' => [
         'label' => 'Allowed document types',
         'description' => 'The document types that are allowed as child items.',

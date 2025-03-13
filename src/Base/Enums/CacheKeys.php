@@ -6,4 +6,3 @@ enum CacheKeys: string
 {
     case CURRENT_THEME = 'current_theme';
 }
-

@@ -120,7 +120,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
         $record = $this->getRecord();
         $template = $record->getDefaultTemplate();
         $template ??= $this->getDocumentType()?->getDefaultTemplate();
-        
+
         $templateContent = $template?->getContent();
 
         if (! $template || blank($templateContent)) {

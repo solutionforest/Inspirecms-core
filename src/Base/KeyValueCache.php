@@ -24,9 +24,9 @@ class KeyValueCache
     protected $cacheExpirationTime;
 
     /**
-     * @param CacheManager $cacheManager
+     * @param  CacheManager  $cacheManager
      */
-    public function __construct($cacheManager, \DateInterval|int|null $ttl = null)
+    public function __construct($cacheManager, \DateInterval | int | null $ttl = null)
     {
         $this->cacheManager = $cacheManager;
         $this->cacheExpirationTime = $ttl ?? InspireCmsConfig::get('cache.key_value.ttl') ?? \DateInterval::createFromDateString('24 hours');
@@ -39,12 +39,12 @@ class KeyValueCache
     {
         $model = $this->attemptRetrieveModel();
 
-        if (!$model) {
+        if (! $model) {
             return;
         }
 
         $keyValues = $model::all();
-        
+
         foreach ($keyValues as $keyValue) {
             $this->set($keyValue->key, $keyValue->value);
         }
@@ -52,24 +52,24 @@ class KeyValueCache
 
     /**
      * Get a value by key from cache or database
-     * 
-     * @param string $key
-     * @param mixed $default
+     *
+     * @param  mixed  $default
      * @return mixed
      */
     public function get(string $key, $default = null)
     {
         $model = $this->attemptRetrieveModel();
 
-        if (!$model) {
+        if (! $model) {
             return;
         }
 
         return $this->cacheManager->remember(
             $this->getCacheKey($key),
-            $this->cacheExpirationTime, 
+            $this->cacheExpirationTime,
             function () use ($key, $default, $model) {
                 $keyValue = $model::findKeyValue($key);
+
                 return $keyValue ? $keyValue->value : $default;
             }
         );
@@ -77,9 +77,8 @@ class KeyValueCache
 
     /**
      * Set a value in the cache
-     * 
-     * @param string $key
-     * @param mixed $value
+     *
+     * @param  mixed  $value
      */
     public function set(string $key, $value): void
     {
@@ -101,12 +100,12 @@ class KeyValueCache
     {
         $model = $this->attemptRetrieveModel();
 
-        if (!$model) {
+        if (! $model) {
             return;
         }
 
         $keyValues = $model::all();
-        
+
         foreach ($keyValues as $keyValue) {
             $this->forget($keyValue->key);
         }
@@ -123,7 +122,7 @@ class KeyValueCache
     /**
      * @return bool|class-string<Model & KeyValue>
      */
-    protected function attemptRetrieveModel(): bool|string
+    protected function attemptRetrieveModel(): bool | string
     {
         try {
             $model = InspireCmsConfig::getKeyValueModelClass();

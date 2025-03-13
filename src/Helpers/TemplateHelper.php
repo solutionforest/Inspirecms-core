@@ -14,7 +14,7 @@ class TemplateHelper
 
         if (ModelHelper::isTableExists($tableName)) {
             $model::query()->firstOrCreate(
-                ['key' => static::getCurrentThemeKey()], 
+                ['key' => static::getCurrentThemeKey()],
                 ['value' => static::getDefaultTemplateTheme()]
             );
         }

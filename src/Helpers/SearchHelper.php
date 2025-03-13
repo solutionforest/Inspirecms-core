@@ -24,7 +24,6 @@ class SearchHelper
      * @param  array  $searchColumns  An array of columns to search within.
      * @param  bool  $isForcedCaseInsensitive  Whether to force case-insensitive search.
      * @param  array  $excepts  The records to exclude from the options.
-     * 
      * @return array The options for attaching the relationship.
      */
     public static function getAttachOptions($relationship, $inverseRelationshipName, int $optionsLimit, $getRecordTitleUsing, ?string $search = null, $searchColumns = [], $isForcedCaseInsensitive = false, $excepts = []): array
@@ -67,7 +66,6 @@ class SearchHelper
      * @param  array  $searchColumns  An array of columns to search within.
      * @param  bool  $isForcedCaseInsensitive  Whether to force case-insensitive search.
      * @param  array  $excepts  The records to exclude from the options.
-     * 
      * @return array The options for attaching the relationship.
      */
     public static function getAttachOptionsIgnoringInverse($relationship, int $optionsLimit, $getRecordTitleUsing, ?string $search = null, $searchColumns = [], $isForcedCaseInsensitive = false, $excepts = []): array
@@ -87,11 +85,11 @@ class SearchHelper
     }
 
     /**
-     * @param BelongsToMany $relationship
-     * @param int $optionsLimit
-     * @param string|null $search
-     * @param array $searchColumns
-     * @param bool $isForcedCaseInsensitive
+     * @param  BelongsToMany  $relationship
+     * @param  int  $optionsLimit
+     * @param  string|null  $search
+     * @param  array  $searchColumns
+     * @param  bool  $isForcedCaseInsensitive
      * @return Builder
      */
     private static function initializeSearchQuery($relationship, $optionsLimit, $search, $searchColumns, $isForcedCaseInsensitive)
@@ -106,11 +104,10 @@ class SearchHelper
     }
 
     /**
-     * @param  Builder $query
+     * @param  Builder  $query
      * @param  string|null  $search  An optional search term to filter the options.
      * @param  array  $searchColumns  An array of columns to search within.
      * @param  bool  $isForcedCaseInsensitive  Whether to force case-insensitive search.
-     * 
      * @return Builder
      */
     public static function filterBySearch($query, $search, $searchColumns, $isForcedCaseInsensitive)

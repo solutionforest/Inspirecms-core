@@ -14,7 +14,7 @@ class TemplateManager implements TemplateManagerInterface
     protected ?string $theme = null;
 
     protected array $themes = [];
-    
+
     public function __construct()
     {
         $this->loadCurrentTheme();
@@ -77,15 +77,17 @@ class TemplateManager implements TemplateManagerInterface
         $componentPrefix = static::getComponentPrefix();
 
         $theme ??= static::getCurrentTheme();
-        
+
         $relativePath = str($theme)
             ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
             ->trim('.')
             ->replace('.', '/')
             ->trim('/')
-            ->when(filled($component), fn ($str) => $str
-                ->finish('/')
-                ->finish(str($component)->trim()->trim('.')->finish('.blade.php'))
+            ->when(
+                filled($component),
+                fn ($str) => $str
+                    ->finish('/')
+                    ->finish(str($component)->trim()->trim('.')->finish('.blade.php'))
             )
             ->toString();
 
@@ -109,6 +111,7 @@ class TemplateManager implements TemplateManagerInterface
     public function retrieveDefaultContent()
     {
         $componentName = static::getDefaultLayoutComponentName();
+
         return <<<HTML
         @php
             \$locale ??= \$content->getLocale();
@@ -159,7 +162,7 @@ class TemplateManager implements TemplateManagerInterface
         // create directory if not exists
         FileHelper::ensureDirectoryExists(dirname($fullPath));
 
-        if (!file_exists($fullPath)) {
+        if (! file_exists($fullPath)) {
             $content = $this->retrieveDefaultLayoutContent();
 
             file_put_contents($fullPath, $content);

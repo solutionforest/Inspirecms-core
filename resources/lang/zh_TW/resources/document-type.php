@@ -59,7 +59,7 @@ return [
         'label' => '繼承至 :name',
         'description' => '繼承此文件類型的文件類型。',
     ],
-    
+
     'allowed_document_types' => [
         'label' => '允許的文件類型',
         'description' => '作為子項允許的文件類型。',

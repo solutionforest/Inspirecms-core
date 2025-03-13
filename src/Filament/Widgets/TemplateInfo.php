@@ -23,17 +23,17 @@ use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class TemplateInfo extends Widget implements GuardWidget, HasForms, HasActions, HasInfolists
+class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, HasInfolists
 {
     use GuardWidgetTrait;
-    use InteractsWithForms;
     use InteractsWithActions;
+    use InteractsWithForms;
     use InteractsWithInfolists;
 
     protected static string $view = 'inspirecms::filament.widgets.template-info';
 
     protected int | string | array $columnSpan = 'full';
-    
+
     /**
      * @var array<string, mixed> | null
      */
@@ -90,6 +90,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasForms, HasActions, 
                 ->extraAttributes(['class' => 'overflow-x-auto overflow-y-hidden']);
         };
         $isThemeReady = $this->data['is_theme_ready'];
+
         return $infolist
             ->state($this->data)
             ->columns(1)
@@ -118,52 +119,52 @@ class TemplateInfo extends Widget implements GuardWidget, HasForms, HasActions, 
                             })
                     ),
 
-                    $makeTextEntryForPath('theme_layout')
-                        ->hint($isThemeReady ? null : 'Theme layout component does not exist')
-                        ->hintColor('primary')
-                        ->hintAction(
-                            Infolists\Components\Actions\Action::make('generateLayout')
-                                ->visible(!$isThemeReady)
-                                ->icon(FilamentIcon::resolve('inspirecms::export'))
-                                ->iconButton()
-                                ->color('gray')
-                                ->requiresConfirmation()
-                                ->modalSubmitActionLabel('Generate')
-                                ->successNotificationTitle('Layout generated')
-                                ->failureNotificationTitle('Failed to generate layout')
-                                ->action(function (Infolists\Components\Actions\Action $action) {
-                                    try {
-                                        
-                                        Templates::ensureThemeLayoutComponentExists(Templates::getCurrentTheme());
-                                        $this->refreshInfolist();
+                $makeTextEntryForPath('theme_layout')
+                    ->hint($isThemeReady ? null : 'Theme layout component does not exist')
+                    ->hintColor('primary')
+                    ->hintAction(
+                        Infolists\Components\Actions\Action::make('generateLayout')
+                            ->visible(! $isThemeReady)
+                            ->icon(FilamentIcon::resolve('inspirecms::export'))
+                            ->iconButton()
+                            ->color('gray')
+                            ->requiresConfirmation()
+                            ->modalSubmitActionLabel('Generate')
+                            ->successNotificationTitle('Layout generated')
+                            ->failureNotificationTitle('Failed to generate layout')
+                            ->action(function (Infolists\Components\Actions\Action $action) {
+                                try {
 
-                                        $action->success();
+                                    Templates::ensureThemeLayoutComponentExists(Templates::getCurrentTheme());
+                                    $this->refreshInfolist();
 
-                                    } catch (\Throwable $th) {
-                                        $action->failure();
-                                    }
-                                })
-                        ),
+                                    $action->success();
 
-                    $makeTextEntryForPath('exported_template_directory')
-                        ->hintAction(
-                            Infolists\Components\Actions\Action::make('exportTemplates')
-                                ->icon(FilamentIcon::resolve('inspirecms::export'))
-                                ->iconButton()
-                                ->color('gray')
-                                ->requiresConfirmation()
-                                ->modalSubmitActionLabel('Export')
-                                ->successNotification(
-                                    fn (Notification $notification) => $notification
-                                        ->title(__('inspirecms::actions.export_templates.notification.success.title'))
-                                        ->body(__('inspirecms::actions.export_templates.notification.success.body'))
-                                )
-                                ->failureNotification(
-                                    fn (Notification $notification) => $notification
-                                        ->title(__('inspirecms::actions.export_templates.notification.failure.title'))
-                                )
-                                ->action(fn (Infolists\Components\Actions\Action $action) => $this->exportExistingTemplates() ? $action->success() : $action->failure())
-                        ),
+                                } catch (\Throwable $th) {
+                                    $action->failure();
+                                }
+                            })
+                    ),
+
+                $makeTextEntryForPath('exported_template_directory')
+                    ->hintAction(
+                        Infolists\Components\Actions\Action::make('exportTemplates')
+                            ->icon(FilamentIcon::resolve('inspirecms::export'))
+                            ->iconButton()
+                            ->color('gray')
+                            ->requiresConfirmation()
+                            ->modalSubmitActionLabel('Export')
+                            ->successNotification(
+                                fn (Notification $notification) => $notification
+                                    ->title(__('inspirecms::actions.export_templates.notification.success.title'))
+                                    ->body(__('inspirecms::actions.export_templates.notification.success.body'))
+                            )
+                            ->failureNotification(
+                                fn (Notification $notification) => $notification
+                                    ->title(__('inspirecms::actions.export_templates.notification.failure.title'))
+                            )
+                            ->action(fn (Infolists\Components\Actions\Action $action) => $this->exportExistingTemplates() ? $action->success() : $action->failure())
+                    ),
             ]);
     }
 
@@ -177,7 +178,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasForms, HasActions, 
                     ->datalist(collect(Templates::getAvailableThemes())->keys())
                     ->required()
                     ->live()
-                    ->afterStateUpdated(fn ($state, $component) => $component->state(trim($state)))
+                    ->afterStateUpdated(fn ($state, $component) => $component->state(trim($state))),
             ]);
     }
 
@@ -198,11 +199,9 @@ class TemplateInfo extends Widget implements GuardWidget, HasForms, HasActions, 
 
                     inspirecms_templates()->exportTemplate($template, $theme);
 
-
                 } catch (\Throwable $th) {
-                    
-                    $failedTemplates[$theme][$template->getKey()] = $th->getMessage();
 
+                    $failedTemplates[$theme][$template->getKey()] = $th->getMessage();
 
                     logger()->warning(
                         'Failed to export template',

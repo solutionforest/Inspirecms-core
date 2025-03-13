@@ -66,7 +66,6 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->schema(static::getBaseFormSchema(operation: 'edit'));
     }
 
-    /** @return array */
     public static function getBaseFormSchema($operation = 'create'): array
     {
         return [
@@ -90,8 +89,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     collect([
                         static::getShowAtRootFormComponent(),
                     ])
-                    ->when($operation == 'edit', fn ($collection) => $collection->push(static::getAllowedRepeater()))
-                    ->all()
+                        ->when($operation == 'edit', fn ($collection) => $collection->push(static::getAllowedRepeater()))
+                        ->all()
                 ),
         ];
     }
@@ -350,7 +349,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     protected static function getAllowedRepeater()
     {
         $getAllowedDocumentTypesForSync = function (array $ids, Forms\Components\Repeater $component): Collection {
-            
+
             /** @var BelongsToMany $relationship */
             $relationship = $component->getRelationship();
 
@@ -359,7 +358,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         };
 
         $buildStateDocumentTypeToRepeater = function (string $action, Collection $documentTypes, Forms\Components\Repeater $component) {
-            
+
             $isDetaching = $action == 'detach';
 
             $newState = $isDetaching ? [] : $component->getState();
@@ -376,23 +375,22 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     if (in_array($model->getKey(), Arr::pluck($newState, 'allowed_id'))) {
                         return;
                     }
-    
+
                     $data = [
                         'allowed_id' => $model->getKey(),
                         'title' => $model->title,
                         'slug' => $model->slug,
                     ];
-    
+
                     $newUuid = $component->generateUuid();
                     $newState[$newUuid] = $data;
-    
+
                     $component->state($newState);
-        
+
                     $component->getChildComponentContainer($newUuid ?? array_key_last($newState))->fill($data);
                 }
             }
 
-    
             // $component->collapsed(true, shouldMakeComponentCollapsible: true);
 
             $component->callAfterStateUpdated();
@@ -401,7 +399,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         };
 
         $handleAttachRepeaterData = function ($idsToAttach, Forms\Components\Repeater $component) use ($getAllowedDocumentTypesForSync, $buildStateDocumentTypeToRepeater) {
-            
+
             if (! is_array($idsToAttach)) {
                 $idsToAttach = [$idsToAttach];
             }
@@ -414,7 +412,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         };
 
         $handleSyncRepeaterData = function ($ids, Forms\Components\Repeater $component) use ($getAllowedDocumentTypesForSync, $buildStateDocumentTypeToRepeater) {
-            
+
             /** @var Collection<Model> */
             $allowedDocumentTypes = empty($ids) ? collect() : $getAllowedDocumentTypesForSync($ids, $component);
 
@@ -470,6 +468,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                         $repeaterState = collect($state)->values()->where(fn ($item) => is_array($item));
                         $options = $repeaterState->pluck('title', 'allowed_id')->all();
                         $descriptions = $repeaterState->pluck('slug', 'allowed_id')->all();
+
                         return $form
                             ->schema([
                                 Forms\Components\CheckboxList::make('records')
@@ -557,6 +556,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     ->content(function ($get) {
                         $slug = $get('slug');
                         $title = $get('title');
+
                         return UIHelper::generateTextWithDescription(
                             text: $title ?? __('inspirecms::inspirecms.n/a'),
                             description: $slug ?? __('inspirecms::inspirecms.n/a'),

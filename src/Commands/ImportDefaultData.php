@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\KeyValue;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]

@@ -13,7 +13,6 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property int|string|null $parent_id
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read null | (\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory & \BackedEnum) $display_category
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
  * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups

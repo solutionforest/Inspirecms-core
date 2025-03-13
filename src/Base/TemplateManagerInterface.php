@@ -26,7 +26,7 @@ interface TemplateManagerInterface
     public function getComponentPrefix(): string;
 
     public function getComponentWithTheme(string $component, ?string $theme = null): string;
-    
+
     public function getComponentDirectoryForTheme(?string $theme = null, ?string $component = null): string;
 
     public function getThemeDefaultLayoutPath(?string $theme = null): string;
@@ -63,9 +63,8 @@ interface TemplateManagerInterface
      *
      * This method checks if the specified theme layout component exists. If not, will create it.
      *
-     * @param string $theme The name of the theme.
-     * @param string|null $component The name of the component. If null, a default component will be used.
-     * @return void
+     * @param  string  $theme  The name of the theme.
+     * @param  string|null  $component  The name of the component. If null, a default component will be used.
      */
     public function ensureThemeLayoutComponentExists(string $theme, ?string $component = null): void;
 }

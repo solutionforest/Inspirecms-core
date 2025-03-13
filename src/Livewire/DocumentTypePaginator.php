@@ -15,8 +15,8 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class DocumentTypePaginator extends \Livewire\Component
 {
-    use WithPagination;
     use WithoutUrlPagination;
+    use WithPagination;
 
     public $search = '';
 
@@ -37,7 +37,7 @@ class DocumentTypePaginator extends \Livewire\Component
     public int | string $perPage = 10;
 
     protected static string $view = 'inspirecms::livewire.document-type-paginator';
-    
+
     public const LOADING_TARGETS = [
         'gotoPage',
         'nextPage',
@@ -117,7 +117,7 @@ class DocumentTypePaginator extends \Livewire\Component
                     'allowingDocumentTypes',
                     fn ($query) => $query->whereKey($this->parentDocumentTypeId)
                 );
-        } 
+        }
         // Is root
         else {
             $query->where('show_at_root', true);
@@ -125,7 +125,7 @@ class DocumentTypePaginator extends \Livewire\Component
 
         if (filled($this->search)) {
             $query = SearchHelper::filterBySearch(
-                query: $query, 
+                query: $query,
                 search: $this->search,
                 searchColumns: ['title', 'slug'],
                 isForcedCaseInsensitive: true

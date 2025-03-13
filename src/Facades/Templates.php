@@ -19,7 +19,7 @@ use SolutionForest\InspireCms\Base\TemplateManagerInterface;
  * @method static void exportTemplate(\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template $template, ?string $theme = null)
  * @method static string getExportedTemplateDir()
  * @method static void ensureThemeLayoutComponentExists(string $theme, ?string $component = null)
- * 
+ *
  * @see \SolutionForest\InspireCms\Base\TemplateManager
  */
 class Templates extends Facade

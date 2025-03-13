@@ -103,7 +103,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
-        
+
         $this->app->singleton(InspireCmsBase\TemplateManagerInterface::class, fn () => $this->app->make(InspireCmsBase\TemplateManager::class));
 
         $this->app->singleton(InspireCmsBase\KeyValueCache::class, function () {
@@ -580,11 +580,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         AboutCommand::add('InspireCms', fn () => [
             'Version' => InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core'),
-            'Theme' => filled($currentTheme) 
+            'Theme' => filled($currentTheme)
                 ? "<fg=green;options=bold>{$currentTheme}</>"
                 : '<fg=yellow;options=bold>NOT SET</>',
-            'Theme Ready' => filled($currentTheme) && inspirecms_templates()->isThemeExists($currentTheme) 
-                ? '<fg=green;options=bold>READY</>' 
+            'Theme Ready' => filled($currentTheme) && inspirecms_templates()->isThemeExists($currentTheme)
+                ? '<fg=green;options=bold>READY</>'
                 : '<fg=yellow;options=bold>NOT READY YET</>',
         ]);
     }

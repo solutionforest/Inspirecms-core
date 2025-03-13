@@ -274,8 +274,8 @@ class TemplatesRelationManager extends RelationManager
             $this->prepareBuilderEditorData($builderName)
         );
 
-        if (!isset($editorData['html_content']) || blank($editorData['html_content'])) {
-            
+        if (! isset($editorData['html_content']) || blank($editorData['html_content'])) {
+
             Notification::make()
                 ->title(__('inspirecms::notification.template_not_found.title'))
                 ->body(__('inspirecms::notification.template_not_found.body'))
@@ -308,7 +308,7 @@ class TemplatesRelationManager extends RelationManager
         $theme = $this->theme ?? inspirecms_templates()->getCurrentTheme();
         $editorData['theme'] = $theme;
         $editorData['record_id'] = $templateRecord?->getKey();
-        
+
         $editorData['html_content'] = $templateRecord?->getContent($theme);
 
         $documentType = $this->getOwnerRecord();
@@ -349,7 +349,7 @@ class TemplatesRelationManager extends RelationManager
         $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
 
         if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
-            
+
             // get the layout
             $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
 

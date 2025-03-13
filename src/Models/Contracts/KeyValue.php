@@ -13,7 +13,7 @@ interface KeyValue
     /**
      * Find the value associated with the given key.
      *
-     * @param string $key The key to search for.
+     * @param  string  $key  The key to search for.
      * @return null | \Illuminate\Database\Eloquent\Model | KeyValue
      */
     public static function findKeyValue($key);
@@ -21,8 +21,8 @@ interface KeyValue
     /**
      * Set a key-value pair.
      *
-     * @param string $key The key to set.
-     * @param mixed $value The value to associate with the key.
+     * @param  string  $key  The key to set.
+     * @param  mixed  $value  The value to associate with the key.
      * @return null | \Illuminate\Database\Eloquent\Model | KeyValue
      */
     public static function setKeyValue($key, $value);

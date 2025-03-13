@@ -1,8 +1,8 @@
 <?php
 
 use SolutionForest\InspireCms\Facades\KeyValueCache;
-use SolutionForest\InspireCms\Tests\TestCase;
 use SolutionForest\InspireCms\Tests\Models\KeyValue;
+use SolutionForest\InspireCms\Tests\TestCase;
 
 uses(TestCase::class);
 
@@ -22,7 +22,7 @@ describe('key value model', function () {
             'key' => 'test_key',
             'value' => 'test_value',
         ]);
-    
+
         expect($keyValue)->toBeInstanceOf(KeyValue::class);
         expect($keyValue->key)->toBe('test_key');
         expect($keyValue->value)->toBe('test_value');
@@ -33,31 +33,31 @@ describe('key value model', function () {
 
         detechClearCache($keyValue->key);
     });
-    
+
     it('can update a key value pair', function () {
         $keyValue = KeyValue::create([
             'key' => 'test_key',
             'value' => 'test_value',
         ]);
-    
+
         $keyValue->update([
             'value' => 'updated_value',
         ]);
-    
+
         $this->assertDatabaseHas(KeyValue::class, [
             'key' => 'test_key',
             'value' => 'updated_value',
         ]);
-        
+
         detechClearCache($keyValue->key, 2);
     });
-    
+
     it('can delete a key value pair', function () {
         $keyValue = KeyValue::create([
             'key' => 'test_key',
             'value' => 'test_value',
         ]);
-    
+
         $keyValue->delete();
 
         $this->assertDatabaseMissing(KeyValue::class, [
@@ -66,6 +66,5 @@ describe('key value model', function () {
 
         detechClearCache($keyValue->key, 2);
     });
-    
 
 })->group('unit', 'model', 'key-value');

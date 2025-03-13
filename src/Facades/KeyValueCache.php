@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Facades;
 
-
 use Illuminate\Support\Facades\Facade;
 
 /**

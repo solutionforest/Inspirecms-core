@@ -392,8 +392,8 @@ class SampleSeeder extends Seeder
                         ->merge($allSlugs)
                         ->unique()
                         ->filter()
-                        ->where(fn ($slug) => !in_array($slug, [
-                            'homepage', //self
+                        ->where(fn ($slug) => ! in_array($slug, [
+                            'homepage', // self
                             'case-study',
                             'blog',
                         ]))
