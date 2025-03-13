@@ -178,7 +178,7 @@ class CmsPanelProvider extends PanelProvider
                         'aria-label' => 'Reset Tour Guide',
                     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Version: ' . InspireCmsConfig::getVersion())
+                    ->label('Version: ' . InspireCms::version())
                     ->icon('heroicon-s-information-circle')
                     ->url('#')
                     ->extraAttributes([

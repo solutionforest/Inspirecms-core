@@ -7,11 +7,11 @@ use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 
 if (! function_exists('inspirecms')) {
     /**
-     * @return \SolutionForest\InspireCms\InspireCmsManager
+     * @return \SolutionForest\InspireCms\InspireCms
      */
     function inspirecms()
     {
-        return app(\SolutionForest\InspireCms\InspireCmsManager::class);
+        return app(\SolutionForest\InspireCms\InspireCms::class);
     }
 }
 

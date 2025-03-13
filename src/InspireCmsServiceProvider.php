@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms;
 
-use Composer\InstalledVersions;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
@@ -34,9 +33,9 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'inspirecms';
+    public static string $name = InspireCms::CORE_SLUG;
 
-    public static string $viewNamespace = 'inspirecms';
+    public static string $viewNamespace = InspireCms::CORE_SLUG;
 
     public function configurePackage(Package $package): void
     {
@@ -579,7 +578,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $currentTheme = inspirecms_templates()->getCurrentTheme();
 
         AboutCommand::add('InspireCms', fn () => [
-            'Version' => InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core'),
+            'Version' => InspireCms::version(),
             'Theme' => filled($currentTheme)
                 ? "<fg=green;options=bold>{$currentTheme}</>"
                 : '<fg=yellow;options=bold>NOT SET</>',

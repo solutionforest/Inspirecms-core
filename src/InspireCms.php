@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms;
 
+use Composer\InstalledVersions;
 use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Cache\CacheManager;
@@ -19,8 +20,11 @@ use SolutionForest\InspireCms\Http\Controllers\ContentController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
-class InspireCmsManager
+class InspireCms
 {
+    const CORE_SLUG = 'inspirecms';
+    const PACKAGE = 'solution-forest/inspirecms-core';
+
     protected CacheManager $cacheManager;
 
     protected Collection $sections;
@@ -36,6 +40,11 @@ class InspireCmsManager
         $this->cacheManager = $cacheManager;
 
         $this->sections = collect(InspireCmsConfig::get('filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
+    }
+
+    public static function version(): string|null
+    {
+        return InstalledVersions::getPrettyVersion(static::PACKAGE);
     }
 
     /**
