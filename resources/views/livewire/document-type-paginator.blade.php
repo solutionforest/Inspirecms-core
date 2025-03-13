@@ -5,7 +5,7 @@
     <x-filament::input.wrapper>
         <x-filament::input
             wire:model.live.debounce.3000s="search"
-            placeholder="Search..."
+            :placeholder="@trans('inspirecms::inspirecms.search.placeholder')"
         />
     </x-filament::input.wrapper>
 
@@ -38,8 +38,8 @@
             </li>
         @empty
             <li>
-                <p>
-                    No items found.
+                <p class="text-gray-500 dark:text-gray-400">
+                    {{ __('inspirecms::inspirecms.search.no_results') }}
                 </p>
             </li>
         @endforelse
