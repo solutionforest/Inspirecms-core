@@ -164,10 +164,16 @@ class ExportResource extends Resource implements ClusterSectionResource
                 Forms\Components\Select::make('exporter')
                     ->options($exporters)
                     ->required()
-                    ->live(),
+                    ->live()
+                    ->afterStateUpdated(fn (Forms\Components\Select $component) => $component
+                        ->getContainer()
+                        ->getComponent('dynamicTypeFields')
+                        ->getChildComponentContainer()
+                        ->fill()),
 
                 Forms\Components\Group::make()
                     ->statePath('payload.args')
+                    ->key('dynamicTypeFields')
                     ->dehydrated(true)
                     ->schema(function (Forms\Get $get) {
 
