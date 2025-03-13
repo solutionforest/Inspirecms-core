@@ -153,8 +153,7 @@ abstract class TestCase extends Orchestra
                 $migration = include $path;
                 $migration->up();
             }
-        }
-        else {
+        } else {
             parent::loadMigrationsFrom($paths);
         }
     }

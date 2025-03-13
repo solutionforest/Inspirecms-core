@@ -19,16 +19,16 @@ describe('import command', function () {
             ->expectsOutput('No pending jobs found.')
             ->assertExitCode(Command::SUCCESS);
     });
-    
+
     it('handles job execution failure', function () {
         $job = createImportJobWithFakeFile('test.csv');
-    
+
         $this->artisan($this->command)
             ->expectsOutput("Executing job {$job->getKey()} ...")
             ->assertExitCode(Command::SUCCESS);
-    
+
         $job->refresh();
-    
+
         expect($job->failed_at)->not->toBeNull();
     });
 
