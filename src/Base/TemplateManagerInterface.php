@@ -44,14 +44,4 @@ interface TemplateManagerInterface
      * @param  Model & Template  $template
      */
     public function exportTemplate($template, ?string $theme = null): void;
-
-    /**
-     * Ensures that the theme layout component exists.
-     *
-     * This method checks if the specified theme layout component exists. If not, will create it.
-     *
-     * @param  string  $theme  The name of the theme.
-     * @param  string|null  $component  The name of the component. If null, a default component will be used.
-     */
-    public function ensureThemeLayoutComponentExists(string $theme, ?string $component = null): void;
 }

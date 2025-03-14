@@ -46,7 +46,9 @@ describe('content model', function () {
 
     it('create or delete related routes and paths', function () {
 
-        $webTypeDocumentType = DocumentType::factory()->create()->refresh();
+        $webTypeDocumentType = DocumentType::factory([
+            'category' => 'web',
+        ])->create()->refresh();
         $content = Content::factory()->create([
             'slug' => 'test-create-route',
             'document_type_id' => $webTypeDocumentType->getKey(),

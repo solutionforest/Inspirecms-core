@@ -20,7 +20,6 @@ use SolutionForest\InspireCms\Base\TemplateManagerInterface;
  * @method static void assignDefaultTemplateIfNotSet(\SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates & \Illuminate\Database\Eloquent\Model $templateable, $template)
  * 
  * @method static void exportTemplate(\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template $template, ?string $theme = null)
- * @method static void ensureThemeLayoutComponentExists(string $theme, ?string $component = null)
  *
  * @see \SolutionForest\InspireCms\Base\TemplateManager
  */
