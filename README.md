@@ -65,6 +65,14 @@ php artisan schedule:work
             '--limit 50', // limit
         ],
     ],
+    'execute_export_job' => [
+        'enabled' => true,
+        'schedule' => 'everyFiveMinutes',
+        'command' => \SolutionForest\InspireCms\Commands\ExecuteExport::class,
+        'arguments' => [
+            '--limit 50', // limit
+        ],
+    ],
     'data_cleanup' => [
         'enabled' => true,
         'schedule' => 'daily',
