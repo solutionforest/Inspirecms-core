@@ -27,6 +27,7 @@ use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\Tree
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
+use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -88,6 +89,8 @@ class CmsPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
+                // todo: add license check
+                // LicenseCheck::class,
                 CmsAuthenticate::class,
                 UserPreference::class,
             ])
