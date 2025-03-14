@@ -24,7 +24,7 @@ return [
             'label' => __('inspirecms::resources/user.password.label'),
             'validation_attribute' => __('inspirecms::resources/user.password.validation_attribute'),
         ],
-        
+
         'password_confirmation' => [
             'label' => __('inspirecms::resources/user.password_confirmation.label'),
             'validation_attribute' => __('inspirecms::resources/user.password_confirmation.validation_attribute'),
@@ -32,7 +32,7 @@ return [
     ],
 
     'buttons' => [
-        
+
         'register' => [
             'label' => '註冊',
         ],

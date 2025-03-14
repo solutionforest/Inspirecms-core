@@ -165,7 +165,7 @@ return [
     'select' => [
         'label' => 'Select',
     ],
-    
+
     'set_as_default' => [
         'label' => 'Set as default',
         'messages' => [

@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPreviewEditorTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\CreateContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreateRecord;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable;
 
 abstract class BaseContentCreatePage extends BaseCreateRecord implements ContentForm

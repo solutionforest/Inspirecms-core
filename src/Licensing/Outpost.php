@@ -22,12 +22,17 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 class Outpost
 {
     const ENDPOINT = 'https://outpost.inspirecms.com/v1/query';
+
     const REQUEST_TIMEOUT = 5;
+
     const CACHE_KEY = 'inspirecms.outpost.response';
+
     const LOCK_KEY = 'inspirecms.outpost.lock';
 
     private $response;
+
     private $client;
+
     private $store;
 
     public function __construct(Client $client)
@@ -95,7 +100,7 @@ class Outpost
             $decrypted = $encrypter->decrypt(File::get($this->licenseKeyPath()));
             $response = collect(json_decode($decrypted, true));
 
-        } catch (DecryptException|RuntimeException $e) {
+        } catch (DecryptException | RuntimeException $e) {
             return ['error' => 500];
         }
 
@@ -185,7 +190,7 @@ class Outpost
 
     private function cacheAndReturnErrorResponse($e)
     {
-        logger()->debug('Error contacting Outpost: '.$e->getMessage());
+        logger()->debug('Error contacting Outpost: ' . $e->getMessage());
 
         return $this->cacheResponse(now()->addMinutes(5), ['error' => $e->getCode()]);
     }

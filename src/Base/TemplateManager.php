@@ -23,6 +23,7 @@ class TemplateManager implements TemplateManagerInterface
 
         return $this->theme;
     }
+
     public function clearCurrentThemeCache(): void
     {
         KeyValueCache::forget(TemplateHelper::getCurrentThemeKey());
@@ -48,7 +49,7 @@ class TemplateManager implements TemplateManagerInterface
     public function isThemeExists(string $theme): bool
     {
         $directory = TemplateHelper::getDirectoryForThemedComponents();
-        
+
         return is_dir($directory . '/' . $theme);
     }
 
@@ -86,31 +87,30 @@ class TemplateManager implements TemplateManagerInterface
     {
         return static::getComponentPathWithTheme(
             componentName: TemplateHelper::getDefaultThemedLayoutComponentName(),
-            theme: $theme, 
+            theme: $theme,
         );
     }
 
     public function createTheme(string $theme): bool
     {
         try {
-            
+
             $filePath = $this->getThemeDefaultLayoutPath($theme);
 
             $dir = dirname($filePath);
-            
+
             if (! is_dir($dir)) {
                 FileHelper::ensureDirectoryExists($dir);
             }
 
             if (! file_exists($filePath)) {
-                
+
                 $content = TemplateHelper::retrieveDefaultLayoutContent();
 
                 file_put_contents($filePath, $content);
 
                 return true;
             }
-            
 
         } catch (\Throwable $th) {
             return false;
@@ -122,7 +122,7 @@ class TemplateManager implements TemplateManagerInterface
     public function cloneTheme(string $sourceTheme, string $newTheme): bool
     {
         try {
-            
+
             $sourceDir = $this->getComponentPathWithTheme(theme: $sourceTheme);
             $newDir = $this->getComponentPathWithTheme(theme: $newTheme);
 

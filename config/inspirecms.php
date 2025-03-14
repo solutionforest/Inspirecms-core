@@ -1,8 +1,8 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
-use SolutionForest\InspireCms\Filament\Pages as FilamentPages;
 use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
+use SolutionForest\InspireCms\Filament\Pages as FilamentPages;
+use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
 use SolutionForest\InspireCms\Models;
 use SolutionForest\InspireCms\Policies;
 use SolutionForest\InspireCms\Support\Models as SupportModels;

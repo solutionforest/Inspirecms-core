@@ -145,8 +145,6 @@ class SearchHelper
      * @param  string|null  $search  An optional search term to filter the options.
      * @param  array  $searchColumns  An array of columns to search within.
      * @param  bool  $isForcedCaseInsensitive  Whether to force case-insensitive search.
-     * @param bool $isFirst
-     * 
      * @return Builder
      */
     public static function globalSearchWithRelation($query, $search, $searchAttributes, $isForcedCaseInsensitive, bool &$isFirst)

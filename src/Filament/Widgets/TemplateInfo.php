@@ -129,17 +129,17 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                                     );
 
                                     event(new ChangeTheme($oldTheme, $newTheme));
-    
+
                                     inspirecms_templates()->resetCurrentTheme();
                                     $this->refreshInfolists();
-    
+
                                     $action->success();
 
-                                } 
+                                }
                             })
                     ),
 
-                    static::makeTextEntryForPath('layout'),
+                static::makeTextEntryForPath('layout'),
             ]);
     }
 
@@ -149,7 +149,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
             ->state($this->templateInfoData)
             ->columns(1)
             ->schema([
-                static::makeTextEntryForPath('exported_content_template_directory')
+                static::makeTextEntryForPath('exported_content_template_directory'),
             ]);
     }
 
@@ -206,6 +206,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                     $action->failureNotification(fn (Notification $notification) => $notification
                         ->body(__('inspirecms::messages.theme_already_exists')));
                     $action->failure();
+
                     return;
                 }
 
@@ -221,7 +222,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                 }
             });
     }
-    
+
     public function cloneThemeAction(): Action
     {
         return Action::make('cloneTheme')
@@ -246,6 +247,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                     $action->failureNotification(fn (Notification $notification) => $notification
                         ->body(__('inspirecms::messages.same_theme_name_already_exists')));
                     $action->failure();
+
                     return;
                 }
 
@@ -253,11 +255,12 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                     $action->failureNotification(fn (Notification $notification) => $notification
                         ->body(__('inspirecms::messages.theme_already_exists')));
                     $action->failure();
+
                     return;
                 }
 
                 try {
-                    
+
                     inspirecms_templates()->cloneTheme($sourceTheme, $newTheme);
 
                     $action->success();
@@ -280,7 +283,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
             ->successNotificationTitle(__('inspirecms::messages.success'))
             ->failureNotificationTitle(__('inspirecms::messages.failure'))
             ->action(function (Action $action) {
-                
+
                 $templates = InspireCmsConfig::getTemplateModelClass()::all();
 
                 $failedTemplates = [];
@@ -310,7 +313,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                         }
                     }
                 }
-                
+
                 if (count($failedTemplates) <= 0) {
                     $action->success();
                 } else {

@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages;
-use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\RelationManagers;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 

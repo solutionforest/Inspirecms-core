@@ -78,7 +78,7 @@ class TemplateResourceHelper
             ->view('inspirecms::instructions.page-component-instructions', [
                 'plaintext' => '<x-cms-template :content="$content" type="page">
     Your content here
-</x-cms-template>'
+</x-cms-template>',
             ]);
     }
 }

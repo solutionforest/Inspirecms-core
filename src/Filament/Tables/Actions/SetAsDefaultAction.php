@@ -18,13 +18,15 @@ class SetAsDefaultAction extends Action
         $this
             ->label(__('inspirecms::buttons.set_as_default.label'))
             ->color('primary')
-            ->successNotification(fn (Notification $notification) => $notification
-                ->title(__('inspirecms::buttons.set_as_default.messages.success.title'))
-                ->body(__('inspirecms::buttons.set_as_default.messages.success.body'))
+            ->successNotification(
+                fn (Notification $notification) => $notification
+                    ->title(__('inspirecms::buttons.set_as_default.messages.success.title'))
+                    ->body(__('inspirecms::buttons.set_as_default.messages.success.body'))
             )
-            ->failureNotification(fn (Notification $notification) => $notification
-                ->title(__('inspirecms::buttons.set_as_default.messages.failure.title'))
-                ->body(__('inspirecms::buttons.set_as_default.messages.failure.body'))
+            ->failureNotification(
+                fn (Notification $notification) => $notification
+                    ->title(__('inspirecms::buttons.set_as_default.messages.failure.title'))
+                    ->body(__('inspirecms::buttons.set_as_default.messages.failure.body'))
             )
             ->icon(FilamentIcon::resolve('inspirecms::as_default'));
     }

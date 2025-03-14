@@ -7,8 +7,7 @@ class ChangeTheme
     public function __construct(
         public string $oldTheme,
         public string $newTheme,
-    )
-    {
+    ) {
         //
     }
 }

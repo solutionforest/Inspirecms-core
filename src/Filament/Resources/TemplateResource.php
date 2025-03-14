@@ -8,9 +8,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Resources\TemplateResource\Pages;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Resources\TemplateResource\Pages;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResource extends Resource implements ClusterSectionResource

@@ -165,7 +165,7 @@ return [
     'select' => [
         'label' => '選擇',
     ],
-    
+
     'set_as_default' => [
         'label' => '設為預設',
         'messages' => [

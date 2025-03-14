@@ -27,13 +27,15 @@ class EditAndPreviewAction extends \Filament\Tables\Actions\Action
             ->label(__('inspirecms::buttons.edit_and_preview.label'))
             ->icon(FilamentIcon::resolve('inspirecms::edit'))
             ->color('primary')
-            ->successNotification(fn (Notification $notification) => $notification
-                ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
-                ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
+            ->successNotification(
+                fn (Notification $notification) => $notification
+                    ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
+                    ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
             )
-            ->failureNotification(fn (Notification $notification) => $notification
-                ->title(__('inspirecms::buttons.edit_and_preview.messages.failure.title'))
-                ->body(__('inspirecms::buttons.edit_and_preview.messages.failure.body'))
+            ->failureNotification(
+                fn (Notification $notification) => $notification
+                    ->title(__('inspirecms::buttons.edit_and_preview.messages.failure.title'))
+                    ->body(__('inspirecms::buttons.edit_and_preview.messages.failure.body'))
             )
             ->action(function ($livewire) {
                 Support\Panel::ensurePluginIsLoaded();

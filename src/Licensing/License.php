@@ -29,6 +29,6 @@ abstract class License
             return;
         }
 
-        return __('inspirecms::messages.licensing_error_'.$reason);
+        return __('inspirecms::messages.licensing_error_' . $reason);
     }
 }

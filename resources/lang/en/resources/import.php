@@ -35,7 +35,7 @@ return [
         'label' => 'Folder Structure of zip file',
         'hint' => 'Below is the folder structure of the zip file. Please ensure that the zip file contains the following folders.',
     ],
-    
+
     'notification' => [
 
         'completed' => [

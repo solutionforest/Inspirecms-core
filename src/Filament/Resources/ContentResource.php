@@ -36,7 +36,6 @@ use SolutionForest\InspireCms\Filament\Forms\Components\TimestampsGroup;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource\Pages;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource\RelationManagers\ChildrenRelationManager;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource\Widgets;
-use SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\ContentResourceHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\SearchHelper;
@@ -429,7 +428,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             'webSetting',
             'sitemap',
         ])
-        ->whereHas('documentType', fn ($query) => $query->whereCanBeContent());
+            ->whereHas('documentType', fn ($query) => $query->whereCanBeContent());
     }
 
     public static function resolveRecordRouteBinding(int | string $key): ?Model
@@ -483,11 +482,12 @@ class ContentResource extends Resource implements ClusterSectionResource
     protected static function applyGlobalSearchAttributeConstraint(Builder $query, string $search, array $searchAttributes, bool &$isFirst): Builder
     {
         return SearchHelper::globalSearchWithRelation(
-            query: $query, 
-            search: $search, 
-            searchAttributes: $searchAttributes, 
-            isForcedCaseInsensitive: static::isGlobalSearchForcedCaseInsensitive(), 
-            isFirst: $isFirst);
+            query: $query,
+            search: $search,
+            searchAttributes: $searchAttributes,
+            isForcedCaseInsensitive: static::isGlobalSearchForcedCaseInsensitive(),
+            isFirst: $isFirst
+        );
     }
     // endregion Global search
 
