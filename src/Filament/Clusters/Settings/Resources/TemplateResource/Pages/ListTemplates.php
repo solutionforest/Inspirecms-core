@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
+use SolutionForest\InspireCms\Filament\Widgets\TemplateInfo;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -66,5 +67,12 @@ class ListTemplates extends BaseListPage
                         'content' => $record->getContent(theme: $this->theme),
                     ]),
             ]);
+    }
+
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            TemplateInfo::class,
+        ];
     }
 }

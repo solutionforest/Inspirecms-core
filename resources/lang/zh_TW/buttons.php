@@ -31,6 +31,18 @@ return [
         'label' => '清除',
     ],
 
+    'clone_theme' => [
+        'label' => '克隆主題',
+        'messages' => [
+            'success' => [
+                'title' => '主題克隆成功。',
+            ],
+            'failure' => [
+                'title' => '克隆主題失敗。',
+            ],
+        ],
+    ],
+
     'content_history' => [
         'label' => '內容歷史',
         'permission_display_name' => '查看內容歷史',
@@ -48,6 +60,18 @@ return [
         'label' => '創建內容',
         'heading' => '在 :title 下創建內容',
         'empty_state' => '沒有可用的文檔類型。請先創建文檔類型。',
+    ],
+
+    'create_theme' => [
+        'label' => '創建主題',
+        'messages' => [
+            'success' => [
+                'title' => '主題創建成功。',
+            ],
+            'failure' => [
+                'title' => '創建主題失敗。',
+            ],
+        ],
     ],
 
     'download_sample' => [

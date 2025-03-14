@@ -18,6 +18,8 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 // config for SolutionForest/InspireCms
 return [
 
+    'license_key' => env('INSPIRECMS_LICENSE_KEY'),
+
     'override_plugins' => [
         'field_group_models' => true,
         'spatie_permission' => true,
@@ -176,12 +178,7 @@ return [
     ],
 
     'template' => [
-        'theme' => 'manifest',
-        'themes' => [
-            'manifest' => 'Manifest',
-            'blogrock' => 'Blogrock',
-            'know-press' => 'Know Press',
-        ],
+        'default_theme' => 'manifest',
         'component_prefix' => 'inspirecms',
         'exported_template_dir' => resource_path('views/inspirecms/templates'),
     ],

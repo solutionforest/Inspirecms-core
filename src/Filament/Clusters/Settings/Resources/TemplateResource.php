@@ -19,7 +19,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
 
     protected static ?int $navigationSort = -5;
 
-    protected static bool $shouldRegisterNavigation = false;
+    // protected static bool $shouldRegisterNavigation = false;
 
     protected static ?string $cluster = Settings::class;
 

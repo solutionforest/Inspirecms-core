@@ -20,6 +20,11 @@ class TemplateHelper
         }
     }
 
+    public static function getCurrentThemeKey(): string
+    {
+        return CacheKeys::CURRENT_THEME->value;
+    }
+
     /**
      * Get the default template theme from the configuration file.
      *
@@ -27,12 +32,83 @@ class TemplateHelper
      */
     public static function getDefaultTemplateTheme(): string
     {
-        return trim(InspireCmsConfig::get('template.theme', 'manifest'));
+        return trim(InspireCmsConfig::get('template.default_theme', 'manifest'));
     }
 
-    public static function getCurrentThemeKey(): string
+    public static function getDefaultTemplateThemes(): array
     {
-        return CacheKeys::CURRENT_THEME->value;
+        return [
+            'manifest',
+            'blogrock',
+            'know-press',
+        ];
+    }
+
+    public static function getComponentPrefixForThemes(): string
+    {
+        return str(InspireCmsConfig::get('template.component_prefix', 'inspirecms'))
+            ->trim()
+            ->trim('.')
+            ->toString();
+    }
+
+    public static function getDirectoryForThemedComponents(): string
+    {
+        $directory = str_replace('.', '/', static::getComponentPrefixForThemes());
+
+        return resource_path("views/components/{$directory}");
+    }
+
+    public static function getDirectoryForExportedTemplates(): string
+    {
+        return str(InspireCmsConfig::get('template.exported_template_dir', resource_path('views/inspirecms/templates')))
+            ->trim()
+            ->rtrim('/')
+            ->toString();
+    }
+
+    public static function retrieveDefaultLayoutContent()
+    {
+        return <<<'HTML'
+        @php
+            $locale ??= $content->getLocale() ?? request()->getLocale();
+            $seo = $content->getSeo()?->getHtml();
+            $title = $content->getTitle();
+        @endphp
+        <html lang="{{ $locale }}">
+        <head>
+            <meta charset="UTF-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>{{ $title }}</title>
+            {!! $seo !!}
+        </head>
+        <body>
+
+            {{ $slot }}
+
+        </body>
+        </html>
+        HTML;
+    }
+
+    public static function retrieveDefaultThemeContent()
+    {
+        $componentName = static::getDefaultThemedLayoutComponentName();
+
+        return <<<HTML
+        @php
+            \$locale ??= \$content->getLocale();
+        @endphp
+        <x-cms-template :content="\$content" type="{$componentName}">
+            Your content here
+        </x-cms-template>
+        HTML;
+    }
+
+    public static function getDefaultThemedLayoutComponentName(): string
+    {
+        return 'page';
     }
 
     /**

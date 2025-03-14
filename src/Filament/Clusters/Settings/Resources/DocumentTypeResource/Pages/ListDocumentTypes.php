@@ -7,7 +7,6 @@ use Filament\Forms\Form;
 use Filament\Resources\Components\Tab;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListPage;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
-use SolutionForest\InspireCms\Filament\Widgets\TemplateInfo;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListDocumentTypes extends BaseListPage
@@ -27,13 +26,6 @@ class ListDocumentTypes extends BaseListPage
     public function form(Form $form): Form
     {
         return static::getResource()::createForm($form);
-    }
-
-    protected function getHeaderWidgets(): array
-    {
-        return [
-            TemplateInfo::class,
-        ];
     }
 
     // public function getTabs(): array

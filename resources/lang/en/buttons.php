@@ -31,6 +31,18 @@ return [
         'label' => 'Clear',
     ],
 
+    'clone_theme' => [
+        'label' => 'Clone theme',
+        'messages' => [
+            'success' => [
+                'title' => 'Theme cloned successfully.',
+            ],
+            'failure' => [
+                'title' => 'Failed to clone theme.',
+            ],
+        ],
+    ],
+
     'content_history' => [
         'label' => 'Content History',
         'permission_display_name' => 'View content history',
@@ -48,6 +60,18 @@ return [
         'label' => 'Create content',
         'heading' => 'Create content under :title',
         'empty_state' => 'No document types available. Please create a document type first.',
+    ],
+
+    'create_theme' => [
+        'label' => 'Create theme',
+        'messages' => [
+            'success' => [
+                'title' => 'Theme created successfully.',
+            ],
+            'failure' => [
+                'title' => 'Failed to create theme.',
+            ],
+        ],
     ],
 
     'download_sample' => [

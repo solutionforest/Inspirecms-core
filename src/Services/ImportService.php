@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
@@ -156,7 +157,7 @@ class ImportService implements ImportServiceInterface
 
                         [$slug, $theme] = static::extractTemplateSlugAndFilename($filePath, $folder);
 
-                        $themeContent = $fs->get($filePath) ?? inspirecms_templates()->retrieveDefaultContent();
+                        $themeContent = $fs->get($filePath) ?? TemplateHelper::retrieveDefaultThemeContent();
 
                         $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
 

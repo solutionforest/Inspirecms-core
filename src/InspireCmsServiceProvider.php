@@ -24,6 +24,8 @@ use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
+use SolutionForest\InspireCms\Licensing\Outpost;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components\Template;
@@ -109,6 +111,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             return new InspireCmsBase\KeyValueCache(
                 $this->app['cache'],
             );
+        });
+
+        $this->app->singleton(LicenseManager::class, function ($app) {
+            return new LicenseManager($app[Outpost::class]);
         });
 
         $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
@@ -526,10 +532,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             $dir = trim(trim($getViewDirForStub($file), '/'));
 
-            $themeComponentPrefix = inspirecms_templates()->getComponentPrefix();
-
-            if (filled($themeComponentPrefix)) {
-                $dir = trim(trim($themeComponentPrefix, '/')) . '/' . $dir;
+            if (($themeComponentPrefix = TemplateHelper::getDirectoryForThemedComponents()) && filled($themeComponentPrefix)) {
+                $dir = $themeComponentPrefix . '/' . $dir;
             }
 
             $this->publishes([
@@ -582,16 +586,16 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     private function addAboutPluginInfo()
     {
-        $currentTheme = inspirecms_templates()->getCurrentTheme();
+        AboutCommand::add('InspireCms', function () {
 
-        AboutCommand::add('InspireCms', fn () => [
-            'Version' => InspireCms::version(),
-            'Theme' => filled($currentTheme)
-                ? "<fg=green;options=bold>{$currentTheme}</>"
-                : '<fg=yellow;options=bold>NOT SET</>',
-            'Theme Ready' => filled($currentTheme) && inspirecms_templates()->isThemeExists($currentTheme)
-                ? '<fg=green;options=bold>READY</>'
-                : '<fg=yellow;options=bold>NOT READY YET</>',
-        ]);
+            $currentTheme = inspirecms_templates()->getCurrentTheme();
+
+            return [
+                'Version' => InspireCms::version(),
+                'Theme' => filled($currentTheme)
+                    ? "<fg=green;options=bold>{$currentTheme}</>"
+                    : '<fg=yellow;options=bold>NOT SET</>',
+            ];
+        });
     }
 }

@@ -9,15 +9,14 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResourceHelper
 {
-    public static function getThemeSelectOptions(?string $currentTheme = null): array
+    public static function getThemeSelectOptions(): array
     {
-        $currentTheme ??= inspirecms_templates()->getCurrentTheme();
-
         return collect(inspirecms_templates()->getAvailableThemes())
-            ->when(
-                fn ($collection) => filled($currentTheme) && ! $collection->has($currentTheme),
-                fn ($collection) => $collection->prepend($currentTheme, $currentTheme)
-            )
+            ->mapWithKeys(function ($theme) {
+                return [
+                    $theme => $theme,
+                ];
+            })
             ->all();
     }
 

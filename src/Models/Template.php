@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\Events\Template\UpdateContent;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
 use SolutionForest\InspireCms\Observers\TemplateObserver;
@@ -44,7 +45,7 @@ class Template extends BaseModel implements TemplateContract
 
         if (empty($templateContent) || ! isset($templateContent[$theme])) {
 
-            $templateContent[$theme] = inspirecms_templates()->retrieveDefaultContent();
+            $templateContent[$theme] = TemplateHelper::retrieveDefaultThemeContent();
 
             $this->content = $templateContent;
 

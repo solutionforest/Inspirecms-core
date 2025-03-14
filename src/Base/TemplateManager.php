@@ -6,22 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\KeyValueCache;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplateManager implements TemplateManagerInterface
 {
     protected ?string $theme = null;
 
-    protected array $themes = [];
-
     public function __construct()
     {
         $this->loadCurrentTheme();
-        $this->themes = collect(InspireCmsConfig::get('template.themes', []))
-            // sort the default theme to the top
-            ->sortBy(fn ($value, $key) => $key === $this->theme ? 0 : 1)
-            ->toArray();
     }
 
     public function getCurrentTheme(): ?string
@@ -30,12 +23,6 @@ class TemplateManager implements TemplateManagerInterface
 
         return $this->theme;
     }
-
-    public function getAvailableThemes(): array
-    {
-        return $this->themes;
-    }
-
     public function clearCurrentThemeCache(): void
     {
         KeyValueCache::forget(TemplateHelper::getCurrentThemeKey());
@@ -47,56 +34,109 @@ class TemplateManager implements TemplateManagerInterface
         $this->clearCurrentThemeCache();
     }
 
-    public function getComponentPrefix(): string
+    public function getAvailableThemes(): array
     {
-        return trim(InspireCmsConfig::get('template.component_prefix', 'inspirecms'));
+        return collect($this->getAvailableThemesFromFolder())
+            ->merge(TemplateHelper::getDefaultTemplateThemes())
+            ->merge([$this->getCurrentTheme()])
+            ->unique()->filter()->values()
+            // sort the default theme to the top
+            ->sortBy(fn ($theme) => $theme === $this->theme ? 0 : 1)
+            ->toArray();
     }
 
     public function isThemeExists(string $theme): bool
     {
-        $defaultLayoutComponentFullPath = static::getThemeDefaultLayoutPath($theme);
-
-        return file_exists($defaultLayoutComponentFullPath);
+        $directory = TemplateHelper::getDirectoryForThemedComponents();
+        
+        return is_dir($directory . '/' . $theme);
     }
 
-    public function getComponentWithTheme(string $component, ?string $theme = null): string
+    public function getComponentWithTheme(string $componentName, ?string $theme = null): string
     {
-        $componentPrefix = static::getComponentPrefix();
+        $componentPrefix = TemplateHelper::getComponentPrefixForThemes();
 
         $theme ??= static::getCurrentTheme();
 
         return str($theme)
             ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
             ->finish('.')
-            ->finish(trim($component))
+            ->finish(trim($componentName))
             ->toString();
     }
 
-    public function getComponentDirectoryForTheme(?string $theme = null, ?string $component = null): string
+    public function getComponentPathWithTheme(?string $componentName = null, ?string $theme = null): string
     {
-        $componentPrefix = static::getComponentPrefix();
+        $theme ??= $this->getCurrentTheme();
 
-        $theme ??= static::getCurrentTheme();
+        $path = TemplateHelper::getDirectoryForThemedComponents();
 
-        $relativePath = str($theme)
-            ->when(filled($componentPrefix), fn ($str) => $str->prepend($componentPrefix . '.'))
-            ->trim('.')
-            ->replace('.', '/')
-            ->trim('/')
-            ->when(
-                filled($component),
-                fn ($str) => $str
-                    ->finish('/')
-                    ->finish(str($component)->trim()->trim('.')->finish('.blade.php'))
-            )
-            ->toString();
+        if (filled($theme)) {
+            $path .= '/' . $theme;
+        }
 
-        return resource_path("views/components/{$relativePath}");
+        if (filled($componentName)) {
+            $path .= '/' . $this->ensureViewFileName($componentName);
+        }
+
+        return $path;
     }
 
     public function getThemeDefaultLayoutPath(?string $theme = null): string
     {
-        return static::getComponentDirectoryForTheme($theme, static::getDefaultLayoutComponentName());
+        return static::getComponentPathWithTheme(
+            componentName: TemplateHelper::getDefaultThemedLayoutComponentName(),
+            theme: $theme, 
+        );
+    }
+
+    public function createTheme(string $theme): bool
+    {
+        try {
+            
+            $filePath = $this->getThemeDefaultLayoutPath($theme);
+
+            $dir = dirname($filePath);
+            
+            if (! is_dir($dir)) {
+                FileHelper::ensureDirectoryExists($dir);
+            }
+
+            if (! file_exists($filePath)) {
+                
+                $content = TemplateHelper::retrieveDefaultLayoutContent();
+
+                file_put_contents($filePath, $content);
+
+                return true;
+            }
+            
+
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return false;
+    }
+
+    public function cloneTheme(string $sourceTheme, string $newTheme): bool
+    {
+        try {
+            
+            $sourceDir = $this->getComponentPathWithTheme(theme: $sourceTheme);
+            $newDir = $this->getComponentPathWithTheme(theme: $newTheme);
+
+            if ($newTheme != $sourceTheme && is_dir($sourceDir)) {
+                FileHelper::copyDirectory($sourceDir, $newDir);
+
+                return true;
+            }
+
+        } catch (\Throwable $th) {
+            return false;
+        }
+
+        return false;
     }
 
     /** {@inheritDoc} */
@@ -105,21 +145,6 @@ class TemplateManager implements TemplateManagerInterface
         if (is_null($templateable->getDefaultTemplate())) {
             $templateable->setAsDefaultTemplate($template);
         }
-    }
-
-    /** {@inheritDoc} */
-    public function retrieveDefaultContent()
-    {
-        $componentName = static::getDefaultLayoutComponentName();
-
-        return <<<HTML
-        @php
-            \$locale ??= \$content->getLocale();
-        @endphp
-        <x-cms-template :content="\$content" type="{$componentName}">
-            Your content here
-        </x-cms-template>
-        HTML;
     }
 
     /**
@@ -133,7 +158,7 @@ class TemplateManager implements TemplateManagerInterface
 
         $theme ??= $this->getCurrentTheme();
 
-        $fullPath = str($this->getExportedTemplateDir())
+        $fullPath = str(TemplateHelper::getDirectoryForExportedTemplates())
             ->rtrim('/')
             ->finish('/')
             ->finish(trim($theme) . '/' . $filename);
@@ -148,28 +173,7 @@ class TemplateManager implements TemplateManagerInterface
         }
     }
 
-    public function getExportedTemplateDir(): string
-    {
-        return InspireCmsConfig::get('template.exported_template_dir', resource_path('views/inspirecms/templates'));
-    }
-
-    public function ensureThemeLayoutComponentExists(string $theme, ?string $component = null): void
-    {
-        $component ??= static::getDefaultLayoutComponentName();
-
-        $fullPath = $this->getComponentDirectoryForTheme($theme, $component);
-
-        // create directory if not exists
-        FileHelper::ensureDirectoryExists(dirname($fullPath));
-
-        if (! file_exists($fullPath)) {
-            $content = $this->retrieveDefaultLayoutContent();
-
-            file_put_contents($fullPath, $content);
-        }
-    }
-
-    protected static function ensureTemplateNameFormat(string $slug): string
+    private static function ensureTemplateFileBaseName(string $slug): string
     {
         return str($slug)
             ->trim()->trim('.')->trim('/')
@@ -178,9 +182,14 @@ class TemplateManager implements TemplateManagerInterface
             ->toString();
     }
 
-    private static function getDefaultLayoutComponentName(): string
+    private static function ensureViewFileName(string $name)
     {
-        return 'page';
+        return str($name)
+            ->trim()
+            ->replace('.', '/')
+            ->trim('/')
+            ->finish('.blade.php')
+            ->toString();
     }
 
     private function loadCurrentTheme()
@@ -197,28 +206,24 @@ class TemplateManager implements TemplateManagerInterface
         }
     }
 
-    private function retrieveDefaultLayoutContent()
+    private function getAvailableThemesFromFolder(): array
     {
-        return <<<'HTML'
-        @php
-            $locale ??= $content->getLocale() ?? request()->getLocale();
-            $seo = $content->getSeo()?->getHtml();
-            $title = $content->getTitle();
-        @endphp
-        <html lang="{{ $locale }}">
-        <head>
-            <meta charset="UTF-8">
-            <meta http-equiv="X-UA-Compatible" content="IE=edge">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>{{ $title }}</title>
-            {!! $seo !!}
-        </head>
-        <body>
+        $themes = [];
 
-            {{ $slot }}
+        $themeDir = TemplateHelper::getDirectoryForThemedComponents();
 
-        </body>
-        </html>
-        HTML;
+        if (is_dir($themeDir)) {
+            $themeDirs = scandir($themeDir);
+
+            foreach ($themeDirs as $theme) {
+                if ($theme === '.' || $theme === '..') {
+                    continue;
+                }
+
+                $themes[] = $theme;
+            }
+        }
+
+        return array_values(array_filter(array_unique($themes)));
     }
 }

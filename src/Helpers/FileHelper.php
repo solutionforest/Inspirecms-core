@@ -71,4 +71,36 @@ class FileHelper
 
         return $dir;
     }
+
+    public static function copyDirectory(string $source, string $destination)
+    {
+        if (! is_dir($source)) {
+            throw new \Exception('Source directory does not exist: ' . $source);
+        }
+
+        if (! is_dir($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        if ($source == $destination) {
+            return;
+        }
+
+        $files = scandir($source);
+
+        foreach ($files as $file) {
+            if ($file == '.' || $file == '..') {
+                continue;
+            }
+
+            $sourcePath = $source . '/' . $file;
+            $destinationPath = $destination . '/' . $file;
+
+            if (is_dir($sourcePath)) {
+                self::copyDirectory($sourcePath, $destinationPath);
+            } else {
+                copy($sourcePath, $destinationPath);
+            }
+        }
+    }
 }
