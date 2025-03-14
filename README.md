@@ -82,7 +82,7 @@ php artisan schedule:work
         name: 'approved',
         formAction: fn () => \Filament\Actions\Action::make('approved')
             ->authorize('approved')
-            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, \SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm $livewire) {
+            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, \SolutionForest\InspireCms\Base\Filament\Contracts $livewire) {
                 
                 // Handle your action here
                 

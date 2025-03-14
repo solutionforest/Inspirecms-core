@@ -7,7 +7,7 @@ use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\DeleteContentItemAction;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\MoveContentAction;
@@ -226,7 +226,7 @@ class ContentSidebar extends BaseContentTreeNode
      */
     protected static function getResource()
     {
-        return InspireCmsConfig::get('filament.resources.page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('content', ContentResource::class);
     }
 
     protected function isValidSelectableModelItemKey($key): bool

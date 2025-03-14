@@ -21,8 +21,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Str;
 use Livewire\Component;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
+use SolutionForest\InspireCms\Filament\Resources\ExportResource;
+use SolutionForest\InspireCms\Filament\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListImportNExport extends Component implements HasActions, HasForms, HasInfolists, HasTable

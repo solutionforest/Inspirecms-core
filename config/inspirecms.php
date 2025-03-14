@@ -1,16 +1,8 @@
 <?php
 
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\LanguageResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\SitemapResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\TemplateResource;
-use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\RoleResource;
-use SolutionForest\InspireCms\Filament\Clusters\Users\Resources\UserResource;
+use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
+use SolutionForest\InspireCms\Filament\Pages as FilamentPages;
+use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
 use SolutionForest\InspireCms\Models;
 use SolutionForest\InspireCms\Policies;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -76,28 +68,28 @@ return [
         ],
         'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
         'resources' => [
-            'page' => PageResource::class,
-            'document_type' => DocumentTypeResource::class,
-            'field_group' => FieldGroupResource::class,
-            'language' => LanguageResource::class,
-            'template' => TemplateResource::class,
-            'user' => UserResource::class,
-            'role' => RoleResource::class,
-            'navigation' => NavigationResource::class,
-            'sitemap' => SitemapResource::class,
-            'import' => ImportResource::class,
-            'export' => ExportResource::class,
+            'content' => FilamentResources\ContentResource::class,
+            'document_type' => FilamentResources\DocumentTypeResource::class,
+            'field_group' => FilamentResources\FieldGroupResource::class,
+            'language' => FilamentResources\LanguageResource::class,
+            'template' => FilamentResources\TemplateResource::class,
+            'user' => FilamentResources\UserResource::class,
+            'role' => FilamentResources\RoleResource::class,
+            'navigation' => FilamentResources\NavigationResource::class,
+            'sitemap' => FilamentResources\SitemapResource::class,
+            'import' => FilamentResources\ImportResource::class,
+            'export' => FilamentResources\ExportResource::class,
         ],
         'pages' => [
-            'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
-            'export' => \SolutionForest\InspireCms\Filament\Pages\Export::class,
-            'health' => \SolutionForest\InspireCms\Filament\Pages\Health::class,
+            'dashboard' => FilamentPages\Dashboard::class,
+            'export' => FilamentPages\Export::class,
+            'health' => FilamentPages\Health::class,
         ],
         'clusters' => [
-            'content' => \SolutionForest\InspireCms\Filament\Clusters\Content::class,
-            'media' => \SolutionForest\InspireCms\Filament\Clusters\Media::class,
-            'settings' => \SolutionForest\InspireCms\Filament\Clusters\Settings::class,
-            'users' => \SolutionForest\InspireCms\Filament\Clusters\Users::class,
+            'content' => FilamentClusters\Content::class,
+            'media' => FilamentClusters\Media::class,
+            'settings' => FilamentClusters\Settings::class,
+            'users' => FilamentClusters\Users::class,
         ],
     ],
 

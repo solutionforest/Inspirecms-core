@@ -11,10 +11,10 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource;
-use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
+use SolutionForest\InspireCms\Filament\Resources\ExportResource;
+use SolutionForest\InspireCms\Filament\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 

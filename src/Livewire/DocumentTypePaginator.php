@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\SearchHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
@@ -63,7 +63,7 @@ class DocumentTypePaginator extends \Livewire\Component
                     $parameters = [
                         'documentType' => $documentType->getKey(),
                         'parent' => $this->parentContentId,
-                        // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
+                        // Set the locale as query parameter as ContentPageTrait
                         'locale' => $this->translatableLocale,
                     ];
 
@@ -145,6 +145,6 @@ class DocumentTypePaginator extends \Livewire\Component
      */
     protected static function getResource()
     {
-        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('content', ContentResource::class);
     }
 }

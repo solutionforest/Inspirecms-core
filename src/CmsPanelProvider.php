@@ -23,6 +23,7 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
@@ -69,7 +70,7 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\PageActivity::class,
                 Widgets\AlertOverview::class,
                 Widgets\TemplateInfo::class,
-                \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets\TreeNavigation::class,
+                TreeNavigation::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')

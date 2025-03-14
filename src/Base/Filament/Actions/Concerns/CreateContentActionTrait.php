@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 use Closure;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait CreateContentActionTrait
@@ -27,8 +26,6 @@ trait CreateContentActionTrait
 
     protected function setUpAction(): void
     {
-        $contentResource = InspireCmsConfig::getFilamentResource('page', PageResource::class);
-
         $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->authorize('create');
@@ -36,8 +33,6 @@ trait CreateContentActionTrait
         $this->label(__('inspirecms::buttons.create_content.label'));
 
         $this->icon(FilamentIcon::resolve('inspirecms::add'));
-
-        $this->hidden(fn () => ! $contentResource::can('create'));
 
         $this->slideOver();
 

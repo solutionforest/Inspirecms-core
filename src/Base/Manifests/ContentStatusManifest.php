@@ -5,8 +5,8 @@ namespace SolutionForest\InspireCms\Base\Manifests;
 use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 

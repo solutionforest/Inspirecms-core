@@ -139,4 +139,48 @@ class SearchHelper
 
         return $query;
     }
+
+    /**
+     * @param  Builder  $query
+     * @param  string|null  $search  An optional search term to filter the options.
+     * @param  array  $searchColumns  An array of columns to search within.
+     * @param  bool  $isForcedCaseInsensitive  Whether to force case-insensitive search.
+     * @param bool $isFirst
+     * 
+     * @return Builder
+     */
+    public static function globalSearchWithRelation($query, $search, $searchAttributes, $isForcedCaseInsensitive, bool &$isFirst)
+    {
+        /** @var Connection $databaseConnection */
+        $databaseConnection = $query->getConnection();
+
+        foreach ($searchAttributes as $searchAttribute) {
+
+            $whereClause = $isFirst ? 'where' : 'orWhere';
+
+            $isRelationColumn = str($searchAttribute)->contains('.') // Check if the search attribute is a relation column
+                && str($searchAttribute)->afterLast('.') != 'id'; // Check if the search attribute is not an id column
+
+            $query->when(
+                $isRelationColumn,
+                function (Builder $query) use ($databaseConnection, $isForcedCaseInsensitive, $searchAttribute, $search, $whereClause): Builder {
+                    return $query->{"{$whereClause}Relation"}(
+                        (string) str($searchAttribute)->beforeLast('.'),
+                        generate_search_column_expression((string) str($searchAttribute)->afterLast('.'), $isForcedCaseInsensitive, $databaseConnection),
+                        'like',
+                        "%{$search}%",
+                    );
+                },
+                fn (Builder $query) => $query->{$whereClause}(
+                    generate_search_column_expression($searchAttribute, $isForcedCaseInsensitive, $databaseConnection),
+                    'like',
+                    "%{$search}%",
+                ),
+            );
+
+            $isFirst = false;
+        }
+
+        return $query;
+    }
 }

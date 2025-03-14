@@ -15,6 +15,7 @@ use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
+use SolutionForest\InspireCms\Filament\Pages\Export;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Http\Controllers\ContentController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
@@ -78,9 +79,9 @@ class InspireCms
     {
         try {
 
-            $resource = InspireCmsConfig::get('resources.import', \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource::class);
-
-            return FilamentResourceHelper::attemptToGetUrl($resource, 'index', [], true);
+            return Export::getUrl(
+                panel:InspireCmsConfig::get('filament.panel_id', 'cms')
+            );
 
         } catch (RouteNotFoundException $th) {
             return null;

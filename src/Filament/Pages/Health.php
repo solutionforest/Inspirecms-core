@@ -34,7 +34,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
     public static function getPermissionName(): string
     {
-        return 'view_health';
+        return 'pages_view-health';
     }
 
     public static function getPermissionDisplayName(): string
