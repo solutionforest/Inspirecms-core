@@ -2,6 +2,11 @@
 
 return [
 
+    'empty_state' => [
+        'heading' => '沒有匯出工作',
+        'description' => '創建一個匯出工作以開始匯出數據。',
+    ],
+
     'exporter' => [
         'label' => '匯出器',
     ],

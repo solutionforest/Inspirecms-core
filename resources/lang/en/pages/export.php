@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'title' => 'Package',
+    'title' => 'Export',
     'import_title' => 'Import',
     'export_title' => 'Export',
 ];

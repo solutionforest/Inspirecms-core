@@ -11,13 +11,14 @@ use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
+use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Livewire\ListPackages;
+use SolutionForest\InspireCms\Livewire\ListImportNExport;
 
-class Package extends Page implements ClusterSectionPage, HasActions, HasForms, HasInfolists
+class Export extends Page implements ClusterSectionPage, HasActions, HasForms, HasInfolists
 {
     use ClusterSectionPageTrait {
         ClusterSectionPageTrait::canAccess as traitCanAccess;
@@ -26,7 +27,7 @@ class Package extends Page implements ClusterSectionPage, HasActions, HasForms, 
     use InteractsWithForms;
     use InteractsWithInfolists;
 
-    public static string $view = 'inspirecms::filament.pages.package';
+    public static string $view = 'inspirecms::filament.pages.export';
 
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
@@ -43,20 +44,20 @@ class Package extends Page implements ClusterSectionPage, HasActions, HasForms, 
 
         if (static::getImportResource()::canViewAny()) {
             $components[] = [
-                'component' => ListPackages::class,
+                'component' => ListImportNExport::class,
                 'data' => [
                     'type' => 'import',
-                    'title' => __('inspirecms::pages/package.import_title'),
+                    'title' => __('inspirecms::pages/export.import_title'),
                 ],
             ];
         }
 
         if (static::getExportResource()::canViewAny()) {
             $components[] = [
-                'component' => ListPackages::class,
+                'component' => ListImportNExport::class,
                 'data' => [
                     'type' => 'export',
-                    'title' => __('inspirecms::pages/package.export_title'),
+                    'title' => __('inspirecms::pages/export.export_title'),
                 ],
             ];
         }
@@ -81,6 +82,6 @@ class Package extends Page implements ClusterSectionPage, HasActions, HasForms, 
 
     public static function getNavigationLabel(): string
     {
-        return __('inspirecms::pages/package.title');
+        return __('inspirecms::pages/export.title');
     }
 }

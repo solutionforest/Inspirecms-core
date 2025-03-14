@@ -2,6 +2,11 @@
 
 return [
 
+    'empty_state' => [
+        'heading' => 'No Export Jobs',
+        'description' => 'Create an export job to start exporting data.',
+    ],
+
     'exporter' => [
         'label' => 'Exporter',
     ],

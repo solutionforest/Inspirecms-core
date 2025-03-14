@@ -8,6 +8,7 @@ use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
@@ -195,9 +196,9 @@ class ExportResource extends Resource implements ClusterSectionResource
         // todo: add translations
         return $table
             ->defaultSort('created_at', 'desc')
-            ->emptyStateIcon('heroicon-o-arrow-down-on-square')
-            // ->emptyStateHeading(__('inspirecms::resources/import.empty_state.heading'))
-            // ->emptyStateDescription(__('inspirecms::resources/import.empty_state.description'))
+            ->emptyStateIcon(FilamentIcon::resolve('inspirecms::download'))
+            ->emptyStateHeading(__('inspirecms::resources/export.empty_state.heading'))
+            ->emptyStateDescription(__('inspirecms::resources/export.empty_state.description'))
             ->modifyQueryUsing(function ($query) {
                 $currentUser = auth()->user();
                 $isSuperAdmin = $currentUser != null && is_inspirecms_user($currentUser) && $currentUser->isSuperAdmin();

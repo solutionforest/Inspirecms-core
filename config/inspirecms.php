@@ -90,7 +90,7 @@ return [
         ],
         'pages' => [
             'dashboard' => \SolutionForest\InspireCms\Filament\Pages\Dashboard::class,
-            'package' => \SolutionForest\InspireCms\Filament\Pages\Package::class,
+            'export' => \SolutionForest\InspireCms\Filament\Pages\Export::class,
             'health' => \SolutionForest\InspireCms\Filament\Pages\Health::class,
         ],
         'clusters' => [

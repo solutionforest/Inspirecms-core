@@ -27,7 +27,7 @@ use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
-use SolutionForest\InspireCms\Livewire\ListPackages;
+use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
@@ -308,7 +308,7 @@ class CmsPanelProvider extends PanelProvider
     {
         return $panel->livewireComponents([
             Pages\Auth\Install::class,
-            ListPackages::class,
+            ListImportNExport::class,
         ]);
     }
 

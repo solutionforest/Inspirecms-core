@@ -12,7 +12,6 @@ use Filament\Forms\Form;
 use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Infolists\Infolist;
-use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\BulkAction;
 use Filament\Tables\Concerns\InteractsWithTable;
@@ -26,7 +25,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ExportResourc
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class ListPackages extends Component implements HasActions, HasForms, HasInfolists, HasTable
+class ListImportNExport extends Component implements HasActions, HasForms, HasInfolists, HasTable
 {
     use InteractsWithActions;
     use InteractsWithForms;
@@ -53,7 +52,7 @@ class ListPackages extends Component implements HasActions, HasForms, HasInfolis
 
     public function render()
     {
-        return view('inspirecms::livewire.list-packages');
+        return view('inspirecms::livewire.list-import-n-export');
     }
 
     /**
