@@ -131,7 +131,7 @@ return [
         'label' => 'Publish',
         'heading' => 'Publish content',
         'messages' => [
-            'published' => [
+            'success' => [
                 'title' => 'Published Successful',
             ],
         ],

@@ -294,7 +294,7 @@ trait ContentFormTrait
 
         return Action::make('publish')
             ->label(__('inspirecms::buttons.publish.label'))
-            ->modalHeading(__('inspirecms::buttons.publish.modal.heading'))
+            ->modalHeading(__('inspirecms::buttons.publish.heading'))
             ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
             ->successNotificationTitle(__('inspirecms::buttons.publish.messages.success.title'))
             ->keyBindings(['mod+p'])
