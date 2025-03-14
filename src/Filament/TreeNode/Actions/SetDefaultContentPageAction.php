@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
+use Filament\Support\Facades\FilamentIcon;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
 use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
@@ -10,16 +11,16 @@ class SetDefaultContentPageAction extends Action
 {
     public static function getDefaultName(): ?string
     {
-        return 'set_default_content_page';
+        return 'setDefaultContentPage';
     }
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->label(__('inspirecms::resources/content.actions.set_default_content_page.label'));
+        $this->label(__('inspirecms::buttons.set_default_content_page.label'));
 
-        $this->icon('heroicon-o-viewfinder-circle');
+        $this->icon(FilamentIcon::resolve('inspirecms::as_default'));
 
         $this->authorize('setAsDefault');
 
@@ -41,11 +42,11 @@ class SetDefaultContentPageAction extends Action
 
         });
 
-        $this->successNotificationTitle(__('inspirecms::resources/content.actions.set_default_content_page.notification.success.title'));
+        $this->successNotificationTitle(__('inspirecms::buttons.set_default_content_page.messages.success.title'));
 
-        $this->action(function ($model, $itemKey, Action $action) {
+        $this->action(function (string $model, $itemKey, Action $action) {
 
-            if (($record = $model->find($itemKey))) {
+            if (($record = $model::find($itemKey))) {
 
                 $record->setAsDefault();
 

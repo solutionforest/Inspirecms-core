@@ -236,6 +236,13 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::delete' => 'heroicon-o-trash',
             'inspirecms::download' => 'heroicon-m-arrow-down-tray',
             'inspirecms::export' => 'heroicon-m-arrow-top-right-on-square',
+
+            'inspirecms::back' => 'heroicon-o-chevron-left',
+            'inspirecms::sort' => 'heroicon-o-arrows-up-down',
+
+            'inspirecms::as_default' => 'heroicon-o-star',
+            'inspirecms::recycle_bin' => 'heroicon-o-trash',
+
             'inspirecms::json-file' => view('inspirecms::icons.json-file'),
             'inspirecms::fields' => view('inspirecms::icons.fields'),
             'inspirecms::templates' => view('inspirecms::icons.templates'),

@@ -41,7 +41,7 @@ abstract class BaseContentViewPage extends BaseViewPage implements ContentForm
             BackActon::make(),
 
             PreviewAction::make()
-                ->label(__('inspirecms::resources/content.actions.preview.label'))
+                ->label(__('inspirecms::buttons.preview.label'))
                 ->hidden(fn (Model $record) => $record->trashed()),
 
             Actions\EditAction::make()->iconButton(),

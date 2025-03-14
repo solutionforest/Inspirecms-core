@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -21,7 +22,7 @@ trait CreateContentActionTrait
 
     public static function getDefaultName(): ?string
     {
-        return 'create_content';
+        return 'createContent';
     }
 
     protected function setUpAction(): void
@@ -32,9 +33,9 @@ trait CreateContentActionTrait
 
         $this->authorize('create');
 
-        $this->label(__('inspirecms::resources/content.actions.create_content.label'));
+        $this->label(__('inspirecms::buttons.create_content.label'));
 
-        $this->icon('heroicon-o-plus');
+        $this->icon(FilamentIcon::resolve('inspirecms::add'));
 
         $this->hidden(fn () => ! $contentResource::can('create'));
 
@@ -54,10 +55,10 @@ trait CreateContentActionTrait
             }
 
             if (blank($title)) {
-                return __('inspirecms::resources/content.actions.create_content.label');
+                return __('inspirecms::buttons.create_content.label');
             }
 
-            return __('inspirecms::resources/content.actions.create_content.modal.heading', ['title' => $title]);
+            return __('inspirecms::buttons.create_content.heading', ['title' => $title]);
         });
 
         $this->modalContent(function ($livewire) {

@@ -36,10 +36,21 @@ class UserRolePicker extends Repeater
         );
 
         $this->addAction(
-            fn (Action $action) => $action
-                ->authorize($permission)
-                ->extraAttributes(['class' => 'w-full'], true)
-                ->label(fn () => __('inspirecms::actions.add.label_with_name', ['name' => strtolower(__('inspirecms::inspirecms.role'))]))
+            function (Action $action) use ($permission) {
+
+                $modelName = strtolower(__('inspirecms::inspirecms.role'));
+                
+                return $action
+                    ->authorize($permission)
+                    ->extraAttributes(['class' => 'w-full'], true)
+                    ->label(fn () => __('inspirecms::buttons.add_with_name.label', [
+                        'name' => $modelName
+                    ]))
+                    ->modalSubmitActionLabel(__('inspirecms::buttons.add.label'))
+                    ->modalHeading(__('inspirecms::buttons.add_with_name.heading', [
+                        'name' => $modelName
+                    ]));
+            }
         );
 
         $this->simple(TextInput::make('name')->disabled());

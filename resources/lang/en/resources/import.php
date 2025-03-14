@@ -31,29 +31,17 @@ return [
     'status' => [
         'label' => 'Status',
     ],
+    'file_structure_instructions' => [
+        'label' => 'Folder Structure of zip file',
+        'hint' => 'Below is the folder structure of the zip file. Please ensure that the zip file contains the following folders.',
+    ],
+    
     'notification' => [
+
         'completed' => [
             'title' => 'Import Job Completed',
             'body' => "The job ':id' has completed.",
         ],
-    ],
-    'actions' => [
-        'download_sample' => [
-            'label' => 'Download Sample',
-        ],
-        'import' => [
-            'label' => 'Import',
-            'modal' => [
-                'actions' => [
-                    'submit' => [
-                        'label' => 'Import',
-                    ],
-                ],
-            ],
-        ],
-    ],
-    'file_structure_instructions' => [
-        'label' => 'Folder Structure of zip file',
-        'hint' => 'Below is the folder structure of the zip file. Please ensure that the zip file contains the following folders.',
+
     ],
 ];

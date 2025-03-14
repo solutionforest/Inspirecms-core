@@ -15,7 +15,7 @@ return [
     'notification' => [
 
         'completed' => [
-            'title' => 'Import job completed',
+            'title' => 'Export job completed',
             'body' => "Job ':id' has been completed.",
         ],
 

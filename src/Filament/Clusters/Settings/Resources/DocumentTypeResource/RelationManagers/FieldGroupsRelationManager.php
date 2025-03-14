@@ -7,8 +7,6 @@ use Filament\Forms\Components\Wizard\Step;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Support\Enums\IconPosition;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
@@ -18,6 +16,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
+use SolutionForest\InspireCms\Filament\Tables\Actions\OpenAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -151,16 +150,12 @@ class FieldGroupsRelationManager extends RelationManager
                     ->fillForm(fn ($record) => $record->fields->toArray())
                     ->slideOver()
                     ->modalWidth('5xl'),
-                Tables\Actions\Action::make('open')
-                    ->label(__('inspirecms::actions.open.label'))
-                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
-                    ->iconPosition(IconPosition::After)
+                OpenAction::make()
                     ->url(function ($record) {
                         $resource = InspireCmsConfig::get('resources.field_group', FieldGroupResource::class);
 
                         return FilamentResourceHelper::attemptToGetUrl($resource, ['view', 'edit'], ['record' => $record], true);
-                    }, true)
-                    ->visible(fn (Tables\Actions\Action $action) => filled($action->getUrl())),
+                    }, true),
                 Tables\Actions\DetachAction::make()
                     ->iconButton()
                     ->visible(fn ($record) => $record->pivot?->inheritedFrom == null),

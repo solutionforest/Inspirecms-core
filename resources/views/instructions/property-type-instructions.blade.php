@@ -108,8 +108,6 @@
                                         
                                         <x-inspirecms::buttons.copy-button
                                             :plaintext="$text"
-                                            :label="$copyButtonLabel"
-                                            :message="$copiedMessage"
                                         />
                                     </li>
 

@@ -11,41 +11,35 @@ return [
     'form' => [
 
         'email' => [
-            'label' => 'Email address',
-            'validation_attribute' => 'email address',
-        ],
-
-        'login_name' => [
-            'label' => 'Login name',
-            'validation_attribute' => 'login name',
+            'label' => __('inspirecms::resources/user.email.label'),
+            'validation_attribute' => __('inspirecms::resources/user.email.validation_attribute'),
         ],
 
         'name' => [
-            'label' => 'Name',
-            'validation_attribute' => 'name',
+            'label' => __('inspirecms::resources/user.name.label'),
+            'validation_attribute' => __('inspirecms::resources/user.name.validation_attribute'),
         ],
 
         'password' => [
-            'label' => 'Password',
-            'validation_attribute' => 'password',
+            'label' => __('inspirecms::resources/user.password.label'),
+            'validation_attribute' => __('inspirecms::resources/user.password.validation_attribute'),
         ],
-
+        
         'password_confirmation' => [
-            'label' => 'Confirm password',
-            'validation_attribute' => 'password confirmation',
+            'label' => __('inspirecms::resources/user.password_confirmation.label'),
+            'validation_attribute' => __('inspirecms::resources/user.password_confirmation.validation_attribute'),
         ],
+    ],
 
-        'actions' => [
-
-            'register' => [
-                'label' => 'Sign up',
-            ],
-
+    'buttons' => [
+        
+        'register' => [
+            'label' => 'Sign up',
         ],
 
     ],
 
-    'notifications' => [
+    'messages' => [
 
         'throttled' => [
             'title' => 'Too many registration attempts',

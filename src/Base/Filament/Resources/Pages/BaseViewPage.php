@@ -26,6 +26,6 @@ class BaseViewPage extends ViewRecord
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label(__('inspirecms::actions.save.label'));
+            ->label(__('inspirecms::buttons.save.label'));
     }
 }

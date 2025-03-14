@@ -488,7 +488,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             )
             ->addAction(
                 fn (Forms\Components\Actions\Action $action) => $action
-                    ->label(__('inspirecms::actions.attach.label'))
+                    ->label(__('inspirecms::buttons.attach.label'))
                     ->size('lg')
                     ->extraAttributes(['class' => 'w-full'])
                     ->icon(FilamentIcon::resolve('inspirecms::attach'))

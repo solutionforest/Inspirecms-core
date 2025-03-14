@@ -11,7 +11,7 @@ class ReorderContentItemAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'reorder_content_children_item';
+        return 'reorderContentChildrenItem';
     }
 
     protected function setUp(): void

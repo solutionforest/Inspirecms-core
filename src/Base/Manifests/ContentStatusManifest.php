@@ -117,14 +117,14 @@ class ContentStatusManifest implements ContentStatusManifestInterface
                 'heroicon-o-x-circle',
                 // Must have record injected
                 fn () => Action::make('unpublish')
-                    ->label(__('inspirecms::resources/content.actions.unpublish.label'))
+                    ->label(__('inspirecms::buttons.unpublish.label'))
                     ->color('gray')
                     ->requiresConfirmation()
-                    ->modalHeading(__('inspirecms::resources/content.actions.unpublish.modal.heading'))
-                    ->modalDescription(__('inspirecms::resources/content.actions.unpublish.modal.description'))
-                    ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.unpublish.modal.actions.unpublish.label'))
                     ->modalIcon('heroicon-o-x-circle')
-                    ->successNotificationTitle(__('inspirecms::resources/content.actions.unpublish.notification.unpublished.title'))
+                    ->modalHeading(__('inspirecms::buttons.unpublish.heading'))
+                    ->modalDescription('')
+                    ->modalSubmitActionLabel(__('inspirecms::buttons.unpublish.label'))
+                    ->successNotificationTitle(__('inspirecms::buttons.unpublish.messages.success.title'))
                     ->action(function (null | Model | Content $record, Action $action, ContentForm $livewire) {
                         if (is_null($record)) {
                             $action->cancel();

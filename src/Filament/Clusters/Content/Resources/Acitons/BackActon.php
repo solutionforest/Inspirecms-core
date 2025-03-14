@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Acitons;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -27,9 +28,9 @@ class BackActon extends Action
 
         $this->iconButton();
 
-        $this->icon('heroicon-o-chevron-left');
+        $this->icon(FilamentIcon::resolve('inspirecms::back'));
 
-        $this->label(__('inspirecms::resources/content.actions.back.label'));
+        $this->label(__('inspirecms::buttons.back.label'));
 
         $this->url(function (null | Model | Content $record, $livewire) {
 

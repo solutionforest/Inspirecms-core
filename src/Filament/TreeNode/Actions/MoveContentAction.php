@@ -14,7 +14,7 @@ class MoveContentAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'move_content';
+        return 'moveContent';
     }
 
     protected function setUp(): void

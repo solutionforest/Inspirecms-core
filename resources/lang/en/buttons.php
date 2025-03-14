@@ -1,0 +1,187 @@
+<?php
+
+return [
+
+    'add_with_name' => [
+        'label' => 'Add :name',
+        'heading' => 'Add :name',
+    ],
+
+    'add' => [
+        'label' => 'Add',
+    ],
+
+    'attach' => [
+        'label' => 'Attach',
+    ],
+
+    'back' => [
+        'label' => 'Back',
+    ],
+
+    'cancel' => [
+        'label' => 'Cancel',
+    ],
+
+    'choose' => [
+        'label' => 'Choose',
+    ],
+
+    'clear' => [
+        'label' => 'Clear',
+    ],
+
+    'content_history' => [
+        'label' => 'Content History',
+        'permission_display_name' => 'View content history',
+    ],
+
+    'copy_to_clipboard' => [
+        'label' => 'Copy to clipboard',
+    ],
+
+    'copy' => [
+        'label' => 'Copy',
+    ],
+
+    'create_content' => [
+        'label' => 'Create content',
+        'heading' => 'Create content under :title',
+        'empty_state' => 'No document types available. Please create a document type first.',
+    ],
+
+    'download_sample' => [
+        'label' => 'Download sample',
+    ],
+
+    'download' => [
+        'label' => 'Download',
+    ],
+
+    'edit_and_preview' => [
+        'label' => 'Edit and preview',
+        'messages' => [
+            'success' => [
+                'title' => __('inspirecms::messages.saved'),
+                'body' => null,
+            ],
+            'failure' => [
+                'title' => null,
+                'body' => null,
+            ],
+        ],
+    ],
+
+    'fix' => [
+        'label' => 'Fix',
+    ],
+
+    'import' => [
+        'label' => 'Import',
+        'heading' => 'Import',
+    ],
+
+    'more_actions' => [
+        'label' => 'More actions',
+    ],
+
+    'open' => [
+        'label' => 'Open',
+    ],
+
+    'preview' => [
+        'label' => 'Preview',
+    ],
+
+    'publish_descendants_and_self' => [
+        'label' => 'Publish descendants and self',
+        'heading' => 'Publish descendants and self',
+        'messages' => [
+            'success' => [
+                'title' => 'Published descendants and self successful',
+            ],
+        ],
+    ],
+
+    'publish' => [
+        'label' => 'Publish',
+        'heading' => 'Publish content',
+        'messages' => [
+            'published' => [
+                'title' => 'Published Successful',
+            ],
+        ],
+    ],
+
+    'reorder_children' => [
+        'label' => 'Reorder children',
+        'messages' => [
+            'invalid_model' => [
+                'title' => 'Invalid Model',
+            ],
+            'success' => [
+                'title' => 'Reorder children successful',
+            ],
+        ],
+        'permission_display_name' => 'Reorder children content',
+    ],
+
+    'save_changes' => [
+        'label' => 'Save changes',
+    ],
+
+    'save_draft' => [
+        'label' => 'Save draft',
+    ],
+
+    'save' => [
+        'label' => 'Save',
+    ],
+
+    'select' => [
+        'label' => 'Select',
+    ],
+    
+    'set_as_default' => [
+        'label' => 'Set as default',
+        'messages' => [
+            'success' => [
+                'title' => 'Set as default',
+                'body' => 'The item has been set as default.',
+            ],
+            'failure' => [
+                'title' => 'Failed to set as default',
+                'body' => 'The item could not be set as default. Please check the logs for more information.',
+            ],
+        ],
+    ],
+
+    'set_default_content_page' => [
+        'label' => 'Set as default page',
+        'permission_display_name' => 'Set default page',
+        'messages' => [
+            'success' => [
+                'title' => 'Default page updated.',
+            ],
+        ],
+    ],
+
+    'trash_bin' => [
+        'label' => 'Trash bin',
+    ],
+
+    'unpublish' => [
+        'label' => 'Unpublish',
+        'heading' => 'Unpublish content',
+        'messages' => [
+            'success' => [
+                'title' => 'Unpublished',
+            ],
+        ],
+    ],
+
+    'view' => [
+        'label' => 'View',
+    ],
+
+];

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
+use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Pboivin\FilamentPeek\Support;
 
@@ -22,9 +23,18 @@ class EditAndPreviewAction extends \Filament\Tables\Actions\Action
     {
         parent::setUp();
 
-        $this->label(__('inspirecms::actions.edit_and_preview.label'))
-            ->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
+        $this
+            ->label(__('inspirecms::buttons.edit_and_preview.label'))
+            ->icon(FilamentIcon::resolve('inspirecms::edit'))
             ->color('primary')
+            ->successNotification(fn (Notification $notification) => $notification
+                ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
+                ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
+            )
+            ->failureNotification(fn (Notification $notification) => $notification
+                ->title(__('inspirecms::buttons.edit_and_preview.messages.failure.title'))
+                ->body(__('inspirecms::buttons.edit_and_preview.messages.failure.body'))
+            )
             ->action(function ($livewire) {
                 Support\Panel::ensurePluginIsLoaded();
 

@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageReso
 
 use Filament\Actions;
 use Filament\Tables;
+use SolutionForest\InspireCms\Filament\Actions\TrashBinAction;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\Pages\BaseContentListPage;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -19,11 +20,8 @@ class ListPages extends BaseContentListPage
     {
         return [
             ...parent::getActions(),
-            Actions\Action::make('trash_bin')
-                ->label(__('inspirecms::resources/content.actions.trash_bin.label'))
-                ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'trash', [], false))
-                ->color('gray')
-                ->icon('heroicon-o-trash'),
+            TrashBinAction::make()
+                ->url(fn () => FilamentResourceHelper::attemptToGetUrl(static::getResource(), 'trash', [], false)),
         ];
     }
 

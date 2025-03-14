@@ -49,7 +49,7 @@ class ListTemplates extends BaseListPage
                             $record->save();
                         } catch (\Throwable $th) {
                             Notification::make()
-                                ->title(__('inspirecms::notification.something_went_wrong.title'))
+                                ->title(__('inspirecms::messages.something_went_wrong'))
                                 ->body($th->getMessage())
                                 ->danger()
                                 ->send();

@@ -14,6 +14,8 @@ use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Forms\Components\Actions\DownloadSampleAction;
+use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
@@ -70,10 +72,7 @@ class ImportResource extends Resource implements ClusterSectionResource
 
                                 [$fs, $path] = $record->getStorageAndFilePath();
 
-                                return Infolists\Components\Actions\Action::make('download')
-                                    ->icon('heroicon-s-arrow-down-on-square')
-                                    ->color('info')
-                                    ->extraAttributes(['aria-label' => 'download'])
+                                return DownloadAction::make()
                                     ->action(fn () => $fs->download($path));
                             }),
                     ]),
@@ -142,12 +141,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->preserveFilenames(false),
 
                 Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('download_sample')
-                        ->label(__('inspirecms::resources/import.actions.download_sample.label'))
-                        ->icon('heroicon-s-arrow-down-on-square')
-                        ->button()
-                        ->outlined()
-                        ->color('warning')
+                    DownloadSampleAction::make()
                         ->url(function () {
                             try {
                                 return filament()->getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route('import.sample');
@@ -207,8 +201,9 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->modalWidth('7xl')
                     ->stickyModalHeader()->stickyModalHeader()
                     ->slideOver()
-                    ->label(__('inspirecms::resources/import.actions.import.label'))
-                    ->modalSubmitActionLabel(__('inspirecms::resources/import.actions.import.modal.actions.submit.label')),
+                    ->label(__('inspirecms::buttons.import.label'))
+                    ->modalSubmitActionLabel(__('inspirecms::buttons.import.label'))
+                    ->modalHeading(__('inspirecms::buttons.import.heading')),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make()

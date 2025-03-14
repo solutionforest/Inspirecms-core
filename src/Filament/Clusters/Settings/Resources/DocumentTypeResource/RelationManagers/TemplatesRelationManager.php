@@ -17,6 +17,7 @@ use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreviewAction;
+use SolutionForest\InspireCms\Filament\Tables\Actions\SetAsDefaultAction;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -114,13 +115,10 @@ class TemplatesRelationManager extends RelationManager
                     ->preloadRecordSelect(),
             ])
             ->actions([
-                Tables\Actions\Action::make('set_as_default')
-                    ->label(__('inspirecms::actions.set_as_default.label'))
+                SetAsDefaultAction::make()
                     ->color('primary')
-                    ->icon('heroicon-o-check-circle')
                     ->button()
                     ->outlined()
-                    ->successNotificationTitle(__('inspirecms::actions.set_as_default.notification.saved.title'))
                     ->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record))
                     ->action(function (Template $record, Tables\Actions\Action $action) {
 
@@ -228,7 +226,7 @@ class TemplatesRelationManager extends RelationManager
                     $record->save();
                 } catch (\Throwable $th) {
                     Notification::make()
-                        ->title(__('inspirecms::notification.something_went_wrong.title'))
+                        ->title(__('inspirecms::messages.something_went_wrong'))
                         ->body($th->getMessage())
                         ->danger()
                         ->send();
@@ -394,7 +392,8 @@ class TemplatesRelationManager extends RelationManager
         $template->updateContent($htmlContent, $theme);
 
         Notification::make()
-            ->title(__('inspirecms::actions.edit_and_preview.notification.saved.title'))
+            ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
+            ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
             ->success()
             ->send();
     }

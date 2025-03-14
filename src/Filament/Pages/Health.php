@@ -82,7 +82,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     public function fixAction(): Action
     {
         return Action::make('fix')
-            ->label(__('inspirecms::pages/health.actions.fix.label'))
+            ->label(__('inspirecms::buttons.fix.label'))
             ->outlined()
             ->size('sm')
             ->action(function (array $arguments) {

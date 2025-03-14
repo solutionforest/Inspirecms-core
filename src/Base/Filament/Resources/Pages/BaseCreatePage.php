@@ -18,13 +18,13 @@ class BaseCreatePage extends CreateRecord
     protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
-            ->label(__('inspirecms::actions.save.label'));
+            ->label(__('inspirecms::buttons.save.label'));
     }
 
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
-            ->label(__('inspirecms::actions.save.label'));
+            ->label(__('inspirecms::buttons.save.label'));
     }
 
     protected function getRedirectUrl(): string

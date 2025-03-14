@@ -11,13 +11,4 @@ return [
     'sitemap' => [
         'label' => 'Sitemap',
     ],
-
-    'actions' => [
-
-        'fix' => [
-
-            'label' => 'Fix',
-
-        ],
-    ],
 ];

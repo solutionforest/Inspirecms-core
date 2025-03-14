@@ -293,10 +293,10 @@ trait ContentFormTrait
         }
 
         return Action::make('publish')
-            ->label(__('inspirecms::resources/content.actions.publish.label'))
-            ->modalHeading(__('inspirecms::resources/content.actions.publish.modal.heading'))
-            ->modalSubmitActionLabel(__('inspirecms::resources/content.actions.publish.modal.actions.publish.label'))
-            ->successNotificationTitle(__('inspirecms::resources/content.actions.publish.notification.published.title'))
+            ->label(__('inspirecms::buttons.publish.label'))
+            ->modalHeading(__('inspirecms::buttons.publish.modal.heading'))
+            ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
+            ->successNotificationTitle(__('inspirecms::buttons.publish.messages.success.title'))
             ->keyBindings(['mod+p'])
             ->color('primary')
             ->form(function (Form $form) {

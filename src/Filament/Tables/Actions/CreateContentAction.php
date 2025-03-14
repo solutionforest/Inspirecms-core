@@ -13,7 +13,7 @@ class CreateContentAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'create_content';
+        return 'createContent';
     }
 
     protected function setUp(): void

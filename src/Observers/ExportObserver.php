@@ -63,7 +63,7 @@ class ExportObserver
             ->body(__('inspirecms::resources/export.notification.completed.body', ['id' => $model->getKey()]))
             ->actions([
                 Action::make('view')
-                    ->label(__('inspirecms::actions.view.label'))
+                    ->label(__('inspirecms::buttons.view.label'))
                     ->url(function () use ($model) {
                         return route('cms.export.show', ['id' => $model->getKey()]);
                     }),

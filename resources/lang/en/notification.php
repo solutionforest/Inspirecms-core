@@ -30,10 +30,4 @@ return [
 
     ],
 
-    'something_went_wrong' => [
-
-        'title' => 'Something went wrong.',
-
-    ],
-
 ];

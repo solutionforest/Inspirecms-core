@@ -107,7 +107,7 @@ abstract class BaseContentResource extends Resource implements ClusterSectionRes
             ->schema([
                 Forms\Components\Actions::make([
                     \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::make()
-                        ->label(__('inspirecms::resources/content.actions.preview.label'))
+                        ->label(__('inspirecms::buttons.preview.label'))
                         ->builderName('propertyData'),
                 ])
                     ->alignEnd()

@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -16,7 +17,7 @@ class BackToParentContentAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'back_to_parent_content';
+        return 'backToParentContent';
     }
 
     protected function setUp(): void
@@ -27,9 +28,9 @@ class BackToParentContentAction extends Action
 
         $this->iconButton();
 
-        $this->icon('heroicon-o-chevron-left');
+        $this->icon(FilamentIcon::resolve('inspirecms::back'));
 
-        $this->label(__('inspirecms::resources/content.actions.back.label'));
+        $this->label(__('inspirecms::buttons.back.label'));
 
         $this->url(function (null | Model | Content $record, $livewire) {
             if ($record->trashed() || ! $record || ! ($record instanceof Content)) {

@@ -3,12 +3,11 @@
 namespace SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\FieldGroupResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Support\Enums\IconPosition;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\DocumentTypeResource;
+use SolutionForest\InspireCms\Filament\Tables\Actions\OpenAction;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -28,12 +27,8 @@ class DocumentTypesRelationManager extends RelationManager
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->actions([
-                Tables\Actions\Action::make('open')
-                    ->label(__('inspirecms::actions.open.label'))
-                    ->icon(FilamentIcon::resolve('inspirecms::goto'))
-                    ->iconPosition(IconPosition::After)
-                    ->url(fn ($record) => $this->getRecordUrl($record))
-                    ->visible(fn (Tables\Actions\Action $action) => filled($action->getUrl())),
+                OpenAction::make()
+                    ->url(fn ($record) => $this->getRecordUrl($record)),
             ]);
     }
 

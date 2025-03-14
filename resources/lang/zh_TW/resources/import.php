@@ -5,6 +5,7 @@ return [
         'heading' => '沒有匯入工作',
         'description' => '上傳 ZIP 文件以開始匯入工作，並等待其被排程和執行。',
     ],
+
     'file_name' => [
         'label' => '文件',
         'validation_attribute' => '文件',
@@ -31,29 +32,17 @@ return [
     'status' => [
         'label' => '狀態',
     ],
+    'file_structure_instructions' => [
+        'label' => 'ZIP 文件的文件夾結構',
+        'hint' => '以下是 ZIP 文件的文件夾結構。請確保 ZIP 文件包含以下文件夾。',
+    ],
+
     'notification' => [
+
         'completed' => [
             'title' => '匯入工作完成',
             'body' => "工作 ':id' 已完成。",
         ],
-    ],
-    'actions' => [
-        'download_sample' => [
-            'label' => '下載範例',
-        ],
-        'import' => [
-            'label' => '匯入',
-            'modal' => [
-                'actions' => [
-                    'submit' => [
-                        'label' => '匯入',
-                    ],
-                ],
-            ],
-        ],
-    ],
-    'file_structure_instructions' => [
-        'label' => 'ZIP 文件的文件夾結構',
-        'hint' => '以下是 ZIP 文件的文件夾結構。請確保 ZIP 文件包含以下文件夾。',
+
     ],
 ];
