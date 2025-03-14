@@ -14,6 +14,7 @@ class DocumentType extends BaseEntity
     protected static array $rules = [
         'slug' => 'required|string',
         'showAsTable' => 'nullable|boolean',
+        'showAtRoot' => 'nullable|boolean',
         'category' => 'required|string',
         'icon' => 'nullable|string',
         'title' => 'nullable|string',
@@ -21,7 +22,7 @@ class DocumentType extends BaseEntity
         'templates' => 'array',
         'defaultTemplate' => 'nullable|string',
         'inheritance' => 'array',
-        'rejected' => 'array',
+        'allowed' => 'array',
     ];
 
     public function __construct(
@@ -37,6 +38,14 @@ class DocumentType extends BaseEntity
          * @var bool
          */
         public $showAsTable,
+
+        /**
+         * Whether the document type should be shown at root while creating a new content.
+         *
+         * @var bool
+         */
+        public $showAtRoot,
+
         /**
          * The category of the document type. (e.g. web, inheritance, etc.)
          *
@@ -77,10 +86,11 @@ class DocumentType extends BaseEntity
          * @var string[]
          */
         public $inheritance = [],
+
         /**
-         * @var array $rejected An array to hold rejected document types (optional).
+         * @var array $allowed An array to hold allowed document types (optional).
          */
-        public $rejected = [],
+        public $allowed = [],
     ) {}
 
     /** {@inheritDoc} */
@@ -89,7 +99,7 @@ class DocumentType extends BaseEntity
         if (blank($parameters['category'] ?? null) || ! isset($parameters['category'])) {
             $parameters['category'] = 'web';
         }
-        $arrayFields = ['fieldGroups', 'templates', 'inheritance', 'rejected'];
+        $arrayFields = ['fieldGroups', 'templates', 'inheritance', 'allowed'];
         foreach ($arrayFields as $field) {
             if (! isset($parameters[$field])) {
                 $parameters[$field] = [];
@@ -103,6 +113,7 @@ class DocumentType extends BaseEntity
     {
         return [
             'show_as_table' => $this->showAsTable ?? false,
+            'show_at_root' => $this->showAtRoot ?? true,
             'category' => $this->category,
             'title' => $this->title ?? (string) str($this->slug)->title()->replace('_', ' '),
             'slug' => $this->slug,
@@ -121,10 +132,11 @@ class DocumentType extends BaseEntity
             $data['defaultTemplate'] = $defaultTemplate->slug;
         }
         $data['templates'] = $record->templates->pluck('slug')->toArray();
-        $data['rejected'] = $record->rejectedDocumentTypes->pluck('slug')->toArray();
+        $data['allowed'] = $record->allowedDocumentTypes->pluck('slug')->toArray();
         $data['fieldGroups'] = $record->fieldGroups->pluck('name')->toArray();
 
         $data['showAsTable'] = $record->show_as_table ?? false;
+        $data['showAtRoot'] = $record->show_at_root ?? true;
         $data['category'] = $record->category;
 
         return static::fromArray(Arr::only($data, static::limitFields()));
@@ -132,7 +144,7 @@ class DocumentType extends BaseEntity
 
     public function toExportArray(): array
     {
-        $arrayOrder = ['slug', 'title', 'showAsTable', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'rejected'];
+        $arrayOrder = ['slug', 'title', 'showAsTable', 'showAtRoot', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'allowed'];
 
         return collect(parent::toArray())
             ->only(static::limitFields())
@@ -145,6 +157,7 @@ class DocumentType extends BaseEntity
         return [
             'slug',
             'showAsTable',
+            'showAtRoot',
             'category',
             'icon',
             'title',
@@ -152,7 +165,7 @@ class DocumentType extends BaseEntity
             'templates',
             'defaultTemplate',
             'inheritance',
-            'rejected',
+            'allowed',
         ];
     }
 }

@@ -9,6 +9,17 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResourceHelper
 {
+    public static function getThemeSelectOptions(): array
+    {
+        return collect(inspirecms_templates()->getAvailableThemes())
+            ->mapWithKeys(function ($theme) {
+                return [
+                    $theme => $theme,
+                ];
+            })
+            ->all();
+    }
+
     /**
      * @return Forms\Components\Field|Forms\Components\Component
      */
@@ -17,7 +28,7 @@ class TemplateResourceHelper
         return Forms\Components\Select::make('theme')
             ->label(__('inspirecms::resources/template.theme.label'))
             ->prefixIcon('heroicon-o-paint-brush')
-            ->options(inspirecms_templates()->getAvailableThemes());
+            ->options(static::getThemeSelectOptions());
     }
 
     /**
@@ -56,10 +67,7 @@ class TemplateResourceHelper
     {
         return Forms\Components\ViewField::make('property_type_instructions')
             ->label(__('inspirecms::resources/template.property_type_instructions.label'))
-            ->view('inspirecms::instructions.property-type-instructions', [
-                'copiedMessage' => __('inspirecms::actions.copy.message'),
-                'copyButtonLabel' => __('inspirecms::actions.copy.label'),
-            ]);
+            ->view('inspirecms::instructions.property-type-instructions');
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
@@ -68,8 +76,9 @@ class TemplateResourceHelper
         return Forms\Components\ViewField::make('page_component_instructions')
             ->label(__('inspirecms::resources/template.page_component_instructions.label'))
             ->view('inspirecms::instructions.page-component-instructions', [
-                'copiedMessage' => __('inspirecms::actions.copy.message'),
-                'copyButtonLabel' => __('inspirecms::actions.copy.label'),
+                'plaintext' => '<x-cms-template :content="$content" type="page">
+    Your content here
+</x-cms-template>',
             ]);
     }
 }

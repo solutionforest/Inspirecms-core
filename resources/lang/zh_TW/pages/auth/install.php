@@ -11,41 +11,35 @@ return [
     'form' => [
 
         'email' => [
-            'label' => '電子郵件地址',
-            'validation_attribute' => '電子郵件地址',
-        ],
-
-        'login_name' => [
-            'label' => '登入名稱',
-            'validation_attribute' => '登入名稱',
+            'label' => __('inspirecms::resources/user.email.label'),
+            'validation_attribute' => __('inspirecms::resources/user.email.validation_attribute'),
         ],
 
         'name' => [
-            'label' => '姓名',
-            'validation_attribute' => '姓名',
+            'label' => __('inspirecms::resources/user.name.label'),
+            'validation_attribute' => __('inspirecms::resources/user.name.validation_attribute'),
         ],
 
         'password' => [
-            'label' => '密碼',
-            'validation_attribute' => '密碼',
+            'label' => __('inspirecms::resources/user.password.label'),
+            'validation_attribute' => __('inspirecms::resources/user.password.validation_attribute'),
         ],
 
         'password_confirmation' => [
-            'label' => '確認密碼',
-            'validation_attribute' => '確認密碼',
+            'label' => __('inspirecms::resources/user.password_confirmation.label'),
+            'validation_attribute' => __('inspirecms::resources/user.password_confirmation.validation_attribute'),
         ],
+    ],
 
-        'actions' => [
+    'buttons' => [
 
-            'register' => [
-                'label' => '註冊',
-            ],
-
+        'register' => [
+            'label' => '註冊',
         ],
 
     ],
 
-    'notifications' => [
+    'messages' => [
 
         'throttled' => [
             'title' => '註冊嘗試次數過多',

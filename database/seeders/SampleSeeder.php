@@ -251,6 +251,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'homepage',
             showAsTable: false,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'hero_banner',
@@ -264,6 +265,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'about',
             showAsTable: false,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'about_section',
@@ -272,22 +274,23 @@ class SampleSeeder extends Seeder
             defaultTemplate: 'about',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-information-circle',
-            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blogs',
             showAsTable: false,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: ['featured_blogs'],
             templates: ['blogs'],
             defaultTemplate: 'blogs',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
-            rejected: ['homepage'],
+            allowed: ['blog'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'contact-us',
             showAsTable: false,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'page_banner',
@@ -296,11 +299,11 @@ class SampleSeeder extends Seeder
             templates: ['contact'],
             defaultTemplate: 'contact',
             icon: 'heroicon-o-question-mark-circle',
-            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'case-studies',
             showAsTable: true,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'page_banner',
@@ -308,11 +311,12 @@ class SampleSeeder extends Seeder
             templates: ['case-studies'],
             defaultTemplate: 'case-studies',
             icon: 'heroicon-o-clipboard-document-list',
-            rejected: ['homepage'],
+            allowed: ['case-study'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'case-study',
             showAsTable: false,
+            showAtRoot: false,
             category: 'web',
             fieldGroups: [
                 'page_banner',
@@ -321,12 +325,12 @@ class SampleSeeder extends Seeder
             templates: ['case-study'],
             defaultTemplate: 'case-study',
             icon: 'heroicon-o-clipboard-document-check',
-            rejected: ['homepage'],
         );
 
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'config',
             showAsTable: false,
+            showAtRoot: true,
             category: 'data',
             fieldGroups: [
                 'social_media',
@@ -339,16 +343,19 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog-management',
             showAsTable: true,
+            showAtRoot: true,
             category: 'data',
             fieldGroups: [],
             templates: [],
             defaultTemplate: null,
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
+            allowed: ['blog'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'blog',
             showAsTable: false,
+            showAtRoot: false,
             category: 'data',
             fieldGroups: [
                 'page_banner',
@@ -362,11 +369,11 @@ class SampleSeeder extends Seeder
             ],
             defaultTemplate: null,
             icon: 'heroicon-o-newspaper',
-            rejected: ['homepage'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'dynamic-blog-page',
             showAsTable: false,
+            showAtRoot: true,
             category: 'web',
             fieldGroups: [],
             templates: [
@@ -374,28 +381,24 @@ class SampleSeeder extends Seeder
             ],
             defaultTemplate: 'blog-page',
             icon: 'heroicon-o-newspaper',
-            rejected: ['homepage'],
         );
 
         $allSlugs = collect($items)->map(fn ($item) => $item->slug)->values()->toArray();
 
         foreach ($items as &$item) {
             switch ($item->slug) {
-                case 'blog-management':
-                    $item->rejected = Arr::except($allSlugs, ['blog']);
-
-                    break;
-                case 'blog':
-                case 'config':
-                    $item->rejected = $allSlugs;
-
-                    break;
                 case 'homepage':
-                    $item->rejected = array_unique(array_merge($item->rejected, ['blog']));
-
-                    break;
-                default:
-                    $item->rejected = array_unique(array_merge($item->rejected, ['blog', 'blog-management']));
+                    $item->allowed = collect($item->allowed)
+                        ->merge($allSlugs)
+                        ->unique()
+                        ->filter()
+                        ->where(fn ($slug) => ! in_array($slug, [
+                            'homepage', // self
+                            'case-study',
+                            'blog',
+                        ]))
+                        ->values()
+                        ->toArray();
 
                     break;
             }

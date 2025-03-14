@@ -7,9 +7,9 @@ use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
+use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Contracts\ContentForm;
 
 class Translate extends Component
 {

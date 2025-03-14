@@ -10,7 +10,7 @@ return [
 
     ],
 
-    'template_file_not_found' => [
+    'template_not_found' => [
 
         'title' => 'Template File Not Found',
 
@@ -27,12 +27,6 @@ return [
     'saved' => [
 
         'title' => 'Saved',
-
-    ],
-
-    'something_went_wrong' => [
-
-        'title' => 'Something went wrong.',
 
     ],
 

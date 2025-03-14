@@ -9,7 +9,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -52,7 +52,7 @@ class PageActivity extends BaseWidget
 
     protected function getRecordUrl(Model $record): ?string
     {
-        $resource = InspireCmsConfig::get('filament.resources.page', PageResource::class);
+        $resource = InspireCmsConfig::getFilamentResource('content', ContentResource::class);
 
         return FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view', 'index'], ['record' => $record], true);
     }

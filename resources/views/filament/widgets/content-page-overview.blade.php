@@ -35,7 +35,7 @@
             </a>
         @endif
         @if ($this->canCreateContent())
-            <x-filament::section class="cursor-pointer" wire:click="callAction('create_content')">
+            <x-filament::section class="cursor-pointer" wire:click="callAction('createContent')">
                 <x-slot name="heading">
                     Create content
                 </x-slot>

@@ -23,6 +23,12 @@ return [
     'publish_at_xxx' => 'Published at :time',
     'role' => 'Role',
     'root' => 'Root',
+    'search' => [
+        'label' => 'Search',
+        'placeholder' => 'Search...',
+        'message' => 'Searching...',
+        'no_results' => 'No results found.',
+    ],
     'settings' => 'Settings',
     'sitemap' => 'Sitemap',
     'table' => 'Table',

@@ -23,6 +23,12 @@ return [
     'publish_at_xxx' => '發布於 :time',
     'role' => '角色',
     'root' => '根',
+    'search' => [
+        'label' => '搜索',
+        'placeholder' => '搜索...',
+        'message' => '搜索中...',
+        'no_results' => '未找到結果',
+    ],
     'settings' => '設置',
     'sitemap' => '網站地圖',
     'table' => '表格',

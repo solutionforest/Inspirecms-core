@@ -13,12 +13,12 @@
             <x-filament::input
                 type="text"
                 wire:model.live="search"
-                placeholder="Search..."
+                :placeholder="@trans('inspirecms::inspirecms.search.placeholder')"
             />
         </x-filament::input.wrapper>
 
         <div wire:loading wire:target="search"> 
-            Searching...
+            {{ __('inspirecms::inspirecms.search.message') }}
         </div>
     @endif
 
@@ -45,7 +45,9 @@
             />
         @endif
     @else
-        <p class="text-gray-500 dark:text-gray-400">No records found.</p>
+        <p class="text-gray-500 dark:text-gray-400">
+            {{ __('inspirecms::inspirecms.search.no_results') }}
+        </p>
     @endif
 
 </div>

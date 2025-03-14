@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
+ * @method static ?stirng version()
  * @method static bool needInstall() Determine if there is a need to go to the install page
  * @method static ?string getInstallUrl()
  * @method static ?string getImportDataUrl()
@@ -19,7 +20,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static array getContentRoutes()
  * @method static void forgetCachedContentRoutes()
  *
- * @see \SolutionForest\InspireCms\InspireCmsManager
+ * @see \SolutionForest\InspireCms\InspireCms
  */
 class InspireCms extends Facade
 {
@@ -28,6 +29,6 @@ class InspireCms extends Facade
      */
     protected static function getFacadeAccessor()
     {
-        return \SolutionForest\InspireCms\InspireCmsManager::class;
+        return \SolutionForest\InspireCms\InspireCms::class;
     }
 }

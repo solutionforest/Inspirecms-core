@@ -5,14 +5,20 @@ namespace SolutionForest\InspireCms\Livewire;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
+use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Helpers\SearchHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class DocumentTypePaginator extends \Livewire\Component
 {
+    use WithoutUrlPagination;
     use WithPagination;
+
+    public $search = '';
 
     /**
      * @var null|int|string
@@ -28,6 +34,24 @@ class DocumentTypePaginator extends \Livewire\Component
 
     public $translatableLocale = null;
 
+    public int | string $perPage = 10;
+
+    protected static string $view = 'inspirecms::livewire.document-type-paginator';
+
+    public const LOADING_TARGETS = [
+        'gotoPage',
+        'nextPage',
+        'previousPage',
+        'search',
+    ];
+
+    public const PAGE_NAME = 'documentTypesPage';
+
+    public function mount()
+    {
+        $this->resetPage(static::PAGE_NAME);
+    }
+
     public function render()
     {
         $documentTypes = tap(
@@ -39,7 +63,7 @@ class DocumentTypePaginator extends \Livewire\Component
                     $parameters = [
                         'documentType' => $documentType->getKey(),
                         'parent' => $this->parentContentId,
-                        // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
+                        // Set the locale as query parameter as ContentPageTrait
                         'locale' => $this->translatableLocale,
                     ];
 
@@ -51,16 +75,27 @@ class DocumentTypePaginator extends \Livewire\Component
                     );
 
                     return [
-                        'label' => $documentType->title,
                         'icon' => $documentType->icon,
                         'url' => $url,
+                        'rawLabel' => $documentType->title,
+                        'displayLabel' => UIHelper::generateTextWithDescription(
+                            text: $documentType->title,
+                            description: $documentType->slug ?? null,
+                        ),
                     ];
                 })
         );
 
-        return view('inspirecms::livewire.document-type-paginator', [
-            'documentTypes' => $documentTypes,
+        return view(static::$view, [
+            'paginator' => $documentTypes,
+            'perPage' => $this->perPage,
+            'loadingTargets' => implode(', ', static::LOADING_TARGETS),
         ]);
+    }
+
+    public function updatedSearch()
+    {
+        $this->resetPage(static::PAGE_NAME);
     }
 
     /**
@@ -71,18 +106,38 @@ class DocumentTypePaginator extends \Livewire\Component
         /**
          * @var Builder $query
          */
-        $query = InspireCmsConfig::getDocumentTypeModelClass()::whereCanBeContent();
+        $query = InspireCmsConfig::getDocumentTypeModelClass()::query()
+            ->whereCanBeContent();
 
         if ($this->parentDocumentTypeId !== null) {
             $query
+                // Skip self
                 ->whereKeyNot($this->parentDocumentTypeId)
-                ->whereDoesntHave(
-                    'rejectingDocumentTypes',
+                ->whereHas(
+                    'allowingDocumentTypes',
                     fn ($query) => $query->whereKey($this->parentDocumentTypeId)
                 );
         }
+        // Is root
+        else {
+            $query->where('show_at_root', true);
+        }
 
-        return $query->paginate(perPage: 15, pageName: 'documentTypesPage');
+        if (filled($this->search)) {
+            $query = SearchHelper::filterBySearch(
+                query: $query,
+                search: $this->search,
+                searchColumns: ['title', 'slug'],
+                isForcedCaseInsensitive: true
+            );
+        }
+
+        return $query
+            ->paginate(
+                perPage: $this->perPage === 'all' ? null : $this->perPage,
+                pageName: static::PAGE_NAME,
+                page: $this->getPage(static::PAGE_NAME),
+            );
     }
 
     /**
@@ -90,6 +145,6 @@ class DocumentTypePaginator extends \Livewire\Component
      */
     protected static function getResource()
     {
-        return InspireCmsConfig::getFilamentResource('page', PageResource::class);
+        return InspireCmsConfig::getFilamentResource('content', ContentResource::class);
     }
 }

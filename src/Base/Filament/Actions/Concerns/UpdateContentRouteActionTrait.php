@@ -14,7 +14,7 @@ trait UpdateContentRouteActionTrait
 {
     public static function getDefaultName(): ?string
     {
-        return 'update_content_route';
+        return 'updateContentRoute';
     }
 
     protected function setUpAction(): void

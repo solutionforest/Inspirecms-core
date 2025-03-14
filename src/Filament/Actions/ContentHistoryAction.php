@@ -25,7 +25,7 @@ class ContentHistoryAction extends Action
         $this->setPerPage(5);
         $this->setPageOptions([5, 10, 20, 100, 'all']);
 
-        $this->label(fn () => __('inspirecms::resources/content.actions.content_history.label'));
+        $this->label(fn () => __('inspirecms::buttons.content_history.label'));
 
         $this->hidden(fn (null | Model | Content $record) => is_null($record));
 

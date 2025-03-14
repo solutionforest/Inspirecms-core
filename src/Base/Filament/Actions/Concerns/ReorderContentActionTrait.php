@@ -7,6 +7,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -19,7 +20,7 @@ trait ReorderContentActionTrait
 
     public static function getDefaultName(): ?string
     {
-        return 'reorder_content_children';
+        return 'reorderContentChildren';
     }
 
     public function nodeParentId(Closure | string | int $nodeParentId): static
@@ -36,11 +37,11 @@ trait ReorderContentActionTrait
 
     protected function setUpAction(): void
     {
-        $this->label(__('inspirecms::resources/content.actions.reorder_children.label'));
+        $this->label(__('inspirecms::buttons.reorder_children.label'));
 
-        $this->successNotificationTitle(__('inspirecms::resources/content.actions.reorder_children.notification.success.title'));
+        $this->successNotificationTitle(__('inspirecms::buttons.reorder_children.messages.success.title'));
 
-        $this->groupedIcon('heroicon-o-arrows-up-down');
+        $this->groupedIcon(FilamentIcon::resolve('inspirecms::sort'));
 
         /**
          * @var class-string<\SolutionForest\InspireCms\Models\Contracts\Content & Model> $contentModel
@@ -109,7 +110,7 @@ trait ReorderContentActionTrait
             if (! in_array(NestableTree::class, class_implements($nestableTreeModel))) {
 
                 Notification::make()
-                    ->title(__('inspirecms::resources/content.actions.reorder_children.notification.invalid_model.title'))
+                    ->title(__('inspirecms::buttons.reorder_children.messages.invalid_model.title'))
                     ->danger()
                     ->send();
 
@@ -129,7 +130,7 @@ trait ReorderContentActionTrait
             } catch (\Throwable $th) {
 
                 Notification::make()
-                    ->title(__('inspirecms::resources/content.actions.reorder_children.notification.error.title'))
+                    ->title(__('inspirecms::messages.something_went_wrong'))
                     ->body($th->getMessage())
                     ->danger()
                     ->send();

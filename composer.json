@@ -49,15 +49,16 @@
         ],
         "psr-4": {
             "SolutionForest\\InspireCms\\": "src/",
-            "SolutionForest\\InspireCms\\Database\\Factories\\": "database/factories/",
             "SolutionForest\\InspireCms\\Database\\Seeders\\": "database/seeders/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "SolutionForest\\InspireCms\\Tests\\": "tests/",
+            "SolutionForest\\InspireCms\\Tests\\": "tests/src",
+            "SolutionForest\\InspireCms\\Tests\\Database\\Factories\\": "tests/database/factories/",
             "SolutionForest\\InspireCms\\Support\\": "vendor/solution-forest/inspirecms-support/src/",
-            "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/src/",
+            "SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\": "tests/database/factories/"
         }
     },
     "scripts": {

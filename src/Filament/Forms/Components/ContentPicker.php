@@ -129,8 +129,8 @@ class ContentPicker extends Field
     public function getSelectAction(): Action
     {
         return Action::make('select')
-            ->label(__('inspirecms::actions.select.label'))
-            ->modalSubmitActionLabel(__('inspirecms::actions.choose.label'))
+            ->label(__('inspirecms::buttons.select.label'))
+            ->modalSubmitActionLabel(__('inspirecms::buttons.choose.label'))
             ->modalWidth('5xl')
             ->slideOver()
             ->fillForm(fn () => ['records' => $this->getState()])
@@ -171,7 +171,7 @@ class ContentPicker extends Field
     public function getClearAction(): Action
     {
         return Action::make('clear')
-            ->label(__('inspirecms::actions.clear.label'))
+            ->label(__('inspirecms::buttons.clear.label'))
             ->color('gray')
             ->action(function () {
                 $this->state([]);

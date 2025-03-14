@@ -11,7 +11,7 @@ class UpdateRouteAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'update_route';
+        return 'updateRoute';
     }
 
     protected function setUp(): void

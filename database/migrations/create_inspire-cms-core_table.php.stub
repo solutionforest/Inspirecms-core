@@ -56,6 +56,8 @@ return new class extends BaseMigration
             $table->string('icon')->nullable();
             $table->boolean('show_as_table')->default(false);
 
+            $table->boolean('show_at_root')->default(true);
+
             $table->timestamps();
 
             $table->unique('slug');
@@ -139,12 +141,10 @@ return new class extends BaseMigration
             $table->index('document_type_id');
             $table->index('inherited_document_type_id');
         });
-        Schema::create($tableNames['rejected_document_type'], function (Blueprint $table) {
-            $table->integer('document_type_id');
-            $table->integer('rejected_document_type_id');
-
-            $table->index('document_type_id');
-            $table->index('rejected_document_type_id');
+        
+        Schema::create($tableNames['allowed_document_type'], function (Blueprint $table) {
+            $table->foreignId('id')->constrained('cms_document_types', 'id')->onDelete('cascade');
+            $table->foreignId('allowed_id')->constrained('cms_document_types', 'id')->onDelete('cascade');
         });
         
         Schema::create($tableNames['user'], function (Blueprint $table) {
@@ -221,7 +221,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['user_login_activity']);
         Schema::dropIfExists($tableNames['user']);
 
-        Schema::dropIfExists($tableNames['rejected_document_type']);
+        Schema::dropIfExists($tableNames['allowed_document_type']);
         Schema::dropIfExists($tableNames['document_type_inheritance']);
         Schema::dropIfExists($tableNames['field_groupable']);
 
@@ -250,7 +250,7 @@ return new class extends BaseMigration
             'content' => $this->prefix . 'content',
             'document_type' => $this->prefix . 'document_types',
             'document_type_inheritance' => $this->prefix . 'document_type_inheritance',
-            'rejected_document_type' => $this->prefix . 'rejected_document_type',
+            'allowed_document_type' => $this->prefix . 'document_type_allowed_document_type',
             'language' => $this->prefix . 'languages',
             'user_login_activity' => $this->prefix . 'user_login_activities',
             'user' => $this->prefix . 'users',

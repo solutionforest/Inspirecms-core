@@ -11,7 +11,7 @@ class CreateContentItemAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'create_content_item';
+        return 'createContentItem';
     }
 
     protected function setUp(): void

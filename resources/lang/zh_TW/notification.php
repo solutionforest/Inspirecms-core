@@ -10,7 +10,7 @@ return [
 
     ],
 
-    'template_file_not_found' => [
+    'template_not_found' => [
 
         'title' => '找不到模板文件',
 
@@ -27,12 +27,6 @@ return [
     'saved' => [
 
         'title' => '已保存',
-
-    ],
-
-    'something_went_wrong' => [
-
-        'title' => '出了些問題。',
 
     ],
 

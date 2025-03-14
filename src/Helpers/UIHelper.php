@@ -197,7 +197,7 @@ class UIHelper
             'icon' => $icon,
             'url' => $url,
             'linkTarget' => $linkTarget,
-            'copiedMessage' => __('inspirecms::actions.copy.message'),
+            'copiedMessage' => __('inspirecms::messages.copied'),
         ]));
     }
 
@@ -217,7 +217,7 @@ class UIHelper
             </div>
         blade, [
             'text' => $text,
-            'copiedMessage' => __('inspirecms::actions.copy.message'),
+            'copiedMessage' => __('inspirecms::messages.copied'),
         ]));
     }
 
@@ -298,16 +298,18 @@ class UIHelper
         ]));
     }
 
-    public static function generateTextWithDescription(string $text, string $description): HtmlString
+    public static function generateTextWithDescription(string $text, ?string $description = null): HtmlString
     {
         return new HtmlString(Blade::render(<<<'blade'
             <div class="flex flex-col">
                 <span>
                     {{$text}}
                 </span>
-                <span class="text-xs text-gray-500">
-                    {{$description}}
-                </span>
+                @if (filled($description))
+                    <span class="text-xs text-gray-500">
+                        {{$description}}
+                    </span>
+                @endif
             </div>
         blade, [
             'text' => $text,

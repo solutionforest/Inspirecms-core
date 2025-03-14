@@ -198,18 +198,18 @@ class Install extends BasePage
     public function getRegisterFormAction(): Action
     {
         return Action::make('register')
-            ->label(__('inspirecms::pages/auth/install.form.actions.register.label'))
+            ->label(__('inspirecms::pages/auth/install.buttons.register.label'))
             ->submit('register');
     }
 
     protected function getRateLimitedNotification(TooManyRequestsException $exception): ?Notification
     {
         return Notification::make()
-            ->title(__('inspirecms::pages/auth/install.notifications.throttled.title', [
+            ->title(__('inspirecms::pages/auth/install.messages.throttled.title', [
                 'seconds' => $exception->secondsUntilAvailable,
                 'minutes' => $exception->minutesUntilAvailable,
             ]))
-            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.notifications.throttled') ?: []) ? __('inspirecms::pages/auth/install.notifications.throttled.body', [
+            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.messages.throttled') ?: []) ? __('inspirecms::pages/auth/install.messages.throttled.body', [
                 'seconds' => $exception->secondsUntilAvailable,
                 'minutes' => $exception->minutesUntilAvailable,
             ]) : null)
@@ -219,8 +219,8 @@ class Install extends BasePage
     protected function getAssignRoleFailedNotification(): ?Notification
     {
         return Notification::make()
-            ->title(__('inspirecms::pages/auth/install.notifications.assign_role_failed.title'))
-            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.notifications.assign_role_failed') ?: []) ? __('inspirecms::pages/auth/install.notifications.assign_role_failed.body') : null)
+            ->title(__('inspirecms::pages/auth/install.messages.assign_role_failed.title'))
+            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.messages.assign_role_failed') ?: []) ? __('inspirecms::pages/auth/install.messages.assign_role_failed.body') : null)
             ->danger();
     }
 

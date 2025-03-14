@@ -28,7 +28,7 @@ class EditProfile extends BasePage
     protected function getSaveFormAction(): Action
     {
         return Action::make('save')
-            ->label(__('inspirecms::actions.save.label'))
+            ->label(__('inspirecms::buttons.save.label'))
             ->submit('save')
             ->keyBindings(['mod+s']);
     }
@@ -36,7 +36,7 @@ class EditProfile extends BasePage
     public function getCancelFormAction(): Action
     {
         return Action::make('back')
-            ->label(__('inspirecms::actions.cancel.label'))
+            ->label(__('inspirecms::buttons.cancel.label'))
             ->alpineClickHandler('document.referrer ? window.history.back() : (window.location.href = ' . Js::from(filament()->getUrl()) . ')')
             ->color('gray');
     }

@@ -1,0 +1,33 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+use SolutionForest\InspireCms\Support\Base\BaseMigration;
+
+return new class extends BaseMigration
+{
+    public function up()
+    {
+        $tableNames = $this->getTableNames();
+        
+        Schema::create($tableNames['key_value'], function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->text('value')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    public function down()
+    {
+        $tableNames = $this->getTableNames();
+
+        Schema::dropIfExists($tableNames['key_value']);
+    }
+
+    private function getTableNames()
+    {
+        return [
+            'key_value' => $this->prefix . 'key_values',
+        ];
+    }
+};

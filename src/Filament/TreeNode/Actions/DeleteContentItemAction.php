@@ -11,7 +11,7 @@ class DeleteContentItemAction extends Action
 {
     public static function getDefaultName(): ?string
     {
-        return 'delete_content_item';
+        return 'deleteContentItem';
     }
 
     protected function setUp(): void

@@ -18,6 +18,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
     protected $casts = [
         'show_as_table' => 'boolean',
+        'show_at_root' => 'boolean',
     ];
 
     public function fields()
@@ -77,14 +78,14 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getDocumentTypeInheritanceTableName(), 'inherited_document_type_id', 'document_type_id');
     }
 
-    public function rejectedDocumentTypes()
+    public function allowedDocumentTypes()
     {
-        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getRejectedDocumentTypeTableName(), 'document_type_id', 'rejected_document_type_id');
+        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getAllowedDocumentTypeTableName(), 'id', 'allowed_id');
     }
 
-    public function rejectingDocumentTypes()
+    public function allowingDocumentTypes()
     {
-        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getRejectedDocumentTypeTableName(), 'rejected_document_type_id', 'document_type_id');
+        return $this->belongsToMany(InspireCmsConfig::getDocumentTypeModelClass(), InspireCmsConfig::getAllowedDocumentTypeTableName(), 'allowed_id', 'id');
     }
 
     public function content()

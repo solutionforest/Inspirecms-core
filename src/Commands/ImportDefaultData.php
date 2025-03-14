@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -27,6 +28,7 @@ class ImportDefaultData extends Command
         $this->publishAssets();
         $this->createSymlink();
 
+        $this->importKeyValueData();
         $this->importLanguageData();
         $this->importLaravelPermissionData();
 
@@ -35,6 +37,13 @@ class ImportDefaultData extends Command
         $this->publishRouteDefinition();
 
         return static::SUCCESS;
+    }
+
+    protected function importKeyValueData(): void
+    {
+        $this->components->task('Import key/value data', function () {
+            TemplateHelper::setupKeyValueForCurrentTemplate();
+        });
     }
 
     protected function importLanguageData(): void

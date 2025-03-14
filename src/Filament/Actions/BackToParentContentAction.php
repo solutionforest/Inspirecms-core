@@ -4,8 +4,9 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Clusters\Content\Resources\PageResource;
+use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -16,7 +17,7 @@ class BackToParentContentAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'back_to_parent_content';
+        return 'backToParentContent';
     }
 
     protected function setUp(): void
@@ -27,9 +28,9 @@ class BackToParentContentAction extends Action
 
         $this->iconButton();
 
-        $this->icon('heroicon-o-chevron-left');
+        $this->icon(FilamentIcon::resolve('inspirecms::back'));
 
-        $this->label(__('inspirecms::resources/content.actions.back.label'));
+        $this->label(__('inspirecms::buttons.back.label'));
 
         $this->url(function (null | Model | Content $record, $livewire) {
             if ($record->trashed() || ! $record || ! ($record instanceof Content)) {
@@ -39,14 +40,14 @@ class BackToParentContentAction extends Action
                 return null;
             }
 
-            $resource = InspireCmsConfig::get('filament.resources.page', PageResource::class);
+            $resource = InspireCmsConfig::getFilamentResource('content', ContentResource::class);
 
             $translatableLocale = method_exists($livewire, 'getActiveActionsLocale') ? $livewire->getActiveActionsLocale() : null;
 
             $parameters = [
                 'record' => $record->parent,
                 'activeRelationManager' => 0,
-                // Set the locale as query parameter as \SolutionForest\InspireCms\Filament\Clusters\Content\Concerns\ContentPageTrait
+                // Set the locale as query parameter as ContentPageTrait
                 'locale' => $translatableLocale,
             ];
 

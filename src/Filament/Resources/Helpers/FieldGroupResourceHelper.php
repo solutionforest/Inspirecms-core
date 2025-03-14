@@ -147,12 +147,11 @@ class FieldGroupResourceHelper
 
     protected static function configureFieldsCreateActionOnRepeater(Forms\Components\Actions\Action $action): Forms\Components\Actions\Action
     {
+        $modelName = strtolower(__('inspirecms::resources/field-group.fields.singular'));
+
         return $action
             ->size(ActionSize::ExtraLarge)
             ->extraAttributes(['class' => 'w-full'])
-            ->label(__('inspirecms::actions.add.label_with_name', [
-                'name' => strtolower(__('inspirecms::resources/field-group.fields.singular')),
-            ]))
             ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->slideOver()
             ->modalWidth('5xl')
@@ -160,10 +159,13 @@ class FieldGroupResourceHelper
                 'group_id' => $record?->getKey(),
             ])
             ->form(static::getFieldsEditFormSchema())
-            ->modalHeading(__('inspirecms::actions.add.modal.heading', [
-                'name' => strtolower(__('inspirecms::resources/field-group.fields.singular')),
+            ->label(fn () => __('inspirecms::buttons.add_with_name.label', [
+                'name' => $modelName,
             ]))
-            ->modalSubmitActionLabel(__('inspirecms::actions.add.modal.actions.submit.label'))
+            ->modalHeading(fn () => __('inspirecms::buttons.add_with_name.heading', [
+                'name' => $modelName,
+            ]))
+            ->modalSubmitActionLabel(__('inspirecms::buttons.add.label'))
             ->action(function (array $data, Forms\Components\Repeater $component) {
                 $newUuid = $component->generateUuid();
 

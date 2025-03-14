@@ -1,9 +1,3 @@
-@php
-$plaintext = '<x-cms-template :content="$content" type="page">
-    Your content here
-</x-cms-template>';
-@endphp
-
 <x-filament::section
     collapsible
     compact
@@ -26,8 +20,6 @@ $plaintext = '<x-cms-template :content="$content" type="page">
 
         <x-inspirecms::buttons.copy-button
             :plaintext="$plaintext"
-            :label="$copyButtonLabel"
-            :message="$copiedMessage"
         />
     </div>
 

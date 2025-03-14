@@ -35,7 +35,7 @@ class LanguageObserver
      */
     public function updating($model)
     {
-        $this->updateRelatedContentRoutes($model);
+        //
     }
 
     /**
@@ -76,26 +76,6 @@ class LanguageObserver
      */
     protected function deleteRelatedModels($model)
     {
-        $model->contentSegments()->delete();
-    }
-
-    /**
-     * @param  Language&Model  $model
-     * @return void
-     */
-    protected function updateRelatedContentRoutes($model)
-    {
-        if (! $model->isDirty(['code'])) {
-            return;
-        }
-
-        $oldCode = $model->getOriginal('code');
-        $newCode = $model->code;
-
-        $contentRouteModel = $model->contentSegments()->getRelated();
-
-        $contentRouteModel->newQuery()
-            ->where('locale', $oldCode)
-            ->update(['locale' => $newCode]);
+        $model->contentRoutes()->delete();
     }
 }

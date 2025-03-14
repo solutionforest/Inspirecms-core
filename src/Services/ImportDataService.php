@@ -344,9 +344,9 @@ class ImportDataService implements ImportDataServiceInterface
                 //     $documentType->inheritDocumentType($inheritanceDocumentType);
                 // }
 
-                if (! empty($item->rejected)) {
-                    $rejectedDocumentTypeKeys = $this->findDocumentTypes($item->rejected)->map(fn ($i) => $i->getKey())->filter()->values();
-                    $documentType->rejectedDocumentTypes()->sync($rejectedDocumentTypeKeys);
+                if (! empty($item->allowed)) {
+                    $allowedDocumentTypeKeys = $this->findDocumentTypes($item->allowed)->map(fn ($i) => $i->getKey())->filter()->values();
+                    $documentType->allowedDocumentTypes()->sync($allowedDocumentTypeKeys);
                 }
 
                 $this->finished['documentTypes'][$slug] = $documentType;

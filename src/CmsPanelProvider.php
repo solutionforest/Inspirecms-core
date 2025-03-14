@@ -23,10 +23,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
+use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
+use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
@@ -67,7 +70,8 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
                 Widgets\AlertOverview::class,
-                \SolutionForest\InspireCms\Filament\Clusters\Settings\Resources\NavigationResource\Widgets\TreeNavigation::class,
+                Widgets\TemplateInfo::class,
+                TreeNavigation::class,
             ])
             ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
@@ -85,6 +89,8 @@ class CmsPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
+                // todo: add license check
+                // LicenseCheck::class,
                 CmsAuthenticate::class,
                 UserPreference::class,
             ])
@@ -176,7 +182,7 @@ class CmsPanelProvider extends PanelProvider
                         'aria-label' => 'Reset Tour Guide',
                     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Version: ' . InspireCmsConfig::getVersion())
+                    ->label('Version: ' . InspireCms::version())
                     ->icon('heroicon-s-information-circle')
                     ->url('#')
                     ->extraAttributes([
@@ -306,6 +312,7 @@ class CmsPanelProvider extends PanelProvider
     {
         return $panel->livewireComponents([
             Pages\Auth\Install::class,
+            ListImportNExport::class,
         ]);
     }
 

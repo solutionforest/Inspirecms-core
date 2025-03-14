@@ -14,7 +14,7 @@ class MoveContentAction extends Action
 
     public static function getDefaultName(): ?string
     {
-        return 'move_content';
+        return 'moveContent';
     }
 
     protected function setUp(): void
@@ -52,9 +52,9 @@ class MoveContentAction extends Action
                 return [];
             }
 
-            $restrictedDocumentTypeIds = InspireCmsConfig::getRejectedDocumentTypeModelClass()::query()
-                ->where('rejected_document_type_id', $record->document_type_id)
-                ->pluck('document_type_id')
+            $allowedDocumentTypeIds = InspireCmsConfig::getAllowedDocumentTypeModelClass()::query()
+                ->where('allowed_id', $record->document_type_id)
+                ->pluck('id')
                 ->all();
 
             return [
@@ -62,9 +62,9 @@ class MoveContentAction extends Action
                     ->hiddenLabel()
                     ->validationAttribute('target')
                     ->whereKeyNot($record->getKey())
-                    ->whereNotIn(
+                    ->whereIn(
                         'document_type_id',
-                        $restrictedDocumentTypeIds,
+                        $allowedDocumentTypeIds,
                     )
                     ->maxItems(1)
                     ->minItems(1),

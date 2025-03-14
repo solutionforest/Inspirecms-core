@@ -11,6 +11,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
@@ -23,6 +24,8 @@ use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
+use SolutionForest\InspireCms\Licensing\Outpost;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components\Template;
@@ -32,9 +35,9 @@ use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
-    public static string $name = 'inspirecms';
+    public static string $name = InspireCms::CORE_SLUG;
 
-    public static string $viewNamespace = 'inspirecms';
+    public static string $viewNamespace = InspireCms::CORE_SLUG;
 
     public function configurePackage(Package $package): void
     {
@@ -101,7 +104,18 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
         $this->app->singleton(BaseManifests\LocaleManifestInterface::class, fn () => $this->app->make(BaseManifests\LocaleManifest::class));
+
         $this->app->singleton(InspireCmsBase\TemplateManagerInterface::class, fn () => $this->app->make(InspireCmsBase\TemplateManager::class));
+
+        $this->app->singleton(InspireCmsBase\KeyValueCache::class, function () {
+            return new InspireCmsBase\KeyValueCache(
+                $this->app['cache'],
+            );
+        });
+
+        $this->app->singleton(LicenseManager::class, function ($app) {
+            return new LicenseManager($app[Outpost::class]);
+        });
 
         $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
@@ -167,6 +181,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Icon Registration
         FilamentIcon::register($this->getIcons());
 
+        $this->addAboutPluginInfo();
+
         if (app()->runningInConsole()) {
             $this->registerStubs();
         }
@@ -197,6 +213,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
+            Commands\AboutCommand::class,
+            Commands\UpdatePluginCommand::class,
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
             Commands\ImportDefaultData::class,
@@ -219,6 +237,18 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'inspirecms::clone' => 'heroicon-o-document-duplicate',
             'inspirecms::add' => 'heroicon-o-plus-small',
             'inspirecms::attach' => 'heroicon-o-link',
+            'inspirecms::detach' => 'heroicon-m-x-mark',
+            'inspirecms::edit' => 'heroicon-m-pencil-square',
+            'inspirecms::delete' => 'heroicon-o-trash',
+            'inspirecms::download' => 'heroicon-m-arrow-down-tray',
+            'inspirecms::export' => 'heroicon-m-arrow-top-right-on-square',
+
+            'inspirecms::back' => 'heroicon-o-chevron-left',
+            'inspirecms::sort' => 'heroicon-o-arrows-up-down',
+
+            'inspirecms::as_default' => 'heroicon-o-star',
+            'inspirecms::recycle_bin' => 'heroicon-o-trash',
+
             'inspirecms::json-file' => view('inspirecms::icons.json-file'),
             'inspirecms::fields' => view('inspirecms::icons.fields'),
             'inspirecms::templates' => view('inspirecms::icons.templates'),
@@ -251,6 +281,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'create_inspire-cms-core_table',
             'create_inspire-cms-content-locks_table',
             'create_inspire-cms-import_and_export_table',
+            'create_key_values_table',
             'create_custom_spatie_permission_table',
             'update_sessions_table',
         ];
@@ -398,6 +429,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             SupportModels\Contracts\NestableTree::class,
             Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
+        Support\Facades\ModelRegistry::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
 
         // Media Library
 
@@ -406,10 +438,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
         Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
 
-        // Support
-
-        Support\Facades\InspireCmsSupport::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
-        Support\Facades\InspireCmsSupport::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
+        // auth guard
+        Support\Facades\AuthenticationManager::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
 
         // Resolvers
 
@@ -502,10 +532,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             $dir = trim(trim($getViewDirForStub($file), '/'));
 
-            $themeComponentPrefix = inspirecms_templates()->getComponentPrefix();
-
-            if (filled($themeComponentPrefix)) {
-                $dir = trim(trim($themeComponentPrefix, '/')) . '/' . $dir;
+            if (($themeComponentPrefix = TemplateHelper::getDirectoryForThemedComponents()) && filled($themeComponentPrefix)) {
+                $dir = $themeComponentPrefix . '/' . $dir;
             }
 
             $this->publishes([
@@ -553,6 +581,21 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
                 if (\${$propertyVarName} != null && !empty(\${$propertyVarName})):
             ?>";
+        });
+    }
+
+    private function addAboutPluginInfo()
+    {
+        AboutCommand::add('InspireCms', function () {
+
+            $currentTheme = inspirecms_templates()->getCurrentTheme();
+
+            return [
+                'Version' => InspireCms::version(),
+                'Theme' => filled($currentTheme)
+                    ? "<fg=green;options=bold>{$currentTheme}</>"
+                    : '<fg=yellow;options=bold>NOT SET</>',
+            ];
         });
     }
 }

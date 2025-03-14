@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms;
 
-use Composer\InstalledVersions;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -18,11 +17,6 @@ class InspireCmsConfig
     public static function set(string $key, mixed $value): void
     {
         config()->set("inspirecms.{$key}", $value);
-    }
-
-    public static function getVersion(): string
-    {
-        return InstalledVersions::getPrettyVersion('solution-forest/inspirecms-core');
     }
 
     public static function getGuardName(): string
@@ -224,19 +218,19 @@ class InspireCmsConfig
         return self::ensureClassExists($class, 'DocumentTypeInheritance model');
     }
 
-    public static function getRejectedDocumentTypeTableName(): string
+    public static function getAllowedDocumentTypeTableName(): string
     {
-        return app(static::getRejectedDocumentTypeModelClass())->getTable();
+        return app(static::getAllowedDocumentTypeModelClass())->getTable();
     }
 
     /**
      * @return class-string<Model>
      */
-    public static function getRejectedDocumentTypeModelClass(): string
+    public static function getAllowedDocumentTypeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\RejectedDocumentType::class, Models\Pivot\RejectedDocumentType::class);
+        $class = ModelManifest::get(Models\Contracts\AllowedDocumentType::class, Models\Pivot\AllowedDocumentType::class);
 
-        return self::ensureClassExists($class, 'RejectedDocumentType model');
+        return self::ensureClassExists($class, 'AllowedDocumentType model');
     }
 
     public static function getFieldGroupTableName(): string
@@ -401,6 +395,21 @@ class InspireCmsConfig
         $class = ModelManifest::get(SupportModels\Contracts\MediaAsset::class, SupportModels\MediaAsset::class);
 
         return self::ensureClassExists($class, 'MediaAsset model');
+    }
+
+    public static function getKeyValueTableName(): string
+    {
+        return app(static::getKeyValueModelClass())->getTable();
+    }
+
+    /**
+     * @return class-string<Model>
+     */
+    public static function getKeyValueModelClass(): string
+    {
+        $class = ModelManifest::get(Models\Contracts\KeyValue::class, Models\KeyValue::class);
+
+        return self::ensureClassExists($class, 'KeyValue model');
     }
 
     public static function getNavigationTableName(): string
