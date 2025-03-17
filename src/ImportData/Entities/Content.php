@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Models\Contracts\Content as ContractsContent;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 /**
@@ -130,5 +133,69 @@ class Content extends BaseEntity
             'redirect_content_id' => KeyHelper::generateMinUuid(),
             'redirect_type' => null,
         ], $this->webSetting ?? []);
+    }
+
+    /**
+     * @param  ContractsContent|Model  $record
+     */
+    public static function fromRecord($record)
+    {
+        $data = $record->toArray();
+
+        if (($defaultTemplate = $record->getDefaultTemplate())) {
+            $data['template'] = $defaultTemplate->slug;
+        }
+        $data['documentType'] = $record->documentType?->slug;
+        $data['isDefault'] = $record->is_default;
+
+        $data['properties'] = $record->getLatestPublishedPropertyData();
+        $data['publishState'] = $record->display_status?->getName();
+
+        $data['sitemap'] = Arr::only($record->sitemap?->toArray() ?? [], [
+            'priority',
+            'change_frequency',
+            'enable',
+        ]);
+        $data['webSetting'] = Arr::only($record->webSetting?->toArray() ?? [], [
+            'seo',
+            'robots',
+            'redirect_path',
+            'redirect_content_id',
+            'redirect_type',
+        ]);
+
+        // full path
+        $data['parent'] = $record->parent?->path?->value;
+
+        return static::fromArray(Arr::only($data, static::limitFields()));
+    }
+
+    public function toExportArray(): array
+    {
+        $arrayOrder = ['slug', 'title', 'documentType', 'isDefault', 'properties', 'publishState', 'sitemap', 'webSetting', 'parent', 'template'];
+
+        $list = parent::toArray();
+
+        return collect($list)
+            ->only($arrayOrder)
+            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
+            ->all();
+    }
+
+    private static function limitFields(): array
+    {
+        return [
+            'slug',
+            'title',
+            'documentType',
+            'isDefault',
+            'properties',
+            'publishState',
+            'sitemap',
+            'webSetting',
+            'routes',
+            'parent',
+            'template',
+        ];
     }
 }

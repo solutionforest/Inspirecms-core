@@ -111,6 +111,25 @@ class TemplateHelper
         return 'page';
     }
 
+    public static function ensureFileBaseNameForTemplate(string $slug): string
+    {
+        return str($slug)
+            ->trim()->trim('.')->trim('/')
+            ->snake()
+            ->replace(['_', ' '], '-')
+            ->toString();
+    }
+
+    public static function ensureViewFileNameForTemplate(string $name)
+    {
+        return str($name)
+            ->trim()
+            ->replace('.', '/')
+            ->trim('/')
+            ->finish('.blade.php')
+            ->toString();
+    }
+
     /**
      * Splits a Blade expression to extract a property.
      *

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -64,48 +63,5 @@ class TemplateExporter extends BaseExporter
     private static function getModel()
     {
         return InspireCmsConfig::getTemplateModelClass();
-    }
-
-    private function getFilePathAndContent($record)
-    {
-        $slug = $record->slug;
-
-        $themeContent = $record->content;
-        if (! is_array($themeContent)) {
-            $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
-        }
-
-        $result = [];
-
-        foreach ($themeContent as $theme => $content) {
-
-            $path = $slug . '/' . "$theme.blade.php";
-
-            $result[$path] = $content;
-        }
-
-        return $result;
-    }
-
-    protected function processRecordForImportUsed(Model $record, $fs, ?string $dir, array &$errors)
-    {
-        $pathAndContent = $this->getFilePathAndContent($record);
-
-        foreach ($pathAndContent as $filePath => $content) {
-
-            try {
-
-                $path = $dir . '/' . $filePath;
-
-                $fs->put($path, $content);
-
-            } catch (\Throwable $th) {
-                $errors[] = [
-                    'record' => $record->getKey(),
-                    'path' => $filePath,
-                    'message' => $th->getMessage(),
-                ];
-            }
-        }
     }
 }

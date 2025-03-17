@@ -6,7 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\FileHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\Export;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
@@ -101,34 +103,44 @@ abstract class BaseExporter
         return array_merge([$folderName], $tmpFolderData);
     }
 
+    /**
+     * @return string | array
+     */
     protected function generateImportFileName(Model $record)
     {
         switch (true) {
+
             case $record instanceof DocumentType:
+            case $record instanceof Content:
                 return $record->slug . '.json';
 
             case $record instanceof FieldGroup:
                 return Str::replace('_', '-', $record->name) . '.json';
 
-                // case $record instanceof Template:
-                //     if (is_array($record->content)) {
-                //         $themes = array_keys($record->content);
-                //     } else {
-                //         $themes = [inspirecms_templates()->getCurrentTheme()];
-                //     }
-                //     return collect($themes)
-                //         ->filter()
-                //         ->unique()
-                //         ->map(fn ($theme) => $record->slug . '/' . "$theme.blade.php")
-                //         ->toArray();
+            case $record instanceof Template:
+                if (is_array($record->content)) {
+                    $themes = array_keys($record->content);
+                } else {
+                    $themes = [inspirecms_templates()->getCurrentTheme()];
+                }
+
+                return collect($themes)
+                    ->filter()
+                    ->unique()
+                    ->mapWithKeys(fn ($theme) => [$theme => $record->slug . '/' . TemplateHelper::ensureViewFileNameForTemplate($theme)])
+                    ->toArray();
         }
 
         return $record->getKey() . '.json';
     }
 
+    /**
+     * @return array|bool|string
+     */
     protected function prepareImportContentFromModel(Model $record)
     {
         switch (true) {
+
             case $record instanceof DocumentType:
                 $array = ImportDataEntities\DocumentType::fromRecord($record)->toExportArray();
 
@@ -145,6 +157,11 @@ abstract class BaseExporter
                 //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
                 //     }
                 //     return $themeContent;
+
+            case $record instanceof Content:
+                $array = ImportDataEntities\Content::fromRecord($record)->toExportArray();
+
+                return json_encode($array, JSON_PRETTY_PRINT);
         }
 
         return '';
@@ -182,15 +199,39 @@ abstract class BaseExporter
     protected function processRecordForImportUsed(Model $record, $fs, ?string $dir, array &$errors)
     {
         try {
-            $content = $this->prepareImportContentFromModel($record);
-            $filename = $this->generateImportFileName($record);
-            $path = $dir . '/' . $filename;
 
-            $fs->put($path, $content);
+            $filename = $this->generateImportFileName($record);
+
+            if ($record instanceof Template && is_array($filename)) {
+
+                foreach ($filename as $theme => $templateFilePath) {
+
+                    $templateContent = $record->getContent($theme);
+
+                    $path = $dir . '/' . trim($templateFilePath, '/');
+
+                    $fs->put($path, $templateContent);
+                }
+
+            } elseif (! is_string($filename)) {
+                $errors[] = [
+                    'record' => $record->getKey(),
+                    'model' => get_class($record),
+                    'message' => 'Invalid filename',
+                ];
+            } else {
+
+                $content = $this->prepareImportContentFromModel($record);
+
+                $path = $dir . '/' . $filename;
+                $fs->put($path, $content);
+
+            }
 
         } catch (\Throwable $th) {
             $errors[] = [
                 'record' => $record->getKey(),
+                'model' => get_class($record),
                 'message' => $th->getMessage(),
             ];
         }
