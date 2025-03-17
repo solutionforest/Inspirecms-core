@@ -81,13 +81,8 @@ class RoleResource extends Resource implements ClusterSectionResource
                             ->schema(static::getFormComponentForTieredPermissionsSection()),
                     ])
                     ->afterStateHydrated(function (null | Role | RoleContract $record, Forms\Components\Group $component) {
-                        if (is_null($record)) {
-                            $component->state([]);
 
-                            return;
-                        }
-
-                        $permissionNames = $record->permissions->pluck('name');
+                        $permissionNames = $record ? $record->permissions->pluck('name') : [];
                         $state = [];
 
                         $resourcePermissions = PermissionManifest::getResourcePermissions();
