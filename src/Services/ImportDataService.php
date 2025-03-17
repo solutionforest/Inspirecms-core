@@ -411,7 +411,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                     $segmentCount = count($slugSegments);
 
-                    //Higher Order if have root parent
+                    // Higher Order if have root parent
                     if ($haveRootParent) {
                         return $segmentCount;
                     }
