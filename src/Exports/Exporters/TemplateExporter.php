@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;

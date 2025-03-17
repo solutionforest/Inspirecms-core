@@ -104,8 +104,6 @@ abstract class BaseExporter
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $record
-     * 
      * @return string | array
      */
     protected function generateImportFileName(Model $record)
@@ -125,10 +123,11 @@ abstract class BaseExporter
                 } else {
                     $themes = [inspirecms_templates()->getCurrentTheme()];
                 }
+
                 return collect($themes)
                     ->filter()
                     ->unique()
-                    ->mapWithKeys(fn ($theme) => [$theme => $record->slug . '/' .  TemplateHelper::ensureViewFileNameForTemplate($theme)])
+                    ->mapWithKeys(fn ($theme) => [$theme => $record->slug . '/' . TemplateHelper::ensureViewFileNameForTemplate($theme)])
                     ->toArray();
         }
 
@@ -136,7 +135,6 @@ abstract class BaseExporter
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Model $record
      * @return array|bool|string
      */
     protected function prepareImportContentFromModel(Model $record)
@@ -153,15 +151,16 @@ abstract class BaseExporter
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
-            // case $record instanceof Template:
-            //     $themeContent = $record->content;
-            //     if (! is_array($themeContent)) {
-            //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
-            //     }
-            //     return $themeContent;
+                // case $record instanceof Template:
+                //     $themeContent = $record->content;
+                //     if (! is_array($themeContent)) {
+                //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
+                //     }
+                //     return $themeContent;
 
             case $record instanceof Content:
                 $array = ImportDataEntities\Content::fromRecord($record)->toExportArray();
+
                 return json_encode($array, JSON_PRETTY_PRINT);
         }
 
@@ -204,7 +203,7 @@ abstract class BaseExporter
             $filename = $this->generateImportFileName($record);
 
             if ($record instanceof Template && is_array($filename)) {
-                
+
                 foreach ($filename as $theme => $templateFilePath) {
 
                     $templateContent = $record->getContent($theme);
@@ -213,8 +212,8 @@ abstract class BaseExporter
 
                     $fs->put($path, $templateContent);
                 }
-                
-            } else if (! is_string($filename)) {
+
+            } elseif (! is_string($filename)) {
                 $errors[] = [
                     'record' => $record->getKey(),
                     'model' => get_class($record),

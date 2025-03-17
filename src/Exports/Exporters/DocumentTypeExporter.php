@@ -55,7 +55,7 @@ class DocumentTypeExporter extends BaseExporter
             );
 
             foreach ($record->fieldGroups as $fieldGroup) {
-                
+
                 $this->processRecordForImportUsed(
                     $fieldGroup,
                     $fs,
@@ -65,7 +65,7 @@ class DocumentTypeExporter extends BaseExporter
             }
 
             foreach ($record->templates as $template) {
-                
+
                 $this->processRecordForImportUsed(
                     $template,
                     $fs,
@@ -75,7 +75,7 @@ class DocumentTypeExporter extends BaseExporter
             }
 
             foreach ($record->content as $content) {
-                
+
                 $this->processRecordForImportUsed(
                     $content,
                     $fs,
@@ -83,7 +83,7 @@ class DocumentTypeExporter extends BaseExporter
                     $errors,
                 );
             }
-            
+
         }
 
         $processingErrors = array_merge(
@@ -112,8 +112,8 @@ class DocumentTypeExporter extends BaseExporter
         $args = $this->record->getArgsForExporter();
 
         $relations = [
-            'fieldGroups', 
-            'templates', 
+            'fieldGroups',
+            'templates',
             'allowedDocumentTypes',
             'content',
         ];
@@ -124,7 +124,6 @@ class DocumentTypeExporter extends BaseExporter
             $relations[] = 'content.webSetting';
             $relations[] = 'content.documentType';
         }
-
 
         $query = static::getModel()::query()->with($relations);
 

@@ -147,7 +147,7 @@ class Content extends BaseEntity
         }
         $data['documentType'] = $record->documentType?->slug;
         $data['isDefault'] = $record->is_default;
-        
+
         $data['properties'] = $record->getLatestPublishedPropertyData();
         $data['publishState'] = $record->display_status?->getName();
 

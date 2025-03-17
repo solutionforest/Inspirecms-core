@@ -103,13 +103,13 @@ class CmsPanelProvider extends PanelProvider
                             return true;
                         }
                     });
-                } else if ($skipSuperAdminCheck == 'after') {
+                } elseif ($skipSuperAdminCheck == 'after') {
                     Gate::after(function ($user, $ability) {
                         if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
                             return true;
                         }
                     });
-                } 
+                }
             });
 
         $this->configurePlugins($panel);
