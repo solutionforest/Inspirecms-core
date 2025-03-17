@@ -96,13 +96,20 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->bootUsing(function () {
 
-                // Gate for super admin
-                Gate::before(function ($user, $ability) {
-                    if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
-                        return true;
-                    }
-                });
-
+                $skipSuperAdminCheck = InspireCmsConfig::get('auth.skip_super_admin_check');
+                if ($skipSuperAdminCheck == 'before') {
+                    Gate::before(function ($user, $ability) {
+                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                            return true;
+                        }
+                    });
+                } else if ($skipSuperAdminCheck == 'after') {
+                    Gate::after(function ($user, $ability) {
+                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                            return true;
+                        }
+                    });
+                } 
             });
 
         $this->configurePlugins($panel);

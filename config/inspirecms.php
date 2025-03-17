@@ -33,6 +33,13 @@ return [
          * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
          */
         'lockout_duration' => 120,
+        
+        /**
+         * Skip authentication for super admin users.
+         * 
+         * Allowed values: before, after, none
+         */
+        'skip_super_admin_check' => 'before',
     ],
 
     'avatar' => [
