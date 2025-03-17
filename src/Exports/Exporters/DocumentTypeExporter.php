@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -17,6 +18,10 @@ class DocumentTypeExporter extends BaseExporter
         $descriptions = $records->map(fn ($record) => $record->slug)->all();
 
         return [
+            Toggle::make('with_content')
+                ->label('With Content')
+                ->hint('Export content records along with document types')
+                ->default(true),
             CheckboxList::make('filter_record')
                 ->label('Filter Records')
                 ->hint('Keep empty to export all records.')
@@ -32,6 +37,9 @@ class DocumentTypeExporter extends BaseExporter
     {
         [$folderName, $fs, $fullPath, $subFolders] = $this->ensureTempFolderForExport('export-document-types', [
             ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE,
+            ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP,
+            ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE,
+            ImportDataHelper::FOLDER_IDENTIFIER_CONTENT,
         ]);
 
         [$records, $perPage, $page] = $this->getDocumentTypeRecords();
@@ -42,9 +50,40 @@ class DocumentTypeExporter extends BaseExporter
             $this->processRecordForImportUsed(
                 $record,
                 $fs,
-                (Arr::first($subFolders) ?? $folderName),
+                (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE) ?? $folderName),
                 $errors,
             );
+
+            foreach ($record->fieldGroups as $fieldGroup) {
+                
+                $this->processRecordForImportUsed(
+                    $fieldGroup,
+                    $fs,
+                    (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP) ?? $folderName),
+                    $errors,
+                );
+            }
+
+            foreach ($record->templates as $template) {
+                
+                $this->processRecordForImportUsed(
+                    $template,
+                    $fs,
+                    (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE) ?? $folderName),
+                    $errors,
+                );
+            }
+
+            foreach ($record->content as $content) {
+                
+                $this->processRecordForImportUsed(
+                    $content,
+                    $fs,
+                    (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_CONTENT) ?? $folderName),
+                    $errors,
+                );
+            }
+            
         }
 
         $processingErrors = array_merge(
@@ -72,7 +111,22 @@ class DocumentTypeExporter extends BaseExporter
 
         $args = $this->record->getArgsForExporter();
 
-        $query = static::getModel()::query()->with(['fieldGroups', 'templates', 'allowedDocumentTypes']);
+        $relations = [
+            'fieldGroups', 
+            'templates', 
+            'allowedDocumentTypes',
+            'content',
+        ];
+
+        if ($args['with_content'] ?? false) {
+            $relations[] = 'content.parent.path';
+            $relations[] = 'content.sitemap';
+            $relations[] = 'content.webSetting';
+            $relations[] = 'content.documentType';
+        }
+
+
+        $query = static::getModel()::query()->with($relations);
 
         if (! empty($args['filter_record'])) {
             $query->whereKey($args['filter_record']);

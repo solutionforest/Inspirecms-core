@@ -77,7 +77,7 @@ class TemplateManager implements TemplateManagerInterface
         }
 
         if (filled($componentName)) {
-            $path .= '/' . $this->ensureViewFileName($componentName);
+            $path .= '/' . TemplateHelper::ensureViewFileNameForTemplate($componentName);
         }
 
         return $path;
@@ -171,25 +171,6 @@ class TemplateManager implements TemplateManagerInterface
         if (filled($themeContent)) {
             file_put_contents($fullPath, $themeContent);
         }
-    }
-
-    private static function ensureTemplateFileBaseName(string $slug): string
-    {
-        return str($slug)
-            ->trim()->trim('.')->trim('/')
-            ->snake()
-            ->replace(['-', ' '], '-')
-            ->toString();
-    }
-
-    private static function ensureViewFileName(string $name)
-    {
-        return str($name)
-            ->trim()
-            ->replace('.', '/')
-            ->trim('/')
-            ->finish('.blade.php')
-            ->toString();
     }
 
     private function loadCurrentTheme()
