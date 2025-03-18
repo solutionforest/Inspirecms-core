@@ -401,6 +401,27 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
+        $reorderContent = function ($collection) {
+            return collect($collection)
+                ->sortBy(function ($item, $contentKey) {
+
+                    $slugSegments = explode('/', $contentKey);
+
+                    $haveRootParent = collect($slugSegments)->contains('__root__');
+
+                    $segmentCount = count($slugSegments);
+
+                    // Higher Order if have root parent
+                    if ($haveRootParent) {
+                        return $segmentCount;
+                    }
+
+                    return 999;
+                });
+        };
+
+        $this->pendingData['content'] = $reorderContent(collect($this->pendingData['content'] ?? []))->toArray();
+
         foreach ($this->pendingData['content'] ?? [] as $contentKey => $item) {
 
             try {

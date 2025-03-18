@@ -284,6 +284,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'create_key_values_table',
             'create_custom_spatie_permission_table',
             'update_sessions_table',
+            'update_notification_table_for_uuid_users',
         ];
     }
 
@@ -521,23 +522,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ], 'inspirecms-stubs');
         }
 
-        $getViewDirForStub = fn ($file) => str($file->getRelativePath())
-            ->trim('/')->trim()
-            ->explode('/')
-            ->map(fn ($path) => (string) str($path)->trim()->kebab())
-            ->implode('/');
-        $getViewFullPathForStub = fn ($file, $dir) => base_path('resources/views/' . trim(trim($dir), '/') . '/' . Str::kebab($file->getFilenameWithoutExtension()) . '.blade.php');
-
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Views/Themes') as $file) {
 
-            $dir = trim(trim($getViewDirForStub($file), '/'));
+            $filename = TemplateHelper::ensureViewFileNameForTemplate(Str::kebab($file->getFilenameWithoutExtension()));
+            $theme = Str::kebab($file->getRelativePath());
 
-            if (($themeComponentPrefix = TemplateHelper::getDirectoryForThemedComponents()) && filled($themeComponentPrefix)) {
-                $dir = $themeComponentPrefix . '/' . $dir;
+            if (($themeComponentDir = TemplateHelper::getDirectoryForThemedComponents()) && filled($themeComponentDir)) {
+                $dir = $themeComponentDir . '/' . $theme;
+            } else {
+                $dir = base_path('resources/views/components/' . $theme);
             }
 
             $this->publishes([
-                $file->getRealPath() => $getViewFullPathForStub($file, 'components/' . $dir),
+                $file->getRealPath() => $dir . '/' . $filename,
             ], 'inspirecms-sample-assets');
         }
 

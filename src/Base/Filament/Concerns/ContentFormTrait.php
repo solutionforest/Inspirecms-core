@@ -182,7 +182,13 @@ trait ContentFormTrait
             /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
             $record = app(static::getModel());
 
-            if (in_array(\Filament\Resources\Pages\CreateRecord\Concerns\Translatable::class, class_uses_recursive($this))) {
+            $isLivewireHandleTranslatable = collect(class_uses_recursive($this))
+                ->where(fn ($traitClass) => in_array($traitClass, [
+                    \Filament\Resources\Pages\CreateRecord\Concerns\Translatable::class,
+                    \SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable::class,
+                ]))
+                ->isNotEmpty();
+            if ($isLivewireHandleTranslatable) {
                 $translatableAttributes = static::getResource()::getTranslatableAttributes();
                 $record->fill(Arr::except($data, $translatableAttributes));
                 foreach (Arr::only($data, $translatableAttributes) as $key => $value) {

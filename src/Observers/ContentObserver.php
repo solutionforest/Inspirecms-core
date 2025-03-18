@@ -47,15 +47,6 @@ class ContentObserver
      */
     public function saving($model)
     {
-        $this->clearCached();
-    }
-
-    /**
-     * @param  Content&Model  $model
-     * @return void
-     */
-    public function updating($model)
-    {
         // Set "is_default" of other content as false if this model is changing to "default"
         if ($model->isDirty(['is_default']) && $model->is_default) {
             $otherDefaultContent = $this->getOtherDefaultContent($model);
@@ -64,6 +55,8 @@ class ContentObserver
                 $item->save();
             });
         }
+
+        $this->clearCached();
     }
 
     /**

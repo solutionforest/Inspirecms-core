@@ -9,7 +9,7 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 trait HasInnerField
 {
     protected static array $exceptsInnerFields = [
-        'repeater',
+        // 'repeater',
     ];
 
     protected static function getHasInnerFieldComponent()
