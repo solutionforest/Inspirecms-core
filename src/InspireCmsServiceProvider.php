@@ -534,7 +534,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             }
 
             $this->publishes([
-                $file->getRealPath() => $dir .'/'.$filename,
+                $file->getRealPath() => $dir . '/' . $filename,
             ], 'inspirecms-sample-assets');
         }
 
