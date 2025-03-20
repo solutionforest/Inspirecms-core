@@ -216,6 +216,7 @@ class SeoDto extends BaseDto
         $mapper = [
             'meta_title' => 'title',
             'meta_description' => 'description',
+            'meta_keywords' => 'keywords',
             'og_title' => 'ogTitle',
             'og_description' => 'ogDescription',
             'og_image' => 'ogImage',
@@ -229,8 +230,17 @@ class SeoDto extends BaseDto
 
         foreach ($parameters as $key => $value) {
 
-            if ($key == 'og_image' && is_array($value)) {
-                $value = $value[0] ?? null;
+            switch ($key) {
+                case 'og_image':
+                    if (is_array($value)) {
+                        $value = $value[0] ?? null;
+                    }
+                    break;
+                case 'meta_keywords':
+                    if (is_array($value)) {
+                        $value = implode(', ', $value);
+                    }
+                    break;
             }
 
             if (array_key_exists($key, $mapper)) {
