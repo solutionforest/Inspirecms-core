@@ -25,7 +25,6 @@ use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
-use SolutionForest\InspireCms\Licensing\Outpost;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components\Template;
@@ -113,9 +112,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             );
         });
 
-        $this->app->singleton(LicenseManager::class, function ($app) {
-            return new LicenseManager($app[Outpost::class]);
-        });
+        $this->app->singleton(LicenseManager::class, fn () => new LicenseManager);
 
         $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));

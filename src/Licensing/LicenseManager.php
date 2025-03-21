@@ -4,96 +4,200 @@ namespace SolutionForest\InspireCms\Licensing;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\MessageBag;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
 use SolutionForest\InspireCms\Events\Licensing\LicensesRefreshed;
+use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Licensing\LicenseVerificationResult;
 
 class LicenseManager
 {
-    protected $outpost;
+    const ENDPOINT = 'https://api.inspirecms.com/v1/license/verify';
+    const REQUEST_TIMEOUT = 5;
+    const CACHE_KEY_PREFIX = 'license:';
 
-    public function __construct(Outpost $outpost)
+    private $cacheManager;
+
+    /**
+     * @return LicenseVerificationResult
+     */
+    public function verify()
     {
-        $this->outpost = $outpost;
+        // todo: wait to build license system
+        return LicenseVerificationResult::failureOffline('License system is not implemented yet');
+
+        // Check cache first to avoid frequent verifications
+        $cacheKey = $this->buildCacheKey();
+
+        if ($this->cache()->has($cacheKey)) {
+            return $this->cache()->get($cacheKey);
+        }
+
+        try {
+
+            // Try to verify the license online first
+            
+            $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $this->payload());
+
+            if ($response->successful()) {
+                $data = $response->json();
+                
+                // Save verification file for offline use
+                if (isset($data['verification_file'])) {
+                    $this->saveLicenseFile($data['verification_file']);
+                }
+                
+                // Cache the result
+                $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
+                $this->cache()->put($cacheKey, $result, now()->addHours(24));
+                
+                return $result;
+            }
+            
+            // If online verification fails, fall back to offline verification
+            return $this->verifyOffline();
+
+        } catch (\Throwable $th) {
+
+            logger()->warning('Failed to verify license online', ['exception' => $th]);
+            
+            // If online verification fails, try to verify the license offline
+            return $this->verifyOffline();
+
+        }
     }
 
-    public function requestFailed()
+    public function refresh(): void
     {
-        return (bool) $this->requestErrorCode();
-    }
-
-    public function requestErrorCode()
-    {
-        return $this->response('error');
-    }
-
-    public function requestRateLimited()
-    {
-        return $this->requestErrorCode() === 429;
-    }
-
-    public function failedRequestRetrySeconds()
-    {
-        return $this->requestRateLimited()
-            ? (int) Carbon::createFromTimestamp($this->response('expiry'), config('app.timezone'))->diffInSeconds(absolute: true)
-            : null;
-    }
-
-    public function requestValidationErrors()
-    {
-        return new MessageBag($this->response('error') === 422 ? $this->response('errors') : []);
-    }
-
-    public function isOnPublicDomain()
-    {
-        return $this->response('public');
-    }
-
-    public function isOnTestDomain()
-    {
-        return ! $this->isOnPublicDomain();
-    }
-
-    public function valid()
-    {
-        return $this->coreValid();
-    }
-
-    public function invalid()
-    {
-        return ! $this->valid();
-    }
-
-    public function coreValid()
-    {
-        return $this->core()->valid();
-    }
-
-    public function coreNeedsRenewal()
-    {
-        return $this->core()->needsRenewal();
-    }
-
-    public function response($key = null, $default = null)
-    {
-        $response = $this->outpost->response();
-
-        return $key ? Arr::get($response, $key, $default) : $response;
-    }
-
-    public function core()
-    {
-        return new CoreLicense($this->response('core'));
-    }
-
-    public function refresh()
-    {
-        $this->outpost->clearCachedResponse();
+        $this->cache()->forget(self::CACHE_KEY_PREFIX . "verification_{$this->getLicenseKey()}_{$this->getCurrentDomain()}");
 
         event(new LicensesRefreshed);
     }
 
-    public function usingLicenseKeyFile()
+    public function usingLicenseKeyFile(): bool
     {
-        return $this->outpost->usingLicenseKeyFile();
+        return File::exists($this->licenseKeyPath());
+    }
+
+    /**
+     * @return LicenseVerificationResult
+     */
+    protected function verifyOffline()
+    {
+        if (!$this->usingLicenseKeyFile()) {
+            return LicenseVerificationResult::failureOffline('License file not found');
+        }
+
+        try {
+
+            $licenseData = json_decode(File::get($this->licenseKeyPath()), true);
+
+            // Verify the license key is the same
+            if ($licenseData['license_key'] !== $this->getLicenseKey()) {
+                return LicenseVerificationResult::failureOffline('The license key in the file does not match the configured license key');
+            }
+
+            // Verify the data is for the current domain
+            if ($licenseData['domain'] !== $this->getCurrentDomain()) {
+                return LicenseVerificationResult::failureOffline('License file does not match the current domain');
+            }
+
+            // Verify the license is not expired
+            if (Carbon::parse($licenseData['expiry_date'])->isPast(Carbon::now('UTC'))) {
+                return LicenseVerificationResult::failureOffline('License expired');
+            }
+
+            // Verify the checksum
+            if ($licenseData['checksum'] !== $this->calculateChecksum(Arr::except($licenseData, 'checksum'))) {
+                return LicenseVerificationResult::failureOffline('License file verification failed due to checksum mismatch');
+            }
+
+            return LicenseVerificationResult::successOffline();
+
+        } catch (\Throwable $th) {
+
+            logger()->warning('Failed to read license file', ['exception' => $th]);
+
+            return LicenseVerificationResult::failureOffline('Failed to read license file');
+
+        }
+    }
+
+    protected function getMachineId(): string
+    {
+        // Generate a unique identifier for this machine/installation
+        if (function_exists('php_uname')) {
+            return md5(php_uname());
+        }
+        
+        // Fallback if php_uname is disabled
+        return md5($_SERVER['HTTP_HOST'] . $_SERVER['SERVER_ADDR'] ?? '');
+    }
+
+    protected function calculateChecksum(array $data): string
+    {
+        $checksumData = $data['license_key'] . $data['domain'] . $data['expiry_date'];
+        return hash_hmac('sha256', $checksumData, $this->getSecretKey());
+    }
+
+    private function getCurrentDomain(): string
+    {
+        return request()->getHost();
+    }
+
+    private function buildCacheKey(): string
+    {
+        return self::CACHE_KEY_PREFIX . "verification_{$this->getLicenseKey()}_{$this->getCurrentDomain()}";
+    }
+
+    private function payload(): array
+    {
+        return [
+            'license_key' => $this->getLicenseKey(),
+            'domain' => $this->getCurrentDomain(),
+            'timestamp' => now()->utc()->timestamp,
+            'version' => InspireCmsConfig::get('version'),
+            'machine_id' => $this->getMachineId(),
+        ];
+    }
+
+    private function saveLicenseFile($fileContent)
+    {
+        File::put($this->licenseKeyPath(), $fileContent);
+    }
+
+    private function getLicenseKey()
+    {
+        return InspireCmsConfig::get('license.key');
+    }
+
+    private function getSecretKey()
+    {
+        return InspireCmsConfig::get('license.secret');
+    }
+
+    private function licenseKeyPath()
+    {
+        return storage_path('app/license.lic');
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Cache\Repository
+     */
+    private function cache()
+    {
+        if ($this->cacheManager) {
+            return $this->cacheManager;
+        }
+
+        try {
+            $store = Cache::store('license');
+        } catch (InvalidArgumentException $e) {
+            $store = Cache::store();
+        }
+
+        return $this->cacheManager = $store;
     }
 }

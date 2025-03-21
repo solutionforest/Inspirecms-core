@@ -89,8 +89,7 @@ class CmsPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                // todo: add license check
-                // LicenseCheck::class,
+                LicenseCheck::class,
                 CmsAuthenticate::class,
                 UserPreference::class,
             ])
