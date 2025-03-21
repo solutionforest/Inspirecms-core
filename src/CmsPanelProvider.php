@@ -179,14 +179,14 @@ class CmsPanelProvider extends PanelProvider
         // todo: add translations
         return $panel
             ->userMenuItems([
-                \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Reset Tour Guide')
-                    ->icon('heroicon-s-arrow-path')
-                    ->button()
-                    ->extraAttributes([
-                        'class' => 'tour-guide-reset-btn',
-                        'aria-label' => 'Reset Tour Guide',
-                    ], true),
+                // \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
+                //     ->label('Reset Tour Guide')
+                //     ->icon('heroicon-s-arrow-path')
+                //     ->button()
+                //     ->extraAttributes([
+                //         'class' => 'tour-guide-reset-btn',
+                //         'aria-label' => 'Reset Tour Guide',
+                //     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
                     ->label('Version: ' . InspireCms::version())
                     ->icon('heroicon-s-information-circle')
