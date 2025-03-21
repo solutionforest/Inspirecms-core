@@ -1,47 +1,48 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Widgets\AlertOverview;
+namespace SolutionForest\InspireCms\View\Components;
 
 use Closure;
+use Filament\Support\Concerns\EvaluatesClosures;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Alert extends Component implements Htmlable
 {
-    protected string | Htmlable | Closure $label = '';
+    use EvaluatesClosures;
 
-    protected string $type = 'info';
+    protected string | Htmlable | Closure $message = '';
+
+    protected string $type;
 
     /**
-     * @param  scalar | Htmlable | Closure  $value
+     * @param  scalar | Htmlable | Closure  $message
      */
-    final public function __construct(string | Htmlable | Closure $label, $type)
+    final public function __construct(string | Htmlable | Closure $message, string $type = 'info')
     {
-        $this->label($label);
+        $this->message($message);
         $this->type($type);
     }
 
     /**
      * @param  scalar | Htmlable | Closure  $value
      */
-    public static function make(string | Htmlable | Closure $label, string $type): static
+    public static function make(string | Htmlable | Closure $message, string $type = 'info'): static
     {
-        return app(static::class, ['label' => $label, 'type' => $type]);
+        return app(static::class, ['message' => $message, 'type' => $type]);
     }
 
-    public function label(string | Htmlable | Closure $label): static
+    public function message(string | Htmlable | Closure $label): static
     {
-        $this->label = $label;
+        $this->message = $label;
 
         return $this;
     }
 
-    public function getLabel(): string | Htmlable
+    public function getMessage(): string | Htmlable
     {
-        $label = is_callable($this->label) ? ($this->label)() : $this->label;
-
-        return $label ?? '';
+        return $this->evaluate($this->message) ?? '';
     }
 
     public function type(string $type): static
@@ -77,7 +78,18 @@ class Alert extends Component implements Htmlable
 
     public function render(): View
     {
-        return view('inspirecms::filament.widgets.alert-overview.alert', $this->data());
+        $viewData = $this->data();
+
+        // unset the methods from this class
+        foreach (get_class_methods($this) as $method) {
+            unset($viewData[$method]);
+        }
+
+        $viewData['color'] = $this->getColor();
+        $viewData['icon'] = $this->getIcon();
+        $viewData['message'] = $this->getMessage();
+
+        return view('inspirecms::components.alert.index', $viewData);
     }
 
     public function toHtml(): string

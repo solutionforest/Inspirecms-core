@@ -2,8 +2,8 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\Widgets;
 
-use SolutionForest\InspireCms\Filament\Widgets\AlertOverview\Alert;
 use SolutionForest\InspireCms\Filament\Widgets\AlertOverview as BaseWidget;
+use SolutionForest\InspireCms\View\Components\Alert;
 
 class AlertOverview extends BaseWidget
 {
