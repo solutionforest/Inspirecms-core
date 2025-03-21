@@ -106,11 +106,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(InspireCmsBase\TemplateManagerInterface::class, fn () => $this->app->make(InspireCmsBase\TemplateManager::class));
 
-        $this->app->singleton(InspireCmsBase\KeyValueCache::class, function () {
-            return new InspireCmsBase\KeyValueCache(
-                $this->app['cache'],
-            );
-        });
+        $this->app->singleton(InspireCmsBase\KeyValueCache::class, fn () => new InspireCmsBase\KeyValueCache($this->app['cache']));
 
         $this->app->singleton(LicenseManager::class, fn () => new LicenseManager);
 
