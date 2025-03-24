@@ -59,15 +59,14 @@ class UsersRelationManager extends RelationManager
 
                                     $avatar = ($record instanceof User ? ($record->getFilamentAvatarUrl() ?? $record->getFilamentFallbackAvatarUrl()) : null) ?? '';
                                     $name = $record->getFilamentName();
-                                    $avatarHtml = UIHelper::generateCircularImage($avatar ?? '', $name, ['class' => ['flex-shrink-0 w-8 h-8']])->toHtml();
-                                    $text = UIHelper::generateTextWithDescription($name, $record->email)->toHtml();
 
-                                    return <<<Html
-                                    <div class="flex items-center gap-2">
-                                        {$avatarHtml}
-                                        {$text}
-                                    </div>
-                                Html;
+                                    $avatarHtml = UIHelper::generateCircularImage($avatar ?? '', $name, ['ctn' => ['class' => 'flex-shrink-0 w-8 h-8']]);
+                                    $text = UIHelper::generateTextWithDescription($name, $record->email);
+
+                                    return str($avatarHtml)
+                                        ->append($text)
+                                        ->wrap('<div class="flex items-center gap-2">', '</div')
+                                        ->toString();
                                 },
                                 search: $search,
                                 searchColumns: $searchColumns,

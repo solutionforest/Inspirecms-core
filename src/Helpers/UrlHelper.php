@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use SolutionForest\InspireCms\InspireCmsConfig;
+
 class UrlHelper
 {
     /**
@@ -21,6 +23,20 @@ class UrlHelper
         }
 
         throw new \Exception('Invalid encoding type');
+    }
+
+    public static function  attemptToGetRouteFromPanel(string $routeName, array $parameters = [], bool $authorizeAction = true): ?string
+    {
+        try {
+
+            $panelId = InspireCmsConfig::get('filament.panel_id');
+            $panel = filament()->getPanel($panelId);
+            return $panel?->route($routeName, $parameters);
+        } catch (\Throwable $th) {
+            //
+        }
+
+        return null;
     }
 
     protected static function getShortenerBase62(string $data): string

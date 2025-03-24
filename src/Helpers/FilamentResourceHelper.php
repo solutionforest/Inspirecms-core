@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Illuminate\Support\Arr;
+
 class FilamentResourceHelper
 {
     /**
@@ -15,9 +17,7 @@ class FilamentResourceHelper
      */
     public static function attemptToGetUrl(string $resource, array | string $pages, array $parameters, bool $autorizeAction): ?string
     {
-        if (is_string($pages)) {
-            $pages = [$pages];
-        }
+        $pages = Arr::wrap($pages);
 
         try {
 

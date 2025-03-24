@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\DownloadSampleAction;
 use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -142,13 +143,7 @@ class ImportResource extends Resource implements ClusterSectionResource
 
                 Forms\Components\Actions::make([
                     DownloadSampleAction::make()
-                        ->url(function () {
-                            try {
-                                return filament()->getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route('import.sample');
-                            } catch (RouteNotFoundException $th) {
-                                return null;
-                            }
-                        }),
+                        ->url(fn () => UrlHelper::attemptToGetRouteFromPanel('import.sample')),
                 ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import.file_structure_instructions.label'))

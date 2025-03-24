@@ -43,7 +43,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                     $model->getKey() => UIHelper::generateTextWithBadge(
                         text: $model->title,
                         badgeText: $model->slug,
-                        attibutes: [
+                        attributes: [
                             'text' => ['class' => 'flex-1 font-semibold'],
                             'badge' => ['class' => 'font-mono'],
                         ]

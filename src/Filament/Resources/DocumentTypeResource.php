@@ -257,7 +257,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithBadge(
             text: static::getRecordTitle($record),
             badgeText: $record instanceof DocumentType ? $record->slug : null,
-            attibutes: [
+            attributes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],
             ]
@@ -524,7 +524,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                                             return UIHelper::generateTextWithBadge(
                                                 text: $title,
                                                 badgeText: $slug,
-                                                attibutes: [
+                                                attributes: [
                                                     'text' => ['class' => 'flex-1 font-semibold'],
                                                     'badge' => ['class' => 'font-mono'],
                                                 ]

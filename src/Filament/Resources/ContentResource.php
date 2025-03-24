@@ -469,7 +469,7 @@ class ContentResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithBadge(
             text: static::getRecordTitle($record),
             badgeText: $record->slug,
-            attibutes: [
+            attributes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],
             ]
@@ -643,13 +643,23 @@ class ContentResource extends Resource implements ClusterSectionResource
                 if (! filled($text)) {
                     $text = __('inspirecms::inspirecms.n/a');
                 }
-                $resource = InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
-                $url = $documentType ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentType], true) : null;
+                $url = $documentType ? FilamentResourceHelper::attemptToGetUrl(
+                    resource: InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class), 
+                    pages: ['edit', 'view'], 
+                    parameters: ['record' => $documentType], 
+                    autorizeAction: true) : null;
                 if (! $url) {
                     return $text;
                 }
 
-                return UIHelper::generateTextWithIconButton($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+                return UIHelper::generateTextWithIconButton(
+                    text: $text, 
+                    icon: FilamentIcon::resolve('inspirecms::goto'), 
+                    color: 'gray', 
+                    size: 'sm', 
+                    url: $url,
+                    linkTarget: '_blank',
+                );
             });
     }
 
