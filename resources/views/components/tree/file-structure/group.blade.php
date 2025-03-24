@@ -5,7 +5,6 @@
     'icon' => null,
     'iconAlias' => null,
     'children' => [],
-    'checkbox' => false,
     'groupKey' => null,
 ])
 <div role="treeitem" {{ $attributes }}>
