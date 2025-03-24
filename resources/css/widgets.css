@@ -1,0 +1,53 @@
+.fi-wi-widget {
+    h2 {
+        @apply text-xl font-semibold;
+    }
+    .icon:not(.icon-container .icon) {
+        @apply w-6 h-6 shrink-0 stroke-primary-500 dark:stroke-primary-100;
+    }
+    .icon-container {
+        @apply flex w-12 h-12 shrink-0 items-center justify-center rounded-full bg-primary-100 sm:w-16 sm:h-16 dark:bg-primary-900;
+
+        .icon {
+            @apply w-5 h-5 sm:w-6 sm:h-6 text-primary-500 dark:text-primary-100;
+        }
+    }
+    .card {
+        @apply flex items-start rounded-lg bg-white p-6 shadow-sm transition duration-300 md:row-span-3 lg:p-10 lg:pb-10 dark:bg-gray-900 dark:ring-white/10;
+        @apply focus:outline-none focus-visible:ring-primary-500 dark:focus-visible:ring-primary-500;
+    }
+}
+
+
+.fi-wi-cms-info {
+    
+    @apply grid gap-6 lg:grid-rows-3 lg:grid-flow-col lg:gap-8;
+
+    .card {
+        @apply shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05];
+        @apply hover:text-black/70 hover:ring-black/20 dark:hover:text-white/70 dark:hover:ring-white/20;
+        &#docs-card {
+            @apply gap-6 overflow-hidden lg:row-span-3 lg:col-span-2;
+        }
+        &:not(#docs-card) {
+            @apply gap-4 lg:col-span-2 lg:row-span-1;
+        }
+    }
+    #docs-card #screenshot-container {
+        @apply relative flex w-full flex-1 items-stretch;
+
+        .screenshot {
+            @apply aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover;
+
+            &.light-screenshot {
+                @apply drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden;
+            }
+            &.dark-screenshot {
+                @apply hidden drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block;
+            }
+        }
+    }
+    > .fi-wi-widget {
+        @apply lg:col-span-2 lg:row-span-2;
+    }
+}

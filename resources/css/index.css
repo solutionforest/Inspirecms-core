@@ -1,186 +1,21 @@
-
-@import "boarding.js/styles/main.css";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import '../../vendor/filament/filament/resources/css/theme.css';
-
-/* Tour Guide */
-.boarding-popover-ctn {
-
-    @apply min-w-52 max-w-60 rounded-md shadow-lg shadow-gray-600 m-0 !pb-5;
-    
-    .boarding-popover-description {
-        @apply text-sm text-gray-500;
-    }
-
-    .boarding-popover-footer {
-        @apply py-2;
-
-        .boarding-btn-group {
-            @apply flex justify-between;
-        }
-    }
-
-    .boarding-prev-btn, .boarding-next-btn {
-        @apply text-sm text-gray-500;
-    }
-
-    .boarding-close-btn {
-        @apply absolute bottom-0.5 right-0.5 text-danger-500 text-xs font-bold;
-    }
-
-}
-
-/* Icon */
-.fi-icon > svg.custom-icon {
-    stroke: currentColor;
-}
-
-/* Widgets */
-.fi-wi-widget {
-    h2 {
-        @apply text-xl font-semibold;
-    }
-    .icon:not(.icon-container > .icon) {
-        @apply size-6 shrink-0 stroke-primary-500 dark:stroke-primary-100;
-    }
-    .icon-container > .icon {
-        @apply size-5 sm:size-6 text-primary-500 dark:text-primary-100;
-    }
-    .icon-container {
-        @apply flex size-12 shrink-0 items-center justify-center rounded-full bg-primary-100 sm:size-16 dark:bg-primary-900;
-    }
-    .card {
-        @apply flex items-start rounded-lg bg-white p-6 shadow-sm transition duration-300 md:row-span-3 lg:p-10 lg:pb-10 dark:bg-gray-900 dark:ring-white/10;
-        @apply focus:outline-none focus-visible:ring-primary-500 dark:focus-visible:ring-primary-500;
-    }
-}
-.fi-wi-cms-info {
-    @apply grid gap-6 lg:grid-rows-3 lg:grid-flow-col lg:gap-8;
-    .card {
-        @apply shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05];
-        @apply hover:text-black/70 hover:ring-black/20 dark:hover:text-white/70 dark:hover:ring-white/20;
-        &#docs-card {
-            @apply gap-6 overflow-hidden lg:row-span-3 lg:col-span-2;
-        }
-        &:not(#docs-card) {
-            @apply gap-4 lg:col-span-2 lg:row-span-1;
-        }
-    }
-    #docs-card #screenshot-container {
-        @apply relative flex w-full flex-1 items-stretch;
-
-        .screenshot {
-            @apply aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover;
-
-            &.light-screenshot {
-                @apply drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden;
-            }
-            &.dark-screenshot {
-                @apply hidden drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block;
-            }
-        }
-    }
-    > .fi-wi-widget {
-        @apply lg:col-span-2 lg:row-span-2;
-    }
-}
-
-/* Form */
-.filament-icon-picker {
-    svg {
-        @apply w-6 h-6;
-    }
-    div.relative:has(svg) {
-        @apply flex items-center justify-center;
-
-    }
-}
-.fi-aside.field-group-field-details-section {
-    & > .fi-section-header, & > .fi-section-content-ctn {
-        @apply col-span-3;
-    }
-    > .fi-section-header {
-        @apply lg:col-span-1;
-    }
-    > .fi-section-content-ctn {
-        @apply lg:col-span-2;
-    }
-    .fi-section-header-heading {
-        @apply text-sm font-medium;
-    }
-}
-
-/* Table */
-.fi-ta-content-grid {
-    .fi-ta-actions {
-        @apply justify-end;
-    }
-}
-
-/* Tree Node */
-@media screen(lg) {
-    .list-view-components {
-        @apply flex-col;
-    }
-}
-.list-view-components .tree-node-sidebar {
-    @apply h-56 overflow-scroll;
-    width: auto;
-    min-width: auto;
-}
-
-.fi-page-sub-navigation-sidebar-ctn {
-    @apply w-44;
-}
-.fi-sidebar-item-button {
-    @apply gap-x-1.5;
-
-    .fi-sidebar-item-icon {
-        @apply w-5 h-5;
-    }
-}
-
-/* Tree */
-.dd-placeholder {
-    @apply rounded-md bg-gray-100/20 dark:bg-gray-200;
-}
+@import "base.css";
+@import "icons.css";
+@import "widgets.css";
+@import "forms.css";
+@import "tables.css";
+@import "modals.css";
+@import "navigation.css";
+@import "tree.css";
+@import "alerts.css";
 
 /* Login */
 .split-image-layout {
     @apply bg-center bg-no-repeat bg-cover bg-[image:var(--panel-background-image)] bg-blend-multiply;
 }
 
-/* Modal */
-.fi-modal-footer-actions {
-    @apply flex flex-row-reverse flex-wrap items-center;
-}
-
-/* Alert */
-.alert-dialog {
-    @apply border-l-4 px-4 py-3;
-
-    .alert-dialog-icon {
-        @apply w-6 h-6;
-    }
-    .alert-dialog-content-ctn {
-        @apply ml-4;
-    }
-    .alert-dialog-content {
-        @apply text-sm;
-    }
-}
-
-/* Main */
-.fi-body {
-    .top-alert.alert-dialog {
-        @apply sticky top-0 z-20 !py-2;
-
-        ~ .fi-layout .fi-topbar {
-            @apply !top-10;
-        }
+/* Media Library */
+.fi-body:has(.top-alert) {
+    .media-library__header {
+        @apply top-24 !important;
     }
 }

@@ -1,0 +1,5 @@
+.fi-ta-content-grid {
+    .fi-ta-actions {
+        @apply justify-end;
+    }
+}
