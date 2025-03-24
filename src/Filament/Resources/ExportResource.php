@@ -204,7 +204,7 @@ class ExportResource extends Resource implements ClusterSectionResource
             ->headerActions([
                 Tables\Actions\CreateAction::make()
                     ->createAnother(false)
-                    ->modalWidth('lg')
+                    ->modalWidth('5xl')
                     ->stickyModalHeader()->stickyModalHeader()
                     ->slideOver()
                     ->form(fn (Form $form) => static::form($form))

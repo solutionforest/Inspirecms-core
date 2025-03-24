@@ -7,7 +7,7 @@ use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class TemplateExporter extends BaseExporter
+class TemplateExporter extends BaseImportUsedDataExporter
 {
     public static function getArgsFormFields(): array
     {

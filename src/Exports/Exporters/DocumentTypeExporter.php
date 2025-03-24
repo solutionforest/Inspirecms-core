@@ -3,13 +3,14 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class DocumentTypeExporter extends BaseExporter
+class DocumentTypeExporter extends BaseImportUsedDataExporter
 {
     public static function getArgsFormFields(): array
     {
@@ -22,14 +23,20 @@ class DocumentTypeExporter extends BaseExporter
                 ->label('With Content')
                 ->hint('Export content records along with document types')
                 ->default(true),
-            CheckboxList::make('filter_record')
-                ->label('Filter Records')
-                ->hint('Keep empty to export all records.')
-                ->gridDirection('row')
-                ->columns(3)
-                ->searchable()
-                ->options($options)
-                ->descriptions($descriptions),
+            Section::make('Filter Records')
+                ->collapsible()
+                ->statePath('filter_records')
+                ->compact()
+                ->schema([
+                    CheckboxList::make('document_type')
+                        ->label(__('inspirecms::inspirecms.document_type'))
+                        ->hint('Keep empty to export all records.')
+                        ->gridDirection('row')
+                        ->columns(3)
+                        ->searchable()
+                        ->options($options)
+                        ->descriptions($descriptions),
+                ]),
         ];
     }
 
@@ -42,7 +49,7 @@ class DocumentTypeExporter extends BaseExporter
             ImportDataHelper::FOLDER_IDENTIFIER_CONTENT,
         ]);
 
-        [$records, $perPage, $page] = $this->getDocumentTypeRecords();
+        [$records, $perPage, $page] = $this->getRecordsToExport();
         $errors = [];
 
         foreach ($records->items() as $record) {
@@ -74,14 +81,17 @@ class DocumentTypeExporter extends BaseExporter
                 );
             }
 
-            foreach ($record->content as $content) {
+            if ($this->record->getArgsForExporter()['with_content'] ?? false) {
 
-                $this->processRecordForImportUsed(
-                    $content,
-                    $fs,
-                    (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_CONTENT) ?? $folderName),
-                    $errors,
-                );
+                foreach ($record->content as $content) {
+
+                    $this->processRecordForImportUsed(
+                        $content,
+                        $fs,
+                        (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_CONTENT) ?? $folderName),
+                        $errors,
+                    );
+                }
             }
 
         }
@@ -103,7 +113,7 @@ class DocumentTypeExporter extends BaseExporter
     /**
      * @return array{0: \Illuminate\Pagination\LengthAwarePaginator, 1: int, 2: int}
      */
-    private function getDocumentTypeRecords()
+    private function getRecordsToExport()
     {
         $processingData = $this->record->getProcessingMessages();
         $perPage = $processingData['perPage'] ?? 100;
@@ -127,8 +137,8 @@ class DocumentTypeExporter extends BaseExporter
 
         $query = static::getModel()::query()->with($relations);
 
-        if (! empty($args['filter_record'])) {
-            $query->whereKey($args['filter_record']);
+        if (isset($args['filter_records']['document_type']) && ! empty($args['filter_records']['document_type'])) {
+            $query->whereKey($args['filter_records']['document_type']);
         }
 
         $records = $query->paginate(perPage: $perPage, page: $page);
