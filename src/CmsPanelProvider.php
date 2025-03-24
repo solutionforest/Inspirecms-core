@@ -8,7 +8,6 @@ use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -30,6 +29,7 @@ use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
+use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
@@ -48,16 +48,8 @@ class CmsPanelProvider extends PanelProvider
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->theme('inspirecms')
-            ->font('DM Sans')
-            ->colors([
-                'danger' => Color::hex('#f44336'),
-                'gray' => Color::hex('#5e5e5e'),
-                'info' => Color::hex('#88B0BA'),
-                'primary' => Color::hex('#B5834A'),
-                'secondary' => Color::hex('#bfa15a'),
-                'success' => Color::hex('#76ae51'),
-                'warning' => Color::hex('#f39e19'),
-            ])
+            ->font(ThemeConfig::fontFamily())
+            ->colors(ThemeConfig::colors())
             ->maxContentWidth('full')
             ->resources(InspireCmsConfig::get('filament.resources'))
             ->pages([
