@@ -15,7 +15,8 @@
 
 /* Media Library */
 .fi-body:has(.top-alert) {
-    .media-library__header {
+    
+    .fi-page :not(.media-library-browser-modal) .media-library__header {
         @apply top-24 !important;
     }
 }
