@@ -86,7 +86,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                 [$fs, $path] = [$record->getDisk(), $record->file_name];
 
                                 return Infolists\Components\Actions\Action::make('download')
-                                    ->icon('heroicon-s-arrow-down-on-square')
+                                    ->icon(FilamentIcon::resolve('inspirecms::download'))
                                     ->color('info')
                                     ->extraAttributes(['aria-label' => 'download'])
                                     ->action(fn () => $fs->download($path));

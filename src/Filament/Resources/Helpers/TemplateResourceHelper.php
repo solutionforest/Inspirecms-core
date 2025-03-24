@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\Helpers;
 
 use Filament\Forms;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
 use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -27,7 +28,7 @@ class TemplateResourceHelper
     {
         return Forms\Components\Select::make('theme')
             ->label(__('inspirecms::resources/template.theme.label'))
-            ->prefixIcon('heroicon-o-paint-brush')
+            ->prefixIcon(FilamentIcon::resolve('inspirecms::theme'))
             ->options(static::getThemeSelectOptions());
     }
 

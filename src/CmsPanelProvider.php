@@ -189,7 +189,7 @@ class CmsPanelProvider extends PanelProvider
                 //     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
                     ->label('Version: ' . InspireCms::version())
-                    ->icon('heroicon-s-information-circle')
+                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
                     ->url('#')
                     ->extraAttributes([
                         'class' => 'cursor-default',
@@ -267,49 +267,49 @@ class CmsPanelProvider extends PanelProvider
             });
             \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
                 $action->icon(function (\Filament\Actions\EditAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::edit-action.grouped') ?? 'heroicon-m-pencil-square';
-                    }
+                    return $action->isIconButton() 
+                        ? FilamentIcon::resolve('inspirecms::edit')
+                        : null;
                 });
             });
             \Filament\Actions\ViewAction::configureUsing(function (\Filament\Actions\ViewAction $action) {
                 $action->icon(function (\Filament\Actions\ViewAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::view-action.grouped') ?? 'heroicon-m-eye';
-                    }
+                    return $action->isIconButton() 
+                        ? FilamentIcon::resolve('inspirecms::visible') 
+                        : null;
                 });
             });
             \Filament\Actions\DeleteAction::configureUsing(function (\Filament\Actions\DeleteAction $action) {
                 $action->icon(function (\Filament\Actions\DeleteAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash';
-                    }
+                    return $action->isIconButton() 
+                        ? FilamentIcon::resolve('inspirecms::delete') 
+                        : null;
                 });
             });
             \Filament\Actions\ForceDeleteAction::configureUsing(function (\Filament\Actions\ForceDeleteAction $action) {
                 $action->icon(function (\Filament\Actions\ForceDeleteAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::force-delete-action.modal') ?? 'heroicon-o-trash';
-                    }
+                    return $action->isIconButton() 
+                        ? FilamentIcon::resolve('inspirecms::delete') 
+                        : null;
                 });
             });
             \Filament\Actions\RestoreAction::configureUsing(function (\Filament\Actions\RestoreAction $action) {
                 $action->icon(function (\Filament\Actions\RestoreAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::restore-action.grouped') ?? 'heroicon-m-arrow-uturn-left';
-                    }
+                    return $action->isIconButton() 
+                        ? FilamentIcon::resolve('inspirecms::restore') 
+                        : null;
                 });
             });
             \Filament\Tables\Actions\ReplicateAction::configureUsing(function (\Filament\Tables\Actions\ReplicateAction $action) {
                 $action
                     ->color('gray')
-                    ->modalIcon('heroicon-o-document-duplicate');
+                    ->modalIcon(FilamentIcon::resolve('inspirecms::clone'));
             });
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
-                $action->icon('heroicon-o-eye');
+                $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
             \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction $action) {
-                $action->icon('heroicon-o-eye');
+                $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
         });
     }

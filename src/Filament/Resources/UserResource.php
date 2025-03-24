@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -74,7 +75,8 @@ class UserResource extends Resource implements ClusterSectionResource
                     ->weight(FontWeight::Bold)
                     ->sortable()->width('1%'),
                 Tables\Columns\TextColumn::make('email')
-                    ->label(__('inspirecms::resources/user.email.label')),
+                    ->label(__('inspirecms::resources/user.email.label'))
+                    ->copyable()->icon(FilamentIcon::resolve('inspirecms::email')),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label(__('inspirecms::resources/user.roles.label')),
                 Tables\Columns\TextColumn::make('last_logged_in_at')

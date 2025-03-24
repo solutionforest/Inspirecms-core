@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\RoleResource\RelationMana
 
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,7 @@ class UsersRelationManager extends RelationManager
 
                         Tables\Columns\Layout\Stack::make([
                             Tables\Columns\TextColumn::make('name'),
-                            Tables\Columns\TextColumn::make('email')->copyable()->icon('heroicon-m-envelope'),
+                            Tables\Columns\TextColumn::make('email')->copyable()->icon(FilamentIcon::resolve('inspirecms::email')),
                         ])
                             ->columnSpan(['default' => 3]),
                     ]),

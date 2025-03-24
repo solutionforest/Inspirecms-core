@@ -121,7 +121,7 @@ class UIHelper
         $textAttributes = static::mergeAttributes($attributes['text'] ?? [], ['class' => 'flex-1']);
 
         return str(static::wrapWithHtmlTag($text, 'span', $textAttributes))
-            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: $btnAttributes))
+            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: ['btn' => $btnAttributes]))
             ->wrap('<div class="flex items-center gap-2">', '</div>')
             ->toHtmlString();
     }
@@ -135,7 +135,7 @@ class UIHelper
         $textAttributes = static::mergeAttributes($attributes['text'] ?? [], ['class' => 'flex-1 truncate']);
 
         return str(static::generateCopyableText(text: $text, attributes: $textAttributes))
-            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: $btnAttributes))
+            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: ['btn' => $btnAttributes]))
             ->wrap('<div class="flex items-center gap-2">', '</div>')
             ->toHtmlString();
     }

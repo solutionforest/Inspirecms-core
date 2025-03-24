@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -160,7 +161,7 @@ class ImportResource extends Resource implements ClusterSectionResource
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->emptyStateIcon('heroicon-o-arrow-up-on-square')
+            ->emptyStateIcon(FilamentIcon::resolve('inspirecms::upload'))
             ->emptyStateHeading(__('inspirecms::resources/import.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/import.empty_state.description'))
             ->columns([

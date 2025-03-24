@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -18,7 +19,7 @@ class LockContentAction extends Action
         // todo: add translation
         parent::setUp();
 
-        $this->icon('heroicon-o-lock-closed');
+        $this->icon(FilamentIcon::resolve('inspirecms::locked'));
 
         $this->model(InspireCmsConfig::getContentModelClass());
 

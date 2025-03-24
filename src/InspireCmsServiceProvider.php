@@ -223,30 +223,55 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getIcons(): array
     {
-        return [
-            'inspirecms::preview' => 'heroicon-o-eye',
-            'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
-            'inspirecms::reset' => 'heroicon-o-arrow-path',
-            'inspirecms::clone' => 'heroicon-o-document-duplicate',
-            'inspirecms::add' => 'heroicon-o-plus-small',
-            'inspirecms::attach' => 'heroicon-o-link',
-            'inspirecms::detach' => 'heroicon-m-x-mark',
-            'inspirecms::edit' => 'heroicon-m-pencil-square',
-            'inspirecms::delete' => 'heroicon-o-trash',
-            'inspirecms::download' => 'heroicon-m-arrow-down-tray',
-            'inspirecms::export' => 'heroicon-m-arrow-top-right-on-square',
+        $iconPrefix = 'inspirecms::';
 
-            'inspirecms::back' => 'heroicon-o-chevron-left',
-            'inspirecms::sort' => 'heroicon-o-arrows-up-down',
+        return collect([
 
-            'inspirecms::as_default' => 'heroicon-o-star',
-            'inspirecms::recycle_bin' => 'heroicon-o-trash',
+            'preview' => 'heroicon-o-eye',
+            
+            'visible' => 'heroicon-m-eye',
+            'invisiable' => 'heroicon-o-eye-slash',
+            'locked' => 'heroicon-o-lock-closed',
+            'unlocked' => 'heroicon-o-lock-open',
 
-            'inspirecms::json-file' => view('inspirecms::icons.json-file'),
-            'inspirecms::fields' => view('inspirecms::icons.fields'),
-            'inspirecms::templates' => view('inspirecms::icons.templates'),
-            'inspirecms::document-type' => view('inspirecms::icons.document-type'),
-        ];
+            'goto' => 'heroicon-m-arrow-top-right-on-square',
+
+            'info' => 'heroicon-o-information-circle',
+            'warn' => 'heroicon-o-exclamation-triangle',
+            'error' => 'heroicon-o-exclamation-circle',
+            'success' => 'heroicon-o-check-circle',
+
+            'reset' => 'heroicon-o-arrow-path',
+            'clone' => 'heroicon-o-document-duplicate',
+            'add' => 'heroicon-o-plus-small',
+            'attach' => 'heroicon-o-link',
+            'detach' => 'heroicon-m-x-mark',
+            'edit' => 'heroicon-m-pencil-square',
+            'delete' => 'heroicon-m-trash',
+            'restore' => 'heroicon-m-arrow-uturn-left',
+
+            'upload' => 'heroicon-m-arrow-up-tray',
+            'download' => 'heroicon-m-arrow-down-tray',
+            'export' => 'heroicon-m-arrow-top-right-on-square',
+
+            'back' => 'heroicon-o-chevron-left',
+            'sort' => 'heroicon-o-arrows-up-down',
+            'move_up' => 'heroicon-m-arrow-up',
+            'move_down' => 'heroicon-m-arrow-down',
+            'setting' => 'heroicon-s-cog-8-tooth',
+
+            'as_default' => 'heroicon-o-star',
+            'recycle_bin' => 'heroicon-o-trash',
+            'theme' => 'heroicon-o-paint-brush',
+            'language' => 'heroicon-o-language',
+            'email' => 'heroicon-m-envelope',
+
+            'json_file' => view('inspirecms::icons.json-file'),
+            'fields' => view('inspirecms::icons.fields'),
+            'templates' => view('inspirecms::icons.templates'),
+            'document_type' => view('inspirecms::icons.document-type'),
+            
+        ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }
 
     /**

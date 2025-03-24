@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
@@ -106,7 +107,7 @@ class TemplatesRelationManager extends RelationManager
                 Tables\Actions\SelectAction::make('theme')
                     ->options(TemplateResourceHelper::getThemeSelectOptions())
                     ->view('inspirecms::filament.actions.select-action', [
-                        'icon' => 'heroicon-o-paint-brush',
+                        'icon' => FilamentIcon::resolve('inspirecms::theme'),
                     ])
                     ->disabled(),
                 Tables\Actions\CreateAction::make(),

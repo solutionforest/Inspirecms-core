@@ -7,6 +7,7 @@ use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Field;
 use Filament\Forms\Components\Wizard\Step;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -117,7 +118,7 @@ class TieredPermissionsRepeater extends Field
     {
         // todo: add translation
         return Action::make('add')
-            ->icon('heroicon-s-plus')
+            ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->color('gray')
             ->extraAttributes([
                 'class' => 'w-full',
@@ -145,7 +146,7 @@ class TieredPermissionsRepeater extends Field
     {
         // todo: add translation
         return Action::make('edit')
-            ->icon('heroicon-s-pencil')
+            ->icon(FilamentIcon::resolve('inspirecms::edit'))
             ->iconButton()
             ->color('primary')
             ->slideOver()->modalWidth('5xl')
@@ -182,7 +183,7 @@ class TieredPermissionsRepeater extends Field
     public function getDeleteAction()
     {
         return Action::make('delete')
-            ->icon('heroicon-s-trash')
+            ->icon(FilamentIcon::resolve('inspirecms::delete'))
             ->iconButton()
             ->color('danger')
             ->action(function (array $arguments, TieredPermissionsRepeater $component) {

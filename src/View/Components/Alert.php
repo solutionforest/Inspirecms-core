@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\View\Components;
 
 use Closure;
 use Filament\Support\Concerns\EvaluatesClosures;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
@@ -68,11 +69,10 @@ class Alert extends Component implements Htmlable
     public function getIcon(): string
     {
         return match ($this->type) {
-            'success' => 'heroicon-s-check-circle',
-            'error', 'danger' => 'heroicon-s-exclamation-circle',
-            'warning', 'warn' => 'heroicon-s-exclamation-triangle',
-            'info', 'primary', 'secondary' => 'heroicon-s-information-circle',
-            default => 'heroicon-s-information-circle',
+            'success' => FilamentIcon::resolve('inspirecms::success') ?? 'heroicon-o-check-circle',
+            'error', 'danger' => FilamentIcon::resolve('inspirecms::error') ?? 'heroicon-o-exclamation-circle',
+            'warning', 'warn' => FilamentIcon::resolve('inspirecms::warn') ?? 'heroicon-o-exclamation-triangle',
+            default =>  FilamentIcon::resolve('inspirecms::info') ?? 'heroicon-o-information-circle',
         };
     }
 

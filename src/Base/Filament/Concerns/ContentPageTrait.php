@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
+use Filament\Support\Facades\FilamentIcon;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 
@@ -37,7 +38,7 @@ trait ContentPageTrait
                 text: $title,
                 badgeText: 'Locked',  // todo: add translation
                 color: 'warning',
-                icon: 'heroicon-o-lock-closed'
+                icon: FilamentIcon::resolve('inspirecms::locked'),
             );
         }
 

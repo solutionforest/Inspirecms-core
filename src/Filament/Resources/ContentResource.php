@@ -229,7 +229,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                 ->options($langs)
                 ->afterStateHydrated(fn ($component) => $component->state(array_key_first($langs)))
                 ->selectablePlaceholder(false)
-                ->prefixIcon('heroicon-m-language')
+                ->prefixIcon(FilamentIcon::resolve('inspirecms::language'))
                 ->hiddenLabel()
                 ->suffix(function ($state) {
                     if (! $state) {
@@ -313,8 +313,8 @@ class ContentResource extends Resource implements ClusterSectionResource
                             ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())
                             ->boolean()
                             ->width('2%')
-                            ->trueIcon('heroicon-m-eye')
-                            ->falseIcon('heroicon-o-eye-slash')
+                            ->trueIcon(FilamentIcon::resolve('inspirecms::visible'))
+                            ->falseIcon(FilamentIcon::resolve('inspirecms::invisiable'))
                             ->falseColor('gray')
                             ->alignCenter()->verticallyAlignCenter()
                             ->hiddenOn([BaseContentListTrashPage::class]),
@@ -766,7 +766,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                             return null;
                         }
 
-                        return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+                        return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: FilamentIcon::resolve('inspirecms::visible'), falseIcon: FilamentIcon::resolve('inspirecms::invisiable'), falseColor: 'gray');
                     }),
 
                 Forms\Components\Placeholder::make('display_published_at')
@@ -831,10 +831,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             ->native(false)
             ->prefixIcon('heroicon-m-calendar-date-range')
             ->suffixAction(ResetAction::make())
-            ->hintIcon(
-                'heroicon-o-information-circle',
-                __('inspirecms::resources/content.published_at.hint')
-            )
+            ->hintIcon(FilamentIcon::resolve('inspirecms::info'), __('inspirecms::resources/content.published_at.hint'))
             ->default(now())
             ->required();
     }
@@ -860,18 +857,25 @@ class ContentResource extends Resource implements ClusterSectionResource
                     return null;
                 }
 
-                if ($record->isRoot()) {
+                if ($record->isRootLevel()) {
                     return __('inspirecms::inspirecms.root');
                 }
 
                 $url = FilamentResourceHelper::attemptToGetUrl(
-                    static::class,
-                    ['view', 'edit'],
-                    ['record' => $record->parent_id],
-                    false
+                    resource: static::class,
+                    pages: ['view', 'edit'],
+                    parameters: ['record' => $record->parent_id],
+                    autorizeAction: false
                 );
 
-                return UIHelper::generateCopyableTextWithIconButton($record->parent_id, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+                return UIHelper::generateCopyableTextWithIconButton(
+                    text: $record->parent_id, 
+                    icon: FilamentIcon::resolve('inspirecms::goto'), 
+                    color: 'gray', 
+                    size: 'sm', 
+                    url: $url,
+                    linkTarget: '_blank',
+                );
             });
     }
 
@@ -895,7 +899,14 @@ class ContentResource extends Resource implements ClusterSectionResource
                     return null;
                 }
 
-                return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
+                return UIHelper::generateCopyableTextWithIconButton(
+                    text: $url, 
+                    icon: FilamentIcon::resolve('inspirecms::goto'), 
+                    color: 'gray', 
+                    size: 'sm', 
+                    url: $url, 
+                    linkTarget: '_blank',
+                );
             });
     }
 

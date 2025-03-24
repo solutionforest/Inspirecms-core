@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Exceptions\UnauthorizedOwnerException;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -20,7 +21,7 @@ class UnlockContentAction extends Action
         // todo: add translation
         parent::setUp();
 
-        $this->icon('heroicon-o-lock-open');
+        $this->icon(FilamentIcon::resolve('inspirecms::unlocked'));
 
         $this->model(InspireCmsConfig::getContentModelClass());
 

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
@@ -24,7 +25,7 @@ class PageActivity extends BaseWidget
             ->recordUrl(fn (Model $record) => $this->getRecordUrl($record))
             ->poll('60s')
             ->striped()
-            ->emptyStateIcon('heroicon-o-information-circle')
+            ->emptyStateIcon(FilamentIcon::resolve('inspirecms::info'))
             ->emptyStateHeading(__('inspirecms::widgets.page_activity.empty_state.heading'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
@@ -79,9 +80,9 @@ class PageActivity extends BaseWidget
     protected function getTableHeading(): string | \Illuminate\Contracts\Support\Htmlable | null
     {
         return UIHelper::generateTextWithIcon(
-            __('inspirecms::widgets.page_activity.title'),
-            'heroicon-o-arrow-trending-up',
-            'primary',
+            text: __('inspirecms::widgets.page_activity.title'),
+            icon: 'heroicon-o-arrow-trending-up',
+            iconColor: 'primary',
         );
     }
     // endregion Table Configuration

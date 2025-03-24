@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Placeholder;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Blade;
@@ -43,7 +44,7 @@ class TimestampsGroup extends Group
                             $dt = $record?->deleted_at;
                             $iconHtml = UIHelper::generateBooleanIcon(
                                 condition: true,
-                                trueIcon: 'heroicon-o-trash',
+                                trueIcon: FilamentIcon::resolve('inspirecms::recycle_bin'),
                                 trueColor: 'danger',
                             );
 

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
 use Filament\Forms;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
@@ -37,7 +38,7 @@ trait HasInnerField
             ->defaultItems(1)
             ->extraItemActions([
                 Forms\Components\Actions\Action::make('editConfig')
-                    ->icon('heroicon-s-cog-8-tooth')
+                    ->icon(FilamentIcon::resolve('inspirecms::setting'))
                     ->slideOver()
                     // todo: add translation
                     ->modalHeading(fn (array $arguments, Forms\Components\Repeater $component) => str_replace([':field'], [$getFieldForRepeaterAction($arguments, $component) ?? 'Field'], 'Edit :field configuration'))
@@ -97,7 +98,7 @@ trait HasInnerField
                 ->required()
                 ->live()
                 // todo: add translation
-                ->hintIcon('heroicon-o-information-circle', 'Resetting the field type will clear the field configuration.')
+                ->hintIcon(FilamentIcon::resolve('inspirecms::info'), 'Resetting the field type will clear the field configuration.')
                 ->afterStateUpdated(function ($old, $state, $set) {
                     if ($old !== $state) {
                         $set('fieldConfig', []);
