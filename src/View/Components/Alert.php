@@ -17,21 +17,24 @@ class Alert extends Component implements Htmlable
 
     protected string $type;
 
+    protected string $size;
+
     /**
      * @param  scalar | Htmlable | Closure  $message
      */
-    final public function __construct(string | Htmlable | Closure $message, string $type = 'info')
+    final public function __construct(string | Htmlable | Closure $message, string $type = 'info', string $size = 'lg')
     {
         $this->message($message);
         $this->type($type);
+        $this->size($size);
     }
 
     /**
      * @param  scalar | Htmlable | Closure  $value
      */
-    public static function make(string | Htmlable | Closure $message, string $type = 'info'): static
+    public static function make(string | Htmlable | Closure $message, string $type = 'info', string $size = 'lg'): static
     {
-        return app(static::class, ['message' => $message, 'type' => $type]);
+        return app(static::class, ['message' => $message, 'type' => $type, 'size' => $size]);
     }
 
     public function message(string | Htmlable | Closure $label): static
@@ -49,6 +52,13 @@ class Alert extends Component implements Htmlable
     public function type(string $type): static
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    public function size(string $size): static
+    {
+        $this->size = $size;
 
         return $this;
     }
@@ -76,6 +86,16 @@ class Alert extends Component implements Htmlable
         };
     }
 
+    public function getSize(): string
+    {
+        return match ($this->size) {
+            'sm' => 'sm',
+            'md' => 'md',
+            'lg' => 'lg',
+            default => 'md',
+        };
+    }
+
     public function render(): View
     {
         $viewData = $this->data();
@@ -87,6 +107,7 @@ class Alert extends Component implements Htmlable
 
         $viewData['color'] = $this->getColor();
         $viewData['icon'] = $this->getIcon();
+        $viewData['size'] = $this->getSize();
         $viewData['message'] = $this->getMessage();
 
         return view('inspirecms::components.alert.index', $viewData);

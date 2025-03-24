@@ -1,6 +1,9 @@
 <div {{ 
     $attributes->class([
         'alert-dialog',
+        'py-2' => $size == 'sm',
+        'py-3' => $size == 'md',
+        'py-4' => $size == 'lg',
         'border-custom-400 bg-custom-50 dark:bg-custom-900/95' => $color != 'gray',
         'border-gray-400 bg-gray-50 dark:bg-gray-900/95' => $color == 'gray',
     ])->style(\Filament\Support\get_color_css_variables(
@@ -8,7 +11,7 @@
         shades: [50, 200, 400, 700, 900],
     ))
 }}>
-    <div class="flex">
+    <div class="flex items-center h-full truncate">
         <div class="flex-shrink-0">
             <x-filament::icon 
                 :icon="$icon" 

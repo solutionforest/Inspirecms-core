@@ -41,7 +41,7 @@ class LicenseCheck
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_START ,
             function () {
-                $alert = Alert::make(fn () => (string) __('inspirecms::messages.invalid_license'), 'warn')
+                $alert = Alert::make(fn () => (string) __('inspirecms::messages.invalid_license'), 'warn', 'sm')
                     ->withAttributes([
                         'class' => 'top-alert',
                     ]);
