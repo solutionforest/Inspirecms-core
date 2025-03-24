@@ -1,6 +1,3 @@
-@php
-    // todo: add translations
-@endphp
 <div class="flex flex-col gap-4 h-full">
     <x-filament::input.wrapper>
         <x-filament::input

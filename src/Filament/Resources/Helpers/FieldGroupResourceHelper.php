@@ -99,7 +99,7 @@ class FieldGroupResourceHelper
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
                     Forms\Components\Section::make()
-                        ->heading(__('inspirecms::resources/field-group.details.section.heading'))
+                        ->heading(__('inspirecms::resources/field-group.sections.details.heading'))
                         ->columnSpanFull()
                         ->extraAttributes(['class' => 'field-group-field-details-section'])
                         ->aside()

@@ -36,7 +36,7 @@ trait ContentPageTrait
         if (($this instanceof EditRecord || $this instanceof ViewRecord) && $this->getRecord()->isLocked()) {
             return UIHelper::generateTextWithBadge(
                 text: $title,
-                badgeText: 'Locked',  // todo: add translation
+                badgeText: __('inspirecms::messages.locked'),
                 color: 'warning',
                 icon: FilamentIcon::resolve('inspirecms::locked'),
             );

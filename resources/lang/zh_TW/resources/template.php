@@ -16,15 +16,21 @@ return [
         'label' => '內容',
     ],
     'property_type_instructions' => [
-        'label' => 'Property type instructions',
+        'label' => 'Property 說明',
+        'group' => '群組',
+        'field' => __('inspirecms::inspirecms.field'),
     ],
     'page_component_instructions' => [
-        'label' => 'Page component instructions',
+        'label' => 'Page component 說明',
     ],
     'theme' => [
         'label' => '主題',
     ],
     'editor' => [
         'title' => '模板編輯器',
+        'tabs' => [
+            'content' => '內容',
+            'instructions' => '說明',
+        ],
     ],
 ];

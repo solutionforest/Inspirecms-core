@@ -116,8 +116,8 @@ class TieredPermissionsRepeater extends Field
 
     public function getAddAction()
     {
-        // todo: add translation
         return Action::make('add')
+            ->label(__('inspirecms::buttons.add.label'))
             ->icon(FilamentIcon::resolve('inspirecms::add'))
             ->color('gray')
             ->extraAttributes([
@@ -144,8 +144,8 @@ class TieredPermissionsRepeater extends Field
 
     public function getEditAction()
     {
-        // todo: add translation
         return Action::make('edit')
+            ->label(__('inspirecms::buttons.edit.label'))
             ->icon(FilamentIcon::resolve('inspirecms::edit'))
             ->iconButton()
             ->color('primary')
@@ -226,23 +226,23 @@ class TieredPermissionsRepeater extends Field
 
     protected static function getSteps(array $permissions, string $operation)
     {
-        // todo: add translation
         return [
-            Step::make('Target')
+            Step::make(__('inspirecms::resources/role.tiered_permissions.steps.target.label'))
                 ->schema([
                     ContentTree::make('target')
                         ->hiddenLabel()
+                        ->validationAttribute(__('inspirecms::resources/role.tiered_permissions.steps.target.validation_attribute'))
                         ->maxItems(1)
                         ->minItems(1)
                         ->required()
                         ->disabled(fn () => $operation === 'edit')
                         ->filteringByPermission(false),
                 ]),
-            Step::make('Access Control')
+            Step::make(__('inspirecms::resources/role.tiered_permissions.steps.access_control.label'))
                 ->schema([
                     CheckboxList::make('permissions')
                         ->hiddenLabel()
-                        ->validationAttribute('permissions')
+                        ->validationAttribute(__('inspirecms::resources/role.permissions.validation_attribute'))
                         ->options($permissions)
                         ->columns(3)
                         ->gridDirection('row')

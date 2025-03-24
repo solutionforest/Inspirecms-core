@@ -14,11 +14,11 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Export;
 
@@ -53,32 +53,15 @@ class ExportResource extends Resource implements ClusterSectionResource
                         Infolists\Components\TextEntry::make('id')
                             ->label(__('inspirecms::inspirecms.id'))
                             ->inlineLabel(),
-                        Infolists\Components\TextEntry::make('status')
+                        Infolists\Components\TextEntry::make('display_status')
                             ->inlineLabel()
+                            ->label(__('inspirecms::resources/export.status.label'))
                             ->badge()
-                            ->getStateUsing(function ($record) {
-                                [$failed, $finished] = [$record->failed_at, $record->finished_at];
-                                if ($failed !== null) {
-                                    return 'failed';
-                                } elseif ($finished !== null) {
-                                    return 'finished';
-                                } else {
-                                    return 'pending';
-                                }
-                            })
-                            ->formatStateUsing(fn ($state) => Str::title($state))
                             ->tooltip(function ($record) {
                                 return $record->failed_at ?? $record->finished_at ?? null;
-                            })
-                            ->color(function ($state) {
-                                return match ($state) {
-                                    'failed' => 'danger',
-                                    'finished' => 'success',
-                                    default => 'gray',
-                                };
                             }),
                         Infolists\Components\TextEntry::make('file_name')
-                            ->label('File')
+                            ->label(__('inspirecms::resources/export.result.label'))
                             ->inlineLabel()
                             ->fontFamily('mono')
                             ->suffixAction(function (Export | Model $record) {
@@ -101,35 +84,32 @@ class ExportResource extends Resource implements ClusterSectionResource
                             ->since()
                             ->dateTimeTooltip(),
                         Infolists\Components\TextEntry::make('finished_at')
+                            ->label(__('inspirecms::resources/export.finished_at.label'))
                             ->inlineLabel(),
                         Infolists\Components\TextEntry::make('failed_at')
+                            ->label(__('inspirecms::resources/export.failed_at.label'))
                             ->inlineLabel(),
                     ]),
 
-                Infolists\Components\Group::make()
-                    ->columnSpanFull()
-                    ->columns(1)
-                    ->schema([
-                        Infolists\Components\TextEntry::make('author.name')->inlineLabel()->copyable(),
-                        Infolists\Components\TextEntry::make('author.email')->inlineLabel()->copyable(),
-                    ]),
+                Infolists\Components\TextEntry::make('created_by')
+                    ->columnSpan(2)
+                    ->label(__('inspirecms::inspirecms.created_by'))
+                    ->inlineLabel()
+                    ->getStateUsing(fn ($record) => UIHelper::generateTextWithDescription(
+                        text: $record->author?->name,
+                        description: UIHelper::generateTextWithIcon(text: $record->author?->email, icon: FilamentIcon::resolve('inspirecms::email'))->toHtml()
+                    ))
+                    ->copyable()->copyableState(fn ($record) => $record->author?->email),
 
                 Infolists\Components\Section::make()
-                    ->heading('Detail')
+                    ->heading(__('inspirecms::resources/export.tabs.details'))
                     ->collapsible()
                     ->columnSpanFull()
                     ->columns(1)
                     ->schema([
-                        Infolists\Components\TextEntry::make('exporter')
+                        Infolists\Components\TextEntry::make('display_exporter')
                             ->label(__('inspirecms::resources/export.exporter.label'))
-                            ->inlineLabel()
-                            ->formatStateUsing(function ($state) {
-                                if (is_string($state) && class_exists($state)) {
-                                    return $state::getLabel();
-                                }
-
-                                return $state;
-                            }),
+                            ->inlineLabel(),
 
                         \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
                             ->label(__('inspirecms::resources/export.message.label'))
@@ -193,54 +173,32 @@ class ExportResource extends Resource implements ClusterSectionResource
 
     public static function table(Table $table): Table
     {
-        // todo: add translations
         return $table
             ->defaultSort('created_at', 'desc')
             ->emptyStateIcon(FilamentIcon::resolve('inspirecms::download'))
             ->emptyStateHeading(__('inspirecms::resources/export.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/export.empty_state.description'))
-            ->modifyQueryUsing(function ($query) {
-                $currentUser = auth()->user();
-                $isSuperAdmin = $currentUser != null && is_inspirecms_user($currentUser) && $currentUser->isSuperAdmin();
-
-                return $query
-                    ->with([
-                        'author' => fn ($userQ) => $userQ
-                            ->when(! $isSuperAdmin, fn ($q) => $q->whereKey($currentUser?->getKey())),
-                    ]);
-            })
+            ->modelLabel(fn () => static::getModelLabel())
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
-                // todo: add enum + attribute
-                Tables\Columns\TextColumn::make('status')
+                Tables\Columns\TextColumn::make('display_exporter')
+                    ->label(__('inspirecms::resources/export.exporter.label')),
+                Tables\Columns\TextColumn::make('display_status')
+                    ->label(__('inspirecms::resources/export.status.label'))
                     ->badge()
-                    ->getStateUsing(function ($record) {
-                        [$failed, $finished] = [$record->failed_at, $record->finished_at];
-                        if ($failed !== null) {
-                            return 'failed';
-                        } elseif ($finished !== null) {
-                            return 'finished';
-                        } else {
-                            return 'pending';
-                        }
-                    })
-                    ->formatStateUsing(fn ($state) => Str::title($state))
                     ->tooltip(function ($record) {
                         return $record->failed_at ?? $record->finished_at ?? null;
-                    })
-                    ->color(function ($state) {
-                        return match ($state) {
-                            'failed' => 'danger',
-                            'finished' => 'success',
-                            default => 'gray',
-                        };
                     }),
-                Tables\Columns\TextColumn::make('exporter')
-                    ->formatStateUsing(fn ($state) => class_basename($state)),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
                     ->sortable(),
+                Tables\Columns\TextColumn::make('created_by')
+                    ->label(__('inspirecms::inspirecms.created_by'))
+                    ->getStateUsing(fn ($record) => $record->author?->email)
+                    ->description(fn ($record) => $record->author?->name, 'above')
+                    ->icon(FilamentIcon::resolve('inspirecms::email'))
+                    ->copyable(),
             ])
             ->recordAction('view')
             ->headerActions([
@@ -250,11 +208,10 @@ class ExportResource extends Resource implements ClusterSectionResource
                     ->stickyModalHeader()->stickyModalHeader()
                     ->slideOver()
                     ->form(fn (Form $form) => static::form($form))
-                    // todo: add translations
-                    ->label('Add')
-                    ->modalSubmitActionLabel('Export')
-                    ->successNotificationTitle('Queued for export, please wait for the download link.')
-                    ->failureNotificationTitle('Missing required data, failed to export.')
+                    ->label(__('inspirecms::buttons.export.label'))
+                    ->modalSubmitActionLabel(__('inspirecms::buttons.export.label'))
+                    ->successNotificationTitle(__('inspirecms::resources/export.notification.place_queue_success.title'))
+                    ->failureNotificationTitle(__('inspirecms::resources/export.notification.place_queue_failue.title'))
                     ->failureNotification(fn (Notification $notification) => $notification->warning())
                     ->using(function (Tables\Actions\CreateAction $action, array $data, string $model) {
 
@@ -299,15 +256,13 @@ class ExportResource extends Resource implements ClusterSectionResource
             ->with([
                 'author',
             ])
-            ->whereHas('author', function (Builder $query) {
+            ->where(function (Builder $query) {
 
                 $currentUser = auth()->user();
-
-                if ($currentUser != null && (is_inspirecms_user($currentUser) && ! $currentUser->isSuperAdmin())) {
-                    return $query->whereKey($currentUser->getKey());
-                }
-
-                return $query;
+                $isSuperAdmin = $currentUser != null && is_inspirecms_user($currentUser) && $currentUser->isSuperAdmin();
+    
+                return $query
+                    ->when(!$isSuperAdmin, fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
             });
     }
 

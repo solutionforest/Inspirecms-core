@@ -16,13 +16,30 @@ return [
     'result' => [
         'label' => '結果',
     ],
+    'status' => [
+        'label' => '狀態',
+    ],
+    'finished_at' => [
+        'label' => '完成於',
+    ],
+    'failed_at' => [
+        'label' => '失敗於',
+    ],
 
     'notification' => [
-
         'completed' => [
             'title' => '匯出工作已完成',
             'body' => "工作 ':id' 已完成。",
         ],
+        'place_queue_success' => [
+            'title' => '已排隊匯出，請等待下載連結。',
+        ],
+        'place_queue_failue' => [
+            'title' => '缺少必要數據，匯出失敗。',
+        ],
+    ],
 
+    'tabs' => [
+        'details' => '詳細資訊',
     ],
 ];

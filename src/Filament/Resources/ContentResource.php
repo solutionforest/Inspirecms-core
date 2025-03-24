@@ -141,11 +141,11 @@ class ContentResource extends Resource implements ClusterSectionResource
 
                         if ($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data) {
                             $tabs[] = Forms\Components\Tabs\Tab::make('seo')
-                                ->label(__('inspirecms::resources/content.seo.tab.label'))
+                                ->label(__('inspirecms::resources/content.tabs.seo'))
                                 ->schema([
                                     Forms\Components\Section::make()
                                         ->columns(1)
-                                        ->heading(__('inspirecms::resources/content.general.section.heading'))
+                                        ->heading(__('inspirecms::resources/content.sections.general.heading'))
                                         ->aside()
                                         ->schema([
                                             static::getTitleFormComponent(),
@@ -154,13 +154,13 @@ class ContentResource extends Resource implements ClusterSectionResource
                                     static::getSeoFormComponent(),
                                 ]);
                             $tabs[] = Forms\Components\Tabs\Tab::make('sitemap')
-                                ->label(__('inspirecms::resources/content.sitemap.tab.label'))
+                                ->label(__('inspirecms::resources/content.tabs.sitemap'))
                                 ->schema([
                                     static::getSitemapFormComponent(),
                                 ]);
                         }
                         $tabs[] = Forms\Components\Tabs\Tab::make('details')
-                            ->label(__('inspirecms::resources/content.details.tab.label'))
+                            ->label(__('inspirecms::resources/content.tabs.details'))
                             ->columns(3)
                             ->schema([
                                 Forms\Components\Section::make()
@@ -721,7 +721,7 @@ class ContentResource extends Resource implements ClusterSectionResource
         if ($isTab) {
 
             return Forms\Components\Tabs\Tab::make('content')
-                ->label(__('inspirecms::resources/content.content.tab.label'))
+                ->label(__('inspirecms::resources/content.tabs.content'))
                 ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
                 ->key('propertyData')
                 ->statePath('propertyData')
@@ -804,19 +804,19 @@ class ContentResource extends Resource implements ClusterSectionResource
      */
     protected static function getLockDetailGroupedFormComponent()
     {
-        // todo: add translations
         return Forms\Components\Section::make()
             ->visible(fn (null | Model | ModelsContent $record) => $record != null && $record->isLocked())
             ->schema([
                 Forms\Components\Placeholder::make('display_locked_at')
                     ->content(fn (Model | ModelsContent $record) => $record->locked?->locked_at->diffForHumans())
-                    // ->label(__('inspirecms::resources/content.locked_at.label'))
-                    ->label('Locked At')
+                    ->label(__('inspirecms::resources/content.locked_at.label'))
                     ->inlineLabel(),
                 Forms\Components\Placeholder::make('display_locked_by')
-                    ->content(fn (Model | ModelsContent $record) => $record->locked?->owner->name)
-                    // ->label(__('inspirecms::resources/content.locked_by.label'))
-                    ->label('Locked By')
+                    ->content(fn (Model | ModelsContent $record) => UIHelper::generateTextWithDescription(
+                        text: $record->locked?->owner->name,
+                        description: UIHelper::generateCopyableText(text: $record->locked?->owner->email)
+                    ))
+                    ->label(__('inspirecms::resources/content.locked_by.label'))
                     ->inlineLabel(),
             ]);
     }
@@ -996,7 +996,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                     }),
                 Forms\Components\Section::make()
                     ->columns(1)
-                    ->heading(__('inspirecms::resources/content.seo_og.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.seo_og.heading'))
                     ->aside()
                     ->statePath('seo')
                     ->schema(function () use ($createSeoField) {
@@ -1038,7 +1038,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                         return $components;
                     }),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.robots.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.robots.heading'))
                     ->aside()
                     ->statePath('robots')
                     ->schema([
@@ -1052,7 +1052,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                             ->helperText(__('inspirecms::resources/content.robots.nofollow.instructions')),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.redirect.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.redirect.heading'))
                     ->aside()
                     ->schema([
                         Forms\Components\TextInput::make('redirect_path')

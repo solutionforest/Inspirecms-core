@@ -17,9 +17,6 @@ return [
         'label' => 'Fields',
         'singular' => 'Field',
         'validation_attribute' => 'fields',
-        'section' => [
-            'label' => 'Fields',
-        ],
     ],
 
     'steps' => [
@@ -32,6 +29,9 @@ return [
     ],
 
     'details' => [
+        'fields' => [
+            'heading' => 'Fields',
+        ],
         'section' => [
             'heading' => 'Details',
         ],

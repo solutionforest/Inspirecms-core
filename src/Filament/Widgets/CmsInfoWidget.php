@@ -23,8 +23,7 @@ class CmsInfoWidget extends Widget implements GuardWidget
 
     public static function getPermissionDisplayName(): string
     {
-        // todo: add translation
-        return 'View CMS Info';
+        return strval(__('inspirecms::widgets.cms_info.permission_display_name'));
     }
 
     public function getDocumentUrl(): string

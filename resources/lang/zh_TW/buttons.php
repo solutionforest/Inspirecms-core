@@ -19,6 +19,10 @@ return [
         'label' => '返回',
     ],
 
+    'bulk_detach' => [
+        'label' => '批量分離',
+    ],
+
     'cancel' => [
         'label' => '取消',
     ],
@@ -96,6 +100,19 @@ return [
         ],
     ],
 
+    'edit_config' => [
+        'label' => '編輯配置',
+        'heading' => '編輯 :name 配置',
+    ],
+
+    'edit' => [
+        'label' => '編輯',
+    ],
+
+    'export' => [
+        'label' => '匯出',
+    ],
+
     'fix' => [
         'label' => '修復',
     ],
@@ -103,6 +120,24 @@ return [
     'import' => [
         'label' => '匯入',
         'heading' => '匯入',
+    ],
+
+    'lock_content' => [
+        'label' => '鎖定內容',
+        'messages' => [
+            'success' => [
+                'title' => __('inspirecms::messages.locked'),
+            ],
+        ],
+    ],
+
+    'move_to_under' => [
+        'label' => '移動到 :name 下',
+        'heading' => '移動到 :name 下',
+    ],
+
+    'move_to' => [
+        'label' => '移動到 ...',
     ],
 
     'more_actions' => [
@@ -192,6 +227,29 @@ return [
 
     'trash_bin' => [
         'label' => '垃圾桶',
+    ],
+
+    'update_content_route' => [
+        'label' => '更新路由',
+        'heading' => '更新路由',
+        'messages' => [
+            'success' => [
+                'title' => '路由已更新',
+            ],
+        ],
+    ],
+
+    'unlock_content' => [
+        'label' => '解鎖內容',
+        'messages' => [
+            'success' => [
+                'title' => '已解鎖'
+            ],
+            'not_owner_error' => [
+                'title' => '解鎖失敗',
+                'body' => '您不是鎖定者。',
+            ],
+        ],
     ],
 
     'unpublish' => [

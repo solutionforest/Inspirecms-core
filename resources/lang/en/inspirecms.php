@@ -4,11 +4,13 @@ return [
     'children' => 'Children',
     'content' => 'Content',
     'created_at' => 'Created at',
+    'created_by' => 'Created by',
     'dashboard' => 'Dashboard',
     'default' => 'Default',
     'deleted_at' => 'Deleted at',
     'document_type' => 'Document Type',
     'export' => 'Export',
+    'field' => 'Fields',
     'field_group' => 'Custom Fields',
     'id' => 'ID',
     'import' => 'Import',
@@ -19,6 +21,7 @@ return [
     'n/a' => 'N/A',
     'navigation' => 'Navigation',
     'order' => 'Order',
+    'others_xxx' => 'Others :name',
     'page' => 'Page',
     'publish_at_xxx' => 'Published at :time',
     'role' => 'Role',
@@ -43,6 +46,7 @@ return [
     'used_by' => 'Used by',
     'user' => 'User',
     'users' => 'Users',
+    'version' => 'Version',
 
     'page_status' => [
         'draft' => [

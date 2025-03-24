@@ -32,9 +32,8 @@ class SitemapGenerator implements SitemapGeneratorInterface
 
     public function sendFailedNotification(\Throwable $exception, $notifiables = [])
     {
-        // todo: add translation
         \Filament\Notifications\Notification::make()
-            ->title('Sitemap Generation Failed')
+            ->title(__('inspirecms::messages.sitemap_generation_failure'))
             ->danger()
             ->body($exception->getMessage())
             ->send();

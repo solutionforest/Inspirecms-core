@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use SolutionForest\InspireCms\Base\Enums\ExportStatus;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
 
@@ -11,9 +12,12 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?string $file_name
  * @property string $exporter
  * @property ?array $payload
- * @property ?\Carbon\Carbon $created_at
- * @property ?\Carbon\Carbon $finished_at
- * @property ?\Carbon\Carbon $failed_at
+ * @property ?\Carbon\CarbonInterface $created_at
+ * @property ?\Carbon\CarbonInterface $finished_at
+ * @property ?\Carbon\CarbonInterface $failed_at
+ * 
+ * @property-read ?ExportStatus $display_status
+ * @property-read ?ExportStatus $display_exporter
  */
 interface Export extends CanPrunable, HasAuthor
 {

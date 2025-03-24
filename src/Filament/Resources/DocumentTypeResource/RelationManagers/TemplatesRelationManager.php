@@ -72,15 +72,14 @@ class TemplatesRelationManager extends RelationManager
             Forms\Components\Hidden::make('record_id'),
             Forms\Components\Hidden::make('document_type_id'),
             TemplateResourceHelper::getThemeFormComponent()->disabled(),
-            // todo: add to translation
             Forms\Components\Tabs::make()
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Content')
+                    Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.content'))
                         ->schema([
                             TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
                             TemplateResourceHelper::getContentFormComponent('html_content'),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Instructions')
+                    Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.instructions'))
                         ->schema([
                             TemplateResourceHelper::getPropertyTypeInstructionsFormComponent(),
                         ]),

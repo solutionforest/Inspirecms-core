@@ -180,7 +180,7 @@ class CmsPanelProvider extends PanelProvider
                 //         'aria-label' => 'Reset Tour Guide',
                 //     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Version: ' . InspireCms::version())
+                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
                     ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
                     ->url('#')
                     ->extraAttributes([
