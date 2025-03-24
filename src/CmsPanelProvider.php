@@ -259,36 +259,36 @@ class CmsPanelProvider extends PanelProvider
             });
             \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
                 $action->icon(function (\Filament\Actions\EditAction $action) {
-                    return $action->isIconButton() 
+                    return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::edit')
                         : null;
                 });
             });
             \Filament\Actions\ViewAction::configureUsing(function (\Filament\Actions\ViewAction $action) {
                 $action->icon(function (\Filament\Actions\ViewAction $action) {
-                    return $action->isIconButton() 
-                        ? FilamentIcon::resolve('inspirecms::visible') 
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::visible')
                         : null;
                 });
             });
             \Filament\Actions\DeleteAction::configureUsing(function (\Filament\Actions\DeleteAction $action) {
                 $action->icon(function (\Filament\Actions\DeleteAction $action) {
-                    return $action->isIconButton() 
-                        ? FilamentIcon::resolve('inspirecms::delete') 
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::delete')
                         : null;
                 });
             });
             \Filament\Actions\ForceDeleteAction::configureUsing(function (\Filament\Actions\ForceDeleteAction $action) {
                 $action->icon(function (\Filament\Actions\ForceDeleteAction $action) {
-                    return $action->isIconButton() 
-                        ? FilamentIcon::resolve('inspirecms::delete') 
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::delete')
                         : null;
                 });
             });
             \Filament\Actions\RestoreAction::configureUsing(function (\Filament\Actions\RestoreAction $action) {
                 $action->icon(function (\Filament\Actions\RestoreAction $action) {
-                    return $action->isIconButton() 
-                        ? FilamentIcon::resolve('inspirecms::restore') 
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::restore')
                         : null;
                 });
             });

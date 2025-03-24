@@ -27,7 +27,7 @@ class MoveContentAction extends Action
         $this->label(fn () => __('inspirecms::buttons.move_to_under.label', [
             'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
         ]));
-        
+
         $this->modalHeading(fn () => __('inspirecms::buttons.move_to_under.heading', [
             'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
         ]));

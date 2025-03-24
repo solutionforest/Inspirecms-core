@@ -644,19 +644,20 @@ class ContentResource extends Resource implements ClusterSectionResource
                     $text = __('inspirecms::inspirecms.n/a');
                 }
                 $url = $documentType ? FilamentResourceHelper::attemptToGetUrl(
-                    resource: InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class), 
-                    pages: ['edit', 'view'], 
-                    parameters: ['record' => $documentType], 
-                    autorizeAction: true) : null;
+                    resource: InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class),
+                    pages: ['edit', 'view'],
+                    parameters: ['record' => $documentType],
+                    autorizeAction: true
+                ) : null;
                 if (! $url) {
                     return $text;
                 }
 
                 return UIHelper::generateTextWithIconButton(
-                    text: $text, 
-                    icon: FilamentIcon::resolve('inspirecms::goto'), 
-                    color: 'gray', 
-                    size: 'sm', 
+                    text: $text,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
                     url: $url,
                     linkTarget: '_blank',
                 );
@@ -869,10 +870,10 @@ class ContentResource extends Resource implements ClusterSectionResource
                 );
 
                 return UIHelper::generateCopyableTextWithIconButton(
-                    text: $record->parent_id, 
-                    icon: FilamentIcon::resolve('inspirecms::goto'), 
-                    color: 'gray', 
-                    size: 'sm', 
+                    text: $record->parent_id,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
                     url: $url,
                     linkTarget: '_blank',
                 );
@@ -900,11 +901,11 @@ class ContentResource extends Resource implements ClusterSectionResource
                 }
 
                 return UIHelper::generateCopyableTextWithIconButton(
-                    text: $url, 
-                    icon: FilamentIcon::resolve('inspirecms::goto'), 
-                    color: 'gray', 
-                    size: 'sm', 
-                    url: $url, 
+                    text: $url,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
+                    url: $url,
                     linkTarget: '_blank',
                 );
             });

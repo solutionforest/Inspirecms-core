@@ -243,7 +243,7 @@ return [
         'label' => '解鎖內容',
         'messages' => [
             'success' => [
-                'title' => '已解鎖'
+                'title' => '已解鎖',
             ],
             'not_owner_error' => [
                 'title' => '解鎖失敗',

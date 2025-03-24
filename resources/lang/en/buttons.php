@@ -243,11 +243,11 @@ return [
         'label' => 'Unlock content',
         'messages' => [
             'success' => [
-                'title' => 'Unlocked'
+                'title' => 'Unlocked',
             ],
             'not_owner_error' => [
                 'title' => 'Unlock failed',
-                'body'  => 'You are not the owner of the lock.',
+                'body' => 'You are not the owner of the lock.',
             ],
         ],
     ],

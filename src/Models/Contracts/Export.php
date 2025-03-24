@@ -15,7 +15,6 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $finished_at
  * @property ?\Carbon\CarbonInterface $failed_at
- * 
  * @property-read ?ExportStatus $display_status
  * @property-read ?ExportStatus $display_exporter
  */

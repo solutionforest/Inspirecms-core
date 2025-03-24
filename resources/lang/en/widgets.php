@@ -12,7 +12,7 @@ return [
             'description' => 'This is the default page for the website.',
         ],
         'create_content' => [
-            'title' => 'Create '  . str(__('inspirecms::inspirecms.content'))->title()->toString(),
+            'title' => 'Create ' . str(__('inspirecms::inspirecms.content'))->title()->toString(),
             'description' => 'Create a new content page.',
             'message' => 'Use this section to create new content for your content management system. This allows you to add fresh and relevant information to your site, keeping it up-to-date and engaging for your audience.',
         ],

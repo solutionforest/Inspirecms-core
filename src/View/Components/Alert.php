@@ -82,7 +82,7 @@ class Alert extends Component implements Htmlable
             'success' => FilamentIcon::resolve('inspirecms::success') ?? 'heroicon-o-check-circle',
             'error', 'danger' => FilamentIcon::resolve('inspirecms::error') ?? 'heroicon-o-exclamation-circle',
             'warning', 'warn' => FilamentIcon::resolve('inspirecms::warn') ?? 'heroicon-o-exclamation-triangle',
-            default =>  FilamentIcon::resolve('inspirecms::info') ?? 'heroicon-o-information-circle',
+            default => FilamentIcon::resolve('inspirecms::info') ?? 'heroicon-o-information-circle',
         };
     }
 

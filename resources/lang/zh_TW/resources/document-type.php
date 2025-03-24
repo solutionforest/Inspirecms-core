@@ -32,7 +32,7 @@ return [
     'inherited_from' => [
         'label' => '繼承自',
     ],
-    
+
     'templates' => [
         'label' => '模板',
         'validation_attribute' => '模板',

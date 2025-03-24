@@ -16,11 +16,11 @@ use Stringable;
 class UIHelper
 {
     /**
-     * @param AttributeArray $attributes
+     * @param  AttributeArray  $attributes
      */
     public static function generateIcon(?string $icon, ?string $color = null, int $width = 5, array $attributes = []): HtmlString
     {
-        if (!filled($icon)) {
+        if (! filled($icon)) {
             return new HtmlString('');
         }
 
@@ -29,7 +29,7 @@ class UIHelper
 
         $data = [
             ...compact($bindings),
-            ... $props,
+            ...$props,
         ];
 
         $attributes = static::mergeAttributes($attributes, [
@@ -42,14 +42,14 @@ class UIHelper
                 \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray' && filled($color),
             ]),
         ]);
-        
+
         $template = static::buildComponentTemplate(componentName: 'filament::icon', bindings: $bindings, props: $props, attributes: $attributes);
 
         return str(Blade::render($template, $data))->toHtmlString();
     }
 
     /**
-     * @param AttributeArray $attributes
+     * @param  AttributeArray  $attributes
      */
     public static function generateBooleanIcon(bool $condition, ?string $trueIcon = 'heroicon-m-check-circle', ?string $falseIcon = 'heroicon-m-x-circle', string $trueColor = 'success', string $falseColor = 'danger', array $attributes = []): HtmlString
     {
@@ -62,7 +62,7 @@ class UIHelper
     }
 
     /**
-     * @param array{btn:?AttributeArray,icon:?AttributeArray} $attributes
+     * @param  array{btn:?AttributeArray,icon:?AttributeArray}  $attributes
      */
     public static function generateIconButton(?string $icon, string $color = 'primary', string $size = 'md', string $url = '', array $attributes = []): HtmlString
     {
@@ -75,7 +75,7 @@ class UIHelper
 
         $data = [
             ...compact($bindings),
-            ... $props,
+            ...$props,
         ];
 
         $template = static::buildComponentTemplate(
@@ -90,7 +90,7 @@ class UIHelper
     }
 
     /**
-     * @param array{text:?AttributeArray,icon:?AttributeArray} $attributes
+     * @param  array{text:?AttributeArray,icon:?AttributeArray}  $attributes
      */
     public static function generateTextWithIcon(string $text, ?string $icon, ?string $iconColor = null, IconPosition | string $iconPosition = IconPosition::Before, int $iconWidth = 5, array $attributes = []): HtmlString
     {
@@ -101,19 +101,21 @@ class UIHelper
         $haveIcon = filled(strval($iconHtml));
 
         return str(static::wrapWithHtmlTag($text, 'span', $attributes['text'] ?? []))
-            ->when($haveIcon, fn ($str) => $str
-                ->when(
-                    $iconPosition == IconPosition::After,
-                    fn ($str) => $str->finish($iconHtml->toHtml()),
-                    fn ($str) => $str->prepend($iconHtml->toHtml())
-                )
+            ->when(
+                $haveIcon,
+                fn ($str) => $str
+                    ->when(
+                        $iconPosition == IconPosition::After,
+                        fn ($str) => $str->finish($iconHtml->toHtml()),
+                        fn ($str) => $str->prepend($iconHtml->toHtml())
+                    )
             )
             ->wrap('<div class="flex items-center gap-2">', '</div>')
             ->toHtmlString();
     }
 
     /**
-     * @param array{text:?AttributeArray,btn:?AttributeArray} $attributes
+     * @param  array{text:?AttributeArray,btn:?AttributeArray}  $attributes
      */
     public static function generateTextWithIconButton(string $text, ?string $icon, string $color = 'primary', string $size = 'md', string $url = '', string $linkTarget = '', array $attributes = []): HtmlString
     {
@@ -127,7 +129,7 @@ class UIHelper
     }
 
     /**
-     * @param array{text:?AttributeArray,btn:?AttributeArray} $attributes
+     * @param  array{text:?AttributeArray,btn:?AttributeArray}  $attributes
      */
     public static function generateCopyableTextWithIconButton(string $text, ?string $icon, string $color = 'primary', string $size = 'md', string $url = '', string $linkTarget = '', array $attributes = []): HtmlString
     {
@@ -141,7 +143,7 @@ class UIHelper
     }
 
     /**
-     * @param AttributeArray $attributes
+     * @param  AttributeArray  $attributes
      */
     public static function generateCopyableText(string $text, array $attributes = []): HtmlString
     {
@@ -162,12 +164,12 @@ class UIHelper
 </span>
 HTML;
 
-    return str(static::wrapWithHtmlTag($template, 'div', $attributes))->toHtmlString();
+        return str(static::wrapWithHtmlTag($template, 'div', $attributes))->toHtmlString();
 
     }
 
     /**
-     * @param AttributeArray $attributes
+     * @param  AttributeArray  $attributes
      */
     public static function generateBadge(string $text, string $color = 'primary', ?string $icon = null, array $attributes = []): HtmlString
     {
@@ -176,9 +178,9 @@ HTML;
 
         $data = [
             ...compact($bindings),
-            ... $props,
+            ...$props,
         ];
-        
+
         $template = static::buildComponentTemplate(
             componentName: 'filament::badge',
             bindings: $bindings,
@@ -191,7 +193,7 @@ HTML;
     }
 
     /**
-     * @param array{text:?AttributeArray,badge:?AttributeArray} $attributes
+     * @param  array{text:?AttributeArray,badge:?AttributeArray}  $attributes
      */
     public static function generateTextWithBadge(string $text, string $badgeText, string $color = 'primary', ?string $icon = null, array $attributes = []): HtmlString
     {
@@ -202,7 +204,7 @@ HTML;
     }
 
     /**
-     * @param array{ctn:?AttributeArray,img:?AttributeArray} $attributes
+     * @param  array{ctn:?AttributeArray,img:?AttributeArray}  $attributes
      */
     public static function generateCircularImage(string $src, string $alt, array $attributes = []): HtmlString
     {
@@ -222,13 +224,13 @@ HTML;
     }
 
     /**
-     * @param array{text:?AttributeArray,description:?AttributeArray} $attributes
+     * @param  array{text:?AttributeArray,description:?AttributeArray}  $attributes
      */
     public static function generateTextWithDescription(string $text, ?string $description = null, array $attributes = []): HtmlString
     {
         $textAttributes = $attributes['text'] ?? [];
         $descriptionAttributes = static::mergeAttributes($attributes['description'] ?? [], ['class' => 'text-xs text-gray-500']);
-        
+
         return str(static::wrapWithHtmlTag($text, 'span', $textAttributes))
             ->finish(static::wrapWithHtmlTag($description, 'span', $descriptionAttributes))
             ->wrap('<div class="flex flex-col">', '</div>')
@@ -268,7 +270,7 @@ blade;
     {
         $attributesBag = new ComponentAttributeBag(Arr::wrap($attributes));
 
-        return  collect($attributesBag->getAttributes())
+        return collect($attributesBag->getAttributes())
             ->map(fn ($value, $key) => "{$key}=\"$value\"")
             ->implode(' ');
     }
@@ -276,6 +278,7 @@ blade;
     private static function wrapWithHtmlTag(string $html, string $tag, array $attributes = []): Stringable
     {
         $attributeReplacement = static::buildAttributeReplacement($attributes);
+
         return str($html)
             ->wrap('<{{ tag }}{{ attributes }}>', '</{{ tag }}>')
             ->replace(['{{ tag }}', '{{ attributes }}'], [$tag, filled($attributeReplacement) ? ' ' . $attributeReplacement : '']);
@@ -293,6 +296,7 @@ blade;
                 $attributes[$key] = $value;
             }
         }
+
         return $attributes;
     }
 }

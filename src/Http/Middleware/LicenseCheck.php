@@ -6,7 +6,6 @@ use Closure;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\View\Components\Alert;
 
@@ -39,12 +38,13 @@ class LicenseCheck
     private function addWarningAlert()
     {
         FilamentView::registerRenderHook(
-            PanelsRenderHook::BODY_START ,
+            PanelsRenderHook::BODY_START,
             function () {
                 $alert = Alert::make(fn () => (string) __('inspirecms::messages.invalid_license'), 'warn', 'sm')
                     ->withAttributes([
                         'class' => 'top-alert',
                     ]);
+
                 return $alert->render();
             }
         );

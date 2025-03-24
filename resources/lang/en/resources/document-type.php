@@ -32,7 +32,7 @@ return [
     'inherited_from' => [
         'label' => 'Inherited from',
     ],
-    
+
     'templates' => [
         'label' => 'Templates',
         'validation_attribute' => 'templates',

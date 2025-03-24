@@ -235,11 +235,13 @@ class SeoDto extends BaseDto
                     if (is_array($value)) {
                         $value = $value[0] ?? null;
                     }
+
                     break;
                 case 'meta_keywords':
                     if (is_array($value)) {
                         $value = implode(', ', $value);
                     }
+
                     break;
             }
 

@@ -62,7 +62,7 @@ return [
     'locked_by' => [
         'label' => 'Locked by',
     ],
-    
+
     'seo' => [
         'meta_title' => [
             'label' => 'Meta Title',
@@ -111,7 +111,7 @@ return [
             'instructions' => 'Prevent search engines from following links on this content',
         ],
     ],
-    
+
     'redirect' => [
         'redirect_path' => [
             'label' => 'Redirect Path',

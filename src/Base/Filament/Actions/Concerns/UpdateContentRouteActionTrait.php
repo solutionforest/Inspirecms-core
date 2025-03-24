@@ -98,7 +98,7 @@ trait UpdateContentRouteActionTrait
                                     ->placeholder(__('inspirecms::resources/content.routes.language_id.placeholder'))
                                     ->options(collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(fn ($langDto) => [$langDto->id => $langDto->code]))
                                     ->markAsRequired(),
-        
+
                                 Forms\Components\TextInput::make('uri')
                                     ->label(__('inspirecms::resources/content.routes.uri.label'))
                                     ->validationAttribute(__('inspirecms::resources/content.routes.uri.validation_attribute'))
@@ -116,8 +116,8 @@ trait UpdateContentRouteActionTrait
                             ->valueLabel(__('inspirecms::resources/content.routes.regex_constraints.value_label'))
                             ->keyPlaceholder('{slug}')
                             ->valuePlaceholder('^[a-z0-9-]+$')
-                            ->hint(fn () => 
-                                str(__('inspirecms::resources/content.routes.regex_constraints.hints', ['examples' => collect($factory->getDefaultRouteConstraints())->take(2)->merge(['id' => '[0-9]+'])->map(fn ($v, $k) => "{{$k}} = {$v}")->values()->join(' ; ', ' ; ')]))
+                            ->hint(
+                                fn () => str(__('inspirecms::resources/content.routes.regex_constraints.hints', ['examples' => collect($factory->getDefaultRouteConstraints())->take(2)->merge(['id' => '[0-9]+'])->map(fn ($v, $k) => "{{$k}} = {$v}")->values()->join(' ; ', ' ; ')]))
                                     ->finish('<br/>')
                                     ->finish(__('inspirecms::messages.please_refer_to_doc_link', ['link' => $regexConstraintsDocLink]))
                                     ->toHtmlString()

@@ -5,9 +5,9 @@ namespace SolutionForest\InspireCms\Licensing;
 class LicenseVerificationResult
 {
     /**
-     * @param bool $isSuccess Whether the license verification was successful
-     * @param string $message The verification message or error details
-     * @param bool $isOnline Whether the license verification was performed online
+     * @param  bool  $isSuccess  Whether the license verification was successful
+     * @param  string  $message  The verification message or error details
+     * @param  bool  $isOnline  Whether the license verification was performed online
      */
     public function __construct(
         protected bool $isSuccess,
@@ -17,8 +17,6 @@ class LicenseVerificationResult
 
     /**
      * Check if the license verification was successful.
-     *
-     * @return bool
      */
     public function isSuccess(): bool
     {
@@ -27,8 +25,6 @@ class LicenseVerificationResult
 
     /**
      * Get the verification message.
-     *
-     * @return string
      */
     public function getMessage(): string
     {
@@ -37,9 +33,6 @@ class LicenseVerificationResult
 
     /**
      * Create a successful online verification result.
-     *
-     * @param ?string $message
-     * @return static
      */
     public static function successOnline(?string $message = null): static
     {
@@ -48,9 +41,6 @@ class LicenseVerificationResult
 
     /**
      * Create a successful offline verification result.
-     *
-     * @param ?string $message
-     * @return static
      */
     public static function successOffline(?string $message = null): static
     {
@@ -59,9 +49,6 @@ class LicenseVerificationResult
 
     /**
      * Create a failed online verification result.
-     *
-     * @param string $message
-     * @return static
      */
     public static function failureOnline(string $message): static
     {
@@ -70,9 +57,6 @@ class LicenseVerificationResult
 
     /**
      * Create a failed offline verification result.
-     *
-     * @param string $message
-     * @return static
      */
     public static function failureOffline(string $message): static
     {
@@ -81,8 +65,6 @@ class LicenseVerificationResult
 
     /**
      * Convert the result to an array.
-     *
-     * @return array
      */
     public function toArray(): array
     {

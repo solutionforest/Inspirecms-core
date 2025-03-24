@@ -228,7 +228,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return collect([
 
             'preview' => 'heroicon-o-eye',
-            
+
             'visible' => 'heroicon-m-eye',
             'invisiable' => 'heroicon-o-eye-slash',
             'locked' => 'heroicon-o-lock-closed',
@@ -270,7 +270,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'fields' => view('inspirecms::icons.fields'),
             'templates' => view('inspirecms::icons.templates'),
             'document_type' => view('inspirecms::icons.document-type'),
-            
+
         ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }
 

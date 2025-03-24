@@ -156,7 +156,7 @@ class Export extends BaseModel implements ExportContract
                     return ExportStatus::Failed;
                 } elseif ($finished !== null) {
                     return ExportStatus::Finished;
-                } elseif (!empty($processingMsg)) {
+                } elseif (! empty($processingMsg)) {
                     return ExportStatus::InProgress;
                 } else {
                     return ExportStatus::Pending;

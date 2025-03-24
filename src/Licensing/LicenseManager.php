@@ -10,12 +10,13 @@ use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use SolutionForest\InspireCms\Events\Licensing\LicensesRefreshed;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Licensing\LicenseVerificationResult;
 
 class LicenseManager
 {
     const ENDPOINT = 'https://api.inspirecms.com/v1/license/verify';
+
     const REQUEST_TIMEOUT = 5;
+
     const CACHE_KEY_PREFIX = 'license:';
 
     private $cacheManager;
@@ -38,31 +39,31 @@ class LicenseManager
         try {
 
             // Try to verify the license online first
-            
+
             $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $this->payload());
 
             if ($response->successful()) {
                 $data = $response->json();
-                
+
                 // Save verification file for offline use
                 if (isset($data['verification_file'])) {
                     $this->saveLicenseFile($data['verification_file']);
                 }
-                
+
                 // Cache the result
                 $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
                 $this->cache()->put($cacheKey, $result, now()->addHours(24));
-                
+
                 return $result;
             }
-            
+
             // If online verification fails, fall back to offline verification
             return $this->verifyOffline();
 
         } catch (\Throwable $th) {
 
             logger()->warning('Failed to verify license online', ['exception' => $th]);
-            
+
             // If online verification fails, try to verify the license offline
             return $this->verifyOffline();
 
@@ -86,7 +87,7 @@ class LicenseManager
      */
     protected function verifyOffline()
     {
-        if (!$this->usingLicenseKeyFile()) {
+        if (! $this->usingLicenseKeyFile()) {
             return LicenseVerificationResult::failureOffline('License file not found');
         }
 
@@ -131,7 +132,7 @@ class LicenseManager
         if (function_exists('php_uname')) {
             return md5(php_uname());
         }
-        
+
         // Fallback if php_uname is disabled
         return md5($_SERVER['HTTP_HOST'] . $_SERVER['SERVER_ADDR'] ?? '');
     }
@@ -139,6 +140,7 @@ class LicenseManager
     protected function calculateChecksum(array $data): string
     {
         $checksumData = $data['license_key'] . $data['domain'] . $data['expiry_date'];
+
         return hash_hmac('sha256', $checksumData, $this->getSecretKey());
     }
 

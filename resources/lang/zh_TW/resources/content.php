@@ -62,7 +62,7 @@ return [
     'locked_by' => [
         'label' => '鎖定者',
     ],
-    
+
     'seo' => [
         'meta_title' => [
             'label' => 'Meta 標題',
@@ -158,7 +158,7 @@ return [
             'instructions' => '選擇內容的更改頻率',
         ],
     ],
-    
+
     'routes' => [
         'is_default_pattern' => [
             'label' => '是否為預設模式',
