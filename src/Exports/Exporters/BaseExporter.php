@@ -30,7 +30,7 @@ abstract class BaseExporter
 
     public static function getLabel(): string
     {
-        return str(static::class)->classBasename()->studly()->toString();
+        return str(static::class)->classBasename()->snake()->replace('_', ' ')->apa()->toString();
     }
 
     /**

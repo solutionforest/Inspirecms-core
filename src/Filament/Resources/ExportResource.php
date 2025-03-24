@@ -131,11 +131,7 @@ class ExportResource extends Resource implements ClusterSectionResource
 
     public static function form(Form $form): Form
     {
-        $exporters = collect([
-            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
-        ])
+        $exporters = collect(InspireCmsConfig::get('exports.exporters', []))
             ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
             ->all();
 
