@@ -347,6 +347,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $guardName = AuthHelper::guardName();
         $authProvider = AuthHelper::providerName();
+        $passwordBroker = AuthHelper::passwordBrokerName();
 
         if (! array_key_exists($authProvider, config('auth.providers'))) {
 
@@ -369,6 +370,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ]), ['driver', 'provider']);
 
             config()->set('auth.guards.' . $guardName, $guardConfig);
+        }
+
+        if (AuthHelper::enablePasswordReset() && ! array_key_exists($passwordBroker, config('auth.passwords'))) {
+
+            $passwordConfig = Arr::only(InspireCmsConfig::get('auth.resetting_password', [
+                'provider' => $authProvider,
+                'table' => 'password_reset_tokens',
+                'expire' => 60,
+                'throttle' => 60,
+            ]), ['provider', 'table', 'expire', 'throttle']);
+
+            config()->set('auth.passwords.' . $passwordBroker, $passwordConfig);
+
         }
     }
 

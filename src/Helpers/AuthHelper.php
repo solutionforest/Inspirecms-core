@@ -16,6 +16,16 @@ class AuthHelper
         return InspireCmsConfig::get('auth.provider.name', 'cms_users');
     }
 
+    public static function enablePasswordReset(): bool
+    {
+        return boolval(InspireCmsConfig::get('auth.resetting_password.enabled', true));
+    }
+
+    public static function passwordBrokerName(): string
+    {
+        return InspireCmsConfig::get('auth..resetting_password.provider', 'inspirecms');
+    }
+
     public static function maxAttempts(): int
     {
         return intval(InspireCmsConfig::get('auth.failed_login_attempts', 5));

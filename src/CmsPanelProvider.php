@@ -49,8 +49,15 @@ class CmsPanelProvider extends PanelProvider
             ->theme('inspirecms')
             ->font(ThemeConfig::fontFamily())
             ->colors(ThemeConfig::colors())
-            ->maxContentWidth('full')
-            ->resources(InspireCmsConfig::get('filament.resources'))
+            ->maxContentWidth('full');
+
+        if (AuthHelper::enablePasswordReset()) {
+            $panel = $panel
+                ->passwordReset()
+                ->authPasswordBroker(AuthHelper::passwordBrokerName());
+        }
+
+        $panel = $panel->resources(InspireCmsConfig::get('filament.resources'))
             ->pages([
                 ...array_values(InspireCmsConfig::get('filament.pages')),
                 ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()

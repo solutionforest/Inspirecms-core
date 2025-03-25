@@ -28,6 +28,14 @@ return [
             'driver' => 'eloquent',
             'model' => \SolutionForest\InspireCms\Models\User::class,
         ],
+        'resetting_password' => [
+            'enabled' => true,
+            'name' => 'inspirecms',
+            'provider' => 'cms_users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
 
         'failed_login_attempts' => 5,
 
