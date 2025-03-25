@@ -22,6 +22,7 @@ use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
@@ -39,7 +40,7 @@ class CmsPanelProvider extends PanelProvider
             ->path(InspireCmsConfig::get('filament.path', 'cms'))
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
-            ->authGuard(InspireCmsConfig::getGuardName())
+            ->authGuard(AuthHelper::guardName())
             ->login(Pages\Auth\Login::class)
             ->registration(Pages\Auth\Register::class)
             ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')

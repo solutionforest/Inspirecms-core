@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
@@ -140,7 +141,7 @@ class Register extends BasePage
     {
         try {
             // Assign "Admininistrator" role
-            $guardName = InspireCmsConfig::getGuardName();
+            $guardName = AuthHelper::guardName();
             $roleClass = InspireCmsConfig::getRoleModelClass();
 
             $role = $roleClass::findByName(PermissionManifest::getSuperAdminRoleName(), $guardName);

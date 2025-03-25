@@ -80,12 +80,12 @@ trait CmsUserTrait
 
     public function isSuperAdmin()
     {
-        return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
+        return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), AuthHelper::guardName());
     }
 
     public function getDefaultGuardName(): string
     {
-        return InspireCmsConfig::getGuardName();
+        return AuthHelper::guardName();
     }
 
     /**

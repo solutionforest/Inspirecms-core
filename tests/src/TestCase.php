@@ -18,6 +18,7 @@ use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
 use SolutionForest\InspireCms\Facades\ModelManifest;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\InspireCmsServiceProvider;
@@ -87,7 +88,7 @@ abstract class TestCase extends Orchestra
         ]);
         $app['config']->set('auth.guards.inspirecms', [
             'driver' => 'session',
-            'provider' => InspireCmsConfig::getGuardName(),
+            'provider' => AuthHelper::guardName(),
         ]);
 
         // Extra resources
@@ -206,6 +207,6 @@ abstract class TestCase extends Orchestra
     {
         $user = User::first();
 
-        return $this->actingAs($user, InspireCmsConfig::getGuardName());
+        return $this->actingAs($user, AuthHelper::guardName());
     }
 }

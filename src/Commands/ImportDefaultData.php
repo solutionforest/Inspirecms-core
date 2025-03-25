@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
@@ -83,7 +84,7 @@ class ImportDefaultData extends Command
 
             // Add example roles
             $roleClass = InspireCmsConfig::getRoleModelClass();
-            $guardName = InspireCmsConfig::getGuardName();
+            $guardName = AuthHelper::guardName();
             $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
 
             $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);

@@ -21,6 +21,7 @@ use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
@@ -344,8 +345,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerAuthGuard(): void
     {
-        $guardName = InspireCmsConfig::getGuardName();
-        $authProvider = InspireCmsConfig::getAuthProvider();
+        $guardName = AuthHelper::guardName();
+        $authProvider = AuthHelper::providerName();
 
         if (! array_key_exists($authProvider, config('auth.providers'))) {
 

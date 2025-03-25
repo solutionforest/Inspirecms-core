@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Filament\Pages\Auth\Register;
 use SolutionForest\InspireCms\Filament\Pages\Export;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Controllers\ContentController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
@@ -54,11 +55,8 @@ class InspireCms
      */
     public function needInstall(): bool
     {
-        // region Check user table not empty
-        $guard = InspireCmsConfig::getGuardName();
-
         /** @var ?EloquentUserProvider $provider */
-        $provider = auth($guard)?->getProvider();
+        $provider = auth(AuthHelper::guardName())?->getProvider();
 
         if (! $provider) {
             throw new \Exception('Authentication provider not found for guard: ' . $guard);
@@ -66,7 +64,6 @@ class InspireCms
         if ($provider->getModel()::count() <= 0) {
             return true;
         }
-        // endregion Check user table not empty
 
         return false;
     }

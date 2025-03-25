@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TieredPermissionsRepeater;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource\Pages;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource\RelationManagers;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Contracts\Role as RoleContract;
@@ -231,7 +232,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     {
         return parent::getEloquentQuery()
             ->with('permissions')
-            ->where('guard_name', InspireCmsConfig::getGuardName());
+            ->where('guard_name', AuthHelper::guardName());
     }
 
     // region Global search
@@ -251,7 +252,7 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::resources/role.name.label'))
             ->validationAttribute(__('inspirecms::resources/role.name.validation_attribute'))
             ->unique(table: static::getModel(), column: 'name', ignoreRecord: true, modifyRuleUsing: function (Unique $rule) {
-                return $rule->where('guard_name', InspireCmsConfig::getGuardName());
+                return $rule->where('guard_name', AuthHelper::guardName());
             })
             ->required();
     }
@@ -263,7 +264,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Hidden::make('guard_name')
             ->dehydratedWhenHidden(true)
-            ->dehydrateStateUsing(fn () => InspireCmsConfig::getGuardName());
+            ->dehydrateStateUsing(fn () => AuthHelper::guardName());
     }
 
     protected static function getFormComponentForClusterSection($name = 'cluster_section_access')

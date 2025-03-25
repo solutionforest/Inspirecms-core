@@ -19,16 +19,6 @@ class InspireCmsConfig
         config()->set("inspirecms.{$key}", $value);
     }
 
-    public static function getGuardName(): string
-    {
-        return static::get('auth.guard.name', 'inspirecms');
-    }
-
-    public static function getAuthProvider(): string
-    {
-        return static::get('auth.provider.name', 'cms_users');
-    }
-
     public static function getPanelId(): string
     {
         return static::get('panel.id', 'inspirecms');

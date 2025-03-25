@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -126,7 +127,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     {
         // check permissions exist
         $permissionModel = InspireCmsConfig::getPermissionModelClass();
-        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
+        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(AuthHelper::guardName())->pluck('name')->toArray();
 
         return array_diff($permissions, $existingPermissions);
     }
