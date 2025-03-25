@@ -155,7 +155,7 @@ class ImportResource extends Resource implements ClusterSectionResource
 
                 Forms\Components\Actions::make([
                     DownloadSampleAction::make()
-                        ->url(fn () => UrlHelper::attemptToGetRouteFromPanel('import.sample')),
+                        ->url(fn () => UrlHelper::attemptToGetRoute('inspirecms.import.sample')),
                 ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import.file_structure_instructions.label'))

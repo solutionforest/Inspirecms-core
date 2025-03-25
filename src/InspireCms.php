@@ -73,7 +73,7 @@ class InspireCms
 
     public function getInstallUrl(): ?string
     {
-        return Filament::getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
+        return Filament::getPanel(InspireCmsConfig::getPanelId())?->getRegistrationUrl();
     }
 
     public function getImportDataUrl(bool $authorize = true): ?string

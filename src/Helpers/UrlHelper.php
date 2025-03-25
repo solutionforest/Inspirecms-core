@@ -25,7 +25,7 @@ class UrlHelper
         throw new \Exception('Invalid encoding type');
     }
 
-    public static function attemptToGetRouteFromPanel(string $routeName, array $parameters = [], bool $authorizeAction = true): ?string
+    public static function attemptToGetRouteFromPanel(string $routeName, array $parameters = []): ?string
     {
         try {
 
@@ -33,6 +33,19 @@ class UrlHelper
             $panel = filament()->getPanel($panelId);
 
             return $panel?->route($routeName, $parameters);
+        } catch (\Throwable $th) {
+            //
+        }
+
+        return null;
+    }
+
+    public static function attemptToGetRoute(string $routeName, array $parameters = [], bool $authorizeAction = true): ?string
+    {
+        try {
+
+            return route($routeName, $parameters);
+            
         } catch (\Throwable $th) {
             //
         }

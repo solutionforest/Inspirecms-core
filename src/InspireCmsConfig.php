@@ -29,6 +29,11 @@ class InspireCmsConfig
         return static::get('auth.provider.name', 'cms_users');
     }
 
+    public static function getPanelId(): string
+    {
+        return static::get('panel.id', 'inspirecms');
+    }
+
     /**
      * @param  null|class-string<\Filament\Resources\Resource>  $default
      * @return class-string<\Filament\Resources\Resource>

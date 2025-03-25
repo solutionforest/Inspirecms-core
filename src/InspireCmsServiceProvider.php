@@ -87,6 +87,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
+
+        if (file_exists($package->basePath('/../resources/routes'))) {
+            $package->hasRoutes($this->getRoutes());
+        }
     }
 
     public function registeringPackage(): void
@@ -263,7 +267,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getRoutes(): array
     {
-        return [];
+        return [
+            'inspirecms',
+        ];
     }
 
     /**

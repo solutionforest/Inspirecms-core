@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms;
 
-use Closure;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
@@ -17,7 +16,6 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
@@ -37,7 +35,7 @@ class CmsPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         $panel = $panel
-            ->id(InspireCmsConfig::get('filament.panel_id', 'cms'))
+            ->id(InspireCmsConfig::getPanelId())
             ->path(InspireCmsConfig::get('filament.path', 'cms'))
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
@@ -46,7 +44,6 @@ class CmsPanelProvider extends PanelProvider
             ->registration(Pages\Auth\Register::class)
             ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')
             ->profile(Pages\Auth\EditProfile::class)
-            ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
             ->theme('inspirecms')
             ->font(ThemeConfig::fontFamily())
@@ -312,15 +309,6 @@ class CmsPanelProvider extends PanelProvider
         return $panel->livewireComponents([
             ListImportNExport::class,
         ]);
-    }
-
-    protected function getExtraRoutes(): ?Closure
-    {
-        return function (Panel $panel) {
-            Route::name('import.')->prefix('import')->group(function () {
-                Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
-            });
-        };
     }
 
     protected function replaceViewComponents()
