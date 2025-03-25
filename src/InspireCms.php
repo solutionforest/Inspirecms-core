@@ -14,8 +14,9 @@ use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Install;
+use SolutionForest\InspireCms\Filament\Pages\Auth\Register;
 use SolutionForest\InspireCms\Filament\Pages\Export;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Controllers\ContentController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
@@ -75,17 +76,21 @@ class InspireCms
         return Filament::getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route(Install::getRouteSlug());
     }
 
-    public function getImportDataUrl(): ?string
+    public function getImportDataUrl(bool $authorize = true): ?string
     {
         try {
 
-            return Export::getUrl(
-                panel: InspireCmsConfig::get('filament.panel_id', 'cms')
-            );
+            if ($authorize && Export::canAccess()) {
+                return Export::getUrl(
+                    panel: InspireCmsConfig::get('filament.panel_id', 'cms')
+                );
+            }
 
         } catch (RouteNotFoundException $th) {
-            return null;
+            //
         }
+
+        return null;
     }
 
     /**

@@ -168,6 +168,18 @@ HTML;
 
     }
 
+    public static function generateTooltip(?string $text, ?string $tooltip, array $attributes = []): HtmlString
+    {
+        if (blank($tooltip)) {
+            return str($text)->toHtmlString();
+        }
+        $attributes = static::mergeAttributes($attributes, [
+            'x-tooltip' => "{content: '{$tooltip}', theme: \$store.theme}",
+        ]);
+
+        return str(static::wrapWithHtmlTag($text, 'span', $attributes))->toHtmlString();
+    }
+
     /**
      * @param  AttributeArray  $attributes
      */
@@ -235,6 +247,21 @@ HTML;
             ->finish(static::wrapWithHtmlTag($description, 'span', $descriptionAttributes))
             ->wrap('<div class="flex flex-col">', '</div>')
             ->toHtmlString();
+    }
+
+    /**
+     * @param  AttributeArray  $attributes
+     */
+    public static function generateLink(string $text, ?string $link, array $attributes = []): HtmlString
+    {
+        $template = static::buildComponentTemplate(
+            componentName: 'filament::link',
+            bindings: ['href'],
+            attributes: $attributes,
+            slot: $text,
+        );
+
+        return str(Blade::render($template, ['href' => $link]))->toHtmlString();
     }
 
     private static function buildComponentTemplate($componentName, $props = [], $bindings = [], $attributes = [], $slot = null)

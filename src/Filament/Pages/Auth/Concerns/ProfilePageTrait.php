@@ -7,11 +7,14 @@ use Filament\Forms\Form;
 use Filament\Pages\Concerns;
 use Filament\Panel;
 use Filament\Support\Enums\Alignment;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use SolutionForest\InspireCms\Base\Enums\UserActivity;
 use SolutionForest\InspireCms\Facades\LocaleManifest;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\User;
@@ -157,13 +160,64 @@ trait ProfilePageTrait
             ->visibleOn(['edit', 'view'])
             ->inlineLabel()
             ->schema([
-                Forms\Components\Placeholder::make('id')->label(__('inspirecms::inspirecms.id'))->inlineLabel()->content(fn (User | Model $record) => UIHelper::generateCopyableText($record->getKey())),
-                Forms\Components\Placeholder::make('last_logged_in_at')->label(__('inspirecms::resources/user.last_logged_in_at.label'))->inlineLabel()->content(fn (User | Model $record) => $record->last_logged_in_at),
-                Forms\Components\Placeholder::make('failed_login_attempt')->label(__('inspirecms::resources/user.failed_login_attempt.label'))->inlineLabel()->content(fn (User | Model $record) => $record->failed_login_attempt),
-                Forms\Components\Placeholder::make('last_lockouted_at')->label(__('inspirecms::resources/user.last_lockouted_at.label'))->inlineLabel()->content(fn (User | Model $record) => $record->last_lockouted_at),
-                Forms\Components\Placeholder::make('email_confirmed_at')->label(__('inspirecms::resources/user.email_confirmed_at.label'))->inlineLabel()->content(fn (User | Model $record) => $record->email_confirmed_at),
-                Forms\Components\Placeholder::make('created_at')->label(__('inspirecms::inspirecms.created_at'))->inlineLabel()->content(fn (User | Model $record) => $record->created_at),
-                Forms\Components\Placeholder::make('updated_at')->label(__('inspirecms::inspirecms.last_updated_at'))->inlineLabel()->content(fn (User | Model $record) => $record->updated_at),
+                Forms\Components\Placeholder::make('id')
+                    ->label(__('inspirecms::inspirecms.id'))
+                    ->content(fn (User | Model $record) => UIHelper::generateCopyableText($record->getKey())),
+                Forms\Components\Placeholder::make('last_logged_in_at')
+                    ->label(__('inspirecms::resources/user.last_logged_in_at.label'))
+                    ->content(fn (User | Model $record) => $record->last_logged_in_at),
+
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('resetLockout')
+                        ->label(__('inspirecms::resources/user.buttons.reset_lockout.label'))
+                        ->requiresConfirmation()
+                        ->color('gray')
+                        ->link()
+                        ->size('xs')
+                        ->icon(FilamentIcon::resolve('inspirecms::reset'))
+                        ->action(fn (User | Model $record) => $record->handleActivity(UserActivity::LockoutReset))
+                        ->visible(fn (User | Model $record) => (filament()->auth()->user()?->isSuperAdmin() ?? false) && $record->is_locked),
+                ])->alignEnd(),
+
+                Forms\Components\Placeholder::make('failed_login_attempt')
+                    ->label(__('inspirecms::resources/user.failed_login_attempt.label'))
+                    ->content(fn (User | Model $record) => str("<b>{$record->failed_login_attempt}</b>/".AuthHelper::maxAttempts())->toHtmlString()),
+                Forms\Components\Placeholder::make('last_lockouted_at')
+                    ->label(__('inspirecms::resources/user.last_lockouted_at.label'))
+                    ->content(fn (User | Model $record) => UIHelper::generateTextWithDescription(
+                        text: UIHelper::generateTooltip(text: $record->last_lockouted_at, tooltip: $record->last_lockouted_at?->diffForHumans())->toHtml(),
+                        description: $record->locked_until ? UIHelper::generateTooltip(text: __('inspirecms::resources/user.last_lockouted_at.hints', ['time' => $record->locked_until]), tooltip: $record->locked_until?->diffForHumans())->toHtml() : '',
+                    )),
+                    
+                Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('resendVerificationEmail')
+                        ->label(__('inspirecms::resources/user.buttons.resend_verification_email.label'))
+                        ->requiresConfirmation()
+                        ->color('gray')
+                        ->link()
+                        ->size('xs')
+                        ->icon(FilamentIcon::resolve('inspirecms::email'))
+                        ->successNotificationTitle(__('inspirecms::messages.sent'))
+                        ->failureNotificationTitle(__('inspirecms::messages.something_went_wrong'))
+                        ->action(function (User | Model $record, Forms\Components\Actions\Action $action) {
+                            try {
+                                $record->sendEmailVerificationNotification();
+                                $action->success();
+                            } catch (\Exception $e) {
+                                $action->failure();
+                            }
+                        }),
+                ])->alignEnd()->visible(fn (User | Model $record) => ! $record->hasVerifiedEmail()),
+                Forms\Components\Placeholder::make('email_confirmed_at')
+                    ->label(__('inspirecms::resources/user.email_confirmed_at.label'))
+                    ->content(fn (User | Model $record) => $record->email_confirmed_at),
+
+                Forms\Components\Placeholder::make('created_at')
+                    ->label(__('inspirecms::inspirecms.created_at'))
+                    ->content(fn (User | Model $record) => $record->created_at),
+                Forms\Components\Placeholder::make('updated_at')
+                    ->label(__('inspirecms::inspirecms.last_updated_at'))
+                    ->content(fn (User | Model $record) => $record->updated_at),
             ]);
     }
     // endregion Form field(s)/component(s)

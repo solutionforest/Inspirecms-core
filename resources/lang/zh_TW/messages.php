@@ -14,6 +14,7 @@ return [
     'same_theme_name_already_exists' => '已存在同名主題。',
     'sitemap_generation_failure' => '網站地圖生成失敗',
     'saved' => '已保存',
+    'sent' => '已發送',
     'something_went_wrong' => '發生錯誤。',
     'success' => '成功',
     'theme_already_exists' => '主題已存在。',

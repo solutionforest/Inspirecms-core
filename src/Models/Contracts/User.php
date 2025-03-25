@@ -8,6 +8,7 @@ use Filament\Models\Contracts\HasName;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 
 /**
@@ -17,15 +18,18 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property string $preferred_language
  * @property ?string $avatar
  * @property int $failed_login_attempt
+ * 
  * @property ?\Carbon\CarbonInterface $last_lockouted_at
  * @property ?\Carbon\CarbonInterface $last_password_change_date
  * @property ?\Carbon\CarbonInterface $last_logged_in_at
  * @property ?\Carbon\CarbonInterface $email_confirmed_at
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read bool $is_active
+ * 
+ * @property-read bool $is_locked
+ * @property-read ?\Carbon\CarbonInterface $locked_until
  */
-interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
+interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName, MustVerifyEmail
 {
     /**
      * Get the user's activity.

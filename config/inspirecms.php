@@ -28,7 +28,9 @@ return [
             'driver' => 'eloquent',
             'model' => \SolutionForest\InspireCms\Models\User::class,
         ],
+
         'failed_login_attempts' => 5,
+
         /**
          * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
          */
@@ -40,6 +42,11 @@ return [
          * Allowed values: before, after, none
          */
         'skip_super_admin_check' => 'before',
+
+        /**
+         * Skip account verification for users.
+         */
+        'skip_account_verification' => false,
     ],
 
     'avatar' => [

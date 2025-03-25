@@ -81,6 +81,17 @@ class UserResource extends Resource implements ClusterSectionResource
                     ->label(__('inspirecms::resources/user.roles.label')),
                 Tables\Columns\TextColumn::make('last_logged_in_at')
                     ->label(__('inspirecms::resources/user.last_logged_in_at.label')),
+                Tables\Columns\IconColumn::make('is_account_verified')
+                    ->label(__('inspirecms::resources/user.is_account_verified.label'))
+                    ->getStateUsing(fn (User $record) => $record->hasVerifiedEmail())->boolean()
+                    ->tooltip(fn (User $record) => $record->email_confirmed_at)
+                    ->alignCenter(),
+                Tables\Columns\IconColumn::make('is_locked')
+                    ->label(__('inspirecms::resources/user.is_locked.label'))
+                    ->boolean(false)
+                    ->icon(fn ($state) => $state ? FilamentIcon::resolve('inspirecms::locked') : null)
+                    ->tooltip(fn (User $record) => $record->last_lockouted_at?->diffForHumans())
+                    ->alignCenter(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),

@@ -61,7 +61,7 @@ class ImportObserver
      */
     protected function getImportCompletedNotification($model)
     {
-        $url = InspireCms::getImportDataUrl();
+        $url = InspireCms::getImportDataUrl(authorize: false);
 
         $notification = Notification::make()
             ->info()

@@ -43,7 +43,8 @@ class CmsPanelProvider extends PanelProvider
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->authGuard(InspireCmsConfig::getGuardName())
             ->login(Pages\Auth\Login::class)
-            ->registration(Pages\Auth\Install::class)
+            ->registration(Pages\Auth\Register::class)
+            ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')
             ->profile(Pages\Auth\EditProfile::class)
             ->routes($this->getExtraRoutes())
             ->homeUrl(fn () => Pages\Dashboard::getUrl())
@@ -309,7 +310,6 @@ class CmsPanelProvider extends PanelProvider
     protected function registerLivewireComponents(Panel $panel): Panel
     {
         return $panel->livewireComponents([
-            Pages\Auth\Install::class,
             ListImportNExport::class,
         ]);
     }
@@ -317,10 +317,6 @@ class CmsPanelProvider extends PanelProvider
     protected function getExtraRoutes(): ?Closure
     {
         return function (Panel $panel) {
-
-            Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)
-                ->name('install');
-
             Route::name('import.')->prefix('import')->group(function () {
                 Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
             });

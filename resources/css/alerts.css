@@ -16,7 +16,7 @@
     .top-alert.alert-dialog {
         @apply sticky top-0 z-20;
 
-        ~ .fi-layout .fi-topbar {
+        ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
             @apply top-10 !important;
         }
     }

@@ -21,10 +21,13 @@ class User extends BaseAuthenticatableModel implements UserContract
     ];
 
     protected $appends = [
-        'is_active',
+        'is_locked',
+        'locked_until',
     ];
 
     protected $casts = [
+        'is_locked' => 'boolean',
+        'locked_until' => 'datetime',
         'last_lockouted_at' => 'datetime',
         'last_password_change_date' => 'datetime',
         'last_logged_in_at' => 'datetime',
