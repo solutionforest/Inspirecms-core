@@ -235,23 +235,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'unlocked' => 'heroicon-o-lock-open',
 
             'goto' => 'heroicon-m-arrow-top-right-on-square',
-
-            'info' => 'heroicon-o-information-circle',
-            'warn' => 'heroicon-o-exclamation-triangle',
-            'error' => 'heroicon-o-exclamation-circle',
-            'success' => 'heroicon-o-check-circle',
-
-            'reset' => 'heroicon-o-arrow-path',
-            'clone' => 'heroicon-o-document-duplicate',
-            'add' => 'heroicon-o-plus-small',
-            'attach' => 'heroicon-o-link',
-            'detach' => 'heroicon-m-x-mark',
-            'edit' => 'heroicon-m-pencil-square',
-            'delete' => 'heroicon-m-trash',
-            'restore' => 'heroicon-m-arrow-uturn-left',
-
-            'upload' => 'heroicon-m-arrow-up-tray',
-            'download' => 'heroicon-m-arrow-down-tray',
+            
             'export' => 'heroicon-m-arrow-top-right-on-square',
 
             'back' => 'heroicon-o-chevron-left',
