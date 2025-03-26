@@ -58,13 +58,6 @@ class ContentHelper
     public static function getAccessibleContentIds($user = null)
     {
         $user ??= filament()->auth()->user();
-        // if (! $user || ($user != null && ! is_inspirecms_user($user))) {
-        //     return false;
-        // }
-
-        // if ($user->isSuperAdmin()) {
-        //     return true;
-        // }
 
         $coreCheck = PermissionManifest::authorizeModel(
             ability: 'view',
@@ -73,15 +66,6 @@ class ContentHelper
         if ($coreCheck === true) {
             return true;
         }
-        // $coreCheck = collect($accessibleActions)
-        //     ->map(fn ($action) => PermissionManifest::authorizeModel(
-        //         ability: $action,
-        //         model: static::getModel(),
-        //     ))
-        //     ->where(fn ($result) => $result === true);
-        // if ($coreCheck->isNotEmpty()) {
-        //     return true;
-        // }
 
         return PermissionHelper::getWildcardPermissions(static::getModel())
             ->map(function (Model | Permission $permission) {

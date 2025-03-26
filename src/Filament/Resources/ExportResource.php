@@ -255,10 +255,9 @@ class ExportResource extends Resource implements ClusterSectionResource
             ->where(function (Builder $query) {
 
                 $currentUser = auth()->user();
-                $isSuperAdmin = $currentUser != null && is_inspirecms_user($currentUser) && $currentUser->isSuperAdmin();
 
                 return $query
-                    ->when(! $isSuperAdmin, fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
+                    ->when(! has_super_admin_role($currentUser), fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
             });
     }
 

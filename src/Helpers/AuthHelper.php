@@ -35,4 +35,9 @@ class AuthHelper
     {
         return boolval(InspireCmsConfig::get('auth.skip_account_verification', false));
     }
+
+    public static function skipSuperAdminCheck()
+    {
+        return InspireCmsConfig::get('auth.skip_super_admin_check', 'before');
+    }
 }

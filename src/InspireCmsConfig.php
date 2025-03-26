@@ -2,11 +2,13 @@
 
 namespace SolutionForest\InspireCms;
 
-use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;
 
+/**
+ * @phpstan-type ModelClass class-string<\Illuminate\Database\Eloquent\Model>
+ */
 class InspireCmsConfig
 {
     public static function get(string $key, mixed $default = null): mixed
@@ -25,12 +27,57 @@ class InspireCmsConfig
     }
 
     /**
-     * @param  null|class-string<\Filament\Resources\Resource>  $default
-     * @return class-string<\Filament\Resources\Resource>
+     * Get a Filament resource by its key.
+     *
+     * @param string $key The key of the resource to retrieve
+     * @param null|class-string<\Filament\Resources\Resource> $default The default value to return if the resource is not found
+     * @return null|class-string<\Filament\Resources\Resource>
      */
-    public static function getFilamentResource(string $key, $default = null)
+    public static function getFilamentResource($key, $default = null)
     {
-        return static::get("filament.resources.{$key}", $default);
+        return collect(static::getFilamentResources())->get($key, $default);
+    }
+
+    /**
+     * @return array<string,class-string<\Filament\Resources\Resource>>
+     */
+    public static function getFilamentResources()
+    {
+        return collect(static::get('filament.resources', []))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Resources\Resource::class, true))
+            ->toArray();
+    }
+
+    /**
+     * Get a Filament page configuration value by key
+     *
+     * @param string $key The configuration key to retrieve
+     * @param null|class-string<\Filament\Pages\Page> $default The default value to return if the key doesn't exist
+     * @return null|class-string<\Filament\Pages\Page> The configuration value or the default value if not found
+     */
+    public static function getFilamentPage($key, $default = null)
+    {
+        return collect(static::getFilamentPages())->get($key, $default);
+    }
+
+    /**
+     * @return array<string,class-string<\Filament\Pages\Page>>
+     */
+    public static function getFilamentPages()
+    {
+        return collect(static::get('filament.pages', []))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Pages\Page::class, true))
+            ->toArray();
+    }
+
+    /**
+     * @return array<string,class-string<\Clusters\Clusters\Cluster>>
+     */
+    public static function getFilamentClusters()
+    {
+        return collect(static::get('filament.clusters', []))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Clusters\Cluster::class, true))
+            ->toArray();
     }
 
     public static function getContentTableName(): string
@@ -39,7 +86,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentModelClass(): string
     {
@@ -54,7 +101,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentPathModelClass(): string
     {
@@ -69,7 +116,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentLockModelClass(): string
     {
@@ -84,7 +131,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentRouteModelClass(): string
     {
@@ -99,7 +146,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getFieldGroupableModelClass(): string
     {
@@ -114,7 +161,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getNestableTreeModelClass(): string
     {
@@ -129,7 +176,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentVersionModelClass(): string
     {
@@ -144,7 +191,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentPublishVersionModelClass(): string
     {
@@ -159,7 +206,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getContentWebSettingModelClass(): string
     {
@@ -174,7 +221,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getSitemapModelClass(): string
     {
@@ -189,7 +236,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getDocumentTypeModelClass(): string
     {
@@ -204,7 +251,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getDocumentTypeInheritanceModelClass(): string
     {
@@ -219,7 +266,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getAllowedDocumentTypeModelClass(): string
     {
@@ -234,7 +281,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getFieldGroupModelClass(): string
     {
@@ -256,7 +303,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getFieldModelClass(): string
     {
@@ -278,7 +325,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getUserModelClass(): string
     {
@@ -293,7 +340,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getUserLoginActivityModelClass(): string
     {
@@ -308,7 +355,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getRoleModelClass(): string
     {
@@ -323,7 +370,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getPermissionModelClass(): string
     {
@@ -338,7 +385,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getLanguageModelClass(): string
     {
@@ -353,7 +400,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getTemplateModelClass(): string
     {
@@ -368,7 +415,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getTemplateableModelClass(): string
     {
@@ -383,7 +430,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getMediaAssetModelClass(): string
     {
@@ -398,7 +445,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getKeyValueModelClass(): string
     {
@@ -413,7 +460,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getNavigationModelClass(): string
     {
@@ -428,7 +475,7 @@ class InspireCmsConfig
     }
 
     /**
-     * @return class-string<Model>
+     * @return ModelClass
      */
     public static function getImportModelClass(): string
     {
@@ -452,13 +499,13 @@ class InspireCmsConfig
     /**
      * Ensure that a class exists, or throw an exception.
      *
-     * @param  string  $class  The fully qualified class name
+     * @param  class-string  $class  The fully qualified class name
      * @param  string  $type  A description of the class type (e.g., 'model', 'service')
-     * @return string The class name if it exists
+     * @return class-string The class name if it exists
      *
      * @throws \Exception If the class does not exist
      */
-    protected static function ensureClassExists(string $class, string $type): string
+    protected static function ensureClassExists($class, string $type)
     {
         if (! class_exists($class)) {
             throw new \Exception("The {$type} class '{$class}' does not exist. Please check your configuration.");

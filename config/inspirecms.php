@@ -185,6 +185,20 @@ return [
         ],
     ],
 
+    'custom_fields' => [
+        'extra_config' => [
+            
+            \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
+            \SolutionForest\InspireCms\Fields\Configs\Tags::class,
+
+            \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
+            \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
+
+            \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
+            \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
+        ],
+    ],
+
     'permissions' => [
         'skip_access_right_permission_on_resource' => false,
         'guard_actions' => [

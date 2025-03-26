@@ -4,6 +4,9 @@ namespace SolutionForest\InspireCms\Helpers;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
 
+/**
+ * @phpstan-type FiPageClass class-string<\Filament\Pages\Page>|\Filament\Pages\Page
+ */
 class UrlHelper
 {
     /**
@@ -25,14 +28,19 @@ class UrlHelper
         throw new \Exception('Invalid encoding type');
     }
 
-    public static function attemptToGetRouteFromPanel(string $routeName, array $parameters = []): ?string
+    /**
+     * @param string $routeName
+     * @param array $parameters
+     * @return string|null
+     */
+    public static function attemptToGetRouteFromPanel($routeName, $parameters = [])
     {
         try {
 
-            $panelId = InspireCmsConfig::get('filament.panel_id');
-            $panel = filament()->getPanel($panelId);
+            $panel = filament()->getPanel(InspireCmsConfig::getPanelId());
 
             return $panel?->route($routeName, $parameters);
+
         } catch (\Throwable $th) {
             //
         }
@@ -40,12 +48,39 @@ class UrlHelper
         return null;
     }
 
-    public static function attemptToGetRoute(string $routeName, array $parameters = [], bool $authorizeAction = true): ?string
+    /**
+     * @param string $routeName
+     * @param array $parameters
+     * @return string|null
+     */
+    public static function attemptToGetRoute($routeName, $parameters = [])
     {
         try {
 
             return route($routeName, $parameters);
             
+        } catch (\Throwable $th) {
+            //
+        }
+
+        return null;
+    }
+
+    /**
+     * @param FiPageClass $target
+     * @param array $parameters
+     * @return string|null
+     */
+    public static function attemptToGetUrlFromPanel($target, $parameters = [])
+    {
+        try {
+
+            $panelId = InspireCmsConfig::getPanelId();
+
+            if (is_a($target, \Filament\Pages\Page::class, true)) {
+                return $target::getUrl(parameters: $parameters, panel: $panelId);
+            }
+
         } catch (\Throwable $th) {
             //
         }

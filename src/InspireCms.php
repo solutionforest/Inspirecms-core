@@ -14,13 +14,12 @@ use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Register;
-use SolutionForest\InspireCms\Filament\Pages\Export;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
-use SolutionForest\InspireCms\Http\Controllers\ContentController;
+use SolutionForest\InspireCms\Http\Controllers\AssetController;
+use SolutionForest\InspireCms\Http\Controllers\FrontendController;
+use SolutionForest\InspireCms\Http\Controllers\SitemapController;
 use SolutionForest\InspireCms\Models\Contracts\Language;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class InspireCms
 {
@@ -30,6 +29,9 @@ class InspireCms
 
     protected CacheManager $cacheManager;
 
+    /**
+     * @var Collection<string,ClusterSection>
+     */
     protected Collection $sections;
 
     protected ?array $cachedLanguages = null;
@@ -42,7 +44,7 @@ class InspireCms
     {
         $this->cacheManager = $cacheManager;
 
-        $this->sections = collect(InspireCmsConfig::get('filament.clusters'))->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
+        $this->sections = collect(InspireCmsConfig::getFilamentClusters())->map(fn ($fqcn, $name) => new ClusterSection($name, $fqcn));
     }
 
     public static function version(): ?string
@@ -77,13 +79,19 @@ class InspireCms
     {
         try {
 
-            if ($authorize && Export::canAccess()) {
-                return Export::getUrl(
-                    panel: InspireCmsConfig::get('filament.panel_id', 'cms')
-                );
+            $page = InspireCmsConfig::getFilamentPage('export', \SolutionForest\InspireCms\Filament\Pages\Export::class);
+
+            $url = UrlHelper::attemptToGetUrlFromPanel($page);
+
+            if (! $authorize) {
+                return $url;
+            } 
+            
+            if ($authorize && is_string($page) && $page::canAccess()) {
+                return $url;
             }
 
-        } catch (RouteNotFoundException $th) {
+        } catch (\Exception $th) {
             //
         }
 
@@ -91,9 +99,10 @@ class InspireCms
     }
 
     /**
+     * @param string ...$names
      * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection>
      */
-    public function getSections(...$names): Collection
+    public function getSections(...$names)
     {
         $sections = $this->sections;
 
@@ -127,13 +136,13 @@ class InspireCms
     public function routes(): void
     {
         Route::name('inspirecms.asset')
-            ->get('assets/{key}', \SolutionForest\InspireCms\Http\Controllers\AssetController::class)
+            ->get('assets/{key}', AssetController::class)
             ->middleware(InspireCmsConfig::get('media_library.middlewares'));
 
         Route::name('inspirecms.sitemap')
-            ->get('sitemap.xml', \SolutionForest\InspireCms\Http\Controllers\SitemapController::class);
+            ->get('sitemap.xml', SitemapController::class);
 
-        Route::name('inspirecms.content.')
+        Route::name('inspirecms.frontend.')
             ->middleware(InspireCmsConfig::get('content.routes.middlewares', []))
             ->group(function () {
 
@@ -142,14 +151,14 @@ class InspireCms
                 if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
 
                     foreach ($this->getContentRoutes() as $index => $item) {
-                        Route::any($item['uri'], ContentController::class)
+                        Route::any($item['uri'], FrontendController::class)
                             ->where($item['regex_constraints'] ?? [])
                             ->name($item['alias'] ?? 'content_' . $index);
                     }
                 }
 
                 // default route
-                Route::any($factory->getDefaultRoutePattern(), ContentController::class)
+                Route::any($factory->getDefaultRoutePattern(), FrontendController::class)
                     ->where($factory->getDefaultRouteConstraints())
                     ->name('default');
             });

@@ -19,14 +19,17 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
+use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -45,7 +48,7 @@ class CmsPanelProvider extends PanelProvider
             ->registration(Pages\Auth\Register::class)
             ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')
             ->profile(Pages\Auth\EditProfile::class)
-            ->homeUrl(fn () => Pages\Dashboard::getUrl())
+            ->homeUrl(fn () => UrlHelper::attemptToGetUrlFromPanel(InspireCmsConfig::getFilamentPage('dashboard', Pages\Dashboard::class)))
             ->theme('inspirecms')
             ->font(ThemeConfig::fontFamily())
             ->colors(ThemeConfig::colors())
@@ -57,13 +60,12 @@ class CmsPanelProvider extends PanelProvider
                 ->authPasswordBroker(AuthHelper::passwordBrokerName());
         }
 
-        $panel = $panel->resources(InspireCmsConfig::get('filament.resources'))
-            ->pages([
-                ...array_values(InspireCmsConfig::get('filament.pages')),
-                ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
-                    ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
-                    ->all(),
-            ])
+        $panel = $panel
+            ->resources(InspireCmsConfig::getFilamentResources())
+            ->pages(array_merge(
+                array_values(InspireCmsConfig::getFilamentPages()),
+                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
+            ))
             ->widgets([
                 Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
@@ -93,16 +95,16 @@ class CmsPanelProvider extends PanelProvider
             ])
             ->bootUsing(function () {
 
-                $skipSuperAdminCheck = InspireCmsConfig::get('auth.skip_super_admin_check');
+                $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
                 if ($skipSuperAdminCheck == 'before') {
                     Gate::before(function ($user, $ability) {
-                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                        if (has_super_admin_role($user)) {
                             return true;
                         }
                     });
                 } elseif ($skipSuperAdminCheck == 'after') {
                     Gate::after(function ($user, $ability) {
-                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                        if (has_super_admin_role($user)) {
                             return true;
                         }
                     });
@@ -125,16 +127,7 @@ class CmsPanelProvider extends PanelProvider
         $plugins[] = FilamentFieldGroupPlugin::make()
             ->enablePlugin()
             ->overrideResources([])
-            ->fieldTypeConfigs([
-                \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-                \SolutionForest\InspireCms\Fields\Configs\Tags::class,
-
-                \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
-                \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
-
-                \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
-                \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
-            ], false);
+            ->fieldTypeConfigs(InspireCmsConfig::get('custom_fields.extra_config'), false);
 
         $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
         $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {

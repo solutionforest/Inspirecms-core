@@ -176,7 +176,7 @@ trait ProfilePageTrait
                         ->size('xs')
                         ->icon(FilamentIcon::resolve('inspirecms::reset'))
                         ->action(fn (User | Model $record) => $record->handleActivity(UserActivity::LockoutReset))
-                        ->visible(fn (User | Model $record) => (filament()->auth()->user()?->isSuperAdmin() ?? false) && $record->is_locked),
+                        ->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && $record->is_locked),
                 ])->alignEnd(),
 
                 Forms\Components\Placeholder::make('failed_login_attempt')
