@@ -8,9 +8,8 @@ use Illuminate\Support\Facades\Schema;
 class ModelHelper
 {
     /**
-     * @param null|string|class-string<Model>|Model $tableOrModel
-     * @param ?string $tableName
-     * @return bool
+     * @param  null|string|class-string<Model>|Model  $tableOrModel
+     * @param  ?string  $tableName
      */
     public static function isTableExists($tableOrModel, &$tableName = null): bool
     {
@@ -20,7 +19,7 @@ class ModelHelper
     }
 
     /**
-     * @param null|string|class-string<Model>|Model $target
+     * @param  null|string|class-string<Model>|Model  $target
      * @return ?string
      */
     public static function getTableName($target)
@@ -33,7 +32,7 @@ class ModelHelper
     }
 
     /**
-     * @param class-string|Model $model
+     * @param  class-string|Model  $model
      * @return bool
      */
     public static function isModelExists($model)
@@ -41,12 +40,12 @@ class ModelHelper
         if (! static::isModel($model)) {
             return false;
         }
-        
+
         return class_exists($model);
     }
 
     /**
-     * @param mixed $target
+     * @param  mixed  $target
      * @return bool
      */
     public static function isModel($target)

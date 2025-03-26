@@ -35,7 +35,7 @@ class ImportDefaultData extends Command
             'importSampleData' => 'Importing sample data',
             'publishRouteDefinition' => 'Publishing route definition',
         ];
-        
+
         $skipAfter = false;
         $processErrors = [];
 
@@ -48,6 +48,7 @@ class ImportDefaultData extends Command
 
             if ($skipAfter) {
                 $this->components->twoColumnDetail($taskDescription, 'Skipped');
+
                 continue;
             }
 
@@ -64,8 +65,9 @@ class ImportDefaultData extends Command
             $this->newLine();
         }
 
-        if (!empty($processErrors)) {
-            $this->components->warn("There was an error during the import process.");
+        if (! empty($processErrors)) {
+            $this->components->warn('There was an error during the import process.');
+
             return static::FAILURE;
         }
 
@@ -83,7 +85,7 @@ class ImportDefaultData extends Command
         $model = InspireCmsConfig::getLanguageModelClass();
 
         if (! ModelHelper::isTableExists($model, $tableName)) {
-            
+
             $this->components->error("Table $tableName does not exist.");
 
             return false;
@@ -105,6 +107,7 @@ class ImportDefaultData extends Command
         foreach ($tableNames as $key => $tableName) {
             if (! ModelHelper::isTableExists($tableName)) {
                 $this->components->error("Model $tableName does not exist.");
+
                 return false;
             }
         }

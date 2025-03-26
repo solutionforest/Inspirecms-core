@@ -10,9 +10,7 @@ use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BasePage;
-use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Auth\Events as AuthEvents;
-use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Exceptions\AccountLockedException;
@@ -48,10 +46,10 @@ class Login extends BasePage
 
         try {
             if (! Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
-    
+
                 // Already handled
                 // event(new AuthEvents\Failed(Filament::getAuthGuard(), null, $this->getCredentialsFromFormData($data)));
-    
+
                 $this->throwFailureValidationException();
             }
         } catch (AccountLockedException $th) {
@@ -69,8 +67,8 @@ class Login extends BasePage
                 $this->getAccountIsLockedNotification()->send();
 
                 return null;
-                
-            } 
+
+            }
         }
 
         event(new AuthEvents\Login(Filament::getAuthGuard(), $user, true));

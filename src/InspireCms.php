@@ -95,7 +95,7 @@ class InspireCms
     }
 
     /**
-     * @param string ...$names
+     * @param  string  ...$names
      * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection>
      */
     public function getSections(...$names)

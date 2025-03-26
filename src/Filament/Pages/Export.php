@@ -33,9 +33,9 @@ class Export extends Page implements ClusterSectionPage, HasActions, HasForms, H
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $cluster = Settings::class;
-    
+
     #[Url]
-    public ?string $redirectUrl = null; 
+    public ?string $redirectUrl = null;
 
     public function mountCanAuthorizeAccess(): void
     {

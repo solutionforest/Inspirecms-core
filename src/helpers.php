@@ -54,13 +54,13 @@ if (! function_exists('is_inspirecms_user')) {
      * This function checks if the provided user either uses the \SolutionForest\InspireCms\Models\Concerns\CmsUserTrait
      * or is an instance of the \SolutionForest\InspireCms\Models\Contracts\User class.
      *
-     * @param mixed $user The user to check.
+     * @param  mixed  $user  The user to check.
      * @return bool Returns true if the user is an InspireCMS user, otherwise false.
      */
     function is_inspirecms_user($user): bool
     {
-        return in_array(CmsUserTrait::class, class_uses($user)) || 
-            $user instanceof \SolutionForest\InspireCms\Models\Contracts\User ;
+        return in_array(CmsUserTrait::class, class_uses($user)) ||
+            $user instanceof \SolutionForest\InspireCms\Models\Contracts\User;
     }
 }
 
@@ -71,7 +71,7 @@ if (! function_exists('has_super_admin_role')) {
      * This function checks if the provided user either uses the \Spatie\Permission\Traits\HasRoles trait
      * and has the super admin role.
      *
-     * @param mixed $user The user to check.
+     * @param  mixed  $user  The user to check.
      * @return bool Returns true if the user has the super admin role, otherwise false.
      */
     function has_super_admin_role($user): bool
@@ -90,8 +90,8 @@ if (! function_exists('has_super_admin_role')) {
             return $user->hasRole($roleName, $guardName);
 
         } elseif ($user instanceof Model) {
-            return $user->relationLoaded('roles') 
-                ? $user->roles->contains(fn($role) => $role->name === $roleName && $role->guard_name === $guardName)
+            return $user->relationLoaded('roles')
+                ? $user->roles->contains(fn ($role) => $role->name === $roleName && $role->guard_name === $guardName)
                 : $user->roles()->where('name', $roleName)->where('guard_name', $guardName)->exists();
 
         }

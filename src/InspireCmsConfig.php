@@ -29,8 +29,8 @@ class InspireCmsConfig
     /**
      * Get a Filament resource by its key.
      *
-     * @param string $key The key of the resource to retrieve
-     * @param null|class-string<\Filament\Resources\Resource> $default The default value to return if the resource is not found
+     * @param  string  $key  The key of the resource to retrieve
+     * @param  null|class-string<\Filament\Resources\Resource>  $default  The default value to return if the resource is not found
      * @return null|class-string<\Filament\Resources\Resource>
      */
     public static function getFilamentResource($key, $default = null)
@@ -51,8 +51,8 @@ class InspireCmsConfig
     /**
      * Get a Filament page configuration value by key
      *
-     * @param string $key The configuration key to retrieve
-     * @param null|class-string<\Filament\Pages\Page> $default The default value to return if the key doesn't exist
+     * @param  string  $key  The configuration key to retrieve
+     * @param  null|class-string<\Filament\Pages\Page>  $default  The default value to return if the key doesn't exist
      * @return null|class-string<\Filament\Pages\Page> The configuration value or the default value if not found
      */
     public static function getFilamentPage($key, $default = null)

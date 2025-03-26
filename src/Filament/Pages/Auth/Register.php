@@ -135,7 +135,7 @@ class Register extends BasePage
     }
 
     /**
-     * @param Model  $user
+     * @param  Model  $user
      */
     protected function assignSuperAdminRoleToUser($user)
     {
@@ -145,7 +145,7 @@ class Register extends BasePage
             $roleClass = InspireCmsConfig::getRoleModelClass();
 
             $role = $roleClass::findByName(PermissionManifest::getSuperAdminRoleName(), $guardName);
-            
+
             $user->assignRole($role);
 
             if ($user instanceof User) {

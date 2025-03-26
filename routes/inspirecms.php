@@ -12,10 +12,9 @@ use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\SetCmsPanel;
 
-
 Route::name('inspirecms.')->prefix('/inspirecms')->group(function () {
-    
-    $getBaseMiddlewares = fn ($haveAuth = true) =>  array_filter([
+
+    $getBaseMiddlewares = fn ($haveAuth = true) => array_filter([
         EncryptCookies::class,
         AddQueuedCookiesToResponse::class,
         StartSession::class,
@@ -26,7 +25,7 @@ Route::name('inspirecms.')->prefix('/inspirecms')->group(function () {
     ]);
 
     $authMiddleware = [
-        ... $getBaseMiddlewares(),
+        ...$getBaseMiddlewares(),
         SetCmsPanel::class,
         CmsAuthenticate::class,
     ];

@@ -187,7 +187,7 @@ return [
 
     'custom_fields' => [
         'extra_config' => [
-            
+
             \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
             \SolutionForest\InspireCms\Fields\Configs\Tags::class,
 

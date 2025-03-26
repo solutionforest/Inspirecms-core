@@ -29,8 +29,8 @@ class UrlHelper
     }
 
     /**
-     * @param string $routeName
-     * @param array $parameters
+     * @param  string  $routeName
+     * @param  array  $parameters
      * @return string|null
      */
     public static function attemptToGetRouteFromPanel($routeName, $parameters = [])
@@ -49,8 +49,8 @@ class UrlHelper
     }
 
     /**
-     * @param string $routeName
-     * @param array $parameters
+     * @param  string  $routeName
+     * @param  array  $parameters
      * @return string|null
      */
     public static function attemptToGetRoute($routeName, $parameters = [])
@@ -58,7 +58,7 @@ class UrlHelper
         try {
 
             return route($routeName, $parameters);
-            
+
         } catch (\Throwable $th) {
             //
         }
@@ -67,8 +67,8 @@ class UrlHelper
     }
 
     /**
-     * @param FiPageClass $target
-     * @param array $parameters
+     * @param  FiPageClass  $target
+     * @param  array  $parameters
      * @return string|null
      */
     public static function attemptToGetUrlFromPanel($target, $parameters = [])

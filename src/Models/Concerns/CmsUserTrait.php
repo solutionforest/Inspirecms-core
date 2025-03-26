@@ -6,7 +6,6 @@ use Filament\AvatarProviders\Contracts\AvatarProvider;
 use Filament\Facades\Filament;
 use Filament\Notifications\Auth\VerifyEmail;
 use Filament\Panel;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
@@ -241,7 +240,7 @@ trait CmsUserTrait
     {
         $notification = app(VerifyEmail::class);
         $notification->url = Filament::getVerifyEmailUrl($this);
-        
+
         $this->notify($notification);
     }
 
@@ -258,6 +257,7 @@ trait CmsUserTrait
             },
         );
     }
+
     public function isLocked(): Attribute
     {
         return new Attribute(

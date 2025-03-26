@@ -240,7 +240,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'unlocked' => 'heroicon-o-lock-open',
 
             'goto' => 'heroicon-m-arrow-top-right-on-square',
-            
+
             'export' => 'heroicon-m-arrow-top-right-on-square',
 
             'back' => 'heroicon-o-chevron-left',

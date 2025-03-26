@@ -24,7 +24,7 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
         try {
             return $this->transform($propertyDataDto, $locale, $fallbackLocale);
         } catch (\Exception $e) {
-            
+
             logger()->warning('Failed to transform property data', [
                 'exception' => $e,
                 'propertyData' => $propertyDataDto,

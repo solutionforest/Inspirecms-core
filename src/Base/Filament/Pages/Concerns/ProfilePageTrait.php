@@ -180,14 +180,14 @@ trait ProfilePageTrait
 
                 Forms\Components\Placeholder::make('failed_login_attempt')
                     ->label(__('inspirecms::resources/user.failed_login_attempt.label'))
-                    ->content(fn (User | Model $record) => str("<b>{$record->failed_login_attempt}</b>/".AuthHelper::maxAttempts())->toHtmlString()),
+                    ->content(fn (User | Model $record) => str("<b>{$record->failed_login_attempt}</b>/" . AuthHelper::maxAttempts())->toHtmlString()),
                 Forms\Components\Placeholder::make('last_lockouted_at')
                     ->label(__('inspirecms::resources/user.last_lockouted_at.label'))
                     ->content(fn (User | Model $record) => UIHelper::generateTextWithDescription(
                         text: UIHelper::generateTooltip(text: $record->last_lockouted_at, tooltip: $record->last_lockouted_at?->diffForHumans())->toHtml(),
                         description: $record->locked_until ? UIHelper::generateTooltip(text: __('inspirecms::resources/user.last_lockouted_at.hints', ['time' => $record->locked_until]), tooltip: $record->locked_until?->diffForHumans())->toHtml() : '',
                     )),
-                    
+
                 Forms\Components\Actions::make([
                     Forms\Components\Actions\Action::make('setAccountVerified')
                         ->label(__('inspirecms::resources/user.buttons.set_account_verified.label'))

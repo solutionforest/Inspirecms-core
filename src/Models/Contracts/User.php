@@ -18,14 +18,12 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property string $preferred_language
  * @property ?string $avatar
  * @property int $failed_login_attempt
- * 
  * @property ?\Carbon\CarbonInterface $last_lockouted_at
  * @property ?\Carbon\CarbonInterface $last_password_change_date
  * @property ?\Carbon\CarbonInterface $last_logged_in_at
  * @property ?\Carbon\CarbonInterface $email_confirmed_at
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * 
  * @property-read bool $is_locked
  * @property-read ?\Carbon\CarbonInterface $locked_until
  */
