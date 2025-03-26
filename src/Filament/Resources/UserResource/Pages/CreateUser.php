@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 
+use Illuminate\Auth\Events\Registered;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreateRecord;
 use SolutionForest\InspireCms\Filament\Resources\UserResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -38,5 +39,14 @@ class CreateUser extends BaseCreateRecord
                     ->inlineLabel($this->hasInlineLabels()),
             )),
         ];
+    }
+
+    public function afterCreate()
+    {
+        $user = $this->record;
+
+        if ($user && $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+            event(new Registered($user));
+        }
     }
 }
