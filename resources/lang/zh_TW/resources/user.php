@@ -58,6 +58,9 @@ return [
         'resend_verification_email' => [
             'label' => '重新發送驗證郵件',
         ],
+        'set_account_verified' => [
+            'label' => '設置帳戶已驗證',
+        ],
     ],
 
     'notification' => [

@@ -18,4 +18,5 @@ return [
     'something_went_wrong' => '發生錯誤。',
     'success' => '成功',
     'theme_already_exists' => '主題已存在。',
+    'updated' => '已更新',
 ];

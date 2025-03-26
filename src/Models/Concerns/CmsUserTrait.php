@@ -32,24 +32,7 @@ trait CmsUserTrait
             return true;
         }
 
-        if ($this->is_locked) {
-            return false;
-        }
-
-        if (AuthHelper::skipAccountVerification()) {
-            return true;
-        }
-
-        // add more checks on production
-        if (app()->isProduction()) {
-
-            // check if email is verified
-            if ($this instanceof MustVerifyEmail) {
-                return $this->hasVerifiedEmail();
-            }
-        }
-
-        return true;
+        return $this->hasVerifiedEmail();
     }
 
     public function getFilamentName(): string
@@ -225,6 +208,10 @@ trait CmsUserTrait
      */
     public function hasVerifiedEmail()
     {
+        if (AuthHelper::skipAccountVerification()) {
+            return true;
+        }
+
         return ! is_null($this->email_confirmed_at);
     }
 

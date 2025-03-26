@@ -58,6 +58,9 @@ return [
         'resend_verification_email' => [
             'label' => 'Resent Verification Email',
         ],
+        'set_account_verified' => [
+            'label' => 'Set Account Verified',
+        ],
     ],
 
     'notification' => [

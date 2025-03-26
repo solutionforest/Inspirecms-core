@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
 use Filament\Support\Facades\FilamentIcon;
@@ -12,12 +10,9 @@ use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
 use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -38,27 +33,6 @@ class UserResource extends Resource implements ClusterSectionResource
     public static function getPermissionPrefixes(): array
     {
         return array_unique(array_merge(static::traitGetPermissionPrefixes(), ['adjust_roles']));
-    }
-
-    public static function createForm(Form $form): Form
-    {
-        return $form
-            ->columns(3)
-            ->schema([
-                Forms\Components\Section::make()
-                    ->schema([
-                        static::getNameFormComponent(),
-                        static::getEmailFormComponent(),
-                        static::getPasswordFormComponent(),
-                        static::getPasswordConfirmationFormComponent(),
-                    ])
-                    ->columnSpan(2),
-                Forms\Components\Section::make()
-                    ->schema([
-                        static::getRolesFormComponent(),
-                    ])
-                    ->columnSpan(1),
-            ]);
     }
 
     public static function table(Table $table): Table
@@ -134,70 +108,4 @@ class UserResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithDescription($record->name, $record->email);
     }
     // endregion Global search
-
-    // region Form field(s)/component(s)
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getNameFormComponent()
-    {
-        return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::resources/user.name.label'))
-            ->required()
-            ->maxLength(255);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getEmailFormComponent()
-    {
-        return Forms\Components\TextInput::make('email')
-            ->label(__('inspirecms::resources/user.email.label'))
-            ->email()
-            ->required()
-            ->maxLength(255)
-            ->autofocus()
-            ->unique(table: static::getModel(), column: 'email', ignoreRecord: true);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getPasswordFormComponent()
-    {
-        return Forms\Components\TextInput::make('password')
-            ->label(__('inspirecms::resources/user.password.label'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->rule(Password::default())
-            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-            ->same('passwordConfirmation');
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getPasswordConfirmationFormComponent()
-    {
-        return Forms\Components\TextInput::make('passwordConfirmation')
-            ->label(__('inspirecms::resources/user.password_confirmation.label'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->dehydrated(false);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getRolesFormComponent()
-    {
-        return UserRolePicker::make('roles')
-            ->label(__('inspirecms::resources/user.roles.label'))
-            ->required()
-            ->columnSpanFull();
-    }
-    // endregion Form field(s)/component(s)
 }

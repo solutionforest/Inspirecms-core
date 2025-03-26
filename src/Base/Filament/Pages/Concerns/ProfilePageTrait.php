@@ -52,7 +52,8 @@ trait ProfilePageTrait
                         Forms\Components\Section::make()
                             ->schema([
                                 $this->getPasswordFormComponent(),
-                                $this->getPasswordConfirmationFormComponent(),
+                                $this->getPasswordConfirmationFormComponent()
+                                    ->visible(fn (Forms\Get $get): bool => filled($get('password'))),
                             ]),
                         $this->getUserActivityDisplayFormComponent(),
                     ])
@@ -109,7 +110,6 @@ trait ProfilePageTrait
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
-            ->visible(fn (Forms\Get $get): bool => filled($get('password')))
             ->dehydrated(false);
     }
 
@@ -133,8 +133,7 @@ trait ProfilePageTrait
     {
         return UserRolePicker::make('roles')
             ->label(__('inspirecms::resources/user.roles.label'))
-            ->validationAttribute(__('inspirecms::resources/user.roles.validation_attribute'))
-            ->required();
+            ->validationAttribute(__('inspirecms::resources/user.roles.validation_attribute'));
     }
 
     /**
@@ -190,6 +189,15 @@ trait ProfilePageTrait
                     )),
                     
                 Forms\Components\Actions::make([
+                    Forms\Components\Actions\Action::make('setAccountVerified')
+                        ->label(__('inspirecms::resources/user.buttons.set_account_verified.label'))
+                        ->requiresConfirmation()
+                        ->color('success')
+                        ->link()
+                        ->size('xs')
+                        ->icon(FilamentIcon::resolve('inspirecms::verified') ?? 'heroicon-s-check-badge')
+                        ->successNotificationTitle(__('inspirecms::messages.updated'))
+                        ->action(fn (User | Model $record) => $record->markEmailAsVerified()),
                     Forms\Components\Actions\Action::make('resendVerificationEmail')
                         ->label(__('inspirecms::resources/user.buttons.resend_verification_email.label'))
                         ->requiresConfirmation()
@@ -207,7 +215,7 @@ trait ProfilePageTrait
                                 $action->failure();
                             }
                         }),
-                ])->alignEnd()->visible(fn (User | Model $record) => ! $record->hasVerifiedEmail()),
+                ])->alignEnd()->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && ! $record->isAccountVerified()),
                 Forms\Components\Placeholder::make('email_confirmed_at')
                     ->label(__('inspirecms::resources/user.email_confirmed_at.label'))
                     ->content(fn (User | Model $record) => $record->email_confirmed_at),

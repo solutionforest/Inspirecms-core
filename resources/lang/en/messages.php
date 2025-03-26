@@ -18,4 +18,5 @@ return [
     'something_went_wrong' => 'Something went wrong.',
     'success' => 'Success',
     'theme_already_exists' => 'Theme already exists.',
+    'updated' => 'Updated',
 ];

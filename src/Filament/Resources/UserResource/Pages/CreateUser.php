@@ -2,13 +2,18 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 
+use Filament\Forms;
+use Filament\Forms\Form;
 use Illuminate\Auth\Events\Registered;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\ProfilePageTrait;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreateRecord;
 use SolutionForest\InspireCms\Filament\Resources\UserResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CreateUser extends BaseCreateRecord
 {
+    use ProfilePageTrait;
+
     public function getActions(): array
     {
         return [];
@@ -19,26 +24,25 @@ class CreateUser extends BaseCreateRecord
         return InspireCmsConfig::getFilamentResource('user', UserResource::class);
     }
 
-    protected function getForms(): array
+    public function form(Form $form): Form
     {
-        $resource = static::getResource();
-
-        $formName = 'form';
-
-        if (method_exists($resource, 'createForm')) {
-            $formName = 'createForm';
-        }
-
-        return [
-            'form' => $this->form($resource::{$formName}(
-                $this->makeForm()
-                    ->operation('create')
-                    ->model($this->getModel())
-                    ->statePath($this->getFormStatePath())
-                    ->columns($this->hasInlineLabels() ? 1 : 2)
-                    ->inlineLabel($this->hasInlineLabels()),
-            )),
-        ];
+        return $form
+            ->columns(3)
+            ->schema([
+                Forms\Components\Section::make()
+                    ->schema([
+                        static::getNameFormComponent(),
+                        static::getEmailFormComponent(),
+                        static::getPasswordFormComponent(),
+                        static::getPasswordConfirmationFormComponent(),
+                    ])
+                    ->columnSpan(2),
+                Forms\Components\Section::make()
+                    ->schema([
+                        static::getRolesFormComponent(),
+                    ])
+                    ->columnSpan(1),
+            ]);
     }
 
     public function afterCreate()
