@@ -14,10 +14,9 @@ use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Auth\SessionGuard;
 use Illuminate\Contracts\Support\Htmlable;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Exceptions\AccountLockedException;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Helpers\UIHelper;
-use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Login extends BasePage
 {
