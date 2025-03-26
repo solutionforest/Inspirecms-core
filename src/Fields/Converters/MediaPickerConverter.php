@@ -13,6 +13,10 @@ class MediaPickerConverter extends BaseConverter
         // todo: improve performance
         $result = [];
 
+        if (is_null($sourceValue)) {
+            return $result;
+        }
+
         $keysToFind = collect($sourceValue)->where(fn ($v) => is_string($v));
         $mediaAssets = $keysToFind->isNotEmpty()
             ? inspirecms_asset()->findByKeys($keysToFind->all())->mapWithKeys(fn (Model $record) => [$record->getKey() => $record])

@@ -9,6 +9,8 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
+use SolutionForest\InspireCms\Fields\Converters\ContentPickerConverter;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker as ContentPickerComponent;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -18,6 +20,7 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 #[FormComponent(ContentPickerComponent::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
+#[Converter(ContentPickerConverter::class)]
 class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     public ?int $max = null;
