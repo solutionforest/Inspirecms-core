@@ -11,6 +11,8 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 class CreateNavigation extends BaseCreateRecord
 {
     use Translatable;
+    
+    protected static bool $canCreateAnother = true;
 
     public function getActions(): array
     {
