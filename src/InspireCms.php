@@ -75,21 +75,17 @@ class InspireCms
         return Filament::getPanel(InspireCmsConfig::getPanelId())?->getRegistrationUrl();
     }
 
-    public function getImportDataUrl(bool $authorize = true): ?string
+    public function getImportDataUrl(): ?string
     {
         try {
 
             $page = InspireCmsConfig::getFilamentPage('export', \SolutionForest\InspireCms\Filament\Pages\Export::class);
 
-            $url = UrlHelper::attemptToGetUrlFromPanel($page);
+            $panel = Filament::getPanel(InspireCmsConfig::getPanelId());
 
-            if (! $authorize) {
-                return $url;
-            } 
-            
-            if ($authorize && is_string($page) && $page::canAccess()) {
-                return $url;
-            }
+            $parameters['redirectUrl'] = $panel?->getHomeUrl();
+
+            return UrlHelper::attemptToGetUrlFromPanel($page, $parameters);
 
         } catch (\Exception $th) {
             //

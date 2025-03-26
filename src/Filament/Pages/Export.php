@@ -10,6 +10,7 @@ use Filament\Infolists\Concerns\InteractsWithInfolists;
 use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
@@ -32,6 +33,22 @@ class Export extends Page implements ClusterSectionPage, HasActions, HasForms, H
     protected static ?string $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $cluster = Settings::class;
+    
+    #[Url]
+    public ?string $redirectUrl = null; 
+
+    public function mountCanAuthorizeAccess(): void
+    {
+        // Overwrite the default behavior
+        if (! static::canAccess()) {
+
+            if (filled($this->redirectUrl)) {
+                redirect()->intended($this->redirectUrl);
+            } else {
+                abort(403);
+            }
+        }
+    }
 
     public static function canAccess(): bool
     {
