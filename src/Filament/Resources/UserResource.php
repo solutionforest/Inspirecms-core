@@ -173,8 +173,7 @@ class UserResource extends Resource implements ClusterSectionResource
             ->required()
             ->rule(Password::default())
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-            ->same('passwordConfirmation')
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.password.validation_attribute'));
+            ->same('passwordConfirmation');
     }
 
     /**
