@@ -135,7 +135,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     protected function getSiteMapStatusData(): array
     {
         // Determin the sitemap is generated or not
-        $fullFilePath = InspireCmsConfig::get('content.sitemap.file_path');
+        $fullFilePath = SitemapGeneratorFactory::create()?->getFilePath();
 
         return [
             'status' => $this->formateStatusData(1, file_exists($fullFilePath) ? 0 : 1, file_exists($fullFilePath)),
