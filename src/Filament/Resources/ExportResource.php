@@ -89,6 +89,12 @@ class ExportResource extends Resource implements ClusterSectionResource
                         Infolists\Components\TextEntry::make('failed_at')
                             ->label(__('inspirecms::resources/export.failed_at.label'))
                             ->inlineLabel(),
+                        Infolists\Components\TextEntry::make('clear_at')
+                            ->weight('bold')
+                            ->label(__('inspirecms::resources/export.clear_at.label'))
+                            ->inlineLabel()
+                            ->since()
+                            ->dateTimeTooltip(),
                     ]),
 
                 Infolists\Components\TextEntry::make('created_by')
@@ -195,6 +201,9 @@ class ExportResource extends Resource implements ClusterSectionResource
                     ->description(fn ($record) => $record->author?->name, 'above')
                     ->icon(FilamentIcon::resolve('inspirecms::email'))
                     ->copyable(),
+                Tables\Columns\TextColumn::make('clear_at')
+                    ->label(__('inspirecms::resources/export.clear_at.label'))
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
             ])
             ->recordAction('view')
             ->headerActions([

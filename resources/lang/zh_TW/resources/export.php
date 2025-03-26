@@ -25,6 +25,9 @@ return [
     'failed_at' => [
         'label' => '失敗於',
     ],
+    'clear_at' => [
+        'label' => '清除於',
+    ],
 
     'notification' => [
         'completed' => [

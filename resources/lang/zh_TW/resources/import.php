@@ -18,13 +18,13 @@ return [
         'hint' => '留空以立即開始匯入工作。',
     ],
     'finished_at' => [
-        'label' => '完成時間',
+        'label' => '完成於',
     ],
     'failed_at' => [
-        'label' => '失敗時間',
+        'label' => '失敗於',
     ],
     'clear_at' => [
-        'label' => '清除時間',
+        'label' => '清除於',
     ],
     'payload' => [
         'label' => '有效負載',

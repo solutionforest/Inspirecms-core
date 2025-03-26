@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?\Carbon\CarbonInterface $failed_at
  * @property-read ?ExportStatus $display_status
  * @property-read ?ExportStatus $display_exporter
+ * @property-read ?\Carbon\CarbonInterface $clear_at
  */
 interface Export extends CanPrunable, HasAuthor
 {
@@ -96,4 +97,12 @@ interface Export extends CanPrunable, HasAuthor
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereFailed($query);
+
+    /**
+     * Scope a query to only include records that can be cleared.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeWhereCanClear($query);
 }

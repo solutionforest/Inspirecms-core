@@ -112,7 +112,7 @@ class Export extends BaseModel implements ExportContract
      */
     public function prunable()
     {
-        return static::query()->wherePending(false)->where('created_at', '<=', now()->subDays(ExportDataHelper::retrieveClearanceDaysInterval()));
+        return static::query()->whereCanClear();
     }
 
     /**
@@ -144,6 +144,13 @@ class Export extends BaseModel implements ExportContract
     public function scopeWhereFailed($query)
     {
         return $query->whereNotNull('failed_at');
+    }
+
+    public function scopeWhereCanClear($query)
+    {
+        return $query
+            ->wherePending(false)
+            ->where('created_at', '<', now()->subDays(ExportDataHelper::retrieveClearanceDaysInterval()));
     }
     // endregion Scope(s)
 
@@ -179,6 +186,19 @@ class Export extends BaseModel implements ExportContract
                 return null;
             },
             set: function ($value) {}
+        );
+    }
+
+    public function clearAt(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->display_status == ExportStatus::Pending) {
+                    return null;
+                }
+
+                return $this->created_at?->addDays(ExportDataHelper::retrieveClearanceDaysInterval());
+            }
         );
     }
 
