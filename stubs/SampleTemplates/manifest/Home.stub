@@ -19,8 +19,8 @@
             @propertyArray('hero_banner', 'image_slider')
             @foreach ($hero_banner_image_slider ?? [] as $item)
                 <div class="swiper-slide">
-                    <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
-                    <p>{{ $item->description }}</p>
+                    <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+                    <p>{{ $item?->description }}</p>
                 </div>
             @endforeach
         </div>
