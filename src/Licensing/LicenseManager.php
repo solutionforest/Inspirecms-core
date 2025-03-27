@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LicenseManager
 {
-    const ENDPOINT = 'https://api.inspirecms.com/v1/license/verify';
+    const ENDPOINT = 'https://inspirecms-license.solutionforest.net';
 
     const REQUEST_TIMEOUT = 5;
 
@@ -26,9 +26,6 @@ class LicenseManager
      */
     public function verify()
     {
-        // todo: wait to build license system
-        return LicenseVerificationResult::failureOffline('License system is not implemented yet');
-
         // Check cache first to avoid frequent verifications
         $cacheKey = $this->buildCacheKey();
 
