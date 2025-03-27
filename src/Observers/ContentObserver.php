@@ -63,6 +63,20 @@ class ContentObserver
      * @param  Content&Model  $model
      * @return void
      */
+    public function saved($model)
+    {
+        if ($model->isDirty(['is_default'])) {
+            // Update the route if default content is changed -> default route should be updated
+            $provider = ContentSegmentFactory::create();
+            $this->updateCurrentRouteInDefaultPattern($model, $provider);
+        }
+
+    }
+
+    /**
+     * @param  Content&Model  $model
+     * @return void
+     */
     public function updated($model)
     {
         $statusDiff = [$model->getOriginal('status'), $model->getAttribute('status')];
@@ -153,6 +167,29 @@ class ContentObserver
                 ],
             ]
         ));
+    }
+
+    /**
+     * @param  Content & Model  $model
+     * @param  SegmentProviderInterface  $provider
+     */
+    protected function updateCurrentRouteInDefaultPattern($model, $provider)
+    {
+        if (! $model->isWebPage()) {
+            return;
+        }
+
+        $uri = $provider->getSegment($model);
+        
+        $currentRoutes = collect($model->routes()->where('is_default_pattern', true)->get())
+            ->map(fn (Model $model) => $model->toArray())
+            ->map(function (array $data) use ($uri) {
+                $data['uri'] = $uri;
+                return $data;
+            })
+            ->all();
+            
+        event(new UpsertRoute($model->withoutRelations(), $currentRoutes));
     }
 
     /**
