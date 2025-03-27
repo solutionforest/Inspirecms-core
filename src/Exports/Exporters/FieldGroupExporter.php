@@ -57,7 +57,7 @@ class FieldGroupExporter extends BaseImportUsedDataExporter
         }
 
         return ExportResult::paused(
-            $this->buildProcessingData($page, $perPage, $processingErrors, $folderName),
+            $this->buildProcessingDataForImportUsed($page, $perPage, $processingErrors, $folderName),
         );
     }
 

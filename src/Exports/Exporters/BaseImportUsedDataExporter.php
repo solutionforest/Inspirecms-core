@@ -4,11 +4,13 @@ namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 abstract class BaseImportUsedDataExporter extends BaseExporter
@@ -52,12 +54,12 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
         switch (true) {
 
             case $record instanceof DocumentType:
-                $array = ImportDataEntities\DocumentType::fromRecord($record)->toExportArray();
+                $array = ImportDataEntities\DocumentType::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
             case $record instanceof FieldGroup:
-                $array = ImportDataEntities\FieldGroup::fromRecord($record)->toExportArray();
+                $array = ImportDataEntities\FieldGroup::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
@@ -69,12 +71,18 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                 //     return $themeContent;
 
             case $record instanceof Content:
-                $array = ImportDataEntities\Content::fromRecord($record)->toExportArray();
+                $array = ImportDataEntities\Content::fromRecord($record)->toArray();
+
+                return json_encode($array, JSON_PRETTY_PRINT);
+
+            case $record instanceof Navigation:
+
+                $array = ImportDataEntities\Navigation::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
         }
 
-        return '';
+        return '{}';
     }
 
     protected function processRecordForImportUsed(Model $record, $fs, ?string $dir, array &$errors)
@@ -116,5 +124,46 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                 'message' => $th->getMessage(),
             ];
         }
+    }
+
+    /**
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param string $type
+     * @return \Illuminate\Database\Eloquent\Builder
+     */
+    protected function buildExportingQueryForImportUsed($query, $type)
+    {
+        switch ($type) {
+            case ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE:
+                return $query->with([
+                    'fieldGroups',
+                    'templates',
+                    'allowedDocumentTypes',
+                    'content',
+                ]);
+            case ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP:
+                return $query->with([
+                    'fields',
+                ]);
+            case ImportDataHelper::FOLDER_IDENTIFIER_CONTENT:
+                return $query->with([
+                    'parent.path',
+                    'sitemap',
+                    'webSetting',
+                    'documentType',
+                ]);
+        }
+
+        return $query;
+    }
+
+    protected static function buildProcessingDataForImportUsed(int $currentPage, int $perPage, array $errors, string $folderName)
+    {
+        return [
+            'page' => $currentPage + 1,
+            'perPage' => $perPage,
+            'errors' => $errors,
+            'folderName' => $folderName,
+        ];
     }
 }

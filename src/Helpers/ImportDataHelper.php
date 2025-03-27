@@ -5,8 +5,10 @@ namespace SolutionForest\InspireCms\Helpers;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class ImportDataHelper
 {
@@ -129,142 +131,226 @@ class ImportDataHelper
     {
         $generateOrder = [
             self::FOLDER_IDENTIFIER_FIELDGROUP => collect(range(1, 3))->map(fn ($i) => "field-group-{$i}.json")->all(),
-            self::FOLDER_IDENTIFIER_TEMPLATE => collect(range(1, 2))->map(fn ($i) => array_map(fn ($j) => ["template-{$i}" . DIRECTORY_SEPARATOR . "theme-{$j}.blade.php"], range(1, 2)))->flatten()->all(),
+            self::FOLDER_IDENTIFIER_TEMPLATE => collect(range(1, 5))->map(fn ($i) => array_map(fn ($j) => ["template-{$i}" . DIRECTORY_SEPARATOR . "theme-{$j}.blade.php"], range(1, 2)))->flatten()->all(),
             self::FOLDER_IDENTIFIER_DOCUMENTTYPE => collect(range(1, 4))->map(fn ($i) => "document-type-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_CONTENT => collect(range(1, 1))->map(fn ($i) => "content-{$i}.json")->all(),
-            self::FOLDER_IDENTIFIER_NAVIGATION => collect(range(1, 1))->map(fn ($i) => "navigation-{$i}.json")->all(),
+            self::FOLDER_IDENTIFIER_NAVIGATION => collect(range(1, 2))->map(fn ($i) => "navigation-{$i}.json")->all(),
         ];
         $data = [];
 
-        $getRandomFileBaseNameOnFolder = fn ($folder, $number): array => ! isset($generateOrder[$folder]) ? [] : collect($generateOrder[$folder])->random($number)->map(fn ($filename) => Str::before($filename, '.'))->all();
-
         foreach ($generateOrder as $folder => $sampleFileNames) {
 
-            $sequence = [];
+            $getSampleDataInSequence = function (string $folder, int $index, string $filename) use ($generateOrder) {
 
-            switch ($folder) {
-                case self::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-                    $sequence = collect([
-                        [
-                            'showAsTable' => false,
-                            'showAtRoot' => true,
-                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
-                            'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
-                            'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
-                        ],
-                        [
-                            'showAsTable' => true,
-                            'showAtRoot' => true,
-                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
-                            'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
-                            'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
-                        ],
-                        [
-                            'showAsTable' => false,
-                            'showAtRoot' => false,
-                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data->value,
-                            'templates' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 2),
-                            'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
-                        ],
-                        [
-                            'showAsTable' => false,
-                            'showAtRoot' => false,
-                            'category' => \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Web->value,
-                            'templates' => [],
-                            'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, 1),
-                        ],
-                    ])
-                        ->map(
-                            fn (array $item): array => collect(['defaultTemplate' => Arr::first($item['templates'] ?? null)])
-                                ->merge(['title' => null, 'icon' => null, 'allowed' => []])
-                                ->merge($item)
-                                ->all()
-                        )
-                        ->map(fn (array $item) => Entities\DocumentType::fromArray($item)->toArray())
-                        ->all();
+                $getRandomFileBaseNameOnFolder = fn ($folder, $number): array => ! isset($generateOrder[$folder]) ? [] : collect($generateOrder[$folder])->random($number)->map(fn ($filename) => Str::before($filename, '.'))->all();
+                $getRandomTemplateSlug = fn ($number): array => collect($getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, $number))
+                    ->map(fn ($path) => str($path)->explode('/')->first())
+                    ->all();
 
-                    break;
-                case self::FOLDER_IDENTIFIER_FIELDGROUP:
+                $locales = ['en'];
+                $generateTranslationArray = fn (array $propsAndValueMap): array => collect($propsAndValueMap)->map(fn ($value) => collect($locales)->mapWithKeys(fn ($locale) => ["{$locale}" => $value])->all())->all();
 
-                    $sequence = collect([
-                        [
-                            new Entities\Field(
-                                slug: 'field-1',
-                                type: 'translate',
-                                config: ['field' => 'text'],
-                                label: 'Field 1',
-                            ),
-                            new Entities\Field(
-                                slug: 'field-2',
-                                type: 'mediaPicker',
-                                config: ['mimeTypes' => ['image'], 'multiple' => false],
-                                label: 'Field 2',
-                            ),
-                        ], [
-                            new Entities\Field(
-                                slug: 'field-3',
-                                type: 'contentPicker',
-                                config: ['documentType' => 'article', 'multiple' => true],
-                                label: 'Field 3',
-                            ),
-                            new Entities\Field(
-                                slug: 'field-4',
-                                type: 'text',
-                                config: [],
-                                label: 'Field 4',
-                            ),
-                        ], [
-                            new Entities\Field(
-                                slug: 'field-5',
-                                type: 'text',
-                                config: [],
-                                label: 'Field 5',
-                            ),
-                        ],
-                    ])->map(fn (array $fields): array => ['title' => null, 'fields' => collect($fields)->map(fn ($field) => $field->toArray())->all()])->all();
+                $itemSlug = Str::before($filename, '.');
 
-                    break;
-                case self::FOLDER_IDENTIFIER_CONTENT:
+                $sequence = [];
 
-                    $arrayOrder = ['slug', 'title', 'documentType', 'isDefault', 'properties', 'publishState', 'sitemap', 'webSetting', 'parent', 'template'];
-                    $sequence = collect([
-                        [
-                            'documentType' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_DOCUMENTTYPE, 1)[0] ?? null,
-                            'publishState' => 'publish',
-                            'properties' => [],
-                        ],
-                    ])->map(
-                        fn (array $item, $i): array => collect(['title' => ['en' => "Content {$i}", 'fr' => "Content {$i}"]])
-                            ->merge($item)
-                            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
-                            ->all()
-                    )->all();
+                switch ($folder) {
+                    
+                    case self::FOLDER_IDENTIFIER_DOCUMENTTYPE:
+                        {
+                            $sequence = collect([
+                                [
+                                    'showAsTable' => false,
+                                    'showAtRoot' => true,
+                                    'templates' => $getRandomTemplateSlug(1),
+                                    'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
+                                ],
+                                [
+                                    'showAsTable' => true,
+                                    'showAtRoot' => true,
+                                    'templates' => [],
+                                    'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
+                                ],
+                                [
+                                    'showAsTable' => false,
+                                    'showAtRoot' => false,
+                                    'category' => DocumentTypeCategory::Data,
+                                    'templates' => $getRandomTemplateSlug(2),
+                                    'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
+                                ],
+                                [
+                                    'showAsTable' => false,
+                                    'showAtRoot' => false,
+                                    'templates' => [],
+                                    'fieldGroups' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_FIELDGROUP, 1),
+                                ],
+                            ])
+                                ->map(
+                                    fn (array $item): array => collect(['defaultTemplate' => Arr::first($item['templates'] ?? null)])
+                                        ->merge(['slug' => $itemSlug])
+                                        ->merge(['title' => Str::title($itemSlug)])
+                                        ->merge($item)
+                                        ->all()
+                                )
+                                ->map(fn (array $item) => Entities\DocumentType::fromArray($item)->toArray())
+                                ->all();
+                        }
+                        break;
 
-                    break;
-                case self::FOLDER_IDENTIFIER_NAVIGATION:
+                    case self::FOLDER_IDENTIFIER_FIELDGROUP:
+                        {
+                            $sequence = collect([
+                                [
+                                    new Entities\Field(
+                                        slug: 'field-1',
+                                        label: 'Field 1',
+                                        type: 'text',
+                                        config: ['translatable' => true],
+                                    ),
+                                    new Entities\Field(
+                                        slug: 'field-2',
+                                        label: 'Field 2',
+                                        type: 'mediaPicker',
+                                        config: ['mimeTypes' => ['image'], 'max' => 1],
+                                    ),
+                                ], [
+                                    new Entities\Field(
+                                        slug: 'field-3',
+                                        label: 'Field 3',
+                                        type: 'contentPicker',
+                                        config: ['documentType' => 'article'],
+                                    ),
+                                    new Entities\Field(
+                                        slug: 'field-4',
+                                        label: 'Field 4',
+                                        type: 'text',
+                                        config: [],
+                                    ),
+                                ], [
+                                    new Entities\Field(
+                                        slug: 'field-5',
+                                        label: 'Field 5',
+                                        type: 'text',
+                                        config: [],
+                                    ),
+                                ],
+                            ])
+                            ->map(fn (array $fields, $index) => new Entities\FieldGroup(
+                                slug: $itemSlug,
+                                title: Str::title($itemSlug),
+                                fields: $fields,
+                            ))
+                            ->map(fn (Entities\FieldGroup $fieldGroup) => $fieldGroup->toArray())
+                            ->all();
+                        }
+                        break;
 
-                    $arrayOrder = ['id', 'category', 'type', 'title', 'contentSlugPath', 'url', 'target', 'children'];
-                    $sequence = collect([
-                        new Entities\Navigation(category: 'main', title: ['en' => 'Main', 'fr' => 'Main'], type: 'content', contentSlugPath: $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_CONTENT, 1)[0] ?? null),
-                    ])
-                        ->map(fn ($item) => collect($item->toArray())->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))->all())
-                        ->all();
+                    case self::FOLDER_IDENTIFIER_CONTENT:
+                        {
+                            $sequence = collect([
+                                [
+                                    'documentType' => 'document-type-1',
+                                    'publishState' => 'publish',
+                                    'properties' => [],
+                                ],
+                            ])
+                                ->map(function (array $item) use ($itemSlug, $generateTranslationArray) {
+                                    $title = Str::title($itemSlug);
 
-                    break;
-                case self::FOLDER_IDENTIFIER_TEMPLATE:
+                                    return collect($item)
+                                        ->merge(['slug' => $itemSlug])
+                                        ->merge($generateTranslationArray(['title' => $title]))
+                                        ->merge([
+                                            'sitemap' => [
+                                                'priority' => 0.5,
+                                                'change_frequency' => 'monthly',
+                                                'enable' => true,
+                                            ],
+                                            'webSetting' => [
+                                                'seo' => [
+                                                    'meta_title' => $title,
+                                                    'meta_description' => [],
+                                                    'meta_keywords' => [],
+                                                    'og_title' => $title,
+                                                    'og_description' => [],
+                                                    'og_image' => [],
+                                                ],
+                                                'robots' => [
+                                                    'index' => true,
+                                                    'follow' => true,
+                                                ],
+                                                'redirect_path' => null,
+                                                'redirect_content_id' => KeyHelper::generateMinUuid(),
+                                                'redirect_type' => null,
+                                            ],
+                                        ])
+                                        ->all();
+                                })
+                                ->map(fn (array $item) => Entities\Content::fromArray($item)->toArray())
+                                ->all();
+                        }
+                        break;
 
-                    $sequence = [
-                        '<x-cms-template :content="$content" type="page">This is sample view</x-cms-template>',
-                    ];
+                    case self::FOLDER_IDENTIFIER_NAVIGATION:
+                        {
+                            $sequence = collect([
+                                [
+                                    'category' => 'main',
+                                    ... $generateTranslationArray(['title' => 'Main']),
+                                    'type' => 'content',
+                                    'contentSlugPath' => $getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_CONTENT, 1)[0] ?? null,
+                                ],
+                                [
+                                    'category' => 'footer',
+                                    ... $generateTranslationArray(['title' => 'Footer']),
+                                    'type' => 'group',
+                                    'children' => [
+                                        [
+                                            'category' => 'footer',
+                                            ... $generateTranslationArray(['title' => 'About Us']),
+                                            'type' => 'link',
+                                            'url' => '/about-us',
+                                        ],
+                                        [
+                                            'category' => 'footer',
+                                            ... $generateTranslationArray(['title' => 'Contact Us']),
+                                            'type' => 'link',
+                                            'url' => '/contact-us',
+                                        ],
+                                    ],
+                                ]
+                            ])
+                                ->map(fn (array $item) => Entities\Navigation::fromArray($item)->toArray())
+                                ->all();
+                        }
+                        break;
 
-                    break;
-            }
+                    case self::FOLDER_IDENTIFIER_TEMPLATE:
+                        {
+                            $sequence = [
+                                TemplateHelper::retrieveDefaultThemeContent(),
+                            ];
+                        }
+                        break;
+                }
+
+                $targetSequenceIndex = $index === 0 ? $index : $index % count($sequence);
+
+                if ($targetSequenceIndex <= 0) {
+                    return Arr::first($sequence);
+                }
+
+                return $sequence[$targetSequenceIndex] ?? [];
+            };
 
             $fileContentArr = [];
 
             foreach ($sampleFileNames as $i => $filename) {
-                $targetDataFromSequence = $i === 0 ? $sequence[$i] : $sequence[$i % count($sequence)];
+
+                $targetDataFromSequence = $getSampleDataInSequence($folder, $i, $filename);
+
                 $fileContentArr[$filename] = is_array($targetDataFromSequence) ? json_encode($targetDataFromSequence, JSON_PRETTY_PRINT) : $targetDataFromSequence;
+
             }
 
             $data[$folder] = $fileContentArr;

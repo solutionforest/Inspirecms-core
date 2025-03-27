@@ -18,6 +18,20 @@ class Field extends BaseEntity
         'label' => 'nullable|string',
     ];
 
+    protected static array $propertiesOrder = [
+        'slug',
+        'label',
+        'type',
+        'config',
+    ];
+
+    protected static array $limitedProperties = [
+        'slug',
+        'label',
+        'type',
+        'config',
+    ];
+
     public function __construct(
         /**
          * The slug of the field.
@@ -43,7 +57,9 @@ class Field extends BaseEntity
          * @var string|null
          */
         public $label = null,
-    ) {}
+    ) {
+        $this->initialize();
+    }
 
     public function getDataForModel(): array
     {

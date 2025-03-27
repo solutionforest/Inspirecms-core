@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\Navigation as ContractsNavigation;
+
 /**
  * @extends BaseEntity<Navigation>
  */
@@ -12,10 +15,33 @@ class Navigation extends BaseEntity
         'type' => 'required|string',
         'title' => 'required|array',
         'title.*' => 'string',
-        'url' => 'nullable|string',
+        'url' => 'required|array',
+        'url.*' => 'nullable|string',
         'target' => 'nullable|string',
         'contentSlugPath' => 'nullable|string',
         'children' => 'array',
+    ];
+
+    protected static array $propertiesOrder = [
+        'id', 
+        'category', 
+        'type', 
+        'title', 
+        'contentSlugPath', 
+        'url', 
+        'target', 
+        'children',
+    ];
+
+    protected static array $limitedProperties = [
+        'id',
+        'category',
+        'type',
+        'title',
+        'url',
+        'target',
+        'contentSlugPath',
+        'children',
     ];
 
     public function __construct(
@@ -40,7 +66,7 @@ class Navigation extends BaseEntity
         /**
          * The URL of the navigation item (optional).
          *
-         * @var string|null
+         * @var ?array<string,string>
          */
         public $url = null,
         /**
@@ -65,7 +91,9 @@ class Navigation extends BaseEntity
          * @var Navigation[]
          */
         public array $children = [],
-    ) {}
+    ) {
+        $this->initialize();
+    }
 
     public static function fromArray(array $parameters)
     {
@@ -84,5 +112,25 @@ class Navigation extends BaseEntity
             'url' => $this->url,
             'target' => $this->target,
         ];
+    }
+
+    /**
+     * @param ContractsNavigation|Model $record
+     */
+    public static function fromRecord($record)
+    {
+        $data = collect($record->toArray())->only(static::$limitedProperties)->except('children')->all();
+
+        $children = [];
+        
+        foreach ($record->children as $item) {
+
+            $children[] = static::fromRecord($item);
+
+        }
+
+        $data['children'] = $children;
+
+        return static::fromArray($data);
     }
 }

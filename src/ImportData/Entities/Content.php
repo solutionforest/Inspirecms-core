@@ -26,6 +26,34 @@ class Content extends BaseEntity
         'template' => 'nullable|string',
     ];
 
+    protected static array $propertiesOrder = [
+        'slug',
+        'title',
+        'parent',
+        'documentType',
+        'isDefault',
+        'properties',
+        'publishState',
+        'sitemap',
+        'webSetting',
+        'template',
+        'routes',
+    ];
+
+    protected static array $limitedProperties = [
+        'slug',
+        'title',
+        'parent',
+        'documentType',
+        'isDefault',
+        'properties',
+        'publishState',
+        'sitemap',
+        'webSetting',
+        'template',
+        'routes',
+    ];
+
     public function __construct(
         /**
          * The unique identifier for the content.
@@ -93,7 +121,16 @@ class Content extends BaseEntity
          * @var string|null
          */
         public $template = null,
-    ) {}
+    )  { 
+        $this->initialize();
+    }
+
+    protected function initialize(): void
+    {
+        // Set the default values
+        $this->isDefault ??= false;
+        $this->publishState ??= 'draft';
+    }
 
     public function getDataForModel(): array
     {
@@ -167,35 +204,6 @@ class Content extends BaseEntity
         // full path
         $data['parent'] = $record->parent?->path?->value;
 
-        return static::fromArray(Arr::only($data, static::limitFields()));
-    }
-
-    public function toExportArray(): array
-    {
-        $arrayOrder = ['slug', 'title', 'documentType', 'isDefault', 'properties', 'publishState', 'sitemap', 'webSetting', 'parent', 'template'];
-
-        $list = parent::toArray();
-
-        return collect($list)
-            ->only($arrayOrder)
-            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
-            ->all();
-    }
-
-    private static function limitFields(): array
-    {
-        return [
-            'slug',
-            'title',
-            'documentType',
-            'isDefault',
-            'properties',
-            'publishState',
-            'sitemap',
-            'webSetting',
-            'routes',
-            'parent',
-            'template',
-        ];
+        return static::fromArray(Arr::only($data, static::$limitedProperties));
     }
 }

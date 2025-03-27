@@ -101,16 +101,6 @@ abstract class BaseExporter
         return $currentPage >= $totalPages;
     }
 
-    protected static function buildProcessingData(int $currentPage, int $perPage, array $errors, string $folderName)
-    {
-        return [
-            'page' => $currentPage + 1,
-            'perPage' => $perPage,
-            'errors' => $errors,
-            'folderName' => $folderName,
-        ];
-    }
-
     protected function handleExportCompletion(string $folderName, $processingErrors)
     {
         $zippedFile = $this->zipTempFolder($folderName);

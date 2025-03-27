@@ -137,6 +137,7 @@ return [
     'exports' => [
         'disk' => 'local',
         'exporters' => [
+            \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
             \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
             \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
             \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
