@@ -36,13 +36,13 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
         if (blank($currentExportingFolder)) {
             return ExportResult::failed('No export folder selected. Please select at least one export type.');
         }
-        
+
         [$folderName, $fs, $fullPath, $subFolders] = $this->ensureTempFolderForExport('import_used', $targetFolders);
 
         $errors = [];
 
         foreach ($records->items() as $record) {
-            
+
             $this->processRecordForImportUsed(
                 $record,
                 $fs,
@@ -61,7 +61,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
         if ($isLastFolder && $isCurrentStepFinished) {
             return $this->handleExportCompletion($folderName, $processingErrors);
         }
-        
+
         $processingData['folderName'] = $folderName;
         $processingData['errors'] = $processingErrors;
         $processingData['__steps'][$currentExportingFolder]['nextPage'] = $page + 1;
@@ -71,7 +71,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             // Get next step
             $currentIndex = array_search($currentExportingFolder, $targetFolders);
             $nextIndex = $currentIndex !== false ? $currentIndex + 1 : 0;
-            
+
             if ($nextIndex < count($targetFolders)) {
                 $processingData['nextStep'] = $targetFolders[$nextIndex];
             } else {
@@ -164,7 +164,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
     {
         $query = static::getBaseQueryForModel($type);
 
-        if (!$query) {
+        if (! $query) {
             return collect();
         }
 
@@ -172,8 +172,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
     }
 
     /**
-     * @param string $type
-     * @param Collection<Model> $records
+     * @param  Collection<Model>  $records
      * @return array
      */
     private static function buildOptionsFor(string $type, $records)
@@ -196,17 +195,17 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
                 $label = $record->title;
             } elseif ($record instanceof ModelContracts\Navigation) {
                 $label = "{$record->title} ({$record->type})";
-            } 
-            
+            }
+
             $results[$key] = $label ?? $key;
 
         }
 
         return $results;
     }
+
     /**
-     * @param string $type
-     * @param Collection<Model> $records
+     * @param  Collection<Model>  $records
      * @return array
      */
     private static function buildOptionDescriptionsFor(string $type, $records)
@@ -229,8 +228,8 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
                 $label = $record->slug;
             } elseif ($record instanceof ModelContracts\Navigation) {
                 $label = "{$record->category}";
-            } 
-            
+            }
+
             $results[$key] = $label ?? $key;
 
         }

@@ -23,22 +23,22 @@ abstract class BaseEntity extends BaseDto
     protected static array $limitedProperties = [];
 
     abstract public function getDataForModel(): array;
-    
+
     protected function initialize(): void
     {
         // Implement the initialization logic here
     }
-    
+
     /** {@inheritDoc} */
     public static function fromArray(array $parameters)
     {
         // Preset default values for array properties
         $reflection = new \ReflectionClass(static::class);
-        
+
         $propTypeMap = [];
-        
+
         foreach ($reflection->getProperties() as $property) {
-            
+
             if (! $property->isPublic()) {
                 continue;
             }
@@ -71,7 +71,7 @@ abstract class BaseEntity extends BaseDto
                 // Use docType to determine if it's an array
                 if (
                     // e.g. @var array
-                    $docType === 'array' || 
+                    $docType === 'array' ||
                     // e.g. @var array<string>
                     strpos($docType, 'array<') === 0 ||
                     // e.g. @var string[]
@@ -80,7 +80,7 @@ abstract class BaseEntity extends BaseDto
                     $propTypeMap[$propName] = 'array';
                 }
                 // Use docType to determine if it's a string
-                else if ($docType === 'string') {
+                elseif ($docType === 'string') {
                     $propTypeMap[$propName] = 'string';
                 }
             }
@@ -93,6 +93,7 @@ abstract class BaseEntity extends BaseDto
                     if (! isset($parameters[$name]) || ! is_array($parameters[$name])) {
                         $parameters[$name] = [];
                     }
+
                     break;
 
                 case 'string':
@@ -101,11 +102,12 @@ abstract class BaseEntity extends BaseDto
                         $parameters[$name] = $parameters[$name]->value;
                     }
                     // Not string
-                    else if (isset($parameters[$name]) && ! is_string($parameters[$name])) {
+                    elseif (isset($parameters[$name]) && ! is_string($parameters[$name])) {
                         $parameters[$name] = null;
                     }
+
                     break;
-                
+
                 default:
                     break;
             }
@@ -120,13 +122,13 @@ abstract class BaseEntity extends BaseDto
     }
 
     /**
-     * @param Model $record
+     * @param  Model  $record
      * @return TEntity
      */
     public static function fromRecord($record)
     {
         $data = $record->toArray();
-        
+
         return static::fromArray(Arr::only($data, static::$limitedProperties));
     }
 
@@ -170,33 +172,35 @@ abstract class BaseEntity extends BaseDto
         $limitFields = static::$limitedProperties;
 
         return collect(parent::__toArray())
-            ->map(fn ($value) => 
-                (is_array($value) || $value instanceof Collection) 
-                    ? collect($value)->toArray() 
+            ->map(
+                fn ($value) => (is_array($value) || $value instanceof Collection)
+                    ? collect($value)->toArray()
                     : ($value instanceof BaseEntity ? $value->toArray() : $value)
             )
             // Limit the properties if the limit is defined
-            ->when(!empty($limitFields), fn (Collection $collection) => $collection
-                ->only($limitFields)
+            ->when(
+                ! empty($limitFields),
+                fn (Collection $collection) => $collection
+                    ->only($limitFields)
             )
             // Order the properties if the order is defined
-            ->when(!empty($order), function (Collection $collection) use ($order) {
+            ->when(! empty($order), function (Collection $collection) use ($order) {
                 $sorted = [];
-                
+
                 // First add items in the specified order
                 foreach ($order as $key) {
                     if ($collection->has($key)) {
                         $sorted[$key] = $collection[$key];
                     }
                 }
-                
+
                 // Then add any remaining items
                 foreach ($collection as $key => $value) {
-                    if (!array_key_exists($key, $sorted)) {
+                    if (! array_key_exists($key, $sorted)) {
                         $sorted[$key] = $value;
                     }
                 }
-                
+
                 return collect($sorted);
             })
             ->toArray();

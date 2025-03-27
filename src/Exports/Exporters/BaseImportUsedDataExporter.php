@@ -127,8 +127,8 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @param string $type
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  string  $type
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function buildExportingQueryForImportUsed($query, $type)

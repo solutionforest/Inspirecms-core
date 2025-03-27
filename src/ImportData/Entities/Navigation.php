@@ -23,13 +23,13 @@ class Navigation extends BaseEntity
     ];
 
     protected static array $propertiesOrder = [
-        'id', 
-        'category', 
-        'type', 
-        'title', 
-        'contentSlugPath', 
-        'url', 
-        'target', 
+        'id',
+        'category',
+        'type',
+        'title',
+        'contentSlugPath',
+        'url',
+        'target',
         'children',
     ];
 
@@ -115,14 +115,14 @@ class Navigation extends BaseEntity
     }
 
     /**
-     * @param ContractsNavigation|Model $record
+     * @param  ContractsNavigation|Model  $record
      */
     public static function fromRecord($record)
     {
         $data = collect($record->toArray())->only(static::$limitedProperties)->except('children')->all();
 
         $children = [];
-        
+
         foreach ($record->children as $item) {
 
             $children[] = static::fromRecord($item);

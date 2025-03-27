@@ -180,15 +180,16 @@ class ContentObserver
         }
 
         $uri = $provider->getSegment($model);
-        
+
         $currentRoutes = collect($model->routes()->where('is_default_pattern', true)->get())
             ->map(fn (Model $model) => $model->toArray())
             ->map(function (array $data) use ($uri) {
                 $data['uri'] = $uri;
+
                 return $data;
             })
             ->all();
-            
+
         event(new UpsertRoute($model->withoutRelations(), $currentRoutes));
     }
 
