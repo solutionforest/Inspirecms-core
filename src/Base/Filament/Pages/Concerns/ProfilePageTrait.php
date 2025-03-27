@@ -215,7 +215,7 @@ trait ProfilePageTrait
                                 $action->failure();
                             }
                         }),
-                ])->alignEnd()->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && ! $record->isAccountVerified()),
+                ])->alignEnd()->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && ! $record->hasVerifiedEmail()),
                 Forms\Components\Placeholder::make('email_confirmed_at')
                     ->label(__('inspirecms::resources/user.email_confirmed_at.label'))
                     ->content(fn (User | Model $record) => $record->email_confirmed_at),

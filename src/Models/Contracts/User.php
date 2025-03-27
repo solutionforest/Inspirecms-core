@@ -39,11 +39,6 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     public function getFilamentFallbackAvatarUrl(): ?string;
 
     /**
-     * Check if the user account is verified.
-     */
-    public function isAccountVerified(): bool;
-
-    /**
      * Determine if the user is a super admin.
      *
      * @return bool True if the user is a super admin, false otherwise.

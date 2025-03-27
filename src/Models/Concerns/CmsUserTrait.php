@@ -25,15 +25,6 @@ trait CmsUserTrait
         return true;
     }
 
-    public function isAccountVerified(): bool
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-
-        return $this->hasVerifiedEmail();
-    }
-
     public function getFilamentName(): string
     {
         return $this->name;
@@ -207,6 +198,10 @@ trait CmsUserTrait
      */
     public function hasVerifiedEmail()
     {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
+
         if (AuthHelper::skipAccountVerification()) {
             return true;
         }
