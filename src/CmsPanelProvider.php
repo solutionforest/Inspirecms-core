@@ -37,9 +37,14 @@ class CmsPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $panel = $panel
-            ->id(InspireCmsConfig::getPanelId())
-            ->path(InspireCmsConfig::get('filament.path', 'cms'))
+        $panel = $panel->id(InspireCmsConfig::getPanelId());
+
+        return $this->configureCmsPanel($panel);
+    }
+
+    protected function configureCmsPanel(Panel $panel)
+    {
+        $panel = $panel->path(InspireCmsConfig::get('filament.path', 'cms'))
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
             ->authGuard(AuthHelper::guardName())
