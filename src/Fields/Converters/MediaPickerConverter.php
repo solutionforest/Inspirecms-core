@@ -28,11 +28,10 @@ class MediaPickerConverter extends BaseConverter
             ->filter(fn ($c) => in_array($c->getKey(), $formattedSourceValue))
             ->sortBy(fn ($c) => array_search($c->getKey(), $formattedSourceValue))
             ->values()
-            ->map(function ($item) use ($locale, $fallbackLocale) {
+            ->map(function ($item) use ($locale) {
                 if ($item instanceof MediaAsset) {
                     return $item->toDto($locale);
-                }
-                else if ($item instanceof BaseDto) {
+                } elseif ($item instanceof BaseDto) {
                     return $item;
                 }
 

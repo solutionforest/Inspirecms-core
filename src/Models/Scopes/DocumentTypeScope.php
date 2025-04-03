@@ -12,7 +12,7 @@ class DocumentTypeScope implements Scope
     public function apply($builder, Model $model)
     {
         if ($model instanceof Content) {
-            
+
             $query = $builder->getQuery();
 
             $related = $model->documentType()->getRelated();
@@ -20,7 +20,7 @@ class DocumentTypeScope implements Scope
 
             $query
                 ->leftJoin(
-                    $related->getTable() . ' as _dt', 
+                    $related->getTable() . ' as _dt',
                     $model->qualifyColumn($foreignKey),
                     '=',
                     '_dt.' . $related->getKeyName()

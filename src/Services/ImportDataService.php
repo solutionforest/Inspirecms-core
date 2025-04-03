@@ -257,11 +257,11 @@ class ImportDataService implements ImportDataServiceInterface
 
         $reorderDocumentTypes = function ($collection) {
 
-            $allowedItemsCount = collect($collection)->pluck('allowed')->reject(fn ($i) => !is_array($i) || empty($i))->flatten()->map(fn ($v) => ['n' => $v])->countBy('n')->all();
+            $allowedItemsCount = collect($collection)->pluck('allowed')->reject(fn ($i) => ! is_array($i) || empty($i))->flatten()->map(fn ($v) => ['n' => $v])->countBy('n')->all();
             // @todo For inheritance
 
             return collect($collection)->sortBy(function ($item) use ($allowedItemsCount) {
-                
+
                 // Low = Higher Order
                 $itemOrder = 0;
 

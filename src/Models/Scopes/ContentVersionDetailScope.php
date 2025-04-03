@@ -36,16 +36,16 @@ class ContentVersionDetailScope implements Scope
                         [
                             'id' => $related->getKeyName(),
                             'dt' => $recordCreationColumn,
-                            'status' => "publish_state",
-                        ], 
-                        null, 
-                    ) . " as __version_details"
+                            'status' => 'publish_state',
+                        ],
+                        null,
+                    ) . ' as __version_details'
                 )
                 ->selectRaw(
                     $this->buildJsonGroupConcatExpression(
-                        "to_data",
+                        'to_data',
                         $related->getKeyName(),
-                    ) . " as __version_data"
+                    ) . ' as __version_data'
                 )
                 ->selectRaw("MAX($recordCreationColumn) as __latest_version_dt")
                 ->selectRaw("MIN($recordCreationColumn) as __earliest_version_dt")
@@ -71,7 +71,7 @@ class ContentVersionDetailScope implements Scope
         }
     }
 
-    private function buildJsonGroupConcatExpression(array|string $columns, ?string $jsonKeyColumn): string
+    private function buildJsonGroupConcatExpression(array | string $columns, ?string $jsonKeyColumn): string
     {
         $isJsonColumn = filled($jsonKeyColumn);
 
@@ -79,17 +79,17 @@ class ContentVersionDetailScope implements Scope
         $dbDriver = DB::connection()->getDriverName();
 
         if (is_string($columns)) {
-        
+
             $gpConcatString = $columns;
 
         } else {
 
             $gpConcatStrings = collect($columns)
                 ->map(function ($columnName, $jsonKey) use ($dbDriver) {
-                    
+
                     $columnTemplate = match ($dbDriver) {
                         // Haven't 'concat' function in sqlite
-                        'sqlite' => "( '\"?\":\"' || ? || '\"' )", 
+                        'sqlite' => "( '\"?\":\"' || ? || '\"' )",
                         default => "CONCAT('\"?\":\"', ?, '\"')",
                     };
 
@@ -100,19 +100,19 @@ class ContentVersionDetailScope implements Scope
                 })
                 ->implode(match ($dbDriver) {
                     'sqlite' => " || ', ' || ",
-                    default => ", ', ', ", 
+                    default => ", ', ', ",
                 });
 
             // Json format '{key1': 'value1', 'key2': 'value2'}'
             $gpConcatString = match ($dbDriver) {
-                'sqlite' => "( '{' || $gpConcatStrings || '}' )", 
+                'sqlite' => "( '{' || $gpConcatStrings || '}' )",
                 default => "CONCAT('{', $gpConcatStrings, '}')",
             };
         }
 
         if ($jsonKeyColumn) {
 
-            $gpConcatString = str( 
+            $gpConcatString = str(
                 match ($dbDriver) {
                     'sqlite' => "( '\"' || ? ||'\":' || ? )",
                     default => "CONCAT('\"', ?, '\":', ?, '')",
@@ -121,7 +121,6 @@ class ContentVersionDetailScope implements Scope
                 ->replaceArray('?', [$jsonKeyColumn, $gpConcatString])
                 ->toString();
         }
-
 
         // Not concat function
         if ($dbDriver === 'sqlite') {

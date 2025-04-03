@@ -35,9 +35,10 @@ class ContentService implements ContentServiceInterface
     public function findByRoutePatternWithLangId($uri, $isDefaultRoutePattern, $isWebPage = null, $withRelations = [], $sorting = [], $limit = 10)
     {
         $query = $this
-            ->buildFindWithRouteQuery(fn ($q) => $q
-                ->where('uri', $uri)
-                ->when($isDefaultRoutePattern != null, fn ($q) => $q->whereIsDefaultPattern())
+            ->buildFindWithRouteQuery(
+                fn ($q) => $q
+                    ->where('uri', $uri)
+                    ->when($isDefaultRoutePattern != null, fn ($q) => $q->whereIsDefaultPattern())
             )
             ->with($withRelations);
 
@@ -45,7 +46,7 @@ class ContentService implements ContentServiceInterface
             'whereIsWebPage' => $isWebPage,
         ]);
         $query = $this->applySortingAndLimit($query, $sorting, $limit);
-        
+
         $records = $query->get();
 
         return collect($records)
@@ -59,7 +60,7 @@ class ContentService implements ContentServiceInterface
     public function findByRealPath($path, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
     {
         $query = $this->buildFindByRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, $limit);
-    
+
         // Key the result by the path
         return $query
             ->get()
@@ -152,7 +153,7 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param \Closure(\Illuminate\Database\Eloquent\Builder)   $routeQueryCallback
+     * @param  \Closure(\Illuminate\Database\Eloquent\Builder)  $routeQueryCallback
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function buildFindWithRouteQuery(\Closure $routeQueryCallback)
@@ -197,9 +198,8 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder   $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  array<string, string>  $sorting
-     * @param  int|null  $limit
      * @return \Illuminate\Database\Eloquent\Builder
      */
     protected function applySortingAndLimit($query, array $sorting, ?int $limit = null)
@@ -229,7 +229,7 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder   $query
+     * @param  \Illuminate\Database\Eloquent\Builder  $query
      * @param  array<string,mixed>  $where
      * @return \Illuminate\Database\Eloquent\Builder
      */
@@ -251,6 +251,7 @@ class ContentService implements ContentServiceInterface
                 }
             }
         }
+
         return $query;
     }
 
@@ -268,7 +269,7 @@ class ContentService implements ContentServiceInterface
         $ids = is_string($ids) ? $ids : Arr::flatten($ids);
 
         $query = $this->buildBaseQuery()->with($withRelations);
-        
+
         $query = $this->applyScopeFilters($query, [
             'whereIsWebPage' => $isWebPage,
             'whereIsPublished' => $isPublished,
@@ -289,15 +290,14 @@ class ContentService implements ContentServiceInterface
             'whereIsPublished' => $isPublished,
         ]);
         $query = $this->applySortingAndLimit($query, $sorting, $limit);
-    
+
         return $query;
     }
-
 
     private function buildGetUnderRealPathQuery($path, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = null)
     {
         $query = $this->buildUnderPathQuery($path)->with($withRelations);
-        
+
         $query = $this->applyScopeFilters($query, [
             'whereIsWebPage' => $isWebPage,
             'whereIsPublished' => $isPublished,
@@ -310,7 +310,7 @@ class ContentService implements ContentServiceInterface
     private function initializePaginatorCollection($paginator)
     {
         if ($paginator instanceof \Illuminate\Contracts\Pagination\Paginator) {
-            
+
             $items = $paginator->getCollection();
 
             // for "toDto" method

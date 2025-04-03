@@ -115,10 +115,10 @@ trait HasContentVersions
 
                 if (is_array($propData)) {
                     return $propData;
-                } else if (is_string($propData)) {
+                } elseif (is_string($propData)) {
                     return json_decode($propData, true);
                 }
-                
+
             } catch (\Throwable $th) {
                 // Fallback to load via publishedVersions
             }
@@ -147,10 +147,10 @@ trait HasContentVersions
 
                 if (is_array($propData)) {
                     return $propData;
-                } else if (is_string($propData)) {
+                } elseif (is_string($propData)) {
                     return json_decode($propData, true);
                 }
-                
+
             } catch (\Throwable $th) {
                 // Fallback to load via latestContentVersion
             }

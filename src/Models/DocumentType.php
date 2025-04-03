@@ -120,7 +120,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             static::getCategoryEnumClass()::Web->value,
             static::getCategoryEnumClass()::Data->value,
         ];
-        
+
         if ($condition) {
             return $query->whereIn('category', $canBeContentCats);
         }

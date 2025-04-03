@@ -77,7 +77,7 @@ class PublishedContentResolver implements PublishedContentResolverInterface
                 $locale = $this->segmentProvider->getLocaleFromDefaultRoute($route);
             }
         } else {
-            
+
             [$content, $landId] = $this->contentService->findByRoutePatternWithLangId(
                 uri: $routePatternToCheck,
                 isDefaultRoutePattern: false,

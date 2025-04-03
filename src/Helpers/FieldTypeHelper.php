@@ -128,7 +128,7 @@ class FieldTypeHelper
 
     public static function getFieldTypeConfig(string $typeName, array $config = []): ?FieldTypeConfig
     {
-        try{
+        try {
             return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
         } catch (\Exception $e) {
             return null;
