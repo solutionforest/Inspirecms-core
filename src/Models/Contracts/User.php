@@ -8,6 +8,7 @@ use Filament\Models\Contracts\HasName;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 
 /**
@@ -23,9 +24,10 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property ?\Carbon\CarbonInterface $email_confirmed_at
  * @property ?\Carbon\CarbonInterface $created_at
  * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read bool $is_active
+ * @property-read bool $is_locked
+ * @property-read ?\Carbon\CarbonInterface $locked_until
  */
-interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName
+interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName, MustVerifyEmail
 {
     /**
      * Get the user's activity.
@@ -35,11 +37,6 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     public function userActivity();
 
     public function getFilamentFallbackAvatarUrl(): ?string;
-
-    /**
-     * Check if the user account is verified.
-     */
-    public function isAccountVerified(): bool;
 
     /**
      * Determine if the user is a super admin.

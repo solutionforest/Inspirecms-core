@@ -1,4 +1,7 @@
-<a href="{{ url("/$locale/blog/$content->slug") }}" class="text-decoration-none">
+@php
+    $blogUrl = url("/$locale/blog/$content?->slug"); // custom route
+@endphp
+<a href="{{ $blogUrl }}" class="text-decoration-none">
     <article class="blog-post">
         @propertyArray('page_banner', 'image')
         @if (($media = collect($page_banner_image)->first()))
@@ -9,9 +12,7 @@
                 @propertyArray('blog_content', 'categories')
                 <span class="category">{{ implode(', ', $blog_content_categories ?? []) }}</span>
                 <span class="date">
-                    @propertyNotEmpty('blog_content', 'post_date')
-                        {{ $blog_content_post_date->format('d M, Y') }}
-                    @endif
+                    {{ $content?->publishAt?->format('d M, Y') }}
                 </span>
             </div>
             <h3>@property('page_banner', 'title')</h3>

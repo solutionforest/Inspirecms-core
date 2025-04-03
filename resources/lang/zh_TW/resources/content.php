@@ -13,115 +13,6 @@ return [
         'placeholder' => '輸入短網址',
         'instructions' => '輸入內容的短網址',
     ],
-    'seo' => [
-        'tab' => [
-            'label' => 'SEO',
-        ],
-        'meta_title' => [
-            'label' => 'Meta 標題',
-            'validation_attribute' => 'meta 標題',
-            'placeholder' => '輸入 meta 標題',
-            'instructions' => '輸入內容的 meta 標題',
-        ],
-        'meta_description' => [
-            'label' => 'Meta 描述',
-            'validation_attribute' => 'meta 描述',
-            'placeholder' => '輸入 meta 描述',
-            'instructions' => '輸入內容的 meta 描述',
-        ],
-        'meta_keywords' => [
-            'label' => 'Meta 關鍵字',
-            'validation_attribute' => 'meta 關鍵字',
-            'placeholder' => '輸入 meta 關鍵字',
-            'instructions' => '輸入內容的 meta 關鍵字',
-        ],
-        'og_title' => [
-            'label' => 'Open Graph 標題',
-            'validation_attribute' => 'open graph 標題',
-            'placeholder' => '輸入 open graph 標題',
-            'instructions' => '輸入內容的 open graph 標題',
-        ],
-        'og_description' => [
-            'label' => 'Open Graph 描述',
-            'placeholder' => '輸入 open graph 描述',
-            'instructions' => '輸入內容的 open graph 描述',
-        ],
-        'og_image' => [
-            'label' => 'Open Graph 圖片',
-            'instructions' => '輸入內容的 open graph 圖片',
-        ],
-    ],
-    'robots' => [
-        'section' => [
-            'heading' => 'Robots',
-        ],
-        'noindex' => [
-            'label' => '不索引',
-            'validation_attribute' => '不索引',
-            'instructions' => '防止搜索引擎索引此內容',
-        ],
-        'nofollow' => [
-            'label' => '不跟隨',
-            'validation_attribute' => '不跟隨',
-            'instructions' => '防止搜索引擎跟隨此內容上的鏈接',
-        ],
-    ],
-    'redirect' => [
-        'section' => [
-            'heading' => '重定向',
-        ],
-        'redirect_path' => [
-            'label' => '重定向路徑',
-            'validation_attribute' => '重定向路徑',
-            'placeholder' => '輸入重定向路徑',
-            'instructions' => '輸入內容的重定向路徑',
-        ],
-        'redirect_content' => [
-            'label' => '重定向內容',
-            'validation_attribute' => '重定向內容',
-            'placeholder' => '選擇重定向內容',
-            'instructions' => '選擇要重定向的內容',
-        ],
-        'redirect_type' => [
-            'label' => '重定向類型',
-            'validation_attribute' => '重定向類型',
-            'placeholder' => '選擇重定向類型',
-            'instructions' => '選擇重定向類型',
-            '301' => '301 永久',
-            '302' => '302 臨時（默認）',
-        ],
-    ],
-    'sitemap' => [
-        'tab' => [
-            'label' => '網站地圖',
-        ],
-        'enable' => [
-            'label' => '啟用',
-            'validation_attribute' => '啟用',
-            'instructions' => '啟用內容以包含在網站地圖中',
-        ],
-        'priority' => [
-            'label' => '優先級',
-            'validation_attribute' => '優先級',
-            'placeholder' => '輸入優先級',
-            'instructions' => '
-                <p><i>優先級應該是 0.0 到 1.0 之間的值。默認優先級是 0.5。</i></p>
-                <p><b>1.0 是最高優先級，0.0 是最低優先級。</b></p>
-                <p>頁面的優先級由搜索引擎用來確定頁面相對於網站上其他頁面的重要性。</p>
-            ',
-        ],
-        'change_frequency' => [
-            'label' => '更改頻率',
-            'validation_attribute' => '更改頻率',
-            'placeholder' => '選擇更改頻率',
-            'instructions' => '選擇內容的更改頻率',
-        ],
-    ],
-    'details' => [
-        'tab' => [
-            'label' => '詳情',
-        ],
-    ],
     'parent' => [
         'label' => '父級',
     ],
@@ -165,6 +56,145 @@ return [
         'validation_attribute' => '文檔類型',
     ],
 
+    'locked_at' => [
+        'label' => '鎖定於',
+    ],
+    'locked_by' => [
+        'label' => '鎖定者',
+    ],
+
+    'seo' => [
+        'meta_title' => [
+            'label' => 'Meta 標題',
+            'validation_attribute' => 'meta 標題',
+            'placeholder' => '輸入 meta 標題',
+            'instructions' => '輸入內容的 meta 標題',
+        ],
+        'meta_description' => [
+            'label' => 'Meta 描述',
+            'validation_attribute' => 'meta 描述',
+            'placeholder' => '輸入 meta 描述',
+            'instructions' => '輸入內容的 meta 描述',
+        ],
+        'meta_keywords' => [
+            'label' => 'Meta 關鍵字',
+            'validation_attribute' => 'meta 關鍵字',
+            'placeholder' => '輸入 meta 關鍵字',
+            'instructions' => '輸入內容的 meta 關鍵字',
+        ],
+        'og_title' => [
+            'label' => 'Open Graph 標題',
+            'validation_attribute' => 'open graph 標題',
+            'placeholder' => '輸入 open graph 標題',
+            'instructions' => '輸入內容的 open graph 標題',
+        ],
+        'og_description' => [
+            'label' => 'Open Graph 描述',
+            'placeholder' => '輸入 open graph 描述',
+            'instructions' => '輸入內容的 open graph 描述',
+        ],
+        'og_image' => [
+            'label' => 'Open Graph 圖片',
+            'instructions' => '輸入內容的 open graph 圖片',
+        ],
+    ],
+
+    'robots' => [
+        'noindex' => [
+            'label' => '不索引',
+            'validation_attribute' => '不索引',
+            'instructions' => '防止搜索引擎索引此內容',
+        ],
+        'nofollow' => [
+            'label' => '不跟隨',
+            'validation_attribute' => '不跟隨',
+            'instructions' => '防止搜索引擎跟隨此內容上的鏈接',
+        ],
+    ],
+
+    'redirect' => [
+        'redirect_path' => [
+            'label' => '重定向路徑',
+            'validation_attribute' => '重定向路徑',
+            'placeholder' => '輸入重定向路徑',
+            'instructions' => '輸入內容的重定向路徑',
+        ],
+        'redirect_content' => [
+            'label' => '重定向內容',
+            'validation_attribute' => '重定向內容',
+            'placeholder' => '選擇重定向內容',
+            'instructions' => '選擇要重定向的內容',
+        ],
+        'redirect_type' => [
+            'label' => '重定向類型',
+            'validation_attribute' => '重定向類型',
+            'placeholder' => '選擇重定向類型',
+            'instructions' => '選擇重定向類型',
+            '301' => '301 永久',
+            '302' => '302 臨時（默認）',
+        ],
+    ],
+
+    'sitemap' => [
+        'enable' => [
+            'label' => '啟用',
+            'validation_attribute' => '啟用',
+            'instructions' => '啟用內容以包含在網站地圖中',
+        ],
+        'priority' => [
+            'label' => '優先級',
+            'validation_attribute' => '優先級',
+            'placeholder' => '輸入優先級',
+            'instructions' => '
+                <p><i>優先級應該是 0.0 到 1.0 之間的值。默認優先級是 0.5。</i></p>
+                <p><b>1.0 是最高優先級，0.0 是最低優先級。</b></p>
+                <p>頁面的優先級由搜索引擎用來確定頁面相對於網站上其他頁面的重要性。</p>
+            ',
+        ],
+        'change_frequency' => [
+            'label' => '更改頻率',
+            'validation_attribute' => '更改頻率',
+            'placeholder' => '選擇更改頻率',
+            'instructions' => '選擇內容的更改頻率',
+        ],
+    ],
+
+    'routes' => [
+        'is_default_pattern' => [
+            'label' => '是否為預設模式',
+            'validation_attribute' => '是否為預設模式',
+            'hints' => '預設模式: :format',
+        ],
+        'language_id' => [
+            'label' => '語言區域',
+            'validation_attribute' => '語言區域',
+            'placeholder' => '默認語言區域',
+        ],
+        'uri' => [
+            'label' => '路徑',
+            'validation_attribute' => '路徑',
+            'hints' => '路徑應以 \'/\' 開頭。',
+        ],
+        'regex_constraints' => [
+            'label' => '正則表達式約束',
+            'key_label' => '參數值',
+            'value_label' => '正則表達式',
+            'hints' => '為路由模式添加正則表達式約束。例如: <i>:examples</i> ...',
+        ],
+    ],
+
+    'history' => [
+        'field' => [
+            'label' => '欄位',
+        ],
+        'from' => [
+            'label' => '從',
+        ],
+        'to' => [
+            'label' => '到',
+        ],
+    ],
+
     'notification' => [
         'remove_content_same_slug_in_same_parent' => [
             'title' => '刪除內容',
@@ -172,19 +202,26 @@ return [
         ],
     ],
 
-    'general' => [
-        'section' => [
+    'tabs' => [
+        'content' => '內容',
+        'details' => '詳情',
+        'sitemap' => '網站地圖',
+        'seo' => 'SEO',
+    ],
+
+    'sections' => [
+        'general' => [
             'heading' => '常規',
         ],
-    ],
-    'content' => [
-        'tab' => [
-            'label' => '內容',
-        ],
-    ],
-    'seo_og' => [
-        'section' => [
+        'seo_og' => [
             'heading' => 'Open Graph',
         ],
+        'robots' => [
+            'heading' => 'Robots',
+        ],
+        'redirect' => [
+            'heading' => '重定向',
+        ],
     ],
+
 ];

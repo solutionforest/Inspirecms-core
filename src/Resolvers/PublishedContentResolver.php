@@ -62,16 +62,27 @@ class PublishedContentResolver implements PublishedContentResolverInterface
     protected function getContentAndLocaleByRoute($route)
     {
         $routePatternToCheck = $route->uri();
+
         if ($routePatternToCheck == $this->segmentProvider->getDefaultRoutePattern()) {
             $urlSegmentToFind = $this->segmentProvider->getUrlSegmentFromDefaultRoute($route);
-            [$content, $landId] = $this->contentService->findWebPageAndLangIdByDefaultRoute($urlSegmentToFind);
+
+            [$content, $landId] = $this->contentService->findByRoutePatternWithLangId(
+                uri: $urlSegmentToFind,
+                isDefaultRoutePattern: true,
+                isWebPage: true,
+            )->map(fn ($arr) => [$arr['content'], $arr['language_id']])->first();
 
             // Check locale from the route if not set lang for the content's route
             if (is_null($landId)) {
                 $locale = $this->segmentProvider->getLocaleFromDefaultRoute($route);
             }
         } else {
-            [$content, $landId] = $this->contentService->findWebPageAndLangIdByRoutePattern($routePatternToCheck);
+
+            [$content, $landId] = $this->contentService->findByRoutePatternWithLangId(
+                uri: $routePatternToCheck,
+                isDefaultRoutePattern: false,
+                isWebPage: true,
+            )->map(fn ($arr) => [$arr['content'], $arr['language_id']])->first();
         }
 
         if (! isset($locale)) {

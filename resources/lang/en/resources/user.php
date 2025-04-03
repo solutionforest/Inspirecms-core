@@ -21,22 +21,6 @@ return [
         'label' => 'Password Confirmation',
         'validation_attribute' => 'password Confirmation',
     ],
-    'last_logged_in_at' => [
-        'label' => 'Last logged in at',
-        'validation_attribute' => 'last logged in at',
-    ],
-    'failed_login_attempt' => [
-        'label' => 'Failed login attempt',
-        'validation_attribute' => 'failed login attempt',
-    ],
-    'last_lockouted_at' => [
-        'label' => 'Last lockouted at',
-        'validation_attribute' => 'last lockouted at',
-    ],
-    'email_confirmed_at' => [
-        'label' => 'Email confirmed at',
-        'validation_attribute' => 'email confirmed at',
-    ],
     'avatar' => [
         'label' => 'Avatar',
         'validation_attribute' => 'avatar',
@@ -44,5 +28,54 @@ return [
     'preferred_language' => [
         'label' => 'Preferred Language',
         'validation_attribute' => 'preferred Language',
+    ],
+
+    'email_confirmed_at' => [
+        'label' => 'Email confirmed at',
+    ],
+    'last_logged_in_at' => [
+        'label' => 'Last logged in at',
+    ],
+    'failed_login_attempt' => [
+        'label' => 'Failed login attempt',
+    ],
+    'last_lockouted_at' => [
+        'label' => 'Last lockouted at',
+        'hints' => 'Will release at :time',
+    ],
+
+    'is_account_verified' => [
+        'label' => 'Account Verified',
+    ],
+    'is_locked' => [
+        'label' => 'Account Locked',
+    ],
+
+    'buttons' => [
+        'reset_lockout' => [
+            'label' => 'Reset Lockout',
+        ],
+        'resend_verification_email' => [
+            'label' => 'Resent Verification Email',
+        ],
+        'set_account_verified' => [
+            'label' => 'Set Account Verified',
+        ],
+    ],
+
+    'notification' => [
+
+        'account_not_verified' => [
+            'title' => 'Account Not Verified',
+            'body' => 'Your account has not been verified. Please check your email for instructions on how to verify your account.',
+        ],
+        'account_is_locked' => [
+            'title' => 'Account Locked',
+            'body' => 'Your account has been locked. Please contact support for assistance.',
+        ],
+    ],
+
+    'messages' => [
+        'account_release_until' => 'Your account has been locked. It will be released at :time.',
     ],
 ];

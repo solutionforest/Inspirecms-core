@@ -6,7 +6,7 @@ use Illuminate\Routing\Controller;
 use SolutionForest\InspireCms\Resolvers\PublishedContentResolverInterface;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 
-class ContentController extends Controller
+class FrontendController extends Controller
 {
     protected PublishedContentResolverInterface $publishedContentResolver;
 

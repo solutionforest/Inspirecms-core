@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
@@ -71,15 +72,14 @@ class TemplatesRelationManager extends RelationManager
             Forms\Components\Hidden::make('record_id'),
             Forms\Components\Hidden::make('document_type_id'),
             TemplateResourceHelper::getThemeFormComponent()->disabled(),
-            // todo: add to translation
             Forms\Components\Tabs::make()
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Content')
+                    Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.content'))
                         ->schema([
                             TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
                             TemplateResourceHelper::getContentFormComponent('html_content'),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Instructions')
+                    Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.instructions'))
                         ->schema([
                             TemplateResourceHelper::getPropertyTypeInstructionsFormComponent(),
                         ]),
@@ -106,7 +106,7 @@ class TemplatesRelationManager extends RelationManager
                 Tables\Actions\SelectAction::make('theme')
                     ->options(TemplateResourceHelper::getThemeSelectOptions())
                     ->view('inspirecms::filament.actions.select-action', [
-                        'icon' => 'heroicon-o-paint-brush',
+                        'icon' => FilamentIcon::resolve('inspirecms::theme'),
                     ])
                     ->disabled(),
                 Tables\Actions\CreateAction::make(),
@@ -393,7 +393,6 @@ class TemplatesRelationManager extends RelationManager
 
         Notification::make()
             ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
-            ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
             ->success()
             ->send();
     }

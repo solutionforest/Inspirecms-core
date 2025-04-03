@@ -30,12 +30,10 @@ class EditAndPreviewAction extends \Filament\Tables\Actions\Action
             ->successNotification(
                 fn (Notification $notification) => $notification
                     ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
-                    ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
             )
             ->failureNotification(
                 fn (Notification $notification) => $notification
                     ->title(__('inspirecms::buttons.edit_and_preview.messages.failure.title'))
-                    ->body(__('inspirecms::buttons.edit_and_preview.messages.failure.body'))
             )
             ->action(function ($livewire) {
                 Support\Panel::ensurePluginIsLoaded();

@@ -2,27 +2,54 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 
 class ModelHelper
 {
     /**
-     * Check if a table exists in the database.
-     *
-     * @param  string  $tableName  The name of the table to check.
-     * @return bool Returns true if the table exists, false otherwise.
+     * @param  null|string|class-string<Model>|Model  $tableOrModel
+     * @param  ?string  $tableName
      */
-    public static function isTableExists(string &$tableName): bool
+    public static function isTableExists($tableOrModel, &$tableName = null): bool
     {
-        // is class name
-        if (class_exists($tableName)) {
-            $tableName = app($tableName)->getTable();
+        $tableName = static::getTableName($tableOrModel);
+
+        return Schema::hasTable($tableName);
+    }
+
+    /**
+     * @param  null|string|class-string<Model>|Model  $target
+     * @return ?string
+     */
+    public static function getTableName($target)
+    {
+        if (static::isModelExists($target)) {
+            return app($target)->getTable();
         }
 
-        if (! Schema::hasTable($tableName)) {
+        return $target;
+    }
+
+    /**
+     * @param  class-string|Model  $model
+     * @return bool
+     */
+    public static function isModelExists($model)
+    {
+        if (! static::isModel($model)) {
             return false;
         }
 
-        return true;
+        return class_exists($model);
+    }
+
+    /**
+     * @param  mixed  $target
+     * @return bool
+     */
+    public static function isModel($target)
+    {
+        return is_a($target, Model::class, true);
     }
 }

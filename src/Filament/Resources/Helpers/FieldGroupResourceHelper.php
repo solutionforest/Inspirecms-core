@@ -80,7 +80,7 @@ class FieldGroupResourceHelper
             ->extraItemActions([
                 static::configureFieldsEditActionOnRepeater(
                     Forms\Components\Actions\Action::make('edit')
-                        ->icon(FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square')
+                        ->icon(FilamentIcon::resolve('inspirecms::edit'))
                         ->label(__('filament-actions::edit.single.label'))
                 ),
             ])
@@ -99,7 +99,7 @@ class FieldGroupResourceHelper
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
                     Forms\Components\Section::make()
-                        ->heading(__('inspirecms::resources/field-group.details.section.heading'))
+                        ->heading(__('inspirecms::resources/field-group.sections.details.heading'))
                         ->columnSpanFull()
                         ->extraAttributes(['class' => 'field-group-field-details-section'])
                         ->aside()

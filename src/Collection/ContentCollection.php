@@ -9,15 +9,34 @@ use Illuminate\Pagination\Paginator;
 
 class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection
 {
+    protected $paginator = null;
+
     public function toDto(...$args)
     {
-        $items = $this->map(fn ($item) => match (true) {
-            $item instanceof \SolutionForest\InspireCms\Models\Contracts\Content => $item->toDto(...$args),
-            default => $item,
-        })
+        $items = $this
+            ->map(fn ($item) => match (true) {
+                $item instanceof \SolutionForest\InspireCms\Models\Contracts\Content => $item->toDto(...$args),
+                default => $item,
+            })
+            ->reject(fn ($item) => is_null($item))
             ->toArray();
 
-        return new static($items);
+        $collection = static::make($items);
+
+        if ($this->paginator != null) {
+            return $this->paginator->setCollection(
+                $collection->setPaginator($this->paginator)
+            );
+        }
+
+        return $collection;
+    }
+
+    public function setPaginator($paginator)
+    {
+        $this->paginator = $paginator;
+
+        return $this;
     }
 
     /**
@@ -41,10 +60,14 @@ class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Colle
 
         $items = $total > 0 ? $this->forPage($page, $perPage) : new static;
 
-        return $this->paginator($items, $total, $perPage, $page, [
+        $paginator = $this->paginator($items, $total, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => $pageName,
         ]);
+
+        $paginator->setCollection($items->setPaginator($paginator));
+
+        return $paginator;
     }
 
     /**
@@ -66,10 +89,14 @@ class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Colle
 
         $items = $total > 0 ? $this->forPage($page, $perPage) : new static;
 
-        return $this->simplePaginator($items, $perPage, $page, [
+        $paginator = $this->simplePaginator($items, $perPage, $page, [
             'path' => Paginator::resolveCurrentPath(),
             'pageName' => $pageName,
         ]);
+
+        $paginator->setCollection($items->setPaginator($paginator));
+
+        return $paginator;
     }
 
     /**
@@ -110,17 +137,6 @@ class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Colle
             'currentPage',
             'options'
         ));
-    }
-
-    protected static function getDtoRelations(): array
-    {
-        return [
-            'documentType.fields.group',
-            'documentType.templates',
-            'webSetting',
-            'publishedVersions',
-            'templates',
-        ];
     }
 
     /**

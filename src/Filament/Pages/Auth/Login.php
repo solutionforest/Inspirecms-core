@@ -3,12 +3,18 @@
 namespace SolutionForest\InspireCms\Filament\Pages\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use Filament\Actions\Action;
 use Filament\Facades\Filament;
+use Filament\Forms\Components\Component;
 use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
+use Filament\Notifications\Notification;
 use Filament\Pages\Auth\Login as BasePage;
 use Illuminate\Auth\Events as AuthEvents;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
+use Illuminate\Contracts\Support\Htmlable;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
+use SolutionForest\InspireCms\Exceptions\AccountLockedException;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 
 class Login extends BasePage
 {
@@ -38,23 +44,31 @@ class Login extends BasePage
 
         $data = $this->form->getState();
 
-        if (! Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
+        try {
+            if (! Filament::auth()->attempt($this->getCredentialsFromFormData($data), $data['remember'] ?? false)) {
 
-            // Already handled
-            // event(new AuthEvents\Failed(Filament::getAuthGuard(), null, $this->getCredentialsFromFormData($data)));
+                // Already handled
+                // event(new AuthEvents\Failed(Filament::getAuthGuard(), null, $this->getCredentialsFromFormData($data)));
 
-            $this->throwFailureValidationException();
+                $this->throwFailureValidationException();
+            }
+        } catch (AccountLockedException $th) {
+            $this->getAccountIsLockedNotification()->send();
+
+            return null;
         }
 
         $user = Filament::auth()->user();
+        if ($user instanceof FilamentUser) {
 
-        if (
-            ($user instanceof FilamentUser) &&
-            (! $user->canAccessPanel(Filament::getCurrentPanel()))
-        ) {
-            Filament::auth()->logout();
+            if ($user->is_locked) {
+                Filament::auth()->logout();
 
-            $this->throwFailureValidationException();
+                $this->getAccountIsLockedNotification()->send();
+
+                return null;
+
+            }
         }
 
         event(new AuthEvents\Login(Filament::getAuthGuard(), $user, true));
@@ -72,8 +86,61 @@ class Login extends BasePage
         ];
     }
 
-    protected function getRememberFormComponent(): \Filament\Forms\Components\Component
+    protected function getEmailFormComponent(): Component
     {
-        return parent::getRememberFormComponent()->default(true);
+        return parent::getEmailFormComponent()
+            ->label(__('inspirecms::pages/auth/login.form.email.label'));
+    }
+
+    protected function getPasswordFormComponent(): Component
+    {
+        return parent::getPasswordFormComponent()
+            ->hint(filament()->hasPasswordReset() ? UIHelper::generateLink(text: __('inspirecms::pages/auth/login.buttons.request_password_reset.label'), link: filament()->getRequestPasswordResetUrl(), attributes: ['tabindex' => 3]) : null)
+            ->label(__('inspirecms::pages/auth/login.form.password.label'));
+    }
+
+    protected function getRememberFormComponent(): Component
+    {
+        return parent::getRememberFormComponent()
+            ->label(__('inspirecms::pages/auth/login.form.remember.label'))
+            ->default(true);
+    }
+
+    public function registerAction(): Action
+    {
+        return parent::registerAction()
+            ->label(__('inspirecms::pages/auth/login.buttons.register.label'));
+    }
+
+    public function getTitle(): string | Htmlable
+    {
+        return __('inspirecms::pages/auth/login.title');
+    }
+
+    public function getHeading(): string | Htmlable
+    {
+        return __('inspirecms::pages/auth/login.heading');
+    }
+
+    protected function getAuthenticateFormAction(): Action
+    {
+        return parent::getAuthenticateFormAction()
+            ->label(__('inspirecms::pages/auth/login.buttons.authenticate.label'));
+    }
+
+    protected function getAccountNotVerifiedNotification(): Notification
+    {
+        return Notification::make()
+            ->title(__('inspirecms::resources/user.notification.account_not_verified.title'))
+            ->body(__('inspirecms::resources/user.notification.account_not_verified.body'))
+            ->danger();
+    }
+
+    protected function getAccountIsLockedNotification(): Notification
+    {
+        return Notification::make()
+            ->title(__('inspirecms::resources/user.notification.account_is_locked.title'))
+            ->body(__('inspirecms::resources/user.notification.account_is_locked.body'))
+            ->danger();
     }
 }

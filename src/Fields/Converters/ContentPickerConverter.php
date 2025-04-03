@@ -9,21 +9,22 @@ class ContentPickerConverter extends BaseConverter
     public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
     {
         // todo: improve performance
-        $content = inspirecms_content()->findPublishedContentByIds($sourceValue)
+        $contentItems = inspirecms_content()
+            ->findByIds(
+                ids: $sourceValue,
+                isPublished: true,
+                limit: count($sourceValue),
+            )
             ->filter(fn ($c) => in_array($c->getKey(), $sourceValue))
             ->sortBy(fn ($c) => array_search($c->getKey(), $sourceValue))
-            ->values();
+            ->values()
+            ->map(fn ($item) => $item->toDto($locale)->setFallbackLocale($fallbackLocale))
+            ->reject(fn ($item) => is_null($item));
 
-        if ($content instanceof ContentCollection) {
-            $content = $content->toDto($locale);
-        } else {
-            $content = ContentCollection::make(
-                $content
-                    ->map(fn ($c) => $c->toDto($locale))
-                    ->values()
-            );
+        if (! $contentItems instanceof ContentCollection) {
+            $contentItems = ContentCollection::make($contentItems->values());
         }
 
-        return $content;
+        return $contentItems;
     }
 }

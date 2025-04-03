@@ -79,7 +79,7 @@ class PermissionHelper
 
         $missing = array_diff($permissions->toArray(), $result);
 
-        $guardName = InspireCmsConfig::getGuardName();
+        $guardName = AuthHelper::guardName();
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
 
         foreach ($missing as $permissionName) {
@@ -95,7 +95,7 @@ class PermissionHelper
         $existingWildcardPermissions = collect(static::getWildcardPermissions())
             ->where(fn (Model $permission) => ! in_array($permission->name, $excepts));
 
-        $guardName = InspireCmsConfig::getGuardName();
+        $guardName = AuthHelper::guardName();
         $permissionClass = InspireCmsConfig::getPermissionModelClass();
         /**
          * @var Builder
@@ -166,7 +166,7 @@ class PermissionHelper
 
     private static function getDefaultGuardName()
     {
-        return InspireCmsConfig::getGuardName();
+        return AuthHelper::guardName();
     }
 
     private static function isWildcardPattern(string $name)

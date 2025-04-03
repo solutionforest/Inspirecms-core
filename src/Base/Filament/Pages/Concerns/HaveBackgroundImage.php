@@ -1,6 +1,6 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\Pages\Auth\Concerns;
+namespace SolutionForest\InspireCms\Base\Filament\Pages\Concerns;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
 

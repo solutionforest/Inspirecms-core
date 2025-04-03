@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -20,13 +21,16 @@ class MoveContentAction extends Action
     protected function setUp(): void
     {
         // todo: add guard
-        // todo: add translation
 
         parent::setUp();
 
-        $this->label(fn () => $this->isMoveUnderRoot() ? 'Move under root' : 'Move under content');
+        $this->label(fn () => __('inspirecms::buttons.move_to_under.label', [
+            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
+        ]));
 
-        $this->modalHeading(fn () => $this->isMoveUnderRoot() ? 'Move under root' : 'Move under content');
+        $this->modalHeading(fn () => __('inspirecms::buttons.move_to_under.heading', [
+            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
+        ]));
 
         $this->model(InspireCmsConfig::getContentModelClass());
 

@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
+use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
 use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
 
 trait HasContentVersions
@@ -41,12 +42,16 @@ trait HasContentVersions
     /** {@inheritDoc} */
     public function publishedVersions()
     {
-        return $this->belongsToMany(
-            InspireCmsConfig::getContentVersionModelClass(),
-            InspireCmsConfig::getContentPublishVersionTableName(),
-            'content_id',
-            'version_id'
-        )->withPivot('published_at')->orderBy('published_at', 'desc')->using(InspireCmsConfig::getContentPublishVersionModelClass());
+        return $this
+            ->belongsToMany(
+                InspireCmsConfig::getContentVersionModelClass(),
+                InspireCmsConfig::getContentPublishVersionTableName(),
+                'content_id',
+                'version_id'
+            )
+            ->withPivot('published_at')
+            ->orderBy('published_at', 'desc')
+            ->using(InspireCmsConfig::getContentPublishVersionModelClass());
     }
 
     public function latestContentVersion()
@@ -79,14 +84,6 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
-    public function getLatestPublishedPropertyData()
-    {
-        $latestContentVersion = $this->getLatestPublishedContentVersion();
-
-        return $this->mutateLatestVersionPropertyData($latestContentVersion);
-    }
-
-    /** {@inheritDoc} */
     public function getPublishTime()
     {
         // If the publish date is in the future, it's not published
@@ -100,8 +97,65 @@ trait HasContentVersions
     }
 
     /** {@inheritDoc} */
+    public function getLatestPublishedPropertyData()
+    {
+        // Already load via ContentVersionDetailScope
+        if ($this->hasAttribute('__version_details') && $this->hasAttribute('__version_data')) {
+            try {
+
+                $lastPublishedVersionId = collect($this->__version_details)
+                    ->sortByDesc(fn ($item) => strtotime($item['dt']))
+                    ->where('status', 'publish')
+                    ->pluck('id')
+                    ->first();
+
+                $propData = collect($this->__version_data)
+                    ->where(fn ($arr, $key) => $key == $lastPublishedVersionId)
+                    ->pluck('propertyData')->first() ?? [];
+
+                if (is_array($propData)) {
+                    return $propData;
+                } elseif (is_string($propData)) {
+                    return json_decode($propData, true);
+                }
+
+            } catch (\Throwable $th) {
+                // Fallback to load via publishedVersions
+            }
+        }
+
+        $latestContentVersion = $this->getLatestPublishedContentVersion();
+
+        return $this->mutateLatestVersionPropertyData($latestContentVersion);
+    }
+
+    /** {@inheritDoc} */
     public function getLatestVersionPropertyData()
     {
+        // Already load via ContentVersionDetailScope
+        if ($this->hasAttribute('__version_details') && $this->hasAttribute('__version_data')) {
+            try {
+
+                $lastVersionId = collect($this->__version_details)
+                    ->sortByDesc(fn ($item) => strtotime($item['dt']))
+                    ->pluck('id')
+                    ->first();
+
+                $propData = collect($this->__version_data)
+                    ->where(fn ($arr, $key) => $key == $lastVersionId)
+                    ->pluck('propertyData')->first() ?? [];
+
+                if (is_array($propData)) {
+                    return $propData;
+                } elseif (is_string($propData)) {
+                    return json_decode($propData, true);
+                }
+
+            } catch (\Throwable $th) {
+                // Fallback to load via latestContentVersion
+            }
+        }
+
         $this->loadMissing('latestContentVersion');
 
         $latestContentVersion = $this->latestContentVersion;

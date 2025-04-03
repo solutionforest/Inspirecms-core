@@ -17,9 +17,6 @@ return [
         'label' => '欄位',
         'singular' => '欄位',
         'validation_attribute' => '欄位',
-        'section' => [
-            'label' => '欄位',
-        ],
     ],
 
     'steps' => [
@@ -32,6 +29,9 @@ return [
     ],
 
     'details' => [
+        'fields' => [
+            'heading' => '欄位',
+        ],
         'section' => [
             'heading' => '詳細資料',
         ],

@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\TieredPermissionsRepeater;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource\Pages;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource\RelationManagers;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Contracts\Role as RoleContract;
@@ -47,35 +48,35 @@ class RoleResource extends Resource implements ClusterSectionResource
                     ->columnSpanFull()->columns(1)
                     ->schema([
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.cluster_section_access.section.heading'))
-                            ->description(__('inspirecms::resources/role.cluster_section_access.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.cluster_section_access.heading'))
+                            ->description(__('inspirecms::resources/role.sections.cluster_section_access.description'))
                             ->collapsible()
                             ->columns(2)
                             ->schema([static::getFormComponentForClusterSection()]),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.action_permissions.section.heading'))
-                            ->description(__('inspirecms::resources/role.action_permissions.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.action_permissions.heading'))
+                            ->description(__('inspirecms::resources/role.sections.action_permissions.description'))
                             ->collapsible()
                             ->schema([static::getFormComponentForActionSection()]),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.widget_permissions.section.heading'))
-                            ->description(__('inspirecms::resources/role.widget_permissions.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.widget_permissions.heading'))
+                            ->description(__('inspirecms::resources/role.sections.widget_permissions.description'))
                             ->collapsible()
                             ->schema([static::getFormComponentForWidgetSection()]),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.page_permissions.section.heading'))
-                            ->description(__('inspirecms::resources/role.page_permissions.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.page_permissions.heading'))
+                            ->description(__('inspirecms::resources/role.sections.page_permissions.description'))
                             ->collapsible()
                             ->schema([static::getFormComponentForPageSection()]),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.resource_permissions.section.heading'))
-                            ->description(__('inspirecms::resources/role.resource_permissions.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.resource_permissions.heading'))
+                            ->description(__('inspirecms::resources/role.sections.resource_permissions.description'))
                             ->collapsible()
                             ->statePath('resource_permissions')
                             ->schema(static::getFormComponentForResourcePermissionsSection()),
                         Forms\Components\Section::make()
-                            ->heading(__('inspirecms::resources/role.tiered_permissions.section.heading'))
-                            ->description(__('inspirecms::resources/role.tiered_permissions.section.description'))
+                            ->heading(__('inspirecms::resources/role.sections.tiered_permissions.heading'))
+                            ->description(__('inspirecms::resources/role.sections.tiered_permissions.description'))
                             ->collapsible()
                             ->statePath('tiered_permissions')
                             ->schema(static::getFormComponentForTieredPermissionsSection()),
@@ -231,7 +232,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     {
         return parent::getEloquentQuery()
             ->with('permissions')
-            ->where('guard_name', InspireCmsConfig::getGuardName());
+            ->where('guard_name', AuthHelper::guardName());
     }
 
     // region Global search
@@ -251,7 +252,7 @@ class RoleResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::resources/role.name.label'))
             ->validationAttribute(__('inspirecms::resources/role.name.validation_attribute'))
             ->unique(table: static::getModel(), column: 'name', ignoreRecord: true, modifyRuleUsing: function (Unique $rule) {
-                return $rule->where('guard_name', InspireCmsConfig::getGuardName());
+                return $rule->where('guard_name', AuthHelper::guardName());
             })
             ->required();
     }
@@ -263,7 +264,7 @@ class RoleResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\Hidden::make('guard_name')
             ->dehydratedWhenHidden(true)
-            ->dehydrateStateUsing(fn () => InspireCmsConfig::getGuardName());
+            ->dehydrateStateUsing(fn () => AuthHelper::guardName());
     }
 
     protected static function getFormComponentForClusterSection($name = 'cluster_section_access')

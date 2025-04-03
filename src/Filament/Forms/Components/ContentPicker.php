@@ -182,7 +182,7 @@ class ContentPicker extends Field
     {
         return Action::make('moveUp')
             ->label(__('filament-forms::components.repeater.actions.move_up.label'))
-            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.move-up') ?? 'heroicon-m-arrow-up')
+            ->icon(FilamentIcon::resolve('inspirecms::move_up'))
             ->color('gray')
             ->action(function (array $arguments, ContentPicker $component): void {
 
@@ -204,7 +204,7 @@ class ContentPicker extends Field
     {
         return Action::make('moveDown')
             ->label(__('filament-forms::components.repeater.actions.move_down.label'))
-            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.move-down') ?? 'heroicon-m-arrow-down')
+            ->icon(FilamentIcon::resolve('inspirecms::move_down'))
             ->color('gray')
             ->action(function (array $arguments, ContentPicker $component): void {
 
@@ -225,7 +225,7 @@ class ContentPicker extends Field
     {
         return Action::make('delete')
             ->label(__('filament-forms::components.repeater.actions.delete.label'))
-            ->icon(FilamentIcon::resolve('forms::components.repeater.actions.delete') ?? 'heroicon-m-trash')
+            ->icon(FilamentIcon::resolve('inspirecms::delete'))
             ->color('danger')
             ->action(function (array $arguments, ContentPicker $component): void {
                 $items = $component->getState();

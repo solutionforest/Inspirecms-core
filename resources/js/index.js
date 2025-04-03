@@ -1,4 +1,4 @@
-import "./tour-guide";
+// import "./tour-guide";
 
 // Function to disable links within the iframe
 function disableIframeLinks(iframe) {

@@ -84,8 +84,7 @@ class Import extends BaseModel implements ImportContract
                 }
 
                 return $this->created_at?->addDays(ImportDataHelper::retrieveClearanceDaysInterval());
-            },
-            set: function ($value) {}
+            }
         );
     }
 

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\TemplateResource\Pages;
 
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -36,7 +37,7 @@ class ListTemplates extends BaseListRecords
                 Tables\Actions\SelectAction::make('theme')
                     ->options(TemplateResourceHelper::getThemeSelectOptions())
                     ->view('inspirecms::filament.actions.select-action', [
-                        'icon' => 'heroicon-o-paint-brush',
+                        'icon' => FilamentIcon::resolve('inspirecms::theme'),
                     ]),
             ])
             ->actions([

@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Commands;
 
-use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
@@ -12,28 +11,20 @@ use Symfony\Component\Console\Attribute\AsCommand;
 )]
 class UpdatePluginCommand extends Command
 {
-    private const PLUGIN_NAME = 'solution-forest/inspirecms-core';
-
     public function handle()
     {
         // publish migrations
-        $this->call('vendor:publish', [
-            '--provider' => 'SolutionForest\\InspireCms\\InspireCmsServiceProvider',
-            '--tag' => 'inspirecms-migrations',
-        ]);
+        $this->components->task('Publishing migrations', function () {
+            $this->call('vendor:publish', [
+                '--provider' => 'SolutionForest\\InspireCms\\InspireCmsServiceProvider',
+                '--tag' => 'inspirecms-migrations',
+            ]);
+        });
 
         // Call install command
         $this->call('inspirecms:install');
 
-        // Get current version of the plugin
-        $currentVersion = $this->getVersion();
-
-        $this->updatePlugin($currentVersion);
-    }
-
-    private function getVersion()
-    {
-        return InstalledVersions::getPrettyVersion(static::PLUGIN_NAME);
+        $this->updatePlugin(inspirecms()->version());
     }
 
     /**
@@ -42,7 +33,7 @@ class UpdatePluginCommand extends Command
     private function updatePlugin($currentVersion)
     {
         if (empty($currentVersion)) {
-            $this->error('Plugin not found');
+            $this->components->error('Plugin not found');
 
             return;
         }

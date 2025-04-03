@@ -94,22 +94,38 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     }
 
     // region Scope(s)
-    public function scopeCanBeInherited($query)
+    public function scopeCanBeInherited($query, bool $condition = true)
     {
-        return $query->where('category', static::getCategoryEnumClass()::allCanBeInherited());
+        if ($condition) {
+            return $query->where('category', static::getCategoryEnumClass()::allCanBeInherited());
+        }
+
+        return $query->whereNot('category', static::getCategoryEnumClass()::allCanBeInherited());
     }
 
-    public function scopeWhereIsWebPage($query)
+    public function scopeWhereIsWebPage($query, bool $condition = true)
     {
-        return $query->where('category', static::getCategoryEnumClass()::Web->value);
+        $webCat = static::getCategoryEnumClass()::Web->value;
+
+        if ($condition) {
+            return $query->where('category', $webCat);
+        }
+
+        return $query->whereNot('category', $webCat);
     }
 
-    public function scopeWhereCanBeContent($query)
+    public function scopeWhereCanBeContent($query, bool $condition = true)
     {
-        return $query->whereIn('category', [
+        $canBeContentCats = [
             static::getCategoryEnumClass()::Web->value,
             static::getCategoryEnumClass()::Data->value,
-        ]);
+        ];
+
+        if ($condition) {
+            return $query->whereIn('category', $canBeContentCats);
+        }
+
+        return $query->whereNotIn('category', $canBeContentCats);
     }
     // endregion Scope(s)
 

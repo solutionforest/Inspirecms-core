@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
+use SolutionForest\InspireCms\Exceptions\AccountLockedException;
 use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserAuthActivityListener
@@ -34,14 +35,18 @@ class UserAuthActivityListener
      */
     public function login(Login $event)
     {
-        if (! is_inspirecms_user($event->user)) {
+        /** @var null|Model|User */
+        $user = $event->user;
+
+        if (! is_inspirecms_user($user)) {
             return;
         }
 
-        $this->wrapInDatabaseTransaction(function () use ($event) {
+        if ($user->is_locked) {
+            throw AccountLockedException::user($user);
+        }
 
-            /** @var Model|User */
-            $user = $event->user;
+        $this->wrapInDatabaseTransaction(function () use ($user) {
 
             $user->handleActivity(UserActivity::Login);
 
@@ -100,11 +105,15 @@ class UserAuthActivityListener
             $user = $event->user;
         }
 
-        $this->wrapInDatabaseTransaction(function () use ($user) {
+        if (is_null($user) || ! is_inspirecms_user($user)) {
+            return;
+        }
 
-            if (is_null($user) || ! is_inspirecms_user($user)) {
-                return;
-            }
+        if ($user->is_locked) {
+            throw AccountLockedException::user($user);
+        }
+
+        $this->wrapInDatabaseTransaction(function () use ($user) {
 
             $user->handleActivity(UserActivity::FailedLogin);
 

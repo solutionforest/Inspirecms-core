@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
 use Illuminate\Support\Facades\Storage;
+use SolutionForest\InspireCms\Base\Enums\ExportStatus;
+use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\Models\Contracts\Export as ExportContract;
@@ -109,7 +112,7 @@ class Export extends BaseModel implements ExportContract
      */
     public function prunable()
     {
-        return static::query()->wherePending(false)->where('created_at', '<=', now()->subDays(ExportDataHelper::retrieveClearanceDaysInterval()));
+        return static::query()->whereCanClear();
     }
 
     /**
@@ -142,7 +145,62 @@ class Export extends BaseModel implements ExportContract
     {
         return $query->whereNotNull('failed_at');
     }
+
+    public function scopeWhereCanClear($query)
+    {
+        return $query
+            ->wherePending(false)
+            ->where('created_at', '<', now()->subDays(ExportDataHelper::retrieveClearanceDaysInterval()));
+    }
     // endregion Scope(s)
+
+    public function displayStatus(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                [$failed, $finished, $processingMsg] = [$this->failed_at, $this->finished_at, $this->getProcessingMessages()];
+                if ($failed !== null) {
+                    return ExportStatus::Failed;
+                } elseif ($finished !== null) {
+                    return ExportStatus::Finished;
+                } elseif (! empty($processingMsg)) {
+                    return ExportStatus::InProgress;
+                } else {
+                    return ExportStatus::Pending;
+                }
+            },
+            set: function ($value) {}
+        );
+    }
+
+    public function displayExporter(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                $exporter = $this->exporter;
+
+                if (filled($exporter) && class_exists($exporter) && is_a($exporter, BaseExporter::class, true)) {
+                    return $exporter::getLabel();
+                }
+
+                return null;
+            },
+            set: function ($value) {}
+        );
+    }
+
+    public function clearAt(): Attribute
+    {
+        return Attribute::make(
+            get: function () {
+                if ($this->display_status == ExportStatus::Pending) {
+                    return null;
+                }
+
+                return $this->created_at?->addDays(ExportDataHelper::retrieveClearanceDaysInterval());
+            }
+        );
+    }
 
     public static function boot()
     {

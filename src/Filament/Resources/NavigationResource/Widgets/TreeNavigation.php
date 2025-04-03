@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widget
 
 use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\HtmlString;
@@ -164,7 +165,7 @@ class TreeNavigation extends BaseWidget
     public function getTreeRecordIcon(?Model $record = null): ?string
     {
         if (! $record->isVisibility()) {
-            return 'heroicon-o-eye-slash';
+            return FilamentIcon::resolve('inspirecms::invisiable');
         }
 
         return null;

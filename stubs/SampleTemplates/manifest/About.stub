@@ -20,7 +20,7 @@
             <div class="bio-content">
                 @property('about_section', 'description')
     
-                    @propertyArray('about_section', 'resume')
+                @propertyArray('about_section', 'resume')
                 @if (($media = collect($about_section_resume)->first()))
                     <button type="submit" class="send-button" onclick="window.open('{{ $media->getUrl() }}')">
                         resume

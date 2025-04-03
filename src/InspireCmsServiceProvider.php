@@ -21,11 +21,11 @@ use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
-use SolutionForest\InspireCms\Licensing\Outpost;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components\Template;
@@ -88,6 +88,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (file_exists($package->basePath('/../resources/views'))) {
             $package->hasViews(static::$viewNamespace);
         }
+
+        if (file_exists($package->basePath('/../resources/routes'))) {
+            $package->hasRoutes($this->getRoutes());
+        }
     }
 
     public function registeringPackage(): void
@@ -107,15 +111,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(InspireCmsBase\TemplateManagerInterface::class, fn () => $this->app->make(InspireCmsBase\TemplateManager::class));
 
-        $this->app->singleton(InspireCmsBase\KeyValueCache::class, function () {
-            return new InspireCmsBase\KeyValueCache(
-                $this->app['cache'],
-            );
-        });
+        $this->app->singleton(InspireCmsBase\KeyValueCache::class, fn () => new InspireCmsBase\KeyValueCache($this->app['cache']));
 
-        $this->app->singleton(LicenseManager::class, function ($app) {
-            return new LicenseManager($app[Outpost::class]);
-        });
+        $this->app->singleton(LicenseManager::class, fn () => new LicenseManager);
 
         $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
         $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
@@ -230,30 +228,39 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getIcons(): array
     {
-        return [
-            'inspirecms::preview' => 'heroicon-o-eye',
-            'inspirecms::goto' => 'heroicon-o-arrow-right-end-on-rectangle',
-            'inspirecms::reset' => 'heroicon-o-arrow-path',
-            'inspirecms::clone' => 'heroicon-o-document-duplicate',
-            'inspirecms::add' => 'heroicon-o-plus-small',
-            'inspirecms::attach' => 'heroicon-o-link',
-            'inspirecms::detach' => 'heroicon-m-x-mark',
-            'inspirecms::edit' => 'heroicon-m-pencil-square',
-            'inspirecms::delete' => 'heroicon-o-trash',
-            'inspirecms::download' => 'heroicon-m-arrow-down-tray',
-            'inspirecms::export' => 'heroicon-m-arrow-top-right-on-square',
+        $iconPrefix = 'inspirecms::';
 
-            'inspirecms::back' => 'heroicon-o-chevron-left',
-            'inspirecms::sort' => 'heroicon-o-arrows-up-down',
+        return collect([
 
-            'inspirecms::as_default' => 'heroicon-o-star',
-            'inspirecms::recycle_bin' => 'heroicon-o-trash',
+            'preview' => 'heroicon-o-eye',
 
-            'inspirecms::json-file' => view('inspirecms::icons.json-file'),
-            'inspirecms::fields' => view('inspirecms::icons.fields'),
-            'inspirecms::templates' => view('inspirecms::icons.templates'),
-            'inspirecms::document-type' => view('inspirecms::icons.document-type'),
-        ];
+            'visible' => 'heroicon-m-eye',
+            'invisiable' => 'heroicon-o-eye-slash',
+            'locked' => 'heroicon-o-lock-closed',
+            'unlocked' => 'heroicon-o-lock-open',
+
+            'goto' => 'heroicon-m-arrow-top-right-on-square',
+
+            'export' => 'heroicon-m-arrow-top-right-on-square',
+
+            'back' => 'heroicon-o-chevron-left',
+            'sort' => 'heroicon-o-arrows-up-down',
+            'move_up' => 'heroicon-m-arrow-up',
+            'move_down' => 'heroicon-m-arrow-down',
+            'setting' => 'heroicon-s-cog-8-tooth',
+
+            'as_default' => 'heroicon-o-star',
+            'recycle_bin' => 'heroicon-o-trash',
+            'theme' => 'heroicon-o-paint-brush',
+            'language' => 'heroicon-o-language',
+            'email' => 'heroicon-m-envelope',
+
+            'json_file' => view('inspirecms::icons.json-file'),
+            'fields' => view('inspirecms::icons.fields'),
+            'templates' => view('inspirecms::icons.templates'),
+            'document_type' => view('inspirecms::icons.document-type'),
+
+        ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }
 
     /**
@@ -261,7 +268,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
      */
     protected function getRoutes(): array
     {
-        return [];
+        return [
+            'inspirecms',
+        ];
     }
 
     /**
@@ -336,8 +345,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerAuthGuard(): void
     {
-        $guardName = InspireCmsConfig::getGuardName();
-        $authProvider = InspireCmsConfig::getAuthProvider();
+        $guardName = AuthHelper::guardName();
+        $authProvider = AuthHelper::providerName();
+        $passwordBroker = AuthHelper::passwordBrokerName();
 
         if (! array_key_exists($authProvider, config('auth.providers'))) {
 
@@ -360,6 +370,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ]), ['driver', 'provider']);
 
             config()->set('auth.guards.' . $guardName, $guardConfig);
+        }
+
+        if (AuthHelper::enablePasswordReset() && ! array_key_exists($passwordBroker, config('auth.passwords'))) {
+
+            $passwordConfig = Arr::only(InspireCmsConfig::get('auth.resetting_password', [
+                'provider' => $authProvider,
+                'table' => 'password_reset_tokens',
+                'expire' => 60,
+                'throttle' => 60,
+            ]), ['provider', 'table', 'expire', 'throttle']);
+
+            config()->set('auth.passwords.' . $passwordBroker, $passwordConfig);
+
         }
     }
 

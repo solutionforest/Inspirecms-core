@@ -19,7 +19,7 @@
                     @endforeach
                 </div>
                 <h2 class="featured-title">@property('page_banner', 'title')</h2>
-                <div class="post-date">@property('blog_content', 'post_date')</div>
+                <div class="post-date">{{ $content?->publishAt }}</div>
                 <p class="featured-excerpt">
                     @property('page_banner', 'description')
                     <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>

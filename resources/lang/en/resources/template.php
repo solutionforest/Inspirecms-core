@@ -16,7 +16,9 @@ return [
         'label' => 'Content',
     ],
     'property_type_instructions' => [
-        'label' => 'Property type instructions',
+        'label' => 'Property instructions',
+        'group' => 'Group',
+        'field' => __('inspirecms::inspirecms.field'),
     ],
     'page_component_instructions' => [
         'label' => 'Page component instructions',
@@ -26,5 +28,9 @@ return [
     ],
     'editor' => [
         'title' => 'Template Editor',
+        'tabs' => [
+            'content' => 'Content',
+            'instructions' => 'Instructions',
+        ],
     ],
 ];

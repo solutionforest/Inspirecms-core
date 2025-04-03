@@ -115,7 +115,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getPagePermissions(): array
     {
-        return collect(InspireCmsConfig::get('filament.pages'))
+        return collect(InspireCmsConfig::getFilamentPages())
             ->where(fn ($fqcn) => in_array(GuardPage::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()
@@ -261,7 +261,7 @@ class PermissionManifest implements PermissionManifestInterface
 
     protected function getResourceData(): array
     {
-        return collect(InspireCmsConfig::get('filament.resources'))
+        return collect(InspireCmsConfig::getFilamentResources())
             ->where(
                 fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
                 in_array(ClusterSectionResource::class, class_implements($fqcn))

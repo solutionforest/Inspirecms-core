@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -126,7 +127,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     {
         // check permissions exist
         $permissionModel = InspireCmsConfig::getPermissionModelClass();
-        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(InspireCmsConfig::getGuardName())->pluck('name')->toArray();
+        $existingPermissions = $permissionModel::whereIn('name', $permissions)->whereGuardName(AuthHelper::guardName())->pluck('name')->toArray();
 
         return array_diff($permissions, $existingPermissions);
     }
@@ -134,7 +135,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     protected function getSiteMapStatusData(): array
     {
         // Determin the sitemap is generated or not
-        $fullFilePath = InspireCmsConfig::get('content.sitemap.file_path');
+        $fullFilePath = SitemapGeneratorFactory::create()?->getFilePath();
 
         return [
             'status' => $this->formateStatusData(1, file_exists($fullFilePath) ? 0 : 1, file_exists($fullFilePath)),

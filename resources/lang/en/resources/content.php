@@ -13,115 +13,6 @@ return [
         'placeholder' => 'Enter slug',
         'instructions' => 'Enter the slug of the content',
     ],
-    'seo' => [
-        'tab' => [
-            'label' => 'SEO',
-        ],
-        'meta_title' => [
-            'label' => 'Meta Title',
-            'validation_attribute' => 'meta title',
-            'placeholder' => 'Enter meta title',
-            'instructions' => 'Enter the meta title of the content',
-        ],
-        'meta_description' => [
-            'label' => 'Meta Description',
-            'validation_attribute' => 'meta description',
-            'placeholder' => 'Enter meta description',
-            'instructions' => 'Enter the meta description of the content',
-        ],
-        'meta_keywords' => [
-            'label' => 'Meta Keywords',
-            'validation_attribute' => 'meta keywords',
-            'placeholder' => 'Enter meta keywords',
-            'instructions' => 'Enter the meta keywords of the content',
-        ],
-        'og_title' => [
-            'label' => 'Open Graph Title',
-            'validation_attribute' => 'open graph title',
-            'placeholder' => 'Enter open graph title',
-            'instructions' => 'Enter the open graph title of the content',
-        ],
-        'og_description' => [
-            'label' => 'Open Graph Description',
-            'placeholder' => 'Enter open graph description',
-            'instructions' => 'Enter the open graph description of the content',
-        ],
-        'og_image' => [
-            'label' => 'Open Graph Image',
-            'instructions' => 'Enter the open graph image of the content',
-        ],
-    ],
-    'robots' => [
-        'section' => [
-            'heading' => 'Robots',
-        ],
-        'noindex' => [
-            'label' => 'No Index',
-            'validation_attribute' => 'no index',
-            'instructions' => 'Prevent search engines from indexing this content',
-        ],
-        'nofollow' => [
-            'label' => 'No Follow',
-            'validation_attribute' => 'no follow',
-            'instructions' => 'Prevent search engines from following links on this content',
-        ],
-    ],
-    'redirect' => [
-        'section' => [
-            'heading' => 'Redirect',
-        ],
-        'redirect_path' => [
-            'label' => 'Redirect Path',
-            'validation_attribute' => 'redirect path',
-            'placeholder' => 'Enter redirect path',
-            'instructions' => 'Enter the redirect path of the content',
-        ],
-        'redirect_content' => [
-            'label' => 'Redirect Content',
-            'validation_attribute' => 'redirect content',
-            'placeholder' => 'Select redirect content',
-            'instructions' => 'Select the content to redirect to',
-        ],
-        'redirect_type' => [
-            'label' => 'Redirect Type',
-            'validation_attribute' => 'redirect type',
-            'placeholder' => 'Select redirect type',
-            'instructions' => 'Select the type of redirect',
-            '301' => '301 Permanent',
-            '302' => '302 Temporary (default)',
-        ],
-    ],
-    'sitemap' => [
-        'tab' => [
-            'label' => 'Site Map',
-        ],
-        'enable' => [
-            'label' => 'Enable',
-            'validation_attribute' => 'enable',
-            'instructions' => 'Enable the content to be included in the site map',
-        ],
-        'priority' => [
-            'label' => 'Priority',
-            'validation_attribute' => 'priority',
-            'placeholder' => 'Enter priority',
-            'instructions' => '
-                <p><i>The priority should be a value between 0.0 and 1.0. The default priority is 0.5. </i></p>
-                <p><b>1.0 is the highest priority and 0.0 is the lowest priority.</b></p>
-                <p>The priority of a page is used by search engines to determine the importance of the page relative to other pages on the site.</p>
-            ',
-        ],
-        'change_frequency' => [
-            'label' => 'Change Frequency',
-            'validation_attribute' => 'change frequency',
-            'placeholder' => 'Select change frequency',
-            'instructions' => 'Select the change frequency of the content',
-        ],
-    ],
-    'details' => [
-        'tab' => [
-            'label' => 'Details',
-        ],
-    ],
     'parent' => [
         'label' => 'Parent',
     ],
@@ -165,6 +56,146 @@ return [
         'validation_attribute' => 'document type',
     ],
 
+    'locked_at' => [
+        'label' => 'Locked at',
+    ],
+    'locked_by' => [
+        'label' => 'Locked by',
+    ],
+
+    'seo' => [
+        'meta_title' => [
+            'label' => 'Meta Title',
+            'validation_attribute' => 'meta title',
+            'placeholder' => 'Enter meta title',
+            'instructions' => 'Enter the meta title of the content',
+        ],
+        'meta_description' => [
+            'label' => 'Meta Description',
+            'validation_attribute' => 'meta description',
+            'placeholder' => 'Enter meta description',
+            'instructions' => 'Enter the meta description of the content',
+        ],
+        'meta_keywords' => [
+            'label' => 'Meta Keywords',
+            'validation_attribute' => 'meta keywords',
+            'placeholder' => 'Enter meta keywords',
+            'instructions' => 'Enter the meta keywords of the content',
+        ],
+        'og_title' => [
+            'label' => 'Open Graph Title',
+            'validation_attribute' => 'open graph title',
+            'placeholder' => 'Enter open graph title',
+            'instructions' => 'Enter the open graph title of the content',
+        ],
+        'og_description' => [
+            'label' => 'Open Graph Description',
+            'placeholder' => 'Enter open graph description',
+            'instructions' => 'Enter the open graph description of the content',
+        ],
+        'og_image' => [
+            'label' => 'Open Graph Image',
+            'instructions' => 'Enter the open graph image of the content',
+        ],
+    ],
+
+    'robots' => [
+        'noindex' => [
+            'label' => 'No Index',
+            'validation_attribute' => 'no index',
+            'instructions' => 'Prevent search engines from indexing this content',
+        ],
+        'nofollow' => [
+            'label' => 'No Follow',
+            'validation_attribute' => 'no follow',
+            'instructions' => 'Prevent search engines from following links on this content',
+        ],
+    ],
+
+    'redirect' => [
+        'redirect_path' => [
+            'label' => 'Redirect Path',
+            'validation_attribute' => 'redirect path',
+            'placeholder' => 'Enter redirect path',
+            'instructions' => 'Enter the redirect path of the content',
+        ],
+        'redirect_content' => [
+            'label' => 'Redirect Content',
+            'validation_attribute' => 'redirect content',
+            'placeholder' => 'Select redirect content',
+            'instructions' => 'Select the content to redirect to',
+        ],
+        'redirect_type' => [
+            'label' => 'Redirect Type',
+            'validation_attribute' => 'redirect type',
+            'placeholder' => 'Select redirect type',
+            'instructions' => 'Select the type of redirect',
+            '301' => '301 Permanent',
+            '302' => '302 Temporary (default)',
+        ],
+    ],
+
+    'sitemap' => [
+        'enable' => [
+            'label' => 'Enable',
+            'validation_attribute' => 'enable',
+            'instructions' => 'Enable the content to be included in the site map',
+        ],
+        'priority' => [
+            'label' => 'Priority',
+            'validation_attribute' => 'priority',
+            'placeholder' => 'Enter priority',
+            'instructions' => '
+                <p><i>The priority should be a value between 0.0 and 1.0. The default priority is 0.5. </i></p>
+                <p><b>1.0 is the highest priority and 0.0 is the lowest priority.</b></p>
+                <p>The priority of a page is used by search engines to determine the importance of the page relative to other pages on the site.</p>
+            ',
+        ],
+        'change_frequency' => [
+            'label' => 'Change Frequency',
+            'validation_attribute' => 'change frequency',
+            'placeholder' => 'Select change frequency',
+            'instructions' => 'Select the change frequency of the content',
+        ],
+    ],
+
+    'routes' => [
+        'is_default_pattern' => [
+            'label' => 'Is default pattern',
+            'validation_attribute' => 'is default pattern',
+            'hints' => 'Default pattern: :format',
+        ],
+        'language_id' => [
+            'label' => 'Locale',
+            'validation_attribute' => 'locale',
+            'placeholder' => 'Default locale',
+        ],
+        'uri' => [
+            'label' => 'Path',
+            'validation_attribute' => 'path',
+            'hints' => 'The path should start with a \'/\'.',
+        ],
+        'regex_constraints' => [
+            'label' => 'Regex Constraints',
+            'validation_attribute' => 'regex constraints',
+            'key_label' => 'Parameter',
+            'value_label' => 'Value',
+            'hints' => 'Add regex constraints to the route pattern. Example: <i>:examples</i> ...',
+        ],
+    ],
+
+    'history' => [
+        'field' => [
+            'label' => 'Field',
+        ],
+        'from' => [
+            'label' => 'From',
+        ],
+        'to' => [
+            'label' => 'To',
+        ],
+    ],
+
     'notification' => [
         'remove_content_same_slug_in_same_parent' => [
             'title' => 'Remove Content',
@@ -172,19 +203,26 @@ return [
         ],
     ],
 
-    'general' => [
-        'section' => [
+    'tabs' => [
+        'content' => 'Content',
+        'details' => 'Details',
+        'sitemap' => 'Site Map',
+        'seo' => 'SEO',
+    ],
+
+    'sections' => [
+        'general' => [
             'heading' => 'General',
         ],
-    ],
-    'content' => [
-        'tab' => [
-            'label' => 'Content',
-        ],
-    ],
-    'seo_og' => [
-        'section' => [
+        'seo_og' => [
             'heading' => 'Open Graph',
         ],
+        'robots' => [
+            'heading' => 'Robots',
+        ],
+        'redirect' => [
+            'heading' => 'Redirect',
+        ],
     ],
+
 ];

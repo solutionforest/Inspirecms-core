@@ -32,25 +32,22 @@ return [
     'inherited_from' => [
         'label' => 'Inherited from',
     ],
+
     'templates' => [
         'label' => 'Templates',
         'validation_attribute' => 'templates',
         'description' => 'The template to use when rendering this document type.',
         'hint' => 'Create a template to display this document type.',
-        'tab' => [
-            'label' => 'Templates',
-        ],
     ],
+
     'field_groups' => [
         'label' => 'Fields',
         'singular' => 'Field',
         'plural' => 'Fields',
         'description' => '',
         'hint' => 'Create a field group to use with this document type.',
-        'tab' => [
-            'label' => 'Structure',
-        ],
     ],
+
     'inherited' => [
         'label' => 'Inherited from :name',
         'description' => 'The document types that this document type inherits from.',
@@ -84,24 +81,18 @@ return [
         ],
     ],
 
-    'presentation' => [
-        'tab' => [
-            'label' => 'Presentation',
-        ],
-    ],
-    'structure' => [
-        'tab' => [
-            'label' => 'Structure',
-        ],
+    'tabs' => [
+        'presentation' => 'Presentation',
+        'structure' => 'Structure',
+        'field_groups' => 'Structure',
+        'templates' => 'Templates',
     ],
 
-    'general' => [
-        'section' => [
+    'sections' => [
+        'general' => [
             'heading' => 'General',
         ],
-    ],
-    'display' => [
-        'section' => [
+        'display' => [
             'heading' => 'Display',
             'description' => 'Settings that determine how this document type is displayed when creating content.',
         ],

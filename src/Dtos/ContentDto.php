@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Dtos;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use SolutionForest\InspireCms\Dtos\Collection\PropertyGroupCollection;
+use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
 use SolutionForest\InspireCms\Models\Content;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
@@ -157,6 +158,12 @@ class ContentDto extends BaseTranslatableModelDto
             : (new \SolutionForest\InspireCms\Collection\ContentCollection($children))->toDto($currLocale);
 
         return $this->children = $result;
+    }
+
+    public function getPaginatedChildren($perPage = 10, $pageName = 'page', $page = null)
+    {
+        // todo: implement pagination for children
+        return $this->getChildren()->paginate($perPage, $pageName, $page);
     }
 
     public function getTemplate($slug)
@@ -386,11 +393,7 @@ class ContentDto extends BaseTranslatableModelDto
 
     protected static function getNecessaryRelationships(): array
     {
-        return [
-            'webSetting',
-            'publishedVersions',
-            'documentType.fields.group',
-        ];
+        return ContentHelper::getDtoRequiredRelations();
     }
     // endregion Helpers
 }

@@ -100,17 +100,16 @@
                                             'default' => 1,
                                             'md' => 2,
                                         ];
-                                        //todo: add translations
                                     @endphp
                                     <x-filament::grid default="3" md="5" class="gap-x-1">
                                         <x-filament::grid.column default="1">
-                                            <span @class([$headingClasses])>Field</span>
+                                            <span @class([$headingClasses])>{{ __('inspirecms::resources/content.history.field.label') }}</span>
                                         </x-filament::grid.column>
                                         <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
-                                            <span @class([$headingClasses])>From</span>
+                                            <span @class([$headingClasses])>{{ __('inspirecms::resources/content.history.from.label') }}</span>
                                         </x-filament::grid.column>
                                         <x-filament::grid.column :default="$dataColumnSpan['default']" :md="$dataColumnSpan['md']">
-                                            <span @class([$headingClasses])>To</span>
+                                            <span @class([$headingClasses])>{{ __('inspirecms::resources/content.history.to.label') }}</span>
                                         </x-filament::grid.column>
                                         @foreach ($item['diff'] ?? [] as $diffKey => $diffValue)
                                             <x-filament::grid.column>

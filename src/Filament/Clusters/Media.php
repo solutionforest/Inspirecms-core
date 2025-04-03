@@ -50,4 +50,9 @@ class Media extends Cluster implements ClusterSection
     {
         return __('inspirecms::inspirecms.media');
     }
+
+    public function getTitle(): string
+    {
+        return static::getNavigationLabel();
+    }
 }

@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
@@ -25,120 +26,149 @@ class ImportDefaultData extends Command
 
     public function handle(): int
     {
-        $this->publishAssets();
-        $this->createSymlink();
+        $steps = [
+            'publishAssets' => 'Publishing assets',
+            'createSymlink' => 'Creating symlink',
+            'importKeyValueData' => 'Importing key/value data',
+            'importLanguageData' => 'Importing language data',
+            'importLaravelPermissionData' => 'Importing user role and permission data',
+            'importSampleData' => 'Importing sample data',
+            'publishRouteDefinition' => 'Publishing route definition',
+        ];
 
-        $this->importKeyValueData();
-        $this->importLanguageData();
-        $this->importLaravelPermissionData();
+        $skipAfter = false;
+        $processErrors = [];
 
-        $this->importSampleData();
+        foreach ($steps as $method => $description) {
 
-        $this->publishRouteDefinition();
+            $displayStep = "  # <options=bold>{$description}</>" . PHP_EOL;
+            $taskDescription = PHP_EOL;
+
+            $this->components->twoColumnDetail($displayStep);
+
+            if ($skipAfter) {
+                $this->components->twoColumnDetail($taskDescription, 'Skipped');
+
+                continue;
+            }
+
+            $this->components->task($taskDescription, function () use ($method, &$skipAfter, &$processErrors) {
+                try {
+                    $this->$method();
+                } catch (\Throwable $th) {
+                    $this->components->error($th->getMessage());
+                    $processErrors[] = $th->getMessage();
+                    $skipAfter = true;
+                }
+            });
+
+            $this->newLine();
+        }
+
+        if (! empty($processErrors)) {
+            $this->components->warn('There was an error during the import process.');
+
+            return static::FAILURE;
+        }
 
         return static::SUCCESS;
     }
 
     protected function importKeyValueData(): void
     {
-        $this->components->task('Import key/value data', function () {
-            TemplateHelper::setupKeyValueForCurrentTemplate();
-        });
+        TemplateHelper::setupKeyValueForCurrentTemplate();
     }
 
-    protected function importLanguageData(): void
+    protected function importLanguageData()
     {
-        $this->components->task('Import language data', function () {
+        // /** @var class-string<\Illuminate\Database\Eloquent\Model> */
+        $model = InspireCmsConfig::getLanguageModelClass();
 
-            /** @var class-string<\Illuminate\Database\Eloquent\Model> */
-            $model = InspireCmsConfig::getLanguageModelClass();
+        if (! ModelHelper::isTableExists($model, $tableName)) {
 
-            if (! $this->isTableExists($model)) {
-                return;
-            }
+            $this->components->error("Table $tableName does not exist.");
 
-            $locale = config('app.locale', 'en');
+            return false;
+        }
 
-            // Create if not exists
-            $model::query()->firstOrCreate(
-                ['code' => $locale],
-                ['is_default' => true]
-            );
-        });
+        $locale = config('app.locale', 'en');
+
+        // Create if not exists
+        $model::query()->firstOrCreate(
+            ['code' => $locale],
+            ['is_default' => true]
+        );
     }
 
-    protected function importLaravelPermissionData(): void
+    protected function importLaravelPermissionData()
     {
-        $this->components->task('Import user role and permission data', function () {
+        $tableNames = config('permission.table_names');
 
-            $tableNames = config('permission.table_names');
+        foreach ($tableNames as $key => $tableName) {
+            if (! ModelHelper::isTableExists($tableName)) {
+                $this->components->error("Model $tableName does not exist.");
 
-            foreach ($tableNames as $key => $tableName) {
-                if (! $this->isTableExists($tableName)) {
-                    return;
-                }
+                return false;
             }
+        }
 
-            PermissionHelper::setupSuperAdminRole();
+        PermissionHelper::setupSuperAdminRole();
 
-            // Add example roles
-            $roleClass = InspireCmsConfig::getRoleModelClass();
-            $guardName = InspireCmsConfig::getGuardName();
-            $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
+        // Add example roles
+        $roleClass = InspireCmsConfig::getRoleModelClass();
+        $guardName = AuthHelper::guardName();
+        $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
 
-            $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);
-            $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
+        $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);
+        $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
 
-            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-            $reviewer = $roleClass::findOrCreate('Reviewer', $guardName);
-            $reviewer->givePermissionTo(
-                $allPermissions
-                    ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => (
-                            Str::startsWith($permission->name, 'view') &&
-                            ! (
-                                Str::endsWith($permission->name, 'user') ||
-                                Str::endsWith($permission->name, 'role')
-                            )
-                        ) ||
-                        str_starts_with($permission->name, 'widgets') ||
-                        $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
-                    )
-            );
-            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-            $writer = $roleClass::findOrCreate('Writer', $guardName);
-            $writer->givePermissionTo(
-                $allPermissions
-                    ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
-                        $modelPermissionFilter($permission->name, 'view', ['content']) ||
-                        $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
-                        $modelPermissionFilter($permission->name, 'update', ['content']) ||
-                        $modelPermissionFilter($permission->name, 'create', ['content']) ||
-                        $clusterPermissionFilter($permission->name, ['content'])
-                    )
-            );
-            /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-            $editor = $roleClass::findOrCreate('Editor', $guardName);
-            $editor->givePermissionTo(
-                $allPermissions
-                    ->filter(
-                        fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
-                        $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
-                        $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
-                        $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
-                        $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
-                        $clusterPermissionFilter($permission->name, ['content', 'media'])
-                    )
-            );
-        });
+        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+        $reviewer = $roleClass::findOrCreate('Reviewer', $guardName);
+        $reviewer->givePermissionTo(
+            $allPermissions
+                ->filter(
+                    fn (\Spatie\Permission\Contracts\Permission $permission) => (
+                        Str::startsWith($permission->name, 'view') &&
+                        ! (
+                            Str::endsWith($permission->name, 'user') ||
+                            Str::endsWith($permission->name, 'role')
+                        )
+                    ) ||
+                    str_starts_with($permission->name, 'widgets') ||
+                    $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
+                )
+        );
+        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+        $writer = $roleClass::findOrCreate('Writer', $guardName);
+        $writer->givePermissionTo(
+            $allPermissions
+                ->filter(
+                    fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                    $modelPermissionFilter($permission->name, 'view', ['content']) ||
+                    $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
+                    $modelPermissionFilter($permission->name, 'update', ['content']) ||
+                    $modelPermissionFilter($permission->name, 'create', ['content']) ||
+                    $clusterPermissionFilter($permission->name, ['content'])
+                )
+        );
+        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
+        $editor = $roleClass::findOrCreate('Editor', $guardName);
+        $editor->givePermissionTo(
+            $allPermissions
+                ->filter(
+                    fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                    $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
+                    $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
+                    $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
+                    $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
+                    $clusterPermissionFilter($permission->name, ['content', 'media'])
+                )
+        );
     }
 
     protected function importSampleData(): void
     {
-        $this->components->info('Import sample data');
-
-        $this->call('vendor:publish', [
+        $this->callSilent('vendor:publish', [
             '--tag' => 'inspirecms-sample-assets',
             '--force' => true,
         ]);
@@ -148,20 +178,14 @@ class ImportDefaultData extends Command
                 '--class' => SampleSeeder::class,
             ]);
         }
-
-        $this->components->info('Sample data imported successfully.');
     }
 
     protected function publishRouteDefinition(): void
     {
-        // Copy routes to user's routes/web.php
-        $this->components->task('Publish route definition', function () {
-            $routeFile = base_path('routes/web.php');
+        $routeFile = base_path('routes/web.php');
 
-            // Replace content
-            file_put_contents($routeFile, $this->cmsRouteDefinition());
-
-        });
+        // Replace content
+        file_put_contents($routeFile, $this->cmsRouteDefinition());
     }
 
     protected function publishAssets(): void
@@ -172,17 +196,6 @@ class ImportDefaultData extends Command
     protected function createSymlink(): void
     {
         $this->call('storage:link');
-    }
-
-    protected function isTableExists(string $tableName): bool
-    {
-        if (! ModelHelper::isTableExists($tableName)) {
-            $this->error("Table $tableName does not exist, please run migration first.");
-
-            return false;
-        }
-
-        return true;
     }
 
     protected function cmsRouteDefinition(): string

@@ -1,0 +1,6 @@
+
+.fi-icon {
+    > svg.custom-icon {
+        stroke: currentColor;
+    }
+}

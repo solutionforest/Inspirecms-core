@@ -141,11 +141,11 @@ class ContentResource extends Resource implements ClusterSectionResource
 
                         if ($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data) {
                             $tabs[] = Forms\Components\Tabs\Tab::make('seo')
-                                ->label(__('inspirecms::resources/content.seo.tab.label'))
+                                ->label(__('inspirecms::resources/content.tabs.seo'))
                                 ->schema([
                                     Forms\Components\Section::make()
                                         ->columns(1)
-                                        ->heading(__('inspirecms::resources/content.general.section.heading'))
+                                        ->heading(__('inspirecms::resources/content.sections.general.heading'))
                                         ->aside()
                                         ->schema([
                                             static::getTitleFormComponent(),
@@ -154,13 +154,13 @@ class ContentResource extends Resource implements ClusterSectionResource
                                     static::getSeoFormComponent(),
                                 ]);
                             $tabs[] = Forms\Components\Tabs\Tab::make('sitemap')
-                                ->label(__('inspirecms::resources/content.sitemap.tab.label'))
+                                ->label(__('inspirecms::resources/content.tabs.sitemap'))
                                 ->schema([
                                     static::getSitemapFormComponent(),
                                 ]);
                         }
                         $tabs[] = Forms\Components\Tabs\Tab::make('details')
-                            ->label(__('inspirecms::resources/content.details.tab.label'))
+                            ->label(__('inspirecms::resources/content.tabs.details'))
                             ->columns(3)
                             ->schema([
                                 Forms\Components\Section::make()
@@ -229,7 +229,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                 ->options($langs)
                 ->afterStateHydrated(fn ($component) => $component->state(array_key_first($langs)))
                 ->selectablePlaceholder(false)
-                ->prefixIcon('heroicon-m-language')
+                ->prefixIcon(FilamentIcon::resolve('inspirecms::language'))
                 ->hiddenLabel()
                 ->suffix(function ($state) {
                     if (! $state) {
@@ -313,8 +313,8 @@ class ContentResource extends Resource implements ClusterSectionResource
                             ->getStateUsing(fn (Model | ModelsContent $record) => $record->isPublished())
                             ->boolean()
                             ->width('2%')
-                            ->trueIcon('heroicon-m-eye')
-                            ->falseIcon('heroicon-o-eye-slash')
+                            ->trueIcon(FilamentIcon::resolve('inspirecms::visible'))
+                            ->falseIcon(FilamentIcon::resolve('inspirecms::invisiable'))
                             ->falseColor('gray')
                             ->alignCenter()->verticallyAlignCenter()
                             ->hiddenOn([BaseContentListTrashPage::class]),
@@ -469,7 +469,7 @@ class ContentResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithBadge(
             text: static::getRecordTitle($record),
             badgeText: $record->slug,
-            attibutes: [
+            attributes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],
             ]
@@ -643,13 +643,24 @@ class ContentResource extends Resource implements ClusterSectionResource
                 if (! filled($text)) {
                     $text = __('inspirecms::inspirecms.n/a');
                 }
-                $resource = InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
-                $url = $documentType ? FilamentResourceHelper::attemptToGetUrl($resource, ['edit', 'view'], ['record' => $documentType], true) : null;
+                $url = $documentType ? FilamentResourceHelper::attemptToGetUrl(
+                    resource: InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class),
+                    pages: ['edit', 'view'],
+                    parameters: ['record' => $documentType],
+                    autorizeAction: true
+                ) : null;
                 if (! $url) {
                     return $text;
                 }
 
-                return UIHelper::generateTextWithIconButton($text, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+                return UIHelper::generateTextWithIconButton(
+                    text: $text,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
+                    url: $url,
+                    linkTarget: '_blank',
+                );
             });
     }
 
@@ -711,7 +722,7 @@ class ContentResource extends Resource implements ClusterSectionResource
         if ($isTab) {
 
             return Forms\Components\Tabs\Tab::make('content')
-                ->label(__('inspirecms::resources/content.content.tab.label'))
+                ->label(__('inspirecms::resources/content.tabs.content'))
                 ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
                 ->key('propertyData')
                 ->statePath('propertyData')
@@ -756,7 +767,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                             return null;
                         }
 
-                        return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: 'heroicon-m-eye', falseIcon: 'heroicon-o-eye-slash', falseColor: 'gray');
+                        return UIHelper::generateBooleanIcon($record->isPublished(), trueIcon: FilamentIcon::resolve('inspirecms::visible'), falseIcon: FilamentIcon::resolve('inspirecms::invisiable'), falseColor: 'gray');
                     }),
 
                 Forms\Components\Placeholder::make('display_published_at')
@@ -794,19 +805,19 @@ class ContentResource extends Resource implements ClusterSectionResource
      */
     protected static function getLockDetailGroupedFormComponent()
     {
-        // todo: add translations
         return Forms\Components\Section::make()
             ->visible(fn (null | Model | ModelsContent $record) => $record != null && $record->isLocked())
             ->schema([
                 Forms\Components\Placeholder::make('display_locked_at')
                     ->content(fn (Model | ModelsContent $record) => $record->locked?->locked_at->diffForHumans())
-                    // ->label(__('inspirecms::resources/content.locked_at.label'))
-                    ->label('Locked At')
+                    ->label(__('inspirecms::resources/content.locked_at.label'))
                     ->inlineLabel(),
                 Forms\Components\Placeholder::make('display_locked_by')
-                    ->content(fn (Model | ModelsContent $record) => $record->locked?->owner->name)
-                    // ->label(__('inspirecms::resources/content.locked_by.label'))
-                    ->label('Locked By')
+                    ->content(fn (Model | ModelsContent $record) => UIHelper::generateTextWithDescription(
+                        text: $record->locked?->owner->name,
+                        description: UIHelper::generateCopyableText(text: $record->locked?->owner->email)
+                    ))
+                    ->label(__('inspirecms::resources/content.locked_by.label'))
                     ->inlineLabel(),
             ]);
     }
@@ -821,10 +832,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             ->native(false)
             ->prefixIcon('heroicon-m-calendar-date-range')
             ->suffixAction(ResetAction::make())
-            ->hintIcon(
-                'heroicon-o-information-circle',
-                __('inspirecms::resources/content.published_at.hint')
-            )
+            ->hintIcon(FilamentIcon::resolve('inspirecms::info'), __('inspirecms::resources/content.published_at.hint'))
             ->default(now())
             ->required();
     }
@@ -850,18 +858,25 @@ class ContentResource extends Resource implements ClusterSectionResource
                     return null;
                 }
 
-                if ($record->isRoot()) {
+                if ($record->isRootLevel()) {
                     return __('inspirecms::inspirecms.root');
                 }
 
                 $url = FilamentResourceHelper::attemptToGetUrl(
-                    static::class,
-                    ['view', 'edit'],
-                    ['record' => $record->parent_id],
-                    false
+                    resource: static::class,
+                    pages: ['view', 'edit'],
+                    parameters: ['record' => $record->parent_id],
+                    autorizeAction: false
                 );
 
-                return UIHelper::generateCopyableTextWithIconButton($record->parent_id, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url);
+                return UIHelper::generateCopyableTextWithIconButton(
+                    text: $record->parent_id,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
+                    url: $url,
+                    linkTarget: '_blank',
+                );
             });
     }
 
@@ -885,7 +900,14 @@ class ContentResource extends Resource implements ClusterSectionResource
                     return null;
                 }
 
-                return UIHelper::generateCopyableTextWithIconButton($url, FilamentIcon::resolve('inspirecms::goto'), 'gray', 'sm', 'mr-2', $url, '_blank');
+                return UIHelper::generateCopyableTextWithIconButton(
+                    text: $url,
+                    icon: FilamentIcon::resolve('inspirecms::goto'),
+                    color: 'gray',
+                    size: 'sm',
+                    url: $url,
+                    linkTarget: '_blank',
+                );
             });
     }
 
@@ -975,7 +997,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                     }),
                 Forms\Components\Section::make()
                     ->columns(1)
-                    ->heading(__('inspirecms::resources/content.seo_og.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.seo_og.heading'))
                     ->aside()
                     ->statePath('seo')
                     ->schema(function () use ($createSeoField) {
@@ -1017,7 +1039,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                         return $components;
                     }),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.robots.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.robots.heading'))
                     ->aside()
                     ->statePath('robots')
                     ->schema([
@@ -1031,7 +1053,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                             ->helperText(__('inspirecms::resources/content.robots.nofollow.instructions')),
                     ]),
                 Forms\Components\Section::make()
-                    ->heading(__('inspirecms::resources/content.redirect.section.heading'))
+                    ->heading(__('inspirecms::resources/content.sections.redirect.heading'))
                     ->aside()
                     ->schema([
                         Forms\Components\TextInput::make('redirect_path')

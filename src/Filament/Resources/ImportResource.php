@@ -7,8 +7,10 @@ use Filament\Forms\Form;
 use Filament\Infolists;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -17,9 +19,10 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\Actions\DownloadSampleAction;
 use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
-use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class ImportResource extends Resource implements ClusterSectionResource
 {
@@ -103,6 +106,16 @@ class ImportResource extends Resource implements ClusterSectionResource
                             ->dateTimeTooltip(),
                     ]),
 
+                Infolists\Components\TextEntry::make('created_by')
+                    ->columnSpan(2)
+                    ->label(__('inspirecms::inspirecms.created_by'))
+                    ->inlineLabel()
+                    ->getStateUsing(fn ($record) => UIHelper::generateTextWithDescription(
+                        text: $record->author?->name,
+                        description: UIHelper::generateTextWithIcon(text: $record->author?->email, icon: FilamentIcon::resolve('inspirecms::email'))->toHtml()
+                    ))
+                    ->copyable()->copyableState(fn ($record) => $record->author?->email),
+
                 \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
                     ->label(__('inspirecms::resources/import.payload.label'))
                     ->columnSpanFull()
@@ -142,13 +155,7 @@ class ImportResource extends Resource implements ClusterSectionResource
 
                 Forms\Components\Actions::make([
                     DownloadSampleAction::make()
-                        ->url(function () {
-                            try {
-                                return filament()->getPanel(InspireCmsConfig::get('filament.panel_id', 'cms'))?->route('import.sample');
-                            } catch (RouteNotFoundException $th) {
-                                return null;
-                            }
-                        }),
+                        ->url(fn () => UrlHelper::attemptToGetRoute('inspirecms.import.sample')),
                 ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import.file_structure_instructions.label'))
@@ -165,9 +172,10 @@ class ImportResource extends Resource implements ClusterSectionResource
     {
         return $table
             ->defaultSort('created_at', 'desc')
-            ->emptyStateIcon('heroicon-o-arrow-up-on-square')
+            ->emptyStateIcon(FilamentIcon::resolve('inspirecms::upload'))
             ->emptyStateHeading(__('inspirecms::resources/import.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/import.empty_state.description'))
+            ->modelLabel(fn () => static::getModelLabel())
             ->columns([
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
@@ -193,6 +201,13 @@ class ImportResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('clear_at')
                     ->label(__('inspirecms::resources/import.clear_at.label'))
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
+                Tables\Columns\TextColumn::make('created_by')
+                    ->label(__('inspirecms::inspirecms.created_by'))
+                    ->getStateUsing(fn ($record) => $record->author?->email)
+                    ->description(fn ($record) => $record->author?->name, 'above')
+                    ->icon(FilamentIcon::resolve('inspirecms::email'))
+                    ->copyable(),
+
             ])
             ->recordAction('view')
             ->headerActions([
@@ -224,6 +239,21 @@ class ImportResource extends Resource implements ClusterSectionResource
     public static function getModelLabel(): string
     {
         return __('inspirecms::inspirecms.import');
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()
+            ->with([
+                'author',
+            ])
+            ->where(function (Builder $query) {
+
+                $currentUser = auth()->user();
+
+                return $query
+                    ->when(! has_super_admin_role($currentUser), fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
+            });
     }
 
     // region Global search

@@ -3,11 +3,15 @@
 namespace SolutionForest\InspireCms\Models\Concerns;
 
 use Filament\AvatarProviders\Contracts\AvatarProvider;
+use Filament\Facades\Filament;
+use Filament\Notifications\Auth\VerifyEmail;
 use Filament\Panel;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -18,20 +22,6 @@ trait CmsUserTrait
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return $this->isAccountVerified();
-    }
-
-    public function isAccountVerified(): bool
-    {
-        if ($this->isSuperAdmin()) {
-            return true;
-        }
-
-        if (! $this->is_active) {
-            return false;
-        }
-
-        // @todo add more checks
         return true;
     }
 
@@ -63,12 +53,12 @@ trait CmsUserTrait
 
     public function isSuperAdmin()
     {
-        return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), InspireCmsConfig::getGuardName());
+        return $this->hasRole(PermissionManifest::getSuperAdminRoleName(), AuthHelper::guardName());
     }
 
     public function getDefaultGuardName(): string
     {
-        return InspireCmsConfig::getGuardName();
+        return AuthHelper::guardName();
     }
 
     /**
@@ -127,7 +117,13 @@ trait CmsUserTrait
         switch ($activity) {
             case UserActivity::Login:
 
-                $this->updateQuietly(['last_logged_in_at' => now()]);
+                $this->updateQuietly([
+                    'last_logged_in_at' => now(),
+
+                    // Reset failed login attempt count
+                    'failed_login_attempt' => 0,
+                    'last_lockouted_at' => null,
+                ]);
 
                 $this->userActivity()->updateOrCreate([
                     'ip_address' => request()->ip(),
@@ -149,8 +145,8 @@ trait CmsUserTrait
 
             case UserActivity::FailedLogin:
 
-                $failedLoginAttempt = $user->failed_login_attempt ?? 0;
-                $failedLoginAttempt += 1;
+                $failedLoginAttempt = intval($this->failed_login_attempt ?? 0);
+                $failedLoginAttempt++;
 
                 if ($this->hasExceededMaxLoginAttempts($failedLoginAttempt)) {
                     $this->last_lockouted_at = now();
@@ -170,6 +166,15 @@ trait CmsUserTrait
 
                 break;
 
+            case UserActivity::LockoutReset:
+
+                $this->updateQuietly([
+                    'failed_login_attempt' => 0,
+                    'last_lockouted_at' => null,
+                ]);
+
+                break;
+
             default:
                 break;
         }
@@ -177,30 +182,94 @@ trait CmsUserTrait
 
     public function hasExceededMaxLoginAttempts($attempt): bool
     {
-        $maxFailedLoginAttempt = InspireCmsConfig::get('auth.failed_login_attempts', 5);
+        $maxFailedLoginAttempt = AuthHelper::maxAttempts();
 
-        if ($attempt >= $maxFailedLoginAttempt) {
+        if (intval($attempt) >= $maxFailedLoginAttempt) {
             return true;
         }
 
         return false;
     }
 
-    // region Attributes
-    public function getIsActiveAttribute()
+    /**
+     * Determine if the user has verified their email address.
+     *
+     * @return bool
+     */
+    public function hasVerifiedEmail()
     {
-        $lockoutDuration = InspireCmsConfig::get('auth.lockout_duration', 5);
-
-        if (! $this->hasExceededMaxLoginAttempts($this->failed_login_attempt ?? 0)) {
+        if ($this->isSuperAdmin()) {
             return true;
         }
 
-        // no limit
-        if (is_null($this->last_lockouted_at)) {
-            return false;
+        if (AuthHelper::skipAccountVerification()) {
+            return true;
         }
 
-        return $this->last_lockouted_at->addMinutes($lockoutDuration)->isPast();
+        return ! is_null($this->email_confirmed_at);
+    }
+
+    /**
+     * Mark the given user's email as verified.
+     *
+     * @return bool
+     */
+    public function markEmailAsVerified()
+    {
+        return $this->forceFill([
+            'email_confirmed_at' => $this->freshTimestamp(),
+        ])->save();
+    }
+
+    /**
+     * Get the email address that should be used for verification.
+     *
+     * @return string
+     */
+    public function getEmailForVerification()
+    {
+        return $this->email;
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $notification = app(VerifyEmail::class);
+        $notification->url = Filament::getVerifyEmailUrl($this);
+
+        $this->notify($notification);
+    }
+
+    // region Attributes
+    public function lockedUntil(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+                if (is_null($this->last_lockouted_at)) {
+                    return null;
+                }
+
+                return $this->last_lockouted_at->addMinutes(InspireCmsConfig::get('auth.lockout_duration', 5));
+            },
+        );
+    }
+
+    public function isLocked(): Attribute
+    {
+        return new Attribute(
+            get: function () {
+
+                if (is_null($this->locked_until)) {
+                    return false;
+                } else {
+                    return now()->lessThan($this->locked_until);
+                }
+
+                $currentAttempt = $this->failed_login_attempt ?? 0;
+
+                return $this->hasExceededMaxLoginAttempts($currentAttempt);
+
+            },
+        );
     }
     // endregion Attributes
 

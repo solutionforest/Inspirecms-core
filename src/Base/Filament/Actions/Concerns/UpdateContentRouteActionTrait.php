@@ -19,15 +19,15 @@ trait UpdateContentRouteActionTrait
 
     protected function setUpAction(): void
     {
-        // todo: add translation
-
         $this->color('gray');
 
         $this->groupedIcon('heroicon-o-globe-alt');
 
-        $this->label('Update Route');
+        $this->label(fn () => __('inspirecms::buttons.update_content_route.label'));
 
-        $this->successNotificationTitle('Route updated!');
+        $this->modalHeading(fn () => __('inspirecms::buttons.update_content_route.heading'));
+
+        $this->successNotificationTitle(__('inspirecms::buttons.update_content_route.messages.success.title'));
 
         $this->authorize('update');
 
@@ -55,6 +55,8 @@ trait UpdateContentRouteActionTrait
         });
 
         $factory = ContentSegmentFactory::create();
+        $routePathDocLink = 'https://laravel.com/docs/11.x/routing#route-parameters';
+        $regexConstraintsDocLink = 'https://laravel.com/docs/11.x/routing#parameters-regular-expression-constraints';
 
         $this
             ->slideOver()
@@ -71,7 +73,7 @@ trait UpdateContentRouteActionTrait
                 Forms\Components\Repeater::make('data')
                     ->hiddenLabel()
                     ->validationAttribute('data')
-                    ->addActionLabel('Add')
+                    ->addActionLabel(__('inspirecms::buttons.add.label'))
                     ->addAction(fn ($action) => $action->extraAttributes(['class' => 'w-full']))
                     ->reorderable(false)
                     ->columns(2)
@@ -79,46 +81,47 @@ trait UpdateContentRouteActionTrait
 
                         Forms\Components\Hidden::make('id'),
 
-                        Forms\Components\Toggle::make('is_default_pattern')
-                            ->columnSpanFull()
+                        Forms\Components\Checkbox::make('is_default_pattern')
                             ->live()
-                            ->label(fn ($state) => $state ? 'Default pattern' : 'Custom pattern')
-                            ->validationAttribute('is default pattern')
-                            ->hint(function ($state) use ($factory) {
-                                if ($state) {
-                                    return 'Pattern: ' . $factory->getDefaultRoutePattern();
-                                }
-
-                                return null;
-                            })
-                            ->onColor('success')
-                            ->offColor('gray')
+                            ->label(__('inspirecms::resources/content.routes.is_default_pattern.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.routes.is_default_pattern.validation_attribute'))
+                            ->hint(fn () => __('inspirecms::resources/content.routes.is_default_pattern.hints', ['format' => $factory->getDefaultRoutePattern()]))
                             ->default(true),
 
-                        Forms\Components\Select::make('language_id')
-                            ->label('Locale')->validationAttribute('locale')
-                            ->options(collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(fn ($langDto) => [$langDto->id => $langDto->code]))
-                            ->placeholder('Default locale')
-                            ->markAsRequired(),
+                        Forms\Components\Grid::make(2)
+                            ->columnSpanFull()
+                            ->schema([
 
-                        Forms\Components\TextInput::make('uri')
-                            ->label('Path')->validationAttribute('path')
-                            ->required(),
+                                Forms\Components\Select::make('language_id')
+                                    ->label(__('inspirecms::resources/content.routes.language_id.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.routes.language_id.validation_attribute'))
+                                    ->placeholder(__('inspirecms::resources/content.routes.language_id.placeholder'))
+                                    ->options(collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(fn ($langDto) => [$langDto->id => $langDto->code]))
+                                    ->markAsRequired(),
+
+                                Forms\Components\TextInput::make('uri')
+                                    ->label(__('inspirecms::resources/content.routes.uri.label'))
+                                    ->validationAttribute(__('inspirecms::resources/content.routes.uri.validation_attribute'))
+                                    ->hint(__('inspirecms::resources/content.routes.uri.hints'))
+                                    ->helperText(fn () => str(__('inspirecms::messages.please_refer_to_doc_link', ['link' => $routePathDocLink]))->toHtmlString())
+                                    ->required(),
+                            ]),
 
                         Forms\Components\KeyValue::make('regex_constraints')
-                            ->label('Regex Constraints')
                             ->columnSpanFull()
-                            ->addActionLabel('Add Constraint')
-                            ->keyLabel('Key')
-                            ->valueLabel('Value')
+                            ->label(__('inspirecms::resources/content.routes.regex_constraints.label'))
+                            ->validationAttribute(__('inspirecms::resources/content.routes.regex_constraints.validation_attribute'))
+                            ->addActionLabel(fn () => __('inspirecms::buttons.add_with_name.label', ['name' => (string) str(__('inspirecms::resources/content.routes.regex_constraints.label'))->lower()]))
+                            ->keyLabel(__('inspirecms::resources/content.routes.regex_constraints.key_label'))
+                            ->valueLabel(__('inspirecms::resources/content.routes.regex_constraints.value_label'))
                             ->keyPlaceholder('{slug}')
                             ->valuePlaceholder('^[a-z0-9-]+$')
-                            ->reorderable()
-                            ->hint(implode(' ', [
-                                'Add regex constraints to the route pattern.',
-                                'Example: ' . collect($factory->getDefaultRouteConstraints())->map(fn ($value, $key) => '{' . $key . '} => ' . $value)->take(2)->values()->join(', '),
-                                '. . . ',
-                            ])),
+                            ->hint(
+                                fn () => str(__('inspirecms::resources/content.routes.regex_constraints.hints', ['examples' => collect($factory->getDefaultRouteConstraints())->take(2)->merge(['id' => '[0-9]+'])->map(fn ($v, $k) => "{{$k}} = {$v}")->values()->join(' ; ', ' ; ')]))
+                                    ->finish('<br/>')
+                                    ->finish(__('inspirecms::messages.please_refer_to_doc_link', ['link' => $regexConstraintsDocLink]))
+                                    ->toHtmlString()
+                            ),
 
                     ]),
             ])

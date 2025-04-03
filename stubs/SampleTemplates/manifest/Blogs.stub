@@ -1,11 +1,22 @@
 @php
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+
     $blogPage = request()->query('page') ?? 1;
     $featuredPage = request()->query('featured') ?? 1;
 
     $blogs = inspirecms_content()
-        ->getUnderRealPath('blogs', null, ['documentType.templates', 'templates'])
-        ->toDto($locale)
-        ->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+        ->getPaginatedUnderRealPath(
+            path: 'blogs', 
+            perPage: 4,
+            pageName: 'page',
+            page: $blogPage,
+            withRelations: ['documentType.templates', 'templates'],
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
 
 <x-cms-template :content="$content" type="page">
@@ -17,13 +28,14 @@
                 </div>
             </section>
             <div class="container ps-0">
-                @propertyArray('featured_blogs', 'blogs')
-                @php
-                    $featuredBlog = collect($featured_blogs_blogs)->skip($featuredPage - 1)->first();
-                    $featuredBlogTemplate = $featuredBlog?->getTemplate('blog-featured-item');
-                @endphp
-                @if ($featuredBlogTemplate)
-                    {!! $featuredBlogTemplate->render(['content' => $featuredBlog, 'locale' => $locale]) !!}
+                @propertyNotEmpty('featured_blogs', 'blogs')
+                    @php
+                        $featuredBlog = collect($featured_blogs_blogs)->skip($featuredPage - 1)->first();
+                        $featuredBlogTemplate = $featuredBlog instanceof ContentDto ? $featuredBlog?->getTemplate('blog-featured-item') : null;
+                    @endphp
+                    @if ($featuredBlogTemplate)
+                        {!! $featuredBlogTemplate->render(['content' => $featuredBlog, 'locale' => $locale]) !!}
+                    @endif
                 @endif
 
                 <div class="categories-wrapper">

@@ -47,7 +47,7 @@ class FieldResourceHelper
             ->validationAttribute(__('inspirecms::resources/field.name.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.name.label'))
-            ->helperText(__('inspirecms::resources/field.name.helper'))
+            ->helperText(__('inspirecms::resources/field.name.instructions'))
             ->required()
             ->maxLength(255)
             ->live(debounce: 500)
@@ -71,7 +71,7 @@ class FieldResourceHelper
             ->validationAttribute(__('inspirecms::resources/field.label.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.label.label'))
-            ->helperText(__('inspirecms::resources/field.label.helper'))
+            ->helperText(__('inspirecms::resources/field.label.instructions'))
             ->required()
             ->columnSpan('full')
             ->maxLength(255)
@@ -87,7 +87,7 @@ class FieldResourceHelper
             ->validationAttribute(__('inspirecms::resources/field.instructions.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.instructions.label'))
-            ->helperText(__('inspirecms::resources/field.instructions.helper'))
+            ->helperText(__('inspirecms::resources/field.instructions.instructions'))
             ->maxLength(255)
             ->columnSpan('full');
     }
@@ -100,7 +100,7 @@ class FieldResourceHelper
             ->validationAttribute(__('inspirecms::resources/field.type.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.type.label'))
-            ->helperText(__('inspirecms::resources/field.type.helper'))
+            ->helperText(__('inspirecms::resources/field.type.instructions'))
             ->columns(4)
             ->searchable()
             ->options(fn () => FieldTypeHelper::getFieldTypeOptions())
@@ -126,7 +126,7 @@ class FieldResourceHelper
             ->validationAttribute(__('inspirecms::resources/field.state_path.validation_attribute'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::resources/field.state_path.label'))
-            ->helperText(__('inspirecms::resources/field.state_path.helper'))
+            ->helperText(__('inspirecms::resources/field.state_path.instructions'))
             ->maxLength(255);
     }
 
@@ -137,7 +137,7 @@ class FieldResourceHelper
             ->label(__('inspirecms::resources/field.mandatory.label'))
             ->validationAttribute(__('inspirecms::resources/field.mandatory.validation_attribute'))
             ->inlineLabel()
-            ->helperText(__('inspirecms::resources/field.mandatory.helper'))
+            ->helperText(__('inspirecms::resources/field.mandatory.instructions'))
             ->inlineLabel();
     }
 

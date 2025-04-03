@@ -4,11 +4,13 @@ return [
     'children' => '子項目',
     'content' => '內容',
     'created_at' => '創建於',
+    'created_by' => '創建者',
     'dashboard' => '儀表板',
     'default' => '默認',
     'deleted_at' => '刪除於',
     'export' => '匯出',
     'document_type' => '文件類型',
+    'field' => '字段',
     'field_group' => '自定義字段',
     'id' => 'ID',
     'import' => '匯入',
@@ -19,6 +21,7 @@ return [
     'n/a' => '不適用',
     'navigation' => '導航',
     'order' => '順序',
+    'others_xxx' => '其他:name',
     'page' => '頁面',
     'publish_at_xxx' => '發布於 :time',
     'role' => '角色',
@@ -43,6 +46,7 @@ return [
     'used_by' => '被引用',
     'user' => '用戶',
     'users' => '用戶',
+    'version' => '版本',
 
     'page_status' => [
         'draft' => [

@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Exports;
 
+use SolutionForest\InspireCms\Base\Enums\ExportStatus;
+
 class ExportResult
 {
     public function __construct(
@@ -19,7 +21,7 @@ class ExportResult
      */
     public static function completed(string $filename, $message = null)
     {
-        return new static(ExportStatus::Completed, $filename, $message);
+        return new static(ExportStatus::Finished, $filename, $message);
     }
 
     /**
@@ -37,6 +39,6 @@ class ExportResult
      */
     public static function paused($messages)
     {
-        return new static(ExportStatus::Paused, null, $messages);
+        return new static(ExportStatus::InProgress, null, $messages);
     }
 }

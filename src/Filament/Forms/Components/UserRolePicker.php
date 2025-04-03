@@ -12,6 +12,7 @@ use Filament\Support\Enums\ActionSize;
 use Filament\Support\Services\RelationshipJoiner;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class UserRolePicker extends Repeater
@@ -69,7 +70,7 @@ class UserRolePicker extends Repeater
 
     public function getGuardName(): string
     {
-        return InspireCmsConfig::getGuardName();
+        return AuthHelper::guardName();
     }
 
     public function modifyRecordSelectUsing(?Closure $callback): static

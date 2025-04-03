@@ -1,6 +1,18 @@
 
 @php
-    $blogs = inspirecms_content()->getUnderRealPath('blogs', 3, ['documentType.templates', 'templates'])->toDto($locale);
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+    
+    $blogs = inspirecms_content()
+        ->getUnderRealPath(
+            path: 'blogs', 
+            withRelations: ['documentType.templates', 'templates'],
+            limit: 3,
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
 
 <x-cms-template :content="$content" type="page">
@@ -19,8 +31,8 @@
             @propertyArray('hero_banner', 'image_slider')
             @foreach ($hero_banner_image_slider ?? [] as $item)
                 <div class="swiper-slide">
-                    <img src="{{ $item->getUrl() }}" alt="Slide {{ $loop->iteration }}">
-                    <p>{{ $item->description }}</p>
+                    <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+                    <p>{{ $item?->description }}</p>
                 </div>
             @endforeach
         </div>
@@ -55,9 +67,11 @@
             </div>
             <div class="row">
                 @foreach ($blogs as $blog)
-                    <div class="col-md-4">
-                        {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
-                    </div>
+                    @if ($blog != null)
+                        <div class="col-md-4">
+                            {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
+                        </div>
+                    @endif
                 @endforeach
             </div>
         </div>

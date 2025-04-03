@@ -256,41 +256,23 @@ class ImportDataService implements ImportDataServiceInterface
         $this->guardAgaintsTableExist($model);
 
         $reorderDocumentTypes = function ($collection) {
-            $higherOrder = $collection->filter(
-                fn ($i) => ! (is_array($i->inheritance) && count($i->inheritance ?? []) > 0) &&
-                empty($i->parent)
-            );
 
-            $noParent = $collection->filter(fn ($i) => empty($i->parent));
-            $withParent = $collection->filter(fn ($i) => ! empty($i->parent));
+            $allowedItemsCount = collect($collection)->pluck('allowed')->reject(fn ($i) => ! is_array($i) || empty($i))->flatten()->map(fn ($v) => ['n' => $v])->countBy('n')->all();
+            // @todo For inheritance
 
-            // Sort the document types so that parents are created before children
-            $noParentKeys = $noParent->keys()->all();
-            $withParentKeys = $withParent->keys()->all();
-            $withParentOrder = $withParent->map(function ($i) use ($noParentKeys, $withParentKeys) {
-                if (in_array($i->parent, $noParentKeys)) {
-                    return 0;
-                }
-                if (in_array($i->parent, $withParentKeys)) {
-                    return 2;
+            return collect($collection)->sortBy(function ($item) use ($allowedItemsCount) {
+
+                // Low = Higher Order
+                $itemOrder = 0;
+
+                // If this item allowing other document types, wait other 'allowing' document types to be created first
+                if (isset($allowedItemsCount[$item->slug])) {
+                    $itemOrder -= $allowedItemsCount[$item->slug];
                 }
 
-                return 1;
-            })->all();
-
-            return $collection->sortBy(function ($i) use ($higherOrder, $withParentOrder) {
-                // Higher Order
-                if ($higherOrder->has($i->slug)) {
-                    return -1;
-                }
-                // With Parent Order
-                if (array_key_exists($i->slug, $withParentOrder)) {
-                    return $withParentOrder[$i->slug] + 1;
-                }
-
-                // Default Order
-                return 0;
+                return $itemOrder;
             });
+
         };
 
         $this->pendingData['documentTypes'] = $reorderDocumentTypes(collect($this->pendingData['documentTypes'] ?? []))->toArray();
@@ -345,8 +327,9 @@ class ImportDataService implements ImportDataServiceInterface
                 // }
 
                 if (! empty($item->allowed)) {
-                    $allowedDocumentTypeKeys = $this->findDocumentTypes($item->allowed)->map(fn ($i) => $i->getKey())->filter()->values();
-                    $documentType->allowedDocumentTypes()->sync($allowedDocumentTypeKeys);
+                    $documentType->allowedDocumentTypes()->sync(
+                        $this->findDocumentTypes($item->allowed)->map(fn ($i) => $i->getKey())->filter()->values()
+                    );
                 }
 
                 $this->finished['documentTypes'][$slug] = $documentType;
@@ -753,7 +736,7 @@ class ImportDataService implements ImportDataServiceInterface
 
             $this->guardAgaintsTableExist($model);
 
-            $found = $this->contentService->getByRealPath($missing);
+            $found = $this->contentService->findByRealPath(path: $missing);
 
             if ($found->isNotEmpty()) {
 

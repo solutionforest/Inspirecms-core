@@ -5,8 +5,10 @@ namespace SolutionForest\InspireCms\Observers;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Filament\Pages\Export;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
 
 class ImportObserver
@@ -61,7 +63,8 @@ class ImportObserver
      */
     protected function getImportCompletedNotification($model)
     {
-        $url = InspireCms::getImportDataUrl();
+        $page = InspireCmsConfig::getFilamentPage('export', Export::class);
+        $url = UrlHelper::attemptToGetUrlFromPanel($page);
 
         $notification = Notification::make()
             ->info()

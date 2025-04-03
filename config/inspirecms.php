@@ -28,7 +28,17 @@ return [
             'driver' => 'eloquent',
             'model' => \SolutionForest\InspireCms\Models\User::class,
         ],
+        'resetting_password' => [
+            'enabled' => true,
+            'name' => 'inspirecms',
+            'provider' => 'cms_users',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+
         'failed_login_attempts' => 5,
+
         /**
          * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
          */
@@ -40,6 +50,11 @@ return [
          * Allowed values: before, after, none
          */
         'skip_super_admin_check' => 'before',
+
+        /**
+         * Skip account verification for users.
+         */
+        'skip_account_verification' => false,
     ],
 
     'avatar' => [
@@ -121,6 +136,12 @@ return [
 
     'exports' => [
         'disk' => 'local',
+        'exporters' => [
+            \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
+            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
+            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
+            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+        ],
     ],
 
     'models' => [
@@ -162,6 +183,20 @@ return [
             'export' => [
                 'interval' => 5,
             ],
+        ],
+    ],
+
+    'custom_fields' => [
+        'extra_config' => [
+
+            \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
+            \SolutionForest\InspireCms\Fields\Configs\Tags::class,
+
+            \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
+            \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
+
+            \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
+            \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
         ],
     ],
 

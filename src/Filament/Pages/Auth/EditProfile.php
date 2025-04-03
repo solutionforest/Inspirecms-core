@@ -6,7 +6,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Form;
 use Filament\Pages\Auth\EditProfile as BasePage;
 use Illuminate\Support\Js;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\ProfilePageTrait;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\ProfilePageTrait;
 
 /**
  * @property Form $form

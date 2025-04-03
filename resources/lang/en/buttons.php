@@ -19,6 +19,10 @@ return [
         'label' => 'Back',
     ],
 
+    'bulk_detach' => [
+        'label' => 'Bulk detach',
+    ],
+
     'cancel' => [
         'label' => 'Cancel',
     ],
@@ -96,6 +100,19 @@ return [
         ],
     ],
 
+    'edit_config' => [
+        'label' => 'Edit config',
+        'heading' => 'Edit :name config',
+    ],
+
+    'edit' => [
+        'label' => 'Edit',
+    ],
+
+    'export' => [
+        'label' => 'Export',
+    ],
+
     'fix' => [
         'label' => 'Fix',
     ],
@@ -103,6 +120,24 @@ return [
     'import' => [
         'label' => 'Import',
         'heading' => 'Import',
+    ],
+
+    'lock_content' => [
+        'label' => 'Lock content',
+        'messages' => [
+            'success' => [
+                'title' => __('inspirecms::messages.locked'),
+            ],
+        ],
+    ],
+
+    'move_to_under' => [
+        'label' => 'Move to under :name',
+        'heading' => 'Move to under :name',
+    ],
+
+    'move_to' => [
+        'label' => 'Move to ...',
     ],
 
     'more_actions' => [
@@ -192,6 +227,29 @@ return [
 
     'trash_bin' => [
         'label' => 'Trash bin',
+    ],
+
+    'update_content_route' => [
+        'label' => 'Update route',
+        'heading' => 'Update route',
+        'messages' => [
+            'success' => [
+                'title' => 'Route updated',
+            ],
+        ],
+    ],
+
+    'unlock_content' => [
+        'label' => 'Unlock content',
+        'messages' => [
+            'success' => [
+                'title' => 'Unlocked',
+            ],
+            'not_owner_error' => [
+                'title' => 'Unlock failed',
+                'body' => 'You are not the owner of the lock.',
+            ],
+        ],
     ],
 
     'unpublish' => [

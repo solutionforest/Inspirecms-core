@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\WithPagination;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -83,7 +84,7 @@ class ContentHistoryAction extends Action
                 ->successNotificationTitle(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Now avoiding to clean' : 'Now waiting to clean')
                 ->successNotification(
                     fn (Notification $notification) => $notification
-                        ->icon('heroicon-o-exclamation-triangle')
+                        ->icon(FilamentIcon::resolve('inspirecms::warn'))
                         ->color('warning')
                         ->iconColor('warning')
                 )

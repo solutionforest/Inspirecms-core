@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Actions;
 
 use Filament\Actions\Action;
 use Filament\Notifications\Notification;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Exceptions\UnauthorizedOwnerException;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -17,10 +18,15 @@ class UnlockContentAction extends Action
 
     protected function setUp(): void
     {
-        // todo: add translation
         parent::setUp();
 
-        $this->icon('heroicon-o-lock-open');
+        $this->label(fn () => __('inspirecms::buttons.unlock_content.label'));
+
+        $this->successNotificationTitle(fn () => __('inspirecms::buttons.unlock_content.messages.success.title'));
+
+        $this->failureNotificationTitle(fn () => __('inspirecms::messages.something_went_wrong'));
+
+        $this->icon(FilamentIcon::resolve('inspirecms::unlocked'));
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
@@ -37,8 +43,6 @@ class UnlockContentAction extends Action
             return $record->isLocked() && $record->isOwnerForLock();
         });
 
-        $this->successNotificationTitle('Unlocked');
-
         $this->action(function (Model $record, Action $action, $livewire) {
             try {
                 if ($record->unlock() == true) {
@@ -48,8 +52,8 @@ class UnlockContentAction extends Action
                 }
             } catch (UnauthorizedOwnerException $th) {
                 Notification::make()
-                    ->title('Unlock failed')
-                    ->body('You are not the owner of the lock.')
+                    ->title(__('inspirecms::buttons.unlock_content.messages.not_owner_error.title'))
+                    ->body(__('inspirecms::buttons.unlock_content.messages.not_owner_error.body'))
                     ->danger()
                     ->send();
 

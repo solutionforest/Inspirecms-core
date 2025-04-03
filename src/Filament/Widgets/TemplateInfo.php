@@ -62,8 +62,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
 
     public static function getPermissionDisplayName(): string
     {
-        // todo: add translation
-        return 'View Template Info';
+        return strval(__('inspirecms::widgets.template_info.permission_display_name'));
     }
 
     protected function fillThemeInfo()

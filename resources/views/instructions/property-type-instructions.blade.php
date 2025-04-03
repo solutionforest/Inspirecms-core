@@ -34,13 +34,11 @@
 
         return $result;
     };
- 
-    //todo: add translation
 @endphp
 
 <div>
     <x-filament-forms::field-wrapper.label class="pb-2">
-        {{ trans('inspirecms::resources/template.property_type_instructions.label') }}
+        {{ __('inspirecms::resources/template.property_type_instructions.label') }}
     </x-filament-forms::field-wrapper.label>
     <div class="flex flex-col space-y-4 w-full">
         @foreach ($groupedPropertyTypes as $group => $propertyTypes)
@@ -50,7 +48,7 @@
                     {{ $group }}
                 </x-slot>
                 <x-slot name="headerEnd">
-                    Group
+                    {{ __('inspirecms::resources/template.property_type_instructions.group') }}
                 </x-slot>
 
                 <div class="flex flex-col gap-y-2">
@@ -85,10 +83,12 @@
                                     <x-filament::icon-button
                                         icon="heroicon-o-language"
                                         color="gray"
-                                        tooltip="Translatable"
+                                        tooltip="{{ __('inspirecms::resources/field.translatable.label') }}"
                                     />
                                 @endif
-                                <span>Field</span>
+                                <span>
+                                    {{ __('inspirecms::resources/template.property_type_instructions.field') }}
+                                </span>
                             </x-slot>
                                 
                             <ol class="flex gap-y-2 flex-col">

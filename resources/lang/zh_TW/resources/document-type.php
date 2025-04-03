@@ -32,25 +32,22 @@ return [
     'inherited_from' => [
         'label' => '繼承自',
     ],
+
     'templates' => [
         'label' => '模板',
         'validation_attribute' => '模板',
         'description' => '渲染此文件類型時使用的模板。',
         'hint' => '創建一個模板來顯示此文件類型。',
-        'tab' => [
-            'label' => '模板',
-        ],
     ],
+
     'field_groups' => [
         'label' => '字段',
         'singular' => '字段',
         'plural' => '字段',
         'description' => '',
         'hint' => '創建一個字段組以用於此文件類型。',
-        'tab' => [
-            'label' => '結構',
-        ],
     ],
+
     'inherited' => [
         'label' => '繼承自 :name',
         'description' => '此文件類型繼承的文件類型。',
@@ -63,6 +60,10 @@ return [
     'allowed_document_types' => [
         'label' => '允許的文件類型',
         'description' => '作為子項允許的文件類型。',
+    ],
+    'allowing_document_types' => [
+        'label' => '允許的文件類型',
+        'description' => '允許此文件類型的文件類型。',
     ],
 
     'categories' => [
@@ -80,24 +81,18 @@ return [
         ],
     ],
 
-    'presentation' => [
-        'tab' => [
-            'label' => '演示',
-        ],
-    ],
-    'structure' => [
-        'tab' => [
-            'label' => '結構',
-        ],
+    'tabs' => [
+        'presentation' => '演示',
+        'structure' => '結構',
+        'field_groups' => '結構',
+        'templates' => '模板',
     ],
 
-    'general' => [
-        'section' => [
+    'sections' => [
+        'general' => [
             'heading' => '一般',
         ],
-    ],
-    'display' => [
-        'section' => [
+        'display' => [
             'heading' => '顯示',
             'description' => '設定在創建內容時如何顯示此文件類型。',
         ],

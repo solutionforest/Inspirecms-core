@@ -11,17 +11,29 @@ class FileConverter extends BaseConverter
         $disk = $this->fieldTypeConfig->disk ?? config('filesystems.default');
         $directory = $this->fieldTypeConfig->directory;
 
-        if (! is_array($sourceValue)) {
-            $sourceValue = array_filter([$sourceValue]);
-        }
+        try {
+            // Ensure is array
+            if (! is_array($sourceValue)) {
+                $sourceValue = array_filter([$sourceValue]);
+            }
 
-        return collect($sourceValue)
-            ->map(fn ($path) => FileDto::fromArray([
-                'path' => $path,
-                'disk' => $disk,
-                'directory' => $directory,
-            ]))
-            ->values()
-            ->all();
+            // Pick value if is translatable
+            if ($this->fieldTypeConfig->translatable) {
+                $sourceValue = $sourceValue[$locale] ?? $sourceValue[$fallbackLocale] ?? [];
+            }
+
+            return collect($sourceValue)
+                ->map(fn ($path) => FileDto::fromArray([
+                    'path' => $path,
+                    'disk' => $disk,
+                    'directory' => $directory,
+                ]))
+                ->values()
+                ->all();
+
+        } catch (\Throwable $th) {
+            // fallback as empty array
+            return [];
+        }
     }
 }

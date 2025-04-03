@@ -4,10 +4,11 @@ namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Filament\Widgets\Widget;
 use Illuminate\Contracts\View\View;
+use SolutionForest\InspireCms\View\Components\Alert;
 
 class AlertOverview extends Widget
 {
-    protected static string $view = 'inspirecms::filament.widgets.alert-overview.index';
+    protected static string $view = 'inspirecms::filament.widgets.alert-overview';
 
     protected int | string | array $columnSpan = 'full';
 

@@ -15,6 +15,9 @@ enum ImportStatus: string implements HasColor, HasIcon, HasLabel
     public function getLabel(): ?string
     {
         return match ($this) {
+            self::Pending => __('inspirecms::messages.pending'),
+            self::Failed => __('inspirecms::messages.failed'),
+            self::Finished => __('inspirecms::messages.finished'),
             default => $this->name,
         };
     }

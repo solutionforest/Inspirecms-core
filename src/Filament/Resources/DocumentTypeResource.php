@@ -56,7 +56,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return FilamentIcon::resolve('inspirecms::document-type');
+        return FilamentIcon::resolve('inspirecms::document_type');
     }
 
     public static function form(Form $form): Form
@@ -70,7 +70,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return [
             Forms\Components\Section::make()
-                ->heading(__('inspirecms::resources/document-type.general.section.heading'))
+                ->heading(__('inspirecms::resources/document-type.sections.general.heading'))
                 ->columns(1)
                 ->aside()
                 ->schema([
@@ -81,8 +81,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     static::getIconFormComponent()->inlineLabel(),
                 ]),
             Forms\Components\Section::make()
-                ->heading(__('inspirecms::resources/document-type.display.section.heading'))
-                ->description(__('inspirecms::resources/document-type.display.section.description'))
+                ->heading(__('inspirecms::resources/document-type.sections.display.heading'))
+                ->description(__('inspirecms::resources/document-type.sections.display.description'))
                 ->columns(1)
                 ->aside()
                 ->schema(
@@ -196,11 +196,11 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function getRelations(): array
     {
         return [
-            'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.field_groups.tab.label'), [
+            'field_group' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.tabs.field_groups'), [
                 // RelationManagers\InheritedDocumentTypesRelationManager::class,
                 RelationManagers\FieldGroupsRelationManager::class,
             ])->icon(FilamentIcon::resolve('inspirecms::fields')),
-            'templates' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.templates.tab.label'), [
+            'templates' => RelationGroup::make(fn () => __('inspirecms::resources/document-type.tabs.templates'), [
                 RelationManagers\TemplatesRelationManager::class,
             ])->icon(FilamentIcon::resolve('inspirecms::templates')),
             'used_by' => RelationGroup::make(fn () => __('inspirecms::inspirecms.used_by'), [
@@ -257,7 +257,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithBadge(
             text: static::getRecordTitle($record),
             badgeText: $record instanceof DocumentType ? $record->slug : null,
-            attibutes: [
+            attributes: [
                 'text' => ['class' => 'flex-1 font-semibold'],
                 'badge' => ['class' => 'font-mono'],
             ]
@@ -459,7 +459,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->hintAction(
                 Forms\Components\Actions\Action::make('bulkDetach')
                     ->icon(FilamentIcon::resolve('inspirecms::detach'))
-                    // todo: add translation label
+                    ->label(__('inspirecms::buttons.bulk_detach.label'))
                     ->color('danger')
                     ->slideOver()
                     ->modalSubmitAction(fn ($action) => $action->color('primary'))
@@ -524,7 +524,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                                             return UIHelper::generateTextWithBadge(
                                                 text: $title,
                                                 badgeText: $slug,
-                                                attibutes: [
+                                                attributes: [
                                                     'text' => ['class' => 'flex-1 font-semibold'],
                                                     'badge' => ['class' => 'font-mono'],
                                                 ]

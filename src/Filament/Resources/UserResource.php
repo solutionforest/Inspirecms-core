@@ -2,21 +2,17 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Support\Enums\FontWeight;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
 use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -39,27 +35,6 @@ class UserResource extends Resource implements ClusterSectionResource
         return array_unique(array_merge(static::traitGetPermissionPrefixes(), ['adjust_roles']));
     }
 
-    public static function createForm(Form $form): Form
-    {
-        return $form
-            ->columns(3)
-            ->schema([
-                Forms\Components\Section::make()
-                    ->schema([
-                        static::getNameFormComponent(),
-                        static::getEmailFormComponent(),
-                        static::getPasswordFormComponent(),
-                        static::getPasswordConfirmationFormComponent(),
-                    ])
-                    ->columnSpan(2),
-                Forms\Components\Section::make()
-                    ->schema([
-                        static::getRolesFormComponent(),
-                    ])
-                    ->columnSpan(1),
-            ]);
-    }
-
     public static function table(Table $table): Table
     {
         return $table
@@ -74,11 +49,23 @@ class UserResource extends Resource implements ClusterSectionResource
                     ->weight(FontWeight::Bold)
                     ->sortable()->width('1%'),
                 Tables\Columns\TextColumn::make('email')
-                    ->label(__('inspirecms::resources/user.email.label')),
+                    ->label(__('inspirecms::resources/user.email.label'))
+                    ->copyable()->icon(FilamentIcon::resolve('inspirecms::email')),
                 Tables\Columns\TextColumn::make('roles.name')
                     ->label(__('inspirecms::resources/user.roles.label')),
                 Tables\Columns\TextColumn::make('last_logged_in_at')
                     ->label(__('inspirecms::resources/user.last_logged_in_at.label')),
+                Tables\Columns\IconColumn::make('is_account_verified')
+                    ->label(__('inspirecms::resources/user.is_account_verified.label'))
+                    ->getStateUsing(fn (User $record) => $record->hasVerifiedEmail())->boolean()
+                    ->tooltip(fn (User $record) => $record->email_confirmed_at)
+                    ->alignCenter(),
+                Tables\Columns\IconColumn::make('is_locked')
+                    ->label(__('inspirecms::resources/user.is_locked.label'))
+                    ->boolean(false)
+                    ->icon(fn ($state) => $state ? FilamentIcon::resolve('inspirecms::locked') : null)
+                    ->tooltip(fn (User $record) => $record->last_lockouted_at?->diffForHumans())
+                    ->alignCenter(),
             ])
             ->actions([
                 Tables\Actions\EditAction::make()->iconButton(),
@@ -121,71 +108,4 @@ class UserResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithDescription($record->name, $record->email);
     }
     // endregion Global search
-
-    // region Form field(s)/component(s)
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getNameFormComponent()
-    {
-        return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::resources/user.name.label'))
-            ->required()
-            ->maxLength(255);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getEmailFormComponent()
-    {
-        return Forms\Components\TextInput::make('email')
-            ->label(__('inspirecms::resources/user.email.label'))
-            ->email()
-            ->required()
-            ->maxLength(255)
-            ->autofocus()
-            ->unique(table: static::getModel(), column: 'email', ignoreRecord: true);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getPasswordFormComponent()
-    {
-        return Forms\Components\TextInput::make('password')
-            ->label(__('inspirecms::resources/user.password.label'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->rule(Password::default())
-            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-            ->same('passwordConfirmation')
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.password.validation_attribute'));
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getPasswordConfirmationFormComponent()
-    {
-        return Forms\Components\TextInput::make('passwordConfirmation')
-            ->label(__('inspirecms::resources/user.password_confirmation.label'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->dehydrated(false);
-    }
-
-    /**
-     * @return Forms\Components\Field|Forms\Components\Component
-     */
-    protected static function getRolesFormComponent()
-    {
-        return UserRolePicker::make('roles')
-            ->label(__('inspirecms::resources/user.roles.label'))
-            ->required()
-            ->columnSpanFull();
-    }
-    // endregion Form field(s)/component(s)
 }

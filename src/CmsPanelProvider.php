@@ -2,13 +2,11 @@
 
 namespace SolutionForest\InspireCms;
 
-use Closure;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -18,54 +16,60 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
-use Illuminate\Support\Facades\Route;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
+use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
+use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
 use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
 use SolutionForest\InspireCms\Http\Middleware\UserPreference;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
+use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $panel = $panel
-            ->id(InspireCmsConfig::get('filament.panel_id', 'cms'))
-            ->path(InspireCmsConfig::get('filament.path', 'cms'))
+        $panel = $panel->id(InspireCmsConfig::getPanelId());
+
+        return $this->configureCmsPanel($panel);
+    }
+
+    protected function configureCmsPanel(Panel $panel)
+    {
+        $panel = $panel->path(InspireCmsConfig::get('filament.path', 'cms'))
             ->default()
             ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
-            ->authGuard(InspireCmsConfig::getGuardName())
+            ->authGuard(AuthHelper::guardName())
             ->login(Pages\Auth\Login::class)
-            ->registration(Pages\Auth\Install::class)
+            ->registration(Pages\Auth\Register::class)
+            ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')
             ->profile(Pages\Auth\EditProfile::class)
-            ->routes($this->getExtraRoutes())
-            ->homeUrl(fn () => Pages\Dashboard::getUrl())
+            ->homeUrl(fn () => UrlHelper::attemptToGetUrlFromPanel(InspireCmsConfig::getFilamentPage('dashboard', Pages\Dashboard::class)))
             ->theme('inspirecms')
-            ->font('DM Sans')
-            ->colors([
-                'danger' => Color::hex('#f44336'),
-                'gray' => Color::hex('#5e5e5e'),
-                'info' => Color::hex('#88B0BA'),
-                'primary' => Color::hex('#B5834A'),
-                'secondary' => Color::hex('#bfa15a'),
-                'success' => Color::hex('#76ae51'),
-                'warning' => Color::hex('#f39e19'),
-            ])
-            ->maxContentWidth('full')
-            ->resources(InspireCmsConfig::get('filament.resources'))
-            ->pages([
-                ...array_values(InspireCmsConfig::get('filament.pages')),
-                ...\SolutionForest\InspireCms\Facades\InspireCms::getSections()
-                    ->map(fn (\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection $section) => $section->getFqcn())
-                    ->all(),
-            ])
+            ->font(ThemeConfig::fontFamily())
+            ->colors(ThemeConfig::colors())
+            ->maxContentWidth('full');
+
+        if (AuthHelper::enablePasswordReset()) {
+            $panel = $panel
+                ->passwordReset()
+                ->authPasswordBroker(AuthHelper::passwordBrokerName());
+        }
+
+        $panel = $panel
+            ->resources(InspireCmsConfig::getFilamentResources())
+            ->pages(array_merge(
+                array_values(InspireCmsConfig::getFilamentPages()),
+                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
+            ))
             ->widgets([
                 Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
@@ -89,23 +93,22 @@ class CmsPanelProvider extends PanelProvider
                 DispatchServingFilamentEvent::class,
             ])
             ->authMiddleware([
-                // todo: add license check
-                // LicenseCheck::class,
+                LicenseCheck::class,
                 CmsAuthenticate::class,
                 UserPreference::class,
             ])
             ->bootUsing(function () {
 
-                $skipSuperAdminCheck = InspireCmsConfig::get('auth.skip_super_admin_check');
+                $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
                 if ($skipSuperAdminCheck == 'before') {
                     Gate::before(function ($user, $ability) {
-                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                        if (has_super_admin_role($user)) {
                             return true;
                         }
                     });
                 } elseif ($skipSuperAdminCheck == 'after') {
                     Gate::after(function ($user, $ability) {
-                        if ($user && is_inspirecms_user($user) && $user->isSuperAdmin()) {
+                        if (has_super_admin_role($user)) {
                             return true;
                         }
                     });
@@ -128,16 +131,7 @@ class CmsPanelProvider extends PanelProvider
         $plugins[] = FilamentFieldGroupPlugin::make()
             ->enablePlugin()
             ->overrideResources([])
-            ->fieldTypeConfigs([
-                \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-                \SolutionForest\InspireCms\Fields\Configs\Tags::class,
-
-                \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
-                \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
-
-                \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
-                \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
-            ], false);
+            ->fieldTypeConfigs(InspireCmsConfig::get('custom_fields.extra_config'), false);
 
         $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
         $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {
@@ -180,17 +174,17 @@ class CmsPanelProvider extends PanelProvider
         // todo: add translations
         return $panel
             ->userMenuItems([
+                // \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
+                //     ->label('Reset Tour Guide')
+                //     ->icon('heroicon-s-arrow-path')
+                //     ->button()
+                //     ->extraAttributes([
+                //         'class' => 'tour-guide-reset-btn',
+                //         'aria-label' => 'Reset Tour Guide',
+                //     ], true),
                 \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Reset Tour Guide')
-                    ->icon('heroicon-s-arrow-path')
-                    ->button()
-                    ->extraAttributes([
-                        'class' => 'tour-guide-reset-btn',
-                        'aria-label' => 'Reset Tour Guide',
-                    ], true),
-                \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label('Version: ' . InspireCms::version())
-                    ->icon('heroicon-s-information-circle')
+                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
+                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
                     ->url('#')
                     ->extraAttributes([
                         'class' => 'cursor-default',
@@ -268,49 +262,49 @@ class CmsPanelProvider extends PanelProvider
             });
             \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
                 $action->icon(function (\Filament\Actions\EditAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::edit-action.grouped') ?? 'heroicon-m-pencil-square';
-                    }
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::edit')
+                        : null;
                 });
             });
             \Filament\Actions\ViewAction::configureUsing(function (\Filament\Actions\ViewAction $action) {
                 $action->icon(function (\Filament\Actions\ViewAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::view-action.grouped') ?? 'heroicon-m-eye';
-                    }
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::visible')
+                        : null;
                 });
             });
             \Filament\Actions\DeleteAction::configureUsing(function (\Filament\Actions\DeleteAction $action) {
                 $action->icon(function (\Filament\Actions\DeleteAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash';
-                    }
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::delete')
+                        : null;
                 });
             });
             \Filament\Actions\ForceDeleteAction::configureUsing(function (\Filament\Actions\ForceDeleteAction $action) {
                 $action->icon(function (\Filament\Actions\ForceDeleteAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::force-delete-action.modal') ?? 'heroicon-o-trash';
-                    }
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::delete')
+                        : null;
                 });
             });
             \Filament\Actions\RestoreAction::configureUsing(function (\Filament\Actions\RestoreAction $action) {
                 $action->icon(function (\Filament\Actions\RestoreAction $action) {
-                    if ($action->isIconButton()) {
-                        return FilamentIcon::resolve('actions::restore-action.grouped') ?? 'heroicon-m-arrow-uturn-left';
-                    }
+                    return $action->isIconButton()
+                        ? FilamentIcon::resolve('inspirecms::restore')
+                        : null;
                 });
             });
             \Filament\Tables\Actions\ReplicateAction::configureUsing(function (\Filament\Tables\Actions\ReplicateAction $action) {
                 $action
                     ->color('gray')
-                    ->modalIcon('heroicon-o-document-duplicate');
+                    ->modalIcon(FilamentIcon::resolve('inspirecms::clone'));
             });
             \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
-                $action->icon('heroicon-o-eye');
+                $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
             \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction $action) {
-                $action->icon('heroicon-o-eye');
+                $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
         });
     }
@@ -318,22 +312,8 @@ class CmsPanelProvider extends PanelProvider
     protected function registerLivewireComponents(Panel $panel): Panel
     {
         return $panel->livewireComponents([
-            Pages\Auth\Install::class,
             ListImportNExport::class,
         ]);
-    }
-
-    protected function getExtraRoutes(): ?Closure
-    {
-        return function (Panel $panel) {
-
-            Route::get(Pages\Auth\Install::getRouteSlug(), Pages\Auth\Install::class)
-                ->name('install');
-
-            Route::name('import.')->prefix('import')->group(function () {
-                Route::get('sample', [\SolutionForest\InspireCms\Http\Controllers\ImportController::class, 'sample'])->name('sample');
-            });
-        };
     }
 
     protected function replaceViewComponents()

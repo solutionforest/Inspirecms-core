@@ -25,6 +25,34 @@ class DocumentType extends BaseEntity
         'allowed' => 'array',
     ];
 
+    protected static array $propertiesOrder = [
+        'slug',
+        'title',
+        'showAsTable',
+        'showAtRoot',
+        'category',
+        'icon',
+        'templates',
+        'defaultTemplate',
+        'fieldGroups',
+        'inheritance',
+        'allowed',
+    ];
+
+    protected static array $limitedProperties = [
+        'slug',
+        'title',
+        'showAsTable',
+        'showAtRoot',
+        'category',
+        'icon',
+        'templates',
+        'defaultTemplate',
+        'fieldGroups',
+        // 'inheritance', @todo Hide this for now
+        'allowed',
+    ];
+
     public function __construct(
         /**
          * The slug of the document type.
@@ -88,25 +116,21 @@ class DocumentType extends BaseEntity
         public $inheritance = [],
 
         /**
-         * @var array $allowed An array to hold allowed document types (optional).
+         * @var string[] $allowed An array to hold allowed document types (optional).
          */
         public $allowed = [],
-    ) {}
+    ) {
+        $this->initialize();
+    }
 
-    /** {@inheritDoc} */
-    public static function fromArray(array $parameters)
+    protected function initialize(): void
     {
-        if (blank($parameters['category'] ?? null) || ! isset($parameters['category'])) {
-            $parameters['category'] = 'web';
+        // Set the default values
+        $this->showAsTable ??= false;
+        $this->showAtRoot ??= true;
+        if (blank($this->category) || ! isset($this->category)) {
+            $this->category = 'web';
         }
-        $arrayFields = ['fieldGroups', 'templates', 'inheritance', 'allowed'];
-        foreach ($arrayFields as $field) {
-            if (! isset($parameters[$field])) {
-                $parameters[$field] = [];
-            }
-        }
-
-        return parent::fromArray($parameters);
     }
 
     public function getDataForModel(): array
@@ -139,33 +163,6 @@ class DocumentType extends BaseEntity
         $data['showAtRoot'] = $record->show_at_root ?? true;
         $data['category'] = $record->category;
 
-        return static::fromArray(Arr::only($data, static::limitFields()));
-    }
-
-    public function toExportArray(): array
-    {
-        $arrayOrder = ['slug', 'title', 'showAsTable', 'showAtRoot', 'category', 'icon', 'templates', 'defaultTemplate', 'fieldGroups', 'inheritance', 'allowed'];
-
-        return collect(parent::toArray())
-            ->only(static::limitFields())
-            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
-            ->all();
-    }
-
-    private static function limitFields(): array
-    {
-        return [
-            'slug',
-            'showAsTable',
-            'showAtRoot',
-            'category',
-            'icon',
-            'title',
-            'fieldGroups',
-            'templates',
-            'defaultTemplate',
-            'inheritance',
-            'allowed',
-        ];
+        return static::fromArray(Arr::only($data, static::$limitedProperties));
     }
 }

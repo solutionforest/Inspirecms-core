@@ -32,7 +32,7 @@ class DeleteContentItemAction extends Action
 
         $this->color('danger');
 
-        $this->groupedIcon(FilamentIcon::resolve('actions::delete-action.grouped') ?? 'heroicon-m-trash');
+        $this->groupedIcon(FilamentIcon::resolve('inspirecms::delete'));
 
         $this->requiresConfirmation();
 

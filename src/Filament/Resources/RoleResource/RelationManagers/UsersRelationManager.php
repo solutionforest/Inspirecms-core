@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\RoleResource\RelationMana
 
 use Filament\Forms;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
@@ -34,7 +35,7 @@ class UsersRelationManager extends RelationManager
 
                         Tables\Columns\Layout\Stack::make([
                             Tables\Columns\TextColumn::make('name'),
-                            Tables\Columns\TextColumn::make('email')->copyable()->icon('heroicon-m-envelope'),
+                            Tables\Columns\TextColumn::make('email')->copyable()->icon(FilamentIcon::resolve('inspirecms::email')),
                         ])
                             ->columnSpan(['default' => 3]),
                     ]),
@@ -59,15 +60,14 @@ class UsersRelationManager extends RelationManager
 
                                     $avatar = ($record instanceof User ? ($record->getFilamentAvatarUrl() ?? $record->getFilamentFallbackAvatarUrl()) : null) ?? '';
                                     $name = $record->getFilamentName();
-                                    $avatarHtml = UIHelper::generateCircularImage($avatar ?? '', $name, ['class' => ['flex-shrink-0 w-8 h-8']])->toHtml();
-                                    $text = UIHelper::generateTextWithDescription($name, $record->email)->toHtml();
 
-                                    return <<<Html
-                                    <div class="flex items-center gap-2">
-                                        {$avatarHtml}
-                                        {$text}
-                                    </div>
-                                Html;
+                                    $avatarHtml = UIHelper::generateCircularImage($avatar ?? '', $name, ['ctn' => ['class' => 'flex-shrink-0 w-8 h-8']]);
+                                    $text = UIHelper::generateTextWithDescription($name, $record->email);
+
+                                    return str($avatarHtml)
+                                        ->append($text)
+                                        ->wrap('<div class="flex items-center gap-2">', '</div')
+                                        ->toString();
                                 },
                                 search: $search,
                                 searchColumns: $searchColumns,

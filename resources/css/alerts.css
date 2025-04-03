@@ -1,0 +1,23 @@
+.alert-dialog {
+    @apply border-l-4 px-4;
+
+    .alert-dialog-icon {
+        @apply w-6 h-6;
+    }
+    .alert-dialog-content-ctn {
+        @apply ml-4;
+    }
+    .alert-dialog-content {
+        @apply text-sm;
+    }
+}
+
+.fi-body {
+    .top-alert.alert-dialog {
+        @apply sticky top-0 z-20;
+
+        ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
+            @apply top-10 !important;
+        }
+    }
+}

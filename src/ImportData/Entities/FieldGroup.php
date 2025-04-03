@@ -17,6 +17,18 @@ class FieldGroup extends BaseEntity
         'fields' => 'array',
     ];
 
+    protected static array $propertiesOrder = [
+        'slug',
+        'title',
+        'fields',
+    ];
+
+    protected static array $limitedProperties = [
+        'slug',
+        'title',
+        'fields',
+    ];
+
     public function __construct(
         /**
          * The name of the field group.
@@ -37,7 +49,9 @@ class FieldGroup extends BaseEntity
          * @var Field[]
          */
         public $fields = [],
-    ) {}
+    ) {
+        $this->initialize();
+    }
 
     public function getDataForModel(): array
     {
@@ -59,20 +73,5 @@ class FieldGroup extends BaseEntity
             ->toArray();
 
         return static::fromArray($data);
-    }
-
-    public function toExportArray(): array
-    {
-        $arrayOrder = ['slug', 'title', 'fields'];
-
-        $list = parent::toArray();
-        $list['fields'] = collect($this->fields ?? [])
-            ->map(fn ($field) => $field->toExportArray())
-            ->toArray();
-
-        return collect($list)
-            ->only($arrayOrder)
-            ->sortBy(fn ($value, $key) => array_search($key, $arrayOrder))
-            ->all();
     }
 }

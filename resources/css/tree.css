@@ -1,0 +1,14 @@
+.list-view-components {
+    
+    @apply lg:flex-col;
+
+    .tree-node-sidebar {
+        @apply h-56 overflow-scroll;
+        width: auto;
+        min-width: auto;
+    }
+}
+
+.dd-placeholder {
+    @apply rounded-md bg-gray-100/20 dark:bg-gray-200;
+}

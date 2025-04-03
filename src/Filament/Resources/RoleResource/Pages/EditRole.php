@@ -26,6 +26,6 @@ class EditRole extends BaseEditRecord
 
     public function getContentTabIcon(): ?string
     {
-        return FilamentIcon::resolve('actions::edit-action') ?? 'heroicon-m-pencil-square';
+        return FilamentIcon::resolve('inspirecms::edit') ?? FilamentIcon::resolve('actions::edit-action');
     }
 }

@@ -155,8 +155,7 @@ class ContentSidebar extends BaseContentTreeNode
                         ->iconPosition(IconPosition::After)
                         ->icon('heroicon-o-arrow-right')
                         ->dropdownPlacement('right-start')
-                        // todo: add  translation
-                        ->label('Move to ... ')
+                        ->label(__('inspirecms::buttons.move_to.label'))
                         ->extraAttributes(['class' => 'w-full justify-between']),
 
                     DeleteContentItemAction::make(),

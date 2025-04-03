@@ -1,7 +1,4 @@
-@php
-    $locale ??= $content->getLocale();
-@endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template :content="$content" type="page">
     <!-- Content Area -->
     <div class="content-area">
         <!-- Main Content -->
@@ -165,4 +162,4 @@
             </div>
         </div>
     </div>
-</x-dynamic-component>
+</x-cms-template>

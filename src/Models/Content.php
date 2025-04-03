@@ -256,9 +256,9 @@ class Content extends BaseModel implements ContentContract
 
     }
 
-    public function scopeWhereIsWebPage($query)
+    public function scopeWhereIsWebPage($query, bool $condition = true)
     {
-        return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage());
+        return $query->whereHas('documentType', fn ($q) => $q->whereIsWebPage($condition));
     }
 
     public function scopeWhereIsDefault($query, bool $condition = true)

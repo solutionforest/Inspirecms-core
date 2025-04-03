@@ -1,10 +1,24 @@
 @php
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+    
     $blogPage = request()->query('page') ?? 1;
+    $featuredPage = request()->query('featured') ?? 1;
 
-    $locale ??= $content->getLocale();
-    $blogs = inspirecms_content()->getUnderRealPath('blogs')->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+    $blogs = inspirecms_content()
+        ->getPaginatedUnderRealPath(
+            path: 'blogs', 
+            perPage: 4,
+            pageName: 'page',
+            page: $blogPage,
+            withRelations: ['documentType.templates', 'templates'],
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template :content="$content" type="page">
     <main>
         <section class="latest-articles">
             <div class="container">
@@ -15,6 +29,9 @@
                             <span>{{ $content->getTitle($locale) }}</span>
                         </div>
                         @foreach ($blogs as $blog)
+                            @if(! $blog instanceof ContentDto)
+                                @continue
+                            @endif
                             <div class="blog-posts-grid">
                                 {!! $blog->getTemplate('blog-card-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
                             </div>
@@ -134,4 +151,4 @@
         </script>
     @endsection
 
-</x-dynamic-component>
+</x-cms-template>

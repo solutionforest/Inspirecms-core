@@ -57,6 +57,6 @@ trait DocumentTypeDetailTrait
 
     public function getContentTabLabel(): ?string
     {
-        return __('inspirecms::resources/document-type.presentation.tab.label');
+        return __('inspirecms::resources/document-type.tabs.presentation');
     }
 }

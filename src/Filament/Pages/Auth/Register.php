@@ -15,29 +15,30 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rules\Password;
-use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
-use SolutionForest\InspireCms\Filament\Pages\Auth\Concerns\HaveBackgroundImage;
+use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
 
-class Install extends BasePage
+class Register extends BasePage
 {
     use HaveBackgroundImage;
 
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.pages.auth.install';
+    protected static string $view = 'inspirecms::filament.pages.auth.register';
 
     /**
      * @var view-string
      */
     protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
 
-    protected static string $slug = 'install';
-
     protected ?string $maxWidth = '4xl';
+
+    protected bool $isAlreadyInitialized = false;
 
     public function boot()
     {
@@ -53,13 +54,15 @@ class Install extends BasePage
 
             throw $e;
         }
+
+        $this->isAlreadyInitialized = ! inspirecms()->needInstall();
     }
 
     public function mount(): void
     {
-        if (! InspireCms::needInstall() || Filament::auth()->check()) {
-            redirect()->intended(Filament::getUrl());
-        }
+        // if (Filament::auth()->check()) {
+        //     redirect()->intended(Filament::getUrl());
+        // }
 
         $this->callHook('beforeFill');
 
@@ -100,7 +103,8 @@ class Install extends BasePage
 
         event(new AuthEvents\Registered($user));
 
-        $this->sendEmailVerificationNotification($user);
+        // handle by event
+        // $this->sendEmailVerificationNotification($user);
 
         Filament::auth()->login($user);
 
@@ -116,23 +120,44 @@ class Install extends BasePage
         $user = $this->getUserModel()::create($data);
 
         if ($user) {
-            if (is_inspirecms_user($user) || in_array(HasRoles::class, class_uses_recursive($user))) {
 
-                try {
-                    // Assign "Admininistrator" role
-                    $guardName = InspireCmsConfig::getGuardName();
-                    $role = app(config('permission.models.role', \Spatie\Permission\Models\Role::class))::findByName(PermissionManifest::getSuperAdminRoleName(), $guardName);
-                    $user->assignRole($role);
-                } catch (\Throwable $th) {
-                    $this->getAssignRoleFailedNotification()?->send();
+            $isFirstCreatedUser = $this->getUserModel()::count() === 1;
 
-                    throw new \Exception('Please ensure you have already run the migration and imported the default data.', previous: $th);
-                }
-
+            if (
+                (is_inspirecms_user($user) || in_array(HasRoles::class, class_uses_recursive($user))) &&
+                $isFirstCreatedUser
+            ) {
+                $this->assignSuperAdminRoleToUser($user);
             }
         }
 
         return $user;
+    }
+
+    /**
+     * @param  Model  $user
+     */
+    protected function assignSuperAdminRoleToUser($user)
+    {
+        try {
+            // Assign "Admininistrator" role
+            $guardName = AuthHelper::guardName();
+            $roleClass = InspireCmsConfig::getRoleModelClass();
+
+            $role = $roleClass::findByName(PermissionManifest::getSuperAdminRoleName(), $guardName);
+
+            $user->assignRole($role);
+
+            if ($user instanceof User) {
+                $user->markEmailAsVerified();
+            }
+
+        } catch (\Throwable $th) {
+
+            $this->getAssignRoleFailedNotification()?->send();
+
+            throw new \Exception('Please ensure you have already run the migration and imported the default data.', previous: $th);
+        }
     }
 
     // region Form field(s)/component(s)
@@ -142,8 +167,8 @@ class Install extends BasePage
     protected function getNameFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('name')
-            ->label(__('inspirecms::pages/auth/install.form.name.label'))
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.name'))
+            ->label(__('inspirecms::pages/auth/register.form.name.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/register.form.email.name'))
             ->required()
             ->maxLength(255)
             ->default('System');
@@ -155,8 +180,8 @@ class Install extends BasePage
     protected function getEmailFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('email')
-            ->label(__('inspirecms::pages/auth/install.form.email.label'))
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.validation_attribute'))
+            ->label(__('inspirecms::pages/auth/register.form.email.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/register.form.email.validation_attribute'))
             ->email()
             ->required()
             ->maxLength(255)
@@ -170,8 +195,8 @@ class Install extends BasePage
     protected function getPasswordFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('password')
-            ->label(__('inspirecms::pages/auth/install.form.password.label'))
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.password.validation_attribute'))
+            ->label(__('inspirecms::pages/auth/register.form.password.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/register.form.password.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -186,8 +211,8 @@ class Install extends BasePage
     protected function getPasswordConfirmationFormComponent(): Forms\Components\Component
     {
         return Forms\Components\TextInput::make('passwordConfirmation')
-            ->label(__('inspirecms::pages/auth/install.form.password_confirmation.label'))
-            ->validationAttribute(__('inspirecms::pages/auth/install.form.email.validation_attribute'))
+            ->label(__('inspirecms::pages/auth/register.form.password_confirmation.label'))
+            ->validationAttribute(__('inspirecms::pages/auth/register.form.email.validation_attribute'))
             ->password()
             ->revealable(filament()->arePasswordsRevealable())
             ->required()
@@ -198,18 +223,26 @@ class Install extends BasePage
     public function getRegisterFormAction(): Action
     {
         return Action::make('register')
-            ->label(__('inspirecms::pages/auth/install.buttons.register.label'))
+            ->label(__('inspirecms::pages/auth/register.buttons.register.label'))
             ->submit('register');
+    }
+
+    public function loginAction(): Action
+    {
+        return Action::make('login')
+            ->link()
+            ->label(__('inspirecms::pages/auth/register.buttons.login.label'))
+            ->url(filament()->getLoginUrl());
     }
 
     protected function getRateLimitedNotification(TooManyRequestsException $exception): ?Notification
     {
         return Notification::make()
-            ->title(__('inspirecms::pages/auth/install.messages.throttled.title', [
+            ->title(__('inspirecms::pages/auth/register.messages.throttled.title', [
                 'seconds' => $exception->secondsUntilAvailable,
                 'minutes' => $exception->minutesUntilAvailable,
             ]))
-            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.messages.throttled') ?: []) ? __('inspirecms::pages/auth/install.messages.throttled.body', [
+            ->body(array_key_exists('body', __('inspirecms::pages/auth/register.messages.throttled') ?: []) ? __('inspirecms::pages/auth/register.messages.throttled.body', [
                 'seconds' => $exception->secondsUntilAvailable,
                 'minutes' => $exception->minutesUntilAvailable,
             ]) : null)
@@ -219,28 +252,23 @@ class Install extends BasePage
     protected function getAssignRoleFailedNotification(): ?Notification
     {
         return Notification::make()
-            ->title(__('inspirecms::pages/auth/install.messages.assign_role_failed.title'))
-            ->body(array_key_exists('body', __('inspirecms::pages/auth/install.messages.assign_role_failed') ?: []) ? __('inspirecms::pages/auth/install.messages.assign_role_failed.body') : null)
+            ->title(__('inspirecms::pages/auth/register.messages.assign_role_failed.title'))
+            ->body(array_key_exists('body', __('inspirecms::pages/auth/register.messages.assign_role_failed') ?: []) ? __('inspirecms::pages/auth/register.messages.assign_role_failed.body') : null)
             ->danger();
     }
 
     public function getTitle(): string | Htmlable
     {
-        return __('inspirecms::pages/auth/install.title');
+        return $this->isAlreadyInitialized ? __('inspirecms::pages/auth/register.title.installed') : __('inspirecms::pages/auth/register.title.not_installed');
     }
 
     public function getHeading(): string | Htmlable
     {
-        return __('inspirecms::pages/auth/install.heading');
+        return $this->isAlreadyInitialized ? __('inspirecms::pages/auth/register.heading.installed') : __('inspirecms::pages/auth/register.heading.not_installed');
     }
 
-    public function getSubheading(): string | Htmlable
+    public function showLoginButton(): bool
     {
-        return __('inspirecms::pages/auth/install.subheading');
-    }
-
-    public static function getRouteSlug(): string
-    {
-        return static::$slug;
+        return filament()->hasLogin() && $this->isAlreadyInitialized;
     }
 }
