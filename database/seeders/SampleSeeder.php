@@ -53,7 +53,7 @@ class SampleSeeder extends Seeder
         $this->importDataService->run();
 
         // handle the content have contentPicker field
-        if ($blog = $this->contentService->findByRealPath('home/blog')) {
+        if ($blog = $this->contentService->findByRealPath('home/blog')->first()) {
             $availableBlogs = $this->contentService->getUnderRealPath('blogs');
             $blog->propertyData = json_encode([
                 'featured_blogs' => [
@@ -83,9 +83,7 @@ class SampleSeeder extends Seeder
 
         // temp for update content route
         // todo: move to import data
-
-        $dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page');
-        if ($dynamicBlogPage) {
+        if (($dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page')->first())) {
             event(
                 new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
                     $dynamicBlogPage->withoutRelations(),

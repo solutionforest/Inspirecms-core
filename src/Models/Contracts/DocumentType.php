@@ -138,23 +138,26 @@ interface DocumentType extends Base\HasTemplates
      * Scope a query to only include document types that can be inherited.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $condition  The condition to check for inheritance.
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeCanBeInherited($query);
+    public function scopeCanBeInherited($query, bool $condition = true);
 
     /**
      * Scope a query to only include web page document types.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $condition  The condition to check for web page types.
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereIsWebPage($query);
+    public function scopeWhereIsWebPage($query, bool $condition = true);
 
     /**
      * Scope a query to only include content that can be used.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $condition  The condition to check for content.
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereCanBeContent($query);
+    public function scopeWhereCanBeContent($query, bool $condition = true);
 }

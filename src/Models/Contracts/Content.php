@@ -117,14 +117,16 @@ interface Content extends Base\CanLockContent, Base\HasContentVersions, Base\Has
      * Scope a query to only include web pages.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $condition  Whether to include web pages or not.
      * @return \Illuminate\Database\Eloquent\Builder
      */
-    public function scopeWhereIsWebPage($query);
+    public function scopeWhereIsWebPage($query, bool $condition = true);
 
     /**
      * Scope a query to only include default content.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  bool  $condition  Whether to include default content or not.
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeWhereIsDefault($query, bool $condition = true);

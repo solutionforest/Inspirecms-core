@@ -51,7 +51,8 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                             'badge' => ['class' => 'font-mono'],
                         ]
                     )->toHtml(),
-                ]);
+                ])
+                ->all();
         };
 
         return [
@@ -70,8 +71,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->optionsLimit(10)
                                 ->allowHtml()
                                 ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
-                                ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search))
-                                ->live(),
+                                ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search)),
                             ContentPickerComponent::make('startNode')
                                 ->inlineLabel()
                                 ->maxItems(1)

@@ -753,7 +753,7 @@ class ImportDataService implements ImportDataServiceInterface
 
             $this->guardAgaintsTableExist($model);
 
-            $found = $this->contentService->getByRealPath($missing);
+            $found = $this->contentService->findByRealPath(path: $missing);
 
             if ($found->isNotEmpty()) {
 

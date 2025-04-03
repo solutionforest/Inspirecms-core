@@ -12,77 +12,103 @@ use SolutionForest\InspireCms\Collection\ContentCollection;
 interface ContentServiceInterface
 {
     /**
-     * Find a published web page by its ID.
+     * Find content item(s) by its ID.
      *
-     * @param  string  $id  The ID of the web page to find.
-     * @return ?TResult The content item if found, or null if not found.
-     */
-    public function findPublishedWebPageById($id);
-
-    /**
-     * Find published content by their ID.
-     *
-     * @param  string  $id  The ID of the content to find.
-     * @return ?TResult The content item if found, or null if not found.
-     */
-    public function findPublishedContentById($id);
-
-    /**
-     * Find published content by their IDs.
-     *
-     * @param  string  ...$ids  The IDs of the content to find.
-     * @return ContentCollection<TResult> The published content corresponding to the given IDs.
-     */
-    public function findPublishedContentByIds(...$ids);
-
-    /**
-     * Find the web page and language ID by the default URL segment route.
-     *
-     * @param  string  $urlSegment  The URL segment to search for.
-     * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
-     */
-    public function findWebPageAndLangIdByDefaultRoute($urlSegment);
-
-    /**
-     * Find the web page and language ID by the given route pattern.
-     *
-     * @param  string  $routePattern  The route pattern to search for.
-     * @return array{0:?TResult,1:null|int} The content and language ID if found, or null if not found.
-     */
-    public function findWebPageAndLangIdByRoutePattern($routePattern);
-
-    /**
-     * Find content by its path.
-     *
-     * @return ?TResult
-     */
-    public function findByRealPath(string $path);
-
-    /**
-     * Retrieve content by its paths.
-     *
-     * @param  string[]  $paths
+     * @param  string|string[]  $id  The ID of the content item to find.
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  bool|null  $isPublished  Whether to filter by published status.
      * @param  array  $withRelations  The relations to load with the content.
-     * @return ContentCollection<string,TResult>
-     */
-    public function getByRealPath($paths, $withRelations = []);
-
-    /**
-     * Retrieve the content under the content with the provided real path.
-     *
-     * @param  int|null  $limit  The maximum number of content items to retrieve, or null for unlimited.
-     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
      * @return ContentCollection<TResult>
      */
-    public function getUnderRealPath(string $path, $limit = null, $withRelations = []);
+    public function findByIds($ids, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10);
+    
+    /**
+     * Find content item(s) by their route pattern and language ID.
+     *
+     * @param  string  $uri  The URI of the content item to find.
+     * @param  bool  $isDefaultRoutePattern  Whether to filter by default route pattern.
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
+     * @return Collection<array{content:TResult,language_id:int}>
+     */
+    public function findByRoutePatternWithLangId($uri, $isDefaultRoutePattern, $isWebPage = null, $withRelations = [], $sorting = [], $limit = 10);
 
     /**
-     * Find content by slug under the its path.
+     * Find content item(s) by their real path.
      *
-     * @param  string  $slug  The slug of the content to find.
-     * @return null | TResult
+     * @param  string|string[]  $path  The real path of the content item to find. (e.g. '/home/blogs/2023/10/01')
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  bool|null  $isPublished  Whether to filter by published status.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
+     * @return Collection<string,TResult> Keyed by the path.
      */
-    public function findBySlugUnderRealPath(string $path, string $slug);
+    public function findByRealPath($path, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10);
+
+    /**
+     * Get content items under the given real path.
+     *
+     * @param  string|string[]  $path  The real path under which to find content items.
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  bool|null  $isPublished  Whether to filter by published status.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
+     * @return ContentCollection<TResult>
+     */
+    public function getUnderRealPath($path, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10);
+
+    /**
+     * Get content items by their IDs with pagination.
+     *
+     * @param  string|string[]  $ids  The IDs of the content items to retrieve.
+     * @param  int  $page  The page number to retrieve.
+     * @param  int|null  $perPage  The number of items per page.
+     * @param  string  $pageName  The name of the page parameter in the query string.
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  bool|null  $isPublished  Whether to filter by published status.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<TResult>
+     */
+    public function getPaginatedByIds($ids, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = []);
+
+    /**
+     * Get content items by their real path with pagination.
+     *
+     * @param string $path The real path to filter content items by
+     * @param int $page The current page number
+     * @param int|null  $perPage  The number of items per page.
+     * @param string $pageName Name of the page query parameter
+     * @param bool|null $isWebPage Filter by web page status (true/false/null for all)
+     * @param bool|null $isPublished Filter by published status (true/false/null for all)
+     * @param array $withRelations Relationships to eager load with the query
+     * @param array $sorting Sorting options for the results
+     * 
+     * @return \Illuminate\Pagination\LengthAwarePaginator<TResult>
+     */
+    public function getPaginatedByRealPath($path, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = []);
+    
+    /**
+     * Get content items under the given real path with pagination.
+     *
+     * @param  string|string[]  $path  The real path under which to find content items.
+     * @param int $page The current page number
+     * @param int|null  $perPage  The number of items per page.
+     * @param string $pageName Name of the page query parameter
+     * @param  bool|null  $isWebPage  Whether to filter by web page status.
+     * @param  bool|null  $isPublished  Whether to filter by published status.
+     * @param  array  $withRelations  The relations to load with the content.
+     * @param array<string,string>|null $sorting The sorting options for the query.
+     * @param int|null $limit The maximum number of content items to retrieve, or null for unlimited.
+     * @return ContentCollection<TResult>
+     */
+    public function getPaginatedUnderRealPath($path, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = []);
 
     /**
      * Get the default template for the given content.

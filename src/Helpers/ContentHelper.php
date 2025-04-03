@@ -86,6 +86,18 @@ class ContentHelper
             ->all();
     }
 
+
+    public static function getDtoRequiredRelations(): array
+    {
+        return [
+            'documentType.fields.group',
+            'documentType.templates',
+            'webSetting',
+            'publishedVersions',
+            'templates',
+        ];
+    }
+
     /**
      * @return class-string<Model | Content>
      */
