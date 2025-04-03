@@ -1,26 +1,12 @@
-@php
-    $locale ??= $content->getLocale();
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    $case_content = $content->getPropertyGroup('case_content');
-    $case_content_overview = $case_content?->getPropertyData('overview')?->getValue();
-    $case_content_category = $case_content?->getPropertyData('category')?->getValue();
-    $case_content_year = $case_content?->getPropertyData('year')?->getValue();
-    $case_content_deliverables = $case_content?->getPropertyData('deliverables')?->getValue();
-    $case_content_platforms = collect($case_content?->getPropertyData('platforms')?->getValue())->implode(', ');
-    $case_content_roles = collect($case_content?->getPropertyData('roles')?->getValue())->implode(', ');
-    $case_content_ = collect($case_content?->getPropertyData('roles')?->getValue())->implode(', ');
-    $case_content_content = $case_content?->getPropertyData('content')?->getValue();
-@endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template :content="$content" type="page">
     <div class="case-study-container">
         <header class="case-study-header">
             <p class="label">CASE STUDY</p>
-            <h1 class="title">{{ $page_banner_title }}</h1>
+            <h1 class="title">@property('page_banner', 'title')</h1>
 
             <div class="hero-image">
-                @if ($page_banner_image)
+                @propertyArray('page_banner', 'image')
+                @if (($page_banner_image = collect($page_banner_image)->first()))
                     <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
                 @endif
             </div>
@@ -33,35 +19,41 @@
                         <div class="row overview-section">
                             <div class="col-md-8 overview-left">
                                 <h2>Project Overview</h2>
-                                {{ $case_content_overview }}
+                                @property('case_content', 'overview')
                             </div>
 
                             <div class="col-md-4 overview-right">
                                 <div class="details-grid">
                                     <div class="detail-item">
                                         <h3>Year</h3>
-                                        <p>{{ $case_content_year }}</p>
+                                        <p>
+                                            @propertyNotEmpty('case_content', 'year')
+                                                {{ $case_content_year->format(' Y') }}
+                                            @endif
+                                        </p>
                                     </div>
                                     <div class="detail-item">
                                         <h3>Platform</h3>
-                                        <p>{{ $case_content_platforms }}</p>
+                                        @propertyArray('case_content', 'platforms')
+                                        <p>{{ implode(', ', $propertyArray ?? []) }}</p>
                                     </div>
                                     <div class="detail-item">
                                         <h3>Role</h3>
-                                        <p>{{ $case_content_roles }}</p>
+                                        @propertyArray('case_content', 'roles')
+                                        <p>{{ implode(', ', $propertyArray ?? []) }}</p>
                                     </div>
                                     <div class="detail-item">
                                         <h3>Deliverables</h3>
-                                        <p>{{ $case_content_deliverables }}</p>
+                                        <p>@property('case_content', 'deliverables')</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    {{ $case_content_content }}
+                    @property('case_content', 'content')
                 </div>
             </div>
         </div>
     </div>
-</x-dynamic-component>
+</x-cms-template>

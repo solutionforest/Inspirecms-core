@@ -1,5 +1,5 @@
 @php
-    $config = inspirecms_content()->findByRealPath('config')->toDto($locale);
+    $config = inspirecms_content()->findByRealPath(path: 'config', limit: 1)->first()->toDto($locale);
 @endphp
 
 <x-cms-template :content="$content" type="page">

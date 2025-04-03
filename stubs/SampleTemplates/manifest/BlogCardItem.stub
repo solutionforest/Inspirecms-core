@@ -6,9 +6,7 @@
     @endif
     <div class="blog-meta">
         <span>{{ implode(', ', $blog_content_categories ?? []) }}</span>
-        @propertyNotEmpty('blog_content', 'post_date')
-            <span>{{ $blog_content_post_date->format('d M, Y') }}</span>
-        @endif
+        <span>{{ $content?->publishAt?->format('d M, Y') }}</span>
     </div>
     <h3>@property('page_banner', 'title')</h3>
     <p>@property('page_banner', 'description')</p>

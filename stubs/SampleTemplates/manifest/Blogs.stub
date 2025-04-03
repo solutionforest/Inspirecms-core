@@ -5,9 +5,18 @@
     $featuredPage = request()->query('featured') ?? 1;
 
     $blogs = inspirecms_content()
-        ->getUnderRealPath('blogs', null, ['documentType.templates', 'templates'])
-        ->toDto($locale)
-        ->paginate(perPage: 4, pageName: 'page', page: $blogPage);
+        ->getPaginatedUnderRealPath(
+            path: 'blogs', 
+            perPage: 4,
+            pageName: 'page',
+            page: $blogPage,
+            withRelations: ['documentType.templates', 'templates'],
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
 
 <x-cms-template :content="$content" type="page">

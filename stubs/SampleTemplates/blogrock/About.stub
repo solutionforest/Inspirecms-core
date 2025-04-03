@@ -1,25 +1,18 @@
-@php
-    $locale ??= $content->getLocale();
-    $about_section = $content->getPropertyGroup('about_section');
-    $about_section_brief = $about_section?->getPropertyData('brief')?->getValue();
-    $about_section_description = $about_section?->getPropertyData('description')?->getValue();
-    $about_section_image = collect($about_section?->getPropertyData('image')?->getValue())->first();
-    $about_section_resume = collect($about_section?->getPropertyData('resume')?->getValue())->first();
-@endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template :content="$content" type="page">
     <!-- About Section -->
     <section class="landing-about-section">
         <div class="container">
             <div class="about-wrapper">
                 <div class="about-image">
-                    @if ($about_section_image)
-                    <img src="{{ $about_section_image->getUrl() }}" alt="About Us">
+                    @propertyArray('about_section', 'image')
+                    @if (($media = collect($about_section_image)->first()))
+                        <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                     @endif
                 </div>
                 <div class="about-content">
                     <span class="section-label">About US</span>
-                    <h2 class="heading-title">{{ $about_section_brief }}</h2>
-                    <p class="about-text">{{ $about_section_description }}</p>
+                    <h2 class="heading-title">@property('about_section', 'brief')</h2>
+                    <p class="about-text">@property('about_section', 'description')</p>
                     <button class="styled-button green-btn">Learn More</button>
                 </div>
             </div>
@@ -145,4 +138,4 @@
             </div>
         </section>
     </div>
-</x-dynamic-component> 
+</x-cms-template>

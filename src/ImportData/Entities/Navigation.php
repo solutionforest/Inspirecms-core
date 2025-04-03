@@ -15,7 +15,7 @@ class Navigation extends BaseEntity
         'type' => 'required|string',
         'title' => 'required|array',
         'title.*' => 'string',
-        'url' => 'required|array',
+        'url' => 'nullable|array',
         'url.*' => 'nullable|string',
         'target' => 'nullable|string',
         'contentSlugPath' => 'nullable|string',

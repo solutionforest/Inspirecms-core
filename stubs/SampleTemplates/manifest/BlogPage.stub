@@ -1,12 +1,18 @@
 @php
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+
     if (isset($isPeekPreviewModal)) {
-        $blog = inspirecms_content()->getUnderRealPath("blogs", 1)?->first()?->toDto($locale);
+        $blog = inspirecms_content()
+            ->getUnderRealPath(path: "blogs", limit: 1)
+            ?->first()?->toDto($locale);
+    } else if (isset($slug)) {
+        $blog = inspirecms_content()
+            ->findByRealPath(path: "blogs/{$slug}", limit: 1)
+            ->first()?->toDto($locale);
     } else {
-        $blog = isset($slug)
-            ? inspirecms_content()->findByRealPath("blogs/{$slug}")?->toDto($locale)
-            : null;
+        $blog = null;
     }
-    if (is_null($blog)) {
+    if (is_null($blog) || ! $blog instanceof ContentDto) {
         abort(404);
     }
 @endphp
@@ -17,20 +23,18 @@
         <div class="container-fluid ps-0 pe-0">
             <header class="post-header">
                 <div class="post-meta">
-                    @propertyArray('blog_content', 'categories')
-                    @foreach ($blog_content_categories ?? [] as $category)
+                    @propertyArray('blog_content', 'categories', 'b_cat', $blog)
+                    @foreach ($b_cat ?? [] as $category)
                         <span class="category">{{ $category }}</span>
                         @if (!$loop->last)
                             <span class="separator">,</span>
                         @endif
                     @endforeach
                 </div>
-                <h1 class="post-title">@property('page_banner', 'title')</h1>
+                <h1 class="post-title">@property('page_banner', 'title', 'b_title', $blog)</h1>
                 <div class="header-meta">
                     <span class="post-date">
-                        @propertyNotEmpty('blog_content', 'post_date')
-                            {{ $blog_content_post_date->format('d M, Y') }}
-                        @endif
+                        {{ $blog->publishAt?->format('d M, Y') }}
                     </span>
                     <span class="post-date"> <img src="{{ asset('image/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
                 </div>
@@ -39,8 +43,8 @@
 
             <!-- Featured Image - Full Width -->
             <div class="post-featured-image">
-                @propertyArray('page_banner', 'image')
-                @if (($media = collect($page_banner_image)->first()))
+                @propertyArray('page_banner', 'image', 'b_image', $blog)
+                @if (($media = collect($b_image)->first()))
                     <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                 @endif
             </div>
@@ -80,14 +84,14 @@
                             </div>
                             <!-- Post Content -->
                             <div class="post-content">
-                                @property('blog_content', 'content')
+                                @property('blog_content', 'content', 'b_content', $blog)
                             </div>
                             <!-- tag -->
                             <div class="tag-wrapper">
                                 <span>Tags: </span>
                                 <span class="post-tag">
-                                    @propertyArray('blog_content', 'tags')
-                                    @foreach ($blog_content_tags ?? [] as $tag)
+                                    @propertyArray('blog_content', 'tags', 'b_tags', $blog)
+                                    @foreach ($b_tags ?? [] as $tag)
                                         <span class="category">{{ $tag }}</span>
                                         @if (!$loop->last)
                                             <span class="separator">,</span>

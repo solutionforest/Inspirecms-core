@@ -2,7 +2,7 @@
     $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('footer', $locale);
 
-    $config = inspirecms_content()->findByRealPath('config')?->toDto($locale);
+    $config = inspirecms_content()->findByRealPath('config')->first()?->toDto($locale);
     $config_sns = $config?->getPropertyGroup('social_media');
 @endphp
 <!-- Newsletter and Footer -->

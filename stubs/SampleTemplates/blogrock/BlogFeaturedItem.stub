@@ -1,37 +1,27 @@
 <!-- Featured Blog Post -->
-@php
-    $locale ??= $content->getLocale();
-
-    $page_banner = $content?->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-
-    $blog_content = $content?->getPropertyGroup('blog_content');
-    $blog_content_categories = collect($blog_content?->getPropertyData('categories')->getValue());
-    $blog_content_post_date = $blog_content?->getPropertyData('post_date')->getValue();
-@endphp
 <div class="featured-post">
     <div class="row align-items-start">
         <div class="col-md-6">
-            @if ($page_banner_image)
-                <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}" class="featured-image">
+            @propertyArray('page_banner', 'image')
+            @if (($media = collect($page_banner_image)->first()))
+                <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}" class="featured-image">
             @endif
         </div>
         <div class="col-md-6">
             <div class="featured-content">
                 <div class="post-categories">
-                    @foreach ($blog_content_categories as $category)
+                    @propertyArray('blog_content', 'categories')
+                    @foreach ($blog_content_categories ?? [] as $category)
                         <span class="category">{{ $category }}</span>
                         @if (!$loop->last)
                             <span class="separator">,</span>
                         @endif
                     @endforeach
                 </div>
-                <h2 class="featured-title">{{ $page_banner_title }}</h2>
-                <div class="post-date">{{ $blog_content_post_date }}</div>
+                <h2 class="featured-title">@property('page_banner', 'title')</h2>
+                <div class="post-date">{{ $content?->publishAt }}</div>
                 <p class="featured-excerpt">
-                    {{ $page_banner_description }}
+                    @property('page_banner', 'description')
                     <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
                 </p>
                 <div class="pagination">

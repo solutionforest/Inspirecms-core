@@ -1,12 +1,7 @@
 @php
-    $locale ??= $content->getLocale();
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
-
-    $cases = $content->getChildren()->paginate(3);
+    $cases = $content->getPaginatedChildren(3, 'children', request()->get('children'));
 @endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template :content="$content" type="page">
     <main>
         <section class="latest-articles">
             <div class="container">
@@ -14,7 +9,7 @@
                     <div class="col-md-8">
                         <div class="page-meta">
                             <div class="line"></div>
-                            <span>{{ $page_banner_title }}</span>
+                            <span>@property('page_banner', 'title')</span>
                         </div>
                         @foreach ($cases as $item)
                             @php
@@ -28,8 +23,9 @@
                                 <article class="article-card">
                                     <div class="article-image">
                                         <div class="image-wrapper">
-                                            @if ($case_page_banner_image)
-                                                <img src="{{ $case_page_banner_image->getUrl() }}" alt="{{ $case_page_banner_image->caption }}">
+                                            @propertyArray('page_banner', 'image', 'c_banner_image', $item)
+                                            @if (($media = collect($c_banner_image ?? [])->first()))
+                                                <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                                             @endif
                                         </div>
                                     </div>
@@ -135,4 +131,4 @@
             </div>
         </section>
     </main>
-</x-dynamic-component>
+</x-cms-template>
