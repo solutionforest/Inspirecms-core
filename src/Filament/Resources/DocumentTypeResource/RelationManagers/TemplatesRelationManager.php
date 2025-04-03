@@ -393,7 +393,6 @@ class TemplatesRelationManager extends RelationManager
 
         Notification::make()
             ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
-            ->body(__('inspirecms::buttons.edit_and_preview.messages.success.body'))
             ->success()
             ->send();
     }
