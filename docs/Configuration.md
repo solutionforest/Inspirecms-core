@@ -1,266 +1,6 @@
-# InspireCMS Configuration
+# Configuration
 
-The `config/inspirecms.php` file contains global settings:
-
-```php
-return [
-
-    'license_key' => env('INSPIRECMS_LICENSE_KEY'),
-
-    'override_plugins' => [
-        'field_group_models' => true,
-        'spatie_permission' => true,
-    ],
-
-    'auth' => [
-        'guard' => [
-            'name' => 'inspirecms',
-            'driver' => 'session',
-            'provider' => 'cms_users',
-        ],
-        'provider' => [
-            'name' => 'cms_users',
-            'driver' => 'eloquent',
-            'model' => \SolutionForest\InspireCms\Models\User::class,
-        ],
-        'resetting_password' => [
-            'enabled' => true,
-            'name' => 'inspirecms',
-            'provider' => 'cms_users',
-            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
-            'expire' => 60,
-            'throttle' => 60,
-        ],
-
-        'failed_login_attempts' => 5,
-
-        /**
-         * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
-         */
-        'lockout_duration' => 120,
-
-        /**
-         * Skip authentication for super admin users.
-         *
-         * Allowed values: before, after, none
-         */
-        'skip_super_admin_check' => 'before',
-
-        /**
-         * Skip account verification for users.
-         */
-        'skip_account_verification' => false,
-    ],
-
-    'avatar' => [
-        'driver' => 'public',
-        'directory' => 'avatars',
-    ],
-
-    'cache' => [
-        'languages' => [
-            'key' => 'inspirecms.languages',
-            'ttl' => 60 * 60 * 24,
-        ],
-        'navigation' => [
-            'key' => 'inspirecms.navigation',
-            'ttl' => 60 * 60 * 24,
-        ],
-        'content_routes' => [
-            'key' => 'inspirecms.content_routes',
-            'ttl' => 120 * 60 * 24,
-        ],
-        'key_value' => [
-            'ttl' => 60 * 60 * 24,
-        ],
-    ],
-
-    'filament' => [
-        'enable_cluster_navigation' => true,
-        'panel_id' => 'cms',
-        'path' => 'cms',
-        'database_notification' => [
-            'enabled' => true,
-            'polling_interval' => '30s',
-        ],
-        'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
-        'resources' => [
-            'content' => FilamentResources\ContentResource::class,
-            'document_type' => FilamentResources\DocumentTypeResource::class,
-            'field_group' => FilamentResources\FieldGroupResource::class,
-            'language' => FilamentResources\LanguageResource::class,
-            'template' => FilamentResources\TemplateResource::class,
-            'user' => FilamentResources\UserResource::class,
-            'role' => FilamentResources\RoleResource::class,
-            'navigation' => FilamentResources\NavigationResource::class,
-            'sitemap' => FilamentResources\SitemapResource::class,
-            'import' => FilamentResources\ImportResource::class,
-            'export' => FilamentResources\ExportResource::class,
-        ],
-        'pages' => [
-            'dashboard' => FilamentPages\Dashboard::class,
-            'export' => FilamentPages\Export::class,
-            'health' => FilamentPages\Health::class,
-        ],
-        'clusters' => [
-            'content' => FilamentClusters\Content::class,
-            'media' => FilamentClusters\Media::class,
-            'settings' => FilamentClusters\Settings::class,
-            'users' => FilamentClusters\Users::class,
-        ],
-    ],
-
-    'media_library' => [
-        'disk' => 'public',
-        'directory' => '',
-        'thumbnail' => [
-            'width' => 300,
-            'height' => 300,
-        ],
-        'should_map_video_properties_with_ffmpeg' => false,
-        'middlewares' => [
-            'cache.headers:public;max_age=2628000;etag',
-        ],
-    ],
-
-    'imports' => [
-        'disk' => 'local',
-        'temp_disk' => 'local',
-        'temp_directory' => 'temp/imports',
-    ],
-
-    'exports' => [
-        'disk' => 'local',
-        'exporters' => [
-            \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
-        ],
-    ],
-
-    'models' => [
-        'table_name_prefix' => 'cms_',
-        'morph_map_prefix' => 'cms_',
-        'fqcn' => [
-            'content' => Models\Content::class,
-            'content_path' => Models\ContentPath::class,
-            'content_route' => Models\ContentRoute::class,
-            'content_lock' => Models\ContentLock::class,
-            'content_version' => Models\ContentVersion::class,
-            'content_web_setting' => Models\ContentWebSetting::class,
-            'document_type' => Models\DocumentType::class,
-            'document_type_inheritance' => Models\Pivot\DocumentTypeInheritance::class,
-            'language' => Models\Language::class,
-            'user' => Models\User::class,
-            'field_groupable' => Models\Polymorphic\FieldGroupable::class,
-            'user_login_activity' => Models\Users\UserLoginActivity::class,
-            'template' => Models\Template::class,
-            'templateable' => Models\Polymorphic\Templateable::class,
-            'sitemap' => Models\Sitemap::class,
-            'navigation' => Models\Navigation::class,
-            'media_asset' => SupportModels\MediaAsset::class,
-            'nestable_tree' => SupportModels\Polymorphic\NestableTree::class,
-            'import' => Models\Import::class,
-            'export' => Models\Export::class,
-            'key_value' => Models\KeyValue::class,
-        ],
-        'policies' => [
-            'content' => Policies\ContentStatusPolicy::class,
-        ],
-        'prunable' => [
-            'content_version' => [
-                'interval' => 30,
-            ],
-            'import' => [
-                'interval' => 5,
-            ],
-            'export' => [
-                'interval' => 5,
-            ],
-        ],
-    ],
-
-    'custom_fields' => [
-        'extra_config' => [
-
-            \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-            \SolutionForest\InspireCms\Fields\Configs\Tags::class,
-
-            \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
-            \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
-
-            \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
-            \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
-        ],
-    ],
-
-    'permissions' => [
-        'skip_access_right_permission_on_resource' => false,
-        'guard_actions' => [
-
-        ],
-        'guard_widgets' => [
-            \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
-            \SolutionForest\InspireCms\Filament\Widgets\TemplateInfo::class,
-        ],
-    ],
-
-    'template' => [
-        'default_theme' => 'manifest',
-        'component_prefix' => 'inspirecms',
-        'exported_template_dir' => resource_path('views/inspirecms/templates'),
-    ],
-
-    'resolvers' => [
-        'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
-        'published_content' => \SolutionForest\InspireCms\Resolvers\PublishedContentResolver::class,
-    ],
-
-    'content' => [
-        'routes' => [
-            'middleware' => [],
-        ],
-        'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
-    ],
-
-    'sitemap' => [
-        'generator' => \SolutionForest\InspireCms\Sitemap\SitemapGenerator::class,
-        'file_path' => public_path('sitemap.xml'),
-    ],
-
-    'scheduled_tasks' => [
-        'execute_import_job' => [
-            'enabled' => true,
-            'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
-            'arguments' => [
-                '--limit 50', // limit
-            ],
-        ],
-        'execute_export_job' => [
-            'enabled' => true,
-            'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteExport::class,
-            'arguments' => [
-                '--limit 50', // limit
-            ],
-        ],
-        'data_cleanup' => [
-            'enabled' => true,
-            'schedule' => 'daily',
-            'command' => \SolutionForest\InspireCms\Commands\DataCleanup::class,
-        ],
-    ],
-
-    'available_locales' => [
-        'en',
-        'zh_CN',
-        'zh_TW',
-    ],
-];
-
-```
+The `config/inspirecms.php` file contains global settings
 
 ## Key Configuration Sections
 
@@ -268,66 +8,122 @@ return [
 - `license_key`: Your InspireCMS license key, typically managed through environment variables
 
 ### Plugin System
-- `override_plugins`: Controls which plugins can be overridden by the CMS
+- `override_plugins`: Controls which plugins can be overridden by the InspireCMS
 
 ### Authentication
-- Guards, providers, and password reset settings
-- Failed login attempt handling and lockout policies
-- Super admin authentication bypass options
-- Account verification settings
+- Guards configuration ([Learn more about custom guards](https://laravel.com/docs/12.x/authentication#adding-custom-guards))
+    - `auth.guard.name`: Name of the authentication guard
+    - `auth.guard.driver`: Authentication driver to use (e.g., session, token)
+    - `auth.guard.provider`: User provider for the guard
+- User provider configuration ([Learn more about custom user providers](https://laravel.com/docs/12.x/authentication#adding-custom-user-providers))
+    - `auth.provider.name`: Name of the user provider
+    - `auth.provider.driver`: User provider driver (e.g., eloquent, database)
+    - `auth.provider.model`: User model class for the provider
+- Password reset settings ([Learn more about password resets](https://laravel.com/docs/12.x/passwords))
+    - `auth.resetting_password.enabled`: Enable/disable password reset functionality
+    - `auth.resetting_password.name`: Name of the password broker
+    - `auth.resetting_password.provider`: User provider for password resets
+    - `auth.resetting_password.table`: Database table for storing reset tokens
+    - `auth.resetting_password.expire`: Expiration time for reset tokens in minutes
+    - `auth.resetting_password.throttle`: Minimum seconds between reset attempts
+- `auth.failed_login_attempts`: Maximum number of failed login attempts before lockout
+- `auth.lockout_duration`: Duration (in minutes) for account lockout after failed attempts
+- `auth.skip_super_admin_check`: Whether to bypass authentication checks for super admins (before / after / none)
+- `auth.skip_account_verification`: Enable/disable account verification requirement
 
 ### Media Management
 - Avatar storage configuration
-- Media library settings including disk, directory, and thumbnail options
-- FFMPEG video property mapping configuration
+    - `media.user_avatar.disk`: Storage disk for user avatars
+    - `media.user_avatar.directory`: Directory path for storing avatars
+- Media library settings 
+    - `media.media_library.disk`: Storage disk for media library files
+    - `media.media_library.directory`: Directory path for storing media files
+    - `media.media_library.thumbnail.width`: Default width for generated thumbnails
+    - `media.media_library.thumbnail.height`: Default height for generated thumbnails
+    - `media.media_library.should_map_video_properties_with_ffmpeg`: Enable video metadata extraction with FFmpeg
+    - `media.media_library.middlewares`: Middleware applied to media library routes
 
 ### Caching
-- Language, navigation, content route, and key-value caching configurations
-- TTL (time-to-live) settings for various cache types
+- Language caching configurations, and TTL (time-to-live) settings
+    - `cache.languages.key`: Cache key for languages
+    - `cache.languages.ttl`: Time-to-live duration for languages cache
+- Navigation caching configurations, and TTL (time-to-live) settings
+    - `cache.navigation.key`: Cache key for navigation
+    - `cache.navigation.ttl`: Time-to-live duration for navigation cache
+- Content route caching configurations, and TTL (time-to-live) settings
+    - `cache.content_routes.key`: Cache key for content routes
+    - `cache.content_routes.ttl`: Time-to-live duration for content routes cache
+- Key-Value caching TTL (time-to-live) settings
+    - `cache.key_value.ttl`: Time-to-live duration for key-value cache entries
 
 ### Filament Admin Panel
-- Panel ID, path, and navigation settings
-- Resource and page registrations
-- Panel clusters for organizing admin functionality
+- `filament.panel_id`: Unique identifier for the admin panel
+- `filament.path`: URL path for accessing the admin panel
+- `filament.enable_cluster_navigation`: Enable/disable grouped navigation clusters
+- `filament.background_image`: Path to custom background image for login/authentication screens
+- `filament.resources`: List of resource classes to register with the panel
+- `filament.pages`: List of custom page classes to register with the panel
+- `filament.clusters`: Panel cluster configurations for organizing admin functionality
 - Notification polling settings
+    - `filament.database_notification.enabled`: Enable/disable database notification polling
+    - `filament.database_notification.polling_interval`: Interval (in seconds) for polling notifications
 
 ### Data Import/Export
-- Disk storage settings for imports and exports
-- Temporary directory configurations
-- Available exporters
+- Import
+    - `imports.disk`: Storage disk for import files
+    - `imports.temp_disk`: Temporary storage disk for in-progress imports
+    - `imports.temp_directory`: Directory path for temporary import files
+- Export
+    - `exports.disk`: Storage disk for export files
+    - `exports.exporters`: List of available exporter classes
 
 ### Models and Database
-- Table name and morph map prefixes
-- Fully qualified class names for all models
-- Policy mappings
-- Prunable model configurations for automatic cleanup
+- `models.table_name_prefix`: Prefix added to all database table names
+- `models.morph_map_prefix`: Prefix for polymorphic relationship mappings
+- `models.fqcn`: Fully qualified class names for all models used by the CMS
+- `models.policies`: Model-to-policy class mappings for authorization
+- `models.prunable`: Configuration for models with automatic data pruning
 
 ### Custom Fields
-- Extensions and configurations for custom field types
+- `custom_fields.extra_config`: Extensions and configurations for custom field types
 
-### Permissions System
-- Resource access control settings
-- Widget and action guarding
+### Permissions
+- `permissions.skip_access_right_permission_on_resource`: Resources exempt from access permission checks
+- `permissions.guard_actions`: Actions that require permission checks
+- `permissions.guard_widgets`: Widgets that require permission checks
 
-### Template System
-- Theme configuration
-- Component prefix settings
-- Exported template directory location
+### Template
+- `template.default_theme`: Default theme to use for frontend rendering
+- `template.component_prefix`: Prefix used for template component registration
+- `template.exported_template_dir`: Directory for exported template files
 
 ### Resolvers
-- User and content resolution classes
+- `resolvers.user`: Class used to resolve author/user information
+- `resolvers.published_content`: Class used to resolve published content
 
-### Content Management
-- Route middleware configuration
-- URL segment provider settings
+### Frontend
+- `frontend.routes.middleware`: Middleware applied to frontend routes
+- `frontend.segment_provider`: Class used for URL segment resolution
 
 ### Sitemap Generation
-- Generator class and output file path
+- `sitemap.generator`: Class responsible for generating the sitemap
+- `sitemap.file_path`: Output file path for the generated sitemap
 
 ### Scheduled Tasks
-- Import/export job execution
+- Import job execution
+    - `scheduled_tasks.execute_import_job.enabled`: Enable/disable scheduled import jobs
+    - `scheduled_tasks.execute_import_job.schedule`: Cron expression for job scheduling
+    - `scheduled_tasks.execute_import_job.command`: Command to execute
+    - `scheduled_tasks.execute_import_job.arguments`: Command arguments
+- Export job execution
+    - `scheduled_tasks.execute_export_job.enabled`: Enable/disable scheduled export jobs
+    - `scheduled_tasks.execute_export_job.schedule`: Cron expression for job scheduling
+    - `scheduled_tasks.execute_export_job.command`: Command to execute
+    - `scheduled_tasks.execute_export_job.arguments`: Command arguments
 - Data cleanup scheduling
-- Task enablement and scheduling options
+    - `scheduled_tasks.data_cleanup.enabled`: Enable/disable scheduled data cleanup
+    - `scheduled_tasks.data_cleanup.schedule`: Cron expression for cleanup scheduling
+    - `scheduled_tasks.data_cleanup.command`: Command to execute for cleanup
 
 ### Localization
-- Available locales for the CMS
+- `available_locales`: Available locales for the CMS

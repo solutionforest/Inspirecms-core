@@ -1,4 +1,4 @@
-# InspireCMS Customization Guide
+# Customization
 
 This guide explains how to customize InspireCMS with custom publishing states, Filament components, and model overrides.
 
@@ -302,7 +302,7 @@ class Test extends Page implements ClusterSectionPage, GuardPage
 }
 ```
 
-> [!IMPORTANT]  
+> [!IMPORTANT] 
 > Always ensure your Cluster implements the `SolutionForest\InspireCms\Filament\Contracts\ClusterSection` interface.
 
 ## Customize Model

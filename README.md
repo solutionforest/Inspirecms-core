@@ -6,33 +6,30 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-core.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-core)
 
 
+InspireCMS Core is the foundation library that powers the InspireCMS platform. This package provides essential functionality, including content management, admin interfaces, and extensibility features. Designed with flexibility and developer experience in mind, it allows you to quickly build customized content management systems for your Laravel applications.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Table of Contents
+- [Get Started]()
+    - [Overview](./docs/Overview.md)
+    - [Requirements](./docs/Requirements.md)
+    - [Installing](./docs/Installing.md)
+    - [Updating](./docs/Updating.md)
+    - [CONTRIBUTING](.github/CONTRIBUTING.md)
+- [Core]()
+    - [Overview](./docs/CoreConcepts.md)
+    - [Configuration](Configuration.md)
+    - [Templating](./docs/Templating.md)
+    - [Navigation](./docs/Navigation.md)
+- [Resources]()
+    - [Tips](./docs/Tips.md)
+    - [Fields](./docs/CustomFields.md)
+    - [Addons](./docs/Addons.md)
+- [Reference]()
+    - [Content](./docs/references/Content.md)
+    - [DocumentType](./docs/references/DocumentType.md)
+    - [Template](./docs/references/Template.md)
+    - [Available Services](./docs/references/Services.md)
 
-## Development
-### Install inspirecms-support library
-`COMPOSER_ROOT_VERSION=dev-main composer update`
-
-### Build js and css
-
-1. Install composer dependencies:
-```bash
-composer install
-```
-
-2. Install npm dependencies:
-```bash
-npm i 
-```
-
-3. Build assets:
-```bash
-npm run build
-```
-
-## Documentation
-
-For additional documentation, please see [Document](./docs/Documentation.md).
 
 ## Testing
 
@@ -43,10 +40,6 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 
