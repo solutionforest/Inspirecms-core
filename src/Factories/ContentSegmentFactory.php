@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
+use SolutionForest\InspireCms\Content\DefaultSegmentProvider;
 use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -9,7 +10,7 @@ class ContentSegmentFactory
 {
     public static function create(): SegmentProviderInterface
     {
-        $class = InspireCmsConfig::get('content.segment_provider');
+        $class = InspireCmsConfig::get('frontend.segment_provider', DefaultSegmentProvider::class);
 
         static::guardAgainstInvalidContentUrlSegmentGenerator($class);
 

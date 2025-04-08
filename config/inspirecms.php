@@ -57,9 +57,24 @@ return [
         'skip_account_verification' => false,
     ],
 
-    'avatar' => [
-        'driver' => 'public',
-        'directory' => 'avatars',
+    'media' => [
+        'user_avatar' => [
+            'disk' => 'public',
+            'directory' => 'avatars',
+        ],
+
+        'media_library' => [
+            'disk' => 'public',
+            'directory' => '',
+            'thumbnail' => [
+                'width' => 300,
+                'height' => 300,
+            ],
+            'should_map_video_properties_with_ffmpeg' => false,
+            'middlewares' => [
+                'cache.headers:public;max_age=2628000;etag',
+            ],
+        ],
     ],
 
     'cache' => [
@@ -112,19 +127,6 @@ return [
             'media' => FilamentClusters\Media::class,
             'settings' => FilamentClusters\Settings::class,
             'users' => FilamentClusters\Users::class,
-        ],
-    ],
-
-    'media_library' => [
-        'disk' => 'public',
-        'directory' => '',
-        'thumbnail' => [
-            'width' => 300,
-            'height' => 300,
-        ],
-        'should_map_video_properties_with_ffmpeg' => false,
-        'middlewares' => [
-            'cache.headers:public;max_age=2628000;etag',
         ],
     ],
 
@@ -222,7 +224,7 @@ return [
         'published_content' => \SolutionForest\InspireCms\Resolvers\PublishedContentResolver::class,
     ],
 
-    'content' => [
+    'frontend' => [
         'routes' => [
             'middleware' => [],
         ],
