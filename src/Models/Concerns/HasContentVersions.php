@@ -100,17 +100,17 @@ trait HasContentVersions
     public function getLatestPublishedPropertyData()
     {
         // Already load via ContentVersionDetailScope
-        if ($this->hasAttribute('__latest_version_publish_data') && is_array($this->__latest_version_publish_data) && !empty($this->__latest_version_publish_data)) {
-            
+        if ($this->hasAttribute('__latest_version_publish_data') && is_array($this->__latest_version_publish_data) && ! empty($this->__latest_version_publish_data)) {
+
             try {
 
                 $propertyData = $this->__latest_version_publish_data['propertyData'];
-    
+
                 if (is_string($propertyData)) {
                     $propertyData = json_decode($propertyData, true);
                 }
 
-                if (is_array($propertyData) && !empty($propertyData)) {
+                if (is_array($propertyData) && ! empty($propertyData)) {
                     return $propertyData;
                 }
 
@@ -118,7 +118,7 @@ trait HasContentVersions
                 // Fallback to load via publishedVersions
             }
         }
-        
+
         $latestContentVersion = $this->getLatestPublishedContentVersion();
 
         return $this->mutateLatestVersionPropertyData($latestContentVersion);
@@ -128,17 +128,17 @@ trait HasContentVersions
     public function getLatestVersionPropertyData()
     {
         // Already load via ContentVersionDetailScope
-        if ($this->hasAttribute('__latest_version_data') && is_array($this->__latest_version_data) && !empty($this->__latest_version_data)) {
-            
+        if ($this->hasAttribute('__latest_version_data') && is_array($this->__latest_version_data) && ! empty($this->__latest_version_data)) {
+
             try {
 
                 $propertyData = $this->__latest_version_data['propertyData'];
-    
+
                 if (is_string($propertyData)) {
                     $propertyData = json_decode($propertyData, true);
                 }
 
-                if (is_array($propertyData) && !empty($propertyData)) {
+                if (is_array($propertyData) && ! empty($propertyData)) {
                     return $propertyData;
                 }
 
@@ -146,7 +146,7 @@ trait HasContentVersions
                 // Fallback to load via latestContentVersion
             }
         }
-        
+
         $this->loadMissing('latestContentVersion');
 
         $latestContentVersion = $this->latestContentVersion;

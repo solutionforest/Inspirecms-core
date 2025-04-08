@@ -36,8 +36,11 @@ class ContentVersionDetailScope implements Scope
             $t2_1TableName = '_cv_t2_publish';
             $t2_2TableName = '_cv_t2_all';
             $t2_1Q = DB::table($related->getTable(), $t2_1TableName)
-                ->joinSub($t1Q, $t1TableName, fn (JoinClause $join) => $join
-                    ->on("$t1TableName.latest_version_id", '=', "$t2_1TableName.$relatedPK")
+                ->joinSub(
+                    $t1Q,
+                    $t1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on("$t1TableName.latest_version_id", '=', "$t2_1TableName.$relatedPK")
                 )
                 ->where("$t2_1TableName.publish_state", 'publish')
                 ->select([
@@ -48,8 +51,11 @@ class ContentVersionDetailScope implements Scope
                     "$t2_1TableName.to_data AS data",
                 ]);
             $t2_2Q = DB::table($related->getTable(), $t2_2TableName)
-                ->joinSub($t1Q, $t1TableName, fn (JoinClause $join) => $join
-                    ->on("$t1TableName.latest_version_id", '=', "$t2_2TableName.$relatedPK")
+                ->joinSub(
+                    $t1Q,
+                    $t1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on("$t1TableName.latest_version_id", '=', "$t2_2TableName.$relatedPK")
                 )
                 ->whereNot("$t2_2TableName.publish_state", 'publish')
                 ->select([
@@ -61,11 +67,17 @@ class ContentVersionDetailScope implements Scope
                 ]);
 
             $query
-                ->leftJoinSub($t2_1Q, $t2_1TableName, fn (JoinClause $join) => $join
-                    ->on($model->getQualifiedKeyName(), '=', "{$t2_1TableName}.{$relatedFK}")
+                ->leftJoinSub(
+                    $t2_1Q,
+                    $t2_1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "{$t2_1TableName}.{$relatedFK}")
                 )
-                ->leftJoinSub($t2_2Q, $t2_2TableName, fn (JoinClause $join) => $join
-                    ->on($model->getQualifiedKeyName(), '=', "{$t2_2TableName}.{$relatedFK}")
+                ->leftJoinSub(
+                    $t2_2Q,
+                    $t2_2TableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "{$t2_2TableName}.{$relatedFK}")
                 )
                 ->addSelect($model->qualifyColumn('*'))
                 ->addSelect([
