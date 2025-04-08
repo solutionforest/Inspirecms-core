@@ -6,271 +6,30 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-core.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-core)
 
 
+InspireCMS Core is the foundation library that powers the InspireCMS platform. This package provides essential functionality, including content management, admin interfaces, and extensibility features. Designed with flexibility and developer experience in mind, it allows you to quickly build customized content management systems for your Laravel applications.
 
-This is where your description should go. Limit it to a paragraph or two. Consider adding a small example.
+## Table of Contents
+- [Get Started]()
+    - [Overview](./docs/Overview.md)
+    - [Requirements](./docs/Requirements.md)
+    - [Installing](./docs/Installing.md)
+    - [Updating](./docs/Updating.md)
+    - [CONTRIBUTING](.github/CONTRIBUTING.md)
+- [Core]()
+    - [Overview](./docs/CoreConcepts.md)
+    - [Configuration](Configuration.md)
+    - [Templating](./docs/Templating.md)
+    - [Navigation](./docs/Navigation.md)
+- [Resources]()
+    - [Tips](./docs/Tips.md)
+    - [Fields](./docs/CustomFields.md)
+    - [Addons](./docs/Addons.md)
+- [Reference]()
+    - [Content](./docs/references/Content.md)
+    - [DocumentType](./docs/references/DocumentType.md)
+    - [Template](./docs/references/Template.md)
+    - [Available Services](./docs/references/Services.md)
 
-
-## Development
-### Install inspirecms-support library
-`COMPOSER_ROOT_VERSION=dev-main composer update`
-
-### Build js and css
-
-1. Install composer dependencies:
-```bash
-composer install
-```
-
-2. Install npm dependencies:
-```bash
-npm i 
-```
-
-3. Build assets:
-```bash
-npm run build
-```
-
-## Installation
-
-1. You can install the package via composer:
-
-```bash
-composer require solution-forest/inspirecms-core
-```
-
-2. Run install command:
-```bash
-php artisan inspirecms:install
-```
-
-Optional: Install required default data:
-```bash
-php artisan inspirecms:import-default-data
-```
-
-3. Execute the schedule command to run scheduled jobs:
-```bash
-php artisan schedule:work
-```
-
-### Existing scheduled jobs in the configuration file:
-```php
-'scheduled_tasks' => [
-    'execute_import_job' => [
-        'enabled' => true,
-        'schedule' => 'everyFiveMinutes',
-        'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
-        'arguments' => [
-            '--limit 50', // limit
-        ],
-    ],
-    'execute_export_job' => [
-        'enabled' => true,
-        'schedule' => 'everyFiveMinutes',
-        'command' => \SolutionForest\InspireCms\Commands\ExecuteExport::class,
-        'arguments' => [
-            '--limit 50', // limit
-        ],
-    ],
-    'data_cleanup' => [
-        'enabled' => true,
-        'schedule' => 'daily',
-        'command' => \SolutionForest\InspireCms\Commands\DataCleanup::class,
-    ],
-],
-```
-
-### Content Approving Flow
-1. Add custom status
-```php
-\SolutionForest\InspireCms\Facades\ContentStatusManifest::replaceOption(
-    new \SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption(
-        value: 5,
-        name: 'approved',
-        formAction: fn () => \Filament\Actions\Action::make('approved')
-            ->authorize('approved')
-            ->action(function (null | \SolutionForest\InspireCms\Models\Content $record, \Filament\Actions\Action $action, \SolutionForest\InspireCms\Base\Filament\Contracts $livewire) {
-                
-                // Handle your action here
-                
-                //Example:
-
-                if (is_null($record)) {
-                    $action->cancel();
-
-                    return;
-                }
-
-                $publishableState = 'approved';
-
-                if (! \SolutionForest\InspireCms\Helpers\ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
-                    return;
-                }
-
-                $action->success();
-
-            }),
-    )
-)
-```
-2. Add policy for Content Model (Super admin already skip all guard)
-```php
-use \SolutionForest\InspireCms\Models\Content;
-
-/**
- * Bootstrap any application services.
- */
-public function boot(): void
-{
-    Gate::policy(Content::class, YourContentPolicy::class);
-}
-```
-
-Or override ContentPublishPolicy on config
-```php
-    // ...
-    'models' => [
-        // ...
-        'policies' => [
-            'content' => YourContentPolicy::class,
-        ]
-    ],
-    //...
-```
-
-```php
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Models\Contracts\Content;
-
-class YourContentPolicy
-{
-    /**
-     * @param  Authenticatable|User|Model  $user
-     * @param  null|Content|Model  $content
-     * @return bool
-     */
-    public function approved($user, $content)
-    {
-        return true;
-    }
-}
-```
-
-3. Override the `Content` model to update the condition that determines if the content is published.
-
-```php
-use SolutionForest\InspireCms\Models\Content as BaseModel;
-use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
-
-class Content extends BaseModel implements ContentContract
-{
-    public function isPublished(): bool
-    {
-        // Your implementation here
-    }
-    
-    public function scopeWhereIsPublished($query, bool $condition = true)
-    {
-        // Your implementation here
-    }
-}
-```
-
-### Adding extract filament cluster/resource/page
-
-> [!IMPORTANT]  
-> need add back miss permission after cluster/resource/page added.
-
-Execute the command:
-```bash
-php artisan inspirecms:repair-permissions
-```
-
-#### Adding extract filament cluster
-
-- Option 1: create by `make:filament-cluster xxx --panel=cms`
-- Option 2: create you cluster, and add this to `filament.cluster` on config file.
-
-1. After cluster created, please apply `ClusterSectionTrait` and `ClusterSection` to your resource.
-```php
-use Filament\Clusters\Cluster;
-use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
-use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
-
-class Test extends Cluster implements ClusterSection
-{
-    use ClusterSectionTrait;
-}
-```
-
-#### Adding extract filament resource
-- Option 1: create by `make:filament-resource xxx --panel=cms`
-- Option 2: create you resource, and add this to `filament.resources` on config file.
-
-After resource created, please apply `ClusterSectionResource`, `ClusterSectionResourceTrait`, and Cluster to your resource.
-
-> [!IMPORTANT] 
-> Ensure your Cluster apply SolutionForest\InspireCms\Filament\Contracts\ClusterSection interface.
-
-```php
-use Filament\Resources\Resource;
-use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
-use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-
-class TestResource extends Resource implements ClusterSectionResource
-{
-    use ClusterSectionResourceTrait;
-
-    protected static ?string $cluster = \App\Clusters\Test::class;
-}
-```
-
-#### Adding extract filament page
-- Option 1: create by `make:filament-page xxx --panel=cms`
-- Option 2: create you page, and add this to `filament.pages` on config file.
-
-After page created, please apply `ClusterSectionPage`, `ClusterSectionResourceTrait`, `GuardPage`, and Cluster to your resource.
-
-> [!IMPORTANT] 
-> Ensure your Cluster apply SolutionForest\InspireCms\Filament\Contracts\ClusterSection interface.
-
-use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
-use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
-use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
-
-```php
-class Test extends Page implements ClusterSectionPage, GuardPage
-{
-    use ClusterSectionPageTrait;
-
-    protected static ?string $cluster = \App\Clusters\Test::class;
-
-    public static function getPermissionName(): string
-    {
-        return 'view_test_page';
-    }
-
-    public static function getPermissionDisplayName(): string
-    {
-        return 'View test page';
-    }
-}
-```
-
-## Extending
-
-### Override model
-```php
-public function register(): void
-{
-    \SolutionForest\InspireCms\Facades\ModelManifest::replace(
-        \SolutionForest\InspireCms\Models\Contracts\Content::class,
-        Your\Model\Class::class,
-    );
-}
-```
 
 ## Testing
 
@@ -281,10 +40,6 @@ composer test
 ## Changelog
 
 Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
-
-## Contributing
-
-Please see [CONTRIBUTING](.github/CONTRIBUTING.md) for details.
 
 ## Security Vulnerabilities
 

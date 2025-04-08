@@ -457,10 +457,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         // Media Library
 
-        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media_library.disk'));
-        Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media_library.directory'));
-        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media_library.thumbnail.width'), InspireCmsConfig::get('media_library.thumbnail.height'));
-        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media_library.should_map_video_properties_with_ffmpeg', false)));
+        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media.media_library.disk', 'public'));
+        Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media.media_library.directory', ''));
+        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media.media_library.thumbnail.width', 300), InspireCmsConfig::get('media.media_library.thumbnail.height', 300));
+        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media.media_library.should_map_video_properties_with_ffmpeg', false)));
 
         // auth guard
         Support\Facades\AuthenticationManager::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));

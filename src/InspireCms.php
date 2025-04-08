@@ -133,13 +133,15 @@ class InspireCms
     {
         Route::name('inspirecms.asset')
             ->get('assets/{key}', AssetController::class)
-            ->middleware(InspireCmsConfig::get('media_library.middlewares'));
+            ->middleware(InspireCmsConfig::get('media.media_library.middlewares', [
+                'cache.headers:public;max_age=2628000;etag',
+            ]));
 
         Route::name('inspirecms.sitemap')
             ->get('sitemap.xml', SitemapController::class);
 
         Route::name('inspirecms.frontend.')
-            ->middleware(InspireCmsConfig::get('content.routes.middlewares', []))
+            ->middleware(InspireCmsConfig::get('frontend.routes.middlewares', []))
             ->group(function () {
 
                 $factory = ContentSegmentFactory::create();

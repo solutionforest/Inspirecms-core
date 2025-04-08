@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Models\Scopes;
 
-use Illuminate\Database\Eloquent\Casts\AsCollection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -16,122 +16,88 @@ class ContentVersionDetailScope implements Scope
 
             $query = $builder->getQuery();
 
-            $foreignKey = $model->contentVersions()->getForeignKeyName();
+            $relatedFK = $model->contentVersions()->getForeignKeyName();
             $related = $model->contentVersions()->getRelated();
+            $relatedPK = $related->getKeyName();
 
             $recordCreationColumn = $related->getCreatedAtColumn();
 
             $t1TableName = '_cv_t1';
-            $t1Q = DB::table($related->getTable(), $t1TableName)
-                ->select('*')
-                // sort by latest version
-                ->orderByDesc($recordCreationColumn)
-                ->orderBy($foreignKey);
-
-            $t2TableName = '_cv_t2';
-            $t2Q = DB::table($t1Q, $t2TableName)
-                ->select($foreignKey) // for group by
-                ->selectRaw(
-                    $this->buildJsonGroupConcatExpression(
-                        [
-                            'id' => $related->getKeyName(),
-                            'dt' => $recordCreationColumn,
-                            'status' => 'publish_state',
-                        ],
-                        null,
-                    ) . ' as __version_details'
+            $t1Q = DB::table($related->getTable())
+                ->orderByDesc($recordCreationColumn) // sort by created_at desc
+                ->groupBy(
+                    $relatedFK, // group by content_id
                 )
-                ->selectRaw(
-                    $this->buildJsonGroupConcatExpression(
-                        'to_data',
-                        $related->getKeyName(),
-                    ) . ' as __version_data'
-                )
-                ->selectRaw("MAX($recordCreationColumn) as __latest_version_dt")
-                ->selectRaw("MIN($recordCreationColumn) as __earliest_version_dt")
-                ->groupBy($foreignKey);
+                ->select([
+                    DB::raw("MAX($relatedPK) AS latest_version_id"),
+                    $relatedFK,
+                ]);
 
-            $joinTableName = '_cv';
+            $t2_1TableName = '_cv_t2_publish';
+            $t2_2TableName = '_cv_t2_all';
+            $t2_1Q = DB::table($related->getTable(), $t2_1TableName)
+                ->joinSub(
+                    $t1Q,
+                    $t1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on("$t1TableName.latest_version_id", '=', "$t2_1TableName.$relatedPK")
+                )
+                ->where("$t2_1TableName.publish_state", 'publish')
+                ->select([
+                    "$t2_1TableName.$relatedFK",
+                    "$t2_1TableName.publish_state",
+                    "$t2_1TableName.$relatedPK",
+                    "$t2_1TableName.$recordCreationColumn",
+                    "$t2_1TableName.to_data AS data",
+                ]);
+            $t2_2Q = DB::table($related->getTable(), $t2_2TableName)
+                ->joinSub(
+                    $t1Q,
+                    $t1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on("$t1TableName.latest_version_id", '=', "$t2_2TableName.$relatedPK")
+                )
+                ->whereNot("$t2_2TableName.publish_state", 'publish')
+                ->select([
+                    "$t2_2TableName.$relatedFK",
+                    "$t2_2TableName.publish_state",
+                    "$t2_2TableName.$relatedPK",
+                    "$t2_2TableName.$recordCreationColumn",
+                    "$t2_2TableName.to_data AS data",
+                ]);
+
             $query
-                ->leftJoinSub($t2Q, $joinTableName, $model->getQualifiedKeyName(), '=', "$joinTableName.$foreignKey")
+                ->leftJoinSub(
+                    $t2_1Q,
+                    $t2_1TableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "{$t2_1TableName}.{$relatedFK}")
+                )
+                ->leftJoinSub(
+                    $t2_2Q,
+                    $t2_2TableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "{$t2_2TableName}.{$relatedFK}")
+                )
+                ->addSelect($model->qualifyColumn('*'))
                 ->addSelect([
-                    $model->qualifyColumn('*'),
-                    "{$joinTableName}.__latest_version_dt",
-                    "{$joinTableName}.__earliest_version_dt",
-                    "{$joinTableName}.__version_details",
-                    "{$joinTableName}.__version_data",
+                    DB::raw("{$t2_1TableName}.{$relatedPK} AS __latest_version_publish_id"),
+                    DB::raw("{$t2_1TableName}.{$recordCreationColumn} AS __latest_version_publish_dt"),
+                    DB::raw("{$t2_1TableName}.data AS __latest_version_publish_data"),
+                ])
+                ->addSelect([
+                    DB::raw("{$t2_2TableName}.{$relatedPK} AS __latest_version_id"),
+                    DB::raw("{$t2_2TableName}.{$recordCreationColumn} AS __latest_version_dt"),
+                    DB::raw("{$t2_2TableName}.data AS __latest_version_data"),
                 ]);
 
             $model->withCasts([
-                '__version_details' => AsCollection::class,
-                '__version_data' => AsCollection::class,
+                '__latest_version_publish_dt' => 'datetime',
                 '__latest_version_dt' => 'datetime',
-                '__earliest_version_dt' => 'datetime',
+
+                '__latest_version_publish_data' => 'json',
+                '__latest_version_data' => 'json',
             ]);
         }
-    }
-
-    private function buildJsonGroupConcatExpression(array | string $columns, ?string $jsonKeyColumn): string
-    {
-        $isJsonColumn = filled($jsonKeyColumn);
-
-        // Check db driver
-        $dbDriver = DB::connection()->getDriverName();
-
-        if (is_string($columns)) {
-
-            $gpConcatString = $columns;
-
-        } else {
-
-            $gpConcatStrings = collect($columns)
-                ->map(function ($columnName, $jsonKey) use ($dbDriver) {
-
-                    $columnTemplate = match ($dbDriver) {
-                        // Haven't 'concat' function in sqlite
-                        'sqlite' => "( '\"?\":\"' || ? || '\"' )",
-                        default => "CONCAT('\"?\":\"', ?, '\"')",
-                    };
-
-                    return str($columnTemplate)
-                        ->replaceArray('?', [$jsonKey, $columnName])
-                        ->wrap('(', ')')
-                        ->toString();
-                })
-                ->implode(match ($dbDriver) {
-                    'sqlite' => " || ', ' || ",
-                    default => ", ', ', ",
-                });
-
-            // Json format '{key1': 'value1', 'key2': 'value2'}'
-            $gpConcatString = match ($dbDriver) {
-                'sqlite' => "( '{' || $gpConcatStrings || '}' )",
-                default => "CONCAT('{', $gpConcatStrings, '}')",
-            };
-        }
-
-        if ($jsonKeyColumn) {
-
-            $gpConcatString = str(
-                match ($dbDriver) {
-                    'sqlite' => "( '\"' || ? ||'\":' || ? )",
-                    default => "CONCAT('\"', ?, '\":', ?, '')",
-                }
-            )
-                ->replaceArray('?', [$jsonKeyColumn, $gpConcatString])
-                ->toString();
-        }
-
-        // Not concat function
-        if ($dbDriver === 'sqlite') {
-            return $isJsonColumn
-                ? "('{' || GROUP_CONCAT($gpConcatString) || '}')"
-                : "('[' || GROUP_CONCAT($gpConcatString) || ']')";
-
-        }
-
-        return $isJsonColumn
-            ? "CONCAT('{', GROUP_CONCAT($gpConcatString), '}')"
-            : "CONCAT('[', GROUP_CONCAT($gpConcatString), ']')";
     }
 }

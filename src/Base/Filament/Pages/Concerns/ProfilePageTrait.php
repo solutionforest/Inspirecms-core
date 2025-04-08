@@ -144,8 +144,8 @@ trait ProfilePageTrait
         return Forms\Components\FileUpload::make('avatar')
             ->label(__('inspirecms::resources/user.avatar.label'))
             ->validationAttribute(__('inspirecms::resources/user.avatar.validation_attribute'))
-            ->disk(InspireCmsConfig::get('avatar.driver'))
-            ->directory(InspireCmsConfig::get('avatar.directory'))
+            ->disk(InspireCmsConfig::get('media.user_avatar.driver', 'public'))
+            ->directory(InspireCmsConfig::get('media.user_avatar.directory', 'avatars'))
             ->image();
     }
 
