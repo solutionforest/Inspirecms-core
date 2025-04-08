@@ -17,7 +17,7 @@ InspireCMS Core is the foundation library that powers the InspireCMS platform. T
     - [CONTRIBUTING](.github/CONTRIBUTING.md)
 - [Core]()
     - [Overview](./docs/CoreConcepts.md)
-    - [Configuration](Configuration.md)
+    - [Configuration](./docs/Configuration.md)
     - [Templating](./docs/Templating.md)
     - [Navigation](./docs/Navigation.md)
 - [Resources]()
