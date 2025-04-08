@@ -100,30 +100,25 @@ trait HasContentVersions
     public function getLatestPublishedPropertyData()
     {
         // Already load via ContentVersionDetailScope
-        if ($this->hasAttribute('__version_details') && $this->hasAttribute('__version_data')) {
+        if ($this->hasAttribute('__latest_version_publish_data') && is_array($this->__latest_version_publish_data) && !empty($this->__latest_version_publish_data)) {
+            
             try {
 
-                $lastPublishedVersionId = collect($this->__version_details)
-                    ->sortByDesc(fn ($item) => strtotime($item['dt']))
-                    ->where('status', 'publish')
-                    ->pluck('id')
-                    ->first();
+                $propertyData = $this->__latest_version_publish_data['propertyData'];
+    
+                if (is_string($propertyData)) {
+                    $propertyData = json_decode($propertyData, true);
+                }
 
-                $propData = collect($this->__version_data)
-                    ->where(fn ($arr, $key) => $key == $lastPublishedVersionId)
-                    ->pluck('propertyData')->first() ?? [];
-
-                if (is_array($propData)) {
-                    return $propData;
-                } elseif (is_string($propData)) {
-                    return json_decode($propData, true);
+                if (is_array($propertyData) && !empty($propertyData)) {
+                    return $propertyData;
                 }
 
             } catch (\Throwable $th) {
                 // Fallback to load via publishedVersions
             }
         }
-
+        
         $latestContentVersion = $this->getLatestPublishedContentVersion();
 
         return $this->mutateLatestVersionPropertyData($latestContentVersion);
@@ -133,29 +128,25 @@ trait HasContentVersions
     public function getLatestVersionPropertyData()
     {
         // Already load via ContentVersionDetailScope
-        if ($this->hasAttribute('__version_details') && $this->hasAttribute('__version_data')) {
+        if ($this->hasAttribute('__latest_version_data') && is_array($this->__latest_version_data) && !empty($this->__latest_version_data)) {
+            
             try {
 
-                $lastVersionId = collect($this->__version_details)
-                    ->sortByDesc(fn ($item) => strtotime($item['dt']))
-                    ->pluck('id')
-                    ->first();
+                $propertyData = $this->__latest_version_data['propertyData'];
+    
+                if (is_string($propertyData)) {
+                    $propertyData = json_decode($propertyData, true);
+                }
 
-                $propData = collect($this->__version_data)
-                    ->where(fn ($arr, $key) => $key == $lastVersionId)
-                    ->pluck('propertyData')->first() ?? [];
-
-                if (is_array($propData)) {
-                    return $propData;
-                } elseif (is_string($propData)) {
-                    return json_decode($propData, true);
+                if (is_array($propertyData) && !empty($propertyData)) {
+                    return $propertyData;
                 }
 
             } catch (\Throwable $th) {
                 // Fallback to load via latestContentVersion
             }
         }
-
+        
         $this->loadMissing('latestContentVersion');
 
         $latestContentVersion = $this->latestContentVersion;
