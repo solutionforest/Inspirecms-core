@@ -1,9 +1,6 @@
 @php
     $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);
-    $allLocales = collect(inspirecms()->getAllAvailableLanguages())
-      ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
-      ->all();
 @endphp
 
 <!-- top nav -->
