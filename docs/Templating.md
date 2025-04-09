@@ -20,8 +20,8 @@ InspireCMS templates allow you to define reusable layouts and components for you
 ## Template Creation
 
 1. Navigate to `/cms/settings/document-types` or `Cms > Settings > Document Types`
-2. Select your target document type[^1]
-3. Create or edit an existing template for that document type[^1]
+2. Select your target [document type](./references/DocumentType.md)
+3. Create or edit an existing template for that [document type](./references/DocumentType.md)
 
 InspireCMS uses [Blade](https://laravel.com/docs/11.x/blade) and automatically binds `$content` and `$locale`. 
 
@@ -46,7 +46,7 @@ InspireCMS allows you to add custom fields to your templates that content editor
 When creating or editing a template, you can define fields in the "Fields" section:
 
 1. Navigate to `/cms/settings/document-types` or `Cms > Settings > Document Types`
-2. Select your document type[^1]
+2. Select your [document type](./references/DocumentType.md)
 3. Add fields using the form to input all required form group data, e.g.
     - Define field name, label, type, and validation rules
     - Organize fields into logical groups if needed
@@ -55,7 +55,7 @@ When creating or editing a template, you can define fields in the "Fields" secti
 
 ### Field Types
 
-For detailed information about available field types and their configuration options, please see the [Custom Fields documentation](./docs/CustomFields.md).
+For detailed information about available field types and their configuration options, please see the [Custom Fields documentation](./CustomFields.md).
 
 ### Using Fields in Templates
 
@@ -111,7 +111,7 @@ Different field types return different data structures:
 - **Rich Text**: Return rendered HTML content
 
 > [!NOTE] 
-> For detailed information about specific field types and their access patterns, please refer to the [Custom Fields documentation](./docs/CustomFields.md).
+> For detailed information about specific field types and their access patterns, please refer to the [Custom Fields documentation](./CustomFields.md).
 
 #### Example
 
@@ -431,5 +431,3 @@ Learn more about [layouts using inheritance in Blade](https://laravel.com/docs/1
     <p>TNC</p>
 @endsection
 ```
-
-[^1]: Document types define the structure and behavior of content in InspireCMS. For detailed information, see the [Document Type](../docs/docs/references/DocumentType.md).
