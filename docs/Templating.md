@@ -135,7 +135,7 @@ Different field types return different data structures:
 ```php
 <!-- Check if field exists or has data -->
 @propertyNotEmpty('hero', 'image')
-    <img src="{{ $hero_image }}" alt="@property('hero', 'image_alt')">
+    <img src="{{ \Arr::first($hero_image) }}" alt="@property('hero', 'image_alt')">
 @endif
 
 <!-- Alternative syntax -->
