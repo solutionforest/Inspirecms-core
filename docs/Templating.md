@@ -4,13 +4,13 @@ InspireCMS templates allow you to define reusable layouts and components for you
 
 ## Theme Management
 ### Creating a Theme
-1. Navigate to `/cms/settings/templates`
+1. Navigate to `/cms/settings/templates` or `Cms > Settings > Templates`
 2. Click `Create theme` or `Clone theme`
 3. Enter your theme name and submit
 4. New theme components will be placed at `resources/views/components/inspirecms/{new_theme}`
 
 ### Changing Themes
-1. Navigate to `/cms/settings/templates` 
+1. Navigate to `/cms/settings/templates` or `Cms > Settings > Templates`
 2. Click `Change theme`
 3. Select your desired theme
 
@@ -19,7 +19,7 @@ InspireCMS templates allow you to define reusable layouts and components for you
 
 ## Template Creation
 
-1. Navigate to `/cms/settings/document-types`
+1. Navigate to `/cms/settings/document-types` or `Cms > Settings > Document Types`
 2. Select your target document type[^1]
 3. Create or edit an existing template for that document type[^1]
 
@@ -45,7 +45,7 @@ InspireCMS allows you to add custom fields to your templates that content editor
 
 When creating or editing a template, you can define fields in the "Fields" section:
 
-1. Navigate to `/cms/settings/document-types`
+1. Navigate to `/cms/settings/document-types` or `Cms > Settings > Document Types`
 2. Select your document type[^1]
 3. Add fields using the form to input all required form group data, e.g.
     - Define field name, label, type, and validation rules
@@ -433,6 +433,3 @@ Learn more about [layouts using inheritance in Blade](https://laravel.com/docs/1
 ```
 
 [^1]: Document types define the structure and behavior of content in InspireCMS. For detailed information, see the [Document Type](../docs/docs/references/DocumentType.md).
-
-
-TBC...
