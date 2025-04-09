@@ -2,12 +2,23 @@
 
 To install InspireCMS Core, follow these steps:
 
-## Via Composer
+## Requirements
+
+Before installing InspireCMS Core, ensure you have:
+
+- **Laravel Application**: A working Laravel application
+- **Laravel Herd**: [Laravel Herd](https://herd.laravel.com) or another suitable PHP development environment
+
+## Installation
+
+Access the admin panel at `/cms` (or your configured prefix) after installed.
+
+### Via Composer
 ```bash
 composer require inspirecms/core
 ```
 
-## Run Install Command
+### Run Install Command
 - **With** sample data:
 ```bash
 php artisan inspirecms:install
@@ -36,7 +47,7 @@ php artisan inspirecms:install --skip-samples
 > inspirecms:repair-permissions
 > ```
 
-## Start Schedule Jobs
+### Start Schedule Jobs
 Execute the schedule command to run scheduled jobs:
 ```bash
 php artisan schedule:work
@@ -73,6 +84,3 @@ php artisan schedule:work
    php artisan filament:assets
    ```
 
-
-
-Access the admin panel at `/cms` (or your configured prefix) after installed.
