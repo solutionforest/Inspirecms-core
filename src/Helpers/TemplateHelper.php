@@ -155,6 +155,11 @@ class TemplateHelper
         $property = static::normalizeVarNameFromBladeExpression($property);
 
         $propertyVarName ??= static::generatePropertyVarName($group, $property);
+        // Ensure the variable name is not empty or null
+        if (empty($propertyVarName) || is_null($propertyVarName) || $propertyVarName === 'null') {
+            $propertyVarName = static::generatePropertyVarName($group, $property);
+        }
+
         $dtoVar ??= '$content';
 
         return [$group, $property, $dtoVar, static::normalizeVarNameFromBladeExpression($propertyVarName)];
