@@ -16,7 +16,7 @@ class AssetController extends Controller
 
     public function __invoke($key)
     {
-        $asset = $this->assetService->findByKey($key);
+        $asset = $this->assetService->findByKeys($key)->first();
 
         $media = $asset?->getFirstMedia();
 

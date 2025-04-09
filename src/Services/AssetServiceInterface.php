@@ -10,13 +10,8 @@ use Illuminate\Support\Collection;
 interface AssetServiceInterface
 {
     /**
-     * @return ?TResult
-     */
-    public function findByKey(string | int $key);
-
-    /**
-     * @param  string|int  ...$keys
+     * @param  string|string[]  $keys
      * @return Collection<TResult>
      */
-    public function findByKeys(...$keys);
+    public function findByKeys($keys);
 }

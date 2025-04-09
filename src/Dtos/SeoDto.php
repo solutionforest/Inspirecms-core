@@ -285,7 +285,7 @@ class SeoDto extends BaseDto
             $html .= "<meta property=\"og:description\" content=\"{$this->ogDescription}\">\n";
         }
 
-        if ($this->ogImage && ($mediaAssetUrl = inspirecms_asset()->findByKey($this->ogImage)?->getUrl())) {
+        if ($this->ogImage && ($mediaAssetUrl = inspirecms_asset()->findByKeys($this->ogImage)->first()?->getUrl())) {
             $html .= "<meta property=\"og:image\" content=\"{$mediaAssetUrl}\">\n";
         }
 

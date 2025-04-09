@@ -9,15 +9,9 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 class AssetService implements AssetServiceInterface
 {
     /** {@inheritDoc} */
-    public function findByKey(string | int $key)
+    public function findByKeys($keys)
     {
-        return $this->getQuery()->with('media')->find($key);
-    }
-
-    /** {@inheritDoc} */
-    public function findByKeys(...$keys)
-    {
-        $keys = array_filter(Arr::flatten($keys));
+        $keys = array_filter(is_string($keys) ? [$keys] : Arr::flatten($keys));
 
         if (count($keys) === 0) {
             return collect();
