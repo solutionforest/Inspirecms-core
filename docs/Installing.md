@@ -9,8 +9,6 @@ Before installing InspireCMS Core, ensure you have:
 
 ## Installation
 
-Access the admin panel at `/cms` (or your configured prefix) after installed.
-
 ### Via Composer
 ```bash
 composer require inspirecms/core
@@ -50,6 +48,8 @@ Execute the schedule command to run scheduled jobs:
 ```bash
 php artisan schedule:work
 ```
+
+Access the admin panel at `/cms` (or your configured prefix) after installed.
 
 ## Development Tips
 1. Change the version in your `composer.json` to "dev":
