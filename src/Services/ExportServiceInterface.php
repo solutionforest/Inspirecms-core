@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\Export;
+
 interface ExportServiceInterface
 {
     /**
