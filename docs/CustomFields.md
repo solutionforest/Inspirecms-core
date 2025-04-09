@@ -97,459 +97,394 @@ Each field type can be configured using the following common options:
 - **Helper Text**: Additional text displayed below the field to guide users on what to input.
 - **Is Mandatory**: Specifies whether the field must be filled before saving. This is a simpler alternative to using 'required' in validation rules.
 
-### Example Field Configurations
+## Field Type Configuration and Usage
 
-Below are examples of how different field types can be configured and used in templates:
+### Text
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Rule**: Validation rules for the field.
+> * **Length**: The exact length of the input.
+> * **Max Length**: The maximum allowed length of the input.
+> * **Min Length**: The minimum required length of the input.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('hero', 'title')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Text</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Rule: Validation rules for the field.</li>
-            <li>Length: The exact length of the input.</li>
-            <li>Max Length: The maximum allowed length of the input.</li>
-            <li>Min Length: The minimum required length of the input.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('hero', 'title')
-        ```
-    </details>
-</details>
+### Text Area
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Rows**: The number of visible rows in the text area.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('intro', 'text')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Text Area</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Rows: The number of visible rows in the text area.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('intro', 'text')
-        ```
-    </details>
-</details>
+### Email
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('contact', 'email')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Email</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('contact', 'email')
-        ```
-    </details>
-</details>
+### Password
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('user', 'password')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Password</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('user', 'password')
-        ```
-    </details>
-</details>
+### Number
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Rule**: Validation rules for the field.
+> * **Min Value**: The minimum allowed value.
+> * **Max Value**: The maximum allowed value.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('event', 'max_ppl')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Number</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Rule: Validation rules for the field.</li>
-            <li>Min Value: The minimum allowed value.</li>
-            <li>Max Value: The maximum allowed value.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('event', 'max_ppl')
-        ```
-    </details>
-</details>
+### URL
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('contact', 'facebook')
+> ```
+> </details>
 
-<details>
-    <summary><h3>URL</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('contact', 'facebook')
-        ```
-    </details>
-</details>
+### Select
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Options**: The predefined choices available in the dropdown.
+> * **Multiple**: Whether multiple selections are allowed.
+> * **Default Value**: The initial value of the field.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> Multiple is false:
+> ```php
+> @property('event', 'type')
+> ```
+> Multiple is true:
+> ```php
+> @propertyArray('event', 'types')
+> {{ implode(', ', $event_types ?? []) }}
+> ```
+> </details>
 
-<details>
-    <summary><h3>Select</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Options: The predefined choices available in the dropdown.</li>
-            <li>Multiple: Whether multiple selections are allowed.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        Multiple is false:
-        ```php
-        @property('event', 'type')
-        ```
-        Multiple is true:
-        ```php
-        @propertyArray('event', 'types')
-        {{ implode(', ', $event_types ?? []) }}
-        ```
-    </details>
-</details>
+### Toggle
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @if ($content?->getPropertyGroup('event')?->getPropertyData('active')?->getValue() ?? false)
+> @endif
+> ```
+> </details>
 
-<details>
-    <summary><h3>Toggle</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @if ($content?->getPropertyGroup('event')?->getPropertyData('active')?->getValue() ?? false)
-        @endif
-        ```
-    </details>
-</details>
+### Radio
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Options**: The predefined choices available for selection.
+> * **Default Value**: The initial value of the field.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @property('user', 'gender')
+> ```
+> </details>
 
-<details>
-    <summary><h3>Radio</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Options: The predefined choices available for selection.</li>
-            <li>Default Value: The initial value of the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @property('user', 'gender')
-        ```
-    </details>
-</details>
+### File
+>
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Disk**: The storage disk where files are saved.
+> * **Directory**: The directory path within the disk.
+> * **Visibility**: The visibility of the uploaded files.
+> * **Multiple**: Whether multiple files can be uploaded.
+> * **Rule**: Validation rules for the field.
+> * **Accepted File Types**: The allowed file types for upload.
+> * **Min File**: The minimum number of files required.
+> * **Max File**: The maximum number of files allowed.
+> * **Min Size**: The minimum file size allowed.
+> * **Max Size**: The maximum file size allowed.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @propertyArray('event', 'docs')
+> @foreach ($event_docs ?? [] as $doc)
+>     <a href="{{ \Storage::disk($doc->disk)->url(implode('/', array_filter([$doc->directory, $doc->path], 'filled'))) }}">Doc</a>
+> @endforeach
+> ```
+> Or
+> ```php
+> @propertyArray('event', 'docs')
+> @foreach ($event_docs ?? [] as $doc)
+>     <a href="{{ $doc }}">Doc</a>
+> @endforeach
+> ```
+> </details>
 
-<details>
-    <summary><h3>File</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Disk: The storage disk where files are saved.</li>
-            <li>Directory: The directory path within the disk.</li>
-            <li>Visibility: The visibility of the uploaded files.</li>
-            <li>Multiple: Whether multiple files can be uploaded.</li>
-            <li>Rule: Validation rules for the field.</li>
-            <li>Accepted File Types: The allowed file types for upload.</li>
-            <li>Min File: The minimum number of files required.</li>
-            <li>Max File: The maximum number of files allowed.</li>
-            <li>Min Size: The minimum file size allowed.</li>
-            <li>Max Size: The maximum file size allowed.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @propertyArray('event', 'docs')
-        @foreach ($event_docs ?? [] as $doc)
-            <a href="{{ \Storage::disk($doc->disk)->url(implode('/', array_filter([$doc->directory, $doc->path], 'filled'))) }}">Doc</a>
-        @endforeach
-        ```
-        Or
-        ```php
-        @propertyArray('event', 'docs')
-        @foreach ($event_docs ?? [] as $doc)
-            <a href="{{ $doc }}">Doc</a>
-        @endforeach
-        ```
-    </details>
-</details>
+### Image
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Disk**: The storage disk where images are saved.
+> * **Directory**: The directory path within the disk.
+> * **Visibility**: The visibility of the uploaded images.
+> * **Multiple**: Whether multiple images can be uploaded.
+> * **Rule**: Validation rules for the field.
+> * **Accepted File Types**: The allowed file types for upload.
+> * **Min File**: The minimum number of images required.
+> * **Max File**: The maximum number of images allowed.
+> * **Min Size**: The minimum image size allowed.
+> * **Max Size**: The maximum image size allowed.
+> </details>
+> <details><summary>Template Usage</summary>
+>
+> ```php
+> @propertyArray('event', 'images')
+> @foreach ($event_images ?? [] as $img)
+>     <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], > 'filled'))) }}" alt="Event Image">
+> @endforeach
+> ```
+> Or
+> ```php
+> @propertyArray('event', 'images')
+> @foreach ($event_images ?? [] as $img)
+>     <img src="{{ $img }}" alt="Event Image">
+> @endforeach
+> ```
+> </details>
 
-<details>
-    <summary><h3>Image</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Disk: The storage disk where images are saved.</li>
-            <li>Directory: The directory path within the disk.</li>
-            <li>Visibility: The visibility of the uploaded images.</li>
-            <li>Multiple: Whether multiple images can be uploaded.</li>
-            <li>Rule: Validation rules for the field.</li>
-            <li>Accepted File Types: The allowed file types for upload.</li>
-            <li>Min File: The minimum number of images required.</li>
-            <li>Max File: The maximum number of images allowed.</li>
-            <li>Min Size: The minimum image size allowed.</li>
-            <li>Max Size: The maximum image size allowed.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @propertyArray('event', 'images')
-        @foreach ($event_images ?? [] as $img)
-            <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], 'filled'))) }}" alt="Event Image">
-        @endforeach
-        ```
-        Or
-        ```php
-        @propertyArray('event', 'images')
-        @foreach ($event_images ?? [] as $img)
-            <img src="{{ $img }}" alt="Event Image">
-        @endforeach
-        ```
-    </details>
-</details>
+### Color Picker
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> </details>
+><details><summary>Template Usage</summary>
+>
+>  ```php
+>  @propertyNotEmpty('user', 'fav_color')
+>  <p style="color: {{ $user_fav_color }}">$user_fav_color</p>
+>  @endif
+>  ```
+></details>
 
-<details>
-    <summary><h3>Color Picker</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @propertyNotEmpty('user', 'fav_color')
-        <p style="color: {{ $user_fav_color }}">$user_fav_color</p>
-        @endif
-        ```
-    </details>
-</details>
+### DateTime Picker
+> <details><summary>Configuration Options</summary>
+>
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Default Value**: The initial value of the field.
+> * **Placeholder**: Text displayed inside the field when empty.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Has Time**: Whether the field includes time selection.
+> * **Has Date**: Whether the field includes date selection.
+> * **Rule**: Validation rules for the field.
+> * **Format**: The format of the date/time value.
+> </detail>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+> @propertyNotEmpty('event', 'date')
+> <p>Year: {{ $event_date?->format('Y') }}</p>
+> @endif
+> ```
+> </details>
 
-<details>
-    <summary><h3>DateTime Picker</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Default Value: The initial value of the field.</li>
-            <li>Placeholder: Text displayed inside the field when empty.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Has Time: Whether the field includes time selection.</li>
-            <li>Has Date: Whether the field includes date selection.</li>
-            <li>Rule: Validation rules for the field.</li>
-            <li>Format: The format of the date/time value.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @propertyNotEmpty('event', 'date')
-        <p>Year: {{ $event_date?->format('Y') }}</p>
-        @endif
-        ```
-    </details>
-</details>
+### Content Picker
 
-<details>
-    <summary><h3>Content Picker</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Document Type: The type of document to be linked.</li>
-            <li>Start Node: The starting point for content selection.</li>
-            <li>Min: The minimum number of items required.</li>
-            <li>Max: The maximum number of items allowed.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-        @propertyNotEmpty('featured_blogs', 'blogs')
-            @foreach ($featured_blogs_blogs as $featuredBlog)
-                @php
-                    $featuredBlogTemplate = $featuredBlog instanceof \SolutionForest\InspireCms\Dtos\ContentDto ? $featuredBlog?->getTemplate('blog-featured-item') : null;
-                @endphp
-                @if ($featuredBlogTemplate)
-                    {!! $featuredBlogTemplate->render(['content' => $featuredBlog, 'locale' => $locale]) !!}
-                @endif
-            @endforeach
-        @endif
-        ```
-    </details>
-</details>
+> <details><summary>Configuration Options</summary>
+> 
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Types**: The types of media files allowed.
+> * **Min**: The minimum number of items required.
+> * **Max**: The maximum number of items allowed.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+>  @propertyArray('hero', 'image_slider')
+>  @foreach ($hero_image_slider ?? [] as $item)
+>      <div class="swiper-slide">
+>          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+>          <p>{{ $item?->description }}</p>
+>      </div>
+>  @endforeach
+> ```
+> </details>
 
-<details>
-    <summary><h3>Media Picker</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Types: The types of media files allowed.</li>
-            <li>Min: The minimum number of items required.</li>
-            <li>Max: The maximum number of items allowed.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-            @propertyArray('hero', 'image_slider')
-            @foreach ($hero_image_slider ?? [] as $item)
-                <div class="swiper-slide">
-                    <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
-                    <p>{{ $item?->description }}</p>
-                </div>
-            @endforeach
-        ```
-    </details>
-</details>
+### Media Picker
 
-<details>
-    <summary><h3>Repeater</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Fields: The sub-fields included in the repeater.</li>
-            <li>Collapsible: Whether the repeater sections can be collapsed.</li>
-            <li>Cloneable: Whether the repeater sections can be cloned.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-            @propertyArray('document_content', 'sections')
-            @foreach ($document_content_sections ?? [] as $item)
-                <section>
-                    <h1>{{ $item->getPropertyData('title')?->getValue() }}</h1>
-                    <p>{{ $item->getPropertyData('description')?->getValue() }}</p>
-                    {{ $item->getPropertyData('content')?->getValue() ?? '' }}
-                </section>
-            @endforeach
-        ```
-    </details>
-</details>
+> <details><summary>Configuration Options</summary>
+> 
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Types**: The types of media files allowed.
+> * **Min**: The minimum number of items required.
+> * **Max**: The maximum number of items allowed.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+>  @propertyArray('hero', 'image_slider')
+>  @foreach ($hero_image_slider ?? [] as $item)
+>      <div class="swiper-slide">
+>          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+>          <p>{{ $item?->description }}</p>
+>      </div>
+>  @endforeach
+> ```
+> </details>
 
-<details>
-    <summary><h3>Tags</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Prefix Label: Text displayed before the field.</li>
-            <li>Suffix Label: Text displayed after the field.</li>
-            <li>Prefix: Text added before each tag.</li>
-            <li>Suffix: Text added after each tag.</li>
-            <li>Separator: The character used to separate tags.</li>
-            <li>Suggestions: Predefined suggestions for tags.</li>
-            <li>Reorderable: Whether tags can be reordered.</li>
-            <li>Color: The color of the tags.</li>
-            <li>Rule: Validation rules for the field.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-            @propertyArray('event', 'categories')
-            <p>{{ implode(' | ', $event_categories ?? []) }}</p>
-        ```
-    </details>
-</details>
+### Repeater
 
-<details>
-    <summary><h3>Rich Editor</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Toolbar Buttons: The buttons available in the editor toolbar.</li>
-            <li>Disk: The storage disk where files are saved.</li>
-            <li>Directory: The directory path within the disk.</li>
-            <li>Visibility: The visibility of the uploaded files.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-            @property('event', 'content')
-        ```
-    </details>
-</details>
+> 
+> <details><summary>Configuration Options</summary>
+> 
+> * **Fields**: The sub-fields included in the repeater.
+> * **Collapsible**: Whether the repeater sections can be collapsed.
+> * **Cloneable**: Whether the repeater sections can be cloned.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+> @propertyArray('document_content', 'sections')
+> @foreach ($document_content_sections ?? [] as $item)
+>     <section>
+>         <h1>{{ $item->getPropertyData('title')?->getValue() }}</h1>
+>         <p>{{ $item->getPropertyData('description')?->getValue() }}</p>
+>         {{ $item->getPropertyData('content')?->getValue() ?? '' }}
+>     </section>
+> @endforeach
+> ```
+> </details>
 
-<details>
-    <summary><h3>Markdown Editor</h3></summary>
-    <details>
-        <summary><h4>Configuration Options</h4></summary>
-        <ul>
-            <li>Translatable: Whether the field supports multiple languages.</li>
-            <li>Toolbar Buttons: The buttons available in the editor toolbar.</li>
-            <li>Disk: The storage disk where files are saved.</li>
-            <li>Directory: The directory path within the disk.</li>
-            <li>Visibility: The visibility of the uploaded files.</li>
-        </ul>
-    </details>
-    <details>
-        <summary><h4>Template Usage</h4></summary>
-        ```php
-            @property('document', 'content')
-        ```
-    </details>
-</details>
+### Tags
+> 
+> <details><summary>Configuration Options</summary>
+> 
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Prefix Label**: Text displayed before the field.
+> * **Suffix Label**: Text displayed after the field.
+> * **Prefix**: Text added before each tag.
+> * **Suffix**: Text added after each tag.
+> * **Separator**: The character used to separate tags.
+> * **Suggestions**: Predefined suggestions for tags.
+> * **Reorderable**: Whether tags can be reordered.
+> * **Color**: The color of the tags.
+> * **Rule**: Validation rules for the field.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+> @propertyArray('event', 'categories')
+> <p>{{ implode(' | ', $event_categories ?? []) }}</p>
+> ```
+> </details>
+
+### Rich Editor
+> 
+> <details><summary>Configuration Options</summary>
+> 
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Toolbar** Buttons: The buttons available in the editor toolbar.
+> * **Disk**: The storage disk where files are saved.
+> * **Directory**: The directory path within the disk.
+> * **Visibility**: The visibility of the uploaded files.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+> @property('event', 'content')
+> ```
+> </details>
+
+### Markdown Editor
+> 
+> <details><summary>Configuration Options</summary>
+> 
+> * **Translatable**: Whether the field supports multiple languages.
+> * **Toolbar** Buttons: The buttons available in the editor toolbar.
+> * **Disk**: The storage disk where files are saved.
+> * **Directory**: The directory path within the disk.
+> * **Visibility**: The visibility of the uploaded files.
+> </details>
+> <details><summary>Template Usage</summary>
+> 
+> ```php
+> @property('document', 'content')
+> ```
+> </details>
 
 ## Using Fields in Templates
 
