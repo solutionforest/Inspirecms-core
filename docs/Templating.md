@@ -111,7 +111,7 @@ Different field types return different data structures:
 - **Rich Text**: Return rendered HTML content
 
 > [!NOTE] 
-> For detailed information about specific field types and their access patterns, please refer to the [Custom Fields documentation](docs/CustomFields.md).
+> For detailed information about specific field types and their access patterns, please refer to the [Custom Fields documentation](./docs/CustomFields.md).
 
 #### Example
 
