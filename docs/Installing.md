@@ -1,7 +1,5 @@
 # Installing
 
-To install InspireCMS Core, follow these steps:
-
 ## Requirements
 
 Before installing InspireCMS Core, ensure you have:
