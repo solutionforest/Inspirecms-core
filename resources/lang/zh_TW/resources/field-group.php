@@ -28,11 +28,8 @@ return [
         ],
     ],
 
-    'details' => [
-        'fields' => [
-            'heading' => '欄位',
-        ],
-        'section' => [
+    'sections' => [
+        'details' => [
             'heading' => '詳細資料',
         ],
     ],

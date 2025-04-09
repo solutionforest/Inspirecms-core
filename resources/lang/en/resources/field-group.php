@@ -28,11 +28,8 @@ return [
         ],
     ],
 
-    'details' => [
-        'fields' => [
-            'heading' => 'Fields',
-        ],
-        'section' => [
+    'sections' => [
+        'details' => [
             'heading' => 'Details',
         ],
     ],
