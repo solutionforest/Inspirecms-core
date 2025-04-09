@@ -1,11 +1,16 @@
 # Installing
 
 ## Requirements
-
 Before installing InspireCMS Core, ensure you have:
 
+- **PHP**: Version 8.3 or higher
 - **Laravel Application**: A working Laravel application
-- **Laravel Herd**: [Laravel Herd](https://herd.laravel.com) or another suitable PHP development environment
+- **Composer**: For package installation and dependency management
+- **Database**: MySQL, PostgreSQL, or another Laravel-supported database
+- **Node.js & NPM**: Required for building assets
+- **Development Environment**: [Laravel Herd](https://herd.laravel.com), Laravel Sail, Valet, or another suitable PHP development environment
+- **Command Line Access**: To run artisan commands
+
 
 ## Installation
 
@@ -25,22 +30,29 @@ php artisan inspirecms:install
 php artisan inspirecms:install --skip-samples
 ```
 
-> [!Note] You can following optional command for xxx
-> Import default data
+### Optional Commands
+
+> [!NOTE]
+> You can run the following optional commands as needed:
+> 
+> Import default data:
 > ```bash
 > php artisan inspirecms:import-default-data
 > ```
-> Install required pacakges
+> 
+> Install required packages:
 > ```bash
-> inspirecms:install-require-packages
+> php artisan inspirecms:install-require-packages
 > ```
-> Publishing CMS panel
+> 
+> Publish CMS panel:
 > ```bash
-> inspirecms:publish-panel
+> php artisan inspirecms:publish-panel
 > ```
-> Repair permissions for CMS panel
+> 
+> Repair permissions for CMS panel:
 > ```bash
-> inspirecms:repair-permissions
+> php artisan inspirecms:repair-permissions
 > ```
 
 ### Start Schedule Jobs
