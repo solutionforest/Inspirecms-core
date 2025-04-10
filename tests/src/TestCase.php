@@ -92,7 +92,7 @@ abstract class TestCase extends Orchestra
         ]);
 
         // Extra resources
-        $app['config']->set('inspirecms.filament.resources.custom_post', \SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource::class);
+        $app['config']->set('inspirecms.admin.resources.custom_post', \SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource::class);
 
         ModelManifest::register();
         ModelManifest::registerMorphMap();
