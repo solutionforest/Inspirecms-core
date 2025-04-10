@@ -58,7 +58,7 @@
             "SolutionForest\\InspireCms\\Tests\\Database\\Factories\\": "tests/database/factories/",
             "SolutionForest\\InspireCms\\Support\\": "vendor/solution-forest/inspirecms-support/src/",
             "SolutionForest\\InspireCms\\Support\\Tests\\": "vendor/solution-forest/inspirecms-support/tests/src/",
-            "SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\": "tests/database/factories/"
+            "SolutionForest\\InspireCms\\Support\\Tests\\Database\\Factories\\": "vendor/solution-forest/inspirecms-support/tests/database/factories/"
         }
     },
     "scripts": {
