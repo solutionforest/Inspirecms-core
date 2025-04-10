@@ -8,7 +8,7 @@ trait HaveBackgroundImage
 {
     protected function getBackgroundImage()
     {
-        $image = InspireCmsConfig::get('filament.background_image');
+        $image = InspireCmsConfig::get('admin.background_image');
 
         if (is_array($image) && count($image) > 0) {
             return $image[array_rand($image)];

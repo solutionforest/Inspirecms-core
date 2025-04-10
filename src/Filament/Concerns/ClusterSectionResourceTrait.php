@@ -45,7 +45,7 @@ trait ClusterSectionResourceTrait
 
     public static function getRecordSubNavigation(\Filament\Resources\Pages\Page $page): array
     {
-        if (InspireCmsConfig::get('filament.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
+        if (InspireCmsConfig::get('admin.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
             $items = $page->generateNavigationItems($cluster::getClusteredComponents());
 
             return array_map(fn ($item) => static::configureResourceKeyOnNavigationItem($item), $items);

@@ -65,7 +65,7 @@ trait ClusterSectionTrait
             })
             ->all();
 
-        if (InspireCmsConfig::get('filament.enable_cluster_navigation')) {
+        if (InspireCmsConfig::get('admin.enable_cluster_navigation')) {
             return $items;
         }
 

@@ -9,7 +9,7 @@ class BaseListRecords extends ListRecords
 {
     public function getSubNavigation(): array
     {
-        if (InspireCmsConfig::get('filament.enable_cluster_navigation')) {
+        if (InspireCmsConfig::get('admin.enable_cluster_navigation')) {
             return parent::getSubNavigation();
         }
 

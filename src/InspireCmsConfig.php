@@ -23,7 +23,7 @@ class InspireCmsConfig
 
     public static function getPanelId(): string
     {
-        return static::get('panel.id', 'inspirecms');
+        return static::get('admin.panel_id', 'inspirecms');
     }
 
     /**
@@ -43,7 +43,7 @@ class InspireCmsConfig
      */
     public static function getFilamentResources()
     {
-        return collect(static::get('filament.resources', []))
+        return collect(static::get('admin.resources', []))
             ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Resources\Resource::class, true))
             ->toArray();
     }
@@ -65,7 +65,7 @@ class InspireCmsConfig
      */
     public static function getFilamentPages()
     {
-        return collect(static::get('filament.pages', []))
+        return collect(static::get('admin.pages', []))
             ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Pages\Page::class, true))
             ->toArray();
     }
@@ -75,7 +75,7 @@ class InspireCmsConfig
      */
     public static function getFilamentClusters()
     {
-        return collect(static::get('filament.clusters', []))
+        return collect(static::get('admin.clusters', []))
             ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Clusters\Cluster::class, true))
             ->toArray();
     }

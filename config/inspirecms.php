@@ -95,10 +95,15 @@ return [
         ],
     ],
 
-    'filament' => [
+    'admin' => [
         'enable_cluster_navigation' => true,
         'panel_id' => 'cms',
         'path' => 'cms',
+        'brand' => [
+            'name' => 'InspireCMS',
+            'logo' => fn () => view('inspirecms::logo'),
+            'favicon' => fn () => asset('images/favicon.png'),
+        ],
         'database_notification' => [
             'enabled' => true,
             'polling_interval' => '30s',

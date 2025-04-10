@@ -37,16 +37,20 @@ class CmsPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-        $panel = $panel->id(InspireCmsConfig::getPanelId());
+        $panel = $panel
+            ->id(InspireCmsConfig::getPanelId());
 
         return $this->configureCmsPanel($panel);
     }
 
     protected function configureCmsPanel(Panel $panel)
     {
-        $panel = $panel->path(InspireCmsConfig::get('filament.path', 'cms'))
+        $panel = $panel
+            ->path(InspireCmsConfig::get('admin.path', 'cms'))
             ->default()
-            ->brandName('InspireCms')->brandLogo(fn () => view('inspirecms::logo'))
+            ->brandName(InspireCmsConfig::get('admin.brand.name', 'InspireCMS'))
+            ->brandLogo(InspireCmsConfig::get('admin.brand.logo', fn () => view('inspirecms::logo')))
+            ->favicon(InspireCmsConfig::get('admin.brand.favicon', fn () => asset('images/favicon.png')))
             ->authGuard(AuthHelper::guardName())
             ->login(Pages\Auth\Login::class)
             ->registration(Pages\Auth\Register::class)
@@ -237,11 +241,11 @@ class CmsPanelProvider extends PanelProvider
 
     protected function configureNotification(Panel $panel): Panel
     {
-        if (InspireCmsConfig::get('filament.database_notification.enabled')) {
+        if (InspireCmsConfig::get('admin.database_notification.enabled')) {
             $panel
                 ->databaseNotifications()
                 ->databaseNotificationsPolling(
-                    InspireCmsConfig::get('filament.database_notification.polling_interval', '30s')
+                    InspireCmsConfig::get('admin.database_notification.polling_interval', '30s')
                 );
         }
 
