@@ -27,6 +27,7 @@ class ContentVersionDetailScope implements Scope
                 ->orderByDesc($recordCreationColumn) // sort by created_at desc
                 ->groupBy(
                     $relatedFK, // group by content_id
+                    $recordCreationColumn, // include the ordered column in GROUP BY
                 )
                 ->select([
                     DB::raw("MAX($relatedPK) AS latest_version_id"),
