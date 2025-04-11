@@ -77,6 +77,7 @@ class CmsPanelProvider extends PanelProvider
             ->widgets([
                 Widgets\CmsInfoWidget::class,
                 Widgets\PageActivity::class,
+                Widgets\UserActivity::class,
                 Widgets\AlertOverview::class,
                 Widgets\TemplateInfo::class,
                 TreeNavigation::class,

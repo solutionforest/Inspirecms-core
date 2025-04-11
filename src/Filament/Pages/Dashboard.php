@@ -42,6 +42,7 @@ class Dashboard extends Page
         return [
             Widgets\CmsInfoWidget::class,
             Widgets\PageActivity::class,
+            Widgets\UserActivity::class,
         ];
     }
     public function getHeaderWidgetsColumns(): int | string | array

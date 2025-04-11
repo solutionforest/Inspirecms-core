@@ -34,4 +34,12 @@ return [
         'permission_display_name' => 'View Template Info',
     ],
 
+    'user_activity' => [
+        'title' => 'User Activity',
+        'empty_state' => [
+            'heading' => 'No recent activity found.',
+        ],
+        'permission_display_name' => 'View User Activity',
+    ],
+
 ];

@@ -34,4 +34,12 @@ return [
         'permission_display_name' => '查看模板資訊',
     ],
 
+    'user_activity' => [
+        'title' => '用戶活動',
+        'empty_state' => [
+            'heading' => '沒有最近的活動。',
+        ],
+        'permission_display_name' => '查看用戶活動',
+    ],
+
 ];

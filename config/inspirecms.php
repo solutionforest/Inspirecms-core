@@ -245,6 +245,7 @@ return [
         'guard_widgets' => [
             \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
             \SolutionForest\InspireCms\Filament\Widgets\TemplateInfo::class,
+            \SolutionForest\InspireCms\Filament\Widgets\UserActivity::class,
         ],
     ],
 
