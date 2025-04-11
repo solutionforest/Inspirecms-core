@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Carbon\Carbon;
 use Filament\Widgets\Widget;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
@@ -53,7 +52,7 @@ class UserActivity extends Widget implements GuardWidget
 
                 $activities->tap(function ($activities) use ($user) {
                     $activities->setCollection($activities->getCollection()->map(function ($activity) use ($user) {
-                        
+
                         $activity->causer = $user;
                         $activity->subject = $user;
 
@@ -63,28 +62,28 @@ class UserActivity extends Widget implements GuardWidget
                         if ($activity->last_logged_in_at_utc != null) {
                             $ts = $activity->last_logged_in_at_utc->format($dtFormat);
                             $activity->last_logged_in_at_utc = Carbon::createFromFormat(
-                                $dtFormat, 
+                                $dtFormat,
                                 $ts,
                                 'UTC'
                             );
                             $activity->last_logged_in_at_local = Carbon::createFromFormat(
-                                $dtFormat, 
+                                $dtFormat,
                                 $ts,
                                 'UTC'
                             )->setTimezone(config('app.timezone'));
                         } else {
                             $activity->last_logged_in_at_local = null;
                         }
-                        
+
                         if ($activity->last_logged_out_at_utc != null) {
                             $ts = $activity->last_logged_out_at_utc->format($dtFormat);
                             $activity->last_logged_out_at_utc = Carbon::createFromFormat(
-                                $dtFormat, 
+                                $dtFormat,
                                 $ts,
                                 'UTC'
                             );
                             $activity->last_logged_out_at_local = Carbon::createFromFormat(
-                                $dtFormat, 
+                                $dtFormat,
                                 $ts,
                                 'UTC'
                             )->setTimezone(config('app.timezone'));
@@ -92,8 +91,8 @@ class UserActivity extends Widget implements GuardWidget
                             $activity->last_logged_out_at_local = null;
                         }
                         $activity->last_logged_out_at_utc = \Carbon\Carbon::createFromFormat(
-                            $dtFormat, 
-                            $activity->last_logged_out_at_utc->format($dtFormat), 
+                            $dtFormat,
+                            $activity->last_logged_out_at_utc->format($dtFormat),
                             'UTC'
                         );
 
