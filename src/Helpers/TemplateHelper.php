@@ -143,7 +143,7 @@ class TemplateHelper
     {
         try {
             $explodedValues = array_map('trim', explode(',', $bladeExpression));
-    
+
             if (count($explodedValues) > 3) {
                 [$group, $property, $propertyVarName, $dtoVar] = $explodedValues;
             } elseif (count($explodedValues) > 2) {
@@ -153,18 +153,18 @@ class TemplateHelper
             } else {
                 return [];
             }
-    
+
             $group = static::normalizeVarNameFromBladeExpression($group);
             $property = static::normalizeVarNameFromBladeExpression($property);
-    
+
             $propertyVarName ??= static::generatePropertyVarName($group, $property);
             // Ensure the variable name is not empty or null
             if (empty($propertyVarName) || is_null($propertyVarName) || $propertyVarName === 'null') {
                 $propertyVarName = static::generatePropertyVarName($group, $property);
             }
-    
+
             $dtoVar ??= '$content';
-    
+
             return [$group, $property, $dtoVar, static::normalizeVarNameFromBladeExpression($propertyVarName)];
         } catch (\Throwable $th) {
             //
