@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Commands;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-
 #[AsCommand(
     name: 'inspirecms:generate-sitemap',
     description: 'Generate a sitemap for the InspireCMS plugin'

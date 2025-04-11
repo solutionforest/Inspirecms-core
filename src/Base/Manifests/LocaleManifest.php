@@ -10,7 +10,7 @@ class LocaleManifest implements LocaleManifestInterface
 
     public function __construct()
     {
-        $this->userPreferredLocales = collect(InspireCmsConfig::get('localization.user_preferred_locales', ['en','zh_CN','zh_TW']))
+        $this->userPreferredLocales = collect(InspireCmsConfig::get('localization.user_preferred_locales', ['en', 'zh_CN', 'zh_TW']))
             ->mapWithKeys(fn ($locale) => [$locale => $locale])
             ->all();
     }

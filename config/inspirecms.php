@@ -106,7 +106,7 @@ return [
         'path' => 'cms',
         'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
             'name' => 'InspireCMS',
-            'logo' => fn () => view('inspirecms::logo'), 
+            'logo' => fn () => view('inspirecms::logo'),
             'favicon' => fn () => asset('images/favicon.png'),
         ],
         'database_notification' => [
@@ -151,7 +151,7 @@ return [
                 'disk' => 'local',
                 'directory' => 'temp/imports',
             ],
-            
+
             'allowed_mime_types' => [
                 'application/zip',
                 'application/octet-stream',
@@ -296,6 +296,6 @@ return [
     ],
 
     'localization' => [
-        'user_preferred_locales' => ['en','zh_CN','zh_TW'],
+        'user_preferred_locales' => ['en', 'zh_CN', 'zh_TW'],
     ],
 ];

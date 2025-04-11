@@ -3,10 +3,9 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
-use Symfony\Component\Console\Attribute\AsCommand;
 use Illuminate\Support\Facades\Cache;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(
     name: 'inspirecms:cache-stats',
@@ -37,10 +36,10 @@ class CacheStats extends Command
 
             $cacheKey = $details['key'] ?? $key;
             $cacheStore = $details['store'] ?? config('cache.default');
-            
+
             $exists = Cache::store($cacheStore)->has($cacheKey) ? 'Yes' : 'No';
             $ttl = $details['ttl'] ?? 'N/A';
-            
+
             $tableData[] = [
                 $cacheKey,
                 $cacheStore,
@@ -71,7 +70,7 @@ class CacheStats extends Command
                 ];
             }
 
-        } 
+        }
 
         $this->table($headers, $tableData);
 
@@ -85,27 +84,29 @@ class CacheStats extends Command
             $driver = $storeConfig['driver'] ?? null;
 
             if (
-                empty($store) 
+                empty($store)
                 || empty($driver) // Store driver is not set
-                || !is_string($store) // Store name is not a string
+                || ! is_string($store) // Store name is not a string
             ) {
-                return []; 
+                return [];
             }
 
             $cacheStore = Cache::store($store)->getStore();
-    
+
             switch ($driver) {
                 case 'redis':
                     if (method_exists($cacheStore, 'getRedis')) {
                         $redis = $cacheStore->getRedis();
                         $prefix = $cacheStore->getPrefix();
                         $keys = $redis->keys($prefix . '*');
+
                         return array_map(function ($key) use ($prefix) {
                             return substr($key, strlen($prefix));
                         }, $keys);
                     }
+
                     break;
-    
+
                 case 'file':
                     $storage = storage_path('framework/cache/data');
                     $pattern = $storage . '/*';
@@ -114,7 +115,7 @@ class CacheStats extends Command
                     return array_map(function ($file) {
                         return str_replace('.php', '', basename($file));
                     }, $files);
-    
+
                 case 'database':
 
                     // Database store requires a connection and table name

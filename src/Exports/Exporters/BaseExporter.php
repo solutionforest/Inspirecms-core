@@ -74,7 +74,7 @@ abstract class BaseExporter
         $subFolders = [];
 
         foreach ($importTypes as $importType) {
-            
+
             $path = collect([
                 ExportDataHelper::getTempDirectory(),
                 $folderName,
