@@ -28,6 +28,4 @@
 
     </div>
 
-    @livewire(\SolutionForest\InspireCms\Filament\Widgets\PageActivity::class)
-
 </x-filament-widgets::widget>
