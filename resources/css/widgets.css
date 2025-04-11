@@ -17,37 +17,3 @@
         @apply focus:outline-none focus-visible:ring-primary-500 dark:focus-visible:ring-primary-500;
     }
 }
-
-
-.fi-wi-cms-info {
-    
-    @apply grid gap-6 lg:grid-rows-3 lg:grid-flow-col lg:gap-8;
-
-    .card {
-        @apply shadow-[0px_14px_34px_0px_rgba(0,0,0,0.08)] ring-1 ring-white/[0.05];
-        @apply hover:text-black/70 hover:ring-black/20 dark:hover:text-white/70 dark:hover:ring-white/20;
-        &#docs-card {
-            @apply gap-6 overflow-hidden lg:row-span-3 lg:col-span-2;
-        }
-        &:not(#docs-card) {
-            @apply gap-4 lg:col-span-2 lg:row-span-1;
-        }
-    }
-    #docs-card #screenshot-container {
-        @apply relative flex w-full flex-1 items-stretch;
-
-        .screenshot {
-            @apply aspect-video h-full w-full flex-1 rounded-[10px] object-top object-cover;
-
-            &.light-screenshot {
-                @apply drop-shadow-[0px_4px_34px_rgba(0,0,0,0.06)] dark:hidden;
-            }
-            &.dark-screenshot {
-                @apply hidden drop-shadow-[0px_4px_34px_rgba(0,0,0,0.25)] dark:block;
-            }
-        }
-    }
-    > .fi-wi-widget {
-        @apply lg:col-span-2 lg:row-span-2;
-    }
-}
