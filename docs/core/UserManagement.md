@@ -41,9 +41,9 @@ From here you can:
 1. Navigate to **Users → Roles** in the admin panel
 2. Click **Create Role**
 3. Fill in the form:
-   - **Name**: Unique identifier for the role (e.g., "Marketing")
-   - **Guard Name**: Leave as "web" for most cases
-   - **Permissions**: Select the permissions for this role
+    - **Name**: Unique identifier for the role (e.g., "Marketing")
+    - **Guard Name**: Set to "inspirecms" (this is the default guard used by InspireCMS)
+    - **Permissions**: Select the permissions for this role
 4. Click **Save** to create the role
 
 ## Permissions System
@@ -59,33 +59,65 @@ InspireCMS uses a granular permission system that controls access to specific ac
 Permissions follow a standard naming convention:
 
 ```
-[action]_[resource]
+[resource].[action]
 ```
 
 For example:
-- `view_content`: Ability to view content
-- `create_content`: Ability to create content
-- `edit_settings`: Ability to modify system settings
+- `content.view`: Ability to view content
+- `content.create`: Ability to create content
+- `settings.update`: Ability to modify system settings
 
 ### Customizing Permissions
 
-You can add custom permissions by extending the permission system:
+You can add custom permissions directly using [Spatie's Permission](https://spatie.be/docs/laravel-permission/v6/introduction) package:
 
 ```php
-use SolutionForest\InspireCms\Facades\PermissionManifest;
-use SolutionForest\InspireCms\DataTypes\Manifest\PermissionOption;
+use Spatie\Permission\Models\Permission;
 
-// In a service provider
-public function boot()
+// In a service provider or seeder
+Permission::create(['name' => 'manage_product_inventory', 'guard_name' => 'inspirecms']);
+```
+
+You can also create permissions in a database seeder:
+
+```php
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+class PermissionSeeder extends Seeder
 {
-    PermissionManifest::addOption(
-        new PermissionOption(
-            name: 'manage_product_inventory',
-            label: 'Manage Product Inventory',
-            description: 'Allow users to manage product inventory levels'
-        )
-    );
+    public function run()
+    {
+        // Create permissions
+        $permissions = [
+            'manage_product_inventory',
+            'view_analytics',
+            'export_reports',
+        ];
+        
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission, 'guard_name' => 'inspirecms']);
+        }
+        
+        // Optionally assign to existing roles
+        $adminRole = Role::findByName('Administrator', 'inspirecms');
+        $adminRole->givePermissionTo('manage_product_inventory');
+    }
 }
+```
+
+Run the seeder with:
+
+```bash
+php artisan db:seed --class=PermissionSeeder
+```
+
+### Using Permissions in Blade Templates
+
+```php
+@if(auth()->user()->can('manage_product_inventory'))
+    <a href="{{ route('products.inventory') }}">Manage Inventory</a>
+@endif
 ```
 
 ## User Management
@@ -172,60 +204,6 @@ Users can edit their own profiles through the user menu:
 User Menu (top-right) → Profile
 ```
 
-### Customizing User Fields
-
-To add custom fields to user profiles:
-
-```php
-use SolutionForest\InspireCms\Filament\Resources\UserResource;
-use Filament\Forms\Components\TextInput;
-
-// In a service provider
-UserResource::form(function ($form) {
-    $form->schema([
-        // Original fields will be included automatically
-        TextInput::make('department')
-            ->label('Department')
-            ->maxLength(100),
-        TextInput::make('employee_id')
-            ->label('Employee ID')
-            ->maxLength(20),
-    ]);
-});
-```
-
-## Activity Monitoring
-
-InspireCMS tracks user activity including:
-
-- Login attempts (successful and failed)
-- Content creation and modification
-- System setting changes
-- User management actions
-
-View the activity log in:
-
-```
-Admin Panel → Dashboard → Activity
-```
-
-### User Login Security
-
-Security features include:
-
-- **IP Tracking**: Monitor login locations
-- **Lockout**: Temporarily block accounts after multiple failed attempts
-- **Session Management**: Control session lifetime and validation
-- **Password Policies**: Enforce strong passwords
-
-## API Authentication
-
-For headless CMS implementations, InspireCMS supports API authentication:
-
-- Token-based authentication
-- Scoped API permissions
-- Rate limiting
-
 ## Custom User Authentication
 
 To use a custom user provider:
@@ -237,6 +215,12 @@ To use a custom user provider:
         'name' => 'cms_users',
         'driver' => 'eloquent',
         'model' => \App\Models\CustomUser::class, // Your custom user model
+    ],
+],
+//...
+'models' => [
+    'fqcn' => [
+        'user' => \App\Models\CustomUser::class,
     ],
 ],
 ```
@@ -258,19 +242,6 @@ class CustomUser extends Authenticatable implements CmsUser
     
     // Your custom implementation...
 }
-```
-
-## User Import and Export
-
-For bulk user management:
-
-1. **Export Users**: Download user data in CSV/JSON format
-2. **Import Users**: Bulk create users from a spreadsheet
-
-Access these features in:
-
-```
-Admin Panel → Users → Import/Export
 ```
 
 ## Best Practices

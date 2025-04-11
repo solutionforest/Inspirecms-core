@@ -189,6 +189,7 @@ InspireCMS comes with several dashboard widgets:
 
 - **Content Page Overview**: Shows content statistics and quick links
 - **Page Activity**: Displays recent content changes
+- **User Activity**: Display current user activities
 - **CMS Info**: Shows system information and version
 - **Template Info**: Provides information about available templates
 - **Tree Navigation**: Visual navigation builder
