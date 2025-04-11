@@ -17,7 +17,7 @@ In InspireCMS, content can exist in various states:
 
 When you create new content in InspireCMS, it starts as a draft by default:
 
-1. Navigate to **Content → [Content Type]** in the admin panel
+1. Navigate to **Content** in the admin panel
 2. Click **Create Content**
 3. Add your content details, fields, and settings
 4. Click **Save** (not "Publish") to store as a draft
@@ -30,7 +30,7 @@ Drafts are clearly marked in the content list:
 
 - Status indicator shows "Draft"
 - Often color-coded differently from published content
-- May show an editing icon
+- Show an editing icon
 
 ### Editing Drafts
 
@@ -47,7 +47,7 @@ Preview your draft to see how it will look when published:
 
 1. Open the draft in the editor
 2. Click the **Preview** button in the editor toolbar
-3. Your draft will open in a new tab showing how it will appear on the site
+3. Your draft will appear in a modal window showing how it will appear on the site
 
 This preview is visible only to authenticated admin users.
 
@@ -82,29 +82,8 @@ InspireCMS automatically tracks revisions each time content is saved, creating a
 To see the history of changes to a content item:
 
 1. Open the content item in the editor
-2. Look for the **Revisions** or **History** tab/button
+2. Look for the **Content History** tab/button
 3. View the list of all revisions with timestamps and authors
-
-### Comparing Revisions
-
-To see what changed between versions:
-
-1. From the revisions list, select two revisions to compare
-2. Click **Compare**
-3. The system will display a side-by-side or inline diff showing:
-   - Added content (typically highlighted in green)
-   - Removed content (typically highlighted in red)
-   - Changed formatting or metadata
-
-### Restoring Previous Revisions
-
-To revert to a previous version:
-
-1. From the revisions list, find the version you want to restore
-2. Click **Restore this version**
-3. Confirm the restore action
-
-The restored version becomes the current draft. You must publish it to make it live.
 
 ## Content Locks
 
@@ -112,19 +91,8 @@ To prevent conflicts when multiple users edit the same content:
 
 1. When a user begins editing content, a lock is placed on that content
 2. Other users see an indicator that the content is being edited
-3. The lock expires after a period of inactivity (typically 15 minutes)
-4. Administrators can override locks if necessary
-
-### Force Edit
-
-If you need to edit locked content:
-
-1. Attempt to open the locked content
-2. You'll see a notification showing who has it locked
-3. Click **Force Edit** (admin users only)
-4. Confirm your action
-
-> **Note**: Forcing an edit may cause the other user's changes to be lost if they try to save after you.
+3. Locks remain active until explicitly released
+4. Only administrators and the user who placed the lock can unlock the content
 
 ## Custom Publishing States
 
@@ -145,8 +113,13 @@ public function boot()
             formAction: fn () => Action::make('review')
                 ->label('Send for Review')
                 ->action(function ($record, $action) {
-                    $record->status = 2;
-                    $record->save();
+                    if (is_null($record)) {
+                        $action->cancel();
+                        return;
+                    }
+                    if (! \SolutionForest\InspireCms\Helpers\ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
+                        return;
+                    }
                     $action->success();
                 })
         )
@@ -154,7 +127,7 @@ public function boot()
 }
 ```
 
-## Content Approval Workflows
+## Example Usage: Content Review and Approval System
 
 For organizations that require approval before publishing:
 
@@ -162,64 +135,161 @@ For organizations that require approval before publishing:
 2. Author submits the content for review
 3. Editors/approvers are notified of pending review
 4. Approvers can:
-   - Approve and publish
-   - Request changes (returns to draft)
-   - Reject the content
+    - Approve and publish
+    - Request changes (returns to draft)
+    - Reject the content
 
-### Implementing a Review Workflow
+### Adding a Custom Content Status
 
 A basic approval workflow can be set up using custom states and notifications:
 
 ```php
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
-use Filament\Notifications\Notification;
 use Filament\Actions\Action;
 
 // In your service provider
 public function boot()
 {
-    // Add "In Review" status
-    ContentStatusManifest::addOption(
-        new ContentStatusOption(
-            value: 2,
-            name: 'in_review',
-            formAction: fn () => Action::make('submit_for_review')
-                ->label('Submit for Review')
-                ->action(function ($record, $action) {
-                    $record->status = 2;
-                    $record->save();
-                    
-                    // Notify reviewers
-                    $editors = \SolutionForest\InspireCms\Models\User::role('editor')->get();
-                    foreach ($editors as $editor) {
-                        Notification::make()
-                            ->title('Content Ready for Review')
-                            ->body("'{$record->title}' needs your review.")
-                            ->actions([
-                                Action::make('review')
-                                    ->button()
-                                    ->url(route('filament.admin.resources.contents.edit', $record))
-                            ])
-                            ->sendToDatabase($editor);
+     // Add "In Review" status
+     ContentStatusManifest::addOption(
+          new ContentStatusOption(
+                value: 2,
+                name: 'in_review',
+                formAction: fn () => Action::make('submit_for_review')
+                    ->authorize('inReview')
+                    ->successNotificationTitle('Send to Review')
+                    ->action(function ($record, $action) {
+                        $if (is_null($record)) {
+                        $action->cancel();
+
+                        return;
                     }
-                    
+            
+                    $publishableState = 'in_review';
+
+                    if (! \SolutionForest\InspireCms\Helpers\ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
+                        return;
+                    }
+
                     $action->success();
-                })
-        )
-    );
+                    })
+          )
+     );
 }
 ```
 
-## Version Control Integration
+### Customizing Models and Authorization Policies
 
-For advanced versioning needs, InspireCMS can be integrated with external version control:
+To fully implement a review workflow, you may need to extend the default content model and define authorization policies:
 
-1. Install the Git integration package
-2. Configure the repository connection
-3. Enable content versioning in settings
+#### Custom Content Model
 
-This allows for more advanced version management, including branching and merging content changes.
+```php
+namespace App\Models;
+
+use SolutionForest\InspireCms\Models\Content as BaseContent;
+
+class Content extends BaseContent
+{
+}
+```
+
+#### Custom Content Policy
+
+```php
+namespace App\Policies;
+
+use App\Models\Content;
+use App\Models\User;
+use SolutionForest\InspireCms\Policies\ContentStatusPolicy as BasePolicy;
+
+class ContentPolicy extends BasePolicy
+{
+    public function viewAny(User $user): bool
+    {
+        return true;
+    }
+    
+    public function view(User $user, Content $content): bool
+    {
+        return true;
+    }
+    
+    public function create(User $user): bool
+    {
+        return $user->hasAnyRole(['author', 'editor', 'admin']);
+    }
+    
+    public function update(User $user, Content $content): bool
+    {
+        // Authors can only edit drafts they created
+        if ($user->hasRole('author') && $content->user_id === $user->id) {
+            return $content?->display_status?->getName() === 'draft';
+        }
+        
+        // Editors can review content in review status and edit any draft
+        if ($user->hasRole('editor')) {
+            return in_array($content?->display_status?->getName(), [
+                'draft',
+                'in_review',
+            ]);
+        }
+        
+        // Admins can edit anything
+        return $user->hasRole('admin');
+    }
+    
+    public function publish(User $user, Content $content): bool
+    {
+        return $user->hasAnyRole(['editor', 'admin']);
+    }
+
+    public function inReview(User $user, Content $content): bool
+    {
+        return $content?->display_status?->getName() !== 'in_review';
+    }
+}
+```
+
+Register your custom model and policy in your `AppServiceProvider`:
+
+```php
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\ServiceProvider;
+use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Facades\ModelManifest;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+
+class AppServiceProvider extends ServiceProvider
+{
+    public function register(): void
+    {
+        ModelManifest::replace(Content::class, \App\Models\Content::class);
+    }
+
+    public function boot()
+    {
+        Gate::policy(\App\Models\Content::class, \App\Policies\ContentPolicy::class);
+    }
+}
+```
+
+Or update in config:
+
+```php
+// config/inspirecms.php
+return [
+    'models' => [
+        'fqcn' => [
+            'content' => \App\Models\Content::class,
+        ],
+        'policies' => [
+            'content' => \App\Policies\YourContentPolicy::class,
+        ]
+    ],
+];
+```
 
 ## Conflict Resolution
 
