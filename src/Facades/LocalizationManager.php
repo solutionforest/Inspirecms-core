@@ -6,14 +6,14 @@ use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 
 /**
- * @method static void addLocale(string $Locale)
- * @method static array getLocales()
- * @method static array selectOptions(?string $displayLocale = null)
- * @method static array getNavigation(string $category, ?string $locale = null)
+ * @method static void addUserPreferredLocale(string $locale)
+ * @method static void removeUserPreferredLocale(string $locale)
+ * @method static array getUserPreferredLocales()
+ * @method static array getUserPreferredLocaleLabels(?string $displayLocale = null)
  *
  * @see \SolutionForest\InspireCms\Base\Manifests\LocaleManifest
  */
-class LocaleManifest extends Facade
+class LocalizationManager extends Facade
 {
     /**
      * {@inheritdoc}

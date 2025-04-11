@@ -265,9 +265,7 @@ return [
         ],
     ],
 
-    'available_locales' => [
-        'en',
-        'zh_CN',
-        'zh_TW',
+    'localization' => [
+        'user_preferred_locales' => ['en','zh_CN','zh_TW'],
     ],
 ];

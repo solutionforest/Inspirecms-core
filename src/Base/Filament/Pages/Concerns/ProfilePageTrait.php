@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
-use SolutionForest\InspireCms\Facades\LocaleManifest;
+use SolutionForest\InspireCms\Facades\LocalizationManager;
 use SolutionForest\InspireCms\Filament\Forms\Components\UserRolePicker;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
@@ -121,7 +121,7 @@ trait ProfilePageTrait
         return Forms\Components\Select::make('preferred_language')
             ->label(__('inspirecms::resources/user.preferred_language.label'))
             ->validationAttribute(__('inspirecms::resources/user.preferred_language.validation_attribute'))
-            ->options(LocaleManifest::selectOptions())
+            ->options(LocalizationManager::getUserPreferredLocaleLabels())
             ->searchable()
             ->required();
     }
