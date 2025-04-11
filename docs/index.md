@@ -75,9 +75,6 @@ Welcome to the official InspireCMS documentation. This guide will help you get s
     - [Documentation Guidelines](./contributing/DocumentationGuidelines.md)
     - [Pull Request Process](./contributing/PullRequestProcess.md)
 
-## Contributing
-
-We welcome contributions to the documentation. Please see our [contribution guidelines](./Contributing.md) for more information.
 
 ## Support
 

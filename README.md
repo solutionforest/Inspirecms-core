@@ -5,36 +5,19 @@
 [![GitHub Code Style Action Status](https://img.shields.io/github/actions/workflow/status/solution-forest/inspirecms-core/fix-php-code-styling.yml?branch=main&label=code%20style&style=flat-square)](https://github.com/solutionforest/inspirecms-core/actions?query=workflow%3A"Fix+PHP+code+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/solution-forest/inspirecms-core.svg?style=flat-square)](https://packagist.org/packages/solution-forest/inspirecms-core)
 
+## About InspireCMS
 
-InspireCMS Core is the foundation library that powers the InspireCMS platform. This package provides essential functionality, including content management, admin interfaces, and extensibility features. Designed with flexibility and developer experience in mind, it allows you to quickly build customized content management systems for your Laravel applications.
-
-## Table of Contents
-- [Get Started]()
-    - [Overview](./docs/Overview.md)
-    - [Requirements](./docs/Requirements.md)
-    - [Installing](./docs/Installing.md)
-    - [Updating](./docs/Updating.md)
-    - [Contributing](.github/CONTRIBUTING.md)
-- [Core]()
-    - [Overview](./docs/CoreConcepts.md)
-    - [Configuration](./docs/Configuration.md)
-    - [Templating](./docs/Templating.md)
-    - [Navigation](./docs/Navigation.md)
-- [Resources]()
-    - [Tips](./docs/Tips.md)
-    - [Fields](./docs/CustomFields.md)
-- [Reference]()
-    - [Content](./docs/references/Content.md)
-    - [DocumentType](./docs/references/DocumentType.md)
-    - [Template](./docs/references/Template.md)
-    - [Available Services](./docs/references/Services.md)
-
+InspireCMS is the foundation library that powers the InspireCMS platform. This package provides essential functionality, including content management, admin interfaces, and extensibility features. Designed with flexibility and developer experience in mind, it allows you to quickly build customized content management systems for your Laravel applications.
 
 ## Testing
 
 ```bash
 composer test
 ```
+
+## Contributing
+
+We welcome contributions to the documentation. Please see our [contribution guidelines](./Contributing.md) for more information.
 
 ## Changelog
 
@@ -52,3 +35,7 @@ Please review [our security policy](../../security/policy) on how to report secu
 ## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+## Resources
+
+* [Documentation](./docs/index.md)
