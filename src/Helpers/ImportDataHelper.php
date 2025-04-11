@@ -361,12 +361,32 @@ class ImportDataHelper
 
     public static function getDiskDriver(): string
     {
-        return strval(InspireCmsConfig::get('imports.disk', 'local'));
+        return strval(InspireCmsConfig::get('import_export.imports.disk', 'local'));
+    }
+
+    public static function getDirectory(): string
+    {
+        return strval(InspireCmsConfig::get('import_export.imports.directory', 'imports'));
     }
 
     public static function getTempDiskDriver(): string
     {
-        return strval(InspireCmsConfig::get('imports.temp_disk', 'local'));
+        return strval(InspireCmsConfig::get('import_export.imports.temporary.disk', 'local'));
+    }
+
+    public static function getTempDirectory(): string
+    {
+        return strval(InspireCmsConfig::get('import_export.imports.temporary.directory', 'temp/imports'));
+    }
+
+    public static function getAllowedMimeTypes(): array
+    {
+        return InspireCmsConfig::get('import_export.imports.allowed_mime_types', []);
+    }
+
+    public static function getMaxFileSize(): int
+    {
+        return (int) InspireCmsConfig::get('import_export.imports.max_file_size', 2048);
     }
 
     /**

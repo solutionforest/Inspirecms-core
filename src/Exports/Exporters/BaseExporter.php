@@ -3,7 +3,9 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Exports\ExportResult;
+use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Models\Contracts\Export;
 
@@ -33,19 +35,36 @@ abstract class BaseExporter
         return str(static::class)->classBasename()->snake()->replace('_', ' ')->apa()->toString();
     }
 
+    protected function getTempFolderPath($folder)
+    {
+        return collect([
+            ExportDataHelper::getTempDirectory(),
+            $folder,
+        ])->filter(fn ($item) => ! empty($item))->implode(DIRECTORY_SEPARATOR);
+    }
+
+    /**
+     * @return \Illuminate\Contracts\Filesystem\Filesystem
+     */
+    protected function getTempDisk()
+    {
+        return Storage::disk(ExportDataHelper::getTempDiskDriver());
+    }
+
     /**
      * @param  string  $folderName
      */
     protected function generateTempFolder($folderName)
     {
-        $disk = $this->record->getDisk();
+        $disk = $this->getTempDisk();
+        $path = $this->getTempFolderPath($folderName);
 
         // Create directory with permissions
-        if (! $disk->exists($folderName)) {
-            $disk->makeDirectory($folderName, 0777, true);
+        if (! $disk->exists($path)) {
+            $disk->makeDirectory($path, 0777, true);
         }
 
-        return [$disk, $disk->path($folderName)];
+        return [$disk, $disk->path($path)];
     }
 
     protected function generateTempFolderForImport($folderName, array $importTypes = [])
@@ -53,12 +72,19 @@ abstract class BaseExporter
         [$fs, $fullPath] = $this->generateTempFolder($folderName);
 
         $subFolders = [];
+
         foreach ($importTypes as $importType) {
-            $folderPath = $folderName . '/' . $importType;
-            if (! $fs->exists($folderPath)) {
-                $fs->makeDirectory($folderPath, 0777, true);
+            
+            $path = collect([
+                ExportDataHelper::getTempDirectory(),
+                $folderName,
+                $importType,
+            ])->filter(fn ($item) => ! empty($item))->implode(DIRECTORY_SEPARATOR);
+
+            if (! $fs->exists($path)) {
+                $fs->makeDirectory($path, 0777, true);
             }
-            $subFolders[$importType] = $folderPath;
+            $subFolders[$importType] = $path;
         }
 
         return [$fs, $fullPath, $subFolders];
@@ -66,16 +92,28 @@ abstract class BaseExporter
 
     protected function zipTempFolder($folderName, bool $deleteFolder = true)
     {
-        $disk = $this->record->getDisk();
-        $folderFullPath = $disk->path($folderName);
+        $folderDisk = $this->getTempDisk();
+        $folderPath = $this->getTempFolderPath($folderName);
+        $folderFullPath = $folderDisk->path($folderPath);
 
-        $zipPath = $folderName . '.zip';
+        $disk = $this->record->getDisk();
+        $zipPath = collect([
+            ExportDataHelper::getDirectory(),
+            $folderName . '.zip',
+        ])->filter(fn ($item) => ! empty($item))->implode(DIRECTORY_SEPARATOR);
+        $zipDir = str($zipPath)->beforeLast('/')->toString();
+
+        // Create directory with permissions
+        if (filled($zipDir) && ! $disk->exists($zipDir)) {
+            $disk->makeDirectory($zipDir, 0777, true);
+        }
+
         $zipFullPath = $disk->path($zipPath);
 
         FileHelper::buildZipFromFolder($folderFullPath, $zipFullPath);
 
         if ($deleteFolder) {
-            $disk->deleteDirectory($folderName);
+            $folderDisk->deleteDirectory($folderPath);
         }
 
         return $zipPath;

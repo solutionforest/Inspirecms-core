@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Export;
@@ -137,15 +138,11 @@ class ExportResource extends Resource implements ClusterSectionResource
 
     public static function form(Form $form): Form
     {
-        $exporters = collect(InspireCmsConfig::get('exports.exporters', []))
-            ->mapWithKeys(fn ($exporter) => [$exporter => $exporter::getLabel()])
-            ->all();
-
         return $form
             ->columns(1)
             ->schema([
                 Forms\Components\Select::make('exporter')
-                    ->options($exporters)
+                    ->options(ExportDataHelper::getExporters())
                     ->required()
                     ->live()
                     ->afterStateUpdated(fn (Forms\Components\Select $component) => $component

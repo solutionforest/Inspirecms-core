@@ -142,15 +142,8 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->validationAttribute(__('inspirecms::resources/import.file_name.validation_attribute'))
                     ->hint(__('inspirecms::resources/import.file_name.hint'))
                     ->disk(ImportDataHelper::getDiskDriver())
-                    ->acceptedFileTypes([
-                        // zip
-                        ...[
-                            'application/zip',
-                            'application/octet-stream',
-                            'application/x-zip-compressed',
-                            'multipart/x-zip',
-                        ],
-                    ])
+                    ->directory(ImportDataHelper::getDirectory())
+                    ->acceptedFileTypes(ImportDataHelper::getAllowedMimeTypes())
                     ->preserveFilenames(false),
 
                 Forms\Components\Actions::make([

@@ -104,9 +104,9 @@ return [
         'enable_cluster_navigation' => true,
         'panel_id' => 'cms',
         'path' => 'cms',
-        'brand' => [
+        'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
             'name' => 'InspireCMS',
-            'logo' => fn () => view('inspirecms::logo'),
+            'logo' => fn () => view('inspirecms::logo'), 
             'favicon' => fn () => asset('images/favicon.png'),
         ],
         'database_notification' => [
@@ -140,19 +140,44 @@ return [
         ],
     ],
 
-    'imports' => [
-        'disk' => 'local',
-        'temp_disk' => 'local',
-        'temp_directory' => 'temp/imports',
-    ],
+    'import_export' => [
 
-    'exports' => [
-        'disk' => 'local',
-        'exporters' => [
-            \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+        'imports' => [
+
+            'disk' => 'local',
+            'directory' => 'imports',
+
+            'temporary' => [
+                'disk' => 'local',
+                'directory' => 'temp/imports',
+            ],
+            
+            'allowed_mime_types' => [
+                'application/zip',
+                'application/octet-stream',
+                'application/x-zip-compressed',
+                'multipart/x-zip',
+            ],
+
+            'max_file_size' => 10 * 1024,
+        ],
+
+        'exports' => [
+
+            'disk' => 'local',
+            'directory' => 'exports',
+
+            'temporary' => [
+                'disk' => 'local',
+                'directory' => 'temp/exports',
+            ],
+
+            'exporters' => [
+                \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
+                \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
+                \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
+                \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+            ],
         ],
     ],
 
