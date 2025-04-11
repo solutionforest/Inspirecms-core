@@ -173,11 +173,13 @@ class InspireCms
     public function getAllAvailableLanguages(): array
     {
         if (! $this->cachedLanguages) {
-            $this->cachedLanguages = $this->cacheManager->remember(
-                InspireCmsConfig::get('cache.languages.key'),
-                InspireCmsConfig::get('cache.languages.ttl'),
-                fn () => $this->getSerializedLanguagesForCache()
-            );
+            $this->cachedLanguages = $this->cacheManager
+                ->store(InspireCmsConfig::get('cache.languages.store'))
+                ->remember(
+                    InspireCmsConfig::get('cache.languages.key'),
+                    InspireCmsConfig::get('cache.languages.ttl'),
+                    fn () => $this->getSerializedLanguagesForCache()
+                );
         }
 
         return collect($this->cachedLanguages['languages'] ?? [])
@@ -193,7 +195,9 @@ class InspireCms
 
     public function forgetCachedLanguages(): void
     {
-        $this->cacheManager->forget(InspireCmsConfig::get('cache.languages.key'));
+        $this->cacheManager
+            ->store(InspireCmsConfig::get('cache.languages.store'))
+            ->forget(InspireCmsConfig::get('cache.languages.key'));
     }
 
     /**
@@ -202,11 +206,13 @@ class InspireCms
     public function getNavigation(string $category, ?string $locale = null): array
     {
         if (! $this->cachedNavigation) {
-            $this->cachedNavigation = $this->cacheManager->remember(
-                InspireCmsConfig::get('cache.navigation.key'),
-                InspireCmsConfig::get('cache.navigation.ttl'),
-                fn () => $this->getSerializedNavigationForCache()
-            );
+            $this->cachedNavigation = $this->cacheManager
+                ->store(InspireCmsConfig::get('cache.navigation.store'))
+                ->remember(
+                    InspireCmsConfig::get('cache.navigation.key'),
+                    InspireCmsConfig::get('cache.navigation.ttl'),
+                    fn () => $this->getSerializedNavigationForCache()
+                );
         }
 
         return collect($this->cachedNavigation['navigation'] ?? [])
@@ -235,7 +241,9 @@ class InspireCms
 
     public function forgetCachedNavigation(): void
     {
-        $this->cacheManager->forget(InspireCmsConfig::get('cache.navigation.key'));
+        $this->cacheManager
+            ->store(InspireCmsConfig::get('cache.content_routes.store'))
+            ->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
 
     /**
@@ -244,11 +252,13 @@ class InspireCms
     public function getContentRoutes()
     {
         if (! $this->cachedContentRoutes) {
-            $this->cachedContentRoutes = $this->cacheManager->remember(
-                InspireCmsConfig::get('cache.content_routes.key'),
-                InspireCmsConfig::get('cache.content_routes.ttl'),
-                fn () => $this->getSerializedContentRoutesForCache()
-            );
+            $this->cachedContentRoutes = $this->cacheManager
+                ->store(InspireCmsConfig::get('cache.content_routes.store'))
+                ->remember(
+                    InspireCmsConfig::get('cache.content_routes.key'),
+                    InspireCmsConfig::get('cache.content_routes.ttl'),
+                    fn () => $this->getSerializedContentRoutesForCache()
+                );
         }
 
         return collect($this->cachedContentRoutes['routes'] ?? [])
@@ -258,7 +268,9 @@ class InspireCms
 
     public function forgetCachedContentRoutes(): void
     {
-        $this->cacheManager->forget(InspireCmsConfig::get('cache.content_routes.key'));
+        $this->cacheManager
+            ->store(InspireCmsConfig::get('cache.content_routes.store'))
+            ->forget(InspireCmsConfig::get('cache.content_routes.key'));
     }
 
     // region Helpers

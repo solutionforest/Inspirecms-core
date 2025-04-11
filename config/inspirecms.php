@@ -79,19 +79,24 @@ return [
 
     'cache' => [
         'languages' => [
+            'store' => null, // null: Fallback to default store
             'key' => 'inspirecms.languages',
             'ttl' => 60 * 60 * 24,
         ],
         'navigation' => [
+            'store' => null, // null: Fallback to default store
             'key' => 'inspirecms.navigation',
             'ttl' => 60 * 60 * 24,
         ],
         'content_routes' => [
+            'store' => null, // null: Fallback to default store
             'key' => 'inspirecms.content_routes',
             'ttl' => 120 * 60 * 24,
         ],
         'key_value' => [
+            'store' => null, // null: Fallback to default store
             'ttl' => 60 * 60 * 24,
+            'prefix' => 'inspire_key_value.',
         ],
     ],
 

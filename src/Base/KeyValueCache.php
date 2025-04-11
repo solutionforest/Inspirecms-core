@@ -11,17 +11,16 @@ use SolutionForest\InspireCms\Models\Contracts\KeyValue;
 class KeyValueCache
 {
     /**
-     * Cache prefix for key-value pairs
-     */
-    protected const CACHE_PREFIX = 'inspire_key_value_';
-
-    /**
      * @var CacheManager
      */
     protected $cacheManager;
 
     /** @var \DateInterval|int */
     protected $cacheExpirationTime;
+
+    protected $cacheStore = null;
+
+    protected $keyPrefix = null;
 
     /**
      * @param  CacheManager  $cacheManager
@@ -30,6 +29,8 @@ class KeyValueCache
     {
         $this->cacheManager = $cacheManager;
         $this->cacheExpirationTime = $ttl ?? InspireCmsConfig::get('cache.key_value.ttl') ?? \DateInterval::createFromDateString('24 hours');
+        $this->cacheStore = InspireCmsConfig::get('cache.key_value.store') ?? null;
+        $this->keyPrefix = InspireCmsConfig::get('cache.key_value.prefix') ?? null;
     }
 
     /**
@@ -64,15 +65,17 @@ class KeyValueCache
             return;
         }
 
-        return $this->cacheManager->remember(
-            $this->getCacheKey($key),
-            $this->cacheExpirationTime,
-            function () use ($key, $default, $model) {
-                $keyValue = $model::findKeyValue($key);
+        return $this->cacheManager
+            ->store($this->cacheStore)
+            ->remember(
+                $this->getCacheKey($key),
+                $this->cacheExpirationTime,
+                function () use ($key, $default, $model) {
+                    $keyValue = $model::findKeyValue($key);
 
-                return $keyValue ? $keyValue->value : $default;
-            }
-        );
+                    return $keyValue ? $keyValue->value : $default;
+                }
+            );
     }
 
     /**
@@ -82,7 +85,9 @@ class KeyValueCache
      */
     public function set(string $key, $value): void
     {
-        $this->cacheManager->put($this->getCacheKey($key), $value);
+        $this->cacheManager
+            ->store($this->cacheStore)
+            ->put($this->getCacheKey($key), $value);
     }
 
     /**
@@ -90,7 +95,9 @@ class KeyValueCache
      */
     public function forget(string $key): void
     {
-        $this->cacheManager->forget($this->getCacheKey($key));
+        $this->cacheManager
+            ->store($this->cacheStore)
+            ->forget($this->getCacheKey($key));
     }
 
     /**
@@ -116,7 +123,7 @@ class KeyValueCache
      */
     protected function getCacheKey(string $key): string
     {
-        return self::CACHE_PREFIX . $key;
+        return $this->keyPrefix . $key;
     }
 
     /**
