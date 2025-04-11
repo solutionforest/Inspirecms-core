@@ -213,6 +213,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             Commands\AboutCommand::class,
             Commands\CacheStats::class,
+            Commands\GenerateSitemap::class,
             Commands\UpdatePluginCommand::class,
             Commands\PublishPanel::class,
             Commands\InstallRequirePacakges::class,
