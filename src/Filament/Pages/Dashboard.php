@@ -44,6 +44,7 @@ class Dashboard extends Page
             Widgets\PageActivity::class,
         ];
     }
+
     public function getHeaderWidgetsColumns(): int | string | array
     {
         return 1;
