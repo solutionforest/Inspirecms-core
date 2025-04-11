@@ -125,7 +125,7 @@ trait CmsUserTrait
                     'last_lockouted_at' => null,
                 ]);
 
-                $this->userActivity()->updateOrCreate([
+                $this->userActivities()->updateOrCreate([
                     'ip_address' => request()->ip(),
                 ], [
                     'last_logged_in_at_utc' => now()->utc(),
@@ -135,7 +135,7 @@ trait CmsUserTrait
 
             case UserActivity::Logout:
 
-                $this->userActivity()->updateOrCreate([
+                $this->userActivities()->updateOrCreate([
                     'ip_address' => request()->ip(),
                 ], [
                     'last_logged_out_at_utc' => now()->utc(),

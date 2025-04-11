@@ -34,8 +34,8 @@ class User extends BaseAuthenticatableModel implements UserContract
         'email_confirmed_at' => 'datetime',
     ];
 
-    public function userActivity()
+    public function userActivities()
     {
-        return $this->hasOne(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
+        return $this->hasMany(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
     }
 }

@@ -32,9 +32,9 @@ interface User extends AuthenticatableContract, AuthorizableContract, CanResetPa
     /**
      * Get the user's activity.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function userActivity();
+    public function userActivities();
 
     public function getFilamentFallbackAvatarUrl(): ?string;
 
