@@ -581,7 +581,15 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Blade::component('cms-template', Template::class);
 
         Blade::directive('property', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            $list = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            if (count($list) === 4) {
+                [$group, $property, $dtoVar, $propertyVarName] = $list;
+            } else {
+                // Return nothing
+                return '';
+            }
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
@@ -589,7 +597,15 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             ?>";
         });
         Blade::directive('propertyArray', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            $list = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            if (count($list) === 4) {
+                [$group, $property, $dtoVar, $propertyVarName] = $list;
+            } else {
+                // Return nothing
+                return '';
+            }
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
@@ -597,7 +613,15 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         });
 
         Blade::directive('propertyNotEmpty', function ($expression) {
-            [$group, $property, $dtoVar, $propertyVarName] = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            $list = TemplateHelper::splitBladeExpressionForProperty($expression);
+
+            if (count($list) === 4) {
+                [$group, $property, $dtoVar, $propertyVarName] = $list;
+            } else {
+                // Return nothing
+                return '';
+            }
 
             return "<?php 
                 \${$propertyVarName} = {$dtoVar}->getPropertyGroup('{$group}')?->getPropertyData('{$property}')?->getValue();
