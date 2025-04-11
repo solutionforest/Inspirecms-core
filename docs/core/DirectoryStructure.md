@@ -9,27 +9,24 @@ InspireCMS follows Laravel's standard directory structure, with additional direc
 ```
 project/ 
 ├── app/ 
-│ └── Cms/ # Custom CMS extensions 
-│ ├── Clusters/ # Custom admin panel clusters 
-│ ├── Pages/ # Custom admin panel pages 
-│ ├── Resources/ # Custom admin panel resources 
-│ └── Widgets/ # Custom admin panel widgets 
+│   └── Cms/ # Custom CMS extensions 
+│       ├── Clusters/ # Custom admin panel clusters 
+│       ├── Pages/ # Custom admin panel pages 
+│       ├── Resources/ # Custom admin panel resources 
+│       └── Widgets/ # Custom admin panel widgets 
 ├── config/ 
-│ └── inspirecms.php # Main CMS configuration file 
+│   └── inspirecms.php # Main CMS configuration file 
 ├── database/ 
-│ └── migrations/ # Database migrations (including CMS tables) 
+│   └── migrations/ # Database migrations (including CMS tables) 
 ├── resources/ 
-│ ├── views/ 
-│ │ ├── components/ 
-│ │ │ └── inspirecms/ # CMS components and templates 
-│ │ │ └── {theme}/ # Theme-specific components 
-│ │ └── inspirecms/ # CMS view overrides 
-│ │ └── templates/ # Exported templates 
-│ └── lang/ # Localization files 
-└── vendor/ 
-└── solution-forest/ # InspireCMS packages 
-├── inspirecms-core/ # Core CMS functionality 
-└── inspirecms-support/ # Support libraries
+│   ├── views/ 
+│   │   ├── components/ 
+│   │   │   └── inspirecms/ # CMS components and templates 
+│   │   │       └── {theme}/ # Theme-specific components 
+│   │   └── inspirecms/ # CMS view overrides 
+│   │       └── templates/ # Exported templates 
+│   └── lang/ # Localization files 
+└── vendor/
 ```
 
 ## Key Directories Explained
@@ -104,6 +101,6 @@ php artisan make:filament-page YourPage --panel=cms
 
 Now that you understand the directory structure, you might want to explore:
 
-* Control Panel overview
-* Creating custom fields
-* Working with themes
+* [Control Panel overview](./ControlPanel.md)
+* [Creating custom fields](./CustomFields.md)
+* [Working with themes](./Themes.md)

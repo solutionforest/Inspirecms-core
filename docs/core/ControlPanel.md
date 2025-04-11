@@ -14,7 +14,7 @@ The path can be customized in your configuration if needed:
 
 ```php
 // config/inspirecms.php
-'filament' => [
+'admin' => [
     'path' => 'admin', // Changes the path from /cms to /admin
     // other settings...
 ],
@@ -86,32 +86,20 @@ The Settings section includes:
 
 ### Branding
 
-You can customize the appearance of the control panel in your service provider:
+You can customize the appearance of the control panel through the configuration file:
 
 ```php
-use Filament\Panel;
-use SolutionForest\InspireCms\CmsPanelProvider;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function boot(): void
-    {
-        CmsPanelProvider::configureUsing(function (Panel $panel): void {
-            $panel
-                ->brandName('Your Site Name')
-                ->brandLogo(fn () => view('custom.logo'))
-                ->colors([
-                    'primary' => [
-                        50 => '238, 242, 255',
-                        100 => '224, 231, 255',
-                        // ...other color values
-                    ],
-                ])
-                ->font('Poppins');
-        });
-    }
-}
+// config/inspirecms.php
+'admin' => [
+    'brand' => [
+        'name' => 'Your Site Name',
+        'logo' => 'path/to/your-logo.svg',
+        'favicon' => 'path/to/favicon.ico', // Optional
+    ],
+],
 ```
+
+The control panel automatically adapts to these branding settings, giving your admin area a custom look that matches your site's identity.
 
 ### Adding Custom Resources
 
@@ -145,6 +133,56 @@ You can add custom pages to the control panel:
 ],
 ```
 
+### Control Panel Appearance
+
+You can fully customize the control panel's theme by overriding the default CmsPanelProvider. This allows you to change colors, fonts, and other visual elements to match your brand.
+
+#### Creating a Custom Panel Provider
+
+First, create a custom provider class that extends the base CmsPanelProvider:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use SolutionForest\InspireCms\CmsPanelProvider;
+use Filament\Panel;
+
+class CustomCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel)
+    {
+        return parent::configureCmsPanel($panel)
+            ->colors([
+                'primary' => '#6366f1',
+                'secondary' => '#8b5cf6',
+                'success' => '#10b981',
+                'info' => '#06b6d4',
+                'warning' => '#fbbf24',
+                'danger' => '#f43f5e',
+                'gray' => '#71717a',
+            ])
+            ->font('Poppins');
+    }
+}
+```
+
+#### Registering Your Custom Provider
+
+Next, register your custom provider in `bootstrap/providers.php`:
+
+```php
+<?php
+
+return [
+    App\Providers\CustomCmsPanelProvider::class,
+    // Other providers...
+];
+```
+
+For more advanced theme customization options, refer to the [Filament Panels documentation](https://filamentphp.com/docs/3.x/panels/themes).
+
 ## Widgets
 
 InspireCMS comes with several dashboard widgets:
@@ -157,21 +195,35 @@ InspireCMS comes with several dashboard widgets:
 
 ### Adding Custom Widgets
 
-Add custom widgets to extend dashboard functionality:
+You can add custom widgets by extending your custom panel provider:
 
 ```php
-// config/inspirecms.php
-'filament' => [
-    // Other settings...
-    'widgets' => [
-        // Default widgets
-        Widgets\CmsInfoWidget::class,
-        Widgets\PageActivity::class,
-        // Your custom widget
-        App\Filament\Widgets\AnalyticsWidget::class,
-    ],
-],
+<?php
+
+namespace App\Providers;
+
+use SolutionForest\InspireCms\CmsPanelProvider;
+use Filament\Panel;
+use App\Filament\Widgets\AnalyticsWidget;
+use SolutionForest\InspireCms\Filament\Widgets;
+
+class CustomCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel)
+    {
+        return parent::configureCmsPanel($panel)
+            ->widgets([
+                // Default widgets
+                Widgets\CmsInfoWidget::class,
+                Widgets\PageActivity::class,
+                // Your custom widget
+                AnalyticsWidget::class,
+            ]);
+    }
+}
 ```
+
+Remember to register your custom provider in `bootstrap/providers.php` as shown in the Customizing the Control Panel section.
 
 ## User Preferences
 

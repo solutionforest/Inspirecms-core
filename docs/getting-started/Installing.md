@@ -148,7 +148,7 @@ php artisan cache:clear
 ## Next Steps
 After installing InspireCMS, you might want to:
 
-* [Configure your settings](../core/)
-* [Create document types](../core/)
-* [Set up custom fields](../core/)
-* [Configure themes](../core/)
+* [Configure your settings](./Configuration.md)
+* [Create document types](../core/Document.md)
+* [Set up custom fields](../core/CustomFields.md)
+* [Configure themes](../core/Themes.md)
