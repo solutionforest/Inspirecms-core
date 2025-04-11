@@ -66,21 +66,9 @@ php artisan migrate
 php artisan inspirecms:repair-permissions
 ```
 
-## Version-Specific Upgrade Notes
-
-Upgrading from 0.0.3x to 0.0.35
-
-* Update your theme configurations in config/inspirecms.php
-* Review your custom field implementations as field processing has been enhanced
-
-Upgrading from 0.0.2x to 0.0.3x
-
-* Custom field converters have been refactored - update any custom converters
-* The user model now includes enhanced permissions - review custom user implementations
-
 ## Troubleshooting Upgrades
 
-**Configuration Issues**
+### Configuration Issues
 
 If your configuration appears outdated after upgrade:
 
@@ -90,14 +78,14 @@ php artisan vendor:publish --tag="inspirecms-config" --force
 
 Then manually merge your customizations from the old config file.
 
-**Database Schema Issues**
+### Database Schema Issues
 
 If you encounter database schema issues:
 ```bash
 php artisan migrate:status
 ```
 
-**Asset Issues**
+### Asset Issues
 
 If the admin panel appears broken after upgrade:
 
