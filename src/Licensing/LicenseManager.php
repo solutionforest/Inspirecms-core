@@ -52,11 +52,11 @@ class LicenseManager
                     if (is_array($offlineData)) {
                         $this->saveLicenseFile(json_encode($offlineData, JSON_PRETTY_PRINT));
                     }
-    
+
                     // Cache the result
                     $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
                     $this->cache()->put($cacheKey, $result, now()->addHours(24));
-    
+
                     return $result;
                 }
             }
