@@ -297,6 +297,7 @@ return [
     ],
 
     'localization' => [
+        'available_locales' => ['en', 'fr', 'zh_CN', 'zh_TW', 'es', 'ja', 'de'],
         'user_preferred_locales' => ['en', 'zh_CN', 'zh_TW'],
     ],
 ];

@@ -9,4 +9,8 @@ return [
         'label' => 'Code',
         'validation_attribute' => 'code',
     ],
+    'display_name' => [
+        'label' => 'Display Name',
+        'validation_attribute' => 'display_name',
+    ],
 ];

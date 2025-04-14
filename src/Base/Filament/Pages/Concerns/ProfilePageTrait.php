@@ -121,7 +121,7 @@ trait ProfilePageTrait
         return Forms\Components\Select::make('preferred_language')
             ->label(__('inspirecms::resources/user.preferred_language.label'))
             ->validationAttribute(__('inspirecms::resources/user.preferred_language.validation_attribute'))
-            ->options(LocalizationManager::getUserPreferredLocaleLabels())
+            ->options(LocalizationManager::getLocaleLabelsFor(LocalizationManager::getUserPreferredLocales()))
             ->searchable()
             ->required();
     }

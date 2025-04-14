@@ -6,10 +6,16 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LocaleManifest implements LocaleManifestInterface
 {
+    protected array $locales = [];
+
     protected array $userPreferredLocales = [];
 
     public function __construct()
     {
+        $this->locales = collect(InspireCmsConfig::get('localization.available_locales', ['en', 'fr', 'zh_CN', 'zh_TW', 'es', 'ja', 'de']))
+            ->mapWithKeys(fn ($locale) => [$locale => $locale])
+            ->all();
+
         $this->userPreferredLocales = collect(InspireCmsConfig::get('localization.user_preferred_locales', ['en', 'zh_CN', 'zh_TW']))
             ->mapWithKeys(fn ($locale) => [$locale => $locale])
             ->all();
@@ -30,41 +36,22 @@ class LocaleManifest implements LocaleManifestInterface
         return $this->userPreferredLocales;
     }
 
-    public function getUserPreferredLocaleLabels(?string $displayLocale = null): array
+    public function getLocales(): array
     {
-        return collect($this->getUserPreferredLocales())
+        return $this->locales;
+    }
+
+    public function getLocaleLabelsFor(array $locales, ?string $displayLocale = null): array
+    {
+        return collect($locales)
             ->mapWithKeys(fn ($locale) => [
-                $locale => locale_get_display_name($locale, $displayLocale ?? app()->getLocale()),
+                $locale => $this->getLocaleLabel($locale, $displayLocale),
             ])
             ->all();
     }
 
-    public function getLocales(): array
+    public function getLocaleLabel(string $locale, ?string $displayLocale = null): string
     {
-        return array_keys($this->getLocaleLabels());
-    }
-
-    public function getLocaleLabels(): array
-    {
-        return [
-            'en_US' => 'English (United States)',
-            'en_GB' => 'English (United Kingdom)',
-            'es_ES' => 'Spanish (Spain)',
-            'fr_FR' => 'French (France)',
-            'de_DE' => 'German (Germany)',
-            'it_IT' => 'Italian (Italy)',
-            'pt_BR' => 'Portuguese (Brazil)',
-            'ja_JP' => 'Japanese (Japan)',
-            'zh_CN' => 'Chinese (Simplified)',
-            'zh_TW' => 'Chinese (Traditional)',
-            'ru_RU' => 'Russian (Russia)',
-            'ar_SA' => 'Arabic (Saudi Arabia)',
-            'hi_IN' => 'Hindi (India)',
-            'nl_NL' => 'Dutch (Netherlands)',
-            'ko_KR' => 'Korean (South Korea)',
-            'tr_TR' => 'Turkish (Turkey)',
-            'pl_PL' => 'Polish (Poland)',
-            'sv_SE' => 'Swedish (Sweden)'
-        ];
+        return locale_get_display_name($locale,  $displayLocale ?? app()->getLocale());
     }
 }

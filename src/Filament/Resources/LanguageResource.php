@@ -55,7 +55,14 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->columns([
                 Tables\Columns\TextColumn::make('code')
                     ->label(__('inspirecms::resources/language.code.label'))
-                    ->sortable(),
+                    ->sortable()
+                    ->width('5%'),
+                Tables\Columns\TextColumn::make('display_name')
+                    ->label(__('inspirecms::resources/language.display_name.label'))
+                    ->getStateUsing(fn ($record) => filled($record->code) ? LocalizationManager::getLocaleLabel($record->code) : null)
+                    ->extraAttributes(fn (Model | Language $record) => [
+                        'data-locale' => $record->code,
+                    ]),
                 Tables\Columns\CheckboxColumn::make('is_default')
                     ->label(__('inspirecms::resources/language.is_default.label'))
                     ->width('1%')

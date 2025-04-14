@@ -10,9 +10,9 @@ interface LocaleManifestInterface
 
     public function getUserPreferredLocales(): array;
 
-    public function getUserPreferredLocaleLabels(?string $displayLocale = null): array;
-
     public function getLocales(): array;
 
-    public function getLocaleLabels(): array;
+    public function getLocaleLabelsFor(array $locales, ?string $displayLocale = null): array;
+    
+    public function getLocaleLabel(string $locale, ?string $displayLocale = null): string;
 }
