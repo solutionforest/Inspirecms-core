@@ -474,11 +474,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 if (($options['enabled'] ?? false) !== true) {
                     continue;
                 }
-                if (! isset($options['width']) ||! is_int($options['width'])) {
+                if (! isset($options['width']) || ! is_int($options['width'])) {
                     continue;
                 }
-                Support\Facades\MediaLibraryRegistry::registerConversionUsing(fn ($model, $media) => 
-                    $model
+                Support\Facades\MediaLibraryRegistry::registerConversionUsing(
+                    fn ($model, $media) => $model
                         ->addMediaConversion($name)
                         ->width($options['width'])
                         ->withResponsiveImages()
