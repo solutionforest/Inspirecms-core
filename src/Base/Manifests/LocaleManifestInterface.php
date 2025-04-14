@@ -13,6 +13,6 @@ interface LocaleManifestInterface
     public function getLocales(): array;
 
     public function getLocaleLabelsFor(array $locales, ?string $displayLocale = null): array;
-    
+
     public function getLocaleLabel(string $locale, ?string $displayLocale = null): string;
 }
