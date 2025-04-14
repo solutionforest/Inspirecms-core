@@ -64,7 +64,7 @@ class LocaleManifest implements LocaleManifestInterface
             'ko_KR' => 'Korean (South Korea)',
             'tr_TR' => 'Turkish (Turkey)',
             'pl_PL' => 'Polish (Poland)',
-            'sv_SE' => 'Swedish (Sweden)'
+            'sv_SE' => 'Swedish (Sweden)',
         ];
     }
 }
