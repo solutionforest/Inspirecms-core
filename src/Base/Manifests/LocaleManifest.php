@@ -52,6 +52,6 @@ class LocaleManifest implements LocaleManifestInterface
 
     public function getLocaleLabel(string $locale, ?string $displayLocale = null): string
     {
-        return locale_get_display_name($locale,  $displayLocale ?? app()->getLocale());
+        return locale_get_display_name($locale, $displayLocale ?? app()->getLocale());
     }
 }
