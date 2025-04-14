@@ -25,15 +25,6 @@ resources/views/components/inspirecms/{theme-name}/
 └── ... other components
 ```
 
-## Default Themes
-
-InspireCMS comes with a default theme called `manifest`. This theme includes:
-
-- Responsive layout templates
-- Basic page components
-- Essential styling
-- Common site elements (header, footer, navigation)
-
 ## Viewing and Changing Themes
 
 ### Viewing Available Themes
@@ -54,6 +45,9 @@ To switch themes:
 4. Confirm the change
 
 The theme change takes effect immediately on your site.
+
+>[!TIP]
+>You can view the current theme by running `php artisan inspirecms:about`
 
 ## Creating a New Theme
 
@@ -141,7 +135,7 @@ This copies all templates and components from the source theme to your new theme
 
 ## Theme Components
 
-Themes use Blade components to create reusable UI elements.
+Themes use [Blade components](https://laravel.com/docs/11.x/blade) to create reusable UI elements.
 
 ### Creating Theme Components
 
@@ -347,33 +341,6 @@ Create specialized templates for different content types:
 </x-dynamic-component>
 ```
 
-## Theme Inheritance
-
-Theme inheritance allows child themes to extend parent themes:
-
-### Creating a Child Theme
-
-1. Create a new theme directory
-2. Implement only the components you want to override
-3. Configure the parent-child relationship
-
-```php
-// config/themes/your-child-theme.php
-return [
-    'parent' => 'your-parent-theme',
-    // other configuration...
-];
-```
-
-Then access parent theme components when needed:
-
-```php
-@php
-    $parentComponent = inspirecms_templates()->getComponentWithTheme('sidebar', 'your-parent-theme');
-@endphp
-<x-dynamic-component :component="$parentComponent" />
-```
-
 ## Responsive Design
 
 Ensure your theme works across different devices:
@@ -437,12 +404,247 @@ To share your theme with others:
 3. List required assets and dependencies
 4. Provide example templates and screenshots
 
-## Theme Marketplace
+## Implementation Examples
 
-If your InspireCMS version supports it, you can:
+Let's assume you've created a theme named "**abc**".
 
-1. Publish themes to the theme marketplace
-2. Install themes from the marketplace
-3. Rate and review installed themes
-4. Contribute to community theme development
-        
+### Approach 1: Using Components
+
+#### Folder Structure
+```
+resources/views/components/inspirecms/abc/
+├── footer.blade.php
+├── header.blade.php
+├── layout.blade.php
+├── page.blade.php
+└── simple-page.blade.php
+```
+
+#### Component Files
+
+```php
+<!-- resources/views/components/inspirecms/abc/layout.blade.php -->
+@php
+    $title ??= config('app.name');
+    $locale ??= request()->getLocale();
+@endphp
+<html lang="{{ $locale }}">
+    <head>
+        @if (isset($seo) && $seo instanceof \Illuminate\Contracts\Support\Htmlable)
+            {{ $seo }}
+        @else
+            <title>{{ $title }}</title>
+        @endif
+        @yield('styles')
+    </head>
+    <body>
+        {{ $slot }}
+        @yield('scripts')
+    </body>
+</html>
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/header.blade.php -->
+<nav>
+    @foreach (inspirecms()->getNavigation('main', $locale ?? request()->getLocale()) as $item)
+        <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+    @endforeach
+</nav>
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/footer.blade.php -->
+<footer>
+    <div>
+        @foreach (inspirecms()->getNavigation('footer', $locale ?? request()->getLocale()) as $item)
+            <div>
+                <h4>{{ $item->getTitle() }}</h4>
+                @if ($item->hasChildren())
+                    <ul>
+                        @foreach ($item->children as $child)
+                            <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endforeach
+    </div>
+
+    <div class="copyright">
+        <p>Copyright</p>
+    </div>
+</footer>
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/page.blade.php -->
+@php
+    $locale ??= $content?->getLocale() ?? request()->getLocale();
+    $title = $content?->getTitle();
+    $seo = $content?->getSeo()?->getHtml();
+
+    $layoutComponent = inspirecms_templates()->getComponentWithTheme('layout');
+    $headerComponent = inspirecms_templates()->getComponentWithTheme('header');
+    $footerComponent = inspirecms_templates()->getComponentWithTheme('footer');
+@endphp
+<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale">
+    <x-dynamic-component :component="$headerComponent" :locale="$locale" />
+    {{ $slot }}
+    <x-dynamic-component :component="$footerComponent" :locale="$locale" />
+</x-dynamic-component>
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/simple-page.blade.php -->
+@php
+    $locale ??= $content?->getLocale() ?? request()->getLocale();
+    $title = $content?->getTitle();
+    $seo = $content?->getSeo()?->getHtml();
+
+    $layoutComponent = inspirecms_templates()->getComponentWithTheme('layout');
+    $footerComponent = inspirecms_templates()->getComponentWithTheme('footer');
+@endphp
+<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale">
+    {{ $slot }}
+    <x-dynamic-component :component="$footerComponent" :locale="$locale" />
+</x-dynamic-component>
+```
+
+#### Applying Layouts to Templates
+
+```php
+<!-- Template: home -->
+<x-cms-template :content="$content" type="page">
+    Home
+</x-cms-template>
+```
+
+```php
+<!-- Template: tnc -->
+<x-cms-template :content="$content" type="simple-page">
+    TNC Here
+</x-cms-template>
+```
+
+### Approach 2: Using Template Inheritance
+
+#### Folder Structure
+```
+resources/views/
+├── layouts/
+│   └── inspirecms/
+│       └── abc/
+│           ├── base.blade.php
+│           ├── footer.blade.php
+│           └── topnav.blade.php
+└── components/
+    └── inspirecms/
+        └── abc/
+            ├── page.blade.php
+            └── simple-page.blade.php
+```
+
+Learn more about [layouts using inheritance in Blade](https://laravel.com/docs/11.x/blade#layouts-using-template-inheritance).
+
+#### Template Files
+
+```php
+<!-- resources/views/layouts/inspirecms/abc/base.blade.php -->
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta charset="utf-8">
+        @hasSection('seo')
+            @yield('seo')
+        @endif
+        @sectionMissing('seo')
+            <title>App Name - @yield('title')</title>
+        @endif
+    </head>
+    <body>
+        @yield('content')
+    </body>
+</html>
+```
+
+```php
+<!-- resources/views/layouts/inspirecms/abc/topnav.blade.php -->
+<nav>
+    @foreach (inspirecms()->getNavigation('topnav', $locale ?? request()->getLocale()) as $item)
+        <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+    @endforeach
+</nav>
+```
+
+**Footer Layout**
+```php
+<!-- resources/views/layouts/inspirecms/abc/footer.blade.php -->
+<footer>
+    <div>
+        @foreach (inspirecms()->getNavigation('footer', $locale ?? request()->getLocale()) as $item)
+            <div>
+                <h4>{{ $item->getTitle() }}</h4>
+                @if ($item->hasChildren())
+                    <ul>
+                        @foreach ($item->children as $child)
+                            <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+        @endforeach
+    </div>
+
+    <div class="copyright">
+        <p>Copyright</p>
+    </div>
+</footer>
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/page.blade.php -->
+@extends('layouts.'.inspirecms_templates()->getComponentWithTheme('base'))
+
+@section('content')
+    @include('layouts.'.inspirecms_templates()->getComponentWithTheme('topnav'))
+    <div class="container">
+        @yield('page-content', 'No content found')
+    </div>
+    @include('layouts.'.inspirecms_templates()->getComponentWithTheme('footer'))
+@endsection
+```
+
+```php
+<!-- resources/views/components/inspirecms/abc/simple-page.blade.php -->
+@extends('layouts.'.inspirecms_templates()->getComponentWithTheme('base'))
+
+@section('content')
+    <div class="container">
+        @yield('page-content', 'No content found')
+    </div>
+    @include('layouts.'.inspirecms_templates()->getComponentWithTheme('footer'))
+@endsection
+```
+
+#### Applying Layouts to Templates
+
+```php
+<!-- Template: home -->
+@extends('components.'.inspirecms_templates()->getComponentWithTheme('page'))
+@section('seo', $content->getSeo()?->getHtml())
+@section('title', $content->getTitle())
+@section('page-content')
+    <p>This is my body content.</p>
+@endsection
+```
+
+```php
+<!-- Template: tnc -->
+@extends('components.'.inspirecms_templates()->getComponentWithTheme('simple-page'))
+@section('seo', $content->getSeo()?->getHtml())
+@section('title', $content->getTitle())
+@section('page-content')
+    <p>TNC</p>
+@endsection
+```
