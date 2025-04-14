@@ -26,6 +26,8 @@ Configure the available languages in your configuration file:
     'zh_CN',  // Simplified Chinese
     'zh_TW',  // Traditional Chinese
     'es',     // Spanish
+    'ja',     // Japanese
+    'de',     // German
     // Add additional languages as needed
 ],
 ```
@@ -40,19 +42,14 @@ Languages are managed through the admin interface:
    - Add new languages
    - Edit language settings
    - Set the default language
-   - Enable/disable languages
 
 ### Adding a New Language
 
 1. Go to **Settings → Languages**
-2. Click **Create Language**
+2. Click **New Language**
 3. Fill in the required information:
    - **Locale Code**: Standard language code (e.g., 'fr' for French)
-   - **Name**: Language name in its native form (e.g., 'Français')
-   - **English Name**: Language name in English (e.g., 'French')
-   - **Direction**: LTR (left-to-right) or RTL (right-to-left)
    - **Is Default**: Whether this is the default language
-   - **Is Active**: Whether the language is currently available on the site
 4. Click **Save**
 
 ### Setting the Default Language
@@ -67,7 +64,7 @@ To change the default language:
 
 1. Go to **Settings → Languages**
 2. Find the language you want to make default
-3. Click the "Make Default" button or edit and check "Is Default"
+3. Toggle the "Default" checkbox or edit and check "Default"
 
 ## Translating Content
 
@@ -110,31 +107,10 @@ class YourFieldConfig extends FieldTypeBaseConfig implements FieldTypeConfig
 
 Or when configuring fields through the admin interface:
 
-1. Go to **Settings → Field Groups → [Your Field Group]**
+1. Go to **Settings → Custom Fields → [Your Field Group]**
 2. Edit the field you want to make translatable
 3. Enable the "Translatable" option
 4. Save the field configuration
-
-### Translation Status
-
-InspireCMS provides translation status indicators:
-
-- **Fully Translated**: All translatable fields have content in this language
-- **Partially Translated**: Some translatable fields have content in this language
-- **Not Translated**: No content has been provided in this language
-
-View translation status in the content list by enabling the language columns.
-
-### Bulk Translation Management
-
-For sites with extensive content:
-
-1. Go to **Content → Translation Manager** (if available in your version)
-2. Here you can:
-   - See all content requiring translation
-   - Filter by language or completion status
-   - Export content for translation
-   - Import translated content
 
 ## URL Structure for Multilingual Sites
 
@@ -150,21 +126,9 @@ InspireCMS supports different URL strategies for multilingual content:
 
 This is the default and most common approach, adding the language code to the URL.
 
-### 2. Domain-based Languages
+### 2. Custom URL Structure
 
-```
-en.yoursite.com/about-us
-fr.yoursite.com/a-propos
-es.yoursite.com/sobre-nosotros
-```
-
-For separate domains per language, configure in your `.env` or environment configuration:
-
-```
-INSPIRECMS_LANG_DOMAIN_MAPPING={"en":"en.yoursite.com","fr":"fr.yoursite.com","es":"es.yoursite.com"}
-```
-
-### 3. Custom URL Structure
+#### 2.1. Configure Frontend Segment Provider
 
 For advanced URL handling, implement a custom segment provider:
 
@@ -186,11 +150,109 @@ class CustomLanguageSegmentProvider implements SegmentProviderInterface
 {
     public function getSegments(string $uri): array
     {
-        // Your custom logic to handle language in URLs
-        // ...
+        // Remove query parameters if present
+        $path = parse_url($uri, PHP_URL_PATH) ?? $uri;
+        $path = trim($path, '/');
+        
+        if (empty($path)) {
+            return [];
+        }
+        
+        $segments = explode('/', $path);
+        
+        // Check if the first segment is a valid language code
+        $availableLocales = config('inspirecms.available_locales', ['en']);
+        
+        if (in_array($segments[0], $availableLocales)) {
+            // If first segment is a language code, extract it from segments
+            $locale = array_shift($segments);
+            app()->setLocale($locale);
+        }
+        
+        return $segments;
+    }
+
+    public function getLocaleFromDefaultRoute($route)
+    {
+        // Option 1: Language Prefix URLs
+        // Extract from URL path format: /en/about, /fr/contact, etc.
+        $uri = request()->getRequestUri();
+        $firstSegment = explode('/', trim($uri, '/'))[0] ?? null;
+        
+        $availableLocales = config('inspirecms.available_locales', ['en']);
+        if ($firstSegment && in_array($firstSegment, $availableLocales)) {
+            return $firstSegment;
+        }
+        
+        // Option 2: Domain-based Languages
+        // Extract from domain format: en.example.com, fr.example.com, etc.
+        $host = request()->getHost();
+        $domainMapping = json_decode(env('INSPIRECMS_LANG_DOMAIN_MAPPING', '{}'), true);
+        
+        // Check if current domain is mapped to a language
+        foreach ($domainMapping as $locale => $domain) {
+            if ($domain === $host) {
+                return $locale;
+            }
+        }
+        
+        // Check for subdomain-based locale
+        $subdomain = explode('.', $host)[0] ?? null;
+        if ($subdomain && in_array($subdomain, $availableLocales)) {
+            return $subdomain;
+        }
+        
+        // Return default locale if no match found
+        return app()->getLocale();
     }
 }
 ```
+
+#### 2.2 Configure Published Content Resolver
+
+For multilingual sites with custom URL structures, you may need a custom content resolver to determine which content to display based on the current language:
+
+```php
+// config/inspirecms.php
+'resolvers' => [
+    'published_content' => \App\Services\MultilingualContentResolver::class,
+],
+```
+
+Create your custom resolver:
+
+```php
+namespace App\Services;
+
+use SolutionForest\InspireCms\Dtos\PublishedContentDto;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
+use SolutionForest\InspireCms\Resolvers\PublishedContentResolverInterface;
+
+class MultilingualContentResolver implements PublishedContentResolverInterface
+{
+    protected $contentService;
+    
+    public function __construct(ContentServiceInterface $contentService)
+    {
+        $this->contentService = $contentService;
+    }
+
+    protected function getContentAndLocaleByRoute($route)
+    {
+        //
+    }
+}
+```
+
+This resolver gives you fine-grained control over how InspireCMS resolves URLs to content for different languages, allowing you to:
+
+- Handle different URL patterns per language
+- Implement language-specific content resolution logic
+- Create custom fallback strategies when content isn't available in the requested language
+- Support domain or subdomain-based language routing
+
+For complex multilingual architectures, you can combine this with the segment provider to create a fully customized routing solution.
+
 
 ## Language Switching
 
@@ -203,36 +265,12 @@ InspireCMS provides helper functions to create language switchers:
 <div class="language-switcher">
     @foreach(inspirecms()->getAllAvailableLanguages() as $locale => $languageDto)
         <a 
-            href="{{ request()->getLanguageUrl($locale) }}" 
+            href="{{ request()->fullUrlWithQuery(['locale' => $locale]) }}" 
             class="{{ app()->getLocale() === $locale ? 'active' : '' }}">
             {{ $languageDto->getLabel() }}
         </a>
     @endforeach
 </div>
-```
-
-The `getLanguageUrl()` method automatically transforms the current URL to the equivalent in the selected language.
-
-### Language Detection
-
-InspireCMS can automatically detect a user's preferred language:
-
-1. From URL parameters (explicit language choice)
-2. From session data (previously selected language)
-3. From browser preferences (Accept-Language header)
-4. Defaulting to the site's default language
-
-Configure language detection behavior:
-
-```php
-// config/inspirecms.php
-'language_detection' => [
-    'enabled' => true,
-    'session_key' => 'inspirecms_locale',
-    'cookie_key' => 'inspirecms_locale',
-    'cookie_lifetime' => 60 * 24 * 30, // 30 days
-    'methods' => ['url', 'session', 'cookie', 'browser', 'default'],
-],
 ```
 
 ## Language-Specific Templates
@@ -290,47 +328,8 @@ InspireCMS caches translations for performance:
 Clear the language cache after making significant changes to language settings:
 
 ```bash
-php artisan inspirecms:clear-language-cache
+php artisan cache:clear
 ```
-
-## Translation Fallbacks
-
-When content is not available in the requested language:
-
-1. InspireCMS looks for the content in the default language
-2. If not found there, it searches for any available translation
-3. Finally, it displays a "content not available" message if configured
-
-Configure fallback behavior:
-
-```php
-// config/inspirecms.php
-'language_fallback' => [
-    'enabled' => true,
-    'show_notice' => true, // Show notice that content is in fallback language
-    'prefer_any_translation' => false, // If false, only falls back to default language
-],
-```
-
-## Translation Services Integration
-
-For larger sites with professional translation needs:
-
-### Export for Translation
-
-1. Go to **Content → Export**
-2. Select "Translation Export" as the export type
-3. Choose source and target languages
-4. Select content to export
-5. Download the export file (XLIFF or other format)
-
-### Import Translations
-
-1. Go to **Content → Import**
-2. Select "Translation Import" as the import type
-3. Upload the translated files
-4. Review the changes
-5. Confirm the import
 
 ## Best Practices
 
@@ -338,7 +337,5 @@ For larger sites with professional translation needs:
 - **Consistent URLs**: Use consistent URL strategies across languages
 - **Translation Workflow**: Establish a process for content translation
 - **Language Variants**: Consider language variants (e.g., PT-BR vs. PT-PT) for targeted audiences
-- **RTL Support**: Test thoroughly with right-to-left languages
-- **Translation Status**: Regularly monitor translation status to ensure completeness
 - **User Experience**: Make language switching obvious and consistent
 - **SEO Optimization**: Use hreflang tags to help search engines understand your multilingual content
