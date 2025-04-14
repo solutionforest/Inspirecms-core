@@ -50,13 +50,28 @@ Admin Panel → Settings → Sitemap
 ```
 
 ### Content Inclusion Rules
+Control which content appears in your sitemap through two available methods:
 
-Control which content appears in your sitemap:
+#### Method 1: Content Management via CMS
+
+1. Navigate to **CMS > Content**
+2. Select your content and go to the **"Sitemap"** tab
+3. Configure sitemap settings specific to that content:
+    - Toggle inclusion in sitemap
+    - Set custom priority and change frequency
+    - Add special sitemap metadata
+
+#### Method 2: Manual URL Addition
 
 1. Go to **Settings → Sitemap**
-2. Under "Content Types" select which document types to include
-3. Configure global settings like default frequency and priority
-4. Set content-specific sitemap rules
+2. Manually add specific URLs you want to include
+3. For each URL, configure:
+    - Priority level
+    - Change frequency
+    - Last modification date
+    - Language/locale information
+
+These two methods can be used complementarily - the CMS method manages existing content pages, while the manual method allows you to add any additional URLs that might not be part of your standard content structure.
 
 ### Prioritizing Content
 
@@ -75,17 +90,6 @@ Example settings:
 | Regular pages| monthly          | 0.5      |
 | Archive      | yearly           | 0.3      |
 
-## Content-Specific Sitemap Settings
-
-Individual content items can have custom sitemap settings:
-
-1. Edit a content item
-2. Look for "SEO & Sitemap" settings
-3. Configure sitemap options:
-   - **Include in Sitemap**: Yes/No
-   - **Priority**: 0.0 to 1.0
-   - **Change Frequency**: Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
-
 ## Sitemap Customization
 
 ### Custom Generator
@@ -99,15 +103,6 @@ use SolutionForest\InspireCms\Sitemap\SitemapGenerator as BaseSitemapGenerator;
 
 class CustomSitemapGenerator extends BaseSitemapGenerator
 {
-    protected function getContentQuery()
-    {
-        // Customize which content to include
-        $query = parent::getContentQuery();
-        
-        // For example, exclude certain sections
-        return $query->where('slug', 'not like', 'internal-%');
-    }
-    
     protected function getAllAvailableSitemapData(): array
     {
         $data = parent::getAllAvailableSitemapData();
@@ -136,58 +131,6 @@ Register your custom generator:
 ],
 ```
 
-### Multiple Sitemaps
-
-For larger sites, create multiple sitemaps:
-
-```php
-namespace App\Services;
-
-use SolutionForest\InspireCms\Sitemap\SitemapGenerator as BaseSitemapGenerator;
-
-class SectionedSitemapGenerator extends BaseSitemapGenerator
-{
-    public function generate(): void
-    {
-        // Generate main sitemap index
-        $this->generateSitemapIndex();
-        
-        // Generate section-specific sitemaps
-        $this->generateSectionSitemap('blog', 'blog-sitemap.xml');
-        $this->generateSectionSitemap('products', 'products-sitemap.xml');
-        $this->generateSectionSitemap('services', 'services-sitemap.xml');
-    }
-    
-    protected function generateSitemapIndex(): void
-    {
-        // Create a sitemap index file
-        $content = $this->view('sitemap.index', [
-            'sitemaps' => [
-                [
-                    'loc' => url('blog-sitemap.xml'),
-                    'lastmod' => now()->toAtomString(),
-                ],
-                [
-                    'loc' => url('products-sitemap.xml'),
-                    'lastmod' => now()->toAtomString(),
-                ],
-                [
-                    'loc' => url('services-sitemap.xml'),
-                    'lastmod' => now()->toAtomString(),
-                ],
-            ]
-        ])->render();
-        
-        file_put_contents(public_path('sitemap.xml'), $content);
-    }
-    
-    protected function generateSectionSitemap(string $section, string $filename): void
-    {
-        // Your implementation to generate section-specific sitemap
-    }
-}
-```
-
 ## Sitemap Generation
 
 ### Manual Generation
@@ -211,109 +154,14 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-## Advanced Features
+### Automatic Generation
 
-### Image Sitemaps
+The sitemap is automatically regenerated when:
+- A sitemap model is created
+- A sitemap model is updated
+- A sitemap model is deleted
 
-Include images in your sitemap:
-
-```php
-// Example custom sitemap generator with image support
-protected function getContentSitemapData($content): array
-{
-    $data = parent::getContentSitemapData($content);
-    
-    // Get content images
-    $images = [];
-    
-    if ($heroImage = $content->getPropertyGroup('hero')?->getPropertyData('image')?->getValue()) {
-        $images[] = [
-            'loc' => $heroImage->getUrl(),
-            'title' => $content->getTitle(),
-        ];
-    }
-    
-    if ($galleryImages = $content->getPropertyGroup('gallery')?->getPropertyData('images')?->getValue()) {
-        foreach ($galleryImages as $image) {
-            $images[] = [
-                'loc' => $image->getUrl(),
-                'title' => $image->title ?? $content->getTitle(),
-                'caption' => $image->caption ?? '',
-            ];
-        }
-    }
-    
-    if (!empty($images)) {
-        $data['images'] = $images;
-    }
-    
-    return $data;
-}
-```
-
-### Video Sitemaps
-
-Include videos in your sitemap:
-
-```php
-// Example custom sitemap generator with video support
-protected function getContentSitemapData($content): array
-{
-    $data = parent::getContentSitemapData($content);
-    
-    // Get content videos
-    $videos = [];
-    
-    if ($featuredVideo = $content->getPropertyGroup('video')?->getPropertyData('featured')?->getValue()) {
-        $videos[] = [
-            'thumbnail_loc' => $featuredVideo->getThumbnail(),
-            'title' => $featuredVideo->title ?? $content->getTitle(),
-            'description' => $featuredVideo->description ?? '',
-            'content_loc' => $featuredVideo->getUrl(),
-            'duration' => $featuredVideo->duration ?? 120,
-        ];
-    }
-    
-    if (!empty($videos)) {
-        $data['videos'] = $videos;
-    }
-    
-    return $data;
-}
-```
-
-### Multilingual Sitemaps
-
-For multilingual sites, include alternate language links:
-
-```php
-// Example multilingual sitemap implementation
-protected function getContentSitemapData($content): array
-{
-    $data = parent::getContentSitemapData($content);
-    
-    // Add alternate language versions
-    $alternates = [];
-    $languages = inspirecms()->getAllAvailableLanguages();
-    
-    foreach ($languages as $locale => $languageDto) {
-        $url = $content->getUrl($locale);
-        
-        if ($url) {
-            $alternates[] = [
-                'hreflang' => $locale,
-                'href' => $url,
-            ];
-        }
-    }
-    
-    if (!empty($alternates)) {
-        $data['alternates'] = $alternates;
-    }
-    
-    return $data;
-}
-```
+This ensures your sitemap always reflects the latest changes without manual intervention.
 
 ## Best Practices
 
