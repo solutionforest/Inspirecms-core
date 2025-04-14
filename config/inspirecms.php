@@ -10,7 +10,10 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 // config for SolutionForest/InspireCms
 return [
 
-    'license_key' => env('INSPIRECMS_LICENSE_KEY'),
+    'license' => [
+        'key' => env('INSPIRECMS_LICENSE_KEY'),
+        'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+    ],
 
     'override_plugins' => [
         'field_group_models' => true,

@@ -45,12 +45,16 @@ If you have purchased a commercial license, you'll receive a license key that sh
 
 ```env
 INSPIRECMS_LICENSE_KEY=your-license-key-here
+INSPIRECMS_LICENSE_SECRET=your-license-secret-here
 ```
 
 You can also configure the license key in your `config/inspirecms.php` file:
 
 ```php
-'license_key' => env('INSPIRECMS_LICENSE_KEY'),
+'license' => [
+    'key' => env('INSPIRECMS_LICENSE_KEY'),
+    'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+],
 ```
 
 ## License Validation

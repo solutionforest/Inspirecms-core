@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LicenseManager
 {
-    const ENDPOINT = 'https://inspirecms-license.solutionforest.net';
+    const ENDPOINT = 'https://license.solutionforest.com/validate';
 
     const REQUEST_TIMEOUT = 5;
 
@@ -37,21 +37,28 @@ class LicenseManager
 
             // Try to verify the license online first
 
-            $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $this->payload());
+            $payload = $this->payload();
+            $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $payload);
 
             if ($response->successful()) {
                 $data = $response->json();
 
-                // Save verification file for offline use
-                if (isset($data['verification_file'])) {
-                    $this->saveLicenseFile($data['verification_file']);
+                if ($data['valid'] === true) {
+
+                    $offlineData = array_merge($data['license'], $payload);
+                    $offlineData['checksum'] = $this->calculateChecksum($offlineData);
+
+                    // Save verification file for offline use
+                    if (is_array($offlineData)) {
+                        $this->saveLicenseFile(json_encode($offlineData, JSON_PRETTY_PRINT));
+                    }
+    
+                    // Cache the result
+                    $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
+                    $this->cache()->put($cacheKey, $result, now()->addHours(24));
+    
+                    return $result;
                 }
-
-                // Cache the result
-                $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
-                $this->cache()->put($cacheKey, $result, now()->addHours(24));
-
-                return $result;
             }
 
             // If online verification fails, fall back to offline verification
@@ -92,27 +99,7 @@ class LicenseManager
 
             $licenseData = json_decode(File::get($this->licenseKeyPath()), true);
 
-            // Verify the license key is the same
-            if ($licenseData['license_key'] !== $this->getLicenseKey()) {
-                return LicenseVerificationResult::failureOffline('The license key in the file does not match the configured license key');
-            }
-
-            // Verify the data is for the current domain
-            if ($licenseData['domain'] !== $this->getCurrentDomain()) {
-                return LicenseVerificationResult::failureOffline('License file does not match the current domain');
-            }
-
-            // Verify the license is not expired
-            if (Carbon::parse($licenseData['expiry_date'])->isPast(Carbon::now('UTC'))) {
-                return LicenseVerificationResult::failureOffline('License expired');
-            }
-
-            // Verify the checksum
-            if ($licenseData['checksum'] !== $this->calculateChecksum(Arr::except($licenseData, 'checksum'))) {
-                return LicenseVerificationResult::failureOffline('License file verification failed due to checksum mismatch');
-            }
-
-            return LicenseVerificationResult::successOffline();
+            return $this->dataVerification($licenseData) ?? LicenseVerificationResult::successOffline();
 
         } catch (\Throwable $th) {
 
@@ -121,6 +108,31 @@ class LicenseManager
             return LicenseVerificationResult::failureOffline('Failed to read license file');
 
         }
+    }
+
+    protected function dataVerification($licenseData): ?LicenseVerificationResult
+    {
+        // Verify the license key is the same
+        if ($licenseData['license_key'] !== $this->getLicenseKey()) {
+            return LicenseVerificationResult::failureOffline('The license key in the file does not match the configured license key');
+        }
+
+        // Verify the data is for the current domain
+        if ($licenseData['domain'] !== $this->getCurrentDomain()) {
+            return LicenseVerificationResult::failureOffline('License file does not match the current domain');
+        }
+
+        // Verify the license is not expired
+        if (Carbon::parse($licenseData['expiry_date'])->isPast(Carbon::now('UTC'))) {
+            return LicenseVerificationResult::failureOffline('License expired');
+        }
+
+        // Verify the checksum
+        if ($licenseData['checksum'] !== $this->calculateChecksum(Arr::except($licenseData, 'checksum'))) {
+            return LicenseVerificationResult::failureOffline('License file verification failed due to checksum mismatch');
+        }
+
+        return null;
     }
 
     protected function getMachineId(): string
@@ -136,9 +148,9 @@ class LicenseManager
 
     protected function calculateChecksum(array $data): string
     {
-        $checksumData = $data['license_key'] . $data['domain'] . $data['expiry_date'];
+        $checksumData = $data['license_key'] . $data['domain'] . $data['product_id'];
 
-        return hash_hmac('sha256', $checksumData, $this->getSecretKey());
+        return hash('sha256', $checksumData);
     }
 
     private function getCurrentDomain(): string
@@ -153,13 +165,21 @@ class LicenseManager
 
     private function payload(): array
     {
-        return [
+        $data = [
             'license_key' => $this->getLicenseKey(),
             'domain' => $this->getCurrentDomain(),
-            'timestamp' => now()->utc()->timestamp,
-            'version' => InspireCmsConfig::get('version'),
-            'machine_id' => $this->getMachineId(),
+            'product_id' => 'cms',
         ];
+
+        $dataForChecksum = Arr::only($data, [
+            'license_key',
+            'domain',
+            'product_id',
+        ]);
+
+        $data['checksum'] = $this->calculateChecksum($dataForChecksum);
+
+        return $data;
     }
 
     private function saveLicenseFile($fileContent)

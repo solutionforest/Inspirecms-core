@@ -14,7 +14,10 @@ php artisan vendor:publish --tag="inspirecms-config"
 
 ### License Management
 ```php
-'license_key' => env('INSPIRECMS_LICENSE_KEY'),
+'license' => [
+    'key' => env('INSPIRECMS_LICENSE_KEY'),
+    'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+],
 ```
 Set your InspireCMS license key in your environment variables for proper license validation.
 
