@@ -24,23 +24,19 @@ To create a document type:
 - **Name**: Human-readable name (e.g., "Blog Post")
 - **Slug**: Machine-readable identifier (e.g., "blog-post")
 - **Icon**: Visual identifier in the admin interface
-- **Category**: For organizing document types (e.g., "Content", "Marketing")
-- **Description**: Help text explaining the document type's purpose
+- **Category**: For organizing document types (e.g., "web", "data")
 
 ### Advanced Settings
 
 - **Show as Table**: Whether to display content in a table view
 - **Show at Root**: Whether content can be created at the root level
-- **Parent Types**: Document types that can be parents of this type
-- **Child Types**: Document types that can be children of this type
-- **Web Page**: Whether content renders as web pages with URLs
-- **Route Pattern**: URL pattern for content (e.g., `/blog/{slug}`)
+- **Allowed document types**: Document types that can be children of this type
 
-## Field Groups
+## Custom Fields
 
-Associate field groups with your document type to define what data can be entered:
+Associate custom fields with your document type to define what data can be entered:
 
-1. In the **Field Groups** section, click **Add Field Group**
+1. In the **Structure** section, click **New field** or **Attach**
 2. Select from available field groups or create new ones
 3. Arrange field groups in the desired order
 
@@ -48,7 +44,7 @@ Associate field groups with your document type to define what data can be entere
 
 Define which templates are available for rendering your content:
 
-1. In the **Templates** section, click **Add Template**
+1. In the **Templates** section, click **Add Template** or **Attach**
 2. Create a new template or select an existing one
 3. Set a default template for new content
 
@@ -56,18 +52,11 @@ Define which templates are available for rendering your content:
 
 InspireCMS allows you to create parent-child relationships between content:
 
-### Setting Parent Types
-
-Define which document types can be parents of the current type:
-
-1. In the **Parent Types** field, select appropriate document types
-2. This controls where content can be placed in the content tree
-
 ### Setting Child Types
 
 Define which document types can be children of the current type:
 
-1. In the **Child Types** field, select appropriate document types
+1. In the **Allowed document types** field, select appropriate document types
 2. This determines what content types can be created underneath this content
 3. Leave empty to prevent child content from being created
 
@@ -103,7 +92,7 @@ Be cautious when deleting document types, as it may affect existing content:
 
 You can share document types between InspireCMS installations:
 
-1. Navigate to **Settings** > **Document Types**
+1. Navigate to **Settings** > **Export**
 2. Use the **Export** button to download document type definitions
 3. On another installation, use the **Import** button to upload definitions
 
