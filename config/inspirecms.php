@@ -74,6 +74,16 @@ return [
             'middlewares' => [
                 'cache.headers:public;max_age=2628000;etag',
             ],
+            'responsive_images' => [
+                'small' => [
+                    'enabled' => true,
+                    'width' => 400,
+                ],
+                'medium' => [
+                    'enabled' => true,
+                    'width' => 600,
+                ],
+            ],
         ],
     ],
 

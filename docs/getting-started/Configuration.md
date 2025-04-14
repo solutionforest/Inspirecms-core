@@ -82,23 +82,31 @@ Configure media uploads, storage, and processing:
             'height' => 300,       // Height of generated thumbnails in pixels
                                   // Set both the same for square thumbnails
         ],
-        
-        // Configure allowed file types (uncomment to override defaults)
-        // 'allowed_mime_types' => [
-        //     'image/jpeg', 'image/png', 'image/gif', 'image/webp',
-        //     'application/pdf', 'video/mp4', 'audio/mpeg'
-        // ],
-        
-        // Maximum file size for uploads in kilobytes (10MB default)
-        'max_file_size' => 10 * 1024,
-        
-        // Image optimization settings (reduces file size)
-        'optimize_images' => true,
+
+        // Whether to use FFmpeg to extract metadata from video files
+        'should_map_video_properties_with_ffmpeg' => false, // Set to true to analyze video files
+                      // Requires FFmpeg to be installed on the server
+                      // Enables extraction of duration, dimensions, codec info
+                      // Increases processing time for video uploads
+
+        // HTTP middleware applied to media requests
+        'middlewares' => [
+            'cache.headers:public;max_age=2628000;etag', // Cache media for ~1 month (2,628,000 seconds)
+                                // Improves performance for static assets
+                                // 'public' allows CDN and browser caching
+                                // 'etag' enables conditional requests for bandwidth saving
+        ],
         
         // Responsive image generation for frontend
         'responsive_images' => [
-            'enabled' => true,
-            'widths' => [320, 640, 1024, 1920],  // Responsive breakpoints
+            'small' => [
+                'enabled' => true,
+                'width' => 400,
+            ],
+            'medium' => [
+                'enabled' => true,
+                'width' => 600,
+            ],
         ],
     ],
 ],

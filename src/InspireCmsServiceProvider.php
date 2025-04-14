@@ -465,6 +465,28 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media.media_library.thumbnail.width', 300), InspireCmsConfig::get('media.media_library.thumbnail.height', 300));
         Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media.media_library.should_map_video_properties_with_ffmpeg', false)));
 
+        $mediaResponsive = InspireCmsConfig::get('media.media_library.responsive_images', []);
+        if (is_array($mediaResponsive) && count($mediaResponsive) > 0) {
+            foreach ($mediaResponsive as $name => $options) {
+                if (is_null($options) || ! is_array($options) || ! is_string($name) || empty($name) || empty($options)) {
+                    continue;
+                }
+                if (($options['enabled'] ?? false) !== true) {
+                    continue;
+                }
+                if (! isset($options['width']) ||! is_int($options['width'])) {
+                    continue;
+                }
+                Support\Facades\MediaLibraryRegistry::registerConversionUsing(fn ($model, $media) => 
+                    $model
+                        ->addMediaConversion($name)
+                        ->width($options['width'])
+                        ->withResponsiveImages()
+                        ->optimize()
+                );
+            }
+        }
+
         // auth guard
         Support\Facades\AuthenticationManager::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
 

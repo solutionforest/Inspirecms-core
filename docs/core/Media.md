@@ -21,14 +21,14 @@ The media system in InspireCMS allows you to:
 The media library is accessible from:
 
 ```
-Admin Panel → Media → Library
+Admin Panel → Media 
 ```
 
 ### Browsing Media
 
 The media library interface includes:
 
-- **Grid/List Views**: Toggle between visual grid and detailed list
+- **Grid Views**: Toggle between visual grid list
 - **Folders**: Organize media in a hierarchical structure
 - **Search**: Find media by filename, type, or metadata
 - **Filters**: Filter by date, file type, or custom attributes
@@ -52,8 +52,7 @@ InspireCMS supports multiple upload methods:
 
 1. **Drag and Drop**: Drag files directly into the media library
 2. **File Browser**: Click "Upload" and select files from your computer
-3. **URL Import**: Import files from external URLs
-4. **Bulk Upload**: Upload multiple files simultaneously
+3. **Bulk Upload**: Upload multiple files simultaneously
 
 ### Upload Configuration
 
@@ -75,6 +74,16 @@ Configure upload settings in `config/inspirecms.php`:
         'should_map_video_properties_with_ffmpeg' => false,
         'middlewares' => [
             'cache.headers:public;max_age=2628000;etag',
+        ],
+        'responsive_images' => [
+            'small' => [
+                'enabled' => true,
+                'width' => 400,
+            ],
+            'medium' => [
+                'enabled' => true,
+                'width' => 600,
+            ],
         ],
     ],
 ],
@@ -99,17 +108,6 @@ To move files between folders:
 2. Click "Move" or drag them to the destination folder
 3. Confirm the move operation
 
-### Bulk Operations
-
-Perform actions on multiple files:
-
-1. Select files by checking their boxes
-2. Use the actions bar to:
-   - Move selected files
-   - Apply metadata to selected files
-   - Download selected files
-   - Delete selected files
-
 ## Media Usage
 
 ### Inserting Media into Content
@@ -120,8 +118,7 @@ To add media to your content:
 2. Place cursor where you want to insert media
 3. Click the "Media" button in the editor toolbar
 4. Select the file from the media picker
-5. Configure display options (size, alignment, etc.)
-6. Insert the media
+5. Insert the media
 
 ### Media Fields
 
@@ -173,42 +170,11 @@ Generate responsive image variants:
 @if(!empty($hero_image))
     <img 
         src="{{ $hero_image[0]->getUrl() }}" 
-        srcset="{{ $hero_image[0]->getSrcset(['small', 'medium', 'large']) }}"
+        srcset="{{ $hero_image[0]->getSrcset(['small', 'medium']) }}"
         sizes="(max-width: 768px) 100vw, 50vw"
         alt="{{ $hero_image[0]->description }}"
     >
 @endif
-```
-
-## Image Processing
-
-### Automatic Image Optimization
-
-InspireCMS can automatically optimize images on upload:
-
-```php
-// config/inspirecms.php
-'media' => [
-    'image_optimization' => [
-        'enabled' => true,
-        'quality' => 85,
-        'convert_to_webp' => true,
-    ],
-],
-```
-
-### Image Transformations
-
-Apply transformations to images:
-
-```php
-$image = inspirecms_asset()->findByKey('550e8400-e29b-41d4-a716-446655440000');
-
-// Get a resized version
-$thumbnail = $image->getUrl(['width' => 300, 'height' => 200, 'fit' => 'crop']);
-
-// Get a filtered version
-$grayscale = $image->getUrl(['filter' => 'greyscale']);
 ```
 
 ## Media Metadata
@@ -236,7 +202,6 @@ Add custom metadata to media files:
    - **Alt Text**: Alternative text for accessibility
    - **Caption**: Explanatory text shown with the media
    - **Description**: Longer description for internal use
-   - **Custom Fields**: Additional metadata fields
 
 ### Metadata in Templates
 
@@ -246,8 +211,8 @@ Use metadata in your templates:
 @propertyArray('gallery', 'images')
 @foreach($gallery_images ?? [] as $image)
     <figure>
-        <img src="{{ $image->getUrl() }}" alt="{{ $image->alt_text }}">
-        <figcaption>{{ $image->caption }}</figcaption>
+        <img src="{{ $image->getUrl() }}" alt="{{ $image->caption }}">
+        <figcaption>{{ $image->description }}</figcaption>
     </figure>
 @endforeach
 ```
@@ -306,117 +271,49 @@ To use a different storage provider:
 
 ### Permission Control
 
-Control who can access the media library:
+Control who can access and manage media by registering a custom policy class:
 
 ```php
-// In your AuthServiceProvider
-use Illuminate\Support\Facades\Gate;
+// config/inspirecms.php
+return [
+    // Other config options...
+    
+    'models' => [
+        'policies' => [
+            'media_asset' => \App\Policies\MediaAssetPolicy::class,
+        ],
+    ],
+];
+```
+
+Create your custom policy class:
+
+```php
+namespace App\Policies;
+
 use SolutionForest\InspireCms\Models\MediaAsset;
+use App\Models\User;
 
-public function boot()
+class MediaAssetPolicy
 {
-    Gate::define('viewMediaLibrary', function ($user) {
+    public function viewAny(User $user): bool
+    {
         return $user->hasPermissionTo('view_media');
-    });
+    }
     
-    Gate::define('uploadMedia', function ($user) {
+    public function create(User $user): bool
+    {
         return $user->hasPermissionTo('upload_media');
-    });
+    }
     
-    Gate::define('deleteMedia', function ($user) {
+    public function delete(User $user, MediaAsset $mediaAsset): bool
+    {
         return $user->hasPermissionTo('delete_media');
-    });
+    }
+    
+    // Define other permissions as needed
 }
 ```
-
-### Private Media
-
-For sensitive or restricted media:
-
-```php
-// config/inspirecms.php
-'media' => [
-    'private_library' => [
-        'enabled' => true,
-        'disk' => 'local', // Non-public disk
-        'directory' => 'private-media',
-        'middleware' => [
-            'auth', // Require authentication
-            'can:view-private-media', // Check permission
-        ],
-    ],
-],
-```
-
-Access private media:
-
-```php
-// In a controller
-$file = inspirecms_asset()->findByKey('550e8400-e29b-41d4-a716-446655440000');
-
-if ($request->user()->can('view', $file)) {
-    return response()->file(storage_path('app/private-media/' . $file->path));
-}
-
-return abort(403);
-```
-
-## Advanced Features
-
-### EXIF Data
-
-Extract and preserve EXIF data from images:
-
-```php
-// config/inspirecms.php
-'media' => [
-    'preserve_exif' => [
-        'enabled' => true,
-        'properties' => ['Camera', 'Aperture', 'FocalLength', 'ShutterSpeed'],
-    ],
-],
-```
-
-### Video Processing
-
-Process uploaded videos (requires FFmpeg):
-
-```php
-// config/inspirecms.php
-'media' => [
-    'media_library' => [
-        'should_map_video_properties_with_ffmpeg' => true,
-        'video_thumbnails' => [
-            'enabled' => true,
-            'time_offset' => 3, // seconds from start
-            'width' => 640,
-            'height' => 360,
-        ],
-    ],
-],
-```
-
-### SVG Support
-
-Configure SVG support with safety measures:
-
-```php
-// config/inspirecms.php
-'media' => [
-    'svg_support' => [
-        'enabled' => true,
-        'sanitize' => true, // Clean potentially harmful content
-    ],
-],
-```
-
-## Media Usage Tracking
-
-InspireCMS tracks where media is being used:
-
-1. View a file in the media library
-2. See the "Usage" tab for a list of content using this media
-3. Exercise caution when deleting files in use
 
 ## Best Practices
 
@@ -424,7 +321,5 @@ InspireCMS tracks where media is being used:
 - **Meaningful Filenames**: Use descriptive, URL-friendly filenames
 - **Complete Metadata**: Add alt text and descriptions for accessibility
 - **Optimize Images**: Use appropriate file formats and compression
-- **Regular Cleanup**: Remove unused files periodically
-- **Backup Strategy**: Include media in your backup routine
 - **Responsive Images**: Use responsive techniques for different screen sizes
 - **Accessibility**: Ensure all media has appropriate alt text
