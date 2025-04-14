@@ -46,7 +46,7 @@ To set a custom route for content:
 
 1. Edit the content item in the admin panel
 2. Navigate to the "URL & Routing" section
-3. Enter your custom route in the "Custom URL" field
+3. Enter your custom route in the "Path" field
 4. Save the content
 
 ### Route Constraints
@@ -145,46 +145,18 @@ Apply middleware to frontend routes:
 
 ### Custom Route Handlers
 
-To handle specific routes with custom logic:
+To handle specific routes with custom logic, register them in your application's `routes/web.php` file:
 
 ```php
-use SolutionForest\InspireCms\Facades\RouteManifest;
+use Illuminate\Support\Facades\Route;
 
-// In your service provider
-public function boot()
-{
-    RouteManifest::register([
-        'pattern' => '/special-section/{id}',
-        'handler' => [\App\Http\Controllers\SpecialController::class, 'show'],
-        'name' => 'special.show',
-        'constraints' => [
-            'id' => '[0-9]+'
-        ]
-    ]);
-}
+// In routes/web.php
+Route::get('/special-section/{id}', [\App\Http\Controllers\SpecialController::class, 'show'])
+    ->name('special.show')
+    ->where('id', '[0-9]+');
 ```
 
-### Route Interceptors
-
-For more advanced route handling:
-
-```php
-use SolutionForest\InspireCms\Facades\RouteInterceptor;
-
-// In your service provider
-public function boot()
-{
-    RouteInterceptor::register(function ($request, $next) {
-        // Check if route starts with /campaign/
-        if (strpos($request->path(), 'campaign/') === 0) {
-            // Log campaign visit
-            logger()->info('Campaign visit: ' . $request->path());
-        }
-        
-        return $next($request);
-    });
-}
-```
+These custom routes will be processed before InspireCMS content routes, allowing you to override or extend functionality for specific URL patterns. For more information on Laravel routing, refer to the [Laravel documentation](https://laravel.com/docs/11.x/routing#basic-routing).
 
 ## Route Caching
 
@@ -207,7 +179,7 @@ InspireCMS caches content routes for performance:
 To clear the route cache:
 
 ```bash
-php artisan inspirecms:clear-route-cache
+php artisan route:clear
 ```
 
 This is useful after:
@@ -216,28 +188,6 @@ This is useful after:
 - Upgrading InspireCMS
 
 ## Advanced Routing
-
-### Route Localization
-
-For multilingual sites:
-
-```php
-use SolutionForest\InspireCms\Facades\RouteManifest;
-
-// In your service provider
-public function boot()
-{
-    // Register language-prefixed routes
-    RouteManifest::registerGroup([
-        'prefix' => '{locale}',
-        'where' => ['locale' => 'en|fr|es'],
-        'middleware' => [\App\Http\Middleware\SetLocale::class],
-    ], function () {
-        // Routes registered here will have language prefix
-        // e.g., /en/about, /fr/about, /es/about
-    });
-}
-```
 
 ### Content Route Resolution
 
@@ -280,38 +230,13 @@ Register in configuration:
 
 ## Redirects and URL Management
 
-### Managing Redirects
+### Managing Content Redirects
 
-InspireCMS provides a redirect management system:
-
-1. Navigate to **Settings → Redirects** in the admin panel
-2. Click **Add Redirect**
-3. Specify:
-   - Source path
-   - Destination path
-   - Redirect type (301 permanent, 302 temporary)
-4. Save the redirect
-
-### Automatic Redirects
-
-The system can automatically create redirects when:
-
-- Content is moved or renamed
-- Custom routes are changed
-- Content is unpublished (optional)
-
-Configure automatic redirects:
-
-```php
-// config/inspirecms.php
-'content' => [
-    'auto_redirects' => [
-        'enabled' => true,
-        'on_slug_change' => true,
-        'on_unpublish' => false,
-    ],
-],
-```
+- Edit the content item in the admin panel
+- Navigate to the "SEO" tab
+- Scroll down to the "Redirect" section
+- Set the destination URL and redirect type (301 permanent, 302 temporary)
+- Save the content
 
 ## Route Debugging
 
@@ -323,8 +248,8 @@ php artisan inspirecms:list-routes
 
 This command shows all registered content routes with:
 - URL pattern
-- Content ID
-- Handler class
+- Name
+- Bindings
 - Middleware
 
 ## Best Practices
