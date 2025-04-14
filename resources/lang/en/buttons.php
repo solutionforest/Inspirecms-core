@@ -230,8 +230,8 @@ return [
     ],
 
     'update_content_route' => [
-        'label' => 'Update route',
-        'heading' => 'Update route',
+        'label' => 'URL & Routing',
+        'heading' => 'URL & Routing',
         'messages' => [
             'success' => [
                 'title' => 'Route updated',

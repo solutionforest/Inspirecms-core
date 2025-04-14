@@ -230,8 +230,8 @@ return [
     ],
 
     'update_content_route' => [
-        'label' => '更新路由',
-        'heading' => '更新路由',
+        'label' => 'URL 與路由',
+        'heading' => 'URL 與路由',
         'messages' => [
             'success' => [
                 'title' => '路由已更新',
