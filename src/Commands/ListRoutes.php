@@ -17,6 +17,7 @@ class ListRoutes extends Command
 
         if (empty($routes)) {
             $this->info('No routes found for InspireCMS.');
+
             return;
         }
 
