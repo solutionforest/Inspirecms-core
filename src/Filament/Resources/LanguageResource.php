@@ -8,7 +8,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Facades\LocaleManifest;
+use SolutionForest\InspireCms\Facades\LocalizationManager;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -111,7 +111,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
             ->label(__('inspirecms::resources/language.code.label'))
             ->validationAttribute(__('inspirecms::resources/language.code.validation_attribute'))
             ->unique(table: static::getModel(), column: 'code', ignoreRecord: true)
-            ->datalist(LocaleManifest::getLocales())
+            ->datalist(LocalizationManager::getLocales())
             ->required();
     }
 

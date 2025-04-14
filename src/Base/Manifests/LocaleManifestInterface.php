@@ -11,4 +11,8 @@ interface LocaleManifestInterface
     public function getUserPreferredLocales(): array;
 
     public function getUserPreferredLocaleLabels(?string $displayLocale = null): array;
+
+    public function getLocales(): array;
+
+    public function getLocaleLabels(): array;
 }

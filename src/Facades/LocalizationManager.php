@@ -10,6 +10,8 @@ use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
  * @method static void removeUserPreferredLocale(string $locale)
  * @method static array getUserPreferredLocales()
  * @method static array getUserPreferredLocaleLabels(?string $displayLocale = null)
+ * @method static array getLocales()
+ * @method static array getLocaleLabels()
  *
  * @see \SolutionForest\InspireCms\Base\Manifests\LocaleManifest
  */

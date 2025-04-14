@@ -38,4 +38,33 @@ class LocaleManifest implements LocaleManifestInterface
             ])
             ->all();
     }
+
+    public function getLocales(): array
+    {
+        return array_keys($this->getLocaleLabels());
+    }
+
+    public function getLocaleLabels(): array
+    {
+        return [
+            'en_US' => 'English (United States)',
+            'en_GB' => 'English (United Kingdom)',
+            'es_ES' => 'Spanish (Spain)',
+            'fr_FR' => 'French (France)',
+            'de_DE' => 'German (Germany)',
+            'it_IT' => 'Italian (Italy)',
+            'pt_BR' => 'Portuguese (Brazil)',
+            'ja_JP' => 'Japanese (Japan)',
+            'zh_CN' => 'Chinese (Simplified)',
+            'zh_TW' => 'Chinese (Traditional)',
+            'ru_RU' => 'Russian (Russia)',
+            'ar_SA' => 'Arabic (Saudi Arabia)',
+            'hi_IN' => 'Hindi (India)',
+            'nl_NL' => 'Dutch (Netherlands)',
+            'ko_KR' => 'Korean (South Korea)',
+            'tr_TR' => 'Turkish (Turkey)',
+            'pl_PL' => 'Polish (Poland)',
+            'sv_SE' => 'Swedish (Sweden)'
+        ];
+    }
 }
