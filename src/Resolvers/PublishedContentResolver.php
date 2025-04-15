@@ -70,6 +70,9 @@ class PublishedContentResolver implements PublishedContentResolverInterface
                 uri: $urlSegmentToFind,
                 isDefaultRoutePattern: true,
                 isWebPage: true,
+                sorting: [
+                    '__latest_version_publish_dt' => 'desc',
+                ],
             )->map(fn ($arr) => [$arr['content'], $arr['language_id']])->first();
 
             // Check locale from the route if not set lang for the content's route
@@ -82,6 +85,9 @@ class PublishedContentResolver implements PublishedContentResolverInterface
                 uri: $routePatternToCheck,
                 isDefaultRoutePattern: false,
                 isWebPage: true,
+                sorting: [
+                    '__latest_version_publish_dt' => 'desc',
+                ],
             )->map(fn ($arr) => [$arr['content'], $arr['language_id']])->first();
         }
 

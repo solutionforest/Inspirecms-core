@@ -44,6 +44,7 @@ class ContentVersionDetailScope implements Scope
                         ->on("$t1TableName.latest_version_id", '=', "$t2_1TableName.$relatedPK")
                 )
                 ->where("$t2_1TableName.publish_state", 'publish')
+                ->orderByDesc("$t2_1TableName.$recordCreationColumn")
                 ->select([
                     "$t2_1TableName.$relatedFK",
                     "$t2_1TableName.publish_state",
@@ -58,7 +59,7 @@ class ContentVersionDetailScope implements Scope
                     fn (JoinClause $join) => $join
                         ->on("$t1TableName.latest_version_id", '=', "$t2_2TableName.$relatedPK")
                 )
-                ->whereNot("$t2_2TableName.publish_state", 'publish')
+                ->orderByDesc("$t2_2TableName.$recordCreationColumn")
                 ->select([
                     "$t2_2TableName.$relatedFK",
                     "$t2_2TableName.publish_state",
