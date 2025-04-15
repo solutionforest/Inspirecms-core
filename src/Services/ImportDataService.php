@@ -537,7 +537,7 @@ class ImportDataService implements ImportDataServiceInterface
                 } else {
                     $errorMsg .= ' - ' . get_class($th);
                 }
-                $this->processErrors['navigation'][$category][] = $errorMsg;
+                $this->processErrors['navigation']['s3'][$category][] = $errorMsg;
             }
         }
     }
