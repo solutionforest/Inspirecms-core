@@ -14,7 +14,6 @@ use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
 
 class PageActivity extends BaseWidget
 {
@@ -61,18 +60,13 @@ class PageActivity extends BaseWidget
 
     protected function getLatestUpdatePagesQuery(): Builder
     {
-        $query = InspireCmsConfig::getContentModelClass()::query();
+        $query = InspireCmsConfig::getContentModelClass()::with([
+            'publishedVersions',
+        ])->withoutGlobalScopes([
+            \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
+        ]);
 
-        $model = $query->getModel();
-        $updatedAtColumn = $model->getUpdatedAtColumn();
-        return InspireCmsConfig::getContentModelClass()::query()
-            ->withoutGlobalScopes([
-                \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
-            ])
-            ->withGlobalScope(ContentVersionDetailScope::class, new ContentVersionDetailScope)
-            ->orderByDesc('__latest_version_dt')
-            ->orderByDesc($model->qualifyColumn($updatedAtColumn))
-            ->take(static::$totalTakeLatest);
+        return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
     }
 
     // region Table Configuration

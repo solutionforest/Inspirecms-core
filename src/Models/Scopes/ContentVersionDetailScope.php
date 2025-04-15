@@ -26,10 +26,12 @@ class ContentVersionDetailScope implements Scope
             $t1Q = DB::table($related->getTable())
                 ->orderByDesc($recordCreationColumn) // sort by created_at desc
                 ->groupBy(
+                    $relatedFK, // group by content_id
                     $recordCreationColumn, // include the ordered column in GROUP BY
                 )
                 ->select([
                     DB::raw("MAX($relatedPK) AS latest_version_id"),
+                    $relatedFK,
                 ]);
 
             $t2_1TableName = '_cv_t2_publish';
