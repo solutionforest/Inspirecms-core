@@ -48,6 +48,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->columns(2)
                     ->schema([
                         static::getCategoryFormComponent(),
+                        static::getParentFormComponent(),
                         Forms\Components\Grid::make(2)
                             ->schema([
                                 static::getTitleFormComponent(),
@@ -271,7 +272,31 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 'main',
                 'footer',
             ])
-            ->default('main');
+            ->default('main')
+            ->live()
+            ->afterStateUpdated(function ($old, $state, $set) {
+                if (trim($old) !== trim($state)) {
+                    $set('parent_id', null);
+                }
+            });
+    }
+
+    /**
+     * @return Forms\Components\Field | Forms\Components\Component
+     */
+    protected static function getParentFormComponent()
+    {
+        return Forms\Components\Select::make('parent_id')
+            ->label(__('inspirecms::resources/navigation.parent_id.label'))
+            ->validationAttribute(__('inspirecms::resources/navigation.parent_id.validation_attribute'))
+            ->options(function ($record, $get) {
+                $keyName = app(static::getModel())->getKeyName();
+                return static::getEloquentQuery()
+                    ->where('category', $get('category'))
+                    ->when($record, fn ($query) => $query->whereNot($keyName, $record->getKey()))
+                    ->pluck('title', $keyName)
+                    ->toArray();
+            });
     }
 
     /**
