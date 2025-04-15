@@ -279,7 +279,7 @@ Each field type has specific configuration options, but most share these common 
 > ```php
 > @propertyArray('event', 'images')
 > @foreach ($event_images ?? [] as $img)
->     <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], > 'filled'))) }}" alt="Event Image">
+>     <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], 'filled'))) }}" alt="Event Image">
 > @endforeach
 > ```
 > Or
