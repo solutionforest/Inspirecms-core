@@ -291,6 +291,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/navigation.parent_id.validation_attribute'))
             ->options(function ($record, $get) {
                 $keyName = app(static::getModel())->getKeyName();
+
                 return static::getEloquentQuery()
                     ->where('category', $get('category'))
                     ->when($record, fn ($query) => $query->whereNot($keyName, $record->getKey()))
