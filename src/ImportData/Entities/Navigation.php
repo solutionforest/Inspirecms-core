@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as ContractsNavigation;
 
 /**
@@ -120,6 +121,8 @@ class Navigation extends BaseEntity
     public static function fromRecord($record)
     {
         $data = collect($record->toArray())->only(static::$limitedProperties)->except('children')->all();
+
+        $data['contentSlugPath'] = $record->content?->path?->value;
 
         $children = [];
 
