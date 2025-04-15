@@ -504,7 +504,7 @@ class ImportDataService implements ImportDataServiceInterface
         // Create tree structure for navigation items
         foreach (collect($this->pendingData['navigation'] ?? [])->groupBy('category') as $category => $items) {
 
-            // Create a tree data 
+            // Create a tree data
             $treeData = [];
             foreach ($items as $item) {
                 try {
