@@ -30,6 +30,12 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public bool $cloneable = false;
 
+    public bool $defaultCollapsed = false;
+
+    public ?string $itemLabel = null;
+
+    public ?int $defaultItems = null;
+
     public function getFormSchema(): array
     {
         return [
@@ -39,9 +45,21 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                         ->schema([
                             Forms\Components\Toggle::make('collapsible'),
                             Forms\Components\Toggle::make('cloneable'),
-                        ]),
+                            Forms\Components\Toggle::make('defaultCollapsed'),
+                            Forms\Components\TextInput::make('itemLabel')
+                                ->inlineLabel()
+                                ->placeholder('e.g. title, key, etc.')
+                                ->helperText(str('The label for each item in the repeater. Using **`Name`** in the **Fields**')->markdown()->toHtmlString()),
+                            ]),
                     Forms\Components\Tabs\Tab::make('Fields')
                         ->schema([
+                            Forms\Components\TextInput::make('defaultItems')
+                                ->inlineLabel()
+                                ->placeholder('e.g. 1, 2, 3, etc.')
+                                ->integer()
+                                ->minValue(0)
+                                ->default(1)
+                                ->helperText(str('The default number of items to show in the repeater.')->markdown()->toHtmlString()),
                             static::getHasInnerFieldComponent()->hiddenLabel(),
                         ]),
                 ]),
@@ -78,6 +96,20 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
             $component->collapsible($this->collapsible);
 
             $component->cloneable($this->cloneable);
+
+            $component->collapsed($this->defaultCollapsed ?? false);
+            
+            $component->itemLabel(function ($state) {
+                if (is_array($state) && filled($this->itemLabel)) {
+                    return $state[$this->itemLabel] ?? null;
+                }
+
+                return null;
+            });
+
+            if ($this->defaultItems != null) {
+                $component->defaultItems($this->defaultItems);
+            }
         }
     }
 }
