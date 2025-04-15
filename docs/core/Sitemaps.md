@@ -178,19 +178,22 @@ This ensures your sitemap always reflects the latest changes without manual inte
 
 ### Common Issues
 
-**Sitemap Not Updating**
+#### Sitemap Not Updating
+
 Check that:
 - Your scheduled task is running
 - The sitemap file is writable by the web server
 - There are no PHP errors during generation
 
-**Missing Content**
+#### Missing Content
+
 Verify that:
 - Content is published and public
 - Content is not excluded from the sitemap
 - Content passes any custom inclusion rules
 
-**Invalid XML**
+#### Invalid XML
+
 Ensure that:
 - Special characters are properly encoded
 - The sitemap follows the XML sitemap protocol
