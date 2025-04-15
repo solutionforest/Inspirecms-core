@@ -8,7 +8,7 @@ Before beginning installation, ensure your environment meets the [system require
 
 ## Standard Installation
 
-### Step 1: Create a Laravel Application { .font-bold  .text-2xl .my-2 }
+### Step 1: Create a Laravel Application
 
 You can install InspireCMS on a new Laravel application or an existing one:
 
@@ -18,7 +18,7 @@ composer create-project laravel/laravel my-inspirecms-project
 cd my-inspirecms-project
 ```
 
-### Step 2: Configure Your Database { .font-bold  .text-2xl .my-2 }
+### Step 2: Configure Your Database
 Update your `.env` file with your database credentials:
 
 ```env
@@ -30,14 +30,14 @@ DB_USERNAME=your_database_user
 DB_PASSWORD=your_database_password
 ```
 
-### Step 3: Install InspireCMS { .font-bold  .text-2xl .my-2 }
+### Step 3: Install InspireCMS
 Add InspireCMS to your project:
 
 ```bash
 composer require solution-forest/inspirecms-core
 ```
 
-### Step 4: Run the Installer { .font-bold  .text-2xl .my-2 }
+### Step 4: Run the Installer
 The installer will set up the database, publish assets, and configure InspireCMS:
 
 ```bash
@@ -50,7 +50,7 @@ To skip sample data, use the --skip-samples flag:
 php artisan inspirecms:install --skip-samples
 ```
 
-### Step 5: Access the Admin Panel { .font-bold  .text-2xl .my-2 }
+### Step 5: Access the Admin Panel
 After installation, you can access the admin panel at `/cms` (or your configured prefix). Use the credentials you provided during installation or the default admin user:
 
 * Username: `admin@example.com`
@@ -125,7 +125,7 @@ cd my-inspirecms-project
 
 ## Troubleshooting Common Issues
 
-### Permissions Issues { .font-bold  .text-2xl .my-2 }
+### Permissions Issues
 
 If you encounter permission issues, ensure your web server has appropriate access:
 
@@ -135,11 +135,11 @@ chmod -R 775 storage bootstrap/cache
 chown -R $USER:www-data storage bootstrap/cache
 ```
 
-### Database Connection Issues { .font-bold  .text-2xl .my-2 }
+### Database Connection Issues
 
 If you're having trouble connecting to your database, verify your .env configuration and ensure the database exists.
 
-### Package Discovery Problems { .font-bold  .text-2xl .my-2 }
+### Package Discovery Problems
 If Laravel isn't discovering the package, try clearing your cache:
 
 ```bash

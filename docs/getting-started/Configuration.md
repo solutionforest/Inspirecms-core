@@ -12,7 +12,7 @@ php artisan vendor:publish --tag="inspirecms-config"
 
 ## Key Configuration Sections
 
-### License Management { .font-bold  .text-2xl .my-2 }
+### License Management
 
 ```php
 'license' => [
@@ -22,7 +22,7 @@ php artisan vendor:publish --tag="inspirecms-config"
 ```
 Set your InspireCMS license key in your environment variables for proper license validation.
 
-### Authentication { .font-bold  .text-2xl .my-2 }
+### Authentication
 
 Configure how users authenticate with your CMS \([learn more about laravel authentication]((https://laravel.com/docs/12.x/authentication#adding-custom-guards))\):
 
@@ -62,7 +62,7 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 ],
 ```
 
-### Media Management { .font-bold  .text-2xl .my-2 }
+### Media Management
 
 Configure media uploads, storage, and processing:
 ```php
@@ -116,7 +116,7 @@ Configure media uploads, storage, and processing:
 ],
 ```
 
-### Caching { .font-bold  .text-2xl .my-2 }
+### Caching
 
 Optimize performance with caching configurations:
 
@@ -159,7 +159,7 @@ Optimize performance with caching configurations:
 ],
 ```
 
-### Admin Panel { .font-bold  .text-2xl .my-2 }
+### Admin Panel
 
 Configure the administration dashboard and interface:
 
@@ -215,7 +215,7 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
 ],
 ```
 
-### Data Import/Export { .font-bold  .text-2xl .my-2 }
+### Data Import/Export
 
 Manage data migration and content portability:
 
@@ -258,7 +258,7 @@ Manage data migration and content portability:
 ],
 ```
 
-### Models and Database { .font-bold  .text-2xl .my-2 }
+### Models and Database
 
 Configure entity models and database settings:
 
@@ -301,7 +301,7 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 ],
 ```
 
-### Custom Fields { .font-bold  .text-2xl .my-2 }
+### Custom Fields
 
 Define and manage custom fields for content types:
 
@@ -326,7 +326,7 @@ Define and manage custom fields for content types:
 ],
 ```
 
-### Permissions { .font-bold  .text-2xl .my-2 }
+### Permissions
 
 Set up role-based access control:
 
@@ -350,7 +350,7 @@ Set up role-based access control:
 ],
 ```
 
-### Template Management { .font-bold  .text-2xl .my-2 }
+### Template Management
 
 Configure themes and templates:
 
@@ -366,7 +366,7 @@ Configure themes and templates:
 ],
 ```
 
-### Resolvers { .font-bold  .text-2xl .my-2 }
+### Resolvers
 
 Configure how InspireCMS resolves various components:
 
@@ -385,7 +385,7 @@ Configure how InspireCMS resolves various components:
 ],
 ```
 
-### Frontend and Routing { .font-bold  .text-2xl .my-2 }
+### Frontend and Routing
 
 Control how InspireCMS handles frontend requests:
 
@@ -402,7 +402,7 @@ Control how InspireCMS handles frontend requests:
 ],
 ```
 
-### Sitemap Generation { .font-bold  .text-2xl .my-2 }
+### Sitemap Generation
 
 Configure automatic sitemap generation:
 
@@ -419,7 +419,7 @@ Configure automatic sitemap generation:
 ],
 ```
 
-### Scheduled Tasks { .font-bold  .text-2xl .my-2 }
+### Scheduled Tasks
 
 Set up automated background tasks:
 
@@ -446,7 +446,7 @@ Set up automated background tasks:
 ],
 ```
 
-### Localization { .font-bold  .text-2xl .my-2 }
+### Localization
 
 Configure language and translation settings:
 

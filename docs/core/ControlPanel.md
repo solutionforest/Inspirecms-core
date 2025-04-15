@@ -40,7 +40,7 @@ The control panel is organized into several main sections:
 
 ## Content Management
 
-### Content List View { .font-bold  .text-2xl .my-2 }
+### Content List View
 
 The Content section lists all your content items with filtering and search capabilities:
 
@@ -49,7 +49,7 @@ The Content section lists all your content items with filtering and search capab
 - Search content by keyword
 - Bulk operations for multiple items
 
-### Content Editor { .font-bold  .text-2xl .my-2 }
+### Content Editor
 
 The content editor includes:
 
@@ -84,7 +84,7 @@ The Settings section includes:
 
 ## Customizing the Control Panel
 
-### Branding { .font-bold  .text-2xl .my-2 }
+### Branding
 
 You can customize the appearance of the control panel through the configuration file:
 
@@ -101,7 +101,7 @@ You can customize the appearance of the control panel through the configuration 
 
 The control panel automatically adapts to these branding settings, giving your admin area a custom look that matches your site's identity.
 
-### Adding Custom Resources { .font-bold  .text-2xl .my-2 }
+### Adding Custom Resources
 
 You can extend the control panel with your own resources:
 
@@ -117,7 +117,7 @@ You can extend the control panel with your own resources:
 ],
 ```
 
-### Adding Custom Pages { .font-bold  .text-2xl .my-2 }
+### Adding Custom Pages
 
 You can add custom pages to the control panel:
 
@@ -133,11 +133,11 @@ You can add custom pages to the control panel:
 ],
 ```
 
-### Control Panel Appearance { .font-bold  .text-2xl .my-2 }
+### Control Panel Appearance
 
 You can fully customize the control panel's theme by overriding the default CmsPanelProvider. This allows you to change colors, fonts, and other visual elements to match your brand.
 
-#### Creating a Custom Panel Provider { .font-bold .my-2 }
+#### Creating a Custom Panel Provider
 
 First, create a custom provider class that extends the base CmsPanelProvider:
 
@@ -168,7 +168,7 @@ class CustomCmsPanelProvider extends CmsPanelProvider
 }
 ```
 
-#### Registering Your Custom Provider { .font-bold .my-2 }
+#### Registering Your Custom Provider
 
 Next, register your custom provider in `bootstrap/providers.php`:
 
@@ -194,7 +194,7 @@ InspireCMS comes with several dashboard widgets:
 - **Template Info**: Provides information about available templates
 - **Tree Navigation**: Visual navigation builder
 
-### Adding Custom Widgets { .font-bold  .text-2xl .my-2 }
+### Adding Custom Widgets
 
 You can add custom widgets by extending your custom panel provider:
 

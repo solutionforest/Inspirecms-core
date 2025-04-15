@@ -21,7 +21,7 @@ InspireCMS comes with several predefined roles:
 4. **Author**: Can create content but typically only edit their own work
 5. **Viewer**: Read-only access to content
 
-### Managing Roles { .font-bold  .text-2xl .my-2 }
+### Managing Roles
 
 Access role management through:
 
@@ -36,7 +36,7 @@ From here you can:
 - Assign permissions to roles
 - Delete roles (except system roles)
 
-### Creating a Custom Role { .font-bold  .text-2xl .my-2 }
+### Creating a Custom Role
 
 1. Navigate to **Users → Roles** in the admin panel
 2. Click **Create Role**
@@ -54,7 +54,7 @@ InspireCMS uses a granular permission system that controls access to specific ac
 - User permissions: view, create, edit, delete
 - System permissions: manage settings, access system tools
 
-### Permission Structure { .font-bold  .text-2xl .my-2 }
+### Permission Structure
 
 Permissions follow a standard naming convention:
 
@@ -67,7 +67,7 @@ For example:
 - `content.create`: Ability to create content
 - `settings.update`: Ability to modify system settings
 
-### Customizing Permissions { .font-bold  .text-2xl .my-2 }
+### Customizing Permissions
 
 You can add custom permissions directly using [Spatie's Permission](https://spatie.be/docs/laravel-permission/v6/introduction) package:
 
@@ -112,7 +112,7 @@ Run the seeder with:
 php artisan db:seed --class=PermissionSeeder
 ```
 
-### Using Permissions in Blade Templates { .font-bold  .text-2xl .my-2 }
+### Using Permissions in Blade Templates
 
 ```php
 @if(auth()->user()->can('manage_product_inventory'))
@@ -128,7 +128,7 @@ Access user management through:
 Admin Panel → Users → Users
 ```
 
-### User Operations { .font-bold  .text-2xl .my-2 }
+### User Operations
 
 From the users section, you can:
 
@@ -138,7 +138,7 @@ From the users section, you can:
 - **Block Users**: Temporarily prevent users from logging in
 - **Delete Users**: Remove user accounts from the system
 
-### Creating a New User { .font-bold  .text-2xl .my-2 }
+### Creating a New User
 
 1. Navigate to **Users → Users**
 2. Click **Create User**
@@ -149,7 +149,7 @@ From the users section, you can:
    - Role assignment
 4. Click **Save** to create the user
 
-### User Authentication { .font-bold  .text-2xl .my-2 }
+### User Authentication
 
 InspireCMS supports various authentication features:
 
@@ -159,7 +159,7 @@ InspireCMS supports various authentication features:
 - Account lockout after failed attempts
 - Optional email verification
 
-### Configuring Authentication { .font-bold  .text-2xl .my-2 }
+### Configuring Authentication
 
 Authentication settings can be modified in `config/inspirecms.php`:
 

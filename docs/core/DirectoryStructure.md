@@ -31,7 +31,7 @@ project/
 
 ## Key Directories Explained
 
-### App Extensions { .font-bold  .text-2xl .my-2 }
+### App Extensions
 
 - **`app/Cms/`**: Directory for all your custom CMS extensions
   - **`Clusters/`**: Custom admin panel sections, each containing related resources
@@ -39,7 +39,7 @@ project/
   - **`Resources/`**: Custom Filament resources for CRUD operations
   - **`Widgets/`**: Custom dashboard widgets
 
-### Configuration { .font-bold  .text-2xl .my-2 }
+### Configuration
 
 - **`config/inspirecms.php`**: The main configuration file for InspireCMS, containing settings for:
   - Authentication and users
@@ -50,7 +50,7 @@ project/
   - Caching
   - Permission settings
 
-### Resources { .font-bold  .text-2xl .my-2 }
+### Resources
 
 - **`resources/views/components/inspirecms/{theme}/`**: Theme-specific components
   - `page.blade.php`: Default page layout template
@@ -79,19 +79,19 @@ resources/views/components/inspirecms/{theme-name}/
 
 ## Adding Custom Extensions
 
-### Creating a Custom Cluster { .font-bold  .text-2xl .my-2 }
+### Creating a Custom Cluster
 
 ```bash
 php artisan make:filament-cluster YourClusterName --panel=cms
 ```
 
-### Creating a Custom Resource { .font-bold  .text-2xl .my-2 }
+### Creating a Custom Resource
 
 ```bash
 php artisan make:filament-resource YourModel --panel=cms
 ```
 
-### Creating a Custom Page { .font-bold  .text-2xl .my-2 }
+### Creating a Custom Page
 
 ```bash
 php artisan make:filament-page YourPage --panel=cms

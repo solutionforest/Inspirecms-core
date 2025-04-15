@@ -6,7 +6,7 @@ InspireCMS provides a flexible and powerful routing system to control how conten
 
 InspireCMS uses a hierarchical routing system that combines standard Laravel routes with content-based dynamic routing. The system determines which content to display based on the requested URL.
 
-### Route Types { .font-bold  .text-2xl .my-2 }
+### Route Types
 
 InspireCMS handles several types of routes:
 
@@ -20,7 +20,7 @@ InspireCMS handles several types of routes:
 
 Content routing is the heart of the system, determining how URLs map to content entries.
 
-### URL Structure { .font-bold  .text-2xl .my-2 }
+### URL Structure
 
 By default, content URLs follow a hierarchical structure:
 
@@ -32,7 +32,7 @@ For example:
 - `/about`: A top-level "About" page
 - `/products/widgets/blue-widget`: A "Blue Widget" page under the "Widgets" section of "Products"
 
-### Route Patterns { .font-bold  .text-2xl .my-2 }
+### Route Patterns
 
 Each content item can have:
 
@@ -40,7 +40,7 @@ Each content item can have:
 2. **Custom Route**: A user-defined URL that overrides the default
 3. **Aliases**: Additional URLs that redirect to the content
 
-### Setting Content Routes { .font-bold  .text-2xl .my-2 }
+### Setting Content Routes
 
 To set a custom route for content:
 
@@ -49,7 +49,7 @@ To set a custom route for content:
 3. Enter your custom route in the "Path" field
 4. Save the content
 
-### Route Constraints { .font-bold  .text-2xl .my-2 }
+### Route Constraints
 
 You can define URL patterns with parameters:
 
@@ -71,14 +71,14 @@ Define constraints to validate parameters:
 
 Content slugs are URL-friendly versions of content titles used in routes.
 
-### Automatic Slug Generation { .font-bold  .text-2xl .my-2 }
+### Automatic Slug Generation
 
 When creating content, InspireCMS automatically generates a slug from the title:
 
 - "Hello World" becomes "hello-world"
 - "Top 10 Tips & Tricks" becomes "top-10-tips-tricks"
 
-### Custom Slugs { .font-bold  .text-2xl .my-2 }
+### Custom Slugs
 
 To use a custom slug:
 
@@ -87,7 +87,7 @@ To use a custom slug:
 3. Enter your custom slug
 4. Save the content
 
-### Slug Validation { .font-bold  .text-2xl .my-2 }
+### Slug Validation
 
 Slugs must:
 - Contain only lowercase letters, numbers, and hyphens
@@ -127,7 +127,7 @@ public function routes(): void
 
 ## Customizing Routes
 
-### Adding Custom Middleware { .font-bold  .text-2xl .my-2 }
+### Adding Custom Middleware
 
 Apply middleware to frontend routes:
 
@@ -143,7 +143,7 @@ Apply middleware to frontend routes:
 ],
 ```
 
-### Custom Route Handlers { .font-bold  .text-2xl .my-2 }
+### Custom Route Handlers
 
 To handle specific routes with custom logic, register them in your application's `routes/web.php` file:
 
@@ -162,7 +162,7 @@ These custom routes will be processed before InspireCMS content routes, allowing
 
 InspireCMS caches content routes for performance:
 
-### Cache Configuration { .font-bold  .text-2xl .my-2 }
+### Cache Configuration
 
 ```php
 // config/inspirecms.php
@@ -174,7 +174,7 @@ InspireCMS caches content routes for performance:
 ],
 ```
 
-### Clearing Route Cache { .font-bold  .text-2xl .my-2 }
+### Clearing Route Cache
 
 To clear the route cache:
 
@@ -189,7 +189,7 @@ This is useful after:
 
 ## Advanced Routing
 
-### Content Route Resolution { .font-bold  .text-2xl .my-2 }
+### Content Route Resolution
 
 The route resolution process:
 
@@ -200,7 +200,7 @@ The route resolution process:
 5. Content is retrieved based on resolved route
 6. Response is generated with the appropriate template
 
-### Custom Segment Provider { .font-bold  .text-2xl .my-2 }
+### Custom Segment Provider
 
 For custom URL structure handling:
 
@@ -230,7 +230,7 @@ Register in configuration:
 
 ## Redirects and URL Management
 
-### Managing Content Redirects { .font-bold  .text-2xl .my-2 }
+### Managing Content Redirects
 
 - Edit the content item in the admin panel
 - Navigate to the "SEO" tab
