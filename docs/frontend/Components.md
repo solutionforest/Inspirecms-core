@@ -16,7 +16,7 @@ Components in InspireCMS serve as the building blocks of your frontend templates
 
 InspireCMS supports several types of components:
 
-### 1. Theme Components { .font-bold  .text-2xl .my-2 }
+### 1. Theme Components
 
 Theme-specific components that define your site's visual elements:
 
@@ -25,7 +25,7 @@ Theme-specific components that define your site's visual elements:
 - Navigation components (menus, breadcrumbs)
 - Media display components (galleries, sliders)
 
-### 2. Content Components { .font-bold  .text-2xl .my-2 }
+### 2. Content Components
 
 Components that render specific types of content:
 
@@ -34,7 +34,7 @@ Components that render specific types of content:
 - Product display components
 - Team member components
 
-### 3. Utility Components { .font-bold  .text-2xl .my-2 }
+### 3. Utility Components
 
 Helper components for common UI patterns:
 
@@ -68,7 +68,7 @@ resources/views/components/
 
 ## Using Components
 
-### Basic Component Usage { .font-bold  .text-2xl .my-2 }
+### Basic Component Usage
 
 Using a component in your templates:
 
@@ -78,7 +78,7 @@ Using a component in your templates:
 </x-cms-theme-component>
 ```
 
-### Using Components via Helper { .font-bold  .text-2xl .my-2 }
+### Using Components via Helper
 
 The component helper makes it easier to use theme-aware components:
 
@@ -92,7 +92,7 @@ $heroComponent = inspirecms_templates()->getComponentWithTheme('hero');
 </x-dynamic-component>
 ```
 
-### Component Slots { .font-bold  .text-2xl .my-2 }
+### Component Slots
 
 Use named slots to organize content within components:
 
@@ -112,7 +112,7 @@ Use named slots to organize content within components:
 
 ## Creating Components
 
-### Basic Component Creation { .font-bold  .text-2xl .my-2 }
+### Basic Component Creation
 
 Create a simple component:
 
@@ -141,7 +141,7 @@ Create a simple component:
 </x-inspirecms-my-theme::alert>
 ```
 
-### Component with Props { .font-bold  .text-2xl .my-2 }
+### Component with Props
 
 Create a component with defined props:
 
@@ -193,7 +193,7 @@ Use this component:
 </x-inspirecms-my-theme::button>
 ```
 
-### Class-Based Components { .font-bold  .text-2xl .my-2 }
+### Class-Based Components
 
 For more complex components, create a class-based component:
 
@@ -321,7 +321,7 @@ class Gallery extends Component
 
 Create components that adapt to the current theme:
 
-### Theme-Aware Components { .font-bold  .text-2xl .my-2 }
+### Theme-Aware Components
 
 Use the theme helper to get the appropriate component for the current theme:
 
@@ -335,7 +335,7 @@ $headerComponent = inspirecms_templates()->getComponentWithTheme('header');
 <x-dynamic-component :component="$headerComponent" :title="$pageTitle" />
 ```
 
-### Component Overriding { .font-bold  .text-2xl .my-2 }
+### Component Overriding
 
 Override default components by creating a component with the same name in your theme:
 
@@ -369,7 +369,7 @@ $navComponent = inspirecms_templates()->getComponentWithTheme('navigation');
 
 ## Advanced Component Techniques
 
-### Component Composition { .font-bold  .text-2xl .my-2 }
+### Component Composition
 
 Build complex components by combining smaller ones:
 
@@ -394,7 +394,7 @@ Build complex components by combining smaller ones:
 </section>
 ```
 
-### Component Variants { .font-bold  .text-2xl .my-2 }
+### Component Variants
 
 Create variants of components using attributes:
 
@@ -463,7 +463,7 @@ Use different variants:
 </x-inspirecms-my-theme::card>
 ```
 
-### Dynamic Components { .font-bold  .text-2xl .my-2 }
+### Dynamic Components
 
 Create components that render differently based on input:
 
@@ -488,7 +488,7 @@ Create components that render differently based on input:
 <x-dynamic-component :component="$view" :content="$content" />
 ```
 
-### Component Collections { .font-bold  .text-2xl .my-2 }
+### Component Collections
 
 Group related components together:
 
@@ -583,7 +583,7 @@ Use component collections:
 
 ## Working with Content in Components
 
-### Content-Aware Components { .font-bold  .text-2xl .my-2 }
+### Content-Aware Components
 
 Create components that intelligently display content:
 
@@ -666,7 +666,7 @@ Document-type specific component:
 </article>
 ```
 
-### Content Collection Components { .font-bold  .text-2xl .my-2 }
+### Content Collection Components
 
 Components for displaying multiple content items:
 

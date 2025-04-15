@@ -21,7 +21,7 @@ Access the import interface through:
 Admin Panel → Settings → Import
 ```
 
-### Import Types { .font-bold  .text-2xl .my-2 }
+### Import Types
 
 InspireCMS supports several import types:
 
@@ -33,7 +33,7 @@ InspireCMS supports several import types:
 6. **User Import**: User accounts and their roles
 7. **Media Import**: Media library assets
 
-### Supported Formats { .font-bold  .text-2xl .my-2 }
+### Supported Formats
 
 Import data can be in various formats:
 
@@ -45,7 +45,7 @@ Import data can be in various formats:
 
 ## Creating an Import
 
-### Basic Import { .font-bold  .text-2xl .my-2 }
+### Basic Import
 
 To create a basic import:
 
@@ -59,7 +59,7 @@ To create a basic import:
 5. Configure additional options based on import type
 6. Click "Create Import"
 
-### Import Configuration Options { .font-bold  .text-2xl .my-2 }
+### Import Configuration Options
 
 Depending on the import type, additional options may include:
 
@@ -70,7 +70,7 @@ Depending on the import type, additional options may include:
 - **Validation Rules**: Custom rules for validating imported data
 - **Notifications**: Who to notify when import completes
 
-### File Upload { .font-bold  .text-2xl .my-2 }
+### File Upload
 
 Upload import files directly:
 
@@ -86,7 +86,7 @@ Upload import files directly:
 ],
 ```
 
-### URL Import { .font-bold  .text-2xl .my-2 }
+### URL Import
 
 Import from a remote URL:
 
@@ -95,7 +95,7 @@ Import from a remote URL:
 3. Optional: Provide authentication credentials if required
 4. The system will download the file before processing
 
-### Manual Data Entry { .font-bold  .text-2xl .my-2 }
+### Manual Data Entry
 
 For simple imports, use manual data entry:
 
@@ -105,7 +105,7 @@ For simple imports, use manual data entry:
 
 ## Executing Imports
 
-### Validation { .font-bold  .text-2xl .my-2 }
+### Validation
 
 Before executing, imports are validated:
 
@@ -117,7 +117,7 @@ Before executing, imports are validated:
 
 Failed validation shows errors to help you fix the import file.
 
-### Dry Run { .font-bold  .text-2xl .my-2 }
+### Dry Run
 
 Test imports without making changes:
 
@@ -127,7 +127,7 @@ Test imports without making changes:
 4. Review the results to check for potential issues
 5. If everything looks good, disable "Dry Run Mode" and run the import
 
-### Immediate Execution { .font-bold  .text-2xl .my-2 }
+### Immediate Execution
 
 For small to medium imports:
 
@@ -136,7 +136,7 @@ For small to medium imports:
 3. Wait for the import to complete
 4. Review the import results
 
-### Background Execution { .font-bold  .text-2xl .my-2 }
+### Background Execution
 
 For larger imports:
 
@@ -306,7 +306,7 @@ View and manage imports:
 
 InspireCMS provides tools for migrating from other CMS platforms:
 
-### WordPress Migration { .font-bold  .text-2xl .my-2 }
+### WordPress Migration
 
 Import content from WordPress:
 
@@ -317,7 +317,7 @@ Import content from WordPress:
 5. Configure mapping options for categories, tags, and media
 6. Execute the import
 
-### Custom CMS Migration { .font-bold  .text-2xl .my-2 }
+### Custom CMS Migration
 
 For custom migrations from other systems:
 
@@ -328,7 +328,7 @@ For custom migrations from other systems:
 
 ## Error Handling and Rollback
 
-### Handling Import Errors { .font-bold  .text-2xl .my-2 }
+### Handling Import Errors
 
 When errors occur during import:
 
@@ -337,7 +337,7 @@ When errors occur during import:
 3. For background imports, errors are stored in the import record
 4. Review errors in the import details view
 
-### Import Rollback { .font-bold  .text-2xl .my-2 }
+### Import Rollback
 
 For critical imports, use transaction support:
 

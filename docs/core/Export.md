@@ -20,7 +20,7 @@ Access the export interface through:
 Admin Panel → Settings → Export
 ```
 
-### Export Types { .font-bold  .text-2xl .my-2 }
+### Export Types
 
 InspireCMS supports several export types:
 
@@ -32,7 +32,7 @@ InspireCMS supports several export types:
 6. **User Export**: User accounts and roles
 7. **Navigation Export**: Navigation structures
 
-### Export Formats { .font-bold  .text-2xl .my-2 }
+### Export Formats
 
 Available export formats include:
 
@@ -44,7 +44,7 @@ Available export formats include:
 
 ## Creating an Export
 
-### Basic Export { .font-bold  .text-2xl .my-2 }
+### Basic Export
 
 To create a basic content export:
 
@@ -57,7 +57,7 @@ To create a basic content export:
 4. Configure additional options based on export type
 5. Click "Create Export"
 
-### Export Configuration Options { .font-bold  .text-2xl .my-2 }
+### Export Configuration Options
 
 Depending on the export type, additional options may include:
 
@@ -68,7 +68,7 @@ Depending on the export type, additional options may include:
 - **File Storage**: Where to store the export file
 - **Compression**: Whether to compress the export file
 
-### Content Selection { .font-bold  .text-2xl .my-2 }
+### Content Selection
 
 For content exports, select items to include:
 
@@ -80,7 +80,7 @@ For content exports, select items to include:
    - Filter by creation date
    - Filter by author
 
-### Media Handling { .font-bold  .text-2xl .my-2 }
+### Media Handling
 
 Configure how media files are handled:
 
@@ -92,7 +92,7 @@ Configure how media files are handled:
 
 ## Executing Exports
 
-### Immediate Execution { .font-bold  .text-2xl .my-2 }
+### Immediate Execution
 
 For small to medium exports:
 
@@ -101,7 +101,7 @@ For small to medium exports:
 3. Wait for the export to complete
 4. Download the export file
 
-### Background Execution { .font-bold  .text-2xl .my-2 }
+### Background Execution
 
 For larger exports:
 
@@ -111,7 +111,7 @@ For larger exports:
 4. Receive notification when export is complete
 5. Download the export file from the export history
 
-### Scheduled Exports { .font-bold  .text-2xl .my-2 }
+### Scheduled Exports
 
 For regular backups or data syncing:
 

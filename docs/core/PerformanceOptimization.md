@@ -15,7 +15,7 @@ Performance optimization in InspireCMS involves several key areas:
 
 ## Server Optimization
 
-### PHP Configuration { .font-bold  .text-2xl .my-2 }
+### PHP Configuration
 
 Adjust PHP settings for optimal performance:
 
@@ -31,7 +31,7 @@ opcache.revalidate_freq = 0
 opcache.save_comments = 1
 ```
 
-### Web Server Configuration { .font-bold  .text-2xl .my-2 }
+### Web Server Configuration
 
 **Nginx Configuration**
 
@@ -91,7 +91,7 @@ http {
 </IfModule>
 ```
 
-### Process Management { .font-bold  .text-2xl .my-2 }
+### Process Management
 
 Configure PHP-FPM for better process management:
 
@@ -107,7 +107,7 @@ pm.max_requests = 500
 
 ## Database Optimization
 
-### Query Optimization { .font-bold  .text-2xl .my-2 }
+### Query Optimization
 
 Identify and optimize slow queries:
 
@@ -125,7 +125,7 @@ foreach ($queries as $query) {
 }
 ```
 
-### Indexing Strategy { .font-bold  .text-2xl .my-2 }
+### Indexing Strategy
 
 Add proper indexes to frequently queried columns:
 
@@ -140,7 +140,7 @@ Schema::table('cms_contents', function (Blueprint $table) {
 });
 ```
 
-### Query Caching { .font-bold  .text-2xl .my-2 }
+### Query Caching
 
 Cache frequent database queries:
 
@@ -148,7 +148,7 @@ Cache frequent database queries:
 // See the Caching section for query cache examples
 ```
 
-### Database Connection Pooling { .font-bold  .text-2xl .my-2 }
+### Database Connection Pooling
 
 Consider using database connection pooling for high-traffic sites:
 
@@ -166,7 +166,7 @@ Consider using database connection pooling for high-traffic sites:
 
 ## Application Optimization
 
-### Route Caching { .font-bold  .text-2xl .my-2 }
+### Route Caching
 
 Cache your application routes:
 
@@ -174,7 +174,7 @@ Cache your application routes:
 php artisan route:cache
 ```
 
-### Configuration Caching { .font-bold  .text-2xl .my-2 }
+### Configuration Caching
 
 Cache your application configuration:
 
@@ -182,7 +182,7 @@ Cache your application configuration:
 php artisan config:cache
 ```
 
-### View Caching { .font-bold  .text-2xl .my-2 }
+### View Caching
 
 Cache compiled Blade templates:
 
@@ -192,7 +192,7 @@ php artisan view:cache
 
 > **Note**: Clear these caches during development with the corresponding `clear` commands: `php artisan route:clear`, `php artisan config:clear`, and `php artisan view:clear`.
 
-### Autoloader Optimization { .font-bold  .text-2xl .my-2 }
+### Autoloader Optimization
 
 Optimize Composer's autoloader in production:
 
@@ -200,7 +200,7 @@ Optimize Composer's autoloader in production:
 composer install --optimize-autoloader --no-dev
 ```
 
-### Queue System { .font-bold  .text-2xl .my-2 }
+### Queue System
 
 Use queues for time-consuming tasks to make your application more responsive:
 
@@ -232,7 +232,7 @@ stdout_logfile=/path/to/project/storage/logs/worker.log
 
 ## Content Delivery Optimization
 
-### CDN Integration { .font-bold  .text-2xl .my-2 }
+### CDN Integration
 
 Use a Content Delivery Network for assets:
 
@@ -258,7 +258,7 @@ Use a Content Delivery Network for assets:
 ],
 ```
 
-### Lazy Loading { .font-bold  .text-2xl .my-2 }
+### Lazy Loading
 
 Implement lazy loading for images and heavy content:
 
@@ -299,7 +299,7 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 ```
 
-### Image Optimization { .font-bold  .text-2xl .my-2 }
+### Image Optimization
 
 Configure automatic image optimization:
 
@@ -320,7 +320,7 @@ Configure automatic image optimization:
 
 ## Frontend Performance
 
-### Asset Bundling { .font-bold  .text-2xl .my-2 }
+### Asset Bundling
 
 Use Laravel Mix or Vite to bundle and optimize assets:
 
@@ -353,7 +353,7 @@ Use in templates:
 @vite(['resources/css/app.css', 'resources/js/app.js'])
 ```
 
-### Critical CSS { .font-bold  .text-2xl .my-2 }
+### Critical CSS
 
 Inline critical CSS for faster initial rendering:
 
@@ -373,7 +373,7 @@ Inline critical CSS for faster initial rendering:
 </head>
 ```
 
-### JavaScript Optimization { .font-bold  .text-2xl .my-2 }
+### JavaScript Optimization
 
 Load JavaScript efficiently:
 
@@ -390,7 +390,7 @@ Load JavaScript efficiently:
 
 ## Monitoring and Profiling
 
-### Laravel Telescope { .font-bold  .text-2xl .my-2 }
+### Laravel Telescope
 
 Install Laravel Telescope for monitoring:
 
@@ -417,7 +417,7 @@ Configure in `config/telescope.php`:
 ],
 ```
 
-### Application Profiling { .font-bold  .text-2xl .my-2 }
+### Application Profiling
 
 Use Laravel Debugbar for profiling:
 
@@ -425,7 +425,7 @@ Use Laravel Debugbar for profiling:
 composer require barryvdh/laravel-debugbar --dev
 ```
 
-### Performance Testing { .font-bold  .text-2xl .my-2 }
+### Performance Testing
 
 Implement performance testing in your development workflow:
 
@@ -450,7 +450,7 @@ export default function() {
 
 ## Advanced Optimization Techniques
 
-### TTFB Optimization { .font-bold  .text-2xl .my-2 }
+### TTFB Optimization
 
 Improve Time To First Byte with these techniques:
 
@@ -460,7 +460,7 @@ Improve Time To First Byte with these techniques:
 4. Cache rendered content for anonymous users
 5. Implement edge caching with CDN
 
-### Memory Optimization { .font-bold  .text-2xl .my-2 }
+### Memory Optimization
 
 Reduce memory usage in your application:
 
@@ -472,7 +472,7 @@ $chunks = InspireCmsConfig::getContentModelClass()::cursor()->map(function ($con
 });
 ```
 
-### Database Optimization Commands { .font-bold  .text-2xl .my-2 }
+### Database Optimization Commands
 
 Create commands to optimize database performance:
 
@@ -500,7 +500,7 @@ class OptimizeDatabaseCommand extends Command
 }
 ```
 
-### Database Sharding { .font-bold  .text-2xl .my-2 }
+### Database Sharding
 
 For very large sites, consider database sharding:
 
@@ -536,7 +536,7 @@ class Content extends BaseContent
 
 ## Environment-Specific Optimizations
 
-### Development Environment { .font-bold  .text-2xl .my-2 }
+### Development Environment
 
 Optimize for developer experience:
 
@@ -552,7 +552,7 @@ TELESCOPE_ENABLED=true
 CACHE_DRIVER=array
 ```
 
-### Production Environment { .font-bold  .text-2xl .my-2 }
+### Production Environment
 
 Optimize for performance:
 
@@ -570,7 +570,7 @@ QUEUE_CONNECTION=redis
 SESSION_DRIVER=redis
 ```
 
-### CI/CD Optimization { .font-bold  .text-2xl .my-2 }
+### CI/CD Optimization
 
 Include performance checks in your CI/CD pipeline:
 

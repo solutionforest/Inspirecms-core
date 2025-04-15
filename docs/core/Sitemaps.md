@@ -41,7 +41,7 @@ Configure basic sitemap settings in your config file:
 
 ## Managing Sitemaps
 
-### Accessing Sitemap Settings { .font-bold  .text-2xl .my-2 }
+### Accessing Sitemap Settings
 
 Manage sitemap configuration through the admin interface:
 
@@ -49,10 +49,10 @@ Manage sitemap configuration through the admin interface:
 Admin Panel → Settings → Sitemap
 ```
 
-### Content Inclusion Rules { .font-bold  .text-2xl .my-2 }
+### Content Inclusion Rules
 Control which content appears in your sitemap through two available methods:
 
-#### Method 1: Content Management via CMS { .font-bold .my-2 }
+#### Method 1: Content Management via CMS
 
 1. Navigate to **CMS > Content**
 2. Select your content and go to the **"Sitemap"** tab
@@ -61,7 +61,7 @@ Control which content appears in your sitemap through two available methods:
     - Set custom priority and change frequency
     - Add special sitemap metadata
 
-#### Method 2: Manual URL Addition { .font-bold .my-2 }
+#### Method 2: Manual URL Addition
 
 1. Go to **Settings → Sitemap**
 2. Manually add specific URLs you want to include
@@ -73,7 +73,7 @@ Control which content appears in your sitemap through two available methods:
 
 These two methods can be used complementarily - the CMS method manages existing content pages, while the manual method allows you to add any additional URLs that might not be part of your standard content structure.
 
-### Prioritizing Content { .font-bold  .text-2xl .my-2 }
+### Prioritizing Content
 
 Set priorities for different content types:
 
@@ -92,7 +92,7 @@ Example settings:
 
 ## Sitemap Customization
 
-### Custom Generator { .font-bold  .text-2xl .my-2 }
+### Custom Generator
 
 Create a custom sitemap generator for specialized needs:
 
@@ -133,7 +133,7 @@ Register your custom generator:
 
 ## Sitemap Generation
 
-### Manual Generation { .font-bold  .text-2xl .my-2 }
+### Manual Generation
 
 Generate the sitemap manually:
 
@@ -141,7 +141,7 @@ Generate the sitemap manually:
 php artisan inspirecms:generate-sitemap
 ```
 
-### Scheduled Generation { .font-bold  .text-2xl .my-2 }
+### Scheduled Generation
 
 Configure automatic sitemap generation:
 
@@ -154,7 +154,7 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-### Automatic Generation { .font-bold  .text-2xl .my-2 }
+### Automatic Generation
 
 The sitemap is automatically regenerated when:
 - A sitemap model is created
@@ -176,27 +176,30 @@ This ensures your sitemap always reflects the latest changes without manual inte
 
 ## Troubleshooting
 
-### Common Issues { .font-bold  .text-2xl .my-2 }
+### Common Issues
 
-**Sitemap Not Updating**
+#### Sitemap Not Updating
+
 Check that:
 - Your scheduled task is running
 - The sitemap file is writable by the web server
 - There are no PHP errors during generation
 
-**Missing Content**
+#### Missing Content
+
 Verify that:
 - Content is published and public
 - Content is not excluded from the sitemap
 - Content passes any custom inclusion rules
 
-**Invalid XML**
+#### Invalid XML
+
 Ensure that:
 - Special characters are properly encoded
 - The sitemap follows the XML sitemap protocol
 - All URLs are properly formatted
 
-### Validation Tools { .font-bold  .text-2xl .my-2 }
+### Validation Tools
 
 Validate your sitemap with:
 - Google Search Console

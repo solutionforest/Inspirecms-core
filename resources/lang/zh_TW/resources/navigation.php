@@ -29,4 +29,8 @@ return [
         'label' => '內容',
         'validation_attribute' => '內容',
     ],
+    'parent_id' => [
+        'label' => '父級',
+        'validation_attribute' => 'parent',
+    ],
 ];

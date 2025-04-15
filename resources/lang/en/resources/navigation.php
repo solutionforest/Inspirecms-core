@@ -29,4 +29,8 @@ return [
         'label' => 'Content',
         'validation_attribute' => 'content',
     ],
+    'parent_id' => [
+        'label' => 'Parent',
+        'validation_attribute' => 'parent',
+    ],
 ];

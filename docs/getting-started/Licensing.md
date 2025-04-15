@@ -18,7 +18,7 @@ The MIT License requires you to:
 
 For businesses requiring additional features, support, and liability protection, we offer commercial licensing options.
 
-### Commercial Features { .font-bold  .text-2xl .my-2 }
+### Commercial Features
 
 Commercial licenses include access to:
 - Priority support
@@ -27,7 +27,7 @@ Commercial licenses include access to:
 - SLA guarantees
 - Dedicated support team
 
-### Pricing { .font-bold  .text-2xl .my-2 }
+### Pricing
 
 Commercial licenses are available in these tiers:
 

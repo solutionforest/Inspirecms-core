@@ -491,7 +491,13 @@ class ImportDataService implements ImportDataServiceInterface
                     $this->finished['navigation'][] = $navigation ?? null;
 
                 } catch (\Throwable $th) {
-                    $this->processErrors['navigation'][] = $th->getMessage();
+                    $errorMsg = 'Error while processing navigation item: ' . $item->title;
+                    if (filled($th->getMessage())) {
+                        $errorMsg .= ' - ' . $th->getMessage();
+                    } else {
+                        $errorMsg .= ' - ' . get_class($th);
+                    }
+                    $this->processErrors['navigation'][$category][] = $errorMsg;
                 }
             }
 
@@ -502,7 +508,13 @@ class ImportDataService implements ImportDataServiceInterface
             try {
                 $model::scoped(['category' => $category])->rebuildTree($treeData, true);
             } catch (\Throwable $th) {
-                $this->processErrors['navigation'][] = $th->getMessage();
+                $errorMsg = 'Error while rebuilding tree for category: ' . $category;
+                if (filled($th->getMessage())) {
+                    $errorMsg .= ' - ' . $th->getMessage();
+                } else {
+                    $errorMsg .= ' - ' . get_class($th);
+                }
+                $this->processErrors['navigation'][$category][] = $errorMsg;
             }
         }
     }

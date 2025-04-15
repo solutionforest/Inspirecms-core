@@ -18,7 +18,7 @@ Caching in InspireCMS accelerates content delivery by storing frequently accesse
 
 Configure caching in your application's configuration files.
 
-### Main Cache Settings { .font-bold  .text-2xl .my-2 }
+### Main Cache Settings
 
 Configure basic cache settings in `config/inspirecms.php`:
 
@@ -42,7 +42,7 @@ Configure basic cache settings in `config/inspirecms.php`:
 ],
 ```
 
-### Laravel Cache Driver Configuration { .font-bold  .text-2xl .my-2 }
+### Laravel Cache Driver Configuration
 
 InspireCMS uses Laravel's caching system. Configure the cache driver in `config/cache.php`:
 
@@ -84,7 +84,7 @@ InspireCMS uses Laravel's caching system. Configure the cache driver in `config/
 
 InspireCMS automatically caches content to reduce database queries.
 
-### Content Cache Configuration { .font-bold  .text-2xl .my-2 }
+### Content Cache Configuration
 
 Adjust content cache settings:
 
@@ -99,7 +99,7 @@ Adjust content cache settings:
 ],
 ```
 
-### Content Cache Tags { .font-bold  .text-2xl .my-2 }
+### Content Cache Tags
 
 Content is cached with tags for easy invalidation:
 
@@ -118,7 +118,7 @@ $content = Cache::tags(['content:123'])->remember('content:123', 3600, function 
 });
 ```
 
-### Invalidating Content Cache { .font-bold  .text-2xl .my-2 }
+### Invalidating Content Cache
 
 Automatically invalidated when content is updated, but can also be cleared manually:
 
@@ -134,7 +134,7 @@ Cache::tags(['content:type:blog'])->flush();
 
 Navigation structure is cached for improved performance.
 
-### Navigation Cache Configuration { .font-bold  .text-2xl .my-2 }
+### Navigation Cache Configuration
 
 ```php
 // config/inspirecms.php
@@ -146,7 +146,7 @@ Navigation structure is cached for improved performance.
 ],
 ```
 
-### Working with Navigation Cache { .font-bold  .text-2xl .my-2 }
+### Working with Navigation Cache
 
 Example of cached navigation retrieval:
 
@@ -155,7 +155,7 @@ Example of cached navigation retrieval:
 $navigation = inspirecms()->getNavigation('main', 'en');
 ```
 
-### Invalidating Navigation Cache { .font-bold  .text-2xl .my-2 }
+### Invalidating Navigation Cache
 
 Clear the navigation cache manually:
 
@@ -171,7 +171,7 @@ Cache::forget("inspirecms.navigation.main.en");
 
 InspireCMS caches content routes for faster URL resolution.
 
-### Route Cache Configuration { .font-bold  .text-2xl .my-2 }
+### Route Cache Configuration
 
 ```php
 // config/inspirecms.php
@@ -183,7 +183,7 @@ InspireCMS caches content routes for faster URL resolution.
 ],
 ```
 
-### Route Cache Commands { .font-bold  .text-2xl .my-2 }
+### Route Cache Commands
 
 In addition to Laravel's route caching, clear InspireCMS route cache:
 
@@ -195,7 +195,7 @@ php artisan inspirecms:clear-route-cache
 
 Templates are cached at different levels for optimal performance.
 
-### View Cache { .font-bold  .text-2xl .my-2 }
+### View Cache
 
 Laravel's view cache for compiled templates:
 
@@ -207,7 +207,7 @@ php artisan view:cache
 php artisan view:clear
 ```
 
-### Fragment Caching { .font-bold  .text-2xl .my-2 }
+### Fragment Caching
 
 Cache specific parts of templates:
 
@@ -231,7 +231,7 @@ $cacheTtl = 60 * 24; // 24 hours in minutes
 
 Cache database queries to reduce load on your database.
 
-### Model Cache { .font-bold  .text-2xl .my-2 }
+### Model Cache
 
 Cache model queries directly:
 
@@ -247,7 +247,7 @@ $posts = Cache::remember('published_blog_posts', 3600, function () {
 });
 ```
 
-### Query Cache Considerations { .font-bold  .text-2xl .my-2 }
+### Query Cache Considerations
 
 - Cache appropriate queries (frequently accessed, rarely changing)
 - Use specific cache keys based on query parameters
@@ -258,7 +258,7 @@ $posts = Cache::remember('published_blog_posts', 3600, function () {
 
 Media and asset caching improves frontend performance.
 
-### Media Cache Configuration { .font-bold  .text-2xl .my-2 }
+### Media Cache Configuration
 
 Configure cache headers for media assets:
 
@@ -274,7 +274,7 @@ Configure cache headers for media assets:
 ],
 ```
 
-### Asset Preprocessing { .font-bold  .text-2xl .my-2 }
+### Asset Preprocessing
 
 For frontend assets, use Laravel Mix or Vite with proper versioning:
 
@@ -288,7 +288,7 @@ For frontend assets, use Laravel Mix or Vite with proper versioning:
 
 Implement HTTP caching for better performance.
 
-### Cache Headers { .font-bold  .text-2xl .my-2 }
+### Cache Headers
 
 InspireCMS sets proper cache headers for different content types:
 
@@ -310,7 +310,7 @@ public function handle($request, Closure $next)
 }
 ```
 
-### Custom Cache Middleware { .font-bold  .text-2xl .my-2 }
+### Custom Cache Middleware
 
 Create custom cache middleware for specific sections:
 
@@ -354,7 +354,7 @@ protected $middlewareGroups = [
 
 Populate cache in advance to avoid cache misses and initial slowdowns.
 
-### Cache Warming Command { .font-bold  .text-2xl .my-2 }
+### Cache Warming Command
 
 Create a command to pre-populate cache:
 
@@ -438,7 +438,7 @@ protected function schedule(Schedule $schedule)
 
 Properly clear cache when needed to ensure fresh content.
 
-### Cache Clear Commands { .font-bold  .text-2xl .my-2 }
+### Cache Clear Commands
 
 InspireCMS provides specific commands for clearing various caches:
 
@@ -452,7 +452,7 @@ php artisan inspirecms:clear-route-cache
 php artisan inspirecms:clear-navigation-cache
 ```
 
-### Automatic Cache Clearing { .font-bold  .text-2xl .my-2 }
+### Automatic Cache Clearing
 
 InspireCMS automatically clears relevant caches when:
 
@@ -465,7 +465,7 @@ InspireCMS automatically clears relevant caches when:
 
 Track and optimize your cache performance.
 
-### Cache Hit/Miss Tracking { .font-bold  .text-2xl .my-2 }
+### Cache Hit/Miss Tracking
 
 Implement cache monitoring:
 
@@ -488,7 +488,7 @@ public function remember($key, $ttl, $callback)
 }
 ```
 
-### Cache Performance Dashboard { .font-bold  .text-2xl .my-2 }
+### Cache Performance Dashboard
 
 Consider implementing a cache monitoring dashboard:
 

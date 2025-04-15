@@ -152,6 +152,10 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                     'webSetting',
                     'documentType',
                 ]);
+            case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
+                return $query->with([
+                    'content.path',
+                ]);
         }
 
         return $query;

@@ -14,7 +14,7 @@ The language system in InspireCMS allows you to:
 
 ## Configuring Languages
 
-### Available Languages { .font-bold  .text-2xl .my-2 }
+### Available Languages
 
 Configure the available languages in your configuration file:
 
@@ -32,7 +32,7 @@ Configure the available languages in your configuration file:
 ],
 ```
 
-### Managing Languages { .font-bold  .text-2xl .my-2 }
+### Managing Languages
 
 Languages are managed through the admin interface:
 
@@ -43,7 +43,7 @@ Languages are managed through the admin interface:
    - Edit language settings
    - Set the default language
 
-### Adding a New Language { .font-bold  .text-2xl .my-2 }
+### Adding a New Language
 
 1. Go to **Settings → Languages**
 2. Click **New Language**
@@ -52,7 +52,7 @@ Languages are managed through the admin interface:
    - **Is Default**: Whether this is the default language
 4. Click **Save**
 
-### Setting the Default Language { .font-bold  .text-2xl .my-2 }
+### Setting the Default Language
 
 The default language is used when:
 
@@ -70,7 +70,7 @@ To change the default language:
 
 InspireCMS manages content translations through a flexible system based on locale keys.
 
-### Creating Multilingual Content { .font-bold  .text-2xl .my-2 }
+### Creating Multilingual Content
 
 When creating or editing content:
 
@@ -80,7 +80,7 @@ When creating or editing content:
 4. Switch to another language to provide translations
 5. Fields that are translatable will show for each language
 
-### Translatable Fields { .font-bold  .text-2xl .my-2 }
+### Translatable Fields
 
 By default, the following fields are typically translatable:
 
@@ -90,7 +90,7 @@ By default, the following fields are typically translatable:
 - URL slugs (can be different per language)
 - Custom fields marked as translatable
 
-### Setting Up Translatable Fields { .font-bold  .text-2xl .my-2 }
+### Setting Up Translatable Fields
 
 When creating custom fields, enable translation support:
 
@@ -116,7 +116,7 @@ Or when configuring fields through the admin interface:
 
 InspireCMS supports different URL strategies for multilingual content:
 
-### 1. Language Prefix URLs { .font-bold  .text-2xl .my-2 }
+### 1. Language Prefix URLs
 
 ```
 /en/about-us
@@ -126,9 +126,9 @@ InspireCMS supports different URL strategies for multilingual content:
 
 This is the default and most common approach, adding the language code to the URL.
 
-### 2. Custom URL Structure { .font-bold  .text-2xl .my-2 }
+### 2. Custom URL Structure
 
-#### 2.1. Configure Frontend Segment Provider { .font-bold .my-2 }
+#### 2.1. Configure Frontend Segment Provider
 
 For advanced URL handling, implement a custom segment provider:
 
@@ -208,7 +208,7 @@ class CustomLanguageSegmentProvider implements SegmentProviderInterface
 }
 ```
 
-#### 2.2 Configure Published Content Resolver { .font-bold .my-2 }
+#### 2.2 Configure Published Content Resolver
 
 For multilingual sites with custom URL structures, you may need a custom content resolver to determine which content to display based on the current language:
 
@@ -256,7 +256,7 @@ For complex multilingual architectures, you can combine this with the segment pr
 
 ## Language Switching
 
-### Adding a Language Switcher { .font-bold  .text-2xl .my-2 }
+### Adding a Language Switcher
 
 InspireCMS provides helper functions to create language switchers:
 
@@ -277,7 +277,7 @@ InspireCMS provides helper functions to create language switchers:
 
 For cases where different languages need different layouts:
 
-### Using Language-Specific Components { .font-bold  .text-2xl .my-2 }
+### Using Language-Specific Components
 
 ```php
 @php
@@ -293,7 +293,7 @@ For cases where different languages need different layouts:
 <x-dynamic-component :component="$componentName" :content="$content" />
 ```
 
-### Conditional Content by Language { .font-bold  .text-2xl .my-2 }
+### Conditional Content by Language
 
 ```php
 @if(app()->getLocale() === 'zh_CN')
