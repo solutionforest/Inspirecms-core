@@ -6,7 +6,7 @@ InspireCMS leverages Laravel's powerful Blade templating engine to create dynami
 
 Blade is Laravel's templating engine that combines the simplicity of plain PHP with powerful features like template inheritance, components, and directives. In InspireCMS, Blade is used to build flexible and maintainable templates for your website.
 
-### Basic Blade Syntax
+### Basic Blade Syntax { .font-bold  .text-2xl .my-2 }
 
 Blade templates use the `.blade.php` extension and include standard HTML with special Blade directives:
 
@@ -36,11 +36,11 @@ Blade templates use the `.blade.php` extension and include standard HTML with sp
 
 InspireCMS extends Blade with custom directives for accessing content properties and common CMS functions.
 
-### Property Directives
+### Property Directives { .font-bold  .text-2xl .my-2 }
 
 Access content field values with these directives:
 
-#### @property
+#### @property { .font-bold .my-2 }
 
 Basic property access:
 
@@ -53,7 +53,7 @@ Basic property access:
 <p>{{ $custom_subtitle }}</p>
 ```
 
-#### @propertyArray
+#### @propertyArray { .font-bold .my-2 }
 
 Access array properties:
 
@@ -64,7 +64,7 @@ Access array properties:
 @endforeach
 ```
 
-#### @propertyNotEmpty
+#### @propertyNotEmpty { .font-bold .my-2 }
 
 Conditionally display content when a property has a value:
 
@@ -76,7 +76,7 @@ Conditionally display content when a property has a value:
 @endif
 ```
 
-### Navigation Directives
+### Navigation Directives { .font-bold  .text-2xl .my-2 }
 
 Render navigation menus:
 
@@ -106,7 +106,7 @@ Customize with a callback:
 })
 ```
 
-### Language and Localization Directives
+### Language and Localization Directives { .font-bold  .text-2xl .my-2 }
 
 Display content in multiple languages:
 
@@ -126,7 +126,7 @@ Display content in multiple languages:
 
 InspireCMS uses Blade components for reusable UI elements.
 
-### Using CMS Components
+### Using CMS Components { .font-bold  .text-2xl .my-2 }
 
 The `x-cms-template` component is the foundation of InspireCMS templates:
 
@@ -137,7 +137,7 @@ The `x-cms-template` component is the foundation of InspireCMS templates:
 </x-cms-template>
 ```
 
-### Theme Components
+### Theme Components { .font-bold  .text-2xl .my-2 }
 
 Access theme-specific components:
 
@@ -188,7 +188,7 @@ Use your component:
 
 InspireCMS leverages Blade's template inheritance for creating consistent layouts.
 
-### Basic Layout Structure
+### Basic Layout Structure { .font-bold  .text-2xl .my-2 }
 
 Create a master layout:
 
@@ -269,7 +269,7 @@ Extend the layout in templates:
 
 ## Advanced Blade Techniques
 
-### Template Partials
+### Template Partials { .font-bold  .text-2xl .my-2 }
 
 Break your templates into manageable pieces:
 
@@ -301,7 +301,7 @@ Include the partial:
 ])
 ```
 
-### Template Slots
+### Template Slots { .font-bold  .text-2xl .my-2 }
 
 Use slots for flexible component content:
 
@@ -342,7 +342,7 @@ Use the component with slots:
 </x-card>
 ```
 
-### Conditional Rendering
+### Conditional Rendering { .font-bold  .text-2xl .my-2 }
 
 Render content conditionally:
 
@@ -364,7 +364,7 @@ Use the `@unless` directive for negative conditions:
 @endunless
 ```
 
-### Loops and Iteration
+### Loops and Iteration { .font-bold  .text-2xl .my-2 }
 
 Work with collections and arrays:
 
@@ -395,7 +395,7 @@ Use the `@foreach` directive with loop variable:
 
 Create custom Blade directives for specialized template functions.
 
-### Registering Custom Directives
+### Registering Custom Directives { .font-bold  .text-2xl .my-2 }
 
 Register in a service provider:
 
@@ -440,7 +440,7 @@ Use custom directives:
 
 Improve performance with template caching:
 
-### View Caching
+### View Caching { .font-bold  .text-2xl .my-2 }
 
 Cache compiled views in production:
 
@@ -454,7 +454,7 @@ Clear the cache during development:
 php artisan view:clear
 ```
 
-### Fragment Caching
+### Fragment Caching { .font-bold  .text-2xl .my-2 }
 
 Cache specific sections of your templates:
 
@@ -512,7 +512,7 @@ class PageTemplateTest extends TestCase
 
 ## Common Blade Patterns in InspireCMS
 
-### SEO Meta Tags
+### SEO Meta Tags { .font-bold  .text-2xl .my-2 }
 
 Handle dynamic SEO meta tags:
 
@@ -541,7 +541,7 @@ Handle dynamic SEO meta tags:
 </head>
 ```
 
-### Navigation Menus
+### Navigation Menus { .font-bold  .text-2xl .my-2 }
 
 Create flexible navigation menus:
 
@@ -586,7 +586,7 @@ Create flexible navigation menus:
 </nav>
 ```
 
-### Breadcrumbs
+### Breadcrumbs { .font-bold  .text-2xl .my-2 }
 
 Implement breadcrumb navigation:
 
@@ -635,7 +635,7 @@ Implement breadcrumb navigation:
 
 ## Troubleshooting Common Issues
 
-### Property Not Found
+### Property Not Found { .font-bold  .text-2xl .my-2 }
 
 If your template shows an error about a property not being found:
 
@@ -655,7 +655,7 @@ Solution:
 @endif
 ```
 
-### Template Performance Issues
+### Template Performance Issues { .font-bold  .text-2xl .my-2 }
 
 If templates render slowly:
 
@@ -680,7 +680,7 @@ $sidebarCache = Cache::remember('sidebar_'.$content->id.'_'.app()->getLocale(), 
 {!! $sidebarCache !!}
 ```
 
-### Multilingual Content Rendering
+### Multilingual Content Rendering { .font-bold  .text-2xl .my-2 }
 
 For issues with multilingual content:
 
@@ -708,7 +708,7 @@ $title = $content->getPropertyValue('hero', 'title', null, $locale)
 
 ## Complex Data Rendering Examples
 
-### Rendering Structured Content
+### Rendering Structured Content { .font-bold  .text-2xl .my-2 }
 
 For complex content structures:
 
@@ -747,7 +747,7 @@ For complex content structures:
 @endforeach
 ```
 
-### Dynamic Form Rendering
+### Dynamic Form Rendering { .font-bold  .text-2xl .my-2 }
 
 Create forms based on template data:
 

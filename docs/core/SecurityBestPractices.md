@@ -18,7 +18,7 @@ InspireCMS includes several built-in security features:
 
 ## Environment Configuration
 
-### Secure .env File
+### Secure .env File { .font-bold  .text-2xl .my-2 }
 
 Your `.env` file contains sensitive information and should be protected:
 
@@ -35,7 +35,7 @@ APP_KEY=[64-character-random-string]
 chmod 600 .env
 ```
 
-### Production Settings
+### Production Settings { .font-bold  .text-2xl .my-2 }
 
 In production environments:
 
@@ -52,7 +52,7 @@ php artisan view:cache
 
 ## Authentication Security
 
-### Password Policies
+### Password Policies { .font-bold  .text-2xl .my-2 }
 
 Implement strong password requirements:
 
@@ -75,7 +75,7 @@ public function boot()
 }
 ```
 
-### Account Security
+### Account Security { .font-bold  .text-2xl .my-2 }
 
 Configure account security settings:
 
@@ -100,7 +100,7 @@ Configure account security settings:
 ],
 ```
 
-### Two-Factor Authentication
+### Two-Factor Authentication { .font-bold  .text-2xl .my-2 }
 
 Enable two-factor authentication for admin users:
 
@@ -120,7 +120,7 @@ composer require laravel/fortify
 
 ## API Security
 
-### API Authentication
+### API Authentication { .font-bold  .text-2xl .my-2 }
 
 Secure API endpoints properly:
 
@@ -139,7 +139,7 @@ Secure API endpoints properly:
 ],
 ```
 
-### CORS Configuration
+### CORS Configuration { .font-bold  .text-2xl .my-2 }
 
 Configure Cross-Origin Resource Sharing:
 
@@ -157,7 +157,7 @@ Configure Cross-Origin Resource Sharing:
 
 ## Content Security
 
-### Content Validation
+### Content Validation { .font-bold  .text-2xl .my-2 }
 
 Validate all content before storing or displaying:
 
@@ -172,7 +172,7 @@ $rules = [
 ];
 ```
 
-### Custom Validation Rules
+### Custom Validation Rules { .font-bold  .text-2xl .my-2 }
 
 Create custom validation rules for content security:
 
@@ -204,7 +204,7 @@ class CleanHtmlRule implements Rule
 
 ## File Upload Security
 
-### Secure File Uploads
+### Secure File Uploads { .font-bold  .text-2xl .my-2 }
 
 Configure secure file upload handling:
 
@@ -230,7 +230,7 @@ Configure secure file upload handling:
 ],
 ```
 
-### SVG Sanitization
+### SVG Sanitization { .font-bold  .text-2xl .my-2 }
 
 Sanitize SVG files to prevent XSS:
 
@@ -253,7 +253,7 @@ if ($file->getClientMimeType() === 'image/svg+xml') {
 
 ## Content Delivery Security
 
-### Content Security Policy
+### Content Security Policy { .font-bold  .text-2xl .my-2 }
 
 Implement a Content Security Policy:
 
@@ -298,7 +298,7 @@ protected $middlewareGroups = [
 ];
 ```
 
-### HTTPS Enforcement
+### HTTPS Enforcement { .font-bold  .text-2xl .my-2 }
 
 Force HTTPS connections:
 
@@ -339,7 +339,7 @@ class SecurityHeaders
 
 ## Database Security
 
-### Database Connections
+### Database Connections { .font-bold  .text-2xl .my-2 }
 
 Secure database connections:
 
@@ -353,7 +353,7 @@ DB_USERNAME=inspirecms_user
 DB_PASSWORD=strong_password_here
 ```
 
-### Query Protection
+### Query Protection { .font-bold  .text-2xl .my-2 }
 
 InspireCMS uses Laravel's query builder, which automatically protects against SQL injection. Always use parameter binding:
 
@@ -370,7 +370,7 @@ $results = DB::select($query);
 
 ## Regular Updates
 
-### Keep Dependencies Updated
+### Keep Dependencies Updated { .font-bold  .text-2xl .my-2 }
 
 Regularly update InspireCMS and its dependencies:
 
@@ -385,7 +385,7 @@ composer update inspirecms/core
 composer update
 ```
 
-### Security Scanning
+### Security Scanning { .font-bold  .text-2xl .my-2 }
 
 Implement security scanning in your workflow:
 
@@ -399,7 +399,7 @@ php artisan security:check
 
 ## Server Hardening
 
-### File Permissions
+### File Permissions { .font-bold  .text-2xl .my-2 }
 
 Set proper file permissions:
 
@@ -418,7 +418,7 @@ chmod -R 775 /path/to/inspirecms/storage
 chmod -R 775 /path/to/inspirecms/bootstrap/cache
 ```
 
-### Web Server Configuration
+### Web Server Configuration { .font-bold  .text-2xl .my-2 }
 
 Configure your web server securely:
 
@@ -473,7 +473,7 @@ location ~ ^/(storage|bootstrap|vendor|node_modules|tests)/ {
 
 ## Monitoring and Logging
 
-### Security Monitoring
+### Security Monitoring { .font-bold  .text-2xl .my-2 }
 
 Configure proper security logging:
 
@@ -500,7 +500,7 @@ Log security events:
 ]);
 ```
 
-### Audit Logging
+### Audit Logging { .font-bold  .text-2xl .my-2 }
 
 Track user actions for accountability:
 
@@ -522,7 +522,7 @@ class Content extends Model implements Auditable
 
 ## Backups and Disaster Recovery
 
-### Regular Backups
+### Regular Backups { .font-bold  .text-2xl .my-2 }
 
 Configure automatic backups:
 
@@ -545,7 +545,7 @@ protected function schedule(Schedule $schedule)
 }
 ```
 
-### Recovery Testing
+### Recovery Testing { .font-bold  .text-2xl .my-2 }
 
 Regularly test your backup restoration process:
 

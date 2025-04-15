@@ -19,14 +19,14 @@ To create a document type:
 2. Click **Create Document Type**
 3. Configure the following settings:
 
-### Basic Settings
+### Basic Settings { .font-bold  .text-2xl .my-2 }
 
 - **Name**: Human-readable name (e.g., "Blog Post")
 - **Slug**: Machine-readable identifier (e.g., "blog-post")
 - **Icon**: Visual identifier in the admin interface
 - **Category**: For organizing document types (e.g., "web", "data")
 
-### Advanced Settings
+### Advanced Settings { .font-bold  .text-2xl .my-2 }
 
 - **Show as Table**: Whether to display content in a table view
 - **Show at Root**: Whether content can be created at the root level
@@ -52,7 +52,7 @@ Define which templates are available for rendering your content:
 
 InspireCMS allows you to create parent-child relationships between content:
 
-### Setting Child Types
+### Setting Child Types { .font-bold  .text-2xl .my-2 }
 
 Define which document types can be children of the current type:
 
@@ -73,14 +73,14 @@ Once document types are configured, content editors can use them to create struc
 
 Over time, you may need to modify your document types:
 
-### Editing Document Types
+### Editing Document Types { .font-bold  .text-2xl .my-2 }
 
 1. Navigate to **Settings** > **Document Types**
 2. Click on the document type you want to modify
 3. Make changes to settings, field groups, or templates
 4. Click **Save** to apply changes
 
-### Deleting Document Types
+### Deleting Document Types { .font-bold  .text-2xl .my-2 }
 
 Be cautious when deleting document types, as it may affect existing content:
 

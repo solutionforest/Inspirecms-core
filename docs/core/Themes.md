@@ -27,7 +27,7 @@ resources/views/components/inspirecms/{theme-name}/
 
 ## Viewing and Changing Themes
 
-### Viewing Available Themes
+### Viewing Available Themes { .font-bold  .text-2xl .my-2 }
 
 To see all available themes:
 
@@ -35,7 +35,7 @@ To see all available themes:
 2. The "Themes" section shows all installed themes
 3. The current active theme is highlighted
 
-### Changing the Active Theme
+### Changing the Active Theme { .font-bold  .text-2xl .my-2 }
 
 To switch themes:
 
@@ -51,7 +51,7 @@ The theme change takes effect immediately on your site.
 
 ## Creating a New Theme
 
-### Using the Admin Interface
+### Using the Admin Interface { .font-bold  .text-2xl .my-2 }
 
 1. Go to **Settings → Templates**
 2. Click "Create theme"
@@ -61,7 +61,7 @@ The theme change takes effect immediately on your site.
 
 The new theme will be created in `resources/views/components/inspirecms/{your-theme-name}/`.
 
-### Manual Creation
+### Manual Creation { .font-bold  .text-2xl .my-2 }
 
 1. Create the theme directory structure:
 
@@ -137,7 +137,7 @@ This copies all templates and components from the source theme to your new theme
 
 Themes use [Blade components](https://laravel.com/docs/11.x/blade) to create reusable UI elements.
 
-### Creating Theme Components
+### Creating Theme Components { .font-bold  .text-2xl .my-2 }
 
 Create a new component in your theme:
 
@@ -154,7 +154,7 @@ Create a new component in your theme:
 </section>
 ```
 
-### Using Theme Components
+### Using Theme Components { .font-bold  .text-2xl .my-2 }
 
 Using the helper:
 
@@ -169,7 +169,7 @@ Using the helper:
 
 ## Theme Configuration
 
-### Default Theme Setting
+### Default Theme Setting { .font-bold  .text-2xl .my-2 }
 
 Set the default theme in your configuration:
 
@@ -182,7 +182,7 @@ Set the default theme in your configuration:
 ],
 ```
 
-### Theme-specific Configuration
+### Theme-specific Configuration { .font-bold  .text-2xl .my-2 }
 
 Create theme-specific configuration:
 
@@ -220,7 +220,7 @@ Access theme configuration in templates:
 
 ## Theme Assets
 
-### Asset Structure
+### Asset Structure { .font-bold  .text-2xl .my-2 }
 
 Organize theme assets in the public directory:
 
@@ -238,7 +238,7 @@ public/themes/your-theme/
     └── font-bold.woff2
 ```
 
-### Including Assets
+### Including Assets { .font-bold  .text-2xl .my-2 }
 
 Include your assets in the theme's layout:
 
@@ -266,7 +266,7 @@ Include your assets in the theme's layout:
 </html>
 ```
 
-### Asset Versioning
+### Asset Versioning { .font-bold  .text-2xl .my-2 }
 
 For production environments, add versioning to prevent caching issues:
 
@@ -278,7 +278,7 @@ For production environments, add versioning to prevent caching issues:
 
 Templates define how content is displayed using your theme components.
 
-### Default Templates
+### Default Templates { .font-bold  .text-2xl .my-2 }
 
 Each theme should provide at least these basic templates:
 
@@ -286,7 +286,7 @@ Each theme should provide at least these basic templates:
 2. **Page**: Standard page template
 3. **Simple Page**: Minimal page template for basic content
 
-### Custom Template Types
+### Custom Template Types { .font-bold  .text-2xl .my-2 }
 
 Create specialized templates for different content types:
 
@@ -408,9 +408,9 @@ To share your theme with others:
 
 Let's assume you've created a theme named "**abc**".
 
-### Approach 1: Using Components
+### Approach 1: Using Components { .font-bold  .text-2xl .my-2 }
 
-#### Folder Structure
+#### Folder Structure { .font-bold .my-2 }
 ```
 resources/views/components/inspirecms/abc/
 ├── footer.blade.php
@@ -420,7 +420,7 @@ resources/views/components/inspirecms/abc/
 └── simple-page.blade.php
 ```
 
-#### Component Files
+#### Component Files { .font-bold .my-2 }
 
 ```php
 <!-- resources/views/components/inspirecms/abc/layout.blade.php -->
@@ -511,7 +511,7 @@ resources/views/components/inspirecms/abc/
 </x-dynamic-component>
 ```
 
-#### Applying Layouts to Templates
+#### Applying Layouts to Templates { .font-bold .my-2 }
 
 ```php
 <!-- Template: home -->
@@ -527,9 +527,9 @@ resources/views/components/inspirecms/abc/
 </x-cms-template>
 ```
 
-### Approach 2: Using Template Inheritance
+### Approach 2: Using Template Inheritance { .font-bold  .text-2xl .my-2 }
 
-#### Folder Structure
+#### Folder Structure { .font-bold .my-2 }
 ```
 resources/views/
 ├── layouts/
@@ -547,7 +547,7 @@ resources/views/
 
 Learn more about [layouts using inheritance in Blade](https://laravel.com/docs/11.x/blade#layouts-using-template-inheritance).
 
-#### Template Files
+#### Template Files { .font-bold .my-2 }
 
 ```php
 <!-- resources/views/layouts/inspirecms/abc/base.blade.php -->
@@ -627,7 +627,7 @@ Learn more about [layouts using inheritance in Blade](https://laravel.com/docs/1
 @endsection
 ```
 
-#### Applying Layouts to Templates
+#### Applying Layouts to Templates { .font-bold .my-2 }
 
 ```php
 <!-- Template: home -->

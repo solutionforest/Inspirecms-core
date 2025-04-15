@@ -12,7 +12,7 @@ Before upgrading, always:
 
 ## Standard Upgrade Process
 
-### Step 1: Update via Composer
+### Step 1: Update via Composer { .font-bold  .text-2xl .my-2 }
 
 Update InspireCMS core and dependencies:
 
@@ -26,7 +26,7 @@ To update to a specific version:
 composer require solution-forest/inspirecms-core:^1.0.0
 ```
 
-### Step 2: Clear All Caches
+### Step 2: Clear All Caches { .font-bold  .text-2xl .my-2 }
 
 Clear Laravel's caches to ensure changes take effect:
 
@@ -34,7 +34,7 @@ Clear Laravel's caches to ensure changes take effect:
 php artisan optimize:clear
 ```
 
-### Step 3: Update InspireCMS Assets
+### Step 3: Update InspireCMS Assets { .font-bold  .text-2xl .my-2 }
 
 **Option A: Automatic Update (Recommended)**
 
@@ -68,7 +68,7 @@ php artisan inspirecms:repair-permissions
 
 ## Troubleshooting Upgrades
 
-### Configuration Issues
+### Configuration Issues { .font-bold  .text-2xl .my-2 }
 
 If your configuration appears outdated after upgrade:
 
@@ -78,14 +78,14 @@ php artisan vendor:publish --tag="inspirecms-config" --force
 
 Then manually merge your customizations from the old config file.
 
-### Database Schema Issues
+### Database Schema Issues { .font-bold  .text-2xl .my-2 }
 
 If you encounter database schema issues:
 ```bash
 php artisan migrate:status
 ```
 
-### Asset Issues
+### Asset Issues { .font-bold  .text-2xl .my-2 }
 
 If the admin panel appears broken after upgrade:
 
@@ -94,7 +94,7 @@ php artisan filament:assets
 npm run build
 ```
 
-### Still Having Issues?
+### Still Having Issues? { .font-bold  .text-2xl .my-2 }
 If you continue to experience problems after upgrading, please:
 
 1. Check the GitHub issues

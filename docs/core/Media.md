@@ -16,7 +16,7 @@ The media system in InspireCMS allows you to:
 
 ## Media Library
 
-### Accessing the Media Library
+### Accessing the Media Library { .font-bold  .text-2xl .my-2 }
 
 The media library is accessible from:
 
@@ -24,7 +24,7 @@ The media library is accessible from:
 Admin Panel → Media 
 ```
 
-### Browsing Media
+### Browsing Media { .font-bold  .text-2xl .my-2 }
 
 The media library interface includes:
 
@@ -34,7 +34,7 @@ The media library interface includes:
 - **Filters**: Filter by date, file type, or custom attributes
 - **Sorting**: Arrange files by name, date, size, or type
 
-### File Details
+### File Details { .font-bold  .text-2xl .my-2 }
 
 Click on a file to view detailed information:
 
@@ -46,7 +46,7 @@ Click on a file to view detailed information:
 
 ## Uploading Files
 
-### Upload Methods
+### Upload Methods { .font-bold  .text-2xl .my-2 }
 
 InspireCMS supports multiple upload methods:
 
@@ -54,7 +54,7 @@ InspireCMS supports multiple upload methods:
 2. **File Browser**: Click "Upload" and select files from your computer
 3. **Bulk Upload**: Upload multiple files simultaneously
 
-### Upload Configuration
+### Upload Configuration { .font-bold  .text-2xl .my-2 }
 
 Configure upload settings in `config/inspirecms.php`:
 
@@ -91,7 +91,7 @@ Configure upload settings in `config/inspirecms.php`:
 
 ## File Organization
 
-### Folder Structure
+### Folder Structure { .font-bold  .text-2xl .my-2 }
 
 Organize your media with folders:
 
@@ -100,7 +100,7 @@ Organize your media with folders:
 3. Optionally, choose a parent folder
 4. Click "Create"
 
-### Moving Files
+### Moving Files { .font-bold  .text-2xl .my-2 }
 
 To move files between folders:
 
@@ -110,7 +110,7 @@ To move files between folders:
 
 ## Media Usage
 
-### Inserting Media into Content
+### Inserting Media into Content { .font-bold  .text-2xl .my-2 }
 
 To add media to your content:
 
@@ -120,7 +120,7 @@ To add media to your content:
 4. Select the file from the media picker
 5. Insert the media
 
-### Media Fields
+### Media Fields { .font-bold  .text-2xl .my-2 }
 
 Content types can include dedicated media fields:
 
@@ -147,7 +147,7 @@ In templates, access media fields:
  @endforeach
 ```
 
-### Media in Templates
+### Media in Templates { .font-bold  .text-2xl .my-2 }
 
 Access media directly in templates:
 
@@ -161,7 +161,7 @@ Access media directly in templates:
 @endif
 ```
 
-### Responsive Images
+### Responsive Images { .font-bold  .text-2xl .my-2 }
 
 Generate responsive image variants:
 
@@ -179,7 +179,7 @@ Generate responsive image variants:
 
 ## Media Metadata
 
-### Default Metadata
+### Default Metadata { .font-bold  .text-2xl .my-2 }
 
 Every media file includes standard metadata:
 
@@ -191,7 +191,7 @@ Every media file includes standard metadata:
 - Dimensions (for images)
 - Duration (for audio/video)
 
-### Custom Metadata
+### Custom Metadata { .font-bold  .text-2xl .my-2 }
 
 Add custom metadata to media files:
 
@@ -203,7 +203,7 @@ Add custom metadata to media files:
    - **Caption**: Explanatory text shown with the media
    - **Description**: Longer description for internal use
 
-### Metadata in Templates
+### Metadata in Templates { .font-bold  .text-2xl .my-2 }
 
 Use metadata in your templates:
 
@@ -219,7 +219,7 @@ Use metadata in your templates:
 
 ## Media Storage
 
-### Storage Configuration
+### Storage Configuration { .font-bold  .text-2xl .my-2 }
 
 Configure where media is stored:
 
@@ -252,7 +252,7 @@ Link your storage:
 php artisan storage:link
 ```
 
-### Changing Storage Disk
+### Changing Storage Disk { .font-bold  .text-2xl .my-2 }
 
 To use a different storage provider:
 
@@ -269,7 +269,7 @@ To use a different storage provider:
 
 ## Media Security
 
-### Permission Control
+### Permission Control { .font-bold  .text-2xl .my-2 }
 
 Control who can access and manage media by registering a custom policy class:
 

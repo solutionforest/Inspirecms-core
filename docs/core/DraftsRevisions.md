@@ -13,7 +13,7 @@ In InspireCMS, content can exist in various states:
 
 ## Working with Drafts
 
-### Creating a Draft
+### Creating a Draft { .font-bold  .text-2xl .my-2 }
 
 When you create new content in InspireCMS, it starts as a draft by default:
 
@@ -24,7 +24,7 @@ When you create new content in InspireCMS, it starts as a draft by default:
 
 Drafts are visible only in the admin panel and not on your live site.
 
-### Identifying Drafts
+### Identifying Drafts { .font-bold  .text-2xl .my-2 }
 
 Drafts are clearly marked in the content list:
 
@@ -32,7 +32,7 @@ Drafts are clearly marked in the content list:
 - Often color-coded differently from published content
 - Show an editing icon
 
-### Editing Drafts
+### Editing Drafts { .font-bold  .text-2xl .my-2 }
 
 You can freely modify drafts without affecting your live content:
 
@@ -41,7 +41,7 @@ You can freely modify drafts without affecting your live content:
 3. Make your changes
 4. Click **Save** to update the draft
 
-### Draft Preview
+### Draft Preview { .font-bold  .text-2xl .my-2 }
 
 Preview your draft to see how it will look when published:
 
@@ -62,7 +62,7 @@ When your draft is ready to go live:
 
 Once published, the content becomes visible on your live site.
 
-### Scheduling Publication
+### Scheduling Publication { .font-bold  .text-2xl .my-2 }
 
 For content that should go live at a specific time:
 
@@ -77,7 +77,7 @@ The system will automatically change the content status from "Scheduled" to "Pub
 
 InspireCMS automatically tracks revisions each time content is saved, creating a history of changes.
 
-### Viewing Revision History
+### Viewing Revision History { .font-bold  .text-2xl .my-2 }
 
 To see the history of changes to a content item:
 
@@ -139,7 +139,7 @@ For organizations that require approval before publishing:
     - Request changes (returns to draft)
     - Reject the content
 
-### Adding a Custom Content Status
+### Adding a Custom Content Status { .font-bold  .text-2xl .my-2 }
 
 A basic approval workflow can be set up using custom states and notifications:
 
@@ -179,11 +179,11 @@ public function boot()
 }
 ```
 
-### Customizing Models and Authorization Policies
+### Customizing Models and Authorization Policies { .font-bold  .text-2xl .my-2 }
 
 To fully implement a review workflow, you may need to extend the default content model and define authorization policies:
 
-#### Custom Content Model
+#### Custom Content Model { .font-bold .my-2 }
 
 ```php
 namespace App\Models;
@@ -195,7 +195,7 @@ class Content extends BaseContent
 }
 ```
 
-#### Custom Content Policy
+#### Custom Content Policy { .font-bold .my-2 }
 
 ```php
 namespace App\Policies;

@@ -36,7 +36,7 @@ Field groups organize related fields together. To create a field group:
 3. Add fields to the group using the form
 4. Enter a name and slug for your field group
 
-### Field Configuration Options
+### Field Configuration Options { .font-bold  .text-2xl .my-2 }
 
 Each field type has specific configuration options, but most share these common settings:
 
@@ -46,26 +46,26 @@ Each field type has specific configuration options, but most share these common 
 - **Required**: Whether the field must be filled
 - **Translatable**: Whether the field should be multilingual
 
-### Field Type Specific Settings
+### Field Type Specific Settings { .font-bold  .text-2xl .my-2 }
 
-#### Rich Editor
+#### Rich Editor { .font-bold .my-2 }
 - **Toolbar Buttons**: Customize available formatting options
 - **Character Limit**: Set maximum content length
 - **Media Upload**: Enable/disable image embedding
 
-#### Repeater
+#### Repeater { .font-bold .my-2 }
 - **Field Types**: Define the sub-fields within each repeated item
 - **Min/Max Items**: Control how many items can be added
 - **Collapsible**: Allow collapsing of items for better organization
 
-#### Select
+#### Select { .font-bold .my-2 }
 - **Options**: Define available choices
 - **Multiple**: Allow multiple selections
 - **Default Value**: Pre-select values
 
-### Field Type Configuration and Usage
+### Field Type Configuration and Usage { .font-bold  .text-2xl .my-2 }
 
-#### Text
+#### Text { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -86,7 +86,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Text Area
+#### Text Area { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -103,7 +103,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Email
+#### Email { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -121,7 +121,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Password
+#### Password { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -136,7 +136,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Number
+#### Number { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -156,7 +156,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### URL
+#### URL { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -174,7 +174,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Select
+#### Select { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -197,7 +197,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Toggle
+#### Toggle { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -211,7 +211,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Radio
+#### Radio { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -226,7 +226,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### File
+#### File { .font-bold .my-2 }
 >
 > <details><summary>Configuration Options</summary>
 >
@@ -259,7 +259,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Image
+#### Image { .font-bold .my-2 }
 > <details><summary>Configuration Options</summary>
 >
 > - **Translatable**: Whether the field supports multiple languages.
@@ -291,7 +291,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Color Picker
+#### Color Picker { .font-bold .my-2 }
 > <details><summary>Configuration Options</summary>
 >
 > - **Translatable**: Whether the field supports multiple languages.
@@ -306,7 +306,7 @@ Each field type has specific configuration options, but most share these common 
 >  ```
 ></details>
 
-#### DateTime Picker
+#### DateTime Picker { .font-bold .my-2 }
 > <details><summary>Configuration Options</summary>
 >
 > - **Translatable**: Whether the field supports multiple languages.
@@ -328,7 +328,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Content Picker
+#### Content Picker { .font-bold .my-2 }
 
 > <details><summary>Configuration Options</summary>
 > 
@@ -350,7 +350,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Media Picker
+#### Media Picker { .font-bold .my-2 }
 
 > <details><summary>Configuration Options</summary>
 > 
@@ -372,7 +372,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Repeater
+#### Repeater { .font-bold .my-2 }
 
 > 
 > <details><summary>Configuration Options</summary>
@@ -395,7 +395,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Tags
+#### Tags { .font-bold .my-2 }
 > 
 > <details><summary>Configuration Options</summary>
 > 
@@ -418,7 +418,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Rich Editor
+#### Rich Editor { .font-bold .my-2 }
 > 
 > <details><summary>Configuration Options</summary>
 > 
@@ -435,7 +435,7 @@ Each field type has specific configuration options, but most share these common 
 > ```
 > </details>
 
-#### Markdown Editor
+#### Markdown Editor { .font-bold .my-2 }
 > 
 > <details><summary>Configuration Options</summary>
 > 
@@ -465,7 +465,7 @@ After creating field groups, associate them with document types:
 
 InspireCMS provides several directives to access field data in templates:
 
-### Basic Field Access
+### Basic Field Access { .font-bold  .text-2xl .my-2 }
 
 ```php
 @property('field_group_name', 'field_name')
@@ -473,7 +473,7 @@ InspireCMS provides several directives to access field data in templates:
 
 This outputs the field value and creates a variable `$field_group_name_field_name` accessible in your template.
 
-### Conditional Field Access
+### Conditional Field Access { .font-bold  .text-2xl .my-2 }
 
 ```php
 <?php
@@ -484,7 +484,7 @@ This outputs the field value and creates a variable `$field_group_name_field_nam
 
 This checks if the field has a value before rendering content.
 
-### Accessing Arrays
+### Accessing Arrays { .font-bold  .text-2xl .my-2 }
 
 ```php
 <?php
@@ -496,7 +496,7 @@ This checks if the field has a value before rendering content.
 
 This is useful for repeaters, tags, and other multi-value fields.
 
-### Alternative Access Pattern
+### Alternative Access Pattern { .font-bold  .text-2xl .my-2 }
 
 You can also access field data through the content object:
 
@@ -509,18 +509,18 @@ You can also access field data through the content object:
 
 Field types in InspireCMS are defined by a set of attributes that control their behavior, storage, and presentation. These attributes ensure seamless integration with the system.
 
-### Core Attributes
+### Core Attributes { .font-bold  .text-2xl .my-2 }
 
 - **ConfigName**: A unique identifier for the field type configuration. This is used internally to load the appropriate configuration class for each field type.
 - **DbType**: Specifies how the field's data is stored in the database, including the data type and structure.
 - **FormComponent**: Defines the Filament form component used to render the field in the admin interface, controlling the user interface for content editors.
 
-### Additional Attributes
+### Additional Attributes { .font-bold  .text-2xl .my-2 }
 
 - **Translatable**: Indicates whether the field supports multilingual content. If enabled, the system stores separate values for each configured language.
 - **Converter**: A class responsible for transforming data between its raw database format and the format used in templates. Converters handle data processing during both saving and retrieval.
 
-### How Attributes Work Together
+### How Attributes Work Together { .font-bold  .text-2xl .my-2 }
 
 These attributes work together to provide a cohesive experience:
 
@@ -530,7 +530,7 @@ These attributes work together to provide a cohesive experience:
 - **Translatable**: Enables multilingual support by storing values for each language.
 - **Converter**: Transforms data between its storage format and display format.
 
-### Example Configuration
+### Example Configuration { .font-bold  .text-2xl .my-2 }
 
 For a simple text field:
 
@@ -602,13 +602,13 @@ Alternatively, you can register the custom field type in the `custom_fields.extr
 
 Field type converters are responsible for transforming data between the raw format stored in the database and the format used in templates. They play a crucial role in ensuring data is properly processed, validated, and formatted throughout the content lifecycle.
 
-### Purpose of Converters
+### Purpose of Converters { .font-bold  .text-2xl .my-2 }
 
 - **Data Transformation**: Convert between database storage format and usable application format
 - **Type Casting**: Ensure data is of the correct PHP type when used in templates
 - **Value Preparation**: Handle any necessary pre-processing before storage or display
 
-### Built-in Converters
+### Built-in Converters { .font-bold  .text-2xl .my-2 }
 
 InspireCMS includes several built-in converters for common field types:
 | Converter | Purpose |
@@ -622,7 +622,7 @@ InspireCMS includes several built-in converters for common field types:
 | RepeaterConverter | Processes nested field groups within repeater fields |
 | RichEditorConverter | Handles HTML content sanitization and processing |
 
-### Creating Custom Converters
+### Creating Custom Converters { .font-bold  .text-2xl .my-2 }
 
 Value converters transform field data between storage format and display format:
 
@@ -663,7 +663,7 @@ class CustomFieldConfig extends FieldTypeBaseConfig implements FieldTypeConfig
 }
 ```
 
-### Configuring Converters
+### Configuring Converters { .font-bold  .text-2xl .my-2 }
 
 You can customize the behavior of built-in converters by using their configuration methods. Configure converters in your service provider's `boot` method:
 
@@ -688,7 +688,7 @@ public function boot(): void
 
 Each converter type may have its own configuration methods:
 
-#### MarkdownConverter
+#### MarkdownConverter { .font-bold .my-2 }
 
 The MarkdownConverter handles parsing and rendering of Markdown content using the PHP League's CommonMark library. You can customize the parser with various extensions and configuration options:
 
@@ -722,7 +722,7 @@ For more information, see:
 
 The Field Type system supports macros, allowing you to extend functionality without creating full custom field types. This approach is useful for adding small enhancements or modifications to existing field types.
 
-### Adding Macros
+### Adding Macros { .font-bold  .text-2xl .my-2 }
 
 You can use the mixin method to add multiple macros at once:
 
@@ -745,9 +745,9 @@ FieldTypeBaseConfig::macro('addHelpText', function ($text) {
 });
 ```
 
-### Usage Examples
+### Usage Examples { .font-bold  .text-2xl .my-2 }
 
-#### Enhancing Field Validation
+#### Enhancing Field Validation { .font-bold .my-2 }
 
 ```php
 FieldTypeBaseConfig::macro('requireHttps', function () {
@@ -760,7 +760,7 @@ FieldTypeBaseConfig::macro('requireHttps', function () {
 $field->requireHttps();
 ```
 
-#### Adding Custom UI Behavior
+#### Adding Custom UI Behavior { .font-bold .my-2 }
 
 ```php
 FieldTypeBaseConfig::macro('withCharacterCount', function () {

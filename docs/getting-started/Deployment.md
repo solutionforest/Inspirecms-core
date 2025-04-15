@@ -4,7 +4,7 @@ This guide covers the recommended practices for deploying InspireCMS to producti
 
 ## Preparing for Deployment
 
-### 1. Optimize Composer Dependencies
+### 1. Optimize Composer Dependencies { .font-bold  .text-2xl .my-2 }
 
 Before deployment, optimize Composer's autoloader to improve performance:
 
@@ -12,7 +12,7 @@ Before deployment, optimize Composer's autoloader to improve performance:
 composer install --no-dev --optimize-autoloader
 ```
 
-### 2. Generate Application Key
+### 2. Generate Application Key { .font-bold  .text-2xl .my-2 }
 
 Ensure your application key is set:
 
@@ -20,7 +20,7 @@ Ensure your application key is set:
 php artisan key:generate
 ```
 
-### 3. Configure Environment Variables
+### 3. Configure Environment Variables { .font-bold  .text-2xl .my-2 }
 
 Create a production `.env` file with appropriate settings:
 
@@ -50,7 +50,7 @@ FILESYSTEM_DISK=public
 INSPIRECMS_LICENSE_KEY=your-license-key
 ```
 
-### 4. Optimize Configuration and Routes
+### 4. Optimize Configuration and Routes { .font-bold  .text-2xl .my-2 }
 
 Cache your configuration and routes for better performance:
 
@@ -72,7 +72,7 @@ php artisan view:cache
 
 ## Web Server Configuration
 
-### Nginx Configuration
+### Nginx Configuration { .font-bold  .text-2xl .my-2 }
 
 ```nginx
 server {
@@ -114,7 +114,7 @@ server {
 }
 ```
 
-### Apache Configuration
+### Apache Configuration { .font-bold  .text-2xl .my-2 }
 
 Ensure you have a proper `.htaccess` file in your public directory:
 
@@ -197,7 +197,7 @@ stopwaitsecs=3600
 
 ## Deployment Strategies
 
-### Using Git
+### Using Git { .font-bold  .text-2xl .my-2 }
 
 1. Clone your repository on the server
 2. Install dependencies: `composer install --no-dev --optimize-autoloader`
@@ -205,7 +205,7 @@ stopwaitsecs=3600
 4. Run migrations and optimizations
 5. Restart queue workers and web server
 
-### Using Deployer (PHP Deployment Tool)
+### Using Deployer (PHP Deployment Tool) { .font-bold  .text-2xl .my-2 }
 
 ```php
 // deploy.php

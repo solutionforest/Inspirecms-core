@@ -24,9 +24,9 @@ Tables in InspireCMS follow a consistent naming convention:
 
 ## Key Tables
 
-### Content Management
+### Content Management { .font-bold  .text-2xl .my-2 }
 
-#### `cms_contents`
+#### `cms_contents` { .font-bold .my-2 }
 
 Stores all content items in the system.
 
@@ -47,7 +47,7 @@ Stores all content items in the system.
 | `updated_at` | Timestamp | Last update timestamp |
 | `deleted_at` | Timestamp | Soft delete timestamp |
 
-#### `cms_content_paths`
+#### `cms_content_paths` { .font-bold .my-2 }
 
 Maps content to their hierarchical paths in the site structure.
 
@@ -60,7 +60,7 @@ Maps content to their hierarchical paths in the site structure.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_content_routes`
+#### `cms_content_routes` { .font-bold .my-2 }
 
 Defines URL routes to content.
 
@@ -75,7 +75,7 @@ Defines URL routes to content.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_document_types`
+#### `cms_document_types` { .font-bold .my-2 }
 
 Defines the different types of content in the system.
 
@@ -92,9 +92,9 @@ Defines the different types of content in the system.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-### Field Management
+### Field Management { .font-bold  .text-2xl .my-2 }
 
-#### `cms_field_groups`
+#### `cms_field_groups` { .font-bold .my-2 }
 
 Defines groups of fields for content types.
 
@@ -107,7 +107,7 @@ Defines groups of fields for content types.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_fields`
+#### `cms_fields` { .font-bold .my-2 }
 
 Defines individual fields within field groups.
 
@@ -126,7 +126,7 @@ Defines individual fields within field groups.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_field_groupables`
+#### `cms_field_groupables` { .font-bold .my-2 }
 
 Polymorphic pivot table linking field groups to content types, templates, etc.
 
@@ -137,9 +137,9 @@ Polymorphic pivot table linking field groups to content types, templates, etc.
 | `field_groupable_id` | UUID | Polymorphic ID |
 | `position` | Integer | Sorting position |
 
-### Template Management
+### Template Management { .font-bold  .text-2xl .my-2 }
 
-#### `cms_templates`
+#### `cms_templates` { .font-bold .my-2 }
 
 Stores template definitions.
 
@@ -155,7 +155,7 @@ Stores template definitions.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_templateables`
+#### `cms_templateables` { .font-bold .my-2 }
 
 Polymorphic pivot table linking templates to content.
 
@@ -165,9 +165,9 @@ Polymorphic pivot table linking templates to content.
 | `templateable_type` | String | Polymorphic type |
 | `templateable_id` | UUID | Polymorphic ID |
 
-### User Management
+### User Management { .font-bold  .text-2xl .my-2 }
 
-#### `cms_users`
+#### `cms_users` { .font-bold .my-2 }
 
 Stores user accounts.
 
@@ -184,7 +184,7 @@ Stores user accounts.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_roles`
+#### `cms_roles` { .font-bold .my-2 }
 
 Defines user roles.
 
@@ -196,7 +196,7 @@ Defines user roles.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_permissions`
+#### `cms_permissions` { .font-bold .my-2 }
 
 Defines individual permissions.
 
@@ -208,7 +208,7 @@ Defines individual permissions.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_model_has_roles`
+#### `cms_model_has_roles` { .font-bold .my-2 }
 
 Links users to roles.
 
@@ -218,7 +218,7 @@ Links users to roles.
 | `model_type` | String | Polymorphic type |
 | `model_id` | UUID | Polymorphic ID |
 
-#### `cms_role_has_permissions`
+#### `cms_role_has_permissions` { .font-bold .my-2 }
 
 Links roles to permissions.
 
@@ -227,9 +227,9 @@ Links roles to permissions.
 | `permission_id` | UUID | Reference to permission |
 | `role_id` | UUID | Reference to role |
 
-### Media Management
+### Media Management { .font-bold  .text-2xl .my-2 }
 
-#### `cms_media_assets`
+#### `cms_media_assets` { .font-bold .my-2 }
 
 Stores media assets.
 
@@ -251,9 +251,9 @@ Stores media assets.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-### Site Configuration
+### Site Configuration { .font-bold  .text-2xl .my-2 }
 
-#### `cms_languages`
+#### `cms_languages` { .font-bold .my-2 }
 
 Defines available languages.
 
@@ -268,7 +268,7 @@ Defines available languages.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_navigations`
+#### `cms_navigations` { .font-bold .my-2 }
 
 Stores navigation menu structure.
 
@@ -286,7 +286,7 @@ Stores navigation menu structure.
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_key_values`
+#### `cms_key_values` { .font-bold .my-2 }
 
 Stores key-value pairs for application settings.
 
@@ -302,7 +302,7 @@ Stores key-value pairs for application settings.
 
 Understanding the relationships between tables is crucial:
 
-### Content Relationships
+### Content Relationships { .font-bold  .text-2xl .my-2 }
 
 - **Content Hierarchy**: `cms_contents.parent_id` ↔ `cms_contents.id` (self-referencing)
 - **Content Type**: `cms_contents.document_type_id` → `cms_document_types.id`
@@ -312,23 +312,23 @@ Understanding the relationships between tables is crucial:
 - **Content Creator**: `cms_contents.created_by` → `cms_users.id`
 - **Content Editor**: `cms_contents.updated_by` → `cms_users.id`
 
-### Field Relationships
+### Field Relationships { .font-bold  .text-2xl .my-2 }
 
 - **Field Group Fields**: `cms_fields.field_group_id` → `cms_field_groups.id`
 - **Document Type Field Groups**: Polymorphic through `cms_field_groupables`
 - **Template Field Groups**: Polymorphic through `cms_field_groupables`
 
-### Template Relationships
+### Template Relationships { .font-bold  .text-2xl .my-2 }
 
 - **Template Document Type**: `cms_templates.document_type_id` → `cms_document_types.id`
 - **Content Template**: Polymorphic through `cms_templateables`
 
-### User Relationships
+### User Relationships { .font-bold  .text-2xl .my-2 }
 
 - **User Roles**: Polymorphic through `cms_model_has_roles`
 - **Role Permissions**: Through `cms_role_has_permissions`
 
-### Navigation Relationships
+### Navigation Relationships { .font-bold  .text-2xl .my-2 }
 
 - **Navigation Hierarchy**: `cms_navigations.parent_id` ↔ `cms_navigations.id` (self-referencing)
 - **Navigation Content**: `cms_navigations.content_id` → `cms_contents.id`
@@ -369,7 +369,7 @@ Table name prefix can be configured in `config/inspirecms.php`:
 
 ## Data Storage
 
-### JSON Fields
+### JSON Fields { .font-bold  .text-2xl .my-2 }
 
 InspireCMS uses JSON fields for storing:
 
@@ -406,7 +406,7 @@ InspireCMS uses JSON fields for storing:
    }
    ```
 
-### Binary Data
+### Binary Data { .font-bold  .text-2xl .my-2 }
 
 Media files are not stored directly in the database. Instead:
 
@@ -428,7 +428,7 @@ For optimal performance:
 
 To extend the database for custom functionality:
 
-### Custom Migration Example
+### Custom Migration Example { .font-bold  .text-2xl .my-2 }
 
 ```php
 use Illuminate\Database\Migrations\Migration;
@@ -462,7 +462,7 @@ class CreateCustomContentMetadataTable extends Migration
 }
 ```
 
-### Custom Model Example
+### Custom Model Example { .font-bold  .text-2xl .my-2 }
 
 ```php
 namespace App\Models;
