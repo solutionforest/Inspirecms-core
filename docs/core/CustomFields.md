@@ -663,6 +663,61 @@ class CustomFieldConfig extends FieldTypeBaseConfig implements FieldTypeConfig
 }
 ```
 
+### Configuring Converters
+
+You can customize the behavior of built-in converters by using their configuration methods. Configure converters in your service provider's `boot` method:
+
+```php
+use SolutionForest\InspireCms\Fields\Converters\MarkdownConverter;
+use League\CommonMark\Extension\Attributes\AttributesExtension;
+use League\CommonMark\Extension\Table\TableExtension;
+
+public function boot(): void
+{
+    MarkdownConverter::configureUsing(function (MarkdownConverter $converter) {
+        // Set CommonMark configuration options
+        $converter->setConfigs([]);
+
+        // Add CommonMark extensions
+        $converter->setExtensions([
+            new AttributesExtension(),
+        ]);
+    });
+}
+```
+
+Each converter type may have its own configuration methods:
+
+#### MarkdownConverter
+
+The MarkdownConverter handles parsing and rendering of Markdown content using the PHP League's CommonMark library. You can customize the parser with various extensions and configuration options:
+
+```php
+use SolutionForest\InspireCms\Fields\Converters\MarkdownConverter;
+
+MarkdownConverter::configureUsing(function (MarkdownConverter $converter) {
+    // Set CommonMark configuration options
+    $converter->setConfigs([
+        'allow_unsafe_links' => false,
+        'html_input' => 'strip',
+        'max_nesting_level' => 100,
+        'renderer' => [
+            'soft_break' => "<br>\n",
+        ],
+    ]);
+    // Add CommonMark extensions
+    $converter->setExtensions([
+        new AttributesExtension(),
+        new TableExtension(),
+    ]);
+});
+```
+
+For more information, see:
+- [Available extensions](https://commonmark.thephpleague.com/2.6/extensions/overview/)
+- [Configuration options](https://commonmark.thephpleague.com/2.6/configuration/)
+
+
 ## Macros
 
 The Field Type system supports macros, allowing you to extend functionality without creating full custom field types. This approach is useful for adding small enhancements or modifications to existing field types.
