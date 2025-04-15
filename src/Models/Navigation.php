@@ -18,7 +18,7 @@ class Navigation extends BaseModel implements NavigationContract
     use Concerns\HasTranslations;
     use NodeTrait;
 
-    protected $guarded = ['id'];
+    protected $guarded = [];
 
     protected $table = 'navigation';
 

@@ -474,9 +474,37 @@ class ImportDataService implements ImportDataServiceInterface
 
         $this->guardAgaintsTableExist($model);
 
-        $navData = collect($this->pendingData['navigation'] ?? [])->groupBy(fn ($d) => $d->category)->toArray();
+        $flatNavigation = collect($this->pendingData['navigation'] ?? [])
+            ->map(fn (Entities\Navigation $item) => array_merge([$item], $this->getFlatNavigationFor($item)))
+            ->flatten(1)
+            ->all();
 
-        foreach ($navData as $category => $items) {
+        // Create or update navigation records
+        foreach ($flatNavigation as $item) {
+            try {
+                $item->validate();
+
+                $navigationData = $this->mutateNavigationData($item);
+                $this->finished['navigation'][] = $model::updateOrCreate(
+                    Arr::only($navigationData, ['id']),
+                    Arr::except($navigationData, ['id', 'children'])
+                );
+
+            } catch (\Throwable $th) {
+                $errorMsg = 'Error while create/update navigation record: ' . json_encode($item->toArray());
+                if (filled($th->getMessage())) {
+                    $errorMsg .= ' - ' . $th->getMessage();
+                } else {
+                    $errorMsg .= ' - ' . get_class($th);
+                }
+                $this->processErrors['navigation']['s1'][] = $errorMsg;
+            }
+        }
+
+        // Create tree structure for navigation items
+        foreach (collect($this->pendingData['navigation'] ?? [])->groupBy('category') as $category => $items) {
+
+            // Create a tree data 
             $treeData = [];
             foreach ($items as $item) {
                 try {
@@ -484,20 +512,15 @@ class ImportDataService implements ImportDataServiceInterface
 
                     $navigationData = $this->mutateNavigationData($item);
                     $treeData[] = $navigationData;
-                    $navigation = $model::updateOrCreate(
-                        Arr::only($navigationData, ['id']),
-                        Arr::except($navigationData, ['id', 'children'])
-                    );
-                    $this->finished['navigation'][] = $navigation ?? null;
 
                 } catch (\Throwable $th) {
-                    $errorMsg = 'Error while processing navigation item: ' . $item->title;
+                    $errorMsg = 'Error while making navigation tree data: ' . json_encode($item->toArray());
                     if (filled($th->getMessage())) {
                         $errorMsg .= ' - ' . $th->getMessage();
                     } else {
                         $errorMsg .= ' - ' . get_class($th);
                     }
-                    $this->processErrors['navigation'][$category][] = $errorMsg;
+                    $this->processErrors['navigation']['s2'][] = $errorMsg;
                 }
             }
 
@@ -839,5 +862,12 @@ class ImportDataService implements ImportDataServiceInterface
         }
 
         return $data;
+    }
+
+    private function getFlatNavigationFor(Entities\Navigation $item): array
+    {
+        return collect($item->children)->flatMap(function (Entities\Navigation $child) {
+            return array_merge([$child], $this->getFlatNavigationFor($child));
+        })->toArray();
     }
 }
