@@ -65,7 +65,6 @@ class PageActivity extends BaseWidget
 
         $model = $query->getModel();
         $updatedAtColumn = $model->getUpdatedAtColumn();
-
         return InspireCmsConfig::getContentModelClass()::query()
             ->withoutGlobalScopes([
                 \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
