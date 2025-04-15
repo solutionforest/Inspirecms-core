@@ -296,6 +296,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->when($record, fn ($query) => $query->whereNot($keyName, $record->getKey()))
                     ->pluck('title', $keyName)
                     ->toArray();
+            })
+            ->saveRelationshipsUsing(function ($record, $state) {
+                $record->setParentId($state);
+                $record->saveQuietly();
             });
     }
 
