@@ -50,7 +50,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->inlineLabel()
                                 ->placeholder('e.g. title, key, etc.')
                                 ->helperText(str('The label for each item in the repeater. Using **`Name`** in the **Fields**')->markdown()->toHtmlString()),
-                            ]),
+                        ]),
                     Forms\Components\Tabs\Tab::make('Fields')
                         ->schema([
                             Forms\Components\TextInput::make('defaultItems')
@@ -98,7 +98,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
             $component->cloneable($this->cloneable);
 
             $component->collapsed($this->defaultCollapsed ?? false);
-            
+
             $component->itemLabel(function ($state) {
                 if (is_array($state) && filled($this->itemLabel)) {
                     return $state[$this->itemLabel] ?? null;

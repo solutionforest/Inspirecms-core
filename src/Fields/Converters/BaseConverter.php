@@ -10,7 +10,7 @@ use SolutionForest\InspireCms\Support\Helpers\TranslatableHelper;
 abstract class BaseConverter
 {
     use Macroable;
-    
+
     protected FieldTypeConfig $fieldTypeConfig;
 
     /**
@@ -44,7 +44,7 @@ abstract class BaseConverter
     {
         return $this->fieldTypeConfig->isTranslatable();
     }
-    
+
     public static function configureUsing(Closure $modifyUsing)
     {
         static::$configurations ??= [];
