@@ -8,12 +8,14 @@ class MarkdownConverter extends BaseConverter
 {
     /**
      * @var array<string, mixed>
+     *
      * @link https://commonmark.thephpleague.com/2.4/configuration/
      */
     protected array $mdConfigs = [];
 
     /**
      * @var array<string, mixed>
+     *
      * @link https://commonmark.thephpleague.com/2.4/extensions/overview/
      */
     protected array $mdExtensions = [];
@@ -71,9 +73,10 @@ class MarkdownConverter extends BaseConverter
             $value = str($value)->markdown($this->mdConfigs, $this->mdExtensions)->toHtmlString();
 
             return $value;
-            
+
         } catch (\Throwable $th) {
-            error_log("Markdown conversion failed: " . $th->getMessage());
+            error_log('Markdown conversion failed: ' . $th->getMessage());
+
             return $value;
         }
     }
