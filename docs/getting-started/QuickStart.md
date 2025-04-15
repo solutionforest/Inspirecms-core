@@ -57,6 +57,7 @@ php artisan inspirecms:install
 3. Navigate to "Settings" > "Templates" to assign your template to content
 
 ## Next Steps
+
 Now that you have InspireCMS up and running, explore the following resources:
 
 * [Directory Structure](../core/DirectoryStructure.md)

@@ -128,6 +128,7 @@ cd my-inspirecms-project
 ### Permissions Issues
 
 If you encounter permission issues, ensure your web server has appropriate access:
+
 ```bash
 # For Ubuntu/Debian
 chmod -R 775 storage bootstrap/cache
@@ -140,12 +141,14 @@ If you're having trouble connecting to your database, verify your .env configura
 
 ### Package Discovery Problems
 If Laravel isn't discovering the package, try clearing your cache:
+
 ```bash
 php artisan config:clear
 php artisan cache:clear
 ```
 
 ## Next Steps
+
 After installing InspireCMS, you might want to:
 
 * [Configure your settings](./Configuration.md)

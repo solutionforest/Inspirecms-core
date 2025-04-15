@@ -13,6 +13,7 @@ php artisan vendor:publish --tag="inspirecms-config"
 ## Key Configuration Sections
 
 ### License Management
+
 ```php
 'license' => [
     'key' => env('INSPIRECMS_LICENSE_KEY'),

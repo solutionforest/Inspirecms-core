@@ -69,15 +69,15 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Rule**: Validation rules for the field.
-> * **Length**: The exact length of the input.
-> * **Max Length**: The maximum allowed length of the input.
-> * **Min Length**: The minimum required length of the input.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Rule**: Validation rules for the field.
+> - **Length**: The exact length of the input.
+> - **Max Length**: The maximum allowed length of the input.
+> - **Min Length**: The minimum required length of the input.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -90,11 +90,11 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Rows**: The number of visible rows in the text area.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Rows**: The number of visible rows in the text area.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -107,12 +107,12 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -125,9 +125,9 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -140,14 +140,14 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Rule**: Validation rules for the field.
-> * **Min Value**: The minimum allowed value.
-> * **Max Value**: The maximum allowed value.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Rule**: Validation rules for the field.
+> - **Min Value**: The minimum allowed value.
+> - **Max Value**: The maximum allowed value.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -160,12 +160,12 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -178,11 +178,11 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Options**: The predefined choices available in the dropdown.
-> * **Multiple**: Whether multiple selections are allowed.
-> * **Default Value**: The initial value of the field.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Options**: The predefined choices available in the dropdown.
+> - **Multiple**: Whether multiple selections are allowed.
+> - **Default Value**: The initial value of the field.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -201,7 +201,7 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
+> - **Translatable**: Whether the field supports multiple languages.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -215,9 +215,9 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Options**: The predefined choices available for selection.
-> * **Default Value**: The initial value of the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Options**: The predefined choices available for selection.
+> - **Default Value**: The initial value of the field.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -230,17 +230,17 @@ Each field type has specific configuration options, but most share these common 
 >
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Disk**: The storage disk where files are saved.
-> * **Directory**: The directory path within the disk.
-> * **Visibility**: The visibility of the uploaded files.
-> * **Multiple**: Whether multiple files can be uploaded.
-> * **Rule**: Validation rules for the field.
-> * **Accepted File Types**: The allowed file types for upload.
-> * **Min File**: The minimum number of files required.
-> * **Max File**: The maximum number of files allowed.
-> * **Min Size**: The minimum file size allowed.
-> * **Max Size**: The maximum file size allowed.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Disk**: The storage disk where files are saved.
+> - **Directory**: The directory path within the disk.
+> - **Visibility**: The visibility of the uploaded files.
+> - **Multiple**: Whether multiple files can be uploaded.
+> - **Rule**: Validation rules for the field.
+> - **Accepted File Types**: The allowed file types for upload.
+> - **Min File**: The minimum number of files required.
+> - **Max File**: The maximum number of files allowed.
+> - **Min Size**: The minimum file size allowed.
+> - **Max Size**: The maximum file size allowed.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -262,17 +262,17 @@ Each field type has specific configuration options, but most share these common 
 #### Image
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Disk**: The storage disk where images are saved.
-> * **Directory**: The directory path within the disk.
-> * **Visibility**: The visibility of the uploaded images.
-> * **Multiple**: Whether multiple images can be uploaded.
-> * **Rule**: Validation rules for the field.
-> * **Accepted File Types**: The allowed file types for upload.
-> * **Min File**: The minimum number of images required.
-> * **Max File**: The maximum number of images allowed.
-> * **Min Size**: The minimum image size allowed.
-> * **Max Size**: The maximum image size allowed.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Disk**: The storage disk where images are saved.
+> - **Directory**: The directory path within the disk.
+> - **Visibility**: The visibility of the uploaded images.
+> - **Multiple**: Whether multiple images can be uploaded.
+> - **Rule**: Validation rules for the field.
+> - **Accepted File Types**: The allowed file types for upload.
+> - **Min File**: The minimum number of images required.
+> - **Max File**: The maximum number of images allowed.
+> - **Min Size**: The minimum image size allowed.
+> - **Max Size**: The maximum image size allowed.
 > </details>
 > <details><summary>Template Usage</summary>
 >
@@ -294,8 +294,8 @@ Each field type has specific configuration options, but most share these common 
 #### Color Picker
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
 > </details>
 ><details><summary>Template Usage</summary>
 >
@@ -309,15 +309,15 @@ Each field type has specific configuration options, but most share these common 
 #### DateTime Picker
 > <details><summary>Configuration Options</summary>
 >
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Default Value**: The initial value of the field.
-> * **Placeholder**: Text displayed inside the field when empty.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Has Time**: Whether the field includes time selection.
-> * **Has Date**: Whether the field includes date selection.
-> * **Rule**: Validation rules for the field.
-> * **Format**: The format of the date/time value.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Default Value**: The initial value of the field.
+> - **Placeholder**: Text displayed inside the field when empty.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Has Time**: Whether the field includes time selection.
+> - **Has Date**: Whether the field includes date selection.
+> - **Rule**: Validation rules for the field.
+> - **Format**: The format of the date/time value.
 > </detail>
 > <details><summary>Template Usage</summary>
 > 
@@ -332,10 +332,10 @@ Each field type has specific configuration options, but most share these common 
 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Types**: The types of media files allowed.
-> * **Min**: The minimum number of items required.
-> * **Max**: The maximum number of items allowed.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Types**: The types of media files allowed.
+> - **Min**: The minimum number of items required.
+> - **Max**: The maximum number of items allowed.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -354,10 +354,10 @@ Each field type has specific configuration options, but most share these common 
 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Types**: The types of media files allowed.
-> * **Min**: The minimum number of items required.
-> * **Max**: The maximum number of items allowed.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Types**: The types of media files allowed.
+> - **Min**: The minimum number of items required.
+> - **Max**: The maximum number of items allowed.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -377,9 +377,9 @@ Each field type has specific configuration options, but most share these common 
 > 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Fields**: The sub-fields included in the repeater.
-> * **Collapsible**: Whether the repeater sections can be collapsed.
-> * **Cloneable**: Whether the repeater sections can be cloned.
+> - **Fields**: The sub-fields included in the repeater.
+> - **Collapsible**: Whether the repeater sections can be collapsed.
+> - **Cloneable**: Whether the repeater sections can be cloned.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -399,16 +399,16 @@ Each field type has specific configuration options, but most share these common 
 > 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Prefix Label**: Text displayed before the field.
-> * **Suffix Label**: Text displayed after the field.
-> * **Prefix**: Text added before each tag.
-> * **Suffix**: Text added after each tag.
-> * **Separator**: The character used to separate tags.
-> * **Suggestions**: Predefined suggestions for tags.
-> * **Reorderable**: Whether tags can be reordered.
-> * **Color**: The color of the tags.
-> * **Rule**: Validation rules for the field.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Prefix Label**: Text displayed before the field.
+> - **Suffix Label**: Text displayed after the field.
+> - **Prefix**: Text added before each tag.
+> - **Suffix**: Text added after each tag.
+> - **Separator**: The character used to separate tags.
+> - **Suggestions**: Predefined suggestions for tags.
+> - **Reorderable**: Whether tags can be reordered.
+> - **Color**: The color of the tags.
+> - **Rule**: Validation rules for the field.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -422,11 +422,11 @@ Each field type has specific configuration options, but most share these common 
 > 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Toolbar** Buttons: The buttons available in the editor toolbar.
-> * **Disk**: The storage disk where files are saved.
-> * **Directory**: The directory path within the disk.
-> * **Visibility**: The visibility of the uploaded files.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Toolbar** Buttons: The buttons available in the editor toolbar.
+> - **Disk**: The storage disk where files are saved.
+> - **Directory**: The directory path within the disk.
+> - **Visibility**: The visibility of the uploaded files.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -439,11 +439,11 @@ Each field type has specific configuration options, but most share these common 
 > 
 > <details><summary>Configuration Options</summary>
 > 
-> * **Translatable**: Whether the field supports multiple languages.
-> * **Toolbar** Buttons: The buttons available in the editor toolbar.
-> * **Disk**: The storage disk where files are saved.
-> * **Directory**: The directory path within the disk.
-> * **Visibility**: The visibility of the uploaded files.
+> - **Translatable**: Whether the field supports multiple languages.
+> - **Toolbar** Buttons: The buttons available in the editor toolbar.
+> - **Disk**: The storage disk where files are saved.
+> - **Directory**: The directory path within the disk.
+> - **Visibility**: The visibility of the uploaded files.
 > </details>
 > <details><summary>Template Usage</summary>
 > 
@@ -511,34 +511,34 @@ Field types in InspireCMS are defined by a set of attributes that control their 
 
 ### Core Attributes
 
-* **ConfigName**: A unique identifier for the field type configuration. This is used internally to load the appropriate configuration class for each field type.
-* **DbType**: Specifies how the field's data is stored in the database, including the data type and structure.
-* **FormComponent**: Defines the Filament form component used to render the field in the admin interface, controlling the user interface for content editors.
+- **ConfigName**: A unique identifier for the field type configuration. This is used internally to load the appropriate configuration class for each field type.
+- **DbType**: Specifies how the field's data is stored in the database, including the data type and structure.
+- **FormComponent**: Defines the Filament form component used to render the field in the admin interface, controlling the user interface for content editors.
 
 ### Additional Attributes
 
-* **Translatable**: Indicates whether the field supports multilingual content. If enabled, the system stores separate values for each configured language.
-* **Converter**: A class responsible for transforming data between its raw database format and the format used in templates. Converters handle data processing during both saving and retrieval.
+- **Translatable**: Indicates whether the field supports multilingual content. If enabled, the system stores separate values for each configured language.
+- **Converter**: A class responsible for transforming data between its raw database format and the format used in templates. Converters handle data processing during both saving and retrieval.
 
 ### How Attributes Work Together
 
 These attributes work together to provide a cohesive experience:
 
-* **ConfigName**: Identifies the field type and loads its configuration.
-* **DbType**: Determines the database column type for storing the field's data.
-* **FormComponent**: Specifies the UI element displayed in the admin panel.
-* **Translatable**: Enables multilingual support by storing values for each language.
-* **Converter**: Transforms data between its storage format and display format.
+- **ConfigName**: Identifies the field type and loads its configuration.
+- **DbType**: Determines the database column type for storing the field's data.
+- **FormComponent**: Specifies the UI element displayed in the admin panel.
+- **Translatable**: Enables multilingual support by storing values for each language.
+- **Converter**: Transforms data between its storage format and display format.
 
 ### Example Configuration
 
 For a simple text field:
 
-* **ConfigName**: `text`
-* **DbType**: `string`
-* **FormComponent**: `TextInput::class`
-* **Translatable**: `true` (if multilingual support is required)
-* **Converter**: `TextConverter::class`
+- **ConfigName**: `text`
+- **DbType**: `string`
+- **FormComponent**: `TextInput::class`
+- **Translatable**: `true` (if multilingual support is required)
+- **Converter**: `TextConverter::class`
 
 ## Creating Custom Field Types
 
@@ -604,9 +604,9 @@ Field type converters are responsible for transforming data between the raw form
 
 ### Purpose of Converters
 
-* **Data Transformation**: Convert between database storage format and usable application format
-* **Type Casting**: Ensure data is of the correct PHP type when used in templates
-* **Value Preparation**: Handle any necessary pre-processing before storage or display
+- **Data Transformation**: Convert between database storage format and usable application format
+- **Type Casting**: Ensure data is of the correct PHP type when used in templates
+- **Value Preparation**: Handle any necessary pre-processing before storage or display
 
 ### Built-in Converters
 
@@ -728,17 +728,18 @@ $field->withCharacterCount();
 Macros provide a lightweight way to extend field functionality without creating full custom field types, making them ideal for project-specific customizations and reusable functionality.
 
 ## Best Practices
-* Keep field groups organized by logical function (e.g., "SEO", "Banner", "Content")
-* Use clear, descriptive names for fields and field groups
-* Add helper text to guide content editors
-* Use appropriate validation rules to ensure data quality
-* Leverage translatable fields for multilingual content
-* Consider the frontend display when designing field structures
+
+- Keep field groups organized by logical function (e.g., "SEO", "Banner", "Content")
+- Use clear, descriptive names for fields and field groups
+- Add helper text to guide content editors
+- Use appropriate validation rules to ensure data quality
+- Leverage translatable fields for multilingual content
+- Consider the frontend display when designing field structures
 
 ## Next Steps
 
 Learn more about:
 
-* Document Types - Using fields in [document types](./Document.md)
-* Templating - Advanced template techniques
-* Themes - Building [theme](./Themes.md) layouts
+- Document Types - Using fields in [document types](./Document.md)
+- Templating - Advanced template techniques
+- Themes - Building [theme](./Themes.md) layouts

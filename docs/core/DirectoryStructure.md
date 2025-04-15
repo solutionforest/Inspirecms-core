@@ -33,36 +33,36 @@ project/
 
 ### App Extensions
 
-* **`app/Cms/`**: Directory for all your custom CMS extensions
-  * **`Clusters/`**: Custom admin panel sections, each containing related resources
-  * **`Pages/`**: Custom admin dashboard pages
-  * **`Resources/`**: Custom Filament resources for CRUD operations
-  * **`Widgets/`**: Custom dashboard widgets
+- **`app/Cms/`**: Directory for all your custom CMS extensions
+  - **`Clusters/`**: Custom admin panel sections, each containing related resources
+  - **`Pages/`**: Custom admin dashboard pages
+  - **`Resources/`**: Custom Filament resources for CRUD operations
+  - **`Widgets/`**: Custom dashboard widgets
 
 ### Configuration
 
-* **`config/inspirecms.php`**: The main configuration file for InspireCMS, containing settings for:
-  * Authentication and users
-  * Media management
-  * Custom models
-  * Database connections
-  * Frontend themes
-  * Caching
-  * Permission settings
+- **`config/inspirecms.php`**: The main configuration file for InspireCMS, containing settings for:
+  - Authentication and users
+  - Media management
+  - Custom models
+  - Database connections
+  - Frontend themes
+  - Caching
+  - Permission settings
 
 ### Resources
 
-* **`resources/views/components/inspirecms/{theme}/`**: Theme-specific components
-  * `page.blade.php`: Default page layout template
-  * `layout.blade.php`: Base layout used by templates
-  * Various component templates (header, footer, navigation, etc.)
-* **`resources/views/inspirecms/templates/`**: Exported templates from the CMS
-* **`resources/lang/`**: Localization files for the CMS interface
+- **`resources/views/components/inspirecms/{theme}/`**: Theme-specific components
+  - `page.blade.php`: Default page layout template
+  - `layout.blade.php`: Base layout used by templates
+  - Various component templates (header, footer, navigation, etc.)
+- **`resources/views/inspirecms/templates/`**: Exported templates from the CMS
+- **`resources/lang/`**: Localization files for the CMS interface
 
 ## Important Files
 
-* **`routes/web.php`**: Contains your application's routes, automatically includes CMS routes
-* **`app/Providers/AppServiceProvider.php`**: Often used for extending CMS functionality
+- **`routes/web.php`**: Contains your application's routes, automatically includes CMS routes
+- **`app/Providers/AppServiceProvider.php`**: Often used for extending CMS functionality
 
 ## Custom Theme Structure
 
@@ -101,6 +101,6 @@ php artisan make:filament-page YourPage --panel=cms
 
 Now that you understand the directory structure, you might want to explore:
 
-* [Control Panel overview](./ControlPanel.md)
-* [Creating custom fields](./CustomFields.md)
-* [Working with themes](./Themes.md)
+- [Control Panel overview](./ControlPanel.md)
+- [Creating custom fields](./CustomFields.md)
+- [Working with themes](./Themes.md)
