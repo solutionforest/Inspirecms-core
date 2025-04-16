@@ -465,6 +465,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Support\Facades\MediaLibraryRegistry::setDirectory(InspireCmsConfig::get('media.media_library.directory', ''));
         Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media.media_library.thumbnail.width', 300), InspireCmsConfig::get('media.media_library.thumbnail.height', 300));
         Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media.media_library.should_map_video_properties_with_ffmpeg', false)));
+        Support\Facades\MediaLibraryRegistry::setLimitedMimeTypes(InspireCmsConfig::get('media.media_library.allowed_mime_types', []));
+        Support\Facades\MediaLibraryRegistry::setMaxSize(InspireCmsConfig::get('media.media_library.max_file_size', null));
 
         $mediaResponsive = InspireCmsConfig::get('media.media_library.responsive_images', []);
         if (is_array($mediaResponsive) && count($mediaResponsive) > 0) {

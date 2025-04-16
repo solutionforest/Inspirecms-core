@@ -80,6 +80,10 @@ Configure media uploads, storage, and processing:
         'directory' => '',         // Base directory for media files (empty for root)
                                   // Set to 'media' or similar for better organization
         
+        'allowed_mime_types' => [], // Allowed file types
+            
+        'max_file_size' => null,    // Maximum file size in KB
+
         // Automatic thumbnail generation settings
         'thumbnail' => [
             'width' => 300,        // Width of generated thumbnails in pixels

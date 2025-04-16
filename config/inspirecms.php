@@ -40,6 +40,9 @@ return [
             'throttle' => 60,
         ],
 
+        /**
+         * Number of failed attempts before lockout
+         */
         'failed_login_attempts' => 5,
 
         /**
@@ -69,6 +72,13 @@ return [
         'media_library' => [
             'disk' => 'public',
             'directory' => '',
+
+            // Allowed file types
+            'allowed_mime_types' => [],
+
+            // Maximum file size in KB
+            'max_file_size' => null,
+
             'thumbnail' => [
                 'width' => 300,
                 'height' => 300,
