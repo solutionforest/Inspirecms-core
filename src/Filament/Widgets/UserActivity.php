@@ -7,6 +7,7 @@ use Filament\Widgets\Widget;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
+use SolutionForest\InspireCms\Models\Contracts\UserLoginActivity;
 
 class UserActivity extends Widget implements GuardWidget
 {
@@ -51,52 +52,21 @@ class UserActivity extends Widget implements GuardWidget
                     ->simplePaginate(perPage: 5, pageName: $pageName, page: $this->getPage($pageName));
 
                 $activities->tap(function ($activities) use ($user) {
-                    $activities->setCollection($activities->getCollection()->map(function ($activity) use ($user) {
+                    $activities->setCollection($activities->getCollection()->map(function (UserLoginActivity $activity) use ($user) {
 
                         $activity->causer = $user;
                         $activity->subject = $user;
 
                         $activity->description = $activity->ip_address;
 
-                        $dtFormat = 'Y-m-d H:i:s';
-                        if ($activity->last_logged_in_at_utc != null) {
-                            $ts = $activity->last_logged_in_at_utc->format($dtFormat);
-                            $activity->last_logged_in_at_utc = Carbon::createFromFormat(
-                                $dtFormat,
-                                $ts,
-                                'UTC'
-                            );
-                            $activity->last_logged_in_at_local = Carbon::createFromFormat(
-                                $dtFormat,
-                                $ts,
-                                'UTC'
-                            )->setTimezone(config('app.timezone'));
-                        } else {
-                            $activity->last_logged_in_at_local = null;
-                        }
+                        $activity->last_logged_in_at_utc = $this->convertDt($activity->last_logged_in_at_utc);
+                        $activity->last_logged_in_at_local = $this->convertDtToLocal($activity->last_logged_in_at_utc);
 
-                        if ($activity->last_logged_out_at_utc != null) {
-                            $ts = $activity->last_logged_out_at_utc->format($dtFormat);
-                            $activity->last_logged_out_at_utc = Carbon::createFromFormat(
-                                $dtFormat,
-                                $ts,
-                                'UTC'
-                            );
-                            $activity->last_logged_out_at_local = Carbon::createFromFormat(
-                                $dtFormat,
-                                $ts,
-                                'UTC'
-                            )->setTimezone(config('app.timezone'));
-                        } else {
-                            $activity->last_logged_out_at_local = null;
-                        }
-                        $activity->last_logged_out_at_utc = \Carbon\Carbon::createFromFormat(
-                            $dtFormat,
-                            $activity->last_logged_out_at_utc->format($dtFormat),
-                            'UTC'
-                        );
+                        $activity->last_logged_out_at_utc = $this->convertDt($activity->last_logged_out_at_utc);
+                        $activity->last_logged_out_at_local = $this->convertDtToLocal($activity->last_logged_out_at_utc);
 
                         return $activity;
+                        
                     }));
                 });
 
@@ -113,5 +83,27 @@ class UserActivity extends Widget implements GuardWidget
         return \Illuminate\Pagination\Paginator::currentPageResolver(function ($pageName) {
             return $this->getPage($pageName);
         });
+    }
+
+    private function convertDt(?\Carbon\CarbonInterface $dateTime): ?\Carbon\CarbonInterface
+    {
+        if (is_null($dateTime)) {
+            return null;
+        }
+
+        $dtFormat = 'Y-m-d H:i:s';
+
+        $ts = $dateTime->format($dtFormat);
+        
+        return Carbon::createFromFormat(
+            $dtFormat,
+            $ts,
+            'UTC'
+        );
+    }
+
+    private function convertDtToLocal(?\Carbon\CarbonInterface $dateTime): ?\Carbon\CarbonInterface
+    {
+        return $this->convertDt($dateTime)?->setTimezone(config('app.timezone'));
     }
 }
