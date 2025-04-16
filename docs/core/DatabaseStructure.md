@@ -34,18 +34,46 @@ Stores all content items in the system.
 |--------|------|-------------|
 | `id` | UUID | Primary key |
 | `parent_id` | UUID | Parent content ID (for hierarchy) |
-| `document_type_id` | UUID | Reference to document type |
+| `document_type_id` | Integer | Reference to `document type` |
 | `title` | JSON | Translatable content title |
 | `slug` | String | URL-friendly identifier |
-| `status` | Integer | Content status (draft, published, etc.) |
-| `created_by` | UUID | User who created the content |
-| `updated_by` | UUID | User who last updated the content |
-| `published_at` | Timestamp | When content was published |
+| `status` | Integer | Content status (0=draft, 1=published, etc.) |
 | `is_default` | Boolean | Whether this is the default content |
-| `position` | Integer | Sorting position |
+| `author_id` | UUID | User who created the content |
+| `author_type` | String | Morph type for `author_id` |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 | `deleted_at` | Timestamp | Soft delete timestamp |
+
+#### `cms_content_versions`
+
+Stores version history for content items.
+#### `cms_content_versions`
+
+Stores version history for content items.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer | Primary key |
+| `created_at` | Timestamp | Creation timestamp |
+| `event_name` | String | Type of event that triggered this version (create, update, publish, etc.) |
+| `publish_state` | String | Publishing state of this version (draft, published, archived, etc.) |
+| `content_id` | UUID | Reference to `content` |
+| `from_data` | JSON | Previous state of content before changes were made |
+| `to_data` | JSON | New state of content after changes were made |
+| `avoid_to_clean` | Boolean | Flag that prevents automatic cleanup/deletion of this version |
+| `author_id` | UUID | User who created the content version |
+| `author_type` | String | Morph type for `author_id` |
+
+#### `cms_content_publish_version`
+
+Maps content items to their currently published version.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `content_id` | UUID | Reference to `content` |
+| `version_id` | id | Reference to `content version` |
+| `published_at` | Timestamp | When this version was published |
 
 #### `cms_content_paths`
 
@@ -53,12 +81,9 @@ Maps content to their hierarchical paths in the site structure.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `content_id` | UUID | Reference to content |
-| `path` | String | Full path to content |
-| `depth` | Integer | Nesting depth |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
+| `id` | Integer | Primary key |
+| `key` | UUID | Reference to `content` |
+| `value` | String | Full path to content |
 
 #### `cms_content_routes`
 
@@ -66,14 +91,37 @@ Defines URL routes to content.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `content_id` | UUID | Reference to content |
-| `language_id` | UUID | Reference to language |
-| `route_pattern` | String | URL pattern |
-| `is_default` | Boolean | Whether this is the default route |
+| `id` | Integer | Primary key |
+| `content_id` | UUID | Reference to `content` |
+| `language_id` | Integer | Reference to `language` |
+| `uri` | String | URL pattern |
+| `is_default_pattern` | Boolean | Whether this is the default route pattern |
 | `regex_constraints` | JSON | Route pattern constraints |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
+
+#### `cms_content_web_settings`
+
+Stores web-specific settings for content items.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer | Primary key |
+| `content_id` | UUID | Reference to `content` |
+| `seo` | JSON | Stores SEO metadata like title, description, and keywords |
+| `rebots` | JSON | Controls search engine crawling and indexing rules |
+| `redirect_path` | String | Custom URL path for content redirection |
+| `redirect_content_id` | UUID | Reference to `content item` for internal redirection |
+| `redirect_content_type` | Integer | HTTP redirect status code (301, 302, etc.) |
+
+#### `cms_content_locks`
+
+Manages content locking for concurrent editing.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `content_id` | UUID | Reference to content |
+| `owner_id` | UUID | User holding the lock |
+| `owner_type` | String | Morph type for user |
+| `locked_at` | Timestamp | When the lock was acquired |
 
 #### `cms_document_types`
 
@@ -81,50 +129,40 @@ Defines the different types of content in the system.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | JSON | Translatable name |
+| `id` | Integer | Primary key |
+| `title` | String | Document type name/title |
 | `slug` | String | URL-friendly identifier |
-| `description` | JSON | Translatable description |
 | `icon` | String | Icon identifier |
+| `category` | String | Document type category |
 | `show_as_table` | Boolean | Display mode in admin UI |
 | `show_at_root` | Boolean | Whether to show at root level |
-| `category` | String | Document type category |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
+
+#### `cms_document_type_inheritance`
+
+Defines inheritance relationships between document types.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `document_type_id` | Integer | Reference to the `document type` that inherits properties |
+| `inherited_document_type_id` | Integer | Reference to the `document type` being inherited from |
+
+#### `cms_document_type_allowed_document_type`
+
+Defines which document types can be created as children of other document types.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer | Reference to the parent `document type` |
+| `allowed_id` | Integer | Reference to `document type` that's allowed as a child |
 
 ### Field Management
 
-#### `cms_field_groups`
+#### Field Groups and Fields
 
-Defines groups of fields for content types.
+These tables manage field groups and fields for content types. The actual table names depend on the configuration of the [filament-field-group package](https://github.com/solutionforest/filament-field-group) and may vary based on your installation settings. For detailed information about these tables, please refer to the package documentation.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | JSON | Translatable name |
-| `slug` | String | URL-friendly identifier |
-| `description` | JSON | Translatable description |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
-
-#### `cms_fields`
-
-Defines individual fields within field groups.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | UUID | Primary key |
-| `field_group_id` | UUID | Reference to field group |
-| `name` | JSON | Translatable name |
-| `slug` | String | URL-friendly identifier |
-| `description` | JSON | Translatable description |
-| `type` | String | Field type identifier |
-| `is_required` | Boolean | Whether field is required |
-| `is_translatable` | Boolean | Whether field supports translation |
-| `config` | JSON | Field configuration options |
-| `position` | Integer | Sorting position |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
 
 #### `cms_field_groupables`
 
@@ -132,10 +170,12 @@ Polymorphic pivot table linking field groups to content types, templates, etc.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `field_group_id` | UUID | Reference to field group |
-| `field_groupable_type` | String | Polymorphic type |
-| `field_groupable_id` | UUID | Polymorphic ID |
-| `position` | Integer | Sorting position |
+| `id` | Integer | Primary key |
+| `field_group_id` | Integer | Reference to `field group` |
+| `groupable_id` | UUID | Polymorphic ID |
+| `groupable_type` | String | Polymorphic type |
+| `inherited_from_id` | Integer | ID of the parent entity this field group inherits from |
+| `inherited_from_type` | String | Type of entity this field group inherits from |
 
 ### Template Management
 
@@ -145,13 +185,9 @@ Stores template definitions.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `document_type_id` | UUID | Reference to document type |
-| `name` | JSON | Translatable name |
-| `slug` | String | URL-friendly identifier |
-| `description` | JSON | Translatable description |
+| `id` | Integer | Primary key |
+| `slug` | String | Unique URL-friendly identifier for the template |
 | `content` | Text | Template content |
-| `is_default` | Boolean | Whether this is the default template |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
@@ -161,9 +197,10 @@ Polymorphic pivot table linking templates to content.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `template_id` | UUID | Reference to template |
+| `template_id` | UUID | Reference to `template` |
 | `templateable_type` | String | Polymorphic type |
 | `templateable_id` | UUID | Polymorphic ID |
+| `is_default` | Boolean | Whether this template is the default for the associated content |
 
 ### User Management
 
@@ -176,56 +213,35 @@ Stores user accounts.
 | `id` | UUID | Primary key |
 | `name` | String | User's full name |
 | `email` | String | User's email address |
+| `preferred_language` | String | User's preferred interface language |
+| `avatar` | String | Path or reference to user's profile image |
 | `password` | String | Hashed password |
 | `remember_token` | String | "Remember me" token |
-| `email_verified_at` | Timestamp | When email was verified |
-| `last_login_at` | Timestamp | Last login timestamp |
-| `settings` | JSON | User-specific settings |
+| `failed_login_attempt` | Integer | Count of consecutive failed login attempts |
+| `last_lockouted_at` | Timestamp | When user account was last locked out |
+| `last_password_change_date` | Timestamp | When user last changed their password |
+| `last_logged_in_at` | Timestamp | When user last successfully logged in |
+| `email_confirmed_at` | Timestamp | When user confirmed their email address |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_roles`
+#### `cms_user_login_activities`
 
-Defines user roles.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | String | Role name |
-| `guard_name` | String | Authentication guard |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
-
-#### `cms_permissions`
-
-Defines individual permissions.
+Tracks user login events and activity.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | String | Permission name |
-| `guard_name` | String | Authentication guard |
-| `created_at` | Timestamp | Creation timestamp |
-| `updated_at` | Timestamp | Last update timestamp |
+| `id` | Interger | Primary key |
+| `user_id` | UUID | Reference to `user` |
+| `last_logged_in_at_utc` | Timestamp | When login attempt occurred |
+| `last_logged_out_at_utc` | Timestamp | When user logged out (if tracked) |
+| `ip_address` | String | Client IP address |
 
-#### `cms_model_has_roles`
+### User Roles and Permissions
 
-Links users to roles.
+InspireCMS uses the [spatie/laravel-permission](https://github.com/spatie/laravel-permission) package to manage user roles and permissions. The package provides tables for roles, permissions, and their relationships.
 
-| Column | Type | Description |
-|--------|------|-------------|
-| `role_id` | UUID | Reference to role |
-| `model_type` | String | Polymorphic type |
-| `model_id` | UUID | Polymorphic ID |
-
-#### `cms_role_has_permissions`
-
-Links roles to permissions.
-
-| Column | Type | Description |
-|--------|------|-------------|
-| `permission_id` | UUID | Reference to permission |
-| `role_id` | UUID | Reference to role |
+For detailed information about the database schema for roles and permissions, please refer to the [Laravel Permission package documentation](https://spatie.be/docs/laravel-permission).
 
 ### Media Management
 
@@ -236,20 +252,30 @@ Stores media assets.
 | Column | Type | Description |
 |--------|------|-------------|
 | `id` | UUID | Primary key |
-| `disk` | String | Storage disk identifier |
-| `directory` | String | Directory path |
-| `filename` | String | File name |
-| `extension` | String | File extension |
-| `mime_type` | String | MIME type |
-| `size` | Integer | File size in bytes |
-| `alt_text` | JSON | Translatable alternative text |
-| `title` | JSON | Translatable title |
-| `caption` | JSON | Translatable caption |
-| `description` | JSON | Translatable description |
-| `metadata` | JSON | Additional metadata |
-| `created_by` | UUID | User who uploaded the asset |
+| `title` | String | The name/title of the media asset |
+| `parent_id` | UUID | Reference to parent folder ID (for hierarchy) |
+| `is_folder` | Boolean | Whether this record represents a folder rather than a file |
+| `caption` | String | Optional descriptive text for the media asset |
+| `author_id` | UUID | User who uploaded/created the media asset |
+| `author_type` | String | Morph type for `author_id` |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
+
+### Media Library
+
+InspireCMS integrates with [spatie/laravel-medialibrary](https://github.com/spatie/laravel-medialibrary) for advanced media management, which provides:
+
+- **Media Table**: Stores media items with polymorphic relationships
+- **Collections**: Organizes media into named groups
+- **Conversions**: Manages image transformations (thumbnails, responsive versions)
+- **Custom Properties**: Allows metadata storage for media items
+
+Key relationships:
+- Media items link to CMS assets via UUID
+- Polymorphic relationships connect media to various content types
+- Collections group related media items
+
+Media files are stored in the filesystem rather than the database, with conversions and responsive images generated automatically.
 
 ### Site Configuration
 
@@ -259,32 +285,34 @@ Defines available languages.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `name` | String | Language name |
-| `locale` | String | Language code |
+| `id` | Integer | Primary key |
+| `code` | String | ISO language code (e.g., 'en', 'fr', 'es') |
 | `is_default` | Boolean | Whether this is the default language |
 | `is_active` | Boolean | Whether language is active |
-| `direction` | String | Text direction (ltr/rtl) |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
-#### `cms_navigations`
+#### `cms_navigation`
 
-Stores navigation menu structure.
+Stores navigation menu structure using [nested set model](https://github.com/lazychaser/laravel-nestedset) from kalnoy/nestedset package.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `parent_id` | UUID | Parent navigation item ID |
+| `id` | Integer | Primary key |
+| `parent_id` | Integer | Parent navigation item ID (for hierarchy) |
+| `_lft` | Integer | Left value for nested set pattern |
+| `_rgt` | Integer | Right value for nested set pattern |
 | `category` | String | Navigation category (main, footer, etc.) |
 | `title` | JSON | Translatable title |
-| `url` | String | Direct URL (for external links) |
-| `type` | String | Link type (content, url, group) |
+| `type` | String | Link type (content, link, group) |
+| `url` | JSON | Translatable URL for external links |
 | `content_id` | UUID | Reference to content (for content links) |
 | `target` | String | Link target (_blank, _self, etc.) |
-| `position` | Integer | Sorting position |
+| `is_active` | Boolean | Whether this navigation item is active |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
+
+The nested set implementation allows for efficient querying of hierarchical navigation structures, making it easy to retrieve entire navigation trees with a single query and maintain proper ordering.
 
 #### `cms_key_values`
 
@@ -292,9 +320,24 @@ Stores key-value pairs for application settings.
 
 | Column | Type | Description |
 |--------|------|-------------|
-| `id` | UUID | Primary key |
-| `key` | String | Setting key |
+| `key` | String | Primary key |
 | `value` | JSON | Setting value |
+| `created_at` | Timestamp | Creation timestamp |
+| `updated_at` | Timestamp | Last update timestamp |
+
+#### `cms_sitemaps`
+
+Stores sitemap configuration for search engine optimization.
+
+| Column | Type | Description |
+|--------|------|-------------|
+| `id` | Integer | Primary key |
+| `model_id` | UUID | Polymorphic relationship ID (content, page, etc.) |
+| `model_type` | String | Polymorphic model class name |
+| `url` | String | URL path for the sitemap entry |
+| `change_frequency` | String | How frequently the page changes (daily, weekly, monthly, etc.) |
+| `priority` | Decimal | SEO priority value (0.0 to 1.0) |
+| `enable` | Boolean | Whether to include in sitemap |
 | `created_at` | Timestamp | Creation timestamp |
 | `updated_at` | Timestamp | Last update timestamp |
 
@@ -431,15 +474,15 @@ To extend the database for custom functionality:
 ### Custom Migration Example
 
 ```php
-use Illuminate\Database\Migrations\Migration;
+use SolutionForest\InspireCms\Support\Base\BaseMigration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCustomContentMetadataTable extends Migration
+class CreateCustomContentMetadataTable extends BaseMigration
 {
     public function up()
     {
-        Schema::create('cms_custom_content_metadata', function (Blueprint $table) {
+        Schema::create($this->prefix . 'custom_content_metadata', function (Blueprint $table) {
             $table->uuid('id')->primary();
             $table->uuid('content_id');
             $table->string('meta_key');
@@ -457,7 +500,7 @@ class CreateCustomContentMetadataTable extends Migration
     
     public function down()
     {
-        Schema::dropIfExists('cms_custom_content_metadata');
+        Schema::dropIfExists($this->prefix . 'custom_content_metadata');
     }
 }
 ```
@@ -467,14 +510,14 @@ class CreateCustomContentMetadataTable extends Migration
 ```php
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
-class CustomContentMetadata extends Model
+class CustomContentMetadata extends BaseModel
 {
     use HasUuids;
     
-    protected $table = 'cms_custom_content_metadata';
+    protected $table = 'custom_content_metadata';
     
     protected $fillable = [
         'content_id',
