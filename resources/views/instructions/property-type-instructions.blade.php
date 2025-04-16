@@ -23,7 +23,7 @@
         } else {
             $result[] = "
 @propertyArray('{$group}', '{$field}')
-@foreach (\${$propertyVarName})} ?? [] as \$item)
+@foreach (\${$propertyVarName} ?? [] as \$item)
     //
 @endforeach";
         }
