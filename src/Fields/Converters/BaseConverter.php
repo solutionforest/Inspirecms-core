@@ -32,9 +32,8 @@ abstract class BaseConverter
     protected static $configurations = [];
 
     /**
-     * @param \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig $fieldTypeConfig
-     * @param ?string $group
-     * @param ?string $key
+     * @param  ?string  $group
+     * @param  ?string  $key
      */
     public function __construct(FieldTypeConfig $fieldTypeConfig, $group, $key)
     {
