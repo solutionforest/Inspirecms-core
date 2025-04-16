@@ -14,7 +14,9 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
 {
     public function transform(PropertyDataDto $propertyDataDto, ?string $locale, ?string $fallbackLocale)
     {
-        $converter = $this->getConverter($propertyDataDto?->propertyType?->config);
+        $propType = $propertyDataDto->propertyType;
+
+        $converter = $this->getConverter($propType?->config, $propType?->key, $propType?->group);
 
         return $converter->toDisplayValue($propertyDataDto->getSourceValue(), $locale, $fallbackLocale);
     }
@@ -34,7 +36,7 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
         }
     }
 
-    public function getConverter($fieldType)
+    public function getConverter($fieldType, $key, $group)
     {
         if ($fieldType === null) {
             throw new \InvalidArgumentException('No field type specified.');
@@ -57,6 +59,8 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
 
         return app($converter, [
             'fieldTypeConfig' => $fieldType,
+            'key' => $key,
+            'group' => $group,
         ]);
     }
 }
