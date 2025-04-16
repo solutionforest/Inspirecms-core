@@ -293,7 +293,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             'create_inspire-cms-core_table',
             'create_inspire-cms-import_and_export_table',
-            'create_key_values_table',
             'create_custom_spatie_permission_table',
             'update_sessions_table',
             'update_notification_table_for_uuid_users',

@@ -214,11 +214,19 @@ return new class extends BaseMigration
             $table->index('type');
             $table->index('category');
         });
+
+        Schema::create($tableNames['key_value'], function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->text('value')->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
+
+        Schema::dropIfExists($tableNames['key_value']);
 
         Schema::dropIfExists($tableNames['navigation']);
         Schema::dropIfExists($tableNames['language']);
@@ -265,6 +273,7 @@ return new class extends BaseMigration
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'sitemap' => $this->prefix . 'sitemaps',
             'navigation' => $this->prefix . 'navigation',
+            'key_value' => $this->prefix . 'key_values',
         ];
     }
 };
