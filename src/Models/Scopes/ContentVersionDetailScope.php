@@ -16,82 +16,74 @@ class ContentVersionDetailScope implements Scope
 
             $query = $builder->getQuery();
 
-            $relatedFK = $model->contentVersions()->getForeignKeyName();
-            $related = $model->contentVersions()->getRelated();
-            $relatedPK = $related->getKeyName();
+            $cvModel = $model->contentVersions()->getRelated();
+            $cvFK = $model->contentVersions()->getForeignKeyName();
+            $cvPK = $cvModel->getKeyName();
+            $cvCreationColumn = $cvModel->getCreatedAtColumn();
 
-            $recordCreationColumn = $related->getCreatedAtColumn();
+            /**
+             * @var Model
+             */
+            $cvPublishedModel = $cvModel->publishLog()->getRelated();
+            $cvPublishedFK = $cvModel->publishLog()->getForeignKeyName();
 
-            $t1TableName = '_cv_t1';
-            $t1Q = DB::table($related->getTable())
-                ->orderByDesc($recordCreationColumn) // sort by created_at desc
-                ->groupBy(
-                    $relatedFK, // group by content_id
-                    $recordCreationColumn, // include the ordered column in GROUP BY
-                )
+            $baseQ = DB::table($cvModel->getTable())
+                ->groupBy($cvFK)
                 ->select([
-                    DB::raw("MAX($relatedPK) AS latest_version_id"),
-                    $relatedFK,
+                    DB::raw("MAX($cvPK) AS joined_version_id"),
+                    $cvFK,
                 ]);
 
-            $t2_1TableName = '_cv_t2_publish';
-            $t2_2TableName = '_cv_t2_all';
-            $t2_1Q = DB::table($related->getTable(), $t2_1TableName)
+            $cvAllQ = DB::table($cvModel->getTable(), '_cv_t2_all')
                 ->joinSub(
-                    $t1Q,
-                    $t1TableName,
+                    $baseQ,
+                    '_cv_t1_base',
                     fn (JoinClause $join) => $join
-                        ->on("$t1TableName.latest_version_id", '=', "$t2_1TableName.$relatedPK")
+                        ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_all.$cvPK")
                 )
-                ->where("$t2_1TableName.publish_state", 'publish')
-                ->orderByDesc("$t2_1TableName.$recordCreationColumn")
-                ->select([
-                    "$t2_1TableName.$relatedFK",
-                    "$t2_1TableName.publish_state",
-                    "$t2_1TableName.$relatedPK",
-                    "$t2_1TableName.$recordCreationColumn",
-                    "$t2_1TableName.to_data AS data",
-                ]);
-            $t2_2Q = DB::table($related->getTable(), $t2_2TableName)
-                ->joinSub(
-                    $t1Q,
-                    $t1TableName,
-                    fn (JoinClause $join) => $join
-                        ->on("$t1TableName.latest_version_id", '=', "$t2_2TableName.$relatedPK")
-                )
-                ->orderByDesc("$t2_2TableName.$recordCreationColumn")
-                ->select([
-                    "$t2_2TableName.$relatedFK",
-                    "$t2_2TableName.publish_state",
-                    "$t2_2TableName.$relatedPK",
-                    "$t2_2TableName.$recordCreationColumn",
-                    "$t2_2TableName.to_data AS data",
-                ]);
+                ->select('_cv_t2_all.*');
 
+            $cvPublishedQ = DB::table($cvModel->getTable(), '_cv_t2_p')
+                ->joinSub(
+                    $baseQ,
+                    '_cv_t1_base',
+                    fn (JoinClause $join) => $join
+                        ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_p.$cvPK")
+                )
+                ->whereExists(
+                    fn (\Illuminate\Database\Query\Builder | \Illuminate\Database\Eloquent\Builder $query) => $query
+                        ->select(DB::raw(1))
+                        ->from($cvPublishedModel->getTable(), '_cv_base_p')
+                        ->where("_cv_base_p.$cvPublishedFK", '=', "_cv_t2_p.$cvPK")
+                )
+                ->select('_cv_t2_p.*');
+
+            $cvAllTableName = '_cv_all';
+            $cvPublishedTableName = '_cv_published';
             $query
                 ->leftJoinSub(
-                    $t2_1Q,
-                    $t2_1TableName,
+                    $cvAllQ,
+                    $cvAllTableName,
                     fn (JoinClause $join) => $join
-                        ->on($model->getQualifiedKeyName(), '=', "{$t2_1TableName}.{$relatedFK}")
+                        ->on($model->getQualifiedKeyName(), '=', "$cvAllTableName.$cvFK")
                 )
-                ->leftJoinSub(
-                    $t2_2Q,
-                    $t2_2TableName,
-                    fn (JoinClause $join) => $join
-                        ->on($model->getQualifiedKeyName(), '=', "{$t2_2TableName}.{$relatedFK}")
-                )
-                ->addSelect($model->qualifyColumn('*'))
                 ->addSelect([
-                    DB::raw("{$t2_1TableName}.{$relatedPK} AS __latest_version_publish_id"),
-                    DB::raw("{$t2_1TableName}.{$recordCreationColumn} AS __latest_version_publish_dt"),
-                    DB::raw("{$t2_1TableName}.data AS __latest_version_publish_data"),
+                    DB::raw("{$cvAllTableName}.{$cvPK} AS __latest_version_id"),
+                    DB::raw("{$cvAllTableName}.{$cvCreationColumn} AS __latest_version_dt"),
+                    DB::raw("{$cvAllTableName}.to_data AS __latest_version_data"),
                 ])
+                ->leftJoinSub(
+                    $cvPublishedQ,
+                    $cvPublishedTableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "$cvPublishedTableName.$cvFK")
+                )
                 ->addSelect([
-                    DB::raw("{$t2_2TableName}.{$relatedPK} AS __latest_version_id"),
-                    DB::raw("{$t2_2TableName}.{$recordCreationColumn} AS __latest_version_dt"),
-                    DB::raw("{$t2_2TableName}.data AS __latest_version_data"),
-                ]);
+                    DB::raw("{$cvPublishedTableName}.{$cvPK} AS __latest_version_publish_id"),
+                    DB::raw("{$cvPublishedTableName}.{$cvCreationColumn} AS __latest_version_publish_dt"),
+                    DB::raw("{$cvPublishedTableName}.to_data AS __latest_version_publish_data"),
+                ])
+                ->addSelect($model->qualifyColumn('*'));
 
             $model->withCasts([
                 '__latest_version_publish_dt' => 'datetime',

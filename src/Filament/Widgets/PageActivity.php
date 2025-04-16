@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
 
 class PageActivity extends BaseWidget
 {
@@ -42,7 +43,14 @@ class PageActivity extends BaseWidget
 
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('inspirecms::resources/content.published_at.label'))
-                    ->getStateUsing(fn ($record) => $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans())
+                    ->getStateUsing(function (Model $record) {
+
+                        if ($record->hasAttribute('__latest_version_publish_dt') && $record->__latest_version_publish_dt) {
+                            return $record->__latest_version_publish_dt->diffForHumans();
+                        }
+
+                        return $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans();
+                    })
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/content.updated_at.label'))
@@ -60,13 +68,15 @@ class PageActivity extends BaseWidget
 
     protected function getLatestUpdatePagesQuery(): Builder
     {
-        $query = InspireCmsConfig::getContentModelClass()::with([
-            'publishedVersions',
-        ])->withoutGlobalScopes([
-            \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
-        ]);
-
-        return $query->orderByDesc('updated_at')->take(static::$totalTakeLatest);
+        return InspireCmsConfig::getContentModelClass()::query()
+            ->with(['publishedVersions'])
+            ->withoutGlobalScopes([
+                \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
+            ])
+            ->withGlobalScope(ContentVersionDetailScope::class, new ContentVersionDetailScope)
+            ->orderByDesc('__latest_version_dt')
+            ->orderByDesc('updated_at')
+            ->take(static::$totalTakeLatest);
     }
 
     // region Table Configuration
