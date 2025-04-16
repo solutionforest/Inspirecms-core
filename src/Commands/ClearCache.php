@@ -56,9 +56,10 @@ class ClearCache extends Command
         $targetTypes = array_filter(array_keys(static::CACHE_TYPES), fn ($option) => $this->option($option));
         if (empty($targetTypes)) {
             $this->error('No cache types selected. Use --all to clear all caches or specify cache types.');
+
             return;
         }
-        
+
         $this->info('Clearing selected caches...');
         foreach ($targetTypes as $type) {
             $this->clearCache($type);
@@ -74,18 +75,21 @@ class ClearCache extends Command
                 switch ($type) {
                     case 'languages':
                         inspirecms()->forgetCachedLanguages();
+
                         break;
                     case 'routes':
                         inspirecms()->forgetCachedContentRoutes();
+
                         // $this->callSilent('route:clear');
                         break;
                     case 'navigation':
                         inspirecms()->forgetCachedNavigation();
+
                         break;
                 }
             });
         }
-        
+
     }
 
     private function wrapClearCache(string $type, callable $callback): void
