@@ -23,12 +23,11 @@ class FileConverter extends BaseConverter
             }
 
             return collect($sourceValue)
-                ->map(fn ($path) => FileDto::fromArray([
-                    'path' => $path,
+                ->map(fn ($v) => $v instanceof FileDto ? $v : FileDto::fromArray([
+                    'path' => $v,
                     'disk' => $disk,
                     'directory' => $directory,
                 ]))
-                ->values()
                 ->all();
 
         } catch (\Throwable $th) {
