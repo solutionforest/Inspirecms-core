@@ -46,7 +46,12 @@ class RepeaterConverter extends BaseConverter
                     continue;
                 }
 
-                $innerFieldConverter = $this->tryGetConverterForInnerField($innerPropertyType);
+                $innerFieldConverter = $this->tryGetConverterForInnerField(
+                    $innerPropertyType,
+                    implode('.', [$this->getFieldIdentifier(), $i]),
+                    $key
+                );
+
                 if (is_null($innerFieldConverter)) {
                     continue;
                 }
@@ -106,13 +111,13 @@ class RepeaterConverter extends BaseConverter
         }
     }
 
-    private function tryGetConverterForInnerField($fieldTypeConfig): ?BaseConverter
+    private function tryGetConverterForInnerField($fieldTypeConfig, $group, $key): ?BaseConverter
     {
         try {
 
             $transformer = app(PropertyValueTransformerInterface::class);
 
-            return $transformer->getConverter($fieldTypeConfig);
+            return $transformer->getConverter($fieldTypeConfig, $key, $group);
 
         } catch (\Throwable $th) {
 

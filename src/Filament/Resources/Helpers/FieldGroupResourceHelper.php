@@ -19,7 +19,7 @@ class FieldGroupResourceHelper
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/field-group.title.label'))
-            ->validationAttribute(__('inspirecms::resources/field-group.name.title'))
+            ->validationAttribute(__('inspirecms::resources/field-group.name.label'))
             ->required()
             ->maxLength(255);
     }

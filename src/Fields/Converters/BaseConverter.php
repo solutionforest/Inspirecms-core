@@ -11,16 +11,36 @@ abstract class BaseConverter
 {
     use Macroable;
 
-    protected FieldTypeConfig $fieldTypeConfig;
+    /**
+     * @var FieldTypeConfig
+     */
+    protected $fieldTypeConfig;
+
+    /**
+     * @var string|null
+     */
+    protected $fieldKey;
+
+    /**
+     * @var string|null
+     */
+    protected $fieldGroupKey;
 
     /**
      * @var array<class-string<BaseConverter>, array<Closure>>
      */
     protected static $configurations = [];
 
-    public function __construct(FieldTypeConfig $fieldTypeConfig)
+    /**
+     * @param  ?string  $group
+     * @param  ?string  $key
+     */
+    public function __construct(FieldTypeConfig $fieldTypeConfig, $group, $key)
     {
         $this->fieldTypeConfig = $fieldTypeConfig;
+
+        $this->fieldKey = $key;
+        $this->fieldGroupKey = $group;
 
         $this->configure();
     }
@@ -42,7 +62,35 @@ abstract class BaseConverter
 
     protected function isFieldTypeTranslatable(): bool
     {
-        return $this->fieldTypeConfig->isTranslatable();
+        return $this->getFieldTypeConfig()->isTranslatable();
+    }
+
+    public function getFieldTypeConfig(): FieldTypeConfig
+    {
+        return $this->fieldTypeConfig;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getKey()
+    {
+        return $this->fieldKey;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getGroup()
+    {
+        return $this->fieldGroupKey;
+    }
+
+    public function getFieldIdentifier(): string
+    {
+        return collect([$this->getGroup(), $this->getKey()])
+            ->filter()
+            ->implode('.');
     }
 
     public static function configureUsing(Closure $modifyUsing)
