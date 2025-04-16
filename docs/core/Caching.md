@@ -6,7 +6,6 @@ InspireCMS implements multiple caching layers to optimize performance. This guid
 
 Caching in InspireCMS accelerates content delivery by storing frequently accessed data in fast-access storage. The system employs several caching strategies:
 
-- **Content Cache**: Speeds up content retrieval
 - **Navigation Cache**: Makes menu loading faster
 - **Route Cache**: Improves URL resolution
 - **Template Cache**: Accelerates template rendering
@@ -80,56 +79,6 @@ InspireCMS uses Laravel's caching system. Configure the cache driver in `config/
 ],
 ```
 
-## Content Caching
-
-InspireCMS automatically caches content to reduce database queries.
-
-### Content Cache Configuration
-
-Adjust content cache settings:
-
-```php
-// config/inspirecms.php
-'cache' => [
-    'content' => [
-        'enabled' => true,
-        'ttl' => 3600, // 1 hour in seconds
-        'per_user' => false, // Whether to cache content per user
-    ],
-],
-```
-
-### Content Cache Tags
-
-Content is cached with tags for easy invalidation:
-
-- `content:{id}` - Individual content item
-- `content:type:{type}` - All content of a specific type
-- `content:lang:{lang}` - Content in a specific language
-
-Example of accessing cached content:
-
-```php
-use Illuminate\Support\Facades\Cache;
-
-// Get content with fallback to database
-$content = Cache::tags(['content:123'])->remember('content:123', 3600, function () {
-    return InspireCmsConfig::getContentModelClass()::find(123);
-});
-```
-
-### Invalidating Content Cache
-
-Automatically invalidated when content is updated, but can also be cleared manually:
-
-```php
-// Clear cache for a specific content item
-Cache::tags(['content:123'])->flush();
-
-// Clear cache for all content of a specific type
-Cache::tags(['content:type:blog'])->flush();
-```
-
 ## Navigation Caching
 
 Navigation structure is cached for improved performance.
@@ -162,9 +111,6 @@ Clear the navigation cache manually:
 ```php
 // Clear all navigation cache
 \SolutionForest\InspireCms\Facades\InspireCms::forgetCachedNavigation();
-
-// Clear category-specific cache
-Cache::forget("inspirecms.navigation.main.en");
 ```
 
 ## Route Caching
@@ -188,7 +134,13 @@ InspireCMS caches content routes for faster URL resolution.
 In addition to Laravel's route caching, clear InspireCMS route cache:
 
 ```bash
-php artisan inspirecms:clear-route-cache
+php artisan route:clear
+```
+
+or
+
+```bash
+php artisan inspirecms:clear-cache --routes
 ```
 
 ## Template Caching
@@ -237,13 +189,26 @@ Cache model queries directly:
 
 ```php
 use Illuminate\Support\Facades\Cache;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 // Get all published blog posts, cached for 1 hour
 $posts = Cache::remember('published_blog_posts', 3600, function () {
-    return InspireCmsConfig::getContentModelClass()::whereDocumentType('blog')
+    return InspireCmsConfig::getContentModelClass()::query()
+        ->whereHas('documentType' => fn ($q) => $q->where('slug', 'blog'))
         ->whereIsPublished()
         ->latest()
         ->get();
+});
+
+// Or via service
+$posts = Cache::remember('published_blog_posts', 3600, function () {
+    return inspirecms_content()->getUnderRealPath(
+        path: 'home/blogs',
+        isPublished: true,
+        sorting: [
+            '__latest_version_dt' => 'desc',
+        ]
+    );
 });
 ```
 
@@ -371,14 +336,13 @@ class WarmCacheCommand extends Command
 
     public function handle()
     {
-        $this->info('Warming content cache...');
-        
+        // Warm language
+        $this->info('Warming language cache...')
+        $langs = inspirecms()->getAllAvailableLanguages();
+
         // Warm main navigation
         $this->info('Warming navigation cache...');
-        foreach (inspirecms()->getAllAvailableLanguages() as $locale => $lang) {
-            inspirecms()->getNavigation('main', $locale);
-            $this->info("Cached main navigation for {$locale}");
-        }
+        inspirecms()->getNavigation('main');
         
         // Warm homepage and main sections
         $this->info('Warming content cache...');
@@ -444,12 +408,12 @@ InspireCMS provides specific commands for clearing various caches:
 
 ```bash
 # Clear all InspireCMS caches
-php artisan inspirecms:clear-cache
+php artisan inspirecms:clear-cache --all
 
 # Clear specific caches
-php artisan inspirecms:clear-language-cache
-php artisan inspirecms:clear-route-cache
-php artisan inspirecms:clear-navigation-cache
+php artisan inspirecms:clear-cache --languages
+php artisan inspirecms:clear-cache --routes
+php artisan inspirecms:clear-cache --navigation
 ```
 
 ### Automatic Cache Clearing

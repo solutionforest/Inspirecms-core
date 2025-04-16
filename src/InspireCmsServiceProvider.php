@@ -223,6 +223,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Commands\DataCleanup::class,
             Commands\RepairPermissionsCommand::class,
             Commands\ListRoutes::class,
+            Commands\ClearCache::class,
         ];
     }
 
