@@ -139,17 +139,16 @@ return new class extends BaseMigration
 
             $table->index('field_group_id');
         });
-        Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) {
-            $table->integer('document_type_id');
-            $table->integer('inherited_document_type_id');
 
-            $table->index('document_type_id');
-            $table->index('inherited_document_type_id');
+        $documentTypeTable = $tableNames['document_type'];
+        Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) use ($documentTypeTable) {
+            $table->foreignId('document_type_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
+            $table->foreignId('inherited_document_type_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
         });
         
-        Schema::create($tableNames['allowed_document_type'], function (Blueprint $table) {
-            $table->foreignId('id')->constrained('cms_document_types', 'id')->onDelete('cascade');
-            $table->foreignId('allowed_id')->constrained('cms_document_types', 'id')->onDelete('cascade');
+        Schema::create($tableNames['allowed_document_type'], function (Blueprint $table) use ($documentTypeTable) {
+            $table->foreignId('id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
+            $table->foreignId('allowed_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
         });
         
         Schema::create($tableNames['user'], function (Blueprint $table) {
