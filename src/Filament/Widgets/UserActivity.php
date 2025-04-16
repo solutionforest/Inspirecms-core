@@ -66,7 +66,7 @@ class UserActivity extends Widget implements GuardWidget
                         $activity->last_logged_out_at_local = $this->convertDtToLocal($activity->last_logged_out_at_utc);
 
                         return $activity;
-                        
+
                     }));
                 });
 
@@ -94,7 +94,7 @@ class UserActivity extends Widget implements GuardWidget
         $dtFormat = 'Y-m-d H:i:s';
 
         $ts = $dateTime->format($dtFormat);
-        
+
         return Carbon::createFromFormat(
             $dtFormat,
             $ts,

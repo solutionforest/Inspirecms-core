@@ -33,37 +33,50 @@ class ContentVersionDetailScope implements Scope
                     DB::raw("MAX($cvPK) AS joined_version_id"),
                     $cvFK,
                 ]);
-            
+
             $cvAllQ = DB::table($cvModel->getTable(), '_cv_t2_all')
-                ->joinSub($baseQ, '_cv_t1_base', fn (JoinClause $join) => $join
-                    ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_all.$cvPK")
+                ->joinSub(
+                    $baseQ,
+                    '_cv_t1_base',
+                    fn (JoinClause $join) => $join
+                        ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_all.$cvPK")
                 )
-                ->select("_cv_t2_all.*");
+                ->select('_cv_t2_all.*');
 
             $cvPublishedQ = DB::table($cvModel->getTable(), '_cv_t2_p')
-                ->joinSub($baseQ, '_cv_t1_base', fn (JoinClause $join) => $join
-                    ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_p.$cvPK")
+                ->joinSub(
+                    $baseQ,
+                    '_cv_t1_base',
+                    fn (JoinClause $join) => $join
+                        ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_p.$cvPK")
                 )
-                ->whereExists(fn (\Illuminate\Database\Query\Builder|\Illuminate\Database\Eloquent\Builder $query) => $query
-                    ->select(DB::raw(1))
-                    ->from($cvPublishedModel->getTable(), '_cv_base_p')
-                    ->where("_cv_base_p.$cvPublishedFK", '=', "_cv_t2_p.$cvPK")
+                ->whereExists(
+                    fn (\Illuminate\Database\Query\Builder | \Illuminate\Database\Eloquent\Builder $query) => $query
+                        ->select(DB::raw(1))
+                        ->from($cvPublishedModel->getTable(), '_cv_base_p')
+                        ->where("_cv_base_p.$cvPublishedFK", '=', "_cv_t2_p.$cvPK")
                 )
-                ->select("_cv_t2_p.*");
+                ->select('_cv_t2_p.*');
 
             $cvAllTableName = '_cv_all';
             $cvPublishedTableName = '_cv_published';
             $query
-                ->leftJoinSub($cvAllQ, $cvAllTableName, fn (JoinClause $join) => $join
-                    ->on($model->getQualifiedKeyName(), '=', "$cvAllTableName.$cvFK")
+                ->leftJoinSub(
+                    $cvAllQ,
+                    $cvAllTableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "$cvAllTableName.$cvFK")
                 )
                 ->addSelect([
                     DB::raw("{$cvAllTableName}.{$cvPK} AS __latest_version_id"),
                     DB::raw("{$cvAllTableName}.{$cvCreationColumn} AS __latest_version_dt"),
                     DB::raw("{$cvAllTableName}.to_data AS __latest_version_data"),
                 ])
-                ->leftJoinSub($cvPublishedQ, $cvPublishedTableName, fn (JoinClause $join) => $join
-                    ->on($model->getQualifiedKeyName(), '=', "$cvPublishedTableName.$cvFK")
+                ->leftJoinSub(
+                    $cvPublishedQ,
+                    $cvPublishedTableName,
+                    fn (JoinClause $join) => $join
+                        ->on($model->getQualifiedKeyName(), '=', "$cvPublishedTableName.$cvFK")
                 )
                 ->addSelect([
                     DB::raw("{$cvPublishedTableName}.{$cvPK} AS __latest_version_publish_id"),
