@@ -1,386 +1,316 @@
 # Import
 
-InspireCMS provides comprehensive import capabilities for migrating content, restoring backups, and bringing data from other systems. This guide explains how to use the import features effectively.
+InspireCMS provides import capabilities for migrating content and system configurations. This guide explains how to use the import features effectively.
 
 ## Import System Overview
 
-The import system in InspireCMS allows you to:
+The import system in InspireCMS allows you to import:
 
-- Import content from various formats and sources
-- Migrate from other CMS platforms
-- Restore data from backups
-- Bring in content from external systems
-- Create content in bulk
-- Update existing content
+- Content items
+- Document types
+- Field groups
+- Navigation menus
+- Templates
+- Views and components
 
-## Import Interface
+## Supported Format
 
-Access the import interface through:
+InspireCMS currently supports importing data through a ZIP archive with a specific structure:
 
 ```
-Admin Panel → Settings → Import
+archive.zip/
+├── Content/
+│   ├── content-1.json
+│   └── content-2.json
+├── DocumentTypes/
+│   ├── document-types-1.json
+│   └── document-types-2.json
+├── FieldGroups/
+│   ├── field-group-1.json
+│   └── field-group-2.json
+├── NavigationMenus/
+│   ├── navigation-menu-1.json
+│   └── navigation-menu-2.json
+├── Templates/
+│   ├── template-1/
+│   │   ├── theme-1.json
+│   │   └── theme-2.json
+│   └── template-2/
+│       ├── theme-1.json
+│       └── theme-2.json
+└── Views/
+    ├── components/
+    │   ├── component-1.blade.php
+    │   └── component-2.blade.php
+    ├── sample-1.blade.php
+    └── sample-2.blade.php
 ```
 
-### Import Types
+### File Structure Requirements
 
-InspireCMS supports several import types:
+1. **Content Directory**
+   - Contains JSON files defining content items
+   - Each file represents one or more content entries
 
-1. **Full Site Import**: Complete site data including content and settings
-2. **Content Import**: Content items and their properties
-3. **Document Type Import**: Document types with field groups and templates
-4. **Field Group Import**: Field group definitions
-5. **Template Import**: Templates and their configuration
-6. **User Import**: User accounts and their roles
-7. **Media Import**: Media library assets
+2. **DocumentTypes Directory**
+   - Contains JSON files defining document types
+   - Each file can contain multiple document type definitions
 
-### Supported Formats
+3. **FieldGroups Directory**
+   - Contains JSON files defining field groups
+   - Each file can contain one or more field group definitions
 
-Import data can be in various formats:
+4. **Navigation Directory**
+   - Contains JSON files defining navigation menus
+   - Each file represents a navigation menu structure
 
-- **JSON**: Structured data (preferred for full imports)
-- **CSV**: Tabular data for simple content imports
-- **XML**: Structured data from other systems
-- **YAML**: Human-readable structured data
-- **SQL**: Database dumps for full restoration
+5. **Templates Directory**
+   - Contains subdirectories for each template
+   - Each template directory contains theme-specific JSON files
 
-## Creating an Import
+6. **Views Directory**
+   - Contains Blade template files
+   - `components` subdirectory for component views
+   - Root level for main template files
 
-### Basic Import
+## Creating an Import Package
 
-To create a basic import:
+1. Create the directory structure as shown above
+2. Add your JSON files in the appropriate directories
+3. Add your Blade template files in the Views directory
+4. Compress the directories into a ZIP file
+5. Upload through the admin interface
 
-1. Go to **Settings → Import**
-2. Click "Create Import"
-3. Fill in the form:
-   - **Name**: Descriptive name for the import
-   - **Type**: Select import type (e.g., "Content Import")
-   - **Format**: Choose format (e.g., JSON)
-4. Upload the import file or provide a URL
-5. Configure additional options based on import type
-6. Click "Create Import"
+### Example JSON Structures
 
-### Import Configuration Options
+**Content (content-1.json)**:
 
-Depending on the import type, additional options may include:
-
-- **Update Strategy**: How to handle existing records (update, skip, duplicate)
-- **Language Mapping**: How to map imported languages to system languages
-- **User Mapping**: How to assign content ownership
-- **Media Handling**: How to process media references
-- **Validation Rules**: Custom rules for validating imported data
-- **Notifications**: Who to notify when import completes
-
-### File Upload
-
-Upload import files directly:
-
-1. Prepare your import file in the appropriate format
-2. Select "File Upload" as the source
-3. Click "Choose File" and select your import file
-4. Set a maximum file size in your configuration:
-
-```php
-// config/inspirecms.php
-'imports' => [
-    'max_file_size' => 50 * 1024, // 50MB in KB
-],
-```
-
-### URL Import
-
-Import from a remote URL:
-
-1. Select "URL" as the source
-2. Enter the URL of the import file
-3. Optional: Provide authentication credentials if required
-4. The system will download the file before processing
-
-### Manual Data Entry
-
-For simple imports, use manual data entry:
-
-1. Select "Manual Entry" as the source
-2. Use the provided interface to enter data
-3. Suitable for small imports where you're adding a few items
-
-## Executing Imports
-
-### Validation
-
-Before executing, imports are validated:
-
-1. File format validation
-2. Schema validation
-3. Data integrity checks
-4. Reference validation
-5. Custom validation rules
-
-Failed validation shows errors to help you fix the import file.
-
-### Dry Run
-
-Test imports without making changes:
-
-1. Create the import configuration
-2. Enable "Dry Run Mode"
-3. Click "Start Import"
-4. Review the results to check for potential issues
-5. If everything looks good, disable "Dry Run Mode" and run the import
-
-### Immediate Execution
-
-For small to medium imports:
-
-1. Create the import configuration
-2. Click "Import Now"
-3. Wait for the import to complete
-4. Review the import results
-
-### Background Execution
-
-For larger imports:
-
-1. Create the import configuration
-2. Click "Schedule Import"
-3. The system processes the import in the background
-4. Receive notification when import is complete
-5. Review the import results from the import history
-
-## Programmatic Imports
-
-Create imports programmatically:
-
-```php
-use SolutionForest\InspireCms\Models\Import;
-use SolutionForest\InspireCms\Services\ImportServiceInterface;
-
-// Create import record
-$import = new Import();
-$import->name = 'Programmatic Import';
-$import->type = 'content';
-$import->format = 'json';
-$import->options = [
-    'update_strategy' => 'update',
-    'validate_only' => false,
-];
-$import->save();
-
-// Set the import file
-$import->attachFile(storage_path('app/imports/content-data.json'));
-
-// Execute import
-app(ImportServiceInterface::class)->execute($import);
-
-// Check results
-$results = $import->results;
-```
-
-## Import Data Service
-
-For more control, use the Import Data Service to define and perform imports:
-
-```php
-use SolutionForest\InspireCms\ImportData\Entities;
-use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
-
-$service = app(ImportDataServiceInterface::class);
-
-// Define document type
-$service->addDocumentType('blog', new Entities\DocumentType(
-    slug: 'blog',
-    showAsTable: true,
-    showAtRoot: true,
-    category: 'content',
-    icon: 'heroicon-o-document-text',
-    fieldGroups: ['blog_content'],
-    templates: ['blog_post'],
-    defaultTemplate: 'blog_post',
-));
-
-// Define field group
-$service->addFieldGroup('blog_content', new Entities\FieldGroup(
-    slug: 'blog_content',
-    fields: [
-        new Entities\Field(slug: 'title', type: 'text', config: ['translatable' => true]),
-        new Entities\Field(slug: 'body', type: 'richEditor', config: ['translatable' => true]),
-        new Entities\Field(slug: 'featured_image', type: 'mediaPicker', config: ['types' => ['image']]),
-    ],
-));
-
-// Define template
-$service->addTemplate('blog_post', '<h1>@property(\'blog_content\', \'title\')</h1>@property(\'blog_content\', \'body\')');
-
-// Add content
-$service->addContent('blog', null, new Entities\Content(
-    slug: 'hello-world',
-    title: ['en' => 'Hello World'],
-    documentType: 'blog',
-    properties: [
-        'blog_content' => [
-            'title' => ['en' => 'Hello World'],
-            'body' => ['en' => '<p>This is my first blog post</p>'],
-            'featured_image' => [],
-        ],
-    ],
-    publishState: 'publish'
-));
-
-// Run the import
-$service->run();
-```
-
-## Custom Importers
-
-Create a custom importer for specialized needs:
-
-```php
-namespace App\Imports;
-
-use SolutionForest\InspireCms\Imports\Importers\BaseImporter;
-use SolutionForest\InspireCms\Models\Contracts\Import;
-
-class CustomImporter extends BaseImporter
+```json
 {
-    public function import(Import $record): bool
-    {
-        // Get the import file
-        $file = $record->getImportFilePath();
-        
-        if (!$file || !file_exists($file)) {
-            $record->addError('File not found or inaccessible');
-            return false;
+    "title": {"en": "Sample Page"},
+    "slug": "sample-page",
+    "document_type": "page",
+    "parent": "home",
+    "properties": {
+        "content": {
+            "body": {"en": "<p>Sample content</p>"}
         }
-        
-        // Read the file
-        $data = file_get_contents($file);
-        
-        // Process the data
-        try {
-            // Your custom import logic
-            $this->processImportData(json_decode($data, true));
-            
-            // Log success
-            $record->addResult('Successfully imported custom data');
-            return true;
-        } catch (\Exception $e) {
-            // Log failure
-            $record->addError('Import failed: ' . $e->getMessage());
-            return false;
-        }
-    }
-    
-    protected function processImportData(array $data): void
-    {
-        // Implement your custom processing logic
-        foreach ($data as $item) {
-            // Process each item
-        }
-    }
+    },
+    "publishState": "publish",
+    "sitemap": {
+        "change_frequency": "monthly",
+        "priority": 0.5,
+        "enable": true
+    },
+    "webSetting": {
+        "seo": {
+            "meta_keywords": [],
+            "og_image": [],
+            "meta_title": {
+                "en": "Sample Page"
+            },
+            "meta_description": {
+                "en": null
+            },
+            "og_title": {
+                "en": null
+            },
+            "og_description": {
+                "en": null
+            }
+        },
+        "robots": {
+            "noindex": false,
+            "nofollow": false
+        },
+        "redirect_path": null,
+        "redirect_content_id": "00000000-0000-0000-0000-000000000000",
+        "redirect_type": null
+    },
+    "template": null
 }
 ```
 
-Register your custom importer:
+**Document Type (document-types-1.json)**:
 
-```php
-// config/inspirecms.php
-'imports' => [
-    'importers' => [
-        'custom' => \App\Imports\CustomImporter::class,
-    ],
-],
-```
-
-## Import History
-
-View and manage imports:
-
-1. Go to **Settings → Import History**
-2. See a list of all imports with:
-   - Import name
-   - Creation date
-   - Status (pending, running, completed, failed)
-   - Summary of results
-3. Click an import to see detailed results
-
-## Migration from Other Systems
-
-InspireCMS provides tools for migrating from other CMS platforms:
-
-### WordPress Migration
-
-Import content from WordPress:
-
-1. Create a WordPress XML export
-2. Go to **Settings → Import**
-3. Create a new import with type "WordPress Import"
-4. Upload the WordPress export file
-5. Configure mapping options for categories, tags, and media
-6. Execute the import
-
-### Custom CMS Migration
-
-For custom migrations from other systems:
-
-1. Create an intermediary format (usually JSON)
-2. Map the external system's data structure to InspireCMS's structure
-3. Use the Import Data Service for granular control
-4. Consider writing a custom importer for complex migrations
-
-## Error Handling and Rollback
-
-### Handling Import Errors
-
-When errors occur during import:
-
-1. The import process logs detailed error information
-2. For immediate imports, errors are displayed on screen
-3. For background imports, errors are stored in the import record
-4. Review errors in the import details view
-
-### Import Rollback
-
-For critical imports, use transaction support:
-
-```php
-// In a custom importer
-public function import(Import $record): bool
+```json
 {
-    DB::beginTransaction();
-    
-    try {
-        // Perform import operations
-        
-        // If everything succeeded
-        DB::commit();
-        return true;
-    } catch (\Exception $e) {
-        // If anything failed, roll back all changes
-        DB::rollBack();
-        $record->addError('Import failed and was rolled back: ' . $e->getMessage());
-        return false;
-    }
+    "slug": "page",
+    "title": "Page",
+    "showAsTable": false,
+    "showAtRoot": false,
+    "category": "web",
+    "icon": "heroicon-c-document",
+    "fieldGroups": ["content"],
+    "templates": ["default"],
+    "defaultTemplate": "default",
+    "allowed": []
 }
 ```
 
-## Import Templates
+**FieldGroups (field-group-1.json)**:
 
-Save import configurations as templates:
+```json
+{
+    "slug": "content",
+    "title": "Content",
+    "fields": [
+        {
+            "slug": "body",
+            "label": "Body",
+            "type": "markdownEditor",
+            "config": {
+                "translatable": true,
+                "toolbarButtons": [
+                    "attachFiles",
+                    "blockquote",
+                    "bold",
+                    "bulletList",
+                    "codeBlock",
+                    "h2",
+                    "h3",
+                    "italic",
+                    "link",
+                    "orderedList",
+                    "redo",
+                    "strike",
+                    "underline",
+                    "undo"
+                ],
+                "fileAttachmentsDisk": "public",
+                "fileAttachmentsDirectory": null,
+                "fileAttachmentsVisibility": null
+            }
+        }
+    ]
+}
+```
 
-1. Create an import with your desired settings
-2. Click "Save as Template" 
-3. Give the template a name and description
-4. The template appears in your templates list
-5. Create new imports based on the template
+**NavigationMenus (navigation-menu-1.json)**
 
-## Import Best Practices
+```json
+{
+    "id": 1,
+    "category": "topbar",
+    "type": "group",
+    "title": {
+        "en": "Home"
+    },
+    "contentSlugPath": null,
+    "url": {
+        "en": null
+    },
+    "target": null,
+    "children": [
+        {
+            "id": 2,
+            "category": "topbar",
+            "type": "content",
+            "title": {
+                "en": "Sample page"
+            },
+            "contentSlugPath": "home/sample-page",
+            "url": {
+                "en": null
+            },
+            "target": null,
+            "children": []
+        },
+        {
+            "id": 3,
+            "category": "topbar",
+            "type": "content",
+            "title": {
+                "en": "URL"
+            },
+            "contentSlugPath": null,
+            "url": {
+                "en": "#jumpHere"
+            },
+            "target": null,
+            "children": []
+        }
+    ]
+}
+```
 
-1. **Test First**: Always test imports in a staging environment
-2. **Backup**: Create a backup before large imports
-3. **Start Small**: Begin with a small sample to validate your import file
-4. **Validate Data**: Clean and validate data before importing
-5. **Use Dry Runs**: Test imports in dry run mode before committing changes
-6. **Monitor Resources**: Large imports may require increased memory or timeout settings
-7. **Log Results**: Keep detailed logs of import operations
-8. **Handle Media**: Plan how media files will be handled during import
-9. **Map Relations**: Carefully map relationships between imported items
-10. **Check Consistency**: Verify data consistency after import
+**Templates (template-1/theme-1.blade.php)**
+
+```php
+<x-cms-template :content="$content" type="page" class="sample-class">
+    @property('content', 'body')
+</x-cms-template>
+```
+
+**Views (components/inspirecms/theme-1/page.blade.php)**
+
+```php
+@php
+    $locale ??= $content->getLocale() ?? request()->getLocale();
+@endphp
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('layout')" :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
+
+    <main class="flex-1 overflow-y-auto">
+        
+        <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('topbar')" :locale="$locale" />
+
+        <!-- Main Content Area -->
+        <div {{ $attributes->merge(['class' => 'lg:pr-8']) }}>
+            {{ $slot }}
+        </div>
+    </main>
+
+</x-dynamic-component>
+```
+
+**Views (components/inspirecms/theme-1/layout.blade.php)**
+
+```php
+@php
+    $title ??= config('app.name');
+    $locale ??= request()->getLocale();
+@endphp
+<!DOCTYPE html>
+<html lang="{{ $locale }}">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        @if (isset($seo) && $seo instanceof \Illuminate\Contracts\Support\Htmlable)
+            {{ $seo }}
+        @endif
+        @yield('styles')
+    </head>
+    <body>
+        {{ $slot }}
+        @yield('scripts')
+    </body>
+</html>
+```
+
+**Views (components/inspirecms/theme-1/topbar.blade.php)**
+
+```php
+@php
+    $locale ??= request()->getLocale();
+@endphp
+
+<!-- top nav -->
+<nav class="top-main-nav">
+    @foreach (inspirecms()->getNavigation('topbar', $locale) as $item)
+        <div class="nav-section">
+            @if ($item->hasChildren())
+                <h3 class="has-dropdown">$item->getTitle()</h3>
+                <ul class="submenu">
+                    @foreach ($item->children as $child)
+                        <li><a href="{{ $child->getUrl() }}">{{ $child->getTitle() }}</a></li>
+                    @endforeach
+                </ul>
+            @else
+                <div>
+                    <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
+                </div>
+            @endif
+        </div>
+    @endforeach
+</nav>
+```
