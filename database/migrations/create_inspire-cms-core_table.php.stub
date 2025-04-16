@@ -48,6 +48,11 @@ return new class extends BaseMigration
             $table->index('uri');
             $table->index('language_id');
         });
+        Schema::create($tableNames['content_lock'], function (Blueprint $table) {
+            $table->uuid('content_id')->primary();
+            $table->uuidMorphs('owner');
+            $table->timestamp('locked_at')->nullable();
+        });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -234,6 +239,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['template']);
 
         Schema::dropIfExists($tableNames['document_type']);
+        Schema::dropIfExists($tableNames['content_lock']);
         Schema::dropIfExists($tableNames['content_route']);
         Schema::dropIfExists($tableNames['content_path']);
         Schema::dropIfExists($tableNames['content']);
@@ -248,6 +254,7 @@ return new class extends BaseMigration
             'content_path' => $this->prefix . 'content_paths',
             'content_route' => $this->prefix . 'content_routes',
             'content' => $this->prefix . 'content',
+            'content_lock' => $this->prefix . 'content_locks',
             'document_type' => $this->prefix . 'document_types',
             'document_type_inheritance' => $this->prefix . 'document_type_inheritance',
             'allowed_document_type' => $this->prefix . 'document_type_allowed_document_type',
