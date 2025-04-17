@@ -32,6 +32,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $slug = 'navigation';
+    
     protected static ?string $cluster = Settings::class;
 
     public static function getTranslatableLocales(): array
