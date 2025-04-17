@@ -24,6 +24,7 @@ The following PHP extensions must be enabled:
 - Tokenizer
 - XML
 - Exif
+- FFMPEG
 
 ## Browser Support
 

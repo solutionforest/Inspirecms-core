@@ -14,101 +14,87 @@ class RepeaterConverter extends BaseConverter
 {
     public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
     {
-
-        $fieldTypeConfig = $this->fieldTypeConfig;
-
+        $fieldTypeConfig = $this->getFieldTypeConfig();
         if (! $fieldTypeConfig instanceof Repeater) {
             return [];
         }
+        $fieldConfigForInnerItems = $this->getFieldConfigForInnerItems($fieldTypeConfig);
 
         if (! is_array($sourceValue)) {
             $sourceValue = [];
         }
 
-        $newValue = [];
+        $convertedValues = [];
 
-        foreach ($sourceValue as $i => $data) {
+        foreach ($sourceValue as $repeaterItemKey => $repeaterItemData) {
 
-            $propData = PropertyDataCollection::make();
+            // Already converted
+            if ($repeaterItemData instanceof PropertyDataGroupDto) {
+                $convertedValues[$repeaterItemKey] = $repeaterItemData;
 
-            foreach ($data as $key => $value) {
+                continue;
+            }
 
-                $field = collect($fieldTypeConfig->fields)->firstWhere('name', $key);
+            $propDataForItem = PropertyDataCollection::make();
+            foreach ($repeaterItemData as $key => $value) {
 
-                if (is_null($field) || ! isset($field['field']) || blank($field['field'])) {
-                    continue;
-                }
-
-                $innerFieldTypeName = $field['field'];
-
-                $innerPropertyType = FieldTypeHelper::getFieldTypeConfig($innerFieldTypeName, $field['fieldConfig'] ?? []);
+                $innerPropertyType = $fieldConfigForInnerItems[$key] ?? null;
                 if (is_null($innerPropertyType)) {
                     continue;
                 }
 
                 $innerFieldConverter = $this->tryGetConverterForInnerField(
                     $innerPropertyType,
-                    implode('.', [$this->getFieldIdentifier(), $i]),
+                    implode('.', [$this->getFieldIdentifier(), $repeaterItemKey]),
                     $key
                 );
-
                 if (is_null($innerFieldConverter)) {
                     continue;
                 }
 
-                $finalValue = null;
-                $attempt = $this->tryGetDisplayValueForInnerField($innerFieldConverter, $value, $locale, $fallbackLocale, $finalValue);
-
                 $innerPropTypeDto = PropertyTypeDto::fromArray([
                     'key' => $key,
-                    'group' => $i,
+                    'group' => $repeaterItemKey,
                     'config' => $innerPropertyType,
                 ]);
                 $newInnerValue = PropertyDataDto::fromArray([
                     'key' => $key,
-                    'value' => $finalValue,
+                    // raw value for inner field
+                    'value' => $value,
                     'propertyType' => $innerPropTypeDto,
-                ])
-                    ->setFallbackLocale($fallbackLocale);
+                ])->setFallbackLocale($fallbackLocale);
 
-                $propData->push($newInnerValue);
+                $propDataForItem->push($newInnerValue);
 
             }
 
-            $newValue[$i] = PropertyDataGroupDto::fromArray([
-                'key' => $i,
-                'data' => $propData,
-                'propertyTypes' => collect($propData)
+            $convertedValues[$repeaterItemKey] = PropertyDataGroupDto::fromArray([
+                'key' => $repeaterItemKey,
+                'data' => $propDataForItem,
+                'propertyTypes' => collect($propDataForItem)
                     ->mapWithKeys(fn ($p) => [
                         $p->key => $p->propertyType,
                     ]),
             ]);
         }
 
-        return $newValue;
+        return $convertedValues;
     }
 
-    /**
-     * @param  BaseConverter  $convert
-     * @param  mixed  $sourceValue
-     * @param  ?string  $locale
-     * @param  ?string  $fallbackLocale
-     * @param  mixed  $finalValue
-     * @return bool
-     */
-    private function tryGetDisplayValueForInnerField($convert, $sourceValue, $locale, $fallbackLocale, &$finalValue = null)
+    private function getFieldConfigForInnerItems(Repeater $fieldTypeConfig): array
     {
-        try {
-
-            $finalValue = $convert->toDisplayValue($sourceValue, $locale, $fallbackLocale);
-
-            return true;
-
-        } catch (\Throwable $th) {
-
-            return false;
-
-        }
+        return collect($fieldTypeConfig->fields)
+            ->reject(fn ($item) => ! is_array($item))
+            ->reject(
+                fn (array $item) => ! isset($item['field']) || blank($item['field']) ||
+                ! isset($item['name']) || blank($item['name'])
+            )
+            ->keyBy('name')
+            // array -> convert to -> FieldTypeConfig
+            ->map(
+                fn (array $item) => FieldTypeHelper::getFieldTypeConfig($item['field'], $item['fieldConfig'] ?? [])
+            )
+            ->all();
     }
 
     private function tryGetConverterForInnerField($fieldTypeConfig, $group, $key): ?BaseConverter

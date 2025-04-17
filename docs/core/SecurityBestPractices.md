@@ -42,13 +42,29 @@ In production environments:
 ```php
 // config/app.php
 'debug' => env('APP_DEBUG', false),
-'log' => env('APP_LOG', 'daily'),
-
-// Clear caches and optimize
-php artisan config:cache
-php artisan route:cache
-php artisan view:cache
 ```
+```php
+// config/logging.php
+'default' => env('LOG_CHANNEL', 'daily'),
+```
+
+For better security and performance in production, cache your configuration and routes:
+
+```bash
+# Cache configuration files for faster loading
+php artisan config:cache
+
+# Cache routes for improved performance
+php artisan route:cache
+
+# Pre-compile views to minimize processing time
+php artisan view:cache
+
+# Clear all caches during updates (when making changes)
+php artisan optimize:clear
+```
+
+These optimizations not only improve performance but also reduce security risks by minimizing file access operations.
 
 ## Authentication Security
 
@@ -90,13 +106,6 @@ Configure account security settings:
     
     // Force email verification
     'skip_account_verification' => false,
-    
-    // Session settings
-    'session' => [
-        'lifetime' => 120, // minutes
-        'expire_on_close' => true,
-        'secure' => true, // only transmit cookies over HTTPS
-    ],
 ],
 ```
 
@@ -118,90 +127,6 @@ composer require laravel/fortify
 ],
 ```
 
-## API Security
-
-### API Authentication
-
-Secure API endpoints properly:
-
-```php
-// config/inspirecms.php
-'api' => [
-    'authentication' => [
-        'token_lifetime' => 60 * 24, // minutes (24 hours)
-        'refresh_token_lifetime' => 60 * 24 * 30, // 30 days
-        'rate_limiting' => [
-            'enabled' => true,
-            'max_attempts' => 60,
-            'decay_minutes' => 1,
-        ],
-    ],
-],
-```
-
-### CORS Configuration
-
-Configure Cross-Origin Resource Sharing:
-
-```php
-// config/cors.php
-'paths' => ['api/*', 'sanctum/csrf-cookie'],
-'allowed_methods' => ['*'],
-'allowed_origins' => ['https://your-frontend-domain.com'],
-'allowed_origins_patterns' => [],
-'allowed_headers' => ['*'],
-'exposed_headers' => [],
-'max_age' => 0,
-'supports_credentials' => true,
-```
-
-## Content Security
-
-### Content Validation
-
-Validate all content before storing or displaying:
-
-```php
-// Example content validation rules
-$rules = [
-    'title' => ['required', 'string', 'max:255'],
-    'body' => ['required', 'string', new CleanHtmlRule],
-    'metadata.description' => ['nullable', 'string', 'max:160'],
-    'attachments' => ['array', 'max:10'],
-    'attachments.*' => ['file', 'max:10240', 'mimes:pdf,doc,docx,jpg,png'],
-];
-```
-
-### Custom Validation Rules
-
-Create custom validation rules for content security:
-
-```php
-namespace App\Rules;
-
-use Illuminate\Contracts\Validation\Rule;
-use HTMLPurifier;
-use HTMLPurifier_Config;
-
-class CleanHtmlRule implements Rule
-{
-    public function passes($attribute, $value)
-    {
-        $config = HTMLPurifier_Config::createDefault();
-        $config->set('HTML.Allowed', 'p,b,i,strong,em,a[href|title],ul,ol,li,br,span,img[src|alt|width|height],h1,h2,h3,h4,h5,h6');
-        $purifier = new HTMLPurifier($config);
-        $clean = $purifier->purify($value);
-        
-        return $clean === $value;
-    }
-    
-    public function message()
-    {
-        return 'The :attribute contains disallowed HTML.';
-    }
-}
-```
-
 ## File Upload Security
 
 ### Secure File Uploads
@@ -220,35 +145,9 @@ Configure secure file upload handling:
         ],
         
         // Maximum file size in KB
-        'max_file_size' => 5 * 1024, // 5MB
-        
-        // SVG security
-        'svg_security' => [
-            'sanitize' => true,
-        ],
+        'max_file_size' => 5 * 1024,
     ],
 ],
-```
-
-### SVG Sanitization
-
-Sanitize SVG files to prevent XSS:
-
-```php
-use enshrined\svgSanitize\Sanitizer;
-
-// In your file upload handler
-if ($file->getClientMimeType() === 'image/svg+xml') {
-    $sanitizer = new Sanitizer();
-    $sanitizer->setAllowedTags(['svg', 'path', 'rect', 'circle', /* other safe SVG tags */]);
-    $sanitizer->setAllowedAttrs(['viewBox', 'width', 'height', 'fill', /* other safe attributes */]);
-    
-    $dirtyXml = file_get_contents($file->getRealPath());
-    $cleanXml = $sanitizer->sanitize($dirtyXml);
-    
-    // Replace the original file content with sanitized version
-    file_put_contents($file->getRealPath(), $cleanXml);
-}
 ```
 
 ## Content Delivery Security

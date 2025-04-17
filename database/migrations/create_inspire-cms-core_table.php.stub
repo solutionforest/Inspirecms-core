@@ -48,6 +48,11 @@ return new class extends BaseMigration
             $table->index('uri');
             $table->index('language_id');
         });
+        Schema::create($tableNames['content_lock'], function (Blueprint $table) {
+            $table->uuid('content_id')->primary();
+            $table->uuidMorphs('owner');
+            $table->timestamp('locked_at')->nullable();
+        });
         Schema::create($tableNames['document_type'], function (Blueprint $table) {
             $table->id();
             $table->string('title');
@@ -134,17 +139,16 @@ return new class extends BaseMigration
 
             $table->index('field_group_id');
         });
-        Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) {
-            $table->integer('document_type_id');
-            $table->integer('inherited_document_type_id');
 
-            $table->index('document_type_id');
-            $table->index('inherited_document_type_id');
+        $documentTypeTable = $tableNames['document_type'];
+        Schema::create($tableNames['document_type_inheritance'], function (Blueprint $table) use ($documentTypeTable) {
+            $table->foreignId('document_type_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
+            $table->foreignId('inherited_document_type_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
         });
         
-        Schema::create($tableNames['allowed_document_type'], function (Blueprint $table) {
-            $table->foreignId('id')->constrained('cms_document_types', 'id')->onDelete('cascade');
-            $table->foreignId('allowed_id')->constrained('cms_document_types', 'id')->onDelete('cascade');
+        Schema::create($tableNames['allowed_document_type'], function (Blueprint $table) use ($documentTypeTable) {
+            $table->foreignId('id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
+            $table->foreignId('allowed_id')->constrained($documentTypeTable, 'id')->onDelete('cascade');
         });
         
         Schema::create($tableNames['user'], function (Blueprint $table) {
@@ -210,11 +214,19 @@ return new class extends BaseMigration
             $table->index('type');
             $table->index('category');
         });
+
+        Schema::create($tableNames['key_value'], function (Blueprint $table) {
+            $table->string('key')->primary();
+            $table->text('value')->nullable();
+            $table->timestamps();
+        });
     }
 
     public function down()
     {
         $tableNames = $this->getTableNames();
+
+        Schema::dropIfExists($tableNames['key_value']);
 
         Schema::dropIfExists($tableNames['navigation']);
         Schema::dropIfExists($tableNames['language']);
@@ -234,6 +246,7 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['template']);
 
         Schema::dropIfExists($tableNames['document_type']);
+        Schema::dropIfExists($tableNames['content_lock']);
         Schema::dropIfExists($tableNames['content_route']);
         Schema::dropIfExists($tableNames['content_path']);
         Schema::dropIfExists($tableNames['content']);
@@ -248,6 +261,7 @@ return new class extends BaseMigration
             'content_path' => $this->prefix . 'content_paths',
             'content_route' => $this->prefix . 'content_routes',
             'content' => $this->prefix . 'content',
+            'content_lock' => $this->prefix . 'content_locks',
             'document_type' => $this->prefix . 'document_types',
             'document_type_inheritance' => $this->prefix . 'document_type_inheritance',
             'allowed_document_type' => $this->prefix . 'document_type_allowed_document_type',
@@ -259,6 +273,7 @@ return new class extends BaseMigration
             'content_web_setting' => $this->prefix . 'content_web_settings',
             'sitemap' => $this->prefix . 'sitemaps',
             'navigation' => $this->prefix . 'navigation',
+            'key_value' => $this->prefix . 'key_values',
         ];
     }
 };

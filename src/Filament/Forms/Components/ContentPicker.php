@@ -41,6 +41,14 @@ class ContentPicker extends Field
 
         $this->default([]);
 
+        $this->afterStateHydrated(function (ContentPicker $component, $state) {
+            if (! is_array($state)) {
+                $state = [$state];
+            }
+            $state = array_filter($state);
+            $component->state($state);
+        });
+
         $this->registerActions([
             $this->getSelectAction(),
             $this->getClearAction(),
@@ -82,9 +90,16 @@ class ContentPicker extends Field
         $records = $this->getEloquentQuery()?->whereKey($state)->get();
 
         $formattedState = $records
-            ->mapWithKeys(fn (Model $record) => [
-                $record->getKey() => $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey()),
-            ])
+            ->keyBy(fn (Model $record) => $record->getKey())
+            ->map(function (Model $record) {
+                $title = $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey());
+
+                if ($record->hasAttribute('deleted_at') && $record->deleted_at) {
+                    $title .= ' (' . __('inspirecms::messages.deleted') . ')';
+                }
+
+                return $title;
+            })
             ->toArray() ?? [];
 
         $orderedState = [];
@@ -133,7 +148,13 @@ class ContentPicker extends Field
             ->modalSubmitActionLabel(__('inspirecms::buttons.choose.label'))
             ->modalWidth('5xl')
             ->slideOver()
-            ->fillForm(fn () => ['records' => $this->getState()])
+            ->fillForm(function (ContentPicker $component) {
+                $recordIds = $component->getState();
+
+                return [
+                    'records' => $recordIds,
+                ];
+            })
             ->form(function () {
                 $selector = ContentTree::make('records')
                     ->hiddenLabel()
@@ -162,9 +183,9 @@ class ContentPicker extends Field
 
                 return [$selector];
             })
-            ->action(function (array $data) {
+            ->action(function (array $data, ContentPicker $component) {
                 $recordKeys = array_filter($data['records'] ?? []);
-                $this->state($recordKeys);
+                $component->state($recordKeys);
             });
     }
 

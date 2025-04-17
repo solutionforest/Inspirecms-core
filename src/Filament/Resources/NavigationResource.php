@@ -32,6 +32,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    protected static ?string $slug = 'navigation';
+
     protected static ?string $cluster = Settings::class;
 
     public static function getTranslatableLocales(): array
@@ -179,18 +181,6 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $type == NavigationType::Content->value;
         };
 
-        $isRelatedRecordDeleted = function (null | Model | Navigation $record) {
-            if (! $record) {
-                return false;
-            }
-
-            if ($record->type != NavigationType::Content->value) {
-                return false;
-            }
-
-            return $record->content?->trashed();
-        };
-
         return ContentPicker::make('content_id')
             ->label(__('inspirecms::resources/navigation.content.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.content.validation_attribute'))
@@ -219,9 +209,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     null;
             })
             // display deleted content
-            ->where(fn (null | Model | Navigation $record) => $isRelatedRecordDeleted($record) ? new ContentPickerFilters\BuilderFilter('withTrashed') : null)
-            // disable if content is deleted
-            ->disabled(fn (null | Model | Navigation $record) => $isRelatedRecordDeleted($record));
+            ->where(new ContentPickerFilters\BuilderFilter('withTrashed'));
     }
 
     /**

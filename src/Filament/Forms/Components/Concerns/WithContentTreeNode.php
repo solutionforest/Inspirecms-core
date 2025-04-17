@@ -60,7 +60,7 @@ trait WithContentTreeNode
 
             if ($filter->isNotEmpty()) {
 
-                $this->getFilter()->applyOnQuery($query);
+                $filter->applyOnQuery($query);
 
             }
 
@@ -70,22 +70,5 @@ trait WithContentTreeNode
         }
 
         return $query;
-    }
-
-    protected function filterStateBeforeDehydrating(array $state): array
-    {
-        $keys = array_filter($state, fn ($value) => $value !== null);
-
-        $startNode = $this->getStartNode();
-        $filter = $this->getFilter();
-
-        if ($startNode != null || $filter->isNotEmpty()) {
-
-            $filterRecordKeys = $this->getEloquentQuery()->whereKey($keys)->pluck($query->getModel()->getKeyName())->all();
-
-            return $filterRecordKeys;
-        }
-
-        return $keys;
     }
 }

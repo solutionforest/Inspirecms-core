@@ -67,6 +67,8 @@ Configure upload settings in `config/inspirecms.php`:
     'media_library' => [
         'disk' => 'public',
         'directory' => '',
+        'allowed_mime_types' => [], // Allowed file types
+        'max_file_size' => null, // Maximum file size in KB
         'thumbnail' => [
             'width' => 300,
             'height' => 300,

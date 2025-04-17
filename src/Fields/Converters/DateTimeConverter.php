@@ -6,17 +6,19 @@ class DateTimeConverter extends BaseConverter
 {
     public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
     {
-        if (is_null($sourceValue)) {
+        $value = $this->applyLocaleConversion($sourceValue, $locale, $fallbackLocale);
+
+        if (is_null($value)) {
             return null;
         }
 
-        if (is_string($sourceValue) && filled($sourceValue)) {
+        if (is_string($value) && filled($value)) {
 
-            return \Carbon\Carbon::parse($sourceValue);
+            return \Carbon\Carbon::parse($value);
 
-        } elseif ($sourceValue instanceof \DateTimeInterface) {
+        } elseif ($value instanceof \DateTimeInterface) {
 
-            return $sourceValue;
+            return $value;
 
         } else {
 

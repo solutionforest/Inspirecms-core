@@ -2,6 +2,7 @@
 
 return [
     'copied' => 'Copied',
+    'deleted' => 'Deleted',
     'failed' => 'Failed',
     'failure' => 'Failure',
     'finished' => 'Finished',
