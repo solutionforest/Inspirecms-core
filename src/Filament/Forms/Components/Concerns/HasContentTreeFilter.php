@@ -8,8 +8,15 @@ use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollec
 
 trait HasContentTreeFilter
 {
+    /**
+     * @var array<array{0:string|BaseFilter|Closure,1:?string,2mixed}>
+     */
     public array $filters = [];
 
+    /**
+     * @param array{0:string|BaseFilter|Closure,1:?string,2mixed} $filters
+     * @param bool $merge
+     */
     public function filter(array $filters, bool $merge = true): static
     {
         $this->filters = $merge ? array_merge($this->filters, $filters) : $filters;
@@ -76,10 +83,25 @@ trait HasContentTreeFilter
         $items = array_map(function ($filter) {
             [$key, $operator, $value] = $filter;
 
-            return $key instanceof Closure ? $this->evaluate($key, [
-                'filter' => $filter,
-            ]) : $filter;
+            if (is_callable($key)) {
+                $newFilter = $this->evaluate($key, [
+                    'filter' => $filter,
+                ]);
+
+                if ($newFilter instanceof BaseFilter || is_array($newFilter)) {
+                    return $newFilter;
+                } else {
+                    return null;
+                }
+            } 
+
+            return $filter;
+
         }, $this->filters);
+
+        $items = array_filter($items, function ($item) {
+            return $item !== null;
+        });
 
         return new FilterCollection($items);
     }

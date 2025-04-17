@@ -2,6 +2,7 @@
 
 return [
     'copied' => '已複製',
+    'deleted' => '已刪除',
     'failed' => '失敗',
     'failure' => '失敗',
     'finished' => '已完成',

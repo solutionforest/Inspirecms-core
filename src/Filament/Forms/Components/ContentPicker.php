@@ -82,9 +82,15 @@ class ContentPicker extends Field
         $records = $this->getEloquentQuery()?->whereKey($state)->get();
 
         $formattedState = $records
-            ->mapWithKeys(fn (Model $record) => [
-                $record->getKey() => $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey()),
-            ])
+            ->keyBy(fn (Model $record) => $record->getKey())
+            ->map(function (Model $record) {
+                $title = $this->getRecordTitle($record) ?? ($record->hasAttribute('title') ? $record->title : $record->getKey());
+
+                if ($record->hasAttribute('deleted_at') && $record->deleted_at) {
+                    $title .= ' (' . __('inspirecms::messages.deleted') . ')';
+                }
+                return $title;
+            })
             ->toArray() ?? [];
 
         $orderedState = [];
@@ -139,7 +145,7 @@ class ContentPicker extends Field
                     ->hiddenLabel()
                     // todo: add translations
                     ->validationAttribute('records')
-                    ->filter($this->getFilter()->toArray())
+                    // ->filter($this->getFilter()->toArray())
                     ->filteringByPermission($this->isFilteringByPermission());
 
                 if ($this->minItems != null) {

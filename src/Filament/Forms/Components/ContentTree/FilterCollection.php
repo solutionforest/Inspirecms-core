@@ -23,33 +23,39 @@ class FilterCollection extends Collection implements Wireable
     {
         foreach ($this->items as $item) {
 
-            [$column, $operator, $value] = $item;
+            if ($item instanceof BaseFilter) {
+                
+                $query = $item->applyToQuery($query);
 
-            if ($column instanceof BaseFilter) {
-                $query = $column->applyToQuery($query);
+            } else if (is_array($item)) {
+                
+                [$column, $operator, $value] = $item;
 
-                return;
-            }
-
-            if ($column === 'id') {
-                if ($operator == 'not') {
-                    $query->whereKeyNot($value);
-                } else {
-                    $query->whereKey($value);
+                if ($column instanceof BaseFilter) {
+                    $query = $column->applyToQuery($query);
+                    continue;
                 }
-            } elseif ($operator == 'not') {
-                $query->whereNot($column, $value);
-            } elseif ($operator == 'in') {
-                $query->whereIn($column, $value);
-            } elseif ($operator == 'not in') {
-                $query->whereNotIn($column, $value);
-            } else {
-                $query->where($column, $operator, $value);
+
+                if ($column === 'id') {
+                    if ($operator == 'not') {
+                        $query->whereKeyNot($value);
+                    } else {
+                        $query->whereKey($value);
+                    }
+                } elseif ($operator == 'not') {
+                    $query->whereNot($column, $value);
+                } elseif ($operator == 'in') {
+                    $query->whereIn($column, $value);
+                } elseif ($operator == 'not in') {
+                    $query->whereNotIn($column, $value);
+                } else {
+                    $query->where($column, $operator, $value);
+                }
             }
         }
     }
 
-    public function applyRecordFilter(Model $record): bool
+    public function applyRecordFilter(Model $record)
     {
         foreach ($this->items as $item) {
 
