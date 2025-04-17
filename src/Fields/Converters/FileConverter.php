@@ -8,31 +8,38 @@ class FileConverter extends BaseConverter
 {
     public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
     {
+        $value = $this->applyLocaleConversion($sourceValue, $locale, $fallbackLocale);
+
         $disk = $this->fieldTypeConfig->disk ?? config('filesystems.default');
         $directory = $this->fieldTypeConfig->directory;
 
         try {
             // Ensure is array
-            if (! is_array($sourceValue)) {
-                $sourceValue = array_filter([$sourceValue]);
+            if (! is_array($value)) {
+                $value = array_filter([$value]);
             }
 
-            // Pick value if is translatable
-            if ($this->fieldTypeConfig->translatable) {
-                $sourceValue = $sourceValue[$locale] ?? $sourceValue[$fallbackLocale] ?? [];
+            $convertedValues = [];
+
+            foreach ($value as $item) {
+                // Already converted
+                if ($item instanceof FileDto) {
+                    $convertedValues[] = $item;
+                } else if (is_string($item)) {
+                    $convertedValues[] = FileDto::fromArray([
+                        'path' => $item,
+                        'disk' => $disk,
+                        'directory' => $directory,
+                    ]);
+                } 
             }
 
-            return collect($sourceValue)
-                ->map(fn ($v) => $v instanceof FileDto ? $v : FileDto::fromArray([
-                    'path' => $v,
-                    'disk' => $disk,
-                    'directory' => $directory,
-                ]))
-                ->all();
+            return $convertedValues;
 
         } catch (\Throwable $th) {
             // fallback as empty array
-            return [];
         }
+
+        return [];
     }
 }
