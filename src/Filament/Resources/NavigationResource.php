@@ -10,6 +10,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use SolutionForest\InspireCms\Base\Enums\NavigationType;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -209,7 +210,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     null;
             })
             // display deleted content
-            ->where(new ContentPickerFilters\BuilderFilter('withTrashed'));
+            ->where(new ContentPickerFilters\WithoutGlobalScope(SoftDeletingScope::class));
     }
 
     /**
