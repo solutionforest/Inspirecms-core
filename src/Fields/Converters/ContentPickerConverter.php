@@ -21,7 +21,7 @@ class ContentPickerConverter extends BaseConverter
 
         $records = $this->getContentRecords($formattedSourceValue);
 
-        $convertedValue = collect($formattedSourceValue)
+        return collect($formattedSourceValue)
             ->map(function ($item) use ($records, $locale) {
 
                 try {
@@ -40,12 +40,6 @@ class ContentPickerConverter extends BaseConverter
             })
             ->reject(fn ($item) => is_null($item))
             ->all();
-
-        if ($this->isFieldTypeTranslatable()) {
-            ray($value, $sourceValue, $convertedValue)->label($this->getFieldIdentifier())->blue();
-        }
-
-        return $convertedValue;
     }
 
     /**
