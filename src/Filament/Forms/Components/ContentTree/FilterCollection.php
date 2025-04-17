@@ -24,15 +24,16 @@ class FilterCollection extends Collection implements Wireable
         foreach ($this->items as $item) {
 
             if ($item instanceof BaseFilter) {
-                
+
                 $query = $item->applyToQuery($query);
 
-            } else if (is_array($item)) {
-                
+            } elseif (is_array($item)) {
+
                 [$column, $operator, $value] = $item;
 
                 if ($column instanceof BaseFilter) {
                     $query = $column->applyToQuery($query);
+
                     continue;
                 }
 

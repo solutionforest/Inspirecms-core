@@ -49,7 +49,7 @@ class MediaPickerConverter extends BaseConverter
         if (empty($keysToFind)) {
             return collect();
         }
-        
+
         return inspirecms_asset()
             ->findByKeys($keysToFind)
             ->mapWithKeys(fn (Model $record) => [$record->getKey() => $record]);

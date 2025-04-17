@@ -25,13 +25,13 @@ class FileConverter extends BaseConverter
                 // Already converted
                 if ($item instanceof FileDto) {
                     $convertedValues[] = $item;
-                } else if (is_string($item)) {
+                } elseif (is_string($item)) {
                     $convertedValues[] = FileDto::fromArray([
                         'path' => $item,
                         'disk' => $disk,
                         'directory' => $directory,
                     ]);
-                } 
+                }
             }
 
             return $convertedValues;

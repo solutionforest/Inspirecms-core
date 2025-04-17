@@ -13,7 +13,6 @@ class ContentPickerConverter extends BaseConverter
     {
         $value = $this->applyLocaleConversion($sourceValue, $locale, $fallbackLocale);
 
-
         if (is_null($value)) {
             return [];
         }

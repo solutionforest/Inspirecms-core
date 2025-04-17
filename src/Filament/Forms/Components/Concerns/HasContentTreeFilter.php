@@ -15,7 +15,6 @@ trait HasContentTreeFilter
 
     /**
      * @param array{0:string|BaseFilter|Closure,1:?string,2mixed} $filters
-     * @param bool $merge
      */
     public function filter(array $filters, bool $merge = true): static
     {
@@ -93,7 +92,7 @@ trait HasContentTreeFilter
                 } else {
                     return null;
                 }
-            } 
+            }
 
             return $filter;
 

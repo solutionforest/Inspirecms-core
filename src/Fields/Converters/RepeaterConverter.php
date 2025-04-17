@@ -27,10 +27,11 @@ class RepeaterConverter extends BaseConverter
         $convertedValues = [];
 
         foreach ($sourceValue as $repeaterItemKey => $repeaterItemData) {
-            
+
             // Already converted
             if ($repeaterItemData instanceof PropertyDataGroupDto) {
                 $convertedValues[$repeaterItemKey] = $repeaterItemData;
+
                 continue;
             }
 
@@ -84,14 +85,14 @@ class RepeaterConverter extends BaseConverter
     {
         return collect($fieldTypeConfig->fields)
             ->reject(fn ($item) => ! is_array($item))
-            ->reject(fn (array $item) => 
-                ! isset($item['field']) || blank($item['field']) ||
-                ! isset($item['name']) || blank($item['name']) 
+            ->reject(
+                fn (array $item) => ! isset($item['field']) || blank($item['field']) ||
+                ! isset($item['name']) || blank($item['name'])
             )
             ->keyBy('name')
             // array -> convert to -> FieldTypeConfig
-            ->map(fn (array $item) => 
-                FieldTypeHelper::getFieldTypeConfig($item['field'], $item['fieldConfig'] ?? [])
+            ->map(
+                fn (array $item) => FieldTypeHelper::getFieldTypeConfig($item['field'], $item['fieldConfig'] ?? [])
             )
             ->all();
     }

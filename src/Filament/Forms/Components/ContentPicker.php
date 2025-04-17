@@ -42,7 +42,7 @@ class ContentPicker extends Field
         $this->default([]);
 
         $this->afterStateHydrated(function (ContentPicker $component, $state) {
-            if (!is_array($state)) {
+            if (! is_array($state)) {
                 $state = [$state];
             }
             $state = array_filter($state);
@@ -97,6 +97,7 @@ class ContentPicker extends Field
                 if ($record->hasAttribute('deleted_at') && $record->deleted_at) {
                     $title .= ' (' . __('inspirecms::messages.deleted') . ')';
                 }
+
                 return $title;
             })
             ->toArray() ?? [];
@@ -149,6 +150,7 @@ class ContentPicker extends Field
             ->slideOver()
             ->fillForm(function (ContentPicker $component) {
                 $recordIds = $component->getState();
+
                 return [
                     'records' => $recordIds,
                 ];
