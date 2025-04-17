@@ -41,6 +41,14 @@ class ContentPicker extends Field
 
         $this->default([]);
 
+        $this->afterStateHydrated(function (ContentPicker $component, $state) {
+            if (!is_array($state)) {
+                $state = [$state];
+            }
+            $state = array_filter($state);
+            $component->state($state);
+        });
+
         $this->registerActions([
             $this->getSelectAction(),
             $this->getClearAction(),
@@ -139,13 +147,18 @@ class ContentPicker extends Field
             ->modalSubmitActionLabel(__('inspirecms::buttons.choose.label'))
             ->modalWidth('5xl')
             ->slideOver()
-            ->fillForm(fn () => ['records' => $this->getState()])
+            ->fillForm(function (ContentPicker $component) {
+                $recordIds = $component->getState();
+                return [
+                    'records' => $recordIds,
+                ];
+            })
             ->form(function () {
                 $selector = ContentTree::make('records')
                     ->hiddenLabel()
                     // todo: add translations
                     ->validationAttribute('records')
-                    // ->filter($this->getFilter()->toArray())
+                    ->filter($this->getFilter()->toArray())
                     ->filteringByPermission($this->isFilteringByPermission());
 
                 if ($this->minItems != null) {
@@ -168,9 +181,9 @@ class ContentPicker extends Field
 
                 return [$selector];
             })
-            ->action(function (array $data) {
+            ->action(function (array $data, ContentPicker $component) {
                 $recordKeys = array_filter($data['records'] ?? []);
-                $this->state($recordKeys);
+                $component->state($recordKeys);
             });
     }
 
