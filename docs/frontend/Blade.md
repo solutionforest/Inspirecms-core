@@ -4,7 +4,7 @@ InspireCMS leverages Laravel's powerful Blade templating engine to create dynami
 
 ## Introduction to Blade
 
-Blade is Laravel's templating engine that combines the simplicity of plain PHP with powerful features like template inheritance, components, and directives. In InspireCMS, Blade is used to build flexible and maintainable templates for your website.
+[Blade](https://laravel.com/docs/11.x/blade) is Laravel's templating engine that combines the simplicity of plain PHP with powerful features like template inheritance, components, and directives. In InspireCMS, Blade is used to build flexible and maintainable templates for your website.
 
 ### Basic Blade Syntax
 
@@ -60,7 +60,7 @@ Access array properties:
 ```php
 @propertyArray('gallery', 'images')
 @foreach($gallery_images ?? [] as $image)
-    <img src="{{ $image->getUrl() }}" alt="{{ $image->alt_text }}">
+    <img src="{{ $image->getUrl() }}" alt="{{ $image->caption }}">
 @endforeach
 ```
 
@@ -74,36 +74,6 @@ Conditionally display content when a property has a value:
         {{ $hero_button_text }}
     </a>
 @endif
-```
-
-### Navigation Directives
-
-Render navigation menus:
-
-```php
-@navigationMenu('main', ['class' => 'main-nav', 'id' => 'primary-menu'])
-```
-
-Customize with a callback:
-
-```php
-@navigationMenu('main', function($items) {
-    echo '<ul class="main-nav">';
-    foreach ($items as $item) {
-        echo '<li><a href="' . $item->getUrl() . '">' . $item->getTitle() . '</a>';
-        
-        if ($item->hasChildren()) {
-            echo '<ul class="sub-menu">';
-            foreach ($item->children as $child) {
-                echo '<li><a href="' . $child->getUrl() . '">' . $child->getTitle() . '</a></li>';
-            }
-            echo '</ul>';
-        }
-        
-        echo '</li>';
-    }
-    echo '</ul>';
-})
 ```
 
 ### Language and Localization Directives
@@ -175,13 +145,13 @@ Create custom theme components:
 Use your component:
 
 ```php
-<x-inspirecms-my-theme::alert type="warning" title="Important Notice">
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('alert')" type="warning" title="Important Notice">
     This is an important message for all users.
     
     <x-slot:footer>
         <button>Dismiss</button>
     </x-slot>
-</x-inspirecms-my-theme::alert>
+</x-dynamic-component>
 ```
 
 ## Blade Layouts and Template Inheritance
@@ -370,7 +340,7 @@ Work with collections and arrays:
 
 ```php
 @propertyArray('blog', 'related_posts')
-@forelse($blog_related_posts as $post)
+@forelse($blog_related_posts ?? [] as $post)
     <div class="related-post">
         <h3><a href="{{ $post->getUrl() }}">{{ $post->getTitle() }}</a></h3>
         <p>{{ Str::limit($post->getPropertyValue('blog', 'excerpt'), 100) }}</p>
@@ -385,7 +355,7 @@ Use the `@foreach` directive with loop variable:
 ```php
 @foreach($gallery_images as $image)
     <div class="gallery-item {{ $loop->first ? 'first' : '' }} {{ $loop->last ? 'last' : '' }}">
-        <img src="{{ $image->getUrl() }}" alt="{{ $image->alt_text }}">
+        <img src="{{ $image->getUrl() }}" alt="{{ $image->caption }}">
         <span class="number">{{ $loop->iteration }}/{{ $loop->count }}</span>
     </div>
 @endforeach
@@ -418,9 +388,9 @@ class BladeServiceProvider extends ServiceProvider
         Blade::directive('contentLink', function ($expression) {
             $params = explode(',', $expression);
             $id = trim($params[0]);
-            $text = isset($params[1]) ? trim($params[1]) : 'null';
-            
-            return "<?php echo inspirecms_content_link($id, $text); ?>";
+            $locale = isset($params[1]) ? trim($params[1]) : 'null';
+
+            return "<?php echo inspirecms_content()->findByIds(ids: $id, limit: 1)?->getUrl($locale); ?>";
         });
     }
 }
@@ -431,7 +401,7 @@ Use custom directives:
 ```php
 <p>Posted on @formatDate($content->published_at)</p>
 
-<a href="@contentLink('550e8400-e29b-41d4-a716-446655440000', 'Read our about page')">
+<a href="@contentLink('550e8400-e29b-41d4-a716-446655440000', 'en')">
     <!-- Link content -->
 </a>
 ```
@@ -472,42 +442,6 @@ $cacheTtl = 60 * 24; // 24 hours in minutes
         </div>
     </div>
 @endcache
-```
-
-## Testing Templates
-
-Test your Blade templates to ensure they render correctly:
-
-```php
-namespace Tests\Feature;
-
-use Tests\TestCase;
-use SolutionForest\InspireCms\Models\Content;
-
-class PageTemplateTest extends TestCase
-{
-    /** @test */
-    public function it_renders_page_template_correctly()
-    {
-        // Create a test content record
-        $content = Content::factory()->create([
-            'title' => json_encode(['en' => 'Test Page']),
-            'slug' => 'test-page',
-            'status' => 1, // Published
-        ]);
-        
-        // Add content properties
-        $content->setPropertyValue('hero', 'title', 'Test Hero Title');
-        
-        // Visit the page
-        $response = $this->get($content->getUrl());
-        
-        // Assert response and content
-        $response->assertStatus(200);
-        $response->assertSee('Test Hero Title');
-        $response->assertSee('Test Page');
-    }
-}
 ```
 
 ## Common Blade Patterns in InspireCMS
@@ -592,13 +526,8 @@ Implement breadcrumb navigation:
 
 ```php
 @php
-    $breadcrumbs = [];
-    $current = $content;
-    
-    while ($current) {
-        array_unshift($breadcrumbs, $current);
-        $current = $current->parent;
-    }
+    $breadcrumbs = $content->getAncestors()->toArray();
+    $breadcrumbs[] = $content;
 @endphp
 
 <nav aria-label="Breadcrumb">
@@ -698,8 +627,7 @@ $locale = app()->getLocale();
 $fallbackLocale = config('app.fallback_locale');
 
 // Get title in current language or fallback to default language
-$title = $content->getPropertyValue('hero', 'title', null, $locale) 
-    ?? $content->getPropertyValue('hero', 'title', null, $fallbackLocale) 
+$title = $content->getPropertyValue('hero', 'title', $locale, $fallbackLocale) 
     ?? 'Default Title';
 @endphp
 
@@ -850,7 +778,7 @@ Use helpers in templates:
 ```php
 <p class="post-meta">
     Published on 
-    <time datetime="{{ $content->published_at->format('Y-m-d') }}">
+    <time datetime="{{ $content->published_at?->format('Y-m-d') }}">
         {{ format_content_date($content->published_at) }}
     </time>
     &bull; {{ get_reading_time($content->getPropertyValue('blog', 'body')) }} min read

@@ -61,4 +61,14 @@ class PropertyDataGroupDto extends BaseDto
 
         return $data;
     }
+
+    public function hasProperty(string $key): bool
+    {
+        foreach ($this->data as $property) {
+            if ($property->key == $key) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
