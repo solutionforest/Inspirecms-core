@@ -33,7 +33,6 @@ Welcome to the official InspireCMS documentation. This guide will help you get s
 - [Frontend](./frontend/Blade.md)
     - [Blade](./frontend/Blade.md)
     - [Content](./frontend/Content.md)
-    - [Views](./frontend/Views.md)
     - [Assets Management](./frontend/AssetsManagement.md)
     - [JavaScript & CSS](./frontend/JavaScriptCSS.md)
     - [Components](./frontend/Components.md)
