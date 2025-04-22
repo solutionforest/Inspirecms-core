@@ -32,7 +32,7 @@ class ContentService implements ContentServiceInterface
             ->find($ids);
     }
 
-    public function findByRoutePatternWithLangId($uri, $isDefaultRoutePattern, $isWebPage = null, $withRelations = [], $sorting = [], $limit = 10)
+    public function findByRoutePatternWithLangId($uri, $isDefaultRoutePattern, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
     {
         $query = $this
             ->buildFindWithRouteQuery(
@@ -44,6 +44,7 @@ class ContentService implements ContentServiceInterface
 
         $query = $this->applyScopeFilters($query, [
             'whereIsWebPage' => $isWebPage,
+            'whereIsPublished' => $isPublished,
         ]);
         $query = $this->applySortingAndLimit($query, $sorting, $limit);
 
@@ -73,6 +74,22 @@ class ContentService implements ContentServiceInterface
         return $this->buildGetUnderRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, $limit)
             ->get();
     }
+    
+    /** {@inheritDoc} */
+    public function getByDocumentType($documentType, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
+    {
+        $query = $this->buildBaseQuery()
+            ->whereHas('documentType', fn ($q) => $q->where('slug', $documentType))
+            ->with($withRelations);
+
+        $query = $this->applyScopeFilters($query, [
+            'whereIsWebPage' => $isWebPage,
+            'whereIsPublished' => $isPublished,
+        ]);
+        $query = $this->applySortingAndLimit($query, $sorting, $limit);
+
+        return $query->get();
+    }
 
     /** {@inheritDoc} */
     public function getPaginatedByIds($ids, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
@@ -95,6 +112,23 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildGetUnderRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
+            ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
+    }
+
+    /** {@inheritDoc} */
+    public function getPaginatedByDocumentType($documentType, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
+    {
+        $query = $this->buildBaseQuery()
+            ->whereHas('documentType', fn ($q) => $q->where('slug', $documentType))
+            ->with($withRelations);
+
+        $query = $this->applyScopeFilters($query, [
+            'whereIsWebPage' => $isWebPage,
+            'whereIsPublished' => $isPublished,
+        ]);
+        $query = $this->applySortingAndLimit($query, $sorting, null);
+
+        return $query->paginate($perPage, ['*'], $pageName, $page)
             ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
     }
 
