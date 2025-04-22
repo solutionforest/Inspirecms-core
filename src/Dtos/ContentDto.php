@@ -201,8 +201,8 @@ class ContentDto extends BaseTranslatableModelDto
     /**
      * Checks if a specific property exists for the given group and field.
      *
-     * @param string $group The property group to check
-     * @param string $field The specific field name to check within the group
+     * @param  string  $group  The property group to check
+     * @param  string  $field  The specific field name to check within the group
      * @return bool Returns true if the property exists, false otherwise
      */
     public function hasProperty(string $group, string $field): bool
@@ -213,10 +213,10 @@ class ContentDto extends BaseTranslatableModelDto
     /**
      * Gets the value of a specific property within a group.
      *
-     * @param string $group The property group identifier
-     * @param string $field The field identifier within the group
-     * @param string|null $locale Optional locale code to get localized value, defaults to current locale if null
-     * @return mixed 
+     * @param  string  $group  The property group identifier
+     * @param  string  $field  The field identifier within the group
+     * @param  string|null  $locale  Optional locale code to get localized value, defaults to current locale if null
+     * @return mixed
      */
     public function getPropertyValue(string $group, string $field, ?string $locale = null, ?string $fallbackLocale = null)
     {

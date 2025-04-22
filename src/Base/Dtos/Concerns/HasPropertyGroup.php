@@ -15,7 +15,7 @@ trait HasPropertyGroup
     /**
      * Retrieves a property group by its key.
      *
-     * @param string $key The unique identifier for the property group
+     * @param  string  $key  The unique identifier for the property group
      * @return ?PropertyDataGroupDto
      */
     public function getPropertyGroup(string $key)
@@ -28,6 +28,7 @@ trait HasPropertyGroup
         if ($result && $result instanceof PropertyGroupCollection) {
             $result->setFallbackLocale($this->getFallbackLocale());
         }
+
         return $result;
     }
 

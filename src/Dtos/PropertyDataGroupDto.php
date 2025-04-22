@@ -69,6 +69,7 @@ class PropertyDataGroupDto extends BaseDto
                 return true;
             }
         }
+
         return false;
     }
 }
