@@ -74,7 +74,7 @@ class ContentService implements ContentServiceInterface
         return $this->buildGetUnderRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, $limit)
             ->get();
     }
-    
+
     /** {@inheritDoc} */
     public function getByDocumentType($documentType, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
     {
