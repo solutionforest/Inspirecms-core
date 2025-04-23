@@ -21,8 +21,17 @@ interface TemplateManagerInterface
 
     public function getAvailableThemes(): array;
 
+    /**
+     * Get the path to the theme directory.
+     * 
+     * @return string
+     */
+    public function getPath(): string;
+
     public function isThemeExists(string $theme): bool;
 
+    public function hasComponent(string $componentName, ?string $theme = null): bool;
+    
     public function getComponentWithTheme(string $componentName, ?string $theme = null): string;
 
     public function getComponentPathWithTheme(?string $componentName = null, ?string $theme = null): string;

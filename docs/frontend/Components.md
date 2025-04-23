@@ -1,6 +1,6 @@
 # Components
 
-InspireCMS offers a powerful component system based on Laravel's Blade components to help you build modular, reusable interface elements. This guide explains how to use, create, and extend components within InspireCMS.
+InspireCMS offers a powerful component system based on Laravel's Blade components to help you build modular, reusable interface elements.
 
 ## Component System Overview
 
@@ -83,11 +83,7 @@ Using a component in your templates:
 The component helper makes it easier to use theme-aware components:
 
 ```php
-@php
-$heroComponent = inspirecms_templates()->getComponentWithTheme('hero');
-@endphp
-
-<x-dynamic-component :component="$heroComponent" :title="$heroTitle" :image="$heroImage">
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('hero')" :title="$heroTitle" :image="$heroImage">
     <p>{{ $heroContent }}</p>
 </x-dynamic-component>
 ```
@@ -116,8 +112,6 @@ Use named slots to organize content within components:
 
 Create a simple component:
 
-1. Create the Blade file in your theme directory:
-
 ```php
 <!-- resources/views/components/inspirecms/my-theme/alert.blade.php -->
 <div class="alert alert-{{ $type ?? 'info' }}" role="alert">
@@ -133,7 +127,7 @@ Create a simple component:
 </div>
 ```
 
-2. Use your component:
+Use your component:
 
 ```php
 <x-inspirecms-my-theme::alert type="warning" :dismissible="true">
@@ -182,7 +176,7 @@ Create a component with defined props:
 Use this component:
 
 ```php
-<x-inspirecms-my-theme::button 
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('button')"  
     type="success" 
     size="lg" 
     url="#" 
@@ -190,20 +184,12 @@ Use this component:
     class="my-4"
 >
     Submit Form
-</x-inspirecms-my-theme::button>
+</x-dynamic-component>
 ```
 
 ### Class-Based Components
 
 For more complex components, create a class-based component:
-
-1. Generate the component class:
-
-```bash
-php artisan make:component Gallery --view
-```
-
-2. Edit the component class:
 
 ```php
 namespace App\View\Components;
@@ -232,7 +218,6 @@ class Gallery extends Component
     {
         // Process and normalize image data
         return collect($images)->map(function ($image) {
-            // If it's just a string/ID, fetch the media asset
             if (is_string($image) || is_numeric($image)) {
                 $media = inspirecms_asset()->findByKey($image);
                 if ($media) {
@@ -247,7 +232,6 @@ class Gallery extends Component
                 return null;
             }
             
-            // If it's already an array, ensure it has required fields
             return [
                 'url' => $image['url'] ?? '',
                 'thumbnail' => $image['thumbnail'] ?? $image['url'] ?? '',
@@ -263,58 +247,6 @@ class Gallery extends Component
         return 'col-' . (12 / $this->columns);
     }
 }
-```
-
-3. Create the view:
-
-```php
-<!-- resources/views/components/gallery.blade.php -->
-<div class="gallery-container">
-    <div class="row">
-        @foreach($images as $image)
-            <div class="{{ $columnClass() }} gallery-item">
-                <figure>
-                    @if($lightbox)
-                        <a href="{{ $image['url'] }}" class="lightbox-trigger" data-caption="{{ $image['caption'] }}">
-                            <img src="{{ $image['thumbnail'] }}" alt="{{ $image['alt'] }}" class="img-fluid">
-                        </a>
-                    @else
-                        <img src="{{ $image['thumbnail'] }}" alt="{{ $image['alt'] }}" class="img-fluid">
-                    @endif
-                    
-                    @if($image['caption'])
-                        <figcaption>{{ $image['caption'] }}</figcaption>
-                    @endif
-                </figure>
-            </div>
-        @endforeach
-    </div>
-</div>
-
-@if($lightbox)
-    @once
-        @push('styles')
-            <link href="{{ asset('css/lightbox.css') }}" rel="stylesheet">
-        @endpush
-        
-        @push('scripts')
-            <script src="{{ asset('js/lightbox.js') }}"></script>
-            <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    // Initialize lightbox
-                    lightbox.init();
-                });
-            </script>
-        @endpush
-    @endonce
-@endif
-```
-
-4. Use your class-based component:
-
-```php
-@propertyArray('page', 'gallery_images')
-<x-gallery :images="$page_gallery_images" :columns="4" :lightbox="true" />
 ```
 
 ## Theme-Specific Components
@@ -339,8 +271,6 @@ $headerComponent = inspirecms_templates()->getComponentWithTheme('header');
 
 Override default components by creating a component with the same name in your theme:
 
-1. Default component:
-
 ```php
 <!-- resources/views/components/inspirecms/default/navigation.blade.php -->
 <nav class="default-navigation">
@@ -348,23 +278,11 @@ Override default components by creating a component with the same name in your t
 </nav>
 ```
 
-2. Override in your theme:
-
 ```php
 <!-- resources/views/components/inspirecms/my-theme/navigation.blade.php -->
 <nav class="custom-navigation">
     <!-- Custom navigation implementation -->
 </nav>
-```
-
-The system will automatically use your theme's version when using:
-
-```php
-@php
-$navComponent = inspirecms_templates()->getComponentWithTheme('navigation');
-@endphp
-
-<x-dynamic-component :component="$navComponent" />
 ```
 
 ## Advanced Component Techniques
@@ -425,42 +343,8 @@ Create variants of components using attributes:
 @endphp
 
 <div {{ $attributes->merge(['class' => implode(' ', array_filter($classes))]) }}>
-    @if(isset($image))
-        <div class="card-image">
-            {{ $image }}
-        </div>
-    @endif
-    
-    <div class="card-body">
-        @if(isset($title))
-            <h3 class="card-title">{{ $title }}</h3>
-        @endif
-        
-        <div class="card-content">
-            {{ $slot }}
-        </div>
-    </div>
-    
-    @if(isset($footer))
-        <div class="card-footer">
-            {{ $footer }}
-        </div>
-    @endif
+    <!-- Card content -->
 </div>
-```
-
-Use different variants:
-
-```php
-<x-inspirecms-my-theme::card variant="feature">
-    <x-slot:title>Featured Content</x-slot>
-    <p>This is featured content in a special card.</p>
-</x-inspirecms-my-theme::card>
-
-<x-inspirecms-my-theme::card variant="outline">
-    <x-slot:title>Outlined Card</x-slot>
-    <p>This card has an outline style.</p>
-</x-inspirecms-my-theme::card>
 ```
 
 ### Dynamic Components
@@ -508,77 +392,6 @@ Group related components together:
         <span class="error-message">{{ $message }}</span>
     @enderror
 </div>
-
-<!-- resources/views/components/inspirecms/my-theme/form/textarea.blade.php -->
-@props(['name', 'label', 'rows' => 3])
-
-<div class="form-group">
-    <label for="{{ $name }}">{{ $label }}</label>
-    <textarea 
-        id="{{ $name }}" 
-        name="{{ $name }}" 
-        rows="{{ $rows }}"
-        {{ $attributes->merge(['class' => 'form-control']) }}
-    >{{ $slot }}</textarea>
-    @error($name)
-        <span class="error-message">{{ $message }}</span>
-    @enderror
-</div>
-
-<!-- resources/views/components/inspirecms/my-theme/form/select.blade.php -->
-@props(['name', 'label', 'options' => []])
-
-<div class="form-group">
-    <label for="{{ $name }}">{{ $label }}</label>
-    <select 
-        id="{{ $name }}" 
-        name="{{ $name }}"
-        {{ $attributes->merge(['class' => 'form-select']) }}
-    >
-        @foreach($options as $value => $label)
-            <option value="{{ $value }}">{{ $label }}</option>
-        @endforeach
-    </select>
-    @error($name)
-        <span class="error-message">{{ $message }}</span>
-    @enderror
-</div>
-```
-
-Use component collections:
-
-```php
-<form method="post" action="{{ $formAction }}">
-    @csrf
-    
-    <x-inspirecms-my-theme::form.input 
-        name="name" 
-        label="Your Name" 
-        required 
-    />
-    
-    <x-inspirecms-my-theme::form.input 
-        name="email" 
-        label="Email Address" 
-        type="email" 
-        required 
-    />
-    
-    <x-inspirecms-my-theme::form.textarea 
-        name="message" 
-        label="Your Message" 
-        rows="5"
-        placeholder="Type your message here..."
-    />
-    
-    <x-inspirecms-my-theme::form.select 
-        name="subject" 
-        label="Subject" 
-        :options="['general' => 'General Inquiry', 'support' => 'Support Request', 'feedback' => 'Feedback']"
-    />
-    
-    <x-inspirecms-my-theme::button type="primary">Submit</x-inspirecms-my-theme::button>
-</form>
 ```
 
 ## Working with Content in Components
@@ -592,149 +405,18 @@ Create components that intelligently display content:
 @props(['content', 'format' => 'full'])
 
 @php
-    $documentType = $content->getDocumentType();
-    $documentTypeName = $documentType ? $documentType->slug : 'default';
+    $documentTypeName = $content->documentType : 'default';
     
     // Try to find a specialized component for this document type
-    $componentName = "inspirecms-my-theme::content.{$documentTypeName}-{$format}";
-    
-    // Check if the specialized component exists
-    if (!View::exists("components.{$componentName}")) {
-        // Fall back to generic component
-        $componentName = "inspirecms-my-theme::content.generic-{$format}";
-        
+    $componentName = collect(["content.{$documentTypeName}-{$format}", "content.generic-{$format}"])
+        // Check if the specialized component exists
+        ->where(fn ($name) => inspirecms_template()->hasComponent($name))
+        ->map(fn ($name) => inspirecms_templates()->getComponentWithTheme($name))
         // If even that doesn't exist, use a very basic fallback
-        if (!View::exists("components.{$componentName}")) {
-            $componentName = "inspirecms-my-theme::content.fallback";
-        }
-    }
+        ->first() ?? inspirecms_template()->getComponentWithTheme("content.fallback");
 @endphp
 
 <x-dynamic-component :component="$componentName" :content="$content" />
-```
-
-Document-type specific component:
-
-```php
-<!-- resources/views/components/inspirecms/my-theme/content/blog-full.blade.php -->
-@props(['content'])
-
-<article class="blog-post">
-    <header class="blog-header">
-        <h1>{{ $content->getTitle() }}</h1>
-        
-        <div class="meta">
-            <time datetime="{{ $content->published_at->format('Y-m-d') }}">
-                {{ $content->published_at->format('F j, Y') }}
-            </time>
-            
-            @propertyNotEmpty('blog', 'author')
-                <span class="author">by {{ $blog_author }}</span>
-            @endif
-        </div>
-    </header>
-    
-    @propertyNotEmpty('blog', 'featured_image')
-        <div class="featured-image">
-            <img 
-                src="{{ $blog_featured_image->getUrl() }}" 
-                alt="{{ $blog_featured_image->alt_text ?? $content->getTitle() }}"
-                class="img-fluid"
-            >
-        </div>
-    @endif
-    
-    <div class="blog-content">
-        @property('blog', 'content')
-    </div>
-    
-    <footer class="blog-footer">
-        @propertyArray('blog', 'tags')
-            <div class="tags">
-                @foreach($blog_tags as $tag)
-                    <span class="tag">{{ $tag }}</span>
-                @endforeach
-            </div>
-        @endif
-        
-        @propertyNotEmpty('blog', 'show_sharing')
-            <div class="share-buttons">
-                <x-inspirecms-my-theme::social-share :url="$content->getUrl()" :title="$content->getTitle()" />
-            </div>
-        @endif
-    </footer>
-</article>
-```
-
-### Content Collection Components
-
-Components for displaying multiple content items:
-
-```php
-<!-- resources/views/components/inspirecms/my-theme/content-grid.blade.php -->
-@props([
-    'contents', 
-    'columns' => 3,
-    'mode' => 'card'
-])
-
-<div class="content-grid">
-    <div class="row">
-        @foreach($contents as $content)
-            <div class="col-md-{{ 12 / $columns }}">
-                <x-inspirecms-my-theme::content-renderer :content="$content" :format="$mode" />
-            </div>
-        @endforeach
-    </div>
-    
-    @if($contents instanceof \Illuminate\Contracts\Pagination\Paginator)
-        <div class="pagination-container">
-            {{ $contents->links() }}
-        </div>
-    @endif
-</div>
-```
-
-## Testing Components
-
-Create tests to verify component functionality:
-
-```php
-namespace Tests\Components;
-
-use Tests\TestCase;
-use SolutionForest\InspireCms\Models\Content;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-class ContentRendererTest extends TestCase
-{
-    use RefreshDatabase;
-    
-    /** @test */
-    public function it_renders_blog_post_component_for_blog_content()
-    {
-        // Create a blog post content item
-        $blog = Content::factory()->create([
-            'title' => json_encode(['en' => 'Test Blog Post']),
-            'document_type_id' => 'blog', // assuming blog document type exists
-        ]);
-        
-        // Add properties to the blog post
-        $blog->setPropertyValue('blog', 'content', '<p>This is a test blog post content.</p>');
-        $blog->setPropertyValue('blog', 'author', 'Test Author');
-        
-        // Render the component
-        $view = $this->component('inspirecms-my-theme::content-renderer', [
-            'content' => $blog,
-            'format' => 'full',
-        ]);
-        
-        // Assert the component renders correctly
-        $view->assertSee('Test Blog Post');
-        $view->assertSee('This is a test blog post content.');
-        $view->assertSee('Test Author');
-    }
-}
 ```
 
 ## Best Practices
@@ -746,6 +428,7 @@ class ContentRendererTest extends TestCase
 5. **Handle Edge Cases**: Anticipate and handle empty or unexpected data
 6. **Follow Naming Conventions**: Use consistent naming for components and props
 7. **Test Components**: Write tests to verify component rendering
-8. **Optimize Component Logic**: Keep performance in mind, especially for repeated components
-9. **Use CSS Frameworks Consistently**: Follow a consistent approach to styling
-10. **Create Component Libraries**: Group related components into logical collections
+
+> **Note:** For detailed examples of using components in templates, see the [Templates](./Templates.md) documentation.
+> 
+> For integrating components into layouts, see the [Layouts](./Layouts.md) documentation.

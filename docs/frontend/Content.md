@@ -179,29 +179,6 @@ $paginatedContent = inspirecms_content()->getPaginatedByDocumentType(documentTyp
 {{ $paginatedContent->links() }}
 ```
 
-## Customizing Services
-
-You can customize any service by binding your own implementation in your ServiceProvider's `boot` method:
-
-```php
-use SolutionForest\InspireCms\Services\ContentServiceInterface;
-
-public function boot()
-{
-    // Customizing Content Service
-    $this->app->singleton(ContentServiceInterface::class, fn () => new YourContentService());
-}
-```
-
-```php
-use SolutionForest\InspireCms\Services\ContentServiceInterface;
-
-class YourContentService implements ContentServiceInterface
-{
-
-}
-```
-
 ## Best Practices
 
 - Use `inspirecms_content()` helper for retrieving content instead of direct database queries
@@ -209,3 +186,7 @@ class YourContentService implements ContentServiceInterface
 - Cache frequent content queries for better performance
 - For large content sets, use pagination to improve page load times
 - Use property directives in Blade templates for cleaner syntax
+
+> **Note:** For details on how to use content properties in templates, see the [Blade](./Blade.md) documentation.
+> 
+> For examples of displaying content in components and layouts, see the [Components](./Components.md) and [Layouts](./Layouts.md) documentation.

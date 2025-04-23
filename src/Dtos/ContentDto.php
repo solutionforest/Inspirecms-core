@@ -65,6 +65,11 @@ class ContentDto extends BaseTranslatableModelDto
     public $redirectType;
 
     /**
+     * @var ?string
+     */
+    public $documentType;
+
+    /**
      * @var null|SupportCollection<ContentDto>
      */
     protected $children = null;
@@ -283,6 +288,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
         $dtoParameters['type'] = $record?->documentType?->category;
+        $dtoParameters['documentType'] = $record?->documentType?->slug;
 
         $dtoParameters['propertyData'] = $propertyData;
 
