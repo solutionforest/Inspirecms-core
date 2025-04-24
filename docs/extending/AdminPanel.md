@@ -20,6 +20,262 @@ Before you begin extending the admin panel, ensure you have:
 2. Basic knowledge of Laravel and Filament concepts
 3. Appropriate permissions to access the admin area
 
+## Creating a Custom Panel Provider
+
+The recommended approach for customizing InspireCMS is to create your own CMS Panel Provider by extending the base `CmsPanelProvider`:
+
+1. Generate a new provider:
+
+```bash
+php artisan make:filament-panel my-cms
+```
+
+2. Extend the base CMS Panel Provider:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    /**
+     * Configure the CMS panel.
+     */
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        // Add your custom configuration here
+
+        return $panel;
+    }
+}
+```
+
+3. Register the provider in `config/app.php`:
+
+```php
+'providers' => [
+    // Other providers...
+    // Comment out or remove the default CmsPanelProvider
+    // SolutionForest\InspireCms\CmsPanelProvider::class,
+    
+    // Add your custom provider
+    App\Providers\MyCmsPanelProvider::class,
+],
+```
+
+### Customizing the Panel Appearance
+
+Here's how to customize various aspects of the panel:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use Filament\Navigation\NavigationGroup;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            // Custom branding
+            ->brandName('My Custom CMS')
+            ->brandLogo(fn() => view('admin.logo'))
+            ->favicon(asset('images/favicon.png'))
+            
+            // Custom colors
+            ->colors([
+                'primary' => [
+                    50 => '238, 242, 255',
+                    100 => '224, 231, 255',
+                    200 => '199, 210, 254',
+                    300 => '165, 180, 252',
+                    400 => '129, 140, 248',
+                    500 => '99, 102, 241',
+                    600 => '79, 70, 229',
+                    700 => '67, 56, 202',
+                    800 => '55, 48, 163',
+                    900 => '49, 46, 129',
+                    950 => '30, 27, 75',
+                ],
+                'danger' => '#ff0000',
+                'success' => '#10b981',
+                'warning' => '#f59e0b',
+            ])
+            
+            // Fonts
+            ->font('Poppins')
+            ->fontSize('md')
+            
+            // Dark mode
+            ->darkMode(true) // Enable dark mode
+            
+            // Render hooks
+            ->renderHook(
+                'panels::body.start',
+                fn () => view('custom-scripts')
+            );
+    }
+}
+```
+
+### Customizing Navigation
+
+You can customize the navigation structure:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureNavigation(Panel $panel): Panel
+    {
+        return parent::configureNavigation($panel)
+            ->navigationGroups([
+                NavigationGroup::make()
+                    ->label('Content')
+                    ->icon('heroicon-o-document-text'),
+                NavigationGroup::make()
+                    ->label('Shop')
+                    ->icon('heroicon-o-shopping-bag'),
+                NavigationGroup::make()
+                    ->label('Settings')
+                    ->icon('heroicon-o-cog'),
+            ])
+            ->navigationItems([
+                NavigationItem::make('Analytics')
+                    ->url('https://analytics.google.com')
+                    ->icon('heroicon-o-chart-bar')
+                    ->group('Reports'),
+            ]);
+    }
+}
+```
+
+### Adding Global Search
+
+Enable and customize global search:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            ->globalSearch(true)
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
+    }
+}
+```
+
+### Adding Widgets and Resources
+
+Configure default widgets and resources:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use App\Filament\Widgets\StatsOverview;
+use App\Filament\Resources\ProductResource;
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            ->widgets([
+                StatsOverview::class,
+            ])
+            ->resources([
+                ProductResource::class,
+            ])
+            ->pages([
+                App\Filament\Pages\Settings::class,
+            ]);
+    }
+}
+```
+
+### Advanced Configuration Options
+
+For more advanced customization:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            // Custom middleware
+            ->middleware([
+                App\Http\Middleware\CustomMiddleware::class,
+            ])
+            ->authMiddleware([
+                App\Http\Middleware\CustomAuthMiddleware::class,
+            ])
+            
+            // Plugin registration
+            ->plugin(new App\Filament\Plugins\CustomPlugin())
+            
+            // Custom assets
+            ->assets([
+                // CSS assets
+                \Filament\Support\Assets\Css::make('custom-stylesheet', 'path/to/stylesheet.css'),
+                // JavaScript assets
+                \Filament\Support\Assets\Js::make('custom-script', 'path/to/script.js'),
+            ])
+            
+            // Authentication
+            ->login()
+            ->registration()
+            ->passwordReset()
+            ->emailVerification();
+    }
+}
+```
+
 ## Custom Resources
 
 Resources in Filament represent database models and provide a complete CRUD interface for managing them.
@@ -150,23 +406,27 @@ You can add standalone pages to the admin panel that aren't tied to a specific r
 php artisan make:filament-page Settings
 ```
 
-2. Register your custom page with InspireCMS:
+2. Register your page with InspireCMS:
 
 ```php
 <?php
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use App\Filament\Pages\Settings;
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
 
-class AppServiceProvider extends ServiceProvider
+class MyCmsPanelProvider extends CmsPanelProvider
 {
-    public function register()
+    protected function configureCmsPanel(Panel $panel): Panel
     {
-        // Register your custom page
-        InspireCmsConfig::set('admin.pages.settings', Settings::class);
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            ->pages([
+                Settings::class,
+            ]);
     }
 }
 ```
@@ -178,52 +438,71 @@ class AppServiceProvider extends ServiceProvider
 
 namespace App\Filament\Pages;
 
-use Filament\Pages\Page;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Contracts\HasForms;
+use Filament\Actions\Action;
+use Filament\Actions\Concerns\InteractsWithActions;
+use Filament\Actions\Contracts\HasActions;
+use Filament\Forms;
+use Filament\Forms\Form;
 use Filament\Forms\Concerns\InteractsWithForms;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
+use Filament\Pages\Page;
+use Illuminate\Support\Facades\Config;
+use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
+use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
+use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 
-class Settings extends Page implements HasForms
+class Settings extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
 {
+    use ClusterSectionPageTrait;
+    use InteractsWithActions;
     use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-cog';
     
+    protected static ?string $navigationLabel = 'Site Settings';
+    
+    protected static ?string $navigationGroup = 'Settings';
+    
+    protected static ?int $navigationSort = 5;
+    
     protected static string $view = 'filament.pages.settings';
+
+    protected static ?string $cluster = \SolutionForest\InspireCms\Filament\Clusters\Settings::class;
     
-    protected static ?string $navigationGroup = 'System';
-    
-    public $siteName;
-    public $enableFeature;
+    public ?array $data = [];
     
     public function mount(): void
     {
         $this->form->fill([
-            'siteName' => config('app.name'),
-            'enableFeature' => config('features.example_feature', false),
+            'site_name' => config('app.name'),
+            'site_description' => config('app.description'),
+            'maintenance_mode' => config('app.maintenance'),
         ]);
     }
     
-    protected function getFormSchema(): array
+    public function form(Form $form): Form
     {
-        return [
-            TextInput::make('siteName')
-                ->required()
-                ->label('Site Name'),
-            Toggle::make('enableFeature')
-                ->label('Enable Example Feature'),
-        ];
+        return $form
+            ->schema([
+                Forms\Components\Section::make('General Settings')
+                    ->schema([
+                        Forms\Components\TextInput::make('site_name')
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\Textarea::make('site_description')
+                            ->maxLength(1000),
+                        Forms\Components\Toggle::make('maintenance_mode'),
+                    ]),
+            ]);
     }
     
-    public function submit(): void
+    public function save(): void
     {
-        // Process the form submission
         $data = $this->form->getState();
         
-        // Save the settings
-        // ...
+        // Save settings logic here
+        // For example, update .env file or settings table
         
         Notification::make()
             ->title('Settings saved successfully')
@@ -233,19 +512,62 @@ class Settings extends Page implements HasForms
 }
 ```
 
-3. Create the view file:
+### Creating a Custom View
 
-```php
-<!-- resources/views/filament/pages/settings.blade.php -->
+Create a view file at `resources/views/filament/pages/settings.blade.php`:
+
+```blade
 <x-filament::page>
-    <form wire:submit.prevent="submit">
+    <form wire:submit.prevent="save">
         {{ $this->form }}
         
-        <x-filament::button type="submit" class="mt-4">
-            Save Settings
-        </x-filament::button>
+        <div class="flex justify-end mt-4">
+            <x-filament::button type="submit">
+                Save Settings
+            </x-filament::button>
+        </div>
     </form>
 </x-filament::page>
+```
+
+### Advanced Page Features
+
+You can further customize pages with actions, tabs, and more:
+
+```php
+<?php
+
+namespace App\Filament\Pages;
+
+use Filament\Actions\Action;
+use Filament\Pages\Page;
+
+class Dashboard extends Page
+{
+    // ... other properties
+    
+    protected function getHeaderActions(): array
+    {
+        return [
+            Action::make('settings')
+                ->label('Settings')
+                ->url(route('filament.admin.pages.settings'))
+                ->icon('heroicon-s-cog'),
+            Action::make('visit')
+                ->label('Visit Site')
+                ->url('/')
+                ->icon('heroicon-s-external-link')
+                ->openUrlInNewTab(),
+        ];
+    }
+    
+    protected function getFooterWidgets(): array
+    {
+        return [
+            // Add widgets that appear at the bottom of the page
+        ];
+    }
+}
 ```
 
 ## Custom Dashboard Widgets
@@ -319,168 +641,6 @@ class StatsOverview extends BaseWidget
         ];
     }
 }
-```
-
-## Custom Navigation
-
-You can customize the admin navigation to organize your resources and pages.
-
-### Adding Custom Navigation Items
-
-```php
-<?php
-
-namespace App\Providers;
-
-use App\Filament\Widgets\StatsOverview;
-use Filament\Navigation\NavigationGroup;
-use Filament\Panel;
-use Illuminate\Support\ServiceProvider;
-use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\CmsPanelProvider;
-
-class MyCmsPanelProvider extends CmsPanelProvider
-{
-    protected function configureNavigation(Panel $panel): Panel
-    {
-        return parent::configureNavigation($panel)
-            ->navigationGroups([
-                NavigationGroup::make('External Resources'),
-            ]);
-    }
-}
-```
-
-## Extending Existing Resources
-
-You can extend or override InspireCMS's built-in resources to customize their behavior.
-
-### Example: Extending the User Resource
-
-```php
-<?php
-
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Filament\Resources\UserResource;
-use App\Filament\Resources\CustomUserResource;
-
-class AppServiceProvider extends ServiceProvider
-{
-    public function register()
-    {
-        // Replace the default User resource with a custom one
-        InspireCmsConfig::set('admin.resources.user', CustomUserResource::class);
-    }
-}
-```
-
-Define your custom resource:
-
-```php
-<?php
-
-namespace App\Filament\Resources;
-
-use SolutionForest\InspireCms\Filament\Resources\UserResource as BaseUserResource;
-use Filament\Forms;
-use Filament\Resources\Form;
-use Filament\Resources\Table;
-use Filament\Tables;
-
-class CustomUserResource extends BaseUserResource
-{
-    public static function form(Form $form): Form
-    {
-        // Get the parent form schema
-        $parentSchema = parent::form($form)->getSchema();
-        
-        // Add your custom fields
-        $customFields = [
-            Forms\Components\TextInput::make('custom_field')
-                ->label('Custom Field'),
-            // Add more custom fields as needed
-        ];
-        
-        // Merge and return
-        return $form->schema(array_merge($parentSchema, $customFields));
-    }
-    
-    public static function table(Table $table): Table
-    {
-        // Get the parent table columns
-        $parentColumns = parent::table($table)->getColumns();
-        
-        // Add your custom columns
-        $customColumns = [
-            Tables\Columns\TextColumn::make('custom_field')
-                ->label('Custom Field'),
-            // Add more custom columns as needed
-        ];
-        
-        // Merge and return
-        return $table->columns(array_merge($parentColumns, $customColumns));
-    }
-}
-```
-
-## Theme Customization
-
-You can customize the appearance of the admin panel by modifying its theme.
-
-1. Configure the theme in the provider:
-
-```php
-<?php
-
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use Filament\Facades\Filament;
-use Filament\Panel;
-use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\CmsPanelProvider;
-
-class MyCmsPanelProvider extends CmsPanelProvider
-{
-    protected function configureCmsPanel(Panel $panel)
-    {
-        $panel = parent::configureCmsPanel($panel);
-
-        return $panel
-            // Custom logo
-            ->brandLogo(fn() => view('admin.logo'))
-            // Custom favicon
-            ->favicon(asset('images/favicon.png'))
-            ->colors([
-                // Light mode colors
-                'primary' => 'rgb(16, 185, 129)',
-                'primary-hover' => 'rgb(4, 165, 109)',
-                'secondary' => 'rgb(14, 165, 233)',
-                'secondary-hover' => 'rgb(2, 132, 199)',
-                'success' => 'rgb(16, 185, 129)',
-                'warning' => 'rgb(250, 204, 21)',
-                'danger' => 'rgb(239, 68, 68)',
-                
-                // Dark mode colors (optional)
-                'dark-primary' => 'rgb(20, 210, 150)',
-                'dark-primary-hover' => 'rgb(10, 190, 130)',
-                'dark-secondary' => 'rgb(20, 184, 255)',
-                'dark-secondary-hover' => 'rgb(10, 150, 220)',
-            ]);
-    }
-}
-```
-
-2. Register the provider in `config/app.php`:
-
-```php
-'providers' => [
-    // Other providers...
-    App\Providers\MyCmsPanelProvider::class,
-],
 ```
 
 ## Best Practices

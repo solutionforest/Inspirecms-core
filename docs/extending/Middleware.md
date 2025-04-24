@@ -9,6 +9,7 @@ InspireCMS uses Laravel's middleware architecture, which allows code to be execu
 1. **Global Middleware**: Applied to every HTTP request
 2. **Route Middleware**: Applied to specific routes or route groups
 3. **Frontend Middleware**: Applied to frontend content routes
+4. **Admin Panel Middleware**: Applied specifically to routes within the InspireCMS admin panel
 
 ## Creating Custom Middleware
 
@@ -114,6 +115,105 @@ To apply middleware specifically to frontend content routes in InspireCMS, modif
         ],
     ],
 ],
+```
+
+### 4. Admin Panel Middleware
+
+To apply middleware specifically to the admin panel in InspireCMS, you need to create a custom panel provider. This allows you to define middleware that will only run for admin panel routes.
+
+First, make sure you've set up a custom panel provider as described in [Extending the Admin Panel](./AdminPanel.md#creating-a-custom-panel-provider).
+
+Once you have your custom panel provider set up, you can add middleware to the admin panel:
+
+```php
+<?php
+
+namespace App\Providers;
+
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            // Add middleware that runs on all admin panel routes
+            ->middleware([
+                \App\Http\Middleware\AdminLoggingMiddleware::class,
+                \App\Http\Middleware\AdminAnalyticsMiddleware::class,
+            ])
+            // Add middleware that runs only on authenticated admin panel routes
+            ->authMiddleware([
+                \App\Http\Middleware\AdminPermissionsMiddleware::class,
+            ]);
+    }
+}
+```
+
+For example, you might create a middleware to log all admin actions:
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+
+class AdminLoggingMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        // Log the admin action
+        Log::channel('admin')->info('Admin action', [
+            'user' => auth()->user()?->name ?? 'Guest',
+            'url' => $request->fullUrl(),
+            'method' => $request->method(),
+            'ip' => $request->ip(),
+        ]);
+        
+        return $next($request);
+    }
+}
+```
+
+Or middleware to implement additional admin permissions:
+
+```php
+<?php
+
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Http\Request;
+use Filament\Notifications\Notification;
+
+class AdminPermissionsMiddleware
+{
+    public function handle(Request $request, Closure $next)
+    {
+        // Get the authenticated user
+        $user = auth()->user();
+        
+        // Example: Check if the user has a specific permission for certain routes
+        if ($request->is('admin/settings*') && !$user->can('manage_settings')) {
+            // Show notification and redirect
+            Notification::make()
+                ->title('Access denied')
+                ->body('You do not have permission to manage settings.')
+                ->danger()
+                ->send();
+                
+            return redirect()->route('filament.admin.pages.dashboard');
+        }
+        
+        return $next($request);
+    }
+}
 ```
 
 ## Common Use Cases for Middleware
