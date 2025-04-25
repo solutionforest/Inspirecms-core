@@ -243,32 +243,6 @@ try {
 }
 ```
 
-### Template Errors
-
-Handle template-related errors:
-
-```php
-try {
-    $theme = inspirecms_templates()->getCurrentTheme();
-    $hasComponent = inspirecms_templates()->hasComponent('page', $theme);
-    
-    if (!$hasComponent) {
-        throw new \SolutionForest\InspireCms\Exceptions\TemplateNotFoundException('Page component not found in theme: ' . $theme);
-    }
-    
-    // Continue rendering
-} catch (\SolutionForest\InspireCms\Exceptions\TemplateNotFoundException $e) {
-    Log::error('Template error', [
-        'message' => $e->getMessage(),
-        'theme' => $theme ?? null,
-    ]);
-    
-    // Fall back to default theme
-    $component = 'inspirecms::components.default.page';
-    return view($component, compact('content'));
-}
-```
-
 ## Error Monitoring
 
 ### Setting Up External Error Monitoring

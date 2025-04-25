@@ -25,67 +25,36 @@ The multilingual system in InspireCMS allows you to:
    - **Is Default**: Check this option for the default language
 4. Click **Save** to add the language
 
-### Configuring Available Languages
-
-You can configure which languages are available in your application via the config file:
-
-```php
-// config/inspirecms.php
-'localization' => [
-    'available_locales' => ['en', 'fr', 'zh_CN', 'zh_TW', 'es', 'ja', 'de'],
-    'user_preferred_locales' => ['en', 'zh_CN', 'zh_TW'],
-],
-```
-
 ## Creating Multilingual Content
 
 ### Translatable Fields
 
-InspireCMS automatically handles translatable fields. When creating or editing content, fields marked as translatable will show a language selector:
+InspireCMS allows you to mark specific content fields as translatable directly through the admin panel:
 
-```php
-// Example field group definition with translatable fields
-[
-    "slug" => "hero",
-    "title" => "Hero Section",
-    "fields" => [
-        [
-            "slug" => "title",
-            "label" => "Title",
-            "type" => "text",
-            "config" => [
-                "translatable" => true,  // This makes the field translatable
-            ]
-        ],
-        [
-            "slug" => "description",
-            "label" => "Description",
-            "type" => "textarea",
-            "config" => [
-                "translatable" => true,  // This makes the field translatable
-            ]
-        ],
-        [
-            "slug" => "image",
-            "label" => "Image",
-            "type" => "mediaPicker",
-            "config" => [
-                "translatable" => false,  // This field is not translatable
-            ]
-        ]
-    ]
-]
-```
+1. Navigate to **Document Types** in the admin panel
+2. Select the content type you want to modify
+3. Edit or create a field group
+4. For each field that should support multiple languages:
+    - In the field settings, check the **Translatable** checkbox
+    - Save your changes
+
+Fields marked as translatable will automatically display language-specific inputs when creating or editing content. When editing content with translatable fields:
+
+1. The default language version appears first
+2. Language tabs appear at the top of each translatable field
+3. Click on a language tab to enter content for that specific language
+4. Non-translatable fields will remain the same across all languages
+
+This allows you to maintain language-specific content while keeping structure consistent across translations.
 
 ### Translating Content
 
 To translate content:
 
 1. Create content in your primary language
-2. Click the "Translations" tab in the content editor
-3. Select the language you want to translate to
-4. Fill in the translatable fields for the selected language
-5. Save the content
+2. Select the language you want to translate to
+3. Fill in the translatable fields for the selected language
+4. Save the content
 
 ## Accessing Multilingual Content
 
@@ -99,9 +68,6 @@ $title = $content->getTitle(); // Uses current application locale
 // Get content in a specific language
 $frenchTitle = $content->getTitle('fr');
 $spanishDescription = $content->getPropertyValue('content', 'description', 'es');
-
-// Check if content has a specific translation
-$hasGermanVersion = $content->hasTranslation('de');
 ```
 
 ### In Blade Templates
@@ -134,32 +100,54 @@ https://example.com/fr/a-propos
 https://example.com/es/sobre-nosotros
 ```
 
-### Content Routes
-
-Content routes are automatically generated for each language. You can customize the path for each language:
-
-```php
-// Each language can have its own unique path
-$content->path; // 'about-us' (default language)
-$content->getPath('fr'); // 'a-propos' (French version)
-$content->getPath('es'); // 'sobre-nosotros' (Spanish version)
-```
-
 ## Language Detection
 
-InspireCMS can detect the user's preferred language:
+InspireCMS can detect the user's preferred language through multiple methods:
 
 ### Based on URL
 
+InspireCMS automatically handles language detection from URL patterns:
+
 ```php
 // Routes are automatically prefixed with the language code
-Route::get('/{locale}/about-us', function ($locale) {
-    // Sets the application locale based on the URL
-    app()->setLocale($locale);
-    
-    // Your code here
-});
+// e.g., /en/about-us, /fr/a-propos
 ```
+
+#### Content Resolution by Route Pattern
+
+InspireCMS provides a built-in mechanism to find content by URL pattern while detecting the language:
+
+```php
+// In a controller or middleware
+$uri = 'about-us';
+$result = inspirecms_content()->findByRoutePatternWithLangId(
+    uri: $uri, 
+    isDefaultRoutePattern: true,  // Set to true for default routes
+    isPublished: true
+);
+
+foreach ($result as $item) {
+    $content = $item['content'];
+    $languageId = $item['language_id'];
+    
+    // Now you have both the content and its associated language ID
+    $language = \SolutionForest\InspireCms\Models\Language::find($languageId);
+    
+    // Set application locale based on the content's language
+    if ($language) {
+        app()->setLocale($language->locale);
+    }
+    
+    // Render the content with the correct locale
+    return view('content', compact('content'));
+}
+```
+
+This approach provides several advantages:
+- Automatically resolves content based on the URL pattern
+- Returns the appropriate language ID for each content item
+- Allows for language-specific routing and content presentation
+- Handles multilingual URLs efficiently
 
 ### Based on Browser Preferences
 
@@ -213,35 +201,6 @@ $title = $content->getTitle($locale) ?? $content->getTitle($fallbackLanguage->ge
 $title = $content->getTitle($locale); // Automatically falls back if translation not available
 ```
 
-## Working with Translation Files
-
-In addition to content translation, you can translate UI elements:
-
-```php
-// resources/lang/en/inspirecms.php
-return [
-    'dashboard' => 'Dashboard',
-    'content' => 'Content',
-    // ...
-];
-
-// resources/lang/fr/inspirecms.php
-return [
-    'dashboard' => 'Tableau de bord',
-    'content' => 'Contenu',
-    // ...
-];
-```
-
-Access these translations in your templates:
-
-```php
-{{ __('inspirecms.dashboard') }} // "Dashboard" or "Tableau de bord" depending on current locale
-
-// Or using the trans directive
-@trans('inspirecms.content')
-```
-
 ## RTL Support
 
 For right-to-left languages like Arabic or Hebrew, InspireCMS provides built-in RTL support:
@@ -272,32 +231,6 @@ For right-to-left languages like Arabic or Hebrew, InspireCMS provides built-in 
 5. **URL Structure**: Maintain consistent URL structures across languages
 6. **Language Indicators**: Provide clear language selection options in your UI
 7. **RTL Support**: Test thoroughly when supporting right-to-left languages
-
-## Advanced Language Configuration
-
-For more complex language requirements:
-
-```php
-// Example service provider extending language capabilities
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use SolutionForest\InspireCms\Models\Language;
-
-class LanguageServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        // Add custom language attributes
-        Language::resolveRelationUsing('countryFlag', function ($languageModel) {
-            return $languageModel->hasOne(CountryFlag::class, 'locale', 'locale');
-        });
-        
-        // Add language-specific middleware for certain routes
-        // ...
-    }
-}
-```
 
 ## Troubleshooting Common Issues
 

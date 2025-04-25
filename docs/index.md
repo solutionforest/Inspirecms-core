@@ -50,14 +50,7 @@ Welcome to the official InspireCMS documentation. This guide will help you get s
     - [Common Issues](./troubleshooting/CommonIssues.md)
     - [Debugging](./troubleshooting/Debugging.md)
     - [Logs & Error Handling](./troubleshooting/LogsErrorHandling.md)
-    - [Support Resources](./troubleshooting/SupportResources.md)
-    - [Community Forums](./troubleshooting/CommunityForums.md)
-- [Contributing to InspireCMS](./Contributing.md)
-    - [Development Setup](./contributing/DevelopmentSetup.md)
-    - [Coding Standards](./contributing/CodingStandards.md)
-    - [Testing](./contributing/Testing.md)
-    - [Documentation Guidelines](./contributing/DocumentationGuidelines.md)
-    - [Pull Request Process](./contributing/PullRequestProcess.md)
+- [Contributing to InspireCMS](../.github/CONTRIBUTING.md)
 
 
 ## Support
