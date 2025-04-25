@@ -63,7 +63,7 @@ Examples:
 \SolutionForest\InspireCms\Models\Content::count();
 
 // Test content retrieval
-inspirecms_content()->findByIds('550e8400-e29b-41d4-a716-446655440000');
+inspirecms_content()->findByIds(ids: '550e8400-e29b-41d4-a716-446655440000', limit: 1);
 
 // Check template configuration
 inspirecms_templates()->getCurrentTheme();
@@ -85,10 +85,13 @@ Test template rendering in isolation:
 
 ```php
 // In a controller or route
-$content = inspirecms_content()->findByIds('content-id')->first();
-return view('components.inspirecms.your-theme.page', [
+$content = inspirecms_content()->findByIds(ids: 'content-id', limit: 1)->first();
+$template = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
+$theme = inspirecms_templates()->getCurrentTheme();
+$templateDto = $template?->toDto($theme);
+return $templateDto->render([
     'content' => $content,
-])->render();
+]);
 ```
 
 #### Component Testing
@@ -110,7 +113,7 @@ Add custom logging statements to trace execution:
 ```php
 \Log::debug('Debugging content retrieval', [
     'content_id' => $content->id,
-    'properties' => $content->getProperties(),
+    'properties' => $content->getLatestVersionPropertyData(),
 ]);
 ```
 
@@ -133,7 +136,7 @@ Create a temporary debug route in `routes/web.php`:
 
 ```php
 Route::get('/_debug/test-template/{id}', function ($id) {
-    $content = inspirecms_content()->findByIds($id)->first();
+    $content = inspirecms_content()->findByIds(ids: $id, limit: 1)->first();
     if (!$content) {
         return 'Content not found';
     }
@@ -198,7 +201,7 @@ Debug database queries:
 \DB::enableQueryLog();
 
 // Your code that executes queries
-$content = inspirecms_content()->findByIds('id')->first();
+$content = inspirecms_content()->findByIds(ids: 'id', limit: 1)->first();
 
 // Get the query log
 $queries = \DB::getQueryLog();
