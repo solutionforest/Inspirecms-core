@@ -47,6 +47,36 @@ if (! function_exists('inspirecms_content')) {
     }
 }
 
+if (! function_exists('inspirecms_content_statuses')) {
+    /**
+     * @return ContentStatusManifestInterface
+     */
+    function inspirecms_content_statuses()
+    {
+        return app(ContentStatusManifestInterface::class);
+    }
+}
+
+if (! function_exists('inspirecms_permissions')) {
+    /**
+     * @return PermissionManifestInterface
+     */
+    function inspirecms_permissions()
+    {
+        return app(PermissionManifestInterface::class);
+    }
+}
+
+if (! function_exists('inspirecms_locales')) {
+    /**
+     * @return LocaleManifestInterface
+     */
+    function inspirecms_locales()
+    {
+        return app(LocaleManifestInterface::class);
+    }
+}
+
 if (! function_exists('is_inspirecms_user')) {
     /**
      * Determine if the given user is an InspireCMS user.
@@ -97,35 +127,5 @@ if (! function_exists('has_super_admin_role')) {
         }
 
         return false;
-    }
-}
-
-if (! function_exists('inspirecms_content_statuses')) {
-    /**
-     * @return ContentStatusManifestInterface
-     */
-    function inspirecms_content_statuses()
-    {
-        return app(ContentStatusManifestInterface::class);
-    }
-}
-
-if (! function_exists('inspirecms_permissions')) {
-    /**
-     * @return PermissionManifestInterface
-     */
-    function inspirecms_permissions()
-    {
-        return app(PermissionManifestInterface::class);
-    }
-}
-
-if (! function_exists('inspirecms_locales')) {
-    /**
-     * @return LocaleManifestInterface
-     */
-    function inspirecms_locales()
-    {
-        return app(LocaleManifestInterface::class);
     }
 }

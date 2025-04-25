@@ -4,6 +4,8 @@ namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
+use SolutionForest\InspireCms\Base\Dtos\Concerns\HasPropertyGroup;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Dtos\Collection\PropertyGroupCollection;
 use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
@@ -15,6 +17,8 @@ use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
  */
 class ContentDto extends BaseTranslatableModelDto
 {
+    use HasPropertyGroup;
+
     /**
      * @var array<string,string>
      */
@@ -46,11 +50,6 @@ class ContentDto extends BaseTranslatableModelDto
     public $propertyTypes;
 
     /**
-     * @var PropertyGroupCollection
-     */
-    public $propertyData;
-
-    /**
      * @var SupportCollection<string,SeoDto>
      */
     public $seo;
@@ -66,9 +65,19 @@ class ContentDto extends BaseTranslatableModelDto
     public $redirectType;
 
     /**
+     * @var ?string
+     */
+    public $documentType;
+
+    /**
      * @var null|SupportCollection<ContentDto>
      */
     protected $children = null;
+
+    /**
+     * @var null|SupportCollection<ContentDto>
+     */
+    protected $ancestors = null;
 
     protected array $translatableAttributes = ['title'];
 
@@ -144,18 +153,13 @@ class ContentDto extends BaseTranslatableModelDto
 
         $model = $this->getModel();
 
-        if (is_null($model)) {
-            $children = collect();
-        } elseif (! $model->relationLoaded('children')) {
-            $children = $model->children()->with(static::getNecessaryRelationships())->get() ?? collect();
-        } else {
-            $children = $model->children ?? collect();
-        }
+        $children = $model?->children ?? collect();
+        $children->map->loadMissing(static::getNecessaryRelationships());
 
         $currLocale = $this->getLocale();
-        $result = $children instanceof \SolutionForest\InspireCms\Collection\ContentCollection
+        $result = $children instanceof ContentCollection
             ? $children->toDto($currLocale)
-            : (new \SolutionForest\InspireCms\Collection\ContentCollection($children))->toDto($currLocale);
+            : ContentCollection::make($children)->toDto($currLocale);
 
         return $this->children = $result;
     }
@@ -164,6 +168,30 @@ class ContentDto extends BaseTranslatableModelDto
     {
         // todo: implement pagination for children
         return $this->getChildren()->paginate($perPage, $pageName, $page);
+    }
+
+    public function getParent()
+    {
+        return $this->getAncestors()->first();
+    }
+
+    public function getAncestors()
+    {
+        if ($this->ancestors != null) {
+            return $this->ancestors;
+        }
+
+        $model = $this->getModel();
+
+        $ancestors = $model->ancestors->reverse() ?? collect();
+        $ancestors->map->loadMissing(static::getNecessaryRelationships());
+
+        $currLocale = $this->getLocale();
+        $result = $ancestors instanceof ContentCollection
+            ? $ancestors->toDto($currLocale)
+            : ContentCollection::make($ancestors)->toDto($currLocale);
+
+        return $this->ancestors = $result;
     }
 
     public function getTemplate($slug)
@@ -176,43 +204,31 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * Retrieves the property group associated with the given key.
+     * Checks if a specific property exists for the given group and field.
      *
-     * @param  string  $key  The key identifying the property group.
-     * @return ?PropertyDataGroupDto
+     * @param  string  $group  The property group to check
+     * @param  string  $field  The specific field name to check within the group
+     * @return bool Returns true if the property exists, false otherwise
      */
-    public function getPropertyGroup(string $key)
+    public function hasProperty(string $group, string $field): bool
     {
-        if (! $this->propertyData instanceof PropertyGroupCollection) {
-            $this->propertyData = new PropertyGroupCollection($this->propertyData);
-        }
-
-        $target = $this->propertyData->get($key);
-        if ($target && ($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
-            $target->setFallbackLocale($locale);
-        }
-
-        return $target;
+        return $this->getPropertyGroup($group)?->hasProperty($field) ?? false;
     }
 
     /**
-     * Retrieve the property data associated with a specific property key.
+     * Gets the value of a specific property within a group.
      *
-     * @param  string  $key  The key of the property to retrieve data for.
-     * @return SupportCollection<string,PropertyDataDto>
+     * @param  string  $group  The property group identifier
+     * @param  string  $field  The field identifier within the group
+     * @param  string|null  $locale  Optional locale code to get localized value, defaults to current locale if null
+     * @return mixed
      */
-    public function getPropertyData(string $key)
+    public function getPropertyValue(string $group, string $field, ?string $locale = null, ?string $fallbackLocale = null)
     {
-        if (! $this->propertyData instanceof PropertyGroupCollection) {
-            $this->propertyData = new PropertyGroupCollection($this->propertyData);
-        }
+        $locale ??= $this->getLocale() ?? $this->getFallbackLocale();
+        $fallbackLocale ??= $this->getFallbackLocale();
 
-        $groups = clone $this->propertyData;
-        if (($locale = $this->getLocale() ?? $this->getFallbackLocale()) != null) {
-            $groups->setFallbackLocale($locale);
-        }
-
-        return $groups->getPropertyData($key);
+        return $this->getPropertyGroup($group)?->getPropertyData($field, $fallbackLocale)?->getValue($locale) ?? null;
     }
 
     /**
@@ -272,6 +288,7 @@ class ContentDto extends BaseTranslatableModelDto
 
         $dtoParameters['propertyTypes'] = collect($record?->documentType?->fields)->map(fn ($field) => $field->toDto());
         $dtoParameters['type'] = $record?->documentType?->category;
+        $dtoParameters['documentType'] = $record?->documentType?->slug;
 
         $dtoParameters['propertyData'] = $propertyData;
 

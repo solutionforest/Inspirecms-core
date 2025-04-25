@@ -48,9 +48,19 @@ class TemplateManager implements TemplateManagerInterface
 
     public function isThemeExists(string $theme): bool
     {
-        $directory = TemplateHelper::getDirectoryForThemedComponents();
+        return is_dir($this->getPath() . '/' . $theme);
+    }
 
-        return is_dir($directory . '/' . $theme);
+    public function hasComponent(string $componentName, ?string $theme = null): bool
+    {
+        $path = $this->getComponentPathWithTheme($componentName, $theme);
+
+        return file_exists($path);
+    }
+
+    public function getPath(): string
+    {
+        return TemplateHelper::getDirectoryForThemedComponents();
     }
 
     public function getComponentWithTheme(string $componentName, ?string $theme = null): string
@@ -70,7 +80,7 @@ class TemplateManager implements TemplateManagerInterface
     {
         $theme ??= $this->getCurrentTheme();
 
-        $path = TemplateHelper::getDirectoryForThemedComponents();
+        $path = $this->getPath();
 
         if (filled($theme)) {
             $path .= '/' . $theme;

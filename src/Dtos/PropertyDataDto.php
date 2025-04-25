@@ -85,7 +85,6 @@ class PropertyDataDto extends BaseDto
 
     /**
      * @param  \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig  $fieldType
-     * @param  string[]  $availableLocales
      */
     protected static function getFakeValueForBasicFieldType($fieldType)
     {

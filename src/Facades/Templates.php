@@ -10,7 +10,9 @@ use SolutionForest\InspireCms\Base\TemplateManagerInterface;
  * @method static void clearCurrentThemeCache()
  * @method static void resetCurrentTheme()
  * @method static array getAvailableThemes()
+ * @method static string getPath() Get the path to the theme directory.
  * @method static bool isThemeExists(string $theme)
+ * @method static bool hasComponent(string $componentName, ?string $theme = null)
  * @method static string getComponentWithTheme(string $component, ?string $theme = null)
  * @method static string getComponentPathWithTheme(?string $componentName = null, ?string $theme = null)
  * @method static bool cloneTheme(string $sourceTheme, string $newTheme)
