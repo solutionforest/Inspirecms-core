@@ -10,7 +10,9 @@ use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Factories\SitemapGeneratorFactory;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
@@ -19,6 +21,9 @@ use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
+use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 
 // todo: need redo the layout
 class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
@@ -65,6 +70,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     {
         $permissions = $this->getPermissionsStatusData();
         $sitemap = $this->getSiteMapStatusData();
+        $contentHierarchy = $this->getContentHierarchyStatusData();
 
         return [
             'permissions' => [
@@ -75,6 +81,12 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
             'sitemap' => [
                 'title' => __('inspirecms::pages/health.sitemap.label'),
                 ...$sitemap,
+                'action' => 'fix',
+            ],
+            'content_hierarchy' => [
+                // 'title' => __('inspirecms::pages/health.content_hierarchy.label'),
+                'title' => 'Content Hierarchy',
+                ...$contentHierarchy,
                 'action' => 'fix',
             ],
         ];
@@ -99,6 +111,10 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
                     case 'sitemap':
                         $needRefresh = $this->fixSiteMap();
 
+                        break;
+
+                    case 'content_hierarchy':
+                        $needRefresh = $this->fixContentHierarchy();
                         break;
 
                 }
@@ -145,6 +161,55 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
         ];
     }
 
+    protected function getContentHierarchyStatusData(): array
+    {
+        $records = InspireCmsConfig::getNestableTreeModelClass()::scoped([
+            'nestable_type' => app(InspireCmsConfig::getContentModelClass())->getMorphClass(),
+        ])->with([
+            'nestable.path', 
+            'nestable.ancestorsAndSelf',
+        ])->get();
+
+        $segmentProvider = ContentSegmentFactory::create();
+
+        $data = $records
+            ->reject(fn (NestableTree | Model $record) => is_null($record->nestable))
+            ->map(fn (NestableTree | Model $record) => [
+                'id' => $record->nestable->getKey(),
+                'slug' => $record->nestable->slug,
+                'parent_id_from_tree' => $record->parent?->nestable_id ?? KeyHelper::generateMinUuid(),
+                'parent_id_from_content' => $record->nestable->getParentId(),
+                'current_path' => $record->nestable->path?->value,
+                'expected_path' => $segmentProvider->getPath($record->nestable),
+            ])
+            ->keyBy('id')
+            ->all();
+
+        $valids = collect($data)->filter(function ($item) {
+            return $item['current_path'] === $item['expected_path'] && 
+                $item['parent_id_from_tree'] === $item['parent_id_from_content'];
+        })->all();
+
+        $invalids =  collect($data)
+            ->where(fn ($item, $key) => array_key_exists($key, $valids) === false)
+            ->all();
+
+        return [
+            'status' => $this->formateStatusData(count($data), count($invalids), count($valids)),
+            'data' => $this->formateStatusContent(collect($invalids)
+                ->mapWithKeys(function ($item) {
+                    return [
+                        'Content ID: '. $item['id'] => [
+                            'Current path: ' . $item['current_path'],
+                            'Expected path: ' . $item['expected_path'],
+                        ],
+                    ];
+                })
+                ->all()
+            ),
+        ];
+    }
+
     protected function fixPermissions(): bool
     {
         $missing = $this->getMissingPermissions($this->getAllPermissions());
@@ -174,6 +239,24 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
             return false;
         }
+
+        return true;
+    }
+
+    protected function fixContentHierarchy(): bool
+    {
+        $records = InspireCmsConfig::getContentModelClass()::with(['path', 'ancestorsAndSelf'])->get();
+        $segmentProvider = ContentSegmentFactory::create();
+
+        $records->each(function (Content | Model $record) use ($segmentProvider) {
+            $expectedPath = $segmentProvider->getPath($record);
+
+            if ($record->path?->value !== $expectedPath) {
+                $record->path?->update([
+                    'value' => $expectedPath,
+                ]);
+            }
+        });
 
         return true;
     }

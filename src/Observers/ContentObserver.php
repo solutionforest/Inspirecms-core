@@ -32,13 +32,12 @@ class ContentObserver
      */
     public function created($model)
     {
-        $provider = ContentSegmentFactory::create();
-
+        $segmentProvider = ContentSegmentFactory::create();
         $model->path()->updateOrCreate([], [
-            'value' => $provider->getPath($model),
+            'value' => $segmentProvider->getPath($model),
         ]);
 
-        $this->createDefaultRoute($model, $provider);
+        $this->createDefaultRoute($model, $segmentProvider);
     }
 
     /**
@@ -71,6 +70,13 @@ class ContentObserver
             $this->updateCurrentRouteInDefaultPattern($model, $provider);
         }
 
+        // Update the path if the content's parent is changed
+        if ($model->isDirty([$model->getParentKeyName()])) {
+            $segmentProvider = ContentSegmentFactory::create();
+            $model->path()->updateOrCreate([], [
+                'value' => $segmentProvider->getPath($model),
+            ]);
+        }
     }
 
     /**
