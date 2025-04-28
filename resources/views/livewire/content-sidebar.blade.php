@@ -9,6 +9,7 @@
 <div x-data="{
         sidebarExpanded: $store.contentSidebar.isOpen,
     }"
+    class="content-sidebar"
 >
     <div x-show="sidebarExpanded" x-cloak
         x-transition:enter="transition-opacity ease-int duration-300" 
@@ -23,7 +24,7 @@
     >
         <div class="fixed inset-0 bg-gray-900/80" aria-hidden="true" :class="{'translate-x-0': sidebarExpanded, '-translate-x-full': !sidebarExpanded}"></div>
         <div class="fixed inset-0 flex">
-            <div class="relative mr-16 flex w-full max-w-xs flex-1 top-0">
+            <div class="relative mr-16 flex w-full max-w-xs flex-1 top-0 content-sidebar_mobile">
                 <div class="absolute left-full flex w-16 justify-center pt-5">
                     <button type="button" class="-m-2.5 p-2.5" @click="sidebarExpanded = false">
                     <span class="sr-only">Close sidebar</span>
@@ -51,7 +52,7 @@
             </div>
         </div>
     </div>
-    <div class="hidden lg:fixed lg:top-16 lg:bottom-0 lg:z-30 lg:flex lg:w-72 lg:flex-col">
+    <div class="hidden lg:fixed lg:top-16 lg:bottom-0 lg:z-30 lg:flex lg:w-72 lg:flex-col content-sidebar_desktop">
         <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white py-2 dark:bg-gray-900 dark:border-gray-700">
             <div class="px-1 pb-2">
                 {{ $this->localeSwitcher }}
@@ -78,7 +79,7 @@
         x-transition:leave="transition-opacity ease-linear duration-300" 
         x-transition:leave-start="opacity-100" 
         x-transition:leave-end="opacity-0"
-        class="fixed top-16 right-0 z-10 px-2 py-2 lg:hidden">
+        class="fixed top-16 right-0 z-10 px-2 py-2 lg:hidden icon-btn">
         <button type="button" 
             class="p-4 rounded-full shadow-md bg-white ring-1 ring-gray-300 hover:bg-gray-100 dark:bg-gray-600 dark:ring-gray-400/20 dark:hover:text-gray-400 dark:ring-gray-400/20" 
             @click="sidebarExpanded = !sidebarExpanded"
