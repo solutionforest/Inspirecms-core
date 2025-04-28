@@ -115,6 +115,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
 
                     case 'content_hierarchy':
                         $needRefresh = $this->fixContentHierarchy();
+
                         break;
 
                 }
@@ -166,7 +167,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
         $records = InspireCmsConfig::getNestableTreeModelClass()::scoped([
             'nestable_type' => app(InspireCmsConfig::getContentModelClass())->getMorphClass(),
         ])->with([
-            'nestable.path', 
+            'nestable.path',
             'nestable.ancestorsAndSelf',
         ])->get();
 
@@ -186,26 +187,27 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
             ->all();
 
         $valids = collect($data)->filter(function ($item) {
-            return $item['current_path'] === $item['expected_path'] && 
+            return $item['current_path'] === $item['expected_path'] &&
                 $item['parent_id_from_tree'] === $item['parent_id_from_content'];
         })->all();
 
-        $invalids =  collect($data)
+        $invalids = collect($data)
             ->where(fn ($item, $key) => array_key_exists($key, $valids) === false)
             ->all();
 
         return [
             'status' => $this->formateStatusData(count($data), count($invalids), count($valids)),
-            'data' => $this->formateStatusContent(collect($invalids)
-                ->mapWithKeys(function ($item) {
-                    return [
-                        'Content ID: '. $item['id'] => [
-                            'Current path: ' . $item['current_path'],
-                            'Expected path: ' . $item['expected_path'],
-                        ],
-                    ];
-                })
-                ->all()
+            'data' => $this->formateStatusContent(
+                collect($invalids)
+                    ->mapWithKeys(function ($item) {
+                        return [
+                            'Content ID: ' . $item['id'] => [
+                                'Current path: ' . $item['current_path'],
+                                'Expected path: ' . $item['expected_path'],
+                            ],
+                        ];
+                    })
+                    ->all()
             ),
         ];
     }
