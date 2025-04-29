@@ -123,11 +123,12 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->extraAttributes([
                         'class' => 'bg-gray-100 dark:bg-gray-800 rounded-md p-2 overflow-x-auto',
                     ])
-                    ->getStateUsing(function ($record)  {
+                    ->getStateUsing(function ($record) {
                         $payload = $record->payload;
                         if (! is_array($payload)) {
                             return '';
                         }
+
                         return str(json_encode($payload, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
                     }),
             ]);

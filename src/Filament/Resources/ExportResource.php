@@ -131,6 +131,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                     return '';
                                 }
                                 $arr = Arr::except($payload, ['result']);
+
                                 return str(json_encode($arr, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
                             }),
 
@@ -142,7 +143,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                 'class' => 'bg-gray-100 dark:bg-gray-800 rounded-md p-2 overflow-x-auto',
                             ])
                             ->html()
-                            ->getStateUsing(function ($record)  {
+                            ->getStateUsing(function ($record) {
                                 $payload = $record->payload;
                                 if (! is_array($payload)) {
                                     return '';
@@ -151,6 +152,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                 if (! is_array($arr)) {
                                     $arr = [$arr];
                                 }
+
                                 return str(json_encode($arr, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
                             }),
                     ]),
