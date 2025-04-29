@@ -61,7 +61,7 @@ class ListTemplates extends BaseListRecords
                     })
                     ->form([
                         TemplateResourceHelper::getThemeFormComponent()->disabled(),
-                        TemplateResourceHelper::getContentFormComponent(),
+                        TemplateResourceHelper::getContentFormComponent()->isReadOnly(true),
                     ])
                     ->mutateRecordDataUsing(fn (Template $record) => [
                         'theme' => $this->theme,

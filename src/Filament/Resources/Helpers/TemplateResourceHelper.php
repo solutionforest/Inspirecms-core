@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Filament\Resources\Helpers;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
-use Riodwanto\FilamentAceEditor\AceEditor;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResourceHelper
@@ -34,15 +33,11 @@ class TemplateResourceHelper
 
     /**
      * @param  string  $name
-     * @return Forms\Components\Field|Forms\Components\Component|AceEditor
+     * @return Forms\Components\Field|Forms\Components\Component
      */
     public static function getContentFormComponent($name = 'content')
     {
-        return AceEditor::make($name)
-            ->label(__('inspirecms::resources/template.content.label'))
-            ->mode('php')
-            ->darkTheme('tomorrow_night_eighties')
-            ->height('48rem');
+        return \Dotswan\FilamentCodeEditor\Fields\CodeEditor::make($name);
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
