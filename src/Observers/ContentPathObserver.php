@@ -18,8 +18,8 @@ class ContentPathObserver
         $content = $model->content;
         if ($content) {
             $segmentProvider = ContentSegmentFactory::create();
-            $content->children()->get()->each(fn (Content|Model $child) => 
-                $child->path()->updateOrCreate([], [
+            $content->children()->get()->each(
+                fn (Content | Model $child) => $child->path()->updateOrCreate([], [
                     'value' => $segmentProvider->getPath($child),
                 ])
             );
