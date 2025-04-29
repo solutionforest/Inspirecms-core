@@ -71,7 +71,8 @@ class ContentObserver
         }
 
         // Update the path if the content's parent is changed
-        if ($model->isDirty([$model->getParentKeyName()])) {
+        // or if the slug is changed
+        if ($model->isDirty([$model->getParentKeyName(), 'slug'])) {
             $segmentProvider = ContentSegmentFactory::create();
             $model->path()->updateOrCreate([], [
                 'value' => $segmentProvider->getPath($model),
