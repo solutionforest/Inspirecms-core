@@ -37,7 +37,7 @@ class ContentService implements ContentServiceInterface
         $query = $this
             ->buildFindWithRouteQuery(
                 fn ($q) => $q
-                    ->where('uri', $uri)
+                    ->where($q->qualifyColumn('uri'), $uri)
                     ->when($isDefaultRoutePattern != null, fn ($q) => $q->whereIsDefaultPattern())
             )
             ->with($withRelations);
