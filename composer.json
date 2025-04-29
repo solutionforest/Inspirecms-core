@@ -22,12 +22,11 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "laravel/framework": "^11.0",
+        "php": ">=8.2",
+        "laravel/framework": "^11.0|^12.0",
         "filament/spatie-laravel-translatable-plugin": "^3.2",
         "guava/filament-icon-picker": "^2.0",
         "pboivin/filament-peek": "^2.0",
-        "riodwanto/filament-ace-editor": "^1.0",
         "solution-forest/filament-field-group": "^1.0.10",
         "solution-forest/filament-tree": "^2.1.0",
         "solution-forest/inspirecms-support": "self.version",
@@ -37,10 +36,10 @@
     "require-dev": {
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^8.0",
-        "orchestra/testbench": "^9.0",
-        "pestphp/pest": "^2.0",
-        "pestphp/pest-plugin-arch": "^2.0",
-        "pestphp/pest-plugin-laravel": "^2.0",
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^2.0|^3.0",
+        "pestphp/pest-plugin-arch": "^2.0|^3.0",
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "spatie/laravel-ray": "^1.26"
     },
     "autoload": {
