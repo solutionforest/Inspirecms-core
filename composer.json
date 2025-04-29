@@ -24,6 +24,7 @@
     "require": {
         "php": ">=8.2",
         "laravel/framework": "^11.0|^12.0",
+        "dotswan/filament-code-editor": "^1.1",
         "filament/spatie-laravel-translatable-plugin": "^3.2",
         "guava/filament-icon-picker": "^2.0",
         "pboivin/filament-peek": "^2.0",
