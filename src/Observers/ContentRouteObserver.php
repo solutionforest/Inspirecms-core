@@ -31,19 +31,19 @@ class ContentRouteObserver
 
             $segmentProvider = ContentSegmentFactory::create();
 
-            $content->children()->get()->load('routes')->each(function (Content|Model $child) use ($segmentProvider) {
-            
+            $content->children()->get()->load('routes')->each(function (Content | Model $child) use ($segmentProvider) {
+
                 $uri = $segmentProvider->getSegment($child);
-                
+
                 $currentRoutes = collect($child->routes->where('is_default_pattern', true))
                     ->map(fn (Model $model) => $model->toArray())
                     ->map(function (array $data) use ($uri) {
                         $data['uri'] = $uri;
-    
+
                         return $data;
                     })
                     ->all();
-    
+
                 event(new UpsertRoute($child->withoutRelations(), $currentRoutes));
             });
         }
