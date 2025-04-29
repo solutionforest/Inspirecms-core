@@ -118,20 +118,43 @@ class ExportResource extends Resource implements ClusterSectionResource
                             ->label(__('inspirecms::resources/export.exporter.label'))
                             ->inlineLabel(),
 
-                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
+                        Infolists\Components\TextEntry::make('process_message')
                             ->label(__('inspirecms::resources/export.message.label'))
                             ->columnSpanFull()
-                            ->darkTheme('tomorrow_night_eighties')
+                            ->size('xs')->color('gray')
+                            ->extraAttributes([
+                                'class' => 'bg-gray-100 dark:bg-gray-800 rounded-md p-2 overflow-x-auto',
+                            ])
                             ->getStateUsing(function ($record) {
                                 $payload = $record->payload;
+                                if (! is_array($payload)) {
+                                    return '';
+                                }
+                                $arr = Arr::except($payload, ['result']);
 
-                                return collect($payload)->except('result')->all();
+                                return str(json_encode($arr, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
                             }),
 
-                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload.result')
+                        Infolists\Components\TextEntry::make('result')
                             ->label(__('inspirecms::resources/export.result.label'))
                             ->columnSpanFull()
-                            ->darkTheme('tomorrow_night_eighties'),
+                            ->size('xs')->color('gray')
+                            ->extraAttributes([
+                                'class' => 'bg-gray-100 dark:bg-gray-800 rounded-md p-2 overflow-x-auto',
+                            ])
+                            ->html()
+                            ->getStateUsing(function ($record) {
+                                $payload = $record->payload;
+                                if (! is_array($payload)) {
+                                    return '';
+                                }
+                                $arr = $payload['result'] ?? [];
+                                if (! is_array($arr)) {
+                                    $arr = [$arr];
+                                }
+
+                                return str(json_encode($arr, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
+                            }),
                     ]),
             ]);
     }
