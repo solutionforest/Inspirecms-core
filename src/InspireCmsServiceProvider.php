@@ -102,8 +102,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
-        $this->registerPolymorphism();
-
         $this->app->singleton(BaseManifests\ModelManifestInterface::class, fn () => $this->app->make(BaseManifests\ModelManifest::class));
         $this->app->singleton(BaseManifests\ContentStatusManifestInterface::class, fn () => $this->app->make(BaseManifests\ContentStatusManifest::class));
         $this->app->singleton(BaseManifests\PermissionManifestInterface::class, fn () => $this->app->make(BaseManifests\PermissionManifest::class));
@@ -297,18 +295,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'update_sessions_table',
             'update_notification_table_for_uuid_users',
         ];
-    }
-
-    /**
-     * Register Polymorphic Types
-     */
-    protected function registerPolymorphism(): void
-    {
-        $map = Arr::pluck(InspireCmsConfig::get('models'), 'fqcn', 'polymorphic_type');
-
-        if (! empty($map)) {
-            Relation::enforceMorphMap($map);
-        }
     }
 
     protected function registerModels(): void
