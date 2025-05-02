@@ -27,7 +27,7 @@ use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
-use SolutionForest\InspireCms\View\Components\Template;
+use SolutionForest\InspireCms\View\Components as ViewComponents;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -587,7 +587,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerComponentAndDirectives(): void
     {
-        Blade::component('cms-template', Template::class);
+        // Custom existing components start
+        Blade::component('filament::icon', ViewComponents\Filament\Icon::class);
+        // Custom existing components end
+
+        Blade::component('cms-template', ViewComponents\Template::class);
 
         Blade::directive('property', function ($expression) {
 

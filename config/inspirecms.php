@@ -147,8 +147,6 @@ return [
             'role' => FilamentResources\RoleResource::class,
             'navigation' => FilamentResources\NavigationResource::class,
             'sitemap' => FilamentResources\SitemapResource::class,
-            'import' => FilamentResources\ImportResource::class,
-            'export' => FilamentResources\ExportResource::class,
         ],
         'pages' => [
             'dashboard' => FilamentPages\Dashboard::class,

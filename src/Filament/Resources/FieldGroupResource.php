@@ -48,7 +48,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return FilamentIcon::resolve('inspirecms::fields');
+        return 'inspirecms::fields';
     }
 
     public static function form(Form $form): Form

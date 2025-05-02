@@ -3,9 +3,13 @@
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
 use Filament\Facades\Filament;
+use Filament\Navigation\NavigationGroup;
+use Filament\Navigation\NavigationItem;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Filament\Navigation\NavigationItem as CustomNavigationItem;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ClusterSectionPageTrait
 {
@@ -18,6 +22,14 @@ trait ClusterSectionPageTrait
         }
 
         return $cluster;
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [
+            ...parent::getBreadcrumbs(),
+            static::getNavigationLabel(),
+        ];
     }
 
     public static function canAccess(): bool
@@ -52,6 +64,20 @@ trait ClusterSectionPageTrait
         }
 
         return parent::canAccess();
+    }
+    
+    /**
+     * @return array<NavigationItem | CustomNavigationItem | NavigationGroup>
+     */
+    public function getSubNavigation(): array
+    {
+        if (InspireCmsConfig::get('admin.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
+            $items = $this->generateNavigationItems($cluster::getClusteredComponents());
+
+            return array_map(fn ($item) => static::configurePageKeyOnNavigationItem($item), $items);
+        }
+
+        return [];
     }
 
     public static function getNavigationItems(): array

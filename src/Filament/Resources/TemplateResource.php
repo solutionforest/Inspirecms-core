@@ -37,7 +37,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return FilamentIcon::resolve('inspirecms::templates');
+        return 'inspirecms::templates';
     }
 
     public static function table(Table $table): Table

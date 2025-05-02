@@ -48,14 +48,6 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
         return __('inspirecms::pages/health.title');
     }
 
-    public function getBreadcrumbs(): array
-    {
-        return [
-            ...parent::getBreadcrumbs(),
-            static::getNavigationLabel(),
-        ];
-    }
-
     public function getTitle(): string | Htmlable
     {
         return static::getNavigationLabel();
