@@ -8,6 +8,6 @@ class UserMenu extends Component
 {
     public function render()
     {
-        return view('inspirecms::components.filament.user-menu');
+        return view('inspirecms::components.filament.user-menu', $this->data());
     }
 }
