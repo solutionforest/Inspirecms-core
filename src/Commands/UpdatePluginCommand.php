@@ -22,7 +22,9 @@ class UpdatePluginCommand extends Command
         });
 
         // Call install command
-        $this->call('inspirecms:install');
+        $this->call('inspirecms:install', [
+            '--skip-samples',
+        ]);
 
         $this->updatePlugin(inspirecms()->version());
     }
