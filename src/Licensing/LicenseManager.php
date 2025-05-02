@@ -189,12 +189,12 @@ class LicenseManager
 
     private function getLicenseKey()
     {
-        return InspireCmsConfig::get('license.key');
+        return InspireCmsConfig::get('system.license.key');
     }
 
     private function getSecretKey()
     {
-        return InspireCmsConfig::get('license.secret');
+        return InspireCmsConfig::get('system.license.secret');
     }
 
     private function licenseKeyPath()

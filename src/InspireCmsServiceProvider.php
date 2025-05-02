@@ -313,7 +313,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function customPlugins(): void
     {
-        if (InspireCmsConfig::get('override_plugins.field_group_models', false)) {
+        if (InspireCmsConfig::get('system.override_plugins.field_group_models', false)) {
 
             // override field group models
             \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldGroupModelClass(
@@ -323,7 +323,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 \SolutionForest\InspireCms\Models\Field::class
             );
         }
-        if (InspireCmsConfig::get('override_plugins.spatie_permission', false)) {
+        if (InspireCmsConfig::get('system.override_plugins.spatie_permission', false)) {
 
             config()->set('permission.enable_wildcard_permission', true);
 

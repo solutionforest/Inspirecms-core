@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms;
 
 use Composer\InstalledVersions;
+use Doctrine\DBAL\Driver\Middleware;
 use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Cache\CacheManager;
@@ -16,9 +17,8 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
-use SolutionForest\InspireCms\Http\Controllers\AssetController;
-use SolutionForest\InspireCms\Http\Controllers\FrontendController;
-use SolutionForest\InspireCms\Http\Controllers\SitemapController;
+use SolutionForest\InspireCms\Http\Controllers as CmsControllers;
+use SolutionForest\InspireCms\Http\Middleware as CmsMiddlewares;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 
 class InspireCms
@@ -131,34 +131,34 @@ class InspireCms
      */
     public function routes(): void
     {
-        Route::name('inspirecms.asset')
-            ->get('assets/{key}', AssetController::class)
-            ->middleware(InspireCmsConfig::get('media.media_library.middlewares', [
-                'cache.headers:public;max_age=2628000;etag',
-            ]));
-
-        Route::name('inspirecms.sitemap')
-            ->get('sitemap.xml', SitemapController::class);
-
-        Route::name('inspirecms.frontend.')
-            ->middleware(InspireCmsConfig::get('frontend.routes.middlewares', []))
+        Route::name('inspirecms.')
             ->group(function () {
+                Route::name('sitemap')
+                    ->get('sitemap.xml', CmsControllers\SitemapController::class);
 
-                $factory = ContentSegmentFactory::create();
+                $frontendMiddlewares = InspireCmsConfig::get('frontend.routes.middlewares', [
+                    CmsMiddlewares\SetUpPoweredBy::class,
+                ]);
+                Route::name('frontend.')
+                    ->middleware($frontendMiddlewares)
+                    ->group(function () {
 
-                if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
+                        $factory = ContentSegmentFactory::create();
+                        $customFrontendRoutes = Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')
+                            ? $this->getContentRoutes()
+                            : [];
 
-                    foreach ($this->getContentRoutes() as $index => $item) {
-                        Route::any($item['uri'], FrontendController::class)
-                            ->where($item['regex_constraints'] ?? [])
-                            ->name($item['alias'] ?? 'content_' . $index);
-                    }
-                }
+                        foreach ($customFrontendRoutes as $index => $item) {
+                            Route::any($item['uri'], CmsControllers\FrontendController::class)
+                                ->where($item['regex_constraints'] ?? [])
+                                ->name($item['alias'] ?? 'content_' . $index);
+                        }
 
-                // default route
-                Route::any($factory->getDefaultRoutePattern(), FrontendController::class)
-                    ->where($factory->getDefaultRouteConstraints())
-                    ->name('default');
+                        // default route
+                        Route::any($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
+                            ->where($factory->getDefaultRouteConstraints())
+                            ->name('default');
+                    });
             });
     }
 

@@ -25,10 +25,7 @@ use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\Tree
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
-use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
-use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
-use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
-use SolutionForest\InspireCms\Http\Middleware\UserPreference;
+use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -81,27 +78,34 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\AlertOverview::class,
                 Widgets\TemplateInfo::class,
                 TreeNavigation::class,
-            ])
-            ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
+            ]);
+        // Discover resources, pages, clusters, and widgets in the specified directories
+        $panel = $panel->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
             ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
             ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
-            ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets')
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                CmsAuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                LicenseCheck::class,
-                CmsAuthenticate::class,
-                UserPreference::class,
-            ])
+            ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets');
+
+        $middleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            CmsMiddleware\CmsAuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+            CmsMiddleware\SetUpPoweredBy::class,
+        ];
+        $authMiddleware = [
+            CmsMiddleware\LicenseCheck::class,
+            CmsMiddleware\CmsAuthenticate::class,
+            CmsMiddleware\UserPreference::class,
+        ];
+
+        $panel = $panel
+            ->middleware($middleware)
+            ->authMiddleware($authMiddleware)
             ->bootUsing(function () {
 
                 $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
