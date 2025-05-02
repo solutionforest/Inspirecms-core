@@ -17,14 +17,14 @@ return [
     'system' => [
         /**
          * Whether to include an X-Powered-By header in HTTP responses
-         * 
-         * When true, InspireCMS adds an X-Powered-By HTTP header to responses. 
+         *
+         * When true, InspireCMS adds an X-Powered-By HTTP header to responses.
          */
         'send_powered_by_header' => true,
 
         /**
          * License configuration for InspireCMS
-         * 
+         *
          * These settings are required for the CMS to validate your license.
          */
         'license' => [
@@ -33,7 +33,7 @@ return [
             // Your InspireCMS license secret used for validation
             'secret' => env('INSPIRECMS_LICENSE_SECRET'),
         ],
-        
+
         /**
          * Control how InspireCMS interacts with key plugins
          */
@@ -77,7 +77,7 @@ return [
 
         /**
          * Security settings to protect against brute-force attacks
-         * 
+         *
          * Number of failed attempts before lockout
          */
         'failed_login_attempts' => 5,
@@ -89,14 +89,14 @@ return [
 
         /**
          * Controls when super admin checks are performed in the authentication flow
-         * 
+         *
          * Allowed values: before, after, none
          */
         'skip_super_admin_check' => 'before',
 
         /**
          * Skip account verification for users.
-         * 
+         *
          * Set to true to skip account email verification requirements.
          */
         'skip_account_verification' => false,
@@ -121,7 +121,7 @@ return [
 
             /**
              * Allowed file types
-             * 
+             *
              * e.g. ['image/jpeg', 'image/png', 'video/mp4']
              */
             'allowed_mime_types' => [],
@@ -141,9 +141,9 @@ return [
 
             /**
              * Whether to use FFmpeg to extract metadata from video files
-             * 
+             *
              * Set to true to analyze video files
-             * 
+             *
              * Requires FFmpeg to be installed on the server
              * Enables extraction of duration, dimensions, codec info
              * Increases processing time for video uploads
