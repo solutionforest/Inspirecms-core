@@ -164,8 +164,9 @@ class CmsPanelProvider extends PanelProvider
 
     protected function configureNavigation(Panel $panel): Panel
     {
+        $position = InspireCmsConfig::get('admin.navigation_position', 'top');
         return $panel
-            ->topNavigation()
+            ->topNavigation($position == 'top')
             ->navigationGroups([
                 'content' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
                 'media' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),

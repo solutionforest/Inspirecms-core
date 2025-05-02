@@ -175,6 +175,7 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
 'admin' => [
     'enable_cluster_navigation' => true, // Group navigation items by function
                                         // Set to false for a flat navigation structure
+    'navigation_position' => 'top',     // left, top
     'panel_id' => 'cms',               // Internal identifier for the panel
                                         // Must be unique if using multiple panels
     'path' => 'cms',                   // URL path segment for admin area 

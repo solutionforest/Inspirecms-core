@@ -125,6 +125,7 @@ return [
 
     'admin' => [
         'enable_cluster_navigation' => true,
+        'navigation_position' => 'top', // left, top
         'panel_id' => 'cms',
         'path' => 'cms',
         'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
