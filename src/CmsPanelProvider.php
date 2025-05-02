@@ -181,7 +181,6 @@ class CmsPanelProvider extends PanelProvider
 
     protected function configureTourGuideElements(Panel $panel): Panel
     {
-        // todo: add translations
         return $panel
             ->userMenuItems([
                 // \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
@@ -335,6 +334,5 @@ class CmsPanelProvider extends PanelProvider
         Blade::component('filament-panels::user-menu', ViewComponents\Filament\UserMenu::class);
 
         Blade::component('filament-panels::resources.relation-managers', ViewComponents\Filament\Resources\RelationManagers::class);
-
     }
 }
