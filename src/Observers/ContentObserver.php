@@ -66,7 +66,7 @@ class ContentObserver
     {
         $segmentProvider = ContentSegmentFactory::create();
 
-        // Update the route 
+        // Update the route
         // - if default content is changed -> default route should be updated
         // - if slug is changed -> the route should be updated
         if ($model->isDirty(['is_default', 'slug'])) {
