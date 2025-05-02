@@ -136,7 +136,7 @@ class InspireCms
                 Route::name('sitemap')
                     ->get('sitemap.xml', CmsControllers\SitemapController::class);
 
-                $frontendMiddlewares = InspireCmsConfig::get('frontend.routes.middlewares', [
+                $frontendMiddlewares = InspireCmsConfig::get('frontend.routes.middleware', [
                     CmsMiddlewares\SetUpPoweredBy::class,
                 ]);
                 Route::name('frontend.')
