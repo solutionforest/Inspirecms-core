@@ -587,10 +587,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerComponentAndDirectives(): void
     {
-        // Custom existing components start
-        Blade::component('filament::icon', ViewComponents\Filament\Icon::class);
-        // Custom existing components end
-
         Blade::component('cms-template', ViewComponents\Template::class);
 
         Blade::directive('property', function ($expression) {

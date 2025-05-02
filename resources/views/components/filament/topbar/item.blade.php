@@ -14,6 +14,7 @@
     'shouldOpenUrlInNewTab' => false,
     'url' => null,
 ])
+@use('SolutionForest\InspireCms\Helpers\IconHelper')
 
 @php
     $tag = $url ? 'a' : 'button';
@@ -41,14 +42,32 @@
         ])
     >
         @if ($icon || $activeIcon)
-            <x-filament::icon
-                :icon="($active && $activeIcon) ? $activeIcon : $icon"
-                @class([
+            @php
+                // remark: enhance icon display for topbar item
+                $itemIcon = ($active && $activeIcon) ? $activeIcon : $icon;
+                $itemIconClasses = [
                     'fi-topbar-item-icon h-5 w-5',
                     'text-gray-400 dark:text-gray-500' => ! $active,
                     'text-primary-600 dark:text-primary-400' => $active,
-                ])
-            />
+                ];
+            @endphp
+            @if (IconHelper::isCmsCustomIcon($itemIcon))
+                <x-filament::icon
+                    :alias="$itemIcon"
+                    @class($itemIconClasses)
+                />
+            @elseif (IconHelper::isHtmlString($itemIcon))
+                <x-filament::icon
+                    @class($itemIconClasses)
+                >
+                    {!! $itemIcon !!}
+                </x-filament::icon>
+            @else
+                <x-filament::icon
+                    :icon="$itemIcon"
+                    @class($itemIconClasses)
+                />
+            @endif
         @endif
 
         <span

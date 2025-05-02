@@ -17,6 +17,7 @@
         return null;
     };
 @endphp
+@use('SolutionForest\InspireCms\Helpers\IconHelper')
 
 @props([
     'navigation',
@@ -133,6 +134,11 @@
                                         @foreach ($list as $item)
                                             @php
                                                 $itemIsActive = $item->isActive();
+                                                // remark: enhance icon display for dropdown item
+                                                $dropdownListItemIcon = $itemIsActive ? ($item->getActiveIcon() ?? $item->getIcon()) : $item->getIcon();
+                                                $dropdownListItemIconAlias = IconHelper::isCmsCustomIcon($dropdownListItemIcon) 
+                                                    ? $dropdownListItemIcon
+                                                    : null;
                                             @endphp
 
                                             <x-filament::dropdown.list.item
@@ -141,7 +147,8 @@
                                                 :badge-tooltip="$item->getBadgeTooltip()"
                                                 :color="$itemIsActive ? 'primary' : 'gray'"
                                                 :href="$item->getUrl()"
-                                                :icon="$itemIsActive ? ($item->getActiveIcon() ?? $item->getIcon()) : $item->getIcon()"
+                                                :icon="$dropdownListItemIcon"
+                                                :icon-alias="$dropdownListItemIconAlias"
                                                 tag="a"
                                                 :target="$item->shouldOpenUrlInNewTab() ? '_blank' : null"
                                                 data-nav-item-key="{{ $ensureNavItemKey($item) }}"
