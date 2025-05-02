@@ -166,16 +166,16 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         // Limit the propertyData to the current fields for the type
         $propertyData = Arr::only($data['propertyData'] ?? [], array_keys($currentFieldsForType));
         foreach ($propertyData as $gpKey => $value) {
-            if (!is_array($value)) {
+            if (! is_array($value)) {
                 continue;
             }
             $targetFields = $currentFieldsForType[$gpKey] ?? null;
-            if (is_null($targetFields) || !is_array($targetFields) || empty($targetFields)) {
+            if (is_null($targetFields) || ! is_array($targetFields) || empty($targetFields)) {
                 continue;
             }
             $propertyData[$gpKey] = Arr::only($value, $targetFields);
         }
-        
+
         // handle 'Property Data' translation here
         $record->setTranslation('propertyData', '', $propertyData);
 
