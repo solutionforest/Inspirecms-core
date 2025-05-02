@@ -65,7 +65,7 @@ trait ClusterSectionPageTrait
 
         return parent::canAccess();
     }
-    
+
     /**
      * @return array<NavigationItem | CustomNavigationItem | NavigationGroup>
      */

@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Resources;
 
 use Filament\Resources\Resource;
-use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;

@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms;
 
 use Composer\InstalledVersions;
-use Doctrine\DBAL\Driver\Middleware;
 use Filament\Facades\Filament;
 use Illuminate\Auth\EloquentUserProvider;
 use Illuminate\Cache\CacheManager;
