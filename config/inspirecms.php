@@ -153,7 +153,7 @@ return [
             /**
              * HTTP middleware applied to media requests
              */
-            'middlewares' => [
+            'middleware' => [
                 Middleware\SetUpPoweredBy::class,
                 'cache.headers:public;max_age=2628000;etag',
             ],

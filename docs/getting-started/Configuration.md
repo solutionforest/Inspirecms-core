@@ -161,7 +161,7 @@ Configure media uploads, storage, and processing:
         /**
          * HTTP middleware applied to media requests
          */
-        'middlewares' => [
+        'middleware' => [
             'cache.headers:public;max_age=2628000;etag', 
         ],
         
