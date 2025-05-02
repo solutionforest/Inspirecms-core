@@ -21,6 +21,8 @@ use SolutionForest\InspireCms\Filament\Actions\UnlockContentAction;
 use SolutionForest\InspireCms\Filament\Actions\UpdateRouteAction;
 use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 
 use function Filament\Support\is_app_url;
 
@@ -158,8 +160,24 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
         $record->fill(Arr::except($data, $translatableAttributes));
 
+        $currentFieldsForType = $record instanceof Content
+            ? $record->documentType?->fieldGroups->whereInstanceOf(FieldGroup::class)->mapWithKeys(fn (FieldGroup $fg) => [$fg->name => $fg->fields->pluck('name')->all()])->all()
+            : [];
+        // Limit the propertyData to the current fields for the type
+        $propertyData = Arr::only($data['propertyData'] ?? [], array_keys($currentFieldsForType));
+        foreach ($propertyData as $gpKey => $value) {
+            if (!is_array($value)) {
+                continue;
+            }
+            $targetFields = $currentFieldsForType[$gpKey] ?? null;
+            if (is_null($targetFields) || !is_array($targetFields) || empty($targetFields)) {
+                continue;
+            }
+            $propertyData[$gpKey] = Arr::only($value, $targetFields);
+        }
+        
         // handle 'Property Data' translation here
-        $record->setTranslation('propertyData', '', $data['propertyData'] ?? []);
+        $record->setTranslation('propertyData', '', $propertyData);
 
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
             $record->setTranslation($key, $this->activeLocale, $value);
