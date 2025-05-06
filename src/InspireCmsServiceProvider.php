@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
@@ -314,11 +315,21 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (InspireCmsConfig::get('system.override_plugins.field_group_models', false)) {
 
             // override field group models
-            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldGroupModelClass(
+            FilamentFieldGroup::setFieldGroupModelClass(
                 \SolutionForest\InspireCms\Models\FieldGroup::class
             );
-            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
+            FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
+            );
+
+            // customizing the config form schema
+            FilamentFieldGroup::configureFieldTypeConfigFormUsing(
+                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File::class,
+                fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
+            );
+            FilamentFieldGroup::configureFieldTypeConfigFormUsing(
+                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image::class,
+                fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
         }
         if (InspireCmsConfig::get('system.override_plugins.spatie_permission', false)) {
@@ -650,5 +661,31 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     : '<fg=yellow;options=bold>NOT SET</>',
             ];
         });
+    }
+
+    private static function configureFileFieldTypeConfigFormSchema(array $schema)
+    {
+        return array_map(function ($component) {
+
+            if ($component instanceof \Filament\Forms\Components\Toggle
+                && $component->getName() === 'multiple'
+            ) {
+                // Force the multiple toggle to be always on
+                // and hidden from the form
+                $component = $component
+                    ->hidden()
+                    ->dehydratedWhenHidden()
+                    ->afterStateHydrated(function ($component) {
+                        $component->state(true);
+                    });
+            }
+            else if ($component instanceof \Filament\Forms\Components\Tabs
+                || $component instanceof \Filament\Forms\Components\Tabs\Tab
+            ) {
+                $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getChildComponents()));
+            }
+
+            return $component;
+        }, $schema);
     }
 }

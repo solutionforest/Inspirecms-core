@@ -4,14 +4,15 @@ namespace SolutionForest\InspireCms\Fields\Mixins;
 
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
-use ReflectionAttribute;
-use ReflectionClass;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Translatable;
 use SolutionForest\InspireCms\Fields\Converters\DefaultConverter;
 
 /**
  * @method array getFormSchema()
+ * @method array getFormSchemaForConfig()
+ * @method array getFieldAttributes()
+ * @method array getTargetFieldAttributes($target)
  * 
  * @mixin \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig
  * 
@@ -27,30 +28,9 @@ class FieldTypeDefinition
      */
     public function getConverter()
     {
-        return fn () => collect($this->getTargetAttributes(Converter::class))
+        return fn () => collect($this->getTargetFieldAttributes(Converter::class))
             ->map(fn (Converter $attribute) => $attribute->converter)
             ->first() ?? DefaultConverter::class;
-    }
-
-    /**
-     * Retrieves the attributes associated with the field type.
-     */
-    public function getAttributes()
-    {
-        return function () {
-            $reflection = new ReflectionClass(static::class);
-
-            return $reflection->getAttributes();
-        };
-    }
-
-    public function getTargetAttributes()
-    {
-        return fn (string $attributeName) => collect($this->getAttributes())
-            ->whereInstanceOf(ReflectionAttribute::class)
-            ->filter(fn (ReflectionAttribute $attribute) => $attribute->getName() === $attributeName)
-            ->map(fn (ReflectionAttribute $attribute) => $attribute->newInstance())
-            ->all();
     }
     
     /**
@@ -72,7 +52,7 @@ class FieldTypeDefinition
                             ->default(false)
                             ->inlineLabel(),
                     ]),
-                ...$this->getFormSchema(),
+                ...$this->getFormSchemaForConfig(),
             ];
         };
     }
@@ -90,13 +70,14 @@ class FieldTypeDefinition
     /**
      * Determines whether the field type supports translation functionality.
      */
-    public function isFieldTypeTranslatable()
+    public static function isFieldTypeTranslatable()
     {
         return function () {
-            $translatable = collect($this->getTargetAttributes(Translatable::class))
+            $translatable = collect($this->getTargetFieldAttributes(Translatable::class))
                 ->map(fn (Translatable $attribute) => $attribute->translatable)
                 ->first();
 
+            // Default to true if no translatable attribute is found
             if (is_null($translatable)) {
                 return true;
             }
