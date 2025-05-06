@@ -24,7 +24,7 @@
                 @if (($media = collect($about_section_resume)->first()))
                     <button type="submit" class="send-button" onclick="window.open('{{ $media->getUrl() }}')">
                         resume
-                        <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                        <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
                     </button>
                 @endif
             </div>

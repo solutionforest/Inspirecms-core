@@ -36,7 +36,7 @@
                     <span class="post-date">
                         {{ $blog->publishAt?->format('d M, Y') }}
                     </span>
-                    <span class="post-date"> <img src="{{ asset('image/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
+                    <span class="post-date"> <img src="{{ asset('images/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
                 </div>
 
             </header>
@@ -58,10 +58,10 @@
                     <div class="col-md-1 ps-0 pe-0">
                         <div class="social-share-fixed">
                             <ul class="social-icons">
-                                <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
+                                <li><a href="#"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a></li>
+                                <li><a href="#"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a></li>
+                                <li><a href="#"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a></li>
+                                <li><a href="#"><img src="{{ asset('images/icon/ball-socialmedia.svg') }}" alt=""></a></li>
                             </ul>
                         </div>
                     </div>
@@ -71,15 +71,15 @@
                         <div class="main-content">
                             <!-- Author Info -->
                             <div class="author-info">
-                                <img src="{{ asset('image/avator.svg') }} " alt="Author Avatar" class="author-avatar">
+                                <img src="{{ asset('images/icon/avator.svg') }} " alt="Author Avatar" class="author-avatar">
                                 <span class="author-name">Marina Silva</span>
                             </div>
                             <div class="mobile-social-icon">
                                 <ul class="social-icons">
-                                    <li><a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a></li>
-                                    <li><a href="#"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a></li>
+                                    <li><a href="#"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a></li>
+                                    <li><a href="#"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a></li>
+                                    <li><a href="#"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a></li>
+                                    <li><a href="#"><img src="{{ asset('images/icon/ball-socialmedia.svg') }}" alt=""></a></li>
                                 </ul>
                             </div>
                             <!-- Post Content -->
@@ -146,7 +146,7 @@
                                     <div class="comment-thread">
                                         <div class="comment">
                                             <div class="comment-avatar">
-                                                <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                                <img src="{{ asset('images/icon/avator.svg') }} " alt="Avatar">
                                             </div>
                                             <div class="comment-content">
                                                 <div class="comment-header">
@@ -162,7 +162,7 @@
                                         <div class="comment-replies">
                                             <div class="comment">
                                                 <div class="comment-avatar">
-                                                    <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                                    <img src="{{ asset('images/icon/avator.svg') }} " alt="Avatar">
                                                 </div>
                                                 <div class="comment-content">
                                                     <div class="comment-header">
@@ -180,7 +180,7 @@
                                     <div class="comment-thread">
                                         <div class="comment">
                                             <div class="comment-avatar">
-                                                <img src="{{ asset('image/avator.svg') }} " alt="Avatar">
+                                                <img src="{{ asset('images/icon/avator.svg') }} " alt="Avatar">
                                             </div>
                                             <div class="comment-content">
                                                 <div class="comment-header">

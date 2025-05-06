@@ -21,10 +21,10 @@
                 </address>
                 <div class="contact-details">
                     @propertyNotEmpty('contact', 'phone')
-                        <p><img src="{{ asset('image/icon/tel.svg') }}" alt=""><a href="tel:{{ $contact_phone }}">{{ $contact_phone }}</a></p>
+                        <p><img src="{{ asset('images/icon/tel.svg') }}" alt=""><a href="tel:{{ $contact_phone }}">{{ $contact_phone }}</a></p>
                     @endif
                     @propertyNotEmpty('contact', 'email')
-                        <p><img src="{{ asset('image/icon/email.svg') }}" alt=""><a href="tel:{{ $contact_email }}">{{ $contact_email }}</a></p>
+                        <p><img src="{{ asset('images/icon/email.svg') }}" alt=""><a href="tel:{{ $contact_email }}">{{ $contact_email }}</a></p>
                     @endif
                 </div>
             </div>
@@ -32,10 +32,10 @@
             <div class="follow-links">
                 <h3>Follow Us</h3>
                 <div class="social-icons">
-                   <a href="@property('social_media', 'facebook')"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'twitter')"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'linkedin')"><img src="{{ asset('image/icon/ilnkedin.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'email')"><img src="{{ asset('image/icon/ball-socialmedia.svg') }}" alt=""></a>
+                   <a href="@property('social_media', 'facebook')"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a>
+                   <a href="@property('social_media', 'twitter')"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a>
+                   <a href="@property('social_media', 'linkedin')"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a>
+                   <a href="@property('social_media', 'email')"><img src="{{ asset('images/icon/ball-socialmedia.svg') }}" alt=""></a>
                 </div>
             </div>
         </div>
@@ -70,7 +70,7 @@
 
                 <button type="submit" class="send-button">
                     Send
-                    <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                    <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
                 </button>
             </form>
         </div>

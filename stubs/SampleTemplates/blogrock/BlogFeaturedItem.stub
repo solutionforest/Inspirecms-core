@@ -22,7 +22,7 @@
                 <div class="post-date">{{ $content?->publishAt }}</div>
                 <p class="featured-excerpt">
                     @property('page_banner', 'description')
-                    <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
+                    <span class=""> <img src="{{ asset('images/icon/arrow1.svg') }}" alt=""></span>
                 </p>
                 <div class="pagination">
                     @isset($pagination)

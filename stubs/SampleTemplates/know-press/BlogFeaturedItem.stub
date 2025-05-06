@@ -32,7 +32,7 @@
                 <div class="post-date">{{ $blog_content_post_date }}</div>
                 <p class="featured-excerpt">
                     {{ $page_banner_description }}
-                    <span class=""> <img src="{{ asset('image/icon/arrow1.svg') }}" alt=""></span>
+                    <span class=""> <img src="{{ asset('images/icon/arrow1.svg') }}" alt=""></span>
                 </p>
                 <div class="pagination">
                     @isset($pagination)

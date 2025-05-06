@@ -36,11 +36,11 @@
                                         </h3>
                                         <div class="article-meta">
                                             <span class="date">Added: 23 October 2020</span>
-                                            <span class="comments"><img src="{{ asset('image/icon/comment.svg') }}" alt=""></i> 23</span>
+                                            <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}" alt=""></i> 23</span>
                                         </div>
                                         <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
                                         <div class="article-author">
-                                            <img src="{{ asset('image/avator.svg') }}" alt="Author" class="author-avatar">
+                                            <img src="{{ asset('images/icon/avator.svg') }}" alt="Author" class="author-avatar">
                                             <span class="author-name">Anna Profeska</span>
                                         </div>
                                     </div>
@@ -57,9 +57,9 @@
                             <div class="follow-me mb-4">
                                 <div class="follow-me-title">Follow Me</div>
                                 <div class="social-icons">
-                                    <a href="#"><img src="{{ asset('image/icon/birdx.svg') }}" alt=""></a>
-                                    <a href="#"><img src="{{ asset('image/icon/fb.svg') }}" alt=""></a>
-                                    <a href="#"><img src="{{ asset('image/icon/ig.svg') }}" alt=""></a>
+                                    <a href="#"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a>
+                                    <a href="#"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a>
+                                    <a href="#"><img src="{{ asset('images/icon/ig.svg') }}" alt=""></a>
                                 </div>
                             </div>
 
@@ -67,7 +67,7 @@
                             <div class="follow-me mb-4">
                                 <div class="follow-me-title">About Me</div>
                                 <div class="profile-card">
-                                    <img src="{{ asset('image/profile-card-image.png') }}" alt="Profile" class="profile-img">
+                                    <img src="{{ asset('images/profile-card-image.png') }}" alt="Profile" class="profile-img">
                                     <p class="mt-3">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget massa sollicitudin, cursus risus eu, vehicula metus. </p>
                                     <a href="#" class="read-more">Read More →</a>
                                 </div>
@@ -79,7 +79,7 @@
                                 <div class="search-box">
                                     <input type="text" placeholder="Search for...">
                                     <button class="search-button">
-                                        <img src="{{ asset('image/icon/search.svg') }}" alt="">
+                                        <img src="{{ asset('images/icon/search.svg') }}" alt="">
                                     </button>
                                 </div>
                             </div>

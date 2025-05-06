@@ -15,7 +15,7 @@
             </svg>
         </a>
         <button class="menu-toggle" type="button">
-            <span class="close-icon"><img src="{{ asset('image/icon/close-menu.svg') }}" alt=""></span>
+            <span class="close-icon"><img src="{{ asset('images/icon/close-menu.svg') }}" alt=""></span>
             <span class="menu-icon"><span class="navbar-toggler-icon"></span></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">

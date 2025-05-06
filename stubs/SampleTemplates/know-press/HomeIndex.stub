@@ -98,9 +98,9 @@
                 <div class="feedback">
                     <span>Was this page helpful?</span>
                     <div class="emoji-buttons">
-                        <button><img src="{{ asset('image/icon/smile-1.svg') }}" alt=""></button>
-                        <button><img src="{{ asset('image/icon/smile--1.svg') }}" alt=""></button>
-                        <button><img src="{{ asset('image/icon/smile-0.svg') }}" alt=""></button>
+                        <button><img src="{{ asset('images/icon/smile-1.svg') }}" alt=""></button>
+                        <button><img src="{{ asset('images/icon/smile--1.svg') }}" alt=""></button>
+                        <button><img src="{{ asset('images/icon/smile-0.svg') }}" alt=""></button>
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@
         </div>
         <div class="utility-sidebar">
             <button class="print-btn">
-                <img src="{{ asset('image/icon/printer.svg') }}" alt="">
+                <img src="{{ asset('images/icon/printer.svg') }}" alt="">
                 PRINT
             </button>
 
@@ -137,10 +137,10 @@
         <!-- Mobile Utility Controls  -->
         <div class="mobile-utility-controls">
             <button class="mobile-print-btn">
-                <img src="{{ asset('image/icon/printer.svg') }}" alt="">
+                <img src="{{ asset('images/icon/printer.svg') }}" alt="">
             </button>
             <button class="mobile-contents-btn">
-                <img src="{{ asset('image/icon/utility-content.svg') }}" alt="">
+                <img src="{{ asset('images/icon/utility-content.svg') }}" alt="">
 
             </button>
         </div>
@@ -149,7 +149,7 @@
         <div class="mobile-contents-popup">
             <div class="popup-content">
                 <div class="popup-header">
-                <img src="{{ asset('image/icon/utility-content.svg') }}" alt="">
+                <img src="{{ asset('images/icon/utility-content.svg') }}" alt="">
                     <h3>CONTENTS</h3>
                     <button class="close-popup">&times;</button>
                 </div>

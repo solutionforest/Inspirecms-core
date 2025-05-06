@@ -51,6 +51,7 @@ class SampleSeeder extends Seeder
         $this->addSampleTemplates();
 
         $this->importDataService->run();
+        $this->showImportErrors();
 
         // Reset for next import
         $this->importDataService->reset();
@@ -59,10 +60,9 @@ class SampleSeeder extends Seeder
         $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
 
         // update config of contentPicker field for featured_blogs
-        $dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data');
         if (
             ($field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first())
-            && $dtBlogData
+            && ($dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data'))
         ) {
             $field->config = array_merge($field->config ?? [], [
                 'documentType' => $dtBlogData->getKey(),
@@ -112,6 +112,26 @@ class SampleSeeder extends Seeder
         }
 
         $this->importDataService->run();
+        $this->showImportErrors();
+    }
+
+    private function showImportErrors(): void
+    {
+        foreach ($this->importDataService->getErrors() as $type => $error) {
+            if (is_string($error)) {
+                $this->command->error('Having error: ' . $type . ' => ' . $error);
+            } elseif ($error instanceof Collection || is_array($error)) {
+                foreach ($error as $item) {
+                    if ($item instanceof Model) {
+                        $this->command->error('Having error: ' . $type . ' => ' . $item->getKey() . ': ' . $item->getErrorsAsString());
+                    } elseif (is_string($item)) {
+                        $this->command->error('Having error: ' . $type . ' => ' . $item);
+                    } elseif ($item instanceof \Throwable) {
+                        $this->command->error('Having error: ' . $type . ' => ' . $item->getMessage());
+                    }
+                }
+            }
+        }
     }
 
     protected function addSampleTemplates(): void
