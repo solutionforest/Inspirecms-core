@@ -13,16 +13,16 @@ use SolutionForest\InspireCms\Fields\Converters\DefaultConverter;
  * @method array getFormSchemaForConfig()
  * @method array getFieldAttributes()
  * @method array getTargetFieldAttributes($target)
- * 
+ *
  * @mixin \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig
- * 
+ *
  * @property null|bool $translatable
  */
 class FieldTypeDefinition
 {
     /**
      * Gets the converter associated with this field type.
-     * 
+     *
      * The converter is responsible for transforming field values between
      * different representations (e.g., from database format to display format).
      */
@@ -32,12 +32,12 @@ class FieldTypeDefinition
             ->map(fn (Converter $attribute) => $attribute->converter)
             ->first() ?? DefaultConverter::class;
     }
-    
+
     /**
      * Retrieves the enhanced form schema for the field.
      *
-     * This method returns an enhanced schema that defines how the field 
-     * should be rendered and processed in forms, potentially including 
+     * This method returns an enhanced schema that defines how the field
+     * should be rendered and processed in forms, potentially including
      * additional validation, formatting, or UI-related configuration.
      */
     public function getEnhancedFormSchema()

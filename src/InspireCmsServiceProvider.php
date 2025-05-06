@@ -678,8 +678,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->afterStateHydrated(function ($component) {
                         $component->state(true);
                     });
-            }
-            else if ($component instanceof \Filament\Forms\Components\Tabs
+            } elseif ($component instanceof \Filament\Forms\Components\Tabs
                 || $component instanceof \Filament\Forms\Components\Tabs\Tab
             ) {
                 $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getChildComponents()));
