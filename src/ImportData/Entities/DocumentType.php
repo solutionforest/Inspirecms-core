@@ -139,7 +139,7 @@ class DocumentType extends BaseEntity
             'show_as_table' => $this->showAsTable ?? false,
             'show_at_root' => $this->showAtRoot ?? true,
             'category' => $this->category,
-            'title' => $this->title ?? (string) str($this->slug)->title()->replace('_', ' '),
+            'title' => $this->title ?? (string) str($this->slug)->title()->replace(['_', '-'], ' '),
             'slug' => $this->slug,
             'icon' => $this->icon,
         ];

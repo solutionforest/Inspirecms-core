@@ -162,8 +162,7 @@ class ImportService implements ImportServiceInterface
                         $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
 
                         $this->importDataService->addTemplate(
-                            slug: $data->slug,
-                            data: $data
+                            data: $data,
                         );
 
                         return;
@@ -180,8 +179,6 @@ class ImportService implements ImportServiceInterface
             neededExtensions: ['.json'],
             callback: function ($fs, $folderPath, $file) use ($forType) {
 
-                $slug = Str::before(basename($file), '.');
-
                 $jsonData = $fs->json($file);
 
                 if (is_null($jsonData)) {
@@ -192,7 +189,6 @@ class ImportService implements ImportServiceInterface
                     case ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE:
                         $data = Entities\DocumentType::fromArray($jsonData);
                         $this->importDataService->addDocumentType(
-                            slug: $slug,
                             data: $data
                         );
 
@@ -202,7 +198,6 @@ class ImportService implements ImportServiceInterface
                         $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
                         $data->fields = $fields;
                         $this->importDataService->addFieldGroup(
-                            slug: $data->slug,
                             data: $data,
                         );
 
@@ -210,15 +205,15 @@ class ImportService implements ImportServiceInterface
                     case ImportDataHelper::FOLDER_IDENTIFIER_CONTENT:
                         $data = Entities\Content::fromArray($jsonData);
                         $this->importDataService->addContent(
-                            slug: $slug,
-                            parent: $data->parent,
-                            data: $data
+                            data: $data,
                         );
 
                         break;
                     case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
                         $data = Entities\Navigation::fromArray($jsonData);
-                        $this->importDataService->addNavigation(data: $data);
+                        $this->importDataService->addNavigation(
+                            data: $data,
+                        );
 
                         break;
                 }

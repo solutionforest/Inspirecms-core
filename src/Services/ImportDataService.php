@@ -60,23 +60,29 @@ class ImportDataService implements ImportDataServiceInterface
     ) {}
 
     /** {@inheritDoc} */
-    public function addDocumentType(string $slug, Entities\DocumentType $data)
+    public function addDocumentType(Entities\DocumentType $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         if (isset($this->pendingData['documentTypes'][$slug])) {
             return;
         }
-        $data->slug = $slug;
         $this->pendingData['documentTypes'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addFieldGroup(string $slug, Entities\FieldGroup $data)
+    public function addFieldGroup(Entities\FieldGroup $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         if (isset($this->pendingData['fieldGroups'][$slug])) {
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['fieldGroups'][$slug] = $data;
 
         foreach ($data->fields as $item) {
@@ -92,8 +98,12 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addTemplate(string $slug, Entities\Template $data)
+    public function addTemplate(Entities\Template $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         // If the template already exists, merge the content
         if ($existing = ($this->pendingData['templates'][$slug] ?? null)) {
             $existing->content = array_merge($existing->content, $data->content);
@@ -101,20 +111,25 @@ class ImportDataService implements ImportDataServiceInterface
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['templates'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addContent(string $slug, ?string $parent, Entities\Content $data)
+    public function addContent(Entities\Content $data)
     {
-        $contentKey = ($parent ?? '__root__') . '/' . $slug;
+        $parent = $data->parent;
+        $slug = $data->slug;
+
+        if (empty($slug)) {
+            return;
+        }
+
+        $contentKey = (filled($parent) ? $parent : '__root__') . '/' . $slug;
 
         if (isset($this->pendingData['content'][$contentKey])) {
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['content'][$contentKey] = $data;
     }
 

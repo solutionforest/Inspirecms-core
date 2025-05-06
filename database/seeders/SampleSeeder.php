@@ -52,41 +52,44 @@ class SampleSeeder extends Seeder
 
         $this->importDataService->run();
 
-        // handle the content have contentPicker field
-        if ($blog = $this->contentService->findByRealPath('home/blog')->first()) {
-            $availableBlogs = $this->contentService->getUnderRealPath('blogs');
-            $blog->propertyData = json_encode([
-                'featured_blogs' => [
-                    'blogs' => $availableBlogs->random($availableBlogs->count() >= 3 ? 3 : $availableBlogs->count())->map(fn ($item) => $item->getKey())->toArray(),
-                ],
-            ]);
-            $blog->setPublishableState('publish');
-            $blog->save();
-        }
+        // Reset for next import
+        $this->importDataService->reset();
 
-        /**
-         * @var class-string<Model>
-         */
         $fieldModel = InspireCmsConfig::getFieldModelClass();
-        /**
-         * @var class-string<Model>
-         */
         $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
 
-        $field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first();
-        if ($field) {
+        // update config of contentPicker field for featured_blogs
+        $dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data');
+        if (
+            ($field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first())
+            && $dtBlogData
+        ) {
             $field->config = array_merge($field->config ?? [], [
-                'documentType' => $documentTypeModel::firstWhere('slug', 'blog')?->getKey(),
+                'documentType' => $dtBlogData->getKey(),
             ]);
             $field->save();
         }
 
+        // handle the content have contentPicker field
+        $cBlogData = $this->contentService->getUnderRealPath(
+            path: 'blog-management',
+            limit: 10,
+        );
+        if ($cBlogData->isNotEmpty()
+            && ($cBlogIndex = collect($this->getSampleContent())->first(fn (ImportDataEntities\Content $v) => $v->slug === 'blogs' && $v->parent === 'parent'))
+        ) {
+            $cBlogIndex->properties['featured_blogs']['blogs'] = $cBlogData->random(3)->map(fn ($item) => $item->getKey())->all();
+            $this->importDataService->addContent(
+                data: $cBlogIndex
+            );
+        }
+
         // temp for update content route
         // todo: move to import data
-        if (($dynamicBlogPage = $this->contentService->findByRealPath('home/dynamic-blog-page')->first())) {
+        if (($cBlogDetail = $this->contentService->findByRealPath('home/blog')->first())) {
             event(
                 new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
-                    $dynamicBlogPage->withoutRelations(),
+                    $cBlogDetail->withoutRelations(),
                     [
                         [
                             'language_id' => null,
@@ -108,6 +111,7 @@ class SampleSeeder extends Seeder
             );
         }
 
+        $this->importDataService->run();
     }
 
     protected function addSampleTemplates(): void
@@ -139,8 +143,9 @@ class SampleSeeder extends Seeder
                 ->mapWithKeys(fn ($theme) => [$theme => $getContent($slug, $theme)])
                 ->filter()
                 ->toArray();
-            $data = new ImportDataEntities\Template(slug: $slug, content: $themedContent);
-            $this->importDataService->addTemplate($slug, $data);
+            $this->importDataService->addTemplate(
+                new ImportDataEntities\Template(slug: $slug, content: $themedContent),
+            );
         }
     }
 
@@ -166,7 +171,7 @@ class SampleSeeder extends Seeder
             slug: 'hero_banner',
             fields: [
                 new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['types' => ['image'], 'multiple' => true]),
+                new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['types' => ['image']]),
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
@@ -230,14 +235,14 @@ class SampleSeeder extends Seeder
             ],
         );
         foreach ($items as $group) {
-            $this->importDataService->addFieldGroup($group->slug, $group);
+            $this->importDataService->addFieldGroup($group);
         }
     }
 
     protected function addSampleDocumentTypes(): void
     {
         foreach ($this->getSampleDocumentTypes() as $item) {
-            $this->importDataService->addDocumentType($item->slug, $item);
+            $this->importDataService->addDocumentType($item);
         }
     }
 
@@ -255,38 +260,38 @@ class SampleSeeder extends Seeder
                 'hero_banner',
                 'profile',
             ],
-            templates: ['home'],
-            defaultTemplate: 'home',
+            templates: ['home-index'],
+            defaultTemplate: 'home-index',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-home',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'about',
+            slug: 'about-index-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'about_section',
             ],
-            templates: ['about'],
-            defaultTemplate: 'about',
+            templates: ['about-index'],
+            defaultTemplate: 'about-index',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-information-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blogs',
+            slug: 'blog-index-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
             fieldGroups: ['featured_blogs'],
-            templates: ['blogs'],
-            defaultTemplate: 'blogs',
+            templates: ['blog-index'],
+            defaultTemplate: 'blog-index',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
-            allowed: ['blog'],
+            allowed: ['blog-detail-page'],
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'contact-us',
+            slug: 'contact-us-index-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
@@ -294,12 +299,12 @@ class SampleSeeder extends Seeder
                 'page_banner',
                 'contact',
             ],
-            templates: ['contact'],
-            defaultTemplate: 'contact',
+            templates: ['contact-index'],
+            defaultTemplate: 'contact-index',
             icon: 'heroicon-o-question-mark-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'case-study',
+            slug: 'case-study-detail-page',
             showAsTable: false,
             showAtRoot: false,
             category: 'web',
@@ -307,22 +312,22 @@ class SampleSeeder extends Seeder
                 'page_banner',
                 'case_content',
             ],
-            templates: ['case-study'],
-            defaultTemplate: 'case-study',
+            templates: ['case-study-detail'],
+            defaultTemplate: 'case-study-detail',
             icon: 'heroicon-o-clipboard-document-check',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'case-studies',
+            slug: 'case-study-index-page',
             showAsTable: true,
             showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'page_banner',
             ],
-            templates: ['case-studies'],
-            defaultTemplate: 'case-studies',
+            templates: ['case-study-index'],
+            defaultTemplate: 'case-study-index',
             icon: 'heroicon-o-clipboard-document-list',
-            allowed: ['case-study'],
+            allowed: ['case-study-detail-page'],
         );
 
         $items[] = new ImportDataEntities\DocumentType(
@@ -348,10 +353,10 @@ class SampleSeeder extends Seeder
             defaultTemplate: null,
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-newspaper',
-            allowed: ['blog'],
+            allowed: ['blog-data'],
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog',
+            slug: 'blog-data',
             showAsTable: false,
             showAtRoot: false,
             category: 'data',
@@ -369,15 +374,15 @@ class SampleSeeder extends Seeder
             icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'dynamic-blog-page',
+            slug: 'blog-detail-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
             fieldGroups: [],
             templates: [
-                'blog-page',
+                'blog-detail',
             ],
-            defaultTemplate: 'blog-page',
+            defaultTemplate: 'blog-detail',
             icon: 'heroicon-o-newspaper',
         );
 
@@ -392,8 +397,8 @@ class SampleSeeder extends Seeder
                         ->filter()
                         ->where(fn ($slug) => ! in_array($slug, [
                             'homepage', // self
-                            'case-study',
-                            'blog',
+                            'case-study',   // children under case-study index page
+                            'blog-detail', //data-type
                         ]))
                         ->values()
                         ->toArray();
@@ -405,7 +410,10 @@ class SampleSeeder extends Seeder
         return $items;
     }
 
-    protected function addSampleContent(): void
+    /**
+     * @return ImportDataEntities\Content[]
+     */
+    protected function getSampleContent()
     {
         $items[] = new ImportDataEntities\Content(
             slug: 'home',
@@ -434,9 +442,9 @@ class SampleSeeder extends Seeder
             publishState: 'publish'
         );
         $items[] = new ImportDataEntities\Content(
-            slug: 'blogs',
+            slug: 'blog-management',
             title: ['en' => 'Blog Management', 'fr' => 'Gestion des blogs'],
-            documentType: 'blog-management',
+            documentType: 'blog-management', // data-type
             properties: [],
             publishState: 'publish',
             parent: null,
@@ -445,7 +453,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\Content(
             slug: 'config',
             title: ['en' => 'Config', 'fr' => 'Config'],
-            documentType: 'config',
+            documentType: 'config', // data-type
             properties: [
                 'social_media' => [
                     'facebook' => 'https://facebook.com',
@@ -462,7 +470,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\Content(
             slug: 'about',
             title: ['en' => 'About', 'fr' => 'À propos'],
-            documentType: 'about',
+            documentType: 'about-index-page',
             properties: [
                 'about_section' => [
                     'brief' => [
@@ -481,9 +489,9 @@ class SampleSeeder extends Seeder
             parent: 'home',
         );
         $items[] = new ImportDataEntities\Content(
-            slug: 'blog',
+            slug: 'blogs',
             title: ['en' => 'Blogs', 'fr' => 'Blogs'],
-            documentType: 'blogs',
+            documentType: 'blog-index-page',
             properties: [
                 'featured_blogs' => [],
             ],
@@ -495,7 +503,7 @@ class SampleSeeder extends Seeder
             $items[] = new ImportDataEntities\Content(
                 slug: "blog-$i",
                 title: ['en' => "Blog $i", 'fr' => "Blog $i"],
-                documentType: 'blog',
+                documentType: 'blog-data', // data-type
                 properties: [
                     'page_banner' => [
                         'title' => [
@@ -524,7 +532,7 @@ class SampleSeeder extends Seeder
                     ],
                 ],
                 publishState: 'publish',
-                parent: 'blogs',
+                parent: 'blog-management', // content's slug
                 sitemap: ['enable' => false],
             );
         }
@@ -532,7 +540,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\Content(
             slug: 'contact-us',
             title: ['en' => 'Contact Us', 'fr' => 'Contactez-nous'],
-            documentType: 'contact-us',
+            documentType: 'contact-us-index-page',
             properties: [
                 'page_banner' => [
                     'title' => [
@@ -556,9 +564,17 @@ class SampleSeeder extends Seeder
         );
 
         $items[] = new ImportDataEntities\Content(
+            slug: 'blog',
+            title: ['en' => 'Blog', 'fr' => 'Blog'],
+            documentType: 'blog-detail-page',
+            publishState: 'publish',
+            parent: 'home',
+        );
+
+        $items[] = new ImportDataEntities\Content(
             slug: 'case-studies',
             title: ['en' => 'Works', 'fr' => 'Travaux'],
-            documentType: 'case-studies',
+            documentType: 'case-study-index-page',
             properties: [
                 'page_banner' => [
                     'title' => [
@@ -574,22 +590,13 @@ class SampleSeeder extends Seeder
             publishState: 'publish',
             parent: 'home',
         );
-
-        $items[] = new ImportDataEntities\Content(
-            slug: 'dynamic-blog-page',
-            title: ['en' => 'Blog', 'fr' => 'Blog'],
-            documentType: 'dynamic-blog-page',
-            publishState: 'publish',
-            parent: 'home',
-        );
-
         foreach (range(1, 3) as $i) {
             $caseTitle = fake()->sentence(3);
             $content = collect(range(1, 3))->map(fn () => '<section class="research"><h3>User Research</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p></section>')->implode('');
             $items[] = new ImportDataEntities\Content(
                 slug: "case-$i",
                 title: ['en' => $caseTitle, 'fr' => $caseTitle],
-                documentType: 'case-study',
+                documentType: 'case-study-detail-page',
                 properties: [
                     'page_banner' => [
                         'title' => [
@@ -619,9 +626,13 @@ class SampleSeeder extends Seeder
                 sitemap: ['enable' => false],
             );
         }
+        return $items;
+    }
 
-        foreach ($items as $item) {
-            $this->importDataService->addContent($item->slug, $item->parent, $item);
+    protected function addSampleContent(): void
+    {
+        foreach ($this->getSampleContent() as $item) {
+            $this->importDataService->addContent($item);
         }
     }
 

@@ -9,20 +9,18 @@ interface ImportDataServiceInterface
     /**
      * Adds a new document type.
      *
-     * @param  string  $slug  The slug identifier for the document type.
      * @param  Entities\DocumentType  $data  The document type data to be added.
      * @return void
      */
-    public function addDocumentType(string $slug, Entities\DocumentType $data);
+    public function addDocumentType(Entities\DocumentType $data);
 
     /**
      * Adds a field group to the system.
      *
-     * @param  string  $slug  The unique identifier for the field group.
      * @param  Entities\FieldGroup  $data  The field group entity containing the data.
      * @return void
      */
-    public function addFieldGroup(string $slug, Entities\FieldGroup $data);
+    public function addFieldGroup(Entities\FieldGroup $data);
 
     /**
      * Adds a template to the system.
@@ -31,17 +29,15 @@ interface ImportDataServiceInterface
      * @param  Entities\Template  $data  The template data to be added.
      * @return void
      */
-    public function addTemplate(string $slug, Entities\Template $data);
+    public function addTemplate(Entities\Template $data);
 
     /**
      * Adds content to the system.
      *
-     * @param  string  $slug  The unique identifier for the content.
-     * @param  string|null  $parent  The parent content identifier, if any.
      * @param  Entities\Content  $data  The content data to be added.
      * @return void
      */
-    public function addContent(string $slug, ?string $parent, Entities\Content $data);
+    public function addContent(Entities\Content $data);
 
     /**
      * Adds a navigation entity to the system.
