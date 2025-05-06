@@ -80,10 +80,11 @@ class CmsPanelProvider extends PanelProvider
                 TreeNavigation::class,
             ]);
         // Discover resources, pages, clusters, and widgets in the specified directories
-        $panel = $panel->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
-            ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
-            ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
-            ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets');
+        $panel = $panel
+            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources')
+            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages')
+            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters')
+            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
 
         $middleware = [
             EncryptCookies::class,
