@@ -279,6 +279,15 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
         'settings' => FilamentClusters\Settings::class,
         'users' => FilamentClusters\Users::class,
     ],
+
+    // Extra widgets to display on the dashboard
+    // Add custom widgets to enhance the admin experience
+    'extra_widgets' => [
+        // Example: App\Filament\Widgets\LatestOrders::class,
+        // Example: App\Filament\Widgets\VisitorStatistics::class,
+        // Each widget will appear on the dashboard page
+        // Implement custom widgets by extending Filament\Widgets\Widget
+    ],
 ],
 ```
 

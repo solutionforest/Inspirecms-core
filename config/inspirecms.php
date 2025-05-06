@@ -247,6 +247,10 @@ return [
             'settings' => FilamentClusters\Settings::class,
             'users' => FilamentClusters\Users::class,
         ],
+
+        'extra_widgets' => [
+            // Extra widgets to be added to the CMS
+        ],
     ],
 
     'import_export' => [
