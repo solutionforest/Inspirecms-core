@@ -6,7 +6,7 @@
 
     $blogs = inspirecms_content()
         ->getPaginatedUnderRealPath(
-            path: 'blogs', 
+            path: 'blog-management', 
             perPage: 4,
             pageName: 'page',
             page: $blogPage,

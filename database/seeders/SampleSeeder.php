@@ -656,7 +656,7 @@ class SampleSeeder extends Seeder
             ],
             [
                 'title' => ['en' => 'Blog', 'fr' => 'Blog'],
-                'contentSlugPath' => 'home/blog',
+                'contentSlugPath' => 'home/blogs',
                 'type' => 'content',
             ],
             [
@@ -689,7 +689,7 @@ class SampleSeeder extends Seeder
                     [
                         'title' => ['en' => 'Blog', 'fr' => 'Blog'],
                         'type' => 'content',
-                        'contentSlugPath' => 'home/blog',
+                        'contentSlugPath' => 'home/blogs',
                     ],
                 ],
             ],

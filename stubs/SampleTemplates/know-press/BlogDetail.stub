@@ -1,9 +1,17 @@
 @php
     $locale ??= $content->getLocale();
 
-    $blog = isset($slug)
-        ? inspirecms_content()->findByRealPath("blogs/{$slug}")->first()?->toDto($locale)
-        : null;
+    if (isset($isPeekPreviewModal)) {
+        $blog = inspirecms_content()
+            ->getUnderRealPath(path: "blog-management", limit: 1)
+            ?->first()?->toDto($locale);
+    } else if (isset($slug)) {
+        $blog = inspirecms_content()
+            ->findByRealPath(path: "blog-management/{$slug}", limit: 1)
+            ->first()?->toDto($locale);
+    } else {
+        $blog = null;
+    }
     if (is_null($blog)) {
         abort(404);
     }

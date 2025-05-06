@@ -1,11 +1,11 @@
 @php
     $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);
-    $allLocales = collect(inspirecms()->getAllAvailableLanguages())
-      ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
-      ->all();
+    $otherLocales = collect(inspirecms()->getAllAvailableLanguages())
+        ->where(fn ($dto, $l) => $l != $locale)
+        ->mapWithKeys(fn ($item) => [$item->code => $item->getLabel($locale)])
+        ->all();
 @endphp
-<!-- Navbar -->
 <!-- Navbar -->
 <nav class="navbar navbar-expand-lg">
     <div class="container">
@@ -32,7 +32,11 @@
                         @endif
                     </li>
                 @endforeach
-                <li class="nav-link"><img src="{{ asset('image/icon/search.svg') }}" alt=""></li>
+                @foreach ($otherLocales as $locale => $langDto)
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url("/$locale") }}">{{ strtoupper($locale) }}</a>
+                    </li>
+                @endforeach
             </ul>
         </div>
     </div>
