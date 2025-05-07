@@ -29,7 +29,7 @@
                             
                             <button type="submit" class="send-button" onclick="window.location.href = '{{ $item->getUrl() }}'">
                                 View More
-                                <img src="{{ asset('image/icon/arrow1.svg') }}" alt="">
+                                <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
                             </button>
                         </div>
                         <div class="work-image">

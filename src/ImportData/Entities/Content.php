@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\ImportData\Entities;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContractsContent;
+use SolutionForest\InspireCms\Models\Contracts\ContentRoute;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 /**
@@ -172,6 +173,17 @@ class Content extends BaseEntity
         ], $this->webSetting ?? []);
     }
 
+    public function getRoutesData(): array
+    {
+        return collect($this->routes ?? [])
+            ->map(fn (array $route) => array_merge([
+                'language_id' => null,
+                'is_default_pattern' => false,
+                'regex_constraints' => [],
+            ], $route))
+            ->all();
+    }
+
     /**
      * @param  ContractsContent|Model  $record
      */
@@ -200,6 +212,18 @@ class Content extends BaseEntity
             'redirect_content_id',
             'redirect_type',
         ]);
+        if (! ($record->documentType?->isDataType() ?? false)) {
+
+            $data['routes'] = collect($record->routes)
+                ->map(fn (ContentRoute | Model $route) => array_merge([
+                    'locale' => $route->language?->code,
+                ], Arr::only($route->toArray(), [
+                    'uri',
+                    'is_default_pattern',
+                    'regex_constraints',
+                ])))
+                ->all();
+        }
 
         // full path
         $data['parent'] = $record->parent?->path?->value;

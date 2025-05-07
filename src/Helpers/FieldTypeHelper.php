@@ -116,7 +116,7 @@ class FieldTypeHelper
         if (filled($typeName) && ($fieldTypeConfig = static::getFieldTypeConfig($typeName))) {
             // hidden "translatable" field for the field type
             if (! $fieldTypeConfig->isFieldTypeTranslatable()) {
-                return $fieldTypeConfig->getFormSchema();
+                return $fieldTypeConfig->getFormSchemaForConfig();
             }
 
             // display "translatable" field for the field type

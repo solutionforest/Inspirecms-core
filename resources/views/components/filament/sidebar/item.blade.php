@@ -4,6 +4,7 @@
     $navKey = isset($navKey) && filled($navKey) ? trim($navKey) : null;
     $navItemKey = isset($navKey) && filled($navKey) ? trim($navItemKey) : null;
 @endphp
+@use('SolutionForest\InspireCms\Helpers\IconHelper')
 
 @props([
     'active' => false,
@@ -65,15 +66,35 @@
         ])
     >
         @if (filled($icon) && ((! $subGrouped) || $sidebarCollapsible))
-            <x-filament::icon
-                :icon="($active && $activeIcon) ? $activeIcon : $icon"
-                :x-show="($subGrouped && $sidebarCollapsible) ? '! $store.sidebar.isOpen' : false"
-                @class([
+            @php
+                // remark: enhance icon display for sub-grouped items
+                $itemIcon = ($active && $activeIcon) ? $activeIcon : $icon;
+                $itemIconClasses = [
                     'fi-sidebar-item-icon h-6 w-6',
                     'text-gray-400 dark:text-gray-500' => ! $active,
                     'text-primary-600 dark:text-primary-400' => $active,
-                ])
-            />
+                ];
+            @endphp
+            @if (IconHelper::isCmsCustomIcon($itemIcon))
+                <x-filament::icon
+                    :alias="$itemIcon"
+                    :x-show="($subGrouped && $sidebarCollapsible) ? '! $store.sidebar.isOpen' : false"
+                    @class($itemIconClasses)
+                />
+            @elseif (IconHelper::isHtmlString($itemIcon))
+                <x-filament::icon
+                    :x-show="($subGrouped && $sidebarCollapsible) ? '! $store.sidebar.isOpen' : false"
+                    @class($itemIconClasses)
+                >
+                    {!! $itemIcon !!}
+                </x-filament::icon>
+            @else
+                <x-filament::icon
+                    :icon="($active && $activeIcon) ? $activeIcon : $icon"
+                    :x-show="($subGrouped && $sidebarCollapsible) ? '! $store.sidebar.isOpen' : false"
+                    @class($itemIconClasses)
+                />
+            @endif
         @endif
 
         @if ((blank($icon) && $grouped) || $subGrouped)

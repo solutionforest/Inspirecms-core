@@ -16,9 +16,8 @@ use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
-use SolutionForest\InspireCms\Http\Controllers\AssetController;
-use SolutionForest\InspireCms\Http\Controllers\FrontendController;
-use SolutionForest\InspireCms\Http\Controllers\SitemapController;
+use SolutionForest\InspireCms\Http\Controllers as CmsControllers;
+use SolutionForest\InspireCms\Http\Middleware as CmsMiddlewares;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 
 class InspireCms
@@ -131,34 +130,34 @@ class InspireCms
      */
     public function routes(): void
     {
-        Route::name('inspirecms.asset')
-            ->get('assets/{key}', AssetController::class)
-            ->middleware(InspireCmsConfig::get('media.media_library.middlewares', [
-                'cache.headers:public;max_age=2628000;etag',
-            ]));
-
-        Route::name('inspirecms.sitemap')
-            ->get('sitemap.xml', SitemapController::class);
-
-        Route::name('inspirecms.frontend.')
-            ->middleware(InspireCmsConfig::get('frontend.routes.middlewares', []))
+        Route::name('inspirecms.')
             ->group(function () {
+                Route::name('sitemap')
+                    ->get('sitemap.xml', CmsControllers\SitemapController::class);
 
-                $factory = ContentSegmentFactory::create();
+                $frontendMiddlewares = InspireCmsConfig::get('frontend.routes.middleware', [
+                    CmsMiddlewares\SetUpPoweredBy::class,
+                ]);
+                Route::name('frontend.')
+                    ->middleware($frontendMiddlewares)
+                    ->group(function () {
 
-                if (Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')) {
+                        $factory = ContentSegmentFactory::create();
+                        $customFrontendRoutes = Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')
+                            ? $this->getContentRoutes()
+                            : [];
 
-                    foreach ($this->getContentRoutes() as $index => $item) {
-                        Route::any($item['uri'], FrontendController::class)
-                            ->where($item['regex_constraints'] ?? [])
-                            ->name($item['alias'] ?? 'content_' . $index);
-                    }
-                }
+                        foreach ($customFrontendRoutes as $index => $item) {
+                            Route::any($item['uri'], CmsControllers\FrontendController::class)
+                                ->where($item['regex_constraints'] ?? [])
+                                ->name($item['alias'] ?? 'content_' . $index);
+                        }
 
-                // default route
-                Route::any($factory->getDefaultRoutePattern(), FrontendController::class)
-                    ->where($factory->getDefaultRouteConstraints())
-                    ->name('default');
+                        // default route
+                        Route::any($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
+                            ->where($factory->getDefaultRouteConstraints())
+                            ->name('default');
+                    });
             });
     }
 
@@ -215,28 +214,13 @@ class InspireCms
                 );
         }
 
-        return collect($this->cachedNavigation['navigation'] ?? [])
-            ->map(function ($arr) {
-                $alias = $this->cachedNavigation['alias'] ?? [];
-                $data = array_combine($alias, $arr);
-                if (isset($data['children'])) {
-                    $data['children'] = collect($data['children'])
-                        ->map(fn ($childArr) => array_combine($alias, $childArr))
-                        ->values()
-                        ->all();
-                }
-
-                $data['isActive'] = (bool) $data['is_active'];
-
-                return $data;
-            })
+        return collect($this->processNavigationData($this->cachedNavigation['navigation'] ?? [], $this->cachedNavigation['alias'] ?? []))
+            ->where('category', $category)
+            ->where('isActive', true)
             ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code, array_keys($this->getAllAvailableLanguages())))
-            ->where(
-                fn (NavigationDto $nav) => $nav->category == $category &&
-                $nav->isActive
-            )
             ->values()
             ->all();
+
     }
 
     public function forgetCachedNavigation(): void
@@ -389,6 +373,26 @@ class InspireCms
     private function aliasModelFields($attributes = [], $relations = []): array
     {
         return array_values(array_unique(array_merge($attributes, $relations)));
+    }
+
+    private function processNavigationData(array $navigationData, array $alias)
+    {
+        return collect($navigationData)
+            ->where(fn ($v) => is_array($v))
+            ->map(fn ($arr) => array_combine($alias, $arr))
+            ->map(function (array $data) use ($alias) {
+                if (isset($data['children']) && is_array($data['children'])) {
+                    $data['children'] = $this->processNavigationData($data['children'], $alias);
+                } else {
+                    $data['children'] = [];
+                }
+
+                $data['isActive'] = (bool) $data['is_active'];
+                unset($data['is_active']);
+
+                return $data;
+            })
+            ->all();
     }
 
     // endregion Helpers

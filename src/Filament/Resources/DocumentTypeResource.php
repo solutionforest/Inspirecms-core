@@ -56,7 +56,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return FilamentIcon::resolve('inspirecms::document_type');
+        return 'inspirecms::document_type';
     }
 
     public static function form(Form $form): Form

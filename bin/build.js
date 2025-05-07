@@ -48,3 +48,8 @@ compile({
     entryPoints: ['./resources/js/index.js'],
     outfile: './resources/dist/inspirecms.js',
 })
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/components/code-editor.js'],
+    outfile: './resources/dist/components/code-editor.js',
+})

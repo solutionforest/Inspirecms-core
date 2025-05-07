@@ -7,7 +7,7 @@ use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class SetCmsPanel
+class SetUpCmsPanel
 {
     public function handle(Request $request, Closure $next)
     {
@@ -16,6 +16,8 @@ class SetCmsPanel
         $panel = Filament::getPanel($panelId);
 
         Filament::setCurrentPanel($panel);
+
+        Filament::bootCurrentPanel();
 
         return $next($request);
     }

@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
+use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
@@ -47,6 +49,7 @@ class ImportDataService implements ImportDataServiceInterface
     protected array $tempModels = [];
 
     const PROCESS_ORDER = [
+        'languages',
         'templates',
         'fieldGroups',
         'documentTypes',
@@ -60,23 +63,29 @@ class ImportDataService implements ImportDataServiceInterface
     ) {}
 
     /** {@inheritDoc} */
-    public function addDocumentType(string $slug, Entities\DocumentType $data)
+    public function addDocumentType(Entities\DocumentType $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         if (isset($this->pendingData['documentTypes'][$slug])) {
             return;
         }
-        $data->slug = $slug;
         $this->pendingData['documentTypes'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addFieldGroup(string $slug, Entities\FieldGroup $data)
+    public function addFieldGroup(Entities\FieldGroup $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         if (isset($this->pendingData['fieldGroups'][$slug])) {
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['fieldGroups'][$slug] = $data;
 
         foreach ($data->fields as $item) {
@@ -92,8 +101,12 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addTemplate(string $slug, Entities\Template $data)
+    public function addTemplate(Entities\Template $data)
     {
+        $slug = $data->slug;
+        if (empty($slug)) {
+            return;
+        }
         // If the template already exists, merge the content
         if ($existing = ($this->pendingData['templates'][$slug] ?? null)) {
             $existing->content = array_merge($existing->content, $data->content);
@@ -101,20 +114,25 @@ class ImportDataService implements ImportDataServiceInterface
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['templates'][$slug] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addContent(string $slug, ?string $parent, Entities\Content $data)
+    public function addContent(Entities\Content $data)
     {
-        $contentKey = ($parent ?? '__root__') . '/' . $slug;
+        $parent = $data->parent;
+        $slug = $data->slug;
+
+        if (empty($slug)) {
+            return;
+        }
+
+        $contentKey = (filled($parent) ? $parent : '__root__') . '/' . $slug;
 
         if (isset($this->pendingData['content'][$contentKey])) {
             return;
         }
 
-        $data->slug = $slug;
         $this->pendingData['content'][$contentKey] = $data;
     }
 
@@ -122,6 +140,20 @@ class ImportDataService implements ImportDataServiceInterface
     public function addNavigation(Entities\Navigation $data)
     {
         $this->pendingData['navigation'][] = $data;
+    }
+
+    /** {@inheritDoc} */
+    public function addLanguage(Entities\Language $data)
+    {
+        $code = $data->code;
+        if (empty($code)) {
+            return;
+        }
+        if (isset($this->pendingData['languages'][$code])) {
+            return;
+        }
+
+        $this->pendingData['languages'][$code] = $data;
     }
 
     /** {@inheritDoc} */
@@ -460,6 +492,42 @@ class ImportDataService implements ImportDataServiceInterface
                     $content->setAsDefaultTemplate($template);
                 }
 
+                if (! empty($item->routes) && $content->documentType?->display_category == DocumentTypeCategory::Web) {
+                    $formattedRoutes = collect($item->routes)
+                        ->where(fn ($i) => is_array($i))
+                        ->map(function (array $i) {
+                            $locale = $i['locale'] ?? null;
+                            if (filled($locale)) {
+                                $i['language_id'] = $this->findLanguages($locale)->first()?->getKey();
+                            } else {
+                                $i['language_id'] = null;
+                            }
+                            unset($i['locale']);
+                            if (isset($i['is_default_pattern'])) {
+                                $i['is_default_pattern'] = (bool) $i['is_default_pattern'];
+                            } else {
+                                $i['is_default_pattern'] = true;
+                            }
+
+                            return Arr::only($i, [
+                                'language_id',
+                                'uri',
+                                'is_default_pattern',
+                                'regex_constraints',
+                            ]);
+                        })
+                        ->where(fn ($i) => isset($i['uri']) && ! empty($i['uri']))
+                        ->values()->all();
+                    if (! empty($formattedRoutes)) {
+                        event(
+                            new UpsertRoute(
+                                $content->withoutRelations(),
+                                $formattedRoutes,
+                            )
+                        );
+                    }
+                }
+
                 $this->finished['content'][$contentKey] = $content;
 
             } catch (\Throwable $th) {
@@ -538,6 +606,39 @@ class ImportDataService implements ImportDataServiceInterface
                     $errorMsg .= ' - ' . get_class($th);
                 }
                 $this->processErrors['navigation']['s3'][$category][] = $errorMsg;
+            }
+        }
+    }
+
+    protected function processForLanguages()
+    {
+        $model = InspireCmsConfig::getLanguageModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        foreach ($this->pendingData['languages'] ?? [] as $code => $item) {
+
+            try {
+
+                $item->validate();
+
+                $languageData = $item->getDataForModel();
+
+                /**
+                 * @var null | Language & Model
+                 */
+                $language = $this->findLanguages($code)->first();
+
+                if (! $language) {
+                    $language = $model::create($languageData);
+                } else {
+                    $language->update($languageData);
+                }
+
+                $this->finished['languages'][$code] = $language;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['languages'][$code] = $th->getMessage();
             }
         }
     }
@@ -785,6 +886,17 @@ class ImportDataService implements ImportDataServiceInterface
         return collect($existing)->where(fn ($v, $k) => in_array($k, $slugs));
     }
 
+    /**
+     * Find languages by locale.
+     *
+     * @param  string[]|string  $locales  The locales of the languages to find.
+     * @return Collection<Language|Model>
+     */
+    protected function findLanguages(...$locales)
+    {
+        return $this->findFromTempModels('languages', $locales);
+    }
+
     protected function findFromTempModels(string $type, ...$keys)
     {
         $existing = $this->tempModels[$type] ?? collect();
@@ -793,6 +905,7 @@ class ImportDataService implements ImportDataServiceInterface
 
         $key = match ($type) {
             'fieldGroups' => 'name',
+            'languages' => 'code',
             default => 'slug',
         };
 
@@ -804,6 +917,7 @@ class ImportDataService implements ImportDataServiceInterface
                 'fieldGroups' => InspireCmsConfig::getFieldGroupModelClass(),
                 'templates' => InspireCmsConfig::getTemplateModelClass(),
                 'documentTypes' => InspireCmsConfig::getDocumentTypeModelClass(),
+                'languages' => InspireCmsConfig::getLanguageModelClass(),
                 default => null,
             };
 

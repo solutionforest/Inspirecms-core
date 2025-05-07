@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms;
 
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
+use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
@@ -16,6 +17,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
+use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
@@ -27,7 +29,7 @@ use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
-use SolutionForest\InspireCms\View\Components\Template;
+use SolutionForest\InspireCms\View\Components as ViewComponents;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -122,9 +124,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
 
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\SimpleFieldDefinition);
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\TranslatableFieldType);
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeConverter);
+        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition);
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
@@ -199,6 +199,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
             Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
+            AlpineComponent::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.js')->loadedOnRequest(),
         ];
     }
 
@@ -313,17 +314,27 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function customPlugins(): void
     {
-        if (InspireCmsConfig::get('override_plugins.field_group_models', false)) {
+        if (InspireCmsConfig::get('system.override_plugins.field_group_models', false)) {
 
             // override field group models
-            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldGroupModelClass(
+            FilamentFieldGroup::setFieldGroupModelClass(
                 \SolutionForest\InspireCms\Models\FieldGroup::class
             );
-            \SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup::setFieldModelClass(
+            FilamentFieldGroup::setFieldModelClass(
                 \SolutionForest\InspireCms\Models\Field::class
             );
+
+            // customizing the config form schema
+            FilamentFieldGroup::configureFieldTypeConfigFormUsing(
+                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File::class,
+                fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
+            );
+            FilamentFieldGroup::configureFieldTypeConfigFormUsing(
+                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image::class,
+                fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
+            );
         }
-        if (InspireCmsConfig::get('override_plugins.spatie_permission', false)) {
+        if (InspireCmsConfig::get('system.override_plugins.spatie_permission', false)) {
 
             config()->set('permission.enable_wildcard_permission', true);
 
@@ -587,7 +598,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerComponentAndDirectives(): void
     {
-        Blade::component('cms-template', Template::class);
+        Blade::component('cms-template', ViewComponents\Template::class);
 
         Blade::directive('property', function ($expression) {
 
@@ -652,5 +663,30 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     : '<fg=yellow;options=bold>NOT SET</>',
             ];
         });
+    }
+
+    private static function configureFileFieldTypeConfigFormSchema(array $schema)
+    {
+        return array_map(function ($component) {
+
+            if ($component instanceof \Filament\Forms\Components\Toggle
+                && $component->getName() === 'multiple'
+            ) {
+                // Force the multiple toggle to be always on
+                // and hidden from the form
+                $component = $component
+                    ->hidden()
+                    ->dehydratedWhenHidden()
+                    ->afterStateHydrated(function ($component) {
+                        $component->state(true);
+                    });
+            } elseif ($component instanceof \Filament\Forms\Components\Tabs
+                || $component instanceof \Filament\Forms\Components\Tabs\Tab
+            ) {
+                $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getChildComponents()));
+            }
+
+            return $component;
+        }, $schema);
     }
 }

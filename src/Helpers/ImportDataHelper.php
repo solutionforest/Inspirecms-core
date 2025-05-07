@@ -22,6 +22,7 @@ class ImportDataHelper
         self::FOLDER_IDENTIFIER_DOCUMENTTYPE,
         self::FOLDER_IDENTIFIER_FIELDGROUP,
         self::FOLDER_IDENTIFIER_NAVIGATION,
+        self::FOLDER_IDENTIFIER_LANGUAGE,
         ...self::FOLDER_HAS_VIEWS,
     ];
 
@@ -37,6 +38,8 @@ class ImportDataHelper
     const FOLDER_IDENTIFIER_FIELDGROUP = 'FieldGroups';
 
     const FOLDER_IDENTIFIER_NAVIGATION = 'NavigationMenus';
+
+    const FOLDER_IDENTIFIER_LANGUAGE = 'Languages';
 
     const FOLDER_IDENTIFIER_TEMPLATE = 'Templates';
 
@@ -105,6 +108,13 @@ class ImportDataHelper
                         )
                         ->all();
 
+                } elseif ($folder == self::FOLDER_IDENTIFIER_LANGUAGE) {
+
+                    $children = collect(['en', 'fr'])
+                        ->map(fn ($locale) => "{$locale}.json")
+                        ->map(fn ($filename) => $getReturnValue($filename))
+                        ->all();
+
                 } elseif ($folder == self::FOLDER_IDENTIFIER_TEMPLATE) {
 
                     $children = collect($generateFiles($folder, ''))
@@ -129,7 +139,9 @@ class ImportDataHelper
 
     public static function generateSampleData()
     {
+        $locales = ['en', 'fr'];
         $generateOrder = [
+            self::FOLDER_IDENTIFIER_LANGUAGE => collect($locales)->map(fn ($locale) => "{$locale}.json")->all(),
             self::FOLDER_IDENTIFIER_FIELDGROUP => collect(range(1, 3))->map(fn ($i) => "field-group-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_TEMPLATE => collect(range(1, 5))->map(fn ($i) => array_map(fn ($j) => ["template-{$i}" . DIRECTORY_SEPARATOR . "theme-{$j}.blade.php"], range(1, 2)))->flatten()->all(),
             self::FOLDER_IDENTIFIER_DOCUMENTTYPE => collect(range(1, 4))->map(fn ($i) => "document-type-{$i}.json")->all(),
@@ -140,14 +152,13 @@ class ImportDataHelper
 
         foreach ($generateOrder as $folder => $sampleFileNames) {
 
-            $getSampleDataInSequence = function (string $folder, int $index, string $filename) use ($generateOrder) {
+            $getSampleDataInSequence = function (string $folder, int $index, string $filename) use ($generateOrder, $locales) {
 
                 $getRandomFileBaseNameOnFolder = fn ($folder, $number): array => ! isset($generateOrder[$folder]) ? [] : collect($generateOrder[$folder])->random($number)->map(fn ($filename) => Str::before($filename, '.'))->all();
                 $getRandomTemplateSlug = fn ($number): array => collect($getRandomFileBaseNameOnFolder(self::FOLDER_IDENTIFIER_TEMPLATE, $number))
                     ->map(fn ($path) => str($path)->explode('/')->first())
                     ->all();
 
-                $locales = ['en'];
                 $generateTranslationArray = fn (array $propsAndValueMap): array => collect($propsAndValueMap)->map(fn ($value) => collect($locales)->mapWithKeys(fn ($locale) => ["{$locale}" => $value])->all())->all();
 
                 $itemSlug = Str::before($filename, '.');
@@ -157,7 +168,6 @@ class ImportDataHelper
                 switch ($folder) {
 
                     case self::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-
                         $sequence = collect([
                             [
                                 'showAsTable' => false,
@@ -330,6 +340,18 @@ class ImportDataHelper
                         $sequence = [
                             TemplateHelper::retrieveDefaultThemeContent(),
                         ];
+
+                        break;
+
+                    case self::FOLDER_IDENTIFIER_LANGUAGE:
+
+                        $sequence = collect($locales)
+                            ->map(fn ($locale) => new Entities\Language(
+                                code: $locale,
+                                isDefault: $locale == 'en',
+                            ))
+                            ->map(fn (Entities\Language $language) => $language->toArray())
+                            ->all();
 
                         break;
                 }

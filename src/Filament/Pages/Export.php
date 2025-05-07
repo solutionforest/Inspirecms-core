@@ -16,7 +16,6 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Resources\ExportResource;
 use SolutionForest\InspireCms\Filament\Resources\ImportResource;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 
 class Export extends Page implements ClusterSectionPage, HasActions, HasForms, HasInfolists
@@ -82,14 +81,14 @@ class Export extends Page implements ClusterSectionPage, HasActions, HasForms, H
         return collect($components)->unique('data.type')->values()->all();
     }
 
-    private static function getImportResource(): string
+    protected static function getImportResource(): string
     {
-        return InspireCmsConfig::getFilamentResource('import', ImportResource::class);
+        return ImportResource::class;
     }
 
-    private static function getExportResource(): string
+    protected static function getExportResource(): string
     {
-        return InspireCmsConfig::getFilamentResource('export', ExportResource::class);
+        return ExportResource::class;
     }
 
     public function getTitle(): string | Htmlable

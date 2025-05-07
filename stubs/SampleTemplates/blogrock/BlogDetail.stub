@@ -3,11 +3,11 @@
 
     if (isset($isPeekPreviewModal)) {
         $blog = inspirecms_content()
-            ->getUnderRealPath(path: "blogs", limit: 1)
+            ->getUnderRealPath(path: "blog-management", limit: 1)
             ?->first()?->toDto($locale);
     } else if (isset($slug)) {
         $blog = inspirecms_content()
-            ->findByRealPath(path: "blogs/{$slug}", limit: 1)
+            ->findByRealPath(path: "blog-management/{$slug}", limit: 1)
             ->first()?->toDto($locale);
     } else {
         $blog = null;

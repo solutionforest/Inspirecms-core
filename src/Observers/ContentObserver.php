@@ -64,15 +64,19 @@ class ContentObserver
      */
     public function saved($model)
     {
-        if ($model->isDirty(['is_default'])) {
+        $segmentProvider = ContentSegmentFactory::create();
+
+        // Update the route
+        // - if default content is changed -> default route should be updated
+        // - if slug is changed -> the route should be updated
+        if ($model->isDirty(['is_default', 'slug'])) {
             // Update the route if default content is changed -> default route should be updated
-            $provider = ContentSegmentFactory::create();
-            $this->updateCurrentRouteInDefaultPattern($model, $provider);
+            $this->updateCurrentRouteInDefaultPattern($model, $segmentProvider);
         }
 
         // Update the path if the content's parent is changed
-        if ($model->isDirty([$model->getParentKeyName()])) {
-            $segmentProvider = ContentSegmentFactory::create();
+        // or if the slug is changed
+        if ($model->isDirty([$model->getParentKeyName(), 'slug'])) {
             $model->path()->updateOrCreate([], [
                 'value' => $segmentProvider->getPath($model),
             ]);

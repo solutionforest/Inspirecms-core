@@ -1,8 +1,12 @@
 <?php
 
+use SolutionForest\InspireCms\Exports\Exporters;
+use SolutionForest\InspireCms\Fields;
 use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
 use SolutionForest\InspireCms\Filament\Pages as FilamentPages;
 use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
+use SolutionForest\InspireCms\Filament\Widgets as FilamentWidgets;
+use SolutionForest\InspireCms\Http\Middleware;
 use SolutionForest\InspireCms\Models;
 use SolutionForest\InspireCms\Policies;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
@@ -10,27 +14,58 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 // config for SolutionForest/InspireCms
 return [
 
-    'license' => [
-        'key' => env('INSPIRECMS_LICENSE_KEY'),
-        'secret' => env('INSPIRECMS_LICENSE_SECRET'),
-    ],
+    'system' => [
+        /**
+         * Whether to include an X-Powered-By header in HTTP responses
+         *
+         * When true, InspireCMS adds an X-Powered-By HTTP header to responses.
+         */
+        'send_powered_by_header' => true,
 
-    'override_plugins' => [
-        'field_group_models' => true,
-        'spatie_permission' => true,
+        /**
+         * License configuration for InspireCMS
+         *
+         * These settings are required for the CMS to validate your license.
+         */
+        'license' => [
+            // Your InspireCMS license key from your subscription
+            'key' => env('INSPIRECMS_LICENSE_KEY'),
+            // Your InspireCMS license secret used for validation
+            'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+        ],
+
+        /**
+         * Control how InspireCMS interacts with key plugins
+         */
+        'override_plugins' => [
+            'field_group_models' => true, // Whether to override field group models
+            'spatie_permission' => true,  // Whether to override Spatie Permission package functionality
+        ],
     ],
 
     'auth' => [
+
+        /**
+         * Define the guard that InspireCMS will use for authentication
+         */
         'guard' => [
             'name' => 'inspirecms',
             'driver' => 'session',
             'provider' => 'cms_users',
         ],
+
+        /**
+         * Define how users are retrieved from your database
+         */
         'provider' => [
             'name' => 'cms_users',
             'driver' => 'eloquent',
-            'model' => \SolutionForest\InspireCms\Models\User::class,
+            'model' => Models\User::class,
         ],
+
+        /**
+         * Password reset functionality
+         */
         'resetting_password' => [
             'enabled' => true,
             'name' => 'inspirecms',
@@ -41,6 +76,8 @@ return [
         ],
 
         /**
+         * Security settings to protect against brute-force attacks
+         *
          * Number of failed attempts before lockout
          */
         'failed_login_attempts' => 5,
@@ -48,10 +85,10 @@ return [
         /**
          * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
          */
-        'lockout_duration' => 120,
+        'lockout_duration' => 120, // Duration of lockout in minutes
 
         /**
-         * Skip authentication for super admin users.
+         * Controls when super admin checks are performed in the authentication flow
          *
          * Allowed values: before, after, none
          */
@@ -59,34 +96,71 @@ return [
 
         /**
          * Skip account verification for users.
+         *
+         * Set to true to skip account email verification requirements.
          */
         'skip_account_verification' => false,
     ],
 
     'media' => [
+
+        /**
+         * User avatar storage configuration
+         */
         'user_avatar' => [
-            'disk' => 'public',
-            'directory' => 'avatars',
+            'disk' => 'public', // Storage disk to use (public, s3, etc.)
+            'directory' => 'avatars', // Subdirectory where avatars will be stored (empty for root)
         ],
 
+        /**
+         * Media library configuration
+         */
         'media_library' => [
-            'disk' => 'public',
-            'directory' => '',
+            'disk' => 'public', // Storage disk (public makes files accessible via URL)
+            'directory' => '', // Subdirectory where media will be stored (empty for root)
 
-            // Allowed file types
+            /**
+             * Allowed file types
+             *
+             * e.g. ['image/jpeg', 'image/png', 'video/mp4']
+             */
             'allowed_mime_types' => [],
 
-            // Maximum file size in KB
+            /**
+             * Maximum file size in KB
+             */
             'max_file_size' => null,
 
+            /**
+             * Automatic thumbnail generation settings
+             */
             'thumbnail' => [
                 'width' => 300,
                 'height' => 300,
             ],
+
+            /**
+             * Whether to use FFmpeg to extract metadata from video files
+             *
+             * Set to true to analyze video files
+             *
+             * Requires FFmpeg to be installed on the server
+             * Enables extraction of duration, dimensions, codec info
+             * Increases processing time for video uploads
+             */
             'should_map_video_properties_with_ffmpeg' => false,
-            'middlewares' => [
+
+            /**
+             * HTTP middleware applied to media requests
+             */
+            'middleware' => [
+                Middleware\SetUpPoweredBy::class,
                 'cache.headers:public;max_age=2628000;etag',
             ],
+
+            /**
+             * Responsive image generation settings
+             */
             'responsive_images' => [
                 'small' => [
                     'enabled' => true,
@@ -124,19 +198,31 @@ return [
     ],
 
     'admin' => [
+
+        /**
+         * Whether to enable the admin panel for managing navigation base on the Clusters
+         */
         'enable_cluster_navigation' => true,
+
+        'navigation_position' => 'top', // left, top
+
         'panel_id' => 'cms',
+
         'path' => 'cms',
+
         'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
             'name' => 'InspireCMS',
             'logo' => fn () => view('inspirecms::logo'),
             'favicon' => fn () => asset('images/favicon.png'),
         ],
+
         'database_notification' => [
             'enabled' => true,
             'polling_interval' => '30s',
         ],
+
         'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
+
         'resources' => [
             'content' => FilamentResources\ContentResource::class,
             'document_type' => FilamentResources\DocumentTypeResource::class,
@@ -147,19 +233,23 @@ return [
             'role' => FilamentResources\RoleResource::class,
             'navigation' => FilamentResources\NavigationResource::class,
             'sitemap' => FilamentResources\SitemapResource::class,
-            'import' => FilamentResources\ImportResource::class,
-            'export' => FilamentResources\ExportResource::class,
         ],
+
         'pages' => [
             'dashboard' => FilamentPages\Dashboard::class,
             'export' => FilamentPages\Export::class,
             'health' => FilamentPages\Health::class,
         ],
+
         'clusters' => [
             'content' => FilamentClusters\Content::class,
             'media' => FilamentClusters\Media::class,
             'settings' => FilamentClusters\Settings::class,
             'users' => FilamentClusters\Users::class,
+        ],
+
+        'extra_widgets' => [
+            // Extra widgets to be added to the CMS
         ],
     ],
 
@@ -175,6 +265,10 @@ return [
                 'directory' => 'temp/imports',
             ],
 
+            /**
+             * Allowed file types for import
+             * e.g. ['application/vnd.ms-excel', 'text/csv', 'text/plain']
+             */
             'allowed_mime_types' => [
                 'application/zip',
                 'application/octet-stream',
@@ -182,6 +276,9 @@ return [
                 'multipart/x-zip',
             ],
 
+            /**
+             * Maximum file size in KB
+             */
             'max_file_size' => 10 * 1024,
         ],
 
@@ -196,17 +293,20 @@ return [
             ],
 
             'exporters' => [
-                \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
-                \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
-                \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
-                \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+                Exporters\ImportUsedExporter::class,
+                Exporters\DocumentTypeExporter::class,
+                Exporters\FieldGroupExporter::class,
+                Exporters\TemplateExporter::class,
             ],
         ],
     ],
 
     'models' => [
+
         'table_name_prefix' => 'cms_',
+
         'morph_map_prefix' => 'cms_',
+
         'fqcn' => [
             'content' => Models\Content::class,
             'content_path' => Models\ContentPath::class,
@@ -230,9 +330,17 @@ return [
             'export' => Models\Export::class,
             'key_value' => Models\KeyValue::class,
         ],
+
+        /**
+         * Policy mappings control authorization
+         */
         'policies' => [
             'content' => Policies\ContentStatusPolicy::class,
         ],
+
+        /**
+         * Auto-cleanup settings for database tables that can grow large
+         */
         'prunable' => [
             'content_version' => [
                 'interval' => 30,
@@ -249,32 +357,55 @@ return [
     'custom_fields' => [
         'extra_config' => [
 
-            \SolutionForest\InspireCms\Fields\Configs\Repeater::class,
-            \SolutionForest\InspireCms\Fields\Configs\Tags::class,
+            Fields\Configs\Repeater::class,
+            Fields\Configs\Tags::class,
 
-            \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,
-            \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class,
+            Fields\Configs\RichEditor::class,
+            Fields\Configs\MarkdownEditor::class,
 
-            \SolutionForest\InspireCms\Fields\Configs\ContentPicker::class,
-            \SolutionForest\InspireCms\Fields\Configs\MediaPicker::class,
+            Fields\Configs\ContentPicker::class,
+            Fields\Configs\MediaPicker::class,
         ],
     ],
 
     'permissions' => [
+
+        /**
+         * Whether to skip access right permission checks on resources
+         */
         'skip_access_right_permission_on_resource' => false,
+
+        /**
+         * Define actions that require specific permissions
+         */
         'guard_actions' => [
 
         ],
+
+        /**
+         * Dashboard widgets requiring permissions to view
+         */
         'guard_widgets' => [
-            \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
-            \SolutionForest\InspireCms\Filament\Widgets\TemplateInfo::class,
-            \SolutionForest\InspireCms\Filament\Widgets\UserActivity::class,
+            FilamentWidgets\CmsInfoWidget::class,
+            FilamentWidgets\TemplateInfo::class,
+            FilamentWidgets\UserActivity::class,
         ],
     ],
 
     'template' => [
+        /**
+         * Default template theme for the CMS
+         */
         'default_theme' => 'manifest',
+
+        /**
+         * The prefix for the component names used in the CMS
+         */
         'component_prefix' => 'inspirecms',
+
+        /**
+         * The directory where exported templates are stored
+         */
         'exported_template_dir' => resource_path('views/inspirecms/templates'),
     ],
 
@@ -285,7 +416,9 @@ return [
 
     'frontend' => [
         'routes' => [
-            'middleware' => [],
+            'middleware' => [
+                Middleware\SetUpPoweredBy::class,
+            ],
         ],
         'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
     ],

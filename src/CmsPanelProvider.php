@@ -20,15 +20,13 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
+use SolutionForest\InspireCms\Filament\Navigation\MenuItem;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
-use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
-use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticateSession;
-use SolutionForest\InspireCms\Http\Middleware\LicenseCheck;
-use SolutionForest\InspireCms\Http\Middleware\UserPreference;
+use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -81,27 +79,36 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\AlertOverview::class,
                 Widgets\TemplateInfo::class,
                 TreeNavigation::class,
-            ])
-            ->discoverResources(in: app_path('Cms/Resources'), for: 'App\\Cms\\Resources')
-            ->discoverPages(in: app_path('Cms/Pages'), for: 'App\\Cms\\Pages')
-            ->discoverClusters(in: app_path('Cms/Clusters'), for: 'App\\Cms\\Clusters')
-            ->discoverWidgets(in: app_path('Cms/Widgets'), for: 'App\\Cms\\Widgets')
-            ->middleware([
-                EncryptCookies::class,
-                AddQueuedCookiesToResponse::class,
-                StartSession::class,
-                CmsAuthenticateSession::class,
-                ShareErrorsFromSession::class,
-                VerifyCsrfToken::class,
-                SubstituteBindings::class,
-                DisableBladeIconComponents::class,
-                DispatchServingFilamentEvent::class,
-            ])
-            ->authMiddleware([
-                LicenseCheck::class,
-                CmsAuthenticate::class,
-                UserPreference::class,
-            ])
+                ...InspireCmsConfig::get('admin.widgets', []),
+            ]);
+        // Discover resources, pages, clusters, and widgets in the specified directories
+        $panel = $panel
+            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources')
+            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages')
+            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters')
+            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
+
+        $middleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            CmsMiddleware\CmsAuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+            CmsMiddleware\SetUpPoweredBy::class,
+        ];
+        $authMiddleware = [
+            CmsMiddleware\LicenseCheck::class,
+            CmsMiddleware\CmsAuthenticate::class,
+            CmsMiddleware\UserPreference::class,
+        ];
+
+        $panel = $panel
+            ->middleware($middleware)
+            ->authMiddleware($authMiddleware)
             ->bootUsing(function () {
 
                 $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
@@ -164,80 +171,28 @@ class CmsPanelProvider extends PanelProvider
 
     protected function configureNavigation(Panel $panel): Panel
     {
+        $position = InspireCmsConfig::get('admin.navigation_position', 'top');
+
+        $userMenuItems = [
+            MenuItem::make()
+                ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
+                ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
+                ->url('#')
+                ->extraAttributes([
+                    'class' => 'cursor-default',
+                    'aria-label' => 'Version',
+                ], true),
+        ];
+
         return $panel
-            ->topNavigation()
+            ->topNavigation($position == 'top')
             ->navigationGroups([
                 'content' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
                 'media' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
-            ]);
-    }
-
-    protected function configureTourGuideElements(Panel $panel): Panel
-    {
-        // todo: add translations
-        return $panel
-            ->userMenuItems([
-                // \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                //     ->label('Reset Tour Guide')
-                //     ->icon('heroicon-s-arrow-path')
-                //     ->button()
-                //     ->extraAttributes([
-                //         'class' => 'tour-guide-reset-btn',
-                //         'aria-label' => 'Reset Tour Guide',
-                //     ], true),
-                \SolutionForest\InspireCms\Filament\Navigation\MenuItem::make()
-                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
-                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
-                    ->url('#')
-                    ->extraAttributes([
-                        'class' => 'cursor-default',
-                        'aria-label' => 'Version',
-                    ], true),
             ])
-            ->bootUsing(function () {
-                \Filament\Navigation\NavigationItem::macro('section', function ($section) {
-                    $cast = $this->cloneAsCustom();
-                    $cast->section = $section;
-
-                    return $cast;
-                });
-                \Filament\Navigation\NavigationItem::macro('itemKey', function ($itemKey) {
-                    $cast = $this->cloneAsCustom();
-                    $cast->itemKey = $itemKey;
-
-                    return $cast;
-                });
-                \Filament\Navigation\NavigationItem::macro('cloneAsCustom', function ($fqcn = \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class) {
-                    $tmp = new $fqcn;
-                    $tmp->label = $this->label;
-                    $tmp->group = $this->group;
-                    $tmp->parentItem = $this->parentItem;
-                    $tmp->isActive = $this->isActive;
-                    $tmp->icon = $this->icon;
-                    $tmp->activeIcon = $this->activeIcon;
-                    $tmp->badge = $this->badge;
-                    $tmp->badgeColor = $this->badgeColor;
-                    $tmp->badgeTooltip = $this->badgeTooltip;
-                    $tmp->shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab;
-                    $tmp->sort = $this->sort;
-                    $tmp->url = $this->url;
-                    $tmp->isHidden = $this->isHidden;
-                    $tmp->isVisible = $this->isVisible;
-                    $tmp->childItems = $this->childItems;
-
-                    return $tmp;
-                });
-
-                $this->replaceViewComponents();
-
-                \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
-                    $action->extraAttributes([
-                        'data-action-name' => $action->getName(),
-                    ], true);
-                });
-            });
+            ->userMenuItems($userMenuItems);
     }
 
     protected function configureNotification(Panel $panel): Panel
@@ -253,9 +208,29 @@ class CmsPanelProvider extends PanelProvider
         return $panel;
     }
 
+    protected function registerLivewireComponents(Panel $panel): Panel
+    {
+        return $panel->livewireComponents([
+            ListImportNExport::class,
+        ]);
+    }
+
+    protected function replaceViewComponents()
+    {
+        Blade::component('filament-panels::topbar', ViewComponents\Filament\TopBar::class);
+        Blade::component('filament-panels::sidebar', ViewComponents\Filament\Sidebar::class);
+        Blade::component('filament-panels::sidebar.group', ViewComponents\Filament\SidebarGroup::class);
+
+        Blade::component('filament-panels::user-menu', ViewComponents\Filament\UserMenu::class);
+
+        Blade::component('filament-panels::resources.relation-managers', ViewComponents\Filament\Resources\RelationManagers::class);
+    }
+
     protected function configureFilamentActions(Panel $panel): Panel
     {
         return $panel->bootUsing(function () {
+
+            // Confiure alignment
             \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
@@ -265,6 +240,11 @@ class CmsPanelProvider extends PanelProvider
             \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
+
+            foreach (InspireCmsConfig::getFilamentPages() as $page) {
+                $page::alignFormActionsEnd();
+            }
+
             \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
                 $action->icon(function (\Filament\Actions\EditAction $action) {
                     return $action->isIconButton()
@@ -314,22 +294,60 @@ class CmsPanelProvider extends PanelProvider
         });
     }
 
-    protected function registerLivewireComponents(Panel $panel): Panel
+    protected function configureTourGuideElements(Panel $panel): Panel
     {
-        return $panel->livewireComponents([
-            ListImportNExport::class,
-        ]);
-    }
+        return $panel
+            // ->userMenuItems([
+            //     MenuItem::make()
+            //         ->label('Reset Tour Guide')
+            //         ->icon('heroicon-s-arrow-path')
+            //         ->button()
+            //         ->extraAttributes([
+            //             'class' => 'tour-guide-reset-btn',
+            //             'aria-label' => 'Reset Tour Guide',
+            //         ], true),
+            // ])
+            ->bootUsing(function () {
+                \Filament\Navigation\NavigationItem::macro('section', function ($section) {
+                    $cast = $this->cloneAsCustom();
+                    $cast->section = $section;
 
-    protected function replaceViewComponents()
-    {
-        Blade::component('filament-panels::topbar', ViewComponents\Filament\TopBar::class);
-        Blade::component('filament-panels::sidebar', ViewComponents\Filament\Sidebar::class);
-        Blade::component('filament-panels::sidebar.group', ViewComponents\Filament\SidebarGroup::class);
+                    return $cast;
+                });
+                \Filament\Navigation\NavigationItem::macro('itemKey', function ($itemKey) {
+                    $cast = $this->cloneAsCustom();
+                    $cast->itemKey = $itemKey;
 
-        Blade::component('filament-panels::user-menu', ViewComponents\Filament\UserMenu::class);
+                    return $cast;
+                });
+                \Filament\Navigation\NavigationItem::macro('cloneAsCustom', function ($fqcn = \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class) {
+                    $tmp = new $fqcn;
+                    $tmp->label = $this->label;
+                    $tmp->group = $this->group;
+                    $tmp->parentItem = $this->parentItem;
+                    $tmp->isActive = $this->isActive;
+                    $tmp->icon = $this->icon;
+                    $tmp->activeIcon = $this->activeIcon;
+                    $tmp->badge = $this->badge;
+                    $tmp->badgeColor = $this->badgeColor;
+                    $tmp->badgeTooltip = $this->badgeTooltip;
+                    $tmp->shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab;
+                    $tmp->sort = $this->sort;
+                    $tmp->url = $this->url;
+                    $tmp->isHidden = $this->isHidden;
+                    $tmp->isVisible = $this->isVisible;
+                    $tmp->childItems = $this->childItems;
 
-        Blade::component('filament-panels::resources.relation-managers', ViewComponents\Filament\Resources\RelationManagers::class);
+                    return $tmp;
+                });
 
+                $this->replaceViewComponents();
+
+                \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
+                    $action->extraAttributes([
+                        'data-action-name' => $action->getName(),
+                    ], true);
+                });
+            });
     }
 }

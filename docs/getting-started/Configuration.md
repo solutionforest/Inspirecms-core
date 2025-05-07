@@ -12,15 +12,38 @@ php artisan vendor:publish --tag="inspirecms-config"
 
 ## Key Configuration Sections
 
-### License Management
+### System Settings
 
 ```php
-'license' => [
-    'key' => env('INSPIRECMS_LICENSE_KEY'),
-    'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+'system' => [
+    /**
+     * Whether to include an X-Powered-By header in HTTP responses
+     * 
+     * When true, InspireCMS adds an X-Powered-By HTTP header to responses. 
+     */
+    'send_powered_by_header' => true,
+
+    /**
+     * License configuration for InspireCMS
+     * 
+     * These settings are required for the CMS to validate your license.
+     */
+    'license' => [
+        // Your InspireCMS license key from your subscription
+        'key' => env('INSPIRECMS_LICENSE_KEY'),
+        // Your InspireCMS license secret used for validation
+        'secret' => env('INSPIRECMS_LICENSE_SECRET'),
+    ],
+    
+    /**
+     * Control how InspireCMS interacts with key plugins
+     */
+    'override_plugins' => [
+        'field_group_models' => true, // Whether to override field group models
+        'spatie_permission' => true,  // Whether to override Spatie Permission package functionality
+    ],
 ],
 ```
-Set your InspireCMS license key in your environment variables for proper license validation.
 
 ### Authentication
 
@@ -29,35 +52,56 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 ```php
 'auth' => [
 
-    // Define the guard that InspireCMS will use for authentication
+    /**
+     * Define the guard that InspireCMS will use for authentication
+     */
     'guard' => [
         'name' => 'inspirecms', // The name of the guard - used in auth middleware
         'driver' => 'session', // Authentication method (session or token)
         'provider' => 'cms_users', // Which provider this guard uses
     ],
 
-    // Define how users are retrieved from your database
+    /**
+     * Define how users are retrieved from your database
+     */
     'provider' => [
         'name' => 'cms_users', // Name of the provider
         'driver' => 'eloquent', // Driver to use (eloquent or database)
         'model' => \SolutionForest\InspireCms\Models\User::class, // User model - change to use a custom model
     ],
 
-    // Password reset functionality
+    /**
+     * Password reset functionality
+     */
     'resetting_password' => [
         'enabled' => true, // Set to false to disable password reset functionality
         // other password reset settings...
     ],
 
-    // Security settings to protect against brute-force attacks
+    /**
+     * Security settings to protect against brute-force attacks
+     * 
+     * Number of failed attempts before lockout
+     */
     'failed_login_attempts' => 5, // Number of attempts before account lockout
 
+    /**
+     * The number of minutes to lock the user out for after the maximum number of failed login attempts is reached.
+     */
     'lockout_duration' => 120, // Duration of lockout in minutes
 
-    // Controls when super admin checks are performed in the authentication flow
-    'skip_super_admin_check' => 'before', // Options: 'before', 'after', or 'none'
+    /**
+     * Controls when super admin checks are performed in the authentication flow
+     * 
+     * Allowed values: before, after, none
+     */
+    'skip_super_admin_check' => 'before', 
 
-    // Set to true to skip account email verification requirement
+    /**
+     * Skip account verification for users.
+     * 
+     * Set to true to skip account email verification requirements.
+     */
     'skip_account_verification' => false,
 ],
 ```
@@ -67,45 +111,63 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 Configure media uploads, storage, and processing:
 ```php
 'media' => [
-    // User avatar storage configuration
+    
+    /**
+     * User avatar storage configuration
+     */
     'user_avatar' => [
         'disk' => 'public',        // Storage disk to use (public, s3, etc.)
         'directory' => 'avatars',  // Subdirectory where avatars will be stored
     ],
     
-    // Media library for general content assets
+    /**
+     * Media library configuration
+     */
     'media_library' => [
         'disk' => 'public',        // Storage disk (public makes files accessible via URL)
                                   // Use 's3' or other drivers for cloud storage
         'directory' => '',         // Base directory for media files (empty for root)
                                   // Set to 'media' or similar for better organization
         
-        'allowed_mime_types' => [], // Allowed file types
+        /**
+         * Allowed file types
+         * 
+         * e.g. ['image/jpeg', 'image/png', 'video/mp4']
+         */
+        'allowed_mime_types' => [], 
             
-        'max_file_size' => null,    // Maximum file size in KB
+        /**
+         * Maximum file size in KB
+         */
+        'max_file_size' => null,
 
-        // Automatic thumbnail generation settings
+        /**
+         * Automatic thumbnail generation settings
+         */
         'thumbnail' => [
             'width' => 300,        // Width of generated thumbnails in pixels
             'height' => 300,       // Height of generated thumbnails in pixels
                                   // Set both the same for square thumbnails
         ],
 
-        // Whether to use FFmpeg to extract metadata from video files
+        /**
+         * Whether to use FFmpeg to extract metadata from video files
+         */
         'should_map_video_properties_with_ffmpeg' => false, // Set to true to analyze video files
                       // Requires FFmpeg to be installed on the server
                       // Enables extraction of duration, dimensions, codec info
                       // Increases processing time for video uploads
 
-        // HTTP middleware applied to media requests
-        'middlewares' => [
-            'cache.headers:public;max_age=2628000;etag', // Cache media for ~1 month (2,628,000 seconds)
-                                // Improves performance for static assets
-                                // 'public' allows CDN and browser caching
-                                // 'etag' enables conditional requests for bandwidth saving
+        /**
+         * HTTP middleware applied to media requests
+         */
+        'middleware' => [
+            'cache.headers:public;max_age=2628000;etag', 
         ],
         
-        // Responsive image generation for frontend
+        /**
+         * Responsive image generation settings
+         */
         'responsive_images' => [
             'small' => [
                 'enabled' => true,
@@ -175,6 +237,7 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
 'admin' => [
     'enable_cluster_navigation' => true, // Group navigation items by function
                                         // Set to false for a flat navigation structure
+    'navigation_position' => 'top',     // left, top
     'panel_id' => 'cms',               // Internal identifier for the panel
                                         // Must be unique if using multiple panels
     'path' => 'cms',                   // URL path segment for admin area 
@@ -215,6 +278,15 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
         'media' => FilamentClusters\Media::class,
         'settings' => FilamentClusters\Settings::class,
         'users' => FilamentClusters\Users::class,
+    ],
+
+    // Extra widgets to display on the dashboard
+    // Add custom widgets to enhance the admin experience
+    'extra_widgets' => [
+        // Example: App\Filament\Widgets\LatestOrders::class,
+        // Example: App\Filament\Widgets\VisitorStatistics::class,
+        // Each widget will appear on the dashboard page
+        // Implement custom widgets by extending Filament\Widgets\Widget
     ],
 ],
 ```
@@ -284,13 +356,17 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
         // ... other models
     ],
     
-    // Policy mappings control authorization
+    /**
+     * Policy mappings control authorization
+     */
     'policies' => [
         'content' => Policies\ContentStatusPolicy::class,
         // Add custom policies here
     ],
     
-    // Auto-cleanup settings for database tables that can grow large
+    /**
+     * Auto-cleanup settings for database tables that can grow large
+     */
     'prunable' => [
         'content_version' => [
             'interval' => 30,      // Delete content versions older than 30 days
@@ -335,21 +411,29 @@ Define and manage custom fields for content types:
 Set up role-based access control:
 
 ```php
+
+use SolutionForest\InspireCms\Filament\Widgets as FilamentWidgets;
+
 'permissions' => [
-    // When true, skips permission checks for resource actions
-    // Useful for development, but should be false in production
-    'skip_access_right_permission_on_resource' => false, 
-    
-    // Define actions that require specific permissions
+    /**
+     * Whether to skip access right permission checks on resources
+     */
+    'skip_access_right_permission_on_resource' => false,
+
+    /**
+     * Define actions that require specific permissions
+     */
     'guard_actions' => [
-        // Add your custom actions here to restrict access
+
     ],
     
-    // Dashboard widgets requiring permissions to view
+    /**
+     * Dashboard widgets requiring permissions to view
+     */
     'guard_widgets' => [
-        \SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget::class,
-        \SolutionForest\InspireCms\Filament\Widgets\TemplateInfo::class,
-        // Add your custom widgets here to restrict access
+        FilamentWidgets\CmsInfoWidget::class,
+        FilamentWidgets\TemplateInfo::class,
+        FilamentWidgets\UserActivity::class,
     ],
 ],
 ```

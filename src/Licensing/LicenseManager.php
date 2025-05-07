@@ -13,13 +13,20 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LicenseManager
 {
-    const ENDPOINT = 'https://license.solutionforest.com/validate';
+    const ENDPOINT = 'https://license.solutionforest.com';
 
     const REQUEST_TIMEOUT = 5;
 
     const CACHE_KEY_PREFIX = 'license:';
 
+    const SUPPORT_EMAIL = 'info@solutionforest.net';
+
     private $cacheManager;
+
+    public function getLicenseKey()
+    {
+        return InspireCmsConfig::get('system.license.key');
+    }
 
     /**
      * @return LicenseVerificationResult
@@ -33,12 +40,19 @@ class LicenseManager
             return $this->cache()->get($cacheKey);
         }
 
+        // Verify the license offline first
+        if (($offlineResult = $this->verifyOffline()) && $offlineResult->isSuccess()) {
+            $this->cache()->put($cacheKey, $offlineResult, now()->addHours(24));
+
+            return $offlineResult;
+        }
+
         try {
 
             // Try to verify the license online first
 
             $payload = $this->payload();
-            $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $payload);
+            $response = Http::timeout(self::REQUEST_TIMEOUT)->post($this->fetchActionPath('validate'), $payload);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -61,17 +75,13 @@ class LicenseManager
                 }
             }
 
-            // If online verification fails, fall back to offline verification
-            return $this->verifyOffline();
-
         } catch (\Throwable $th) {
 
             logger()->warning('Failed to verify license online', ['exception' => $th]);
 
-            // If online verification fails, try to verify the license offline
-            return $this->verifyOffline();
-
         }
+
+        return LicenseVerificationResult::failureOnline('License verification failed');
     }
 
     public function refresh(): void
@@ -84,6 +94,11 @@ class LicenseManager
     public function usingLicenseKeyFile(): bool
     {
         return File::exists($this->licenseKeyPath());
+    }
+
+    public function getSupportEmail(): ?string
+    {
+        return self::SUPPORT_EMAIL;
     }
 
     /**
@@ -135,17 +150,6 @@ class LicenseManager
         return null;
     }
 
-    protected function getMachineId(): string
-    {
-        // Generate a unique identifier for this machine/installation
-        if (function_exists('php_uname')) {
-            return md5(php_uname());
-        }
-
-        // Fallback if php_uname is disabled
-        return md5($_SERVER['HTTP_HOST'] . $_SERVER['SERVER_ADDR'] ?? '');
-    }
-
     protected function calculateChecksum(array $data): string
     {
         $checksumData = $data['license_key'] . $data['domain'] . $data['product_id'];
@@ -187,14 +191,9 @@ class LicenseManager
         File::put($this->licenseKeyPath(), $fileContent);
     }
 
-    private function getLicenseKey()
-    {
-        return InspireCmsConfig::get('license.key');
-    }
-
     private function getSecretKey()
     {
-        return InspireCmsConfig::get('license.secret');
+        return InspireCmsConfig::get('system.license.secret');
     }
 
     private function licenseKeyPath()
@@ -218,5 +217,14 @@ class LicenseManager
         }
 
         return $this->cacheManager = $store;
+    }
+
+    private function fetchActionPath($action)
+    {
+        return str(self::ENDPOINT)
+            ->rtrim('/')
+            ->append('/')
+            ->append(trim(trim($action), '/'))
+            ->toString();
     }
 }

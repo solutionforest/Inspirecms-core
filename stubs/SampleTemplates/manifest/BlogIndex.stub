@@ -1,15 +1,25 @@
 @php
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+
     $blogPage = request()->query('page') ?? 1;
     $featuredPage = request()->query('featured') ?? 1;
 
-    $locale ??= $content->getLocale();
-    $blogs = inspirecms_content()->getUnderRealPath('blogs', null, ['documentType.templates', 'templates'])->toDto($locale)->paginate(perPage: 4, pageName: 'page', page: $blogPage);
-
-    $featured_blogs = $content->getPropertyGroup('featured_blogs');
-    $featured_blogs_blogs = $featured_blogs?->getPropertyData('blogs')?->getValue()?->paginate(perPage: 1, pageName: 'featured', page: $featuredPage);
-    $featured_blogs_blog = $featured_blogs_blogs?->isNotEmpty() ? ($featured_blogs_blogs?->items()[0] ?? null) : null;
+    $blogs = inspirecms_content()
+        ->getPaginatedUnderRealPath(
+            path: 'blog-management', 
+            perPage: 4,
+            pageName: 'page',
+            page: $blogPage,
+            withRelations: ['documentType.templates', 'templates'],
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+
+<x-cms-template :content="$content" type="page">
     <div class="page-main-container">
         <section class="blog-section-ma">
             <section class="hero-section">
@@ -18,8 +28,14 @@
                 </div>
             </section>
             <div class="container ps-0">
-                @if ($featured_blogs_blog)
-                    {!! $featured_blogs_blog->getTemplate('blog-featured-item')?->render(['content' => $featured_blogs_blog, 'locale' => $locale, 'pagination' => $featured_blogs_blogs]) !!}
+                @propertyNotEmpty('featured_blogs', 'blogs')
+                    @php
+                        $featuredBlog = collect($featured_blogs_blogs)->skip($featuredPage - 1)->first();
+                        $featuredBlogTemplate = $featuredBlog instanceof ContentDto ? $featuredBlog?->getTemplate('blog-featured-item') : null;
+                    @endphp
+                    @if ($featuredBlogTemplate)
+                        {!! $featuredBlogTemplate->render(['content' => $featuredBlog, 'locale' => $locale]) !!}
+                    @endif
                 @endif
 
                 <div class="categories-wrapper">
@@ -74,4 +90,4 @@
         </script>
     @endsection
 
-</x-dynamic-component>
+</x-cms-template>

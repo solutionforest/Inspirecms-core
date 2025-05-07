@@ -37,7 +37,10 @@ class TemplateResourceHelper
      */
     public static function getContentFormComponent($name = 'content')
     {
-        return \Dotswan\FilamentCodeEditor\Fields\CodeEditor::make($name);
+        return \SolutionForest\InspireCms\Filament\Forms\Components\CodeEditor::make($name)
+            ->darkModeTheme('basic-dark')
+            ->lightModeTheme('basic-light')
+            ->minHeight('48rem');
     }
 
     /** @return Forms\Components\Field|Forms\Components\Component */
