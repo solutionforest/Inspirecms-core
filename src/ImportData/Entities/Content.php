@@ -212,10 +212,10 @@ class Content extends BaseEntity
             'redirect_content_id',
             'redirect_type',
         ]);
-        if (!($record->documentType?->isDataType() ?? false)) {
+        if (! ($record->documentType?->isDataType() ?? false)) {
 
             $data['routes'] = collect($record->routes)
-                ->map(fn (ContentRoute|Model $route) => array_merge([
+                ->map(fn (ContentRoute | Model $route) => array_merge([
                     'locale' => $route->language?->code,
                 ], Arr::only($route->toArray(), [
                     'uri',

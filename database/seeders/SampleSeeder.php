@@ -234,7 +234,7 @@ class SampleSeeder extends Seeder
                 new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'documentType' => 'blog']),
             ],
         );
-        
+
         return $items;
     }
 
@@ -404,7 +404,7 @@ class SampleSeeder extends Seeder
                         ->where(fn ($slug) => ! in_array($slug, [
                             'homepage', // self
                             'case-study',   // children under case-study index page
-                            'blog-detail', //data-type
+                            'blog-detail', // data-type
                         ]))
                         ->values()
                         ->toArray();
@@ -649,6 +649,7 @@ class SampleSeeder extends Seeder
                 sitemap: ['enable' => false],
             );
         }
+
         return $items;
     }
 
@@ -894,7 +895,7 @@ class SampleSeeder extends Seeder
         // Add random HTML tags
         $tags = ['b', 'i', 'u', 'strong'];
         foreach (explode(' ', fake()->paragraph(5)) as $index => $word) {
-            
+
             if ($index > 0) {
                 $paragraph .= ' ';
             }
