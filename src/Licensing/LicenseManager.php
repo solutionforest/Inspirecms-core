@@ -38,6 +38,12 @@ class LicenseManager
             return $this->cache()->get($cacheKey);
         }
 
+        // Verify the license offline first
+        if (($offlineResult = $this->verifyOffline()) && $offlineResult->isSuccess()) {
+            $this->cache()->put($cacheKey, $offlineResult, now()->addHours(24));
+            return $offlineResult;
+        }
+
         try {
 
             // Try to verify the license online first
@@ -66,17 +72,13 @@ class LicenseManager
                 }
             }
 
-            // If online verification fails, fall back to offline verification
-            return $this->verifyOffline();
-
         } catch (\Throwable $th) {
 
             logger()->warning('Failed to verify license online', ['exception' => $th]);
 
-            // If online verification fails, try to verify the license offline
-            return $this->verifyOffline();
-
         }
+
+        return LicenseVerificationResult::failureOnline('License verification failed');
     }
 
     public function refresh(): void
