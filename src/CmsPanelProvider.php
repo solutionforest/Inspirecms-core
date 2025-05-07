@@ -173,6 +173,17 @@ class CmsPanelProvider extends PanelProvider
     {
         $position = InspireCmsConfig::get('admin.navigation_position', 'top');
 
+        $userMenuItems = [
+            MenuItem::make()
+                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
+                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
+                    ->url('#')
+                    ->extraAttributes([
+                        'class' => 'cursor-default',
+                        'aria-label' => 'Version',
+                    ], true),
+        ];
+
         return $panel
             ->topNavigation($position == 'top')
             ->navigationGroups([
@@ -181,16 +192,7 @@ class CmsPanelProvider extends PanelProvider
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
             ])
-            ->userMenuItems([
-                MenuItem::make()
-                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
-                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
-                    ->url('#')
-                    ->extraAttributes([
-                        'class' => 'cursor-default',
-                        'aria-label' => 'Version',
-                    ], true),
-            ]);
+            ->userMenuItems($userMenuItems);
     }
 
     protected function configureNotification(Panel $panel): Panel
@@ -227,6 +229,8 @@ class CmsPanelProvider extends PanelProvider
     protected function configureFilamentActions(Panel $panel): Panel
     {
         return $panel->bootUsing(function () {
+
+            // Confiure alignment
             \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
@@ -236,6 +240,11 @@ class CmsPanelProvider extends PanelProvider
             \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
+            
+            foreach (InspireCmsConfig::getFilamentPages() as $page) {
+                $page::alignFormActionsEnd();
+            }
+
             \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
                 $action->icon(function (\Filament\Actions\EditAction $action) {
                     return $action->isIconButton()
