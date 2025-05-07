@@ -13,11 +13,13 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LicenseManager
 {
-    const ENDPOINT = 'https://license.solutionforest.com/validate';
+    const ENDPOINT = 'https://license.solutionforest.com';
 
     const REQUEST_TIMEOUT = 5;
 
     const CACHE_KEY_PREFIX = 'license:';
+
+    const SUPPORT_EMAIL = 'info@solutionforest.net';
 
     private $cacheManager;
 
@@ -49,7 +51,7 @@ class LicenseManager
             // Try to verify the license online first
 
             $payload = $this->payload();
-            $response = Http::timeout(self::REQUEST_TIMEOUT)->post(self::ENDPOINT, $payload);
+            $response = Http::timeout(self::REQUEST_TIMEOUT)->post($this->fetchActionPath('validate'), $payload);
 
             if ($response->successful()) {
                 $data = $response->json();
@@ -91,6 +93,11 @@ class LicenseManager
     public function usingLicenseKeyFile(): bool
     {
         return File::exists($this->licenseKeyPath());
+    }
+
+    public function getSupportEmail(): ?string
+    {
+        return self::SUPPORT_EMAIL;
     }
 
     /**
@@ -140,17 +147,6 @@ class LicenseManager
         }
 
         return null;
-    }
-
-    protected function getMachineId(): string
-    {
-        // Generate a unique identifier for this machine/installation
-        if (function_exists('php_uname')) {
-            return md5(php_uname());
-        }
-
-        // Fallback if php_uname is disabled
-        return md5($_SERVER['HTTP_HOST'] . $_SERVER['SERVER_ADDR'] ?? '');
     }
 
     protected function calculateChecksum(array $data): string
@@ -220,5 +216,14 @@ class LicenseManager
         }
 
         return $this->cacheManager = $store;
+    }
+
+    private function fetchActionPath($action)
+    {
+        return str(self::ENDPOINT)
+            ->rtrim('/')
+            ->append('/')
+            ->append(trim(trim($action), '/'))
+            ->toString();
     }
 }
