@@ -59,7 +59,7 @@
         <div class="mobile-menu">
             <div class="mobile-menu-header">
                 <span class="vt">VT. Knowledge Base</span>
-                <button class="close-menu"><img src="{{ asset('images/icon/larr.svg') }}" alt=""></button>
+                <button class="close-menu"><img src="{{ asset('images/icon/arrow1.svg') }}" alt="" style="transform: scaleX(-1); -webkit-transform: scaleX(-1);"></button>
             </div>
 
             <div class="search-box">

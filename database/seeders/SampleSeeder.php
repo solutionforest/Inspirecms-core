@@ -540,8 +540,8 @@ class SampleSeeder extends Seeder
                         'categories' => ['Technology', 'Interface Design'],
                         'tags' => ['Technology', 'Interface Design', 'Visual Design'],
                         'content' => [
-                            'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                            'fr' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
+                            'en' => $this->generateFakeHtmlParagraph(),
+                            'fr' => $this->generateFakeHtmlParagraph(),
                         ],
                         'post_date' => fake()->dateTimeThisYear()->format('Y-m-d H:i:s'),
                     ],
@@ -742,10 +742,10 @@ class SampleSeeder extends Seeder
 
     protected function makeSampleMedia(): void
     {
-        $model = InspireCmsConfig::getMediaAssetModelClass();
+        $mediaAssetModel = InspireCmsConfig::getMediaAssetModelClass();
         $mediaModel = config('media-library.media_model', \Spatie\MediaLibrary\MediaCollections\Models\Media::class);
 
-        if (! $this->isTableExists($model) || ! $this->isTableExists($mediaModel)) {
+        if (! $this->isTableExists($mediaAssetModel) || ! $this->isTableExists($mediaModel)) {
             return;
         }
 
@@ -754,10 +754,10 @@ class SampleSeeder extends Seeder
 
             try {
 
-                $fakeName = "image-{$i}";
+                $fakeName = "image-{$i}.png";
 
                 /** @var MediaAsset */
-                $mediaAsset = $model::create([
+                $mediaAsset = $mediaAssetModel::create([
                     'title' => $fakeName,
                     'is_folder' => false,
                 ]);
@@ -783,7 +783,7 @@ class SampleSeeder extends Seeder
         $fakeName = 'dummy.txt';
 
         /** @var MediaAsset */
-        $mediaAsset = $model::create([
+        $mediaAsset = $mediaAssetModel::create([
             'title' => $fakeName,
             'is_folder' => false,
         ]);
@@ -891,5 +891,29 @@ class SampleSeeder extends Seeder
         $mime = 'image/png';
 
         return [$base64, $mime];
+    }
+
+    protected function generateFakeHtmlParagraph(): string
+    {
+        $paragraph = '';
+
+        // Add random HTML tags
+        $tags = ['b', 'i', 'u', 'strong'];
+        foreach (explode(' ', fake()->paragraph(5)) as $index => $word) {
+            
+            if ($index > 0) {
+                $paragraph .= ' ';
+            }
+
+            $randomTag = collect($tags)->random();
+
+            if (rand(0, 1)) {
+                $word = Str::wrap($word, "<{$randomTag}>", "</{$randomTag}>");
+            }
+
+            $paragraph .= $word;
+        }
+
+        return '<p>' . $paragraph . '</p>';
     }
 }
