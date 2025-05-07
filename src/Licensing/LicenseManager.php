@@ -43,6 +43,7 @@ class LicenseManager
         // Verify the license offline first
         if (($offlineResult = $this->verifyOffline()) && $offlineResult->isSuccess()) {
             $this->cache()->put($cacheKey, $offlineResult, now()->addHours(24));
+
             return $offlineResult;
         }
 

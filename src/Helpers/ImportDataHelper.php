@@ -236,14 +236,14 @@ class ImportDataHelper
                                     type: 'text',
                                     config: [],
                                 ),
-                                ], [
+                            ], [
                                 new Entities\Field(
                                     slug: 'field-5',
                                     label: 'Field 5',
                                     type: 'text',
                                     config: [],
                                 ),
-                                ],
+                            ],
                         ])
                             ->map(fn (array $fields, $index) => new Entities\FieldGroup(
                                 slug: $itemSlug,

@@ -8,15 +8,20 @@ use Filament\Forms\Components\Field;
 class CodeEditor extends Field
 {
     protected string $view = 'inspirecms::filament.forms.components.code-editor';
-    
+
     protected int | string | Closure | null $minHeight = 420;
+
     protected string | Closure | null $customStyle = null;
+
     protected string | Closure | null $darkModeTheme = null;
+
     protected string | Closure | null $lightModeTheme = null;
+
     protected bool | Closure $isReadOnly = false;
+
     protected bool | Closure $showCopyButton = false;
 
-    public function customStyle(string | null $customStyle): static
+    public function customStyle(?string $customStyle): static
     {
         $this->customStyle = $customStyle;
 
@@ -58,9 +63,6 @@ class CodeEditor extends Field
         return $this;
     }
 
-    /**
-     * @return bool
-     */
     public function getIsReadOnly(): bool
     {
         return boolval($this->evaluate($this->isReadOnly));
@@ -89,7 +91,7 @@ class CodeEditor extends Field
      */
     public function getShowCopyButton()
     {
-        return $this->evaluate($this->showCopyButton ? "true" : "false");
+        return $this->evaluate($this->showCopyButton ? 'true' : 'false');
     }
 
     /**

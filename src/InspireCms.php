@@ -389,7 +389,7 @@ class InspireCms
 
                 $data['isActive'] = (bool) $data['is_active'];
                 unset($data['is_active']);
-    
+
                 return $data;
             })
             ->all();

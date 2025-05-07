@@ -175,13 +175,13 @@ class CmsPanelProvider extends PanelProvider
 
         $userMenuItems = [
             MenuItem::make()
-                    ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
-                    ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
-                    ->url('#')
-                    ->extraAttributes([
-                        'class' => 'cursor-default',
-                        'aria-label' => 'Version',
-                    ], true),
+                ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
+                ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
+                ->url('#')
+                ->extraAttributes([
+                    'class' => 'cursor-default',
+                    'aria-label' => 'Version',
+                ], true),
         ];
 
         return $panel
@@ -240,7 +240,7 @@ class CmsPanelProvider extends PanelProvider
             \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
-            
+
             foreach (InspireCmsConfig::getFilamentPages() as $page) {
                 $page::alignFormActionsEnd();
             }
