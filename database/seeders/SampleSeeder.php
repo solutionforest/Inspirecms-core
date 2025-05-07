@@ -43,7 +43,6 @@ class SampleSeeder extends Seeder
         $this->makeSampleMedia();
 
         $this->makeSampleLanguages();
-
         $this->addSampleFields();
         $this->addSampleDocumentTypes();
         $this->addSampleContent();
@@ -56,15 +55,11 @@ class SampleSeeder extends Seeder
         // Reset for next import
         $this->importDataService->reset();
 
-        // $fieldModel = InspireCmsConfig::getFieldModelClass();
-        // $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
-
-        //
+        // ****
         // Configure the contentPicker field and data
-        //
+        // ****
 
         // update config of contentPicker field for featured_blogs
-        // $dtBlogDataKey = $documentTypeModel::firstWhere('slug', 'blog-data')?->getKey();
         if (($dtBlogData = InspireCmsConfig::getDocumentTypeModelClass()::firstWhere('slug', 'blog-data'))
             && ($fFeaturedBlogs = collect($this->getSampleFields())->first(fn (ImportDataEntities\FieldGroup $v) => $v->slug === 'featured_blogs'))
         ) {
@@ -83,15 +78,6 @@ class SampleSeeder extends Seeder
                 data: $fFeaturedBlogs,
             );
         }
-        // if (
-        //     ($field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first())
-        //     && ($dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data'))
-        // ) {
-        //     $field->config = array_merge($field->config ?? [], [
-        //         'documentType' => $dtBlogData->getKey(),
-        //     ]);
-        //     $field->save();
-        // }
 
         // handle the content have contentPicker field
         if (
@@ -816,27 +802,18 @@ class SampleSeeder extends Seeder
 
     protected function makeSampleLanguages(): void
     {
-        $model = InspireCmsConfig::getLanguageModelClass();
+        $items[] = new ImportDataEntities\Language(
+            code: 'en',
+            isDefault: true,
+        );
+        $items[] = new ImportDataEntities\Language(
+            code: 'fr',
+            isDefault: false,
+        );
 
-        if (! $this->isTableExists($model)) {
-            return;
+        foreach ($items as $data) {
+            $this->importDataService->addLanguage($data);
         }
-
-        $languagesData = [
-            'en' => [
-                'is_default' => true,
-            ],
-            'fr' => [
-                'is_default' => false,
-            ],
-        ];
-
-        foreach ($languagesData as $code => $data) {
-
-            $this->language[$code] = $model::firstOrCreate(['code' => $code], $data);
-
-        }
-
     }
 
     protected function isTableExists(string $tableName): bool

@@ -248,6 +248,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE => InspireCmsConfig::getTemplateModelClass(),
             ImportDataHelper::FOLDER_IDENTIFIER_CONTENT => InspireCmsConfig::getContentModelClass(),
             ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION => InspireCmsConfig::getNavigationModelClass(),
+            ImportDataHelper::FOLDER_IDENTIFIER_LANGUAGE => InspireCmsConfig::getLanguageModelClass(),
             default => null,
         };
 

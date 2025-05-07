@@ -48,6 +48,14 @@ interface ImportDataServiceInterface
     public function addNavigation(Entities\Navigation $data);
 
     /**
+     * Adds a language to the system.
+     *
+     * @param  Entities\Language  $data  The language entity to be added.
+     * @return void
+     */
+    public function addLanguage(Entities\Language $data);
+
+    /**
      * Executes the import data service.
      *
      * This method is responsible for running the import data process.

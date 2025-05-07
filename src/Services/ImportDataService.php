@@ -49,6 +49,7 @@ class ImportDataService implements ImportDataServiceInterface
     protected array $tempModels = [];
 
     const PROCESS_ORDER = [
+        'languages',
         'templates',
         'fieldGroups',
         'documentTypes',
@@ -139,6 +140,20 @@ class ImportDataService implements ImportDataServiceInterface
     public function addNavigation(Entities\Navigation $data)
     {
         $this->pendingData['navigation'][] = $data;
+    }
+
+    /** {@inheritDoc} */
+    public function addLanguage(Entities\Language $data)
+    {
+        $code = $data->code;
+        if (empty($code)) {
+            return;
+        }
+        if (isset($this->pendingData['languages'][$code])) {
+            return;
+        }
+
+        $this->pendingData['languages'][$code] = $data;
     }
 
     /** {@inheritDoc} */
@@ -591,6 +606,39 @@ class ImportDataService implements ImportDataServiceInterface
                     $errorMsg .= ' - ' . get_class($th);
                 }
                 $this->processErrors['navigation']['s3'][$category][] = $errorMsg;
+            }
+        }
+    }
+
+    protected function processForLanguages()
+    {
+        $model = InspireCmsConfig::getLanguageModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        foreach ($this->pendingData['languages'] ?? [] as $code => $item) {
+
+            try {
+
+                $item->validate();
+
+                $languageData = $item->getDataForModel();
+
+                /**
+                 * @var null | Language & Model
+                 */
+                $language = $this->findLanguages($code)->first();
+
+                if (! $language) {
+                    $language = $model::create($languageData);
+                } else {
+                    $language->update($languageData);
+                }
+
+                $this->finished['languages'][$code] = $language;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['languages'][$code] = $th->getMessage();
             }
         }
     }

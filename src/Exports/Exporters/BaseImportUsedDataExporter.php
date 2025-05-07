@@ -10,6 +10,7 @@ use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -25,6 +26,9 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
             case $record instanceof DocumentType:
             case $record instanceof Content:
                 return $record->slug . '.json';
+
+            case $record instanceof Language:
+                return $record->code . '.json';
 
             case $record instanceof FieldGroup:
                 return Str::replace('_', '-', $record->name) . '.json';
@@ -78,6 +82,11 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
             case $record instanceof Navigation:
 
                 $array = ImportDataEntities\Navigation::fromRecord($record)->toArray();
+
+                return json_encode($array, JSON_PRETTY_PRINT);
+
+            case $record instanceof Language:
+                $array = ImportDataEntities\Language::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
         }
@@ -157,6 +166,9 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                 return $query->with([
                     'content.path',
                 ]);
+
+            case ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE:
+                return $query;
         }
 
         return $query;
