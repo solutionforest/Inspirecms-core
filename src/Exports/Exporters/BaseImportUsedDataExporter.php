@@ -151,6 +151,7 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                     'sitemap',
                     'webSetting',
                     'documentType',
+                    'routes.language',
                 ]);
             case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
                 return $query->with([

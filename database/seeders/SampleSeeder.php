@@ -56,58 +56,52 @@ class SampleSeeder extends Seeder
         // Reset for next import
         $this->importDataService->reset();
 
-        $fieldModel = InspireCmsConfig::getFieldModelClass();
-        $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
+        // $fieldModel = InspireCmsConfig::getFieldModelClass();
+        // $documentTypeModel = InspireCmsConfig::getDocumentTypeModelClass();
+
+        //
+        // Configure the contentPicker field and data
+        //
 
         // update config of contentPicker field for featured_blogs
-        if (
-            ($field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first())
-            && ($dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data'))
+        // $dtBlogDataKey = $documentTypeModel::firstWhere('slug', 'blog-data')?->getKey();
+        if (($dtBlogData = InspireCmsConfig::getDocumentTypeModelClass()::firstWhere('slug', 'blog-data'))
+            && ($fFeaturedBlogs = collect($this->getSampleFields())->first(fn (ImportDataEntities\FieldGroup $v) => $v->slug === 'featured_blogs'))
         ) {
-            $field->config = array_merge($field->config ?? [], [
-                'documentType' => $dtBlogData->getKey(),
-            ]);
-            $field->save();
+            $fFeaturedBlogs->fields = collect($fFeaturedBlogs->fields)
+                ->map(function (ImportDataEntities\Field $field) use ($dtBlogData) {
+                    if ($field->slug === 'blogs') {
+                        $field->config = array_merge($field->config ?? [], [
+                            'documentType' => $dtBlogData->getKey(),
+                        ]);
+                    }
+
+                    return $field;
+                })
+                ->all();
+            $this->importDataService->addFieldGroup(
+                data: $fFeaturedBlogs,
+            );
         }
+        // if (
+        //     ($field = $fieldModel::query()->where('name', 'blogs')->byGroup('featured_blogs')->first())
+        //     && ($dtBlogData = $documentTypeModel::firstWhere('slug', 'blog-data'))
+        // ) {
+        //     $field->config = array_merge($field->config ?? [], [
+        //         'documentType' => $dtBlogData->getKey(),
+        //     ]);
+        //     $field->save();
+        // }
 
         // handle the content have contentPicker field
-        $cBlogData = $this->contentService->getUnderRealPath(
-            path: 'blog-management',
-            limit: 10,
-        );
-        if ($cBlogData->isNotEmpty()
+        if (
+            ($cBlogData = $this->contentService->getUnderRealPath(path: 'blog-management', limit: 10))
+            && $cBlogData->isNotEmpty()
             && ($cBlogIndex = collect($this->getSampleContent())->first(fn (ImportDataEntities\Content $v) => $v->slug === 'blogs' && $v->parent === 'parent'))
         ) {
             $cBlogIndex->properties['featured_blogs']['blogs'] = $cBlogData->random(3)->map(fn ($item) => $item->getKey())->all();
             $this->importDataService->addContent(
                 data: $cBlogIndex
-            );
-        }
-
-        // temp for update content route
-        // todo: move to import data
-        if (($cBlogDetail = $this->contentService->findByRealPath('home/blog')->first())) {
-            event(
-                new \SolutionForest\InspireCms\Events\Content\UpsertRoute(
-                    $cBlogDetail->withoutRelations(),
-                    [
-                        [
-                            'language_id' => null,
-                            'uri' => 'blog/{slug}',
-                            'is_default_pattern' => false,
-                        ],
-                        [
-                            'language_id' => 1,
-                            'uri' => 'en/blog/{slug}',
-                            'is_default_pattern' => false,
-                        ],
-                        [
-                            'language_id' => 2,
-                            'uri' => 'fr/blog/{slug}',
-                            'is_default_pattern' => false,
-                        ],
-                    ]
-                )
             );
         }
 
@@ -169,7 +163,7 @@ class SampleSeeder extends Seeder
         }
     }
 
-    protected function addSampleFields(): void
+    protected function getSampleFields(): array
     {
         $toolbarButtonsForRichEditor = array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons());
         $extraConfigForRichEditor = [
@@ -254,7 +248,13 @@ class SampleSeeder extends Seeder
                 new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'documentType' => 'blog']),
             ],
         );
-        foreach ($items as $group) {
+        
+        return $items;
+    }
+
+    protected function addSampleFields()
+    {
+        foreach ($this->getSampleFields() as $group) {
             $this->importDataService->addFieldGroup($group);
         }
     }
@@ -589,6 +589,23 @@ class SampleSeeder extends Seeder
             documentType: 'blog-detail-page',
             publishState: 'publish',
             parent: 'home',
+            routes: [
+                [
+                    'locale' => null,
+                    'uri' => 'blog/{slug}',
+                    'is_default_pattern' => true,
+                ],
+                [
+                    'locale' => 'en',
+                    'uri' => 'en/blog/{slug}',
+                    'is_default_pattern' => false,
+                ],
+                [
+                    'locale' => 'fr',
+                    'uri' => 'fr/blog/{slug}',
+                    'is_default_pattern' => false,
+                ],
+            ],
         );
 
         $items[] = new ImportDataEntities\Content(

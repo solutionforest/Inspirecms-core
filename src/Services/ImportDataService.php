@@ -7,12 +7,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
+use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\ImportData\Entities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
@@ -475,6 +477,42 @@ class ImportDataService implements ImportDataServiceInterface
                     $content->setAsDefaultTemplate($template);
                 }
 
+                if (! empty($item->routes) && $content->documentType?->display_category == DocumentTypeCategory::Web) {
+                    $formattedRoutes = collect($item->routes)
+                        ->where(fn ($i) => is_array($i))
+                        ->map(function (array $i) {
+                            $locale = $i['locale'] ?? null;
+                            if (filled($locale)) {
+                                $i['language_id'] = $this->findLanguages($locale)->first()?->getKey();
+                            } else {
+                                $i['language_id'] = null;
+                            }
+                            unset($i['locale']);
+                            if (isset($i['is_default_pattern'])) {
+                                $i['is_default_pattern'] = (bool) $i['is_default_pattern'];
+                            } else {
+                                $i['is_default_pattern'] = true;
+                            }
+
+                            return Arr::only($i, [
+                                'language_id',
+                                'uri',
+                                'is_default_pattern',
+                                'regex_constraints',
+                            ]);
+                        })
+                        ->where(fn ($i) => isset($i['uri']) && ! empty($i['uri']))
+                        ->values()->all();
+                    if (! empty($formattedRoutes)) {
+                        event(
+                            new UpsertRoute(
+                                $content->withoutRelations(),
+                                $formattedRoutes,
+                            )
+                        );
+                    }
+                }
+
                 $this->finished['content'][$contentKey] = $content;
 
             } catch (\Throwable $th) {
@@ -800,6 +838,17 @@ class ImportDataService implements ImportDataServiceInterface
         return collect($existing)->where(fn ($v, $k) => in_array($k, $slugs));
     }
 
+    /**
+     * Find languages by locale.
+     *
+     * @param  string[]|string  $locales  The locales of the languages to find.
+     * @return Collection<Language|Model>
+     */
+    protected function findLanguages(...$locales)
+    {
+        return $this->findFromTempModels('languages', $locales);
+    }
+
     protected function findFromTempModels(string $type, ...$keys)
     {
         $existing = $this->tempModels[$type] ?? collect();
@@ -808,6 +857,7 @@ class ImportDataService implements ImportDataServiceInterface
 
         $key = match ($type) {
             'fieldGroups' => 'name',
+            'languages' => 'code',
             default => 'slug',
         };
 
@@ -819,6 +869,7 @@ class ImportDataService implements ImportDataServiceInterface
                 'fieldGroups' => InspireCmsConfig::getFieldGroupModelClass(),
                 'templates' => InspireCmsConfig::getTemplateModelClass(),
                 'documentTypes' => InspireCmsConfig::getDocumentTypeModelClass(),
+                'languages' => InspireCmsConfig::getLanguageModelClass(),
                 default => null,
             };
 
