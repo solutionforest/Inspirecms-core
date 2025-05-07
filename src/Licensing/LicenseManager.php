@@ -21,6 +21,11 @@ class LicenseManager
 
     private $cacheManager;
 
+    public function getLicenseKey()
+    {
+        return InspireCmsConfig::get('system.license.key');
+    }
+
     /**
      * @return LicenseVerificationResult
      */
@@ -185,11 +190,6 @@ class LicenseManager
     private function saveLicenseFile($fileContent)
     {
         File::put($this->licenseKeyPath(), $fileContent);
-    }
-
-    private function getLicenseKey()
-    {
-        return InspireCmsConfig::get('system.license.key');
     }
 
     private function getSecretKey()
