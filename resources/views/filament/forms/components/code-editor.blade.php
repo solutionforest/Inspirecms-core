@@ -38,7 +38,7 @@
             x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('filament-code-editor', 'solution-forest/inspirecms') }}"
         >
             <div wire:ignore class="w-full code-editor-textarea-wrapper" x-ref="codeEditor"
-                style="height:{{ $getMinHeight() }}px;overflow: hidden; {{ $getCustomStyle() }}">
+                style="height:{{ $getMinHeight() }};overflow: hidden; {{ $getCustomStyle() }}">
             </div>
         </div>
     </div>
