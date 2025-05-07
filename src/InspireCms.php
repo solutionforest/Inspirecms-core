@@ -214,28 +214,13 @@ class InspireCms
                 );
         }
 
-        return collect($this->cachedNavigation['navigation'] ?? [])
-            ->map(function ($arr) {
-                $alias = $this->cachedNavigation['alias'] ?? [];
-                $data = array_combine($alias, $arr);
-                if (isset($data['children'])) {
-                    $data['children'] = collect($data['children'])
-                        ->map(fn ($childArr) => array_combine($alias, $childArr))
-                        ->values()
-                        ->all();
-                }
-
-                $data['isActive'] = (bool) $data['is_active'];
-
-                return $data;
-            })
+        return collect($this->processNavigationData($this->cachedNavigation['navigation'] ?? [], $this->cachedNavigation['alias'] ?? []))
+            ->where('category', $category)
+            ->where('isActive', true)
             ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code, array_keys($this->getAllAvailableLanguages())))
-            ->where(
-                fn (NavigationDto $nav) => $nav->category == $category &&
-                $nav->isActive
-            )
             ->values()
             ->all();
+
     }
 
     public function forgetCachedNavigation(): void
@@ -388,6 +373,26 @@ class InspireCms
     private function aliasModelFields($attributes = [], $relations = []): array
     {
         return array_values(array_unique(array_merge($attributes, $relations)));
+    }
+
+    private function processNavigationData(array $navigationData, array $alias)
+    {
+        return collect($navigationData)
+            ->where(fn ($v) => is_array($v))
+            ->map(fn ($arr) => array_combine($alias, $arr))
+            ->map(function (array $data) use ($alias) {
+                if (isset($data['children']) && is_array($data['children'])) {
+                    $data['children'] = $this->processNavigationData($data['children'], $alias);
+                } else {
+                    $data['children'] = [];
+                }
+
+                $data['isActive'] = (bool) $data['is_active'];
+                unset($data['is_active']);
+    
+                return $data;
+            })
+            ->all();
     }
 
     // endregion Helpers
