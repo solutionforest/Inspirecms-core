@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
+use Filament\Support\Assets\Css;
 use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
 use Filament\Support\Facades\FilamentAsset;
@@ -199,6 +200,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         return [
             Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
             Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
+            Css::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.css')->loadedOnRequest(),
             AlpineComponent::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.js')->loadedOnRequest(),
         ];
     }

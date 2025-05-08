@@ -3,30 +3,20 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
+use Filament\Forms\Components\Concerns\HasExtraInputAttributes;
 use Filament\Forms\Components\Field;
 
 class CodeEditor extends Field
 {
+    use HasExtraInputAttributes;
+
     protected string $view = 'inspirecms::filament.forms.components.code-editor';
 
     protected int | string | Closure | null $minHeight = 420;
 
-    protected string | Closure | null $customStyle = null;
-
     protected string | Closure | null $darkModeTheme = null;
 
     protected string | Closure | null $lightModeTheme = null;
-
-    protected bool | Closure $isReadOnly = false;
-
-    protected bool | Closure $showCopyButton = false;
-
-    public function customStyle(?string $customStyle): static
-    {
-        $this->customStyle = $customStyle;
-
-        return $this;
-    }
 
     public function minHeight(int | string | Closure | null $minHeight = 768): static
     {
@@ -49,25 +39,6 @@ class CodeEditor extends Field
         return $this;
     }
 
-    public function isReadOnly(bool | Closure $isReadOnly = false): static
-    {
-        $this->isReadOnly = $isReadOnly;
-
-        return $this;
-    }
-
-    public function showCopyButton(bool | Closure $showCopyButton = true): static
-    {
-        $this->showCopyButton = $showCopyButton;
-
-        return $this;
-    }
-
-    public function getIsReadOnly(): bool
-    {
-        return boolval($this->evaluate($this->isReadOnly));
-    }
-
     /**
      * @return ?string
      */
@@ -84,22 +55,6 @@ class CodeEditor extends Field
         }
 
         return null;
-    }
-
-    /**
-     * @return string
-     */
-    public function getShowCopyButton()
-    {
-        return $this->evaluate($this->showCopyButton ? 'true' : 'false');
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getCustomStyle()
-    {
-        return $this->evaluate($this->customStyle);
     }
 
     /**

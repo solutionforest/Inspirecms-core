@@ -19,9 +19,9 @@ import { gruvboxDark } from 'cm6-theme-gruvbox-dark'
 
 export default function codeEditorFormComponentEnhace({
     state, 
-    isReadOnly, 
     darkTheme, 
     lightTheme,
+    isReadOnly, 
 }) {
     return {
         state,
@@ -69,12 +69,20 @@ export default function codeEditorFormComponentEnhace({
             dark: basicDark,
         },
         init: function () {
+            let theme = window.Alpine.store('theme') || 'system';
+            if (theme === 'system') {
+                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
             this.isReadOnly = isReadOnly;
             this.theme.dark = darkTheme;
             this.theme.light = lightTheme;
             this.themeConfig = new Compartment();
-            this.mode = 'dark';
+            this.mode = theme;
             this.render();
+
+            this.toggleTheme(theme);
+
         },
         toggleTheme(mode) {
             const selectedStyle = mode === 'dark' ? this.theme.dark : this.theme.light;
