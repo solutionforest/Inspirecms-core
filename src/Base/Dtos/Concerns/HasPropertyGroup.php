@@ -25,8 +25,16 @@ trait HasPropertyGroup
         }
 
         $result = $this->propertyData->get($key, null);
-        if ($result && $result instanceof PropertyGroupCollection) {
-            $result->setFallbackLocale($this->getFallbackLocale());
+        
+        if ($result) {
+            
+            $locale = $this->getLocale() ?? $this->getFallbackLocale();
+
+            if ($result instanceof PropertyGroupCollection
+                || $result instanceof PropertyDataGroupDto
+            ) {
+                $result = $result->setFallbackLocale($locale);
+            }
         }
 
         return $result;
