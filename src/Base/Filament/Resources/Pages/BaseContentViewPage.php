@@ -3,17 +3,15 @@
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
 use Filament\Actions;
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\ViewRecord;
-use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Arr;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
-use SolutionForest\InspireCms\Dtos\ContentDto;
+use SolutionForest\InspireCms\Factories\PreviewFactory;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LockContentAction;
@@ -114,42 +112,38 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
     // region Preview
     protected function getPreviewModalView(): ?string
     {
-        $record = $this->getRecord();
-        $template = $record->getDefaultTemplate();
-        $template ??= $this->getDocumentType()?->getDefaultTemplate();
-
-        $templateContent = $template?->getContent();
-
-        if (! $template || blank($templateContent)) {
-            Notification::make()
-                ->title(__('inspirecms::notification.template_not_found.title'))
-                ->body(__('inspirecms::notification.template_not_found.body'))
-                ->danger()
-                ->seconds(60)
-                ->send();
-
-            throw new Halt;
-        }
-
-        return $templateContent;
+        return 'handle by previewFactory';
     }
 
     public static function renderPreviewModalView(string $view, array $data): string
     {
-        return Blade::render($view, $data);
+        $extraData = Arr::except($data, [
+            'propertyData',
+            'content',
+            'documentType',
+            'template',
+            'record',
+        ]);
+        return PreviewFactory::create()->renderContentPreview(
+            documentType: $data['documentType'] ?? null,
+            template: $data['template'] ?? null,
+            content: $data['content'] ?? null,
+            propertyData: $data['propertyData'] ?? [],
+            locale: $data['locale'] ?? null,
+            data: $extraData,
+        );
     }
 
     protected function mutatePreviewModalData(array $data): array
     {
-        $contentDto = $this->contentDto;
-
         $locale = $this->getActiveFormsLocale();
-        if ($contentDto instanceof ContentDto) {
-            // Set the locale of the content dto to the active locale
-            $contentDto->setLocale($locale);
-        }
+        $content = $this->getRecord();
 
-        $data['content'] = $contentDto;
+        $data['propertyData'] = $content->getLatestPublishedPropertyData();
+        $data['content'] = $content;
+        $data['documentType'] = $content->documentType;
+        $data['template'] = $content->getDefaultTemplate() ?? $content->documentType?->getDefaultTemplate();
+        $data['contentDTO'] = $this->contentDto;
         $data['locale'] = $locale;
 
         return $data;

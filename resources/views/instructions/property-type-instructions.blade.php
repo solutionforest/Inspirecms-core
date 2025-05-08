@@ -1,3 +1,4 @@
+@use('SolutionForest\InspireCms\Helpers\PropertyTypeHelper')
 @php
     use Illuminate\Support\Arr;
     use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
@@ -14,7 +15,7 @@
 
         $translatable = $fieldType?->isTranslatable() ?? false;
 
-        $valueType = FieldTypeHelper::resolveFieldReturnType($fieldType);
+        $valueType = PropertyTypeHelper::getFieldDisplayValueType($fieldType);
 
         $propertyVarName = TemplateHelper::generatePropertyVarName($group, $field);
         if ($valueType != 'array' || $translatable) {

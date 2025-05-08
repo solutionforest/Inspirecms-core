@@ -11,15 +11,14 @@ use Filament\Tables;
 use Filament\Tables\Actions\CreateAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Arr;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
-use Pboivin\FilamentPeek\Support\Html;
+use SolutionForest\InspireCms\Factories\PreviewFactory;
 use SolutionForest\InspireCms\Filament\Concerns\CanAuthorizeRelationManager;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\Filament\Tables\Actions\EditAndPreviewAction;
 use SolutionForest\InspireCms\Filament\Tables\Actions\SetAsDefaultAction;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class TemplatesRelationManager extends RelationManager
@@ -305,7 +304,8 @@ class TemplatesRelationManager extends RelationManager
         $templateRecord = $this->cachedMountedTableActionRecord;
         $theme = $this->theme ?? inspirecms_templates()->getCurrentTheme();
         $editorData['theme'] = $theme;
-        $editorData['record_id'] = $templateRecord?->getKey();
+        $editorData['template'] = $templateRecord;
+        $editorData['record_id'] = $templateRecord?->getKey(); // for update record content used
 
         $editorData['html_content'] = $templateRecord?->getContent($theme);
 
@@ -323,55 +323,23 @@ class TemplatesRelationManager extends RelationManager
 
     public static function mutateBuilderPreviewData(string $builderName, array $editorData, array $previewData): array
     {
-        $documentTypeId = $editorData['document_type_id'] ?? null;
-        $previewData['documentType'] = filled($documentTypeId)
-            ? InspireCmsConfig::getDocumentTypeModelClass()::with('fields')->find($documentTypeId)
-            : null;
-
         return $previewData;
     }
 
     public static function renderBuilderPreview(string $view, array $data): string
     {
-        $htmlContent = $data['html_content'] ?? '';
+        $extraData = Arr::except($data, [
+            'html_content',
+            'document_type_id',
+            'theme',
+            'record_id',
+        ]);
 
-        /**
-         * @var null | \SolutionForest\InspireCms\Models\Contracts\DocumentType
-         */
-        $documentType = $data['documentType'] ?? null;
-
-        if (! $documentType) {
-            return '';
-        }
-
-        $dummyDto = \SolutionForest\InspireCms\Dtos\ContentDto::fakeForDocumentType($documentType);
-
-        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
-
-            // get the layout
-            $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
-
-            if (view()->exists('components.' . $layoutName)) {
-                $newHtmlContent = Blade::render("@extends('components.$layoutName')" . $htmlContent, [
-                    'content' => $dummyDto,
-                    'locale' => $dummyDto->getLocale(),
-                    'layoutName' => $layoutName,
-                    'slot' => '',
-                    'isPeekPreviewModal' => true,
-                ]);
-
-                return Html::injectPreviewModalStyle(
-                    $newHtmlContent
-                );
-            }
-        }
-
-        return Html::injectPreviewModalStyle(
-            Blade::render($htmlContent, [
-                'content' => $dummyDto,
-                'locale' => $dummyDto->getLocale(),
-                'isPeekPreviewModal' => true,
-            ])
+        return PreviewFactory::create()->renderTemplatePreview(
+            templateContent: $data['html_content'] ?? '',
+            documentType: $data['document_type_id'] ?? null,
+            data: $extraData,
+            theme: $data['theme'] ?? null,
         );
     }
 

@@ -2,16 +2,12 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
-use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
-use Filament\Support\Exceptions\Halt;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Arr;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
-use Pboivin\FilamentPeek\Support\Html;
-use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Factories\PreviewFactory;
 
 trait ContentPreviewEditorTrait
 {
@@ -20,29 +16,24 @@ trait ContentPreviewEditorTrait
 
     protected function getBuilderPreviewView(string $builderName): ?string
     {
-        $template = filled($this->data['template_id'] ?? null) ? InspireCmsConfig::getTemplateModelClass()::find($this->data['template_id']) : null;
-        $template ??= $this->getDocumentType()?->getDefaultTemplate();
-
-        $templateContent = $template?->getContent();
-
-        if (! $template || blank($templateContent)) {
-            Notification::make()
-                ->title(__('inspirecms::notification.template_not_found.title'))
-                ->body(__('inspirecms::notification.template_not_found.body'))
-                ->danger()
-                ->seconds(60)
-                ->send();
-
-            throw new Halt;
-        }
-
-        return $templateContent;
+        return 'handle by previewFactory';
     }
 
     public static function renderBuilderPreview(string $view, array $data): string
     {
-        return Html::injectPreviewModalStyle(
-            Blade::render($view, $data)
+        $extraData = Arr::except($data, [
+            'documentType',
+            'template',
+            'recordData',
+            'propertyData',
+        ]);
+        return PreviewFactory::create()->renderContentPreview(
+            documentType: $data['documentType'] ?? null,
+            template: $data['template'] ?? null,
+            content: $data['recordData'] ?? [],
+            propertyData: $data['propertyData'] ?? [],
+            locale: $data['locale'] ?? null,
+            data: $extraData,
         );
     }
 
@@ -55,49 +46,30 @@ trait ContentPreviewEditorTrait
 
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
     {
-        $contentModel = $this->getModel();
-        $editorData['contentModel'] = $contentModel;
-
-        $documentType = $this->getDocumentType();
-        $editorData['documentType'] = $documentType instanceof Model ? $documentType->getKey() : $documentType;
+        $editorData['recordData'] = Arr::except($this->data, [
+            'propertyData',
+        ]);
+        $editorData['propertyData'] = $this->data['propertyData'] ?? [];
 
         if ($this instanceof CreateRecord) {
-            $editorData['operation'] = 'create';
-            $editorData['contentData'] = $this->data;
-            $editorData['contentData']['children'] = [];
+            $editorData['editorOperation'] = 'create';
+            $editorData['recordData']['children'] = [];
+
         } else {
-            $editorData['operation'] = 'edit';
+            $editorData['editorOperation'] = 'edit';
 
             $content = $this->getRecord();
-            $editorData['contentData'] = $this->data;
-            $editorData['contentData']['children'] = $content->children()->pluck($content->getKeyName())->toArray();
-            $editorData['contentKey'] = $content->getKey();
-
+            $editorData['recordData']['children'] = $content->children()->pluck($content->getKeyName())->toArray();
         }
+
+        $editorData['documentType'] = ($dt = $this->getDocumentType()) && $dt instanceof Model ? $dt->getKey() : ($dt ?? null); // primary key or model record
+        $editorData['template'] = $this->data['template_id'] ?? null; 
 
         return $editorData;
     }
 
     public static function mutateBuilderPreviewData(string $builderName, array $editorData, array $previewData): array
     {
-        $contentModel = $editorData['contentModel'];
-
-        if (! in_array(Content::class, class_implements($contentModel))) {
-            throw new \Exception('Model must implement ' . Content::class);
-        }
-
-        $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($editorData['documentType']);
-
-        $contentDto = $contentModel::toPreviewDto(
-            record: $editorData['contentData'],
-            propertyData: $editorData['propertyData'] ?? [],
-            locale: $editorData['activeLocale'],
-            documentType: $documentType,
-        );
-
-        $previewData['content'] = $contentDto;
-        $previewData['locale'] = $editorData['activeLocale'] ?? app()->getLocale();
-
-        return $previewData;
+        return array_merge($previewData, $editorData);
     }
 }

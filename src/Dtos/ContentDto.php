@@ -107,42 +107,6 @@ class ContentDto extends BaseTranslatableModelDto
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Model&\SolutionForest\InspireCms\Models\Contracts\DocumentType  $documentType
-     * @return \SolutionForest\InspireCms\Dtos\ContentDto
-     */
-    public static function fakeForDocumentType($documentType, array $propertyData = [], ?\Carbon\CarbonInterface $publishAt = null)
-    {
-        $availableLanguages = inspirecms()->getAllAvailableLanguages();
-
-        $availableLocales = collect($availableLanguages)->map(fn ($lang) => $lang->code)->toArray();
-
-        $fallbackLocale = array_key_first($availableLocales) ?? 'en';
-
-        /** @var SupportCollection<PropertyTypeDto> */
-        $propertyTypes = collect($documentType?->fields)->map(fn ($field) => $field->toDto());
-        $dtoParameters['propertyTypes'] = $propertyTypes;
-
-        foreach ($propertyTypes as $propertyType) {
-            if (! $propertyType instanceof PropertyTypeDto) {
-                continue;
-            }
-            $propertyData[$propertyType->group][$propertyType->key] = PropertyDataDto::fakeValueForPropertyType($propertyType, array_keys($availableLocales));
-        }
-        $dtoParameters['propertyData'] = $propertyData;
-
-        $parameters = static::mutuateParameters($dtoParameters, [$fallbackLocale, $availableLanguages]);
-
-        $parameters['publishAt'] = $publishAt;
-        $dto = parent::fromArray($parameters);
-
-        $dto->setLocale($fallbackLocale);
-        $dto->setFallbackLocale($fallbackLocale);
-        $dto->setAvailableLocales($availableLocales);
-
-        return $dto;
-    }
-
-    /**
      * @return SupportCollection<ContentDto>
      */
     public function getChildren()

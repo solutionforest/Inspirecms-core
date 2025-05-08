@@ -5,8 +5,6 @@ namespace SolutionForest\InspireCms\Helpers;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
-use SolutionForest\InspireCms\Dtos\PropertyDataDto;
-use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Filament\Forms\Components\Translate as TranslateComponent;
 
 class FieldTypeHelper
@@ -151,21 +149,5 @@ class FieldTypeHelper
         } else {
             return $icons->first();
         }
-    }
-
-    /**
-     * @param  FieldTypeConfig  $fieldType
-     */
-    public static function resolveFieldReturnType($fieldType)
-    {
-        $fakePropertyType = PropertyTypeDto::fromArray([
-            'key' => 'fake',
-            'group' => 'fake',
-            'config' => $fieldType,
-        ]);
-        $fakeValue = PropertyDataDto::fakeValueForPropertyType($fakePropertyType, array_keys(inspirecms()->getAllAvailableLanguages()));
-        $propertyValueType = gettype($fakeValue);
-
-        return $propertyValueType;
     }
 }

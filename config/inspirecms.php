@@ -421,6 +421,7 @@ return [
             ],
         ],
         'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
+        'preview_provider' => \SolutionForest\InspireCms\Content\DefaultPreviewProvider::class,
     ],
 
     'sitemap' => [
