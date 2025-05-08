@@ -18,14 +18,14 @@ php artisan vendor:publish --tag="inspirecms-config"
 'system' => [
     /**
      * Whether to include an X-Powered-By header in HTTP responses
-     * 
-     * When true, InspireCMS adds an X-Powered-By HTTP header to responses. 
+     *
+     * When true, InspireCMS adds an X-Powered-By HTTP header to responses.
      */
     'send_powered_by_header' => true,
 
     /**
      * License configuration for InspireCMS
-     * 
+     *
      * These settings are required for the CMS to validate your license.
      */
     'license' => [
@@ -34,7 +34,7 @@ php artisan vendor:publish --tag="inspirecms-config"
         // Your InspireCMS license secret used for validation
         'secret' => env('INSPIRECMS_LICENSE_SECRET'),
     ],
-    
+
     /**
      * Control how InspireCMS interacts with key plugins
      */
@@ -47,7 +47,7 @@ php artisan vendor:publish --tag="inspirecms-config"
 
 ### Authentication
 
-Configure how users authenticate with your CMS \([learn more about laravel authentication]((https://laravel.com/docs/12.x/authentication#adding-custom-guards))\):
+Configure how users authenticate with your CMS \([learn more about laravel authentication](<(https://laravel.com/docs/12.x/authentication#adding-custom-guards)>)\):
 
 ```php
 'auth' => [
@@ -80,7 +80,7 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 
     /**
      * Security settings to protect against brute-force attacks
-     * 
+     *
      * Number of failed attempts before lockout
      */
     'failed_login_attempts' => 5, // Number of attempts before account lockout
@@ -92,14 +92,14 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 
     /**
      * Controls when super admin checks are performed in the authentication flow
-     * 
+     *
      * Allowed values: before, after, none
      */
-    'skip_super_admin_check' => 'before', 
+    'skip_super_admin_check' => 'before',
 
     /**
      * Skip account verification for users.
-     * 
+     *
      * Set to true to skip account email verification requirements.
      */
     'skip_account_verification' => false,
@@ -109,9 +109,10 @@ Configure how users authenticate with your CMS \([learn more about laravel authe
 ### Media Management
 
 Configure media uploads, storage, and processing:
+
 ```php
 'media' => [
-    
+
     /**
      * User avatar storage configuration
      */
@@ -119,7 +120,7 @@ Configure media uploads, storage, and processing:
         'disk' => 'public',        // Storage disk to use (public, s3, etc.)
         'directory' => 'avatars',  // Subdirectory where avatars will be stored
     ],
-    
+
     /**
      * Media library configuration
      */
@@ -128,14 +129,14 @@ Configure media uploads, storage, and processing:
                                   // Use 's3' or other drivers for cloud storage
         'directory' => '',         // Base directory for media files (empty for root)
                                   // Set to 'media' or similar for better organization
-        
+
         /**
          * Allowed file types
-         * 
+         *
          * e.g. ['image/jpeg', 'image/png', 'video/mp4']
          */
-        'allowed_mime_types' => [], 
-            
+        'allowed_mime_types' => [],
+
         /**
          * Maximum file size in KB
          */
@@ -162,9 +163,9 @@ Configure media uploads, storage, and processing:
          * HTTP middleware applied to media requests
          */
         'middleware' => [
-            'cache.headers:public;max_age=2628000;etag', 
+            'cache.headers:public;max_age=2628000;etag',
         ],
-        
+
         /**
          * Responsive image generation settings
          */
@@ -220,7 +221,7 @@ Optimize performance with caching configurations:
         // For production environments, consider enabling a persistent cache driver
         // such as Redis or Memcached in your .env file:
         // CACHE_DRIVER=redis
-        
+
         // Monitor cache usage with: php artisan inspirecms:cache-stats
 ],
 ```
@@ -240,7 +241,7 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
     'navigation_position' => 'top',     // left, top
     'panel_id' => 'cms',               // Internal identifier for the panel
                                         // Must be unique if using multiple panels
-    'path' => 'cms',                   // URL path segment for admin area 
+    'path' => 'cms',                   // URL path segment for admin area
                                         // Example: https://yoursite.com/cms
     'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
         'name' => 'InspireCMS',        // Display name shown in admin header
@@ -253,10 +254,10 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
         'polling_interval' => '30s',   // How often to check for new notifications
                                         // Lower for more responsiveness, higher for reduced server load
     ],
-    'background_image' => 'https://random.danielpetrica.com/api/random?format=regular', 
+    'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
                                         // Login page background
                                         // Replace with your own image path for branding
-    
+
     // Resource classes define admin CRUD interfaces
     // Replace with custom classes to modify behavior
     'resources' => [
@@ -264,14 +265,14 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
         'document_type' => FilamentResources\DocumentTypeResource::class,
         // ... other resources
     ],
-    
+
     // Admin panel pages (replace to customize specific pages)
     'pages' => [
         'dashboard' => FilamentPages\Dashboard::class,
         'export' => FilamentPages\Export::class,
         'health' => FilamentPages\Health::class,
     ],
-    
+
     // Navigation clusters (groupings of admin features)
     'clusters' => [
         'content' => FilamentClusters\Content::class,
@@ -297,7 +298,7 @@ Manage data migration and content portability:
 
 ```php
 'import_export' => [
-    
+
     'imports' => [
 
         // Storage configuration for imports
@@ -347,7 +348,7 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
     'table_name_prefix' => 'cms_',  // Prefix for database tables
                                    // Change requires database migration update
     'morph_map_prefix' => 'cms_',   // Prefix for polymorphic relationships
-    
+
     // Model class mappings - replace with your own to extend functionality
     // Example: 'user' => App\Models\User::class
     'fqcn' => [
@@ -355,7 +356,7 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
         'content_path' => Models\ContentPath::class,
         // ... other models
     ],
-    
+
     /**
      * Policy mappings control authorization
      */
@@ -363,7 +364,7 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
         'content' => Policies\ContentStatusPolicy::class,
         // Add custom policies here
     ],
-    
+
     /**
      * Auto-cleanup settings for database tables that can grow large
      */
@@ -395,7 +396,7 @@ Define and manage custom fields for content types:
         \SolutionForest\InspireCms\Fields\Configs\Repeater::class,      // Repeatable field groups
         \SolutionForest\InspireCms\Fields\Configs\Tags::class,          // Tag selection field
 
-        // Rich content editors 
+        // Rich content editors
         \SolutionForest\InspireCms\Fields\Configs\RichEditor::class,    // WYSIWYG editor
         \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor::class, // Markdown support
 
@@ -426,7 +427,7 @@ use SolutionForest\InspireCms\Filament\Widgets as FilamentWidgets;
     'guard_actions' => [
 
     ],
-    
+
     /**
      * Dashboard widgets requiring permissions to view
      */
@@ -462,13 +463,13 @@ Configure how InspireCMS resolves various components:
 'resolvers' => [
     // Service classes for resolving common entities
     // Replace with custom classes to modify behavior
-    
+
     // How the current user is determined
     'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
-    
+
     // How published content is retrieved and filtered
     'published_content' => \SolutionForest\InspireCms\Resolvers\PublishedContentResolver::class,
-    
+
     // Add custom resolvers here as needed for extending functionality
 ],
 ```
@@ -484,9 +485,18 @@ Control how InspireCMS handles frontend requests:
                                    // Example: ['web', 'localize', 'cache']
                                    // Core middleware like 'web' is already applied
     ],
-    // Handles URL segment parsing for content routing
-    // Replace with custom class to implement custom URL schemes
+    /**
+     * Handles URL segment parsing for content routing
+     *
+     * Replace with custom class to implement custom URL schemes
+     */
     'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
+    /**
+     * Class that handles content previews
+     *
+     * Override with a custom class to implement specialized preview behavior
+     */
+    'preview_provider' => \SolutionForest\InspireCms\Content\DefaultPreviewProvider::class,
 ],
 ```
 
@@ -499,10 +509,10 @@ Configure automatic sitemap generation:
     // Class responsible for generating sitemaps
     // Replace with custom class for specialized sitemap behavior
     'generator' => \SolutionForest\InspireCms\Sitemap\SitemapGenerator::class,
-    
+
     // Where the sitemap is stored - should be in public web directory
     'file_path' => public_path('sitemap.xml'),
-    
+
     // To regenerate sitemap: php artisan inspirecms:generate-sitemap
 ],
 ```
@@ -528,7 +538,7 @@ Set up automated background tasks:
         'schedule' => 'daily',       // Run once per day
         // Cleanup settings...
     ],
-    
+
     // To use scheduled tasks, ensure Laravel's scheduler is running:
     // * * * * * cd /path-to-project && php artisan schedule:run >> /dev/null 2>&1
 ],
@@ -543,10 +553,10 @@ Configure language and translation settings:
     // Languages available in the admin interface
     // Format: language code or locale identifier
     'user_preferred_locales' => ['en','zh_CN','zh_TW'],
-    
+
     // Add new languages via the admin interface
     // or directly in the languages table
-    
+
     // To generate translation files: php artisan lang:publish
 ],
 ```
@@ -577,7 +587,7 @@ class InspireCmsConfigServiceProvider extends ServiceProvider
     public function boot()
     {
         InspireCmsConfig::set('custom.setting', 'value');
-        
+
         // Override existing settings
         InspireCmsConfig::set('template.default_theme', 'custom-theme');
     }
