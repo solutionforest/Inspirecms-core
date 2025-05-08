@@ -27,6 +27,7 @@ trait ContentPreviewEditorTrait
             'recordData',
             'propertyData',
         ]);
+
         return PreviewFactory::create()->renderContentPreview(
             documentType: $data['documentType'] ?? null,
             template: $data['template'] ?? null,
@@ -63,7 +64,7 @@ trait ContentPreviewEditorTrait
         }
 
         $editorData['documentType'] = ($dt = $this->getDocumentType()) && $dt instanceof Model ? $dt->getKey() : ($dt ?? null); // primary key or model record
-        $editorData['template'] = $this->data['template_id'] ?? null; 
+        $editorData['template'] = $this->data['template_id'] ?? null;
 
         return $editorData;
     }

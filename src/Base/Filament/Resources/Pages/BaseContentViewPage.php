@@ -124,6 +124,7 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
             'template',
             'record',
         ]);
+
         return PreviewFactory::create()->renderContentPreview(
             documentType: $data['documentType'] ?? null,
             template: $data['template'] ?? null,

@@ -25,7 +25,7 @@ class PropertyTypeHelper
     {
         $fieldType = $propertyType->config;
         $value = null;
-        
+
         if ($fieldType?->isTranslatable()) {
             $value = collect($availableLocales)
                 ->mapWithKeys(fn ($locale) => [$locale => static::fakeDisplayValueForFieldType($fieldType)])
@@ -45,15 +45,16 @@ class PropertyTypeHelper
         if ($fieldType  instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater) {
 
             return collect(range(1, 3))
-                ->map(fn ($i) => collect($fieldType->fields)
-                    ->mapWithKeys(function ($field) {
-                        $innerFieldType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
+                ->map(
+                    fn ($i) => collect($fieldType->fields)
+                        ->mapWithKeys(function ($field) {
+                            $innerFieldType = FieldTypeHelper::getFieldTypeConfig($field['field'], $field['fieldConfig'] ?? []);
 
-                        return [
-                            $field['name'] => static::fakeDisplayValueForFieldType($innerFieldType),
-                        ];
-                    })
-                    ->toArray()
+                            return [
+                                $field['name'] => static::fakeDisplayValueForFieldType($innerFieldType),
+                            ];
+                        })
+                        ->toArray()
                 )
                 ->all();
         }

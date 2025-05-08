@@ -8,12 +8,10 @@ use Illuminate\Support\Facades\Blade;
 use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
-use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Helpers\PropertyTypeHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
-use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class DefaultPreviewProvider implements PreviewProviderInterface
 {
@@ -32,12 +30,12 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         }
 
         $locale ??= $data['activeLocale'] ?? $data['locale'] ?? null;
-        
+
         if (isset($data['contentDTO']) && $data['contentDTO'] instanceof ContentDto) {
             $contentDTO = $data['contentDTO'];
             unset($data['contentDTO']);
 
-        } else if (is_array($content)) {
+        } elseif (is_array($content)) {
             $contentDTO = static::getContentModelClass()::toPreviewDto(
                 record: $content,
                 propertyData: $propertyData,
@@ -51,6 +49,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->danger()
                 ->seconds(60)
                 ->send();
+
             return $this->renderBuilderPreview('Content not found');
         }
 
@@ -65,7 +64,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
 
             return $this->renderBuilderPreview('Template not found');
         }
-        
+
         if ($contentDTO instanceof ContentDto) {
             // Set the locale of the content dto to the active locale
             $contentDTO = $contentDTO->setLocale($locale);
@@ -73,11 +72,11 @@ class DefaultPreviewProvider implements PreviewProviderInterface
 
         return $this->renderBuilderPreview(
             Blade::render(
-                $templateContent, 
+                $templateContent,
                 array_merge([
                     'locale' => $locale,
                     'content' => $contentDTO,
-                ], $data), 
+                ], $data),
                 true
             )
         );
@@ -117,7 +116,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
             if (view()->exists('components.' . $layoutName)) {
 
                 $newHtmlContent = Blade::render(
-                    "@extends('components.$layoutName')" . $templateContent, 
+                    "@extends('components.$layoutName')" . $templateContent,
                     array_merge($viewData, ['slot' => '', 'layoutName' => $layoutName]),
                 );
 
@@ -131,7 +130,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
     }
 
     /**
-     * @param int|Model|null $template
+     * @param  int|Model|null  $template
      * @return ?string
      */
     private function findTemplateContent($template)
@@ -142,11 +141,12 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         if (! $template instanceof Model) {
             $template = InspireCmsConfig::getTemplateModelClass()::find($template);
         }
+
         return $template?->getContent() ?? null;
     }
-    
+
     /**
-     * @param int|Model|null $documentType
+     * @param  int|Model|null  $documentType
      * @return \Illuminate\Database\Eloquent\Model|null
      */
     private function findDocumentType($documentType)
@@ -157,6 +157,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         if (! $documentType instanceof Model) {
             $documentType = InspireCmsConfig::getDocumentTypeModelClass()::find($documentType);
         }
+
         return $documentType;
     }
 
@@ -174,8 +175,8 @@ class DefaultPreviewProvider implements PreviewProviderInterface
     }
 
     /**
-     * @param DocumentType|Model|null $documentType
-     * @param ?string $locale
+     * @param  DocumentType|Model|null  $documentType
+     * @param  ?string  $locale
      */
     private function buildFakeContentDto($documentType, $locale)
     {
