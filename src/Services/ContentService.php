@@ -28,8 +28,7 @@ class ContentService implements ContentServiceInterface
     /** {@inheritDoc} */
     public function findByIds($ids, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
     {
-        return $this->buildFindByIdsQuery($ids, $isWebPage, $isPublished, $withRelations, $sorting, $limit)
-            ->find($ids);
+        return $this->buildFindByIdsQuery($ids, $isWebPage, $isPublished, $withRelations, $sorting, $limit)->get();
     }
 
     public function findByRoutePatternWithLangId($uri, $isDefaultRoutePattern, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = 10)
@@ -310,7 +309,7 @@ class ContentService implements ContentServiceInterface
         ]);
         $query = $this->applySortingAndLimit($query, $sorting, $limit);
 
-        return $query;
+        return $query->whereKey($ids);
     }
 
     private function buildFindByRealPathQuery($path, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [], $limit = null)
