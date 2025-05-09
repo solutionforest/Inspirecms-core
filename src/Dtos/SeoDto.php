@@ -262,7 +262,7 @@ class SeoDto extends BaseDto
     }
 
     /**
-     * @param self|null $root
+     * @param  self|null  $root
      * @return self
      */
     public function setRoot($root)
