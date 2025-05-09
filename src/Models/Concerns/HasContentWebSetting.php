@@ -66,13 +66,13 @@ trait HasContentWebSetting
             return $redirecPath;
         }
 
-        if (($redirectContentId = $this->webSetting?->redirect_content_id) && $redirectContentId !== $this->getKey() && $redirectContentId !== KeyHelper::generateMinUuid()) {
-
-            $content = app(ContentServiceInterface::class)->findPublishedWebPageById($redirectContentId);
-
-            if ($content) {
-                return $content->getUrl($locale);
-            }
+        if (
+            ($redirectContentId = $this->webSetting?->redirect_content_id) 
+            && $redirectContentId !== $this->getKey() 
+            && $redirectContentId !== KeyHelper::generateMinUuid() 
+            && ($redirectContent = app(ContentServiceInterface::class)->findByIds(ids: $redirectContentId, isWebPage: true, isPublished: true, limit: 1)->first())
+        ) {
+            return $redirectContent->getUrl($locale);
         }
 
         return null;
