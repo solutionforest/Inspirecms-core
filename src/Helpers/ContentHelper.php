@@ -94,6 +94,7 @@ class ContentHelper
             'webSetting',
             'publishedVersions',
             'templates',
+            'ancestorsAndSelf.webSetting',
         ];
     }
 

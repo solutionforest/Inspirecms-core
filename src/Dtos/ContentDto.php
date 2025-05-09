@@ -242,9 +242,21 @@ class ContentDto extends BaseTranslatableModelDto
 
         $dtoParameters = $record->toArray();
 
-        $dtoParameters['seo'] = collect($availableLanguages)->keys()->mapWithKeys(fn ($locale) => [
-            $locale => $record->webSetting?->toDto($locale),
-        ])->all();
+        $dtoParameters['seo'] = collect($availableLanguages)->keys()->mapWithKeys(function ($locale) use ($record) {
+            $seo = $record->webSetting?->toDto($locale);
+
+            if (
+                $seo instanceof SeoDto
+                && ($root = collect($record->ancestorsAndSelf)->where(fn ($item) => $item->getKey() !== $record->getKey())->last())
+                && ($rootSeo = $root->webSetting?->toDto($locale))
+            ) {
+                $seo->setRoot($rootSeo);
+            }
+
+            return [
+                $locale => $seo,
+            ];
+        })->all();
 
         $dtoParameters['urls'] = collect($availableLanguages)->mapWithKeys(fn (LanguageDto $lang) => [
             $lang->code => $record->getUrl($lang),

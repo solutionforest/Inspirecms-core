@@ -211,6 +211,11 @@ class SeoDto extends BaseDto
      */
     public $noCache;
 
+    /**
+     * @var self|null
+     */
+    protected $root = null;
+
     public static function fromArray(array $parameters)
     {
         $mapper = [
@@ -256,6 +261,17 @@ class SeoDto extends BaseDto
         return $dto;
     }
 
+    /**
+     * @param self|null $root
+     * @return self
+     */
+    public function setRoot($root)
+    {
+        $this->root = $root;
+
+        return $this;
+    }
+
     public function getHtml(): Htmlable
     {
         return new HtmlString($this->__toString());
@@ -266,7 +282,11 @@ class SeoDto extends BaseDto
         $html = '';
 
         if ($this->title) {
-            $html .= "<title>{$this->title}</title>\n";
+            $title = $this->title;
+            if ($this->root) {
+                $title .= ' - ' . $this->root->title;
+            }
+            $html .= "<title>{$title}</title>\n";
         }
 
         if ($this->description) {
@@ -277,12 +297,18 @@ class SeoDto extends BaseDto
             $html .= "<meta name=\"keywords\" content=\"{$this->keywords}\">\n";
         }
 
-        if ($this->ogTitle) {
-            $html .= "<meta property=\"og:title\" content=\"{$this->ogTitle}\">\n";
+        if ($this->ogTitle || $this->title) {
+            $ogTitle = $this->ogTitle ?: $this->title;
+            if ($this->root) {
+                $ogTitle .= ' - ' . $this->root->title;
+            }
+
+            $html .= "<meta property=\"og:title\" content=\"{$ogTitle}\">\n";
         }
 
-        if ($this->ogDescription) {
-            $html .= "<meta property=\"og:description\" content=\"{$this->ogDescription}\">\n";
+        if ($this->ogDescription || $this->description) {
+            $ogDescription = $this->ogDescription ?: $this->description;
+            $html .= "<meta property=\"og:description\" content=\"{$ogDescription}\">\n";
         }
 
         if ($this->ogImage && ($mediaAssetUrl = inspirecms_asset()->findByKeys($this->ogImage)->first()?->getUrl())) {
