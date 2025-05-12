@@ -247,10 +247,9 @@ class ContentDto extends BaseTranslatableModelDto
 
             if (
                 $seo instanceof SeoDto
-                && ($root = collect($record->ancestorsAndSelf)->where(fn ($item) => $item->getKey() !== $record->getKey())->last())
-                && ($rootSeo = $root->webSetting?->toDto($locale))
+                && ($ancestors = collect($record->ancestorsAndSelf)->where(fn ($item) => $item->getKey() !== $record->getKey())->pluck('webSetting')->map(fn ($item) => $item?->toDto($locale)))
             ) {
-                $seo->setRoot($rootSeo);
+                $seo->setAncestors($ancestors);
             }
 
             return [

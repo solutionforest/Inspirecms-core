@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Dtos;
 
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
@@ -212,9 +213,9 @@ class SeoDto extends BaseDto
     public $noCache;
 
     /**
-     * @var self|null
+     * @var Collection<self>|null
      */
-    protected $root = null;
+    protected $ancestors = null;
 
     public static function fromArray(array $parameters)
     {
@@ -262,12 +263,15 @@ class SeoDto extends BaseDto
     }
 
     /**
-     * @param  self|null  $root
+     * @param  self[]|Collection<slef>|null  $ancestors
      * @return self
      */
-    public function setRoot($root)
+    public function setAncestors($ancestors)
     {
-        $this->root = $root;
+        $this->ancestors = collect($ancestors ?? [])
+            ->whereInstanceOf(static::class)
+            ->filter()
+            ->values();
 
         return $this;
     }
@@ -281,10 +285,12 @@ class SeoDto extends BaseDto
     {
         $html = '';
 
+        $parentSeo = $this->ancestors->filter()->last();
+
         if ($this->title) {
             $title = $this->title;
-            if ($this->root) {
-                $title .= ' - ' . $this->root->title;
+            if ($parentSeo) {
+                $title .= ' - ' . $parentSeo->title;
             }
             $html .= "<title>{$title}</title>\n";
         }
@@ -299,8 +305,8 @@ class SeoDto extends BaseDto
 
         if ($this->ogTitle || $this->title) {
             $ogTitle = $this->ogTitle ?: $this->title;
-            if ($this->root) {
-                $ogTitle .= ' - ' . $this->root->title;
+            if ($parentSeo) {
+                $ogTitle .= ' - ' . $parentSeo->title;
             }
 
             $html .= "<meta property=\"og:title\" content=\"{$ogTitle}\">\n";
