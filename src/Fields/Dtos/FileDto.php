@@ -20,18 +20,18 @@ class FileDto extends BaseDto
     /**
      * @var ?string
      */
-    public $directory;
+    protected $directory;
 
     public function getFullPath()
     {
-        return $this->directory ? $this->directory . '/' . $this->path : $this->path;
+        $fs = filled($this->disk) ? Storage::disk($this->disk) : Storage::getDriver();
+        return $fs->path($this->path);
     }
 
     public function getUrl(): ?string
     {
         $fs = filled($this->disk) ? Storage::disk($this->disk) : Storage::getDriver();
-
-        return $fs->url($this->getFullPath());
+        return $fs->url($this->path);
     }
 
     public function __toString()
