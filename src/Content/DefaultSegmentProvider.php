@@ -70,6 +70,19 @@ class DefaultSegmentProvider implements SegmentProviderInterface
         return $slugs;
     }
 
+    public function getRouteSegmentWithPrefix($slug, ... $prefixes)
+    {
+        $prefixes = collect(is_string($prefixes) ? [$prefixes] : $prefixes)
+            ->flatten()
+            ->flatMap(fn ($item) => str($item)->trim()->trim('/')->explode('/'))
+            ->where(fn ($item) => filled($item))
+            ->all();
+
+        $segments = array_merge($prefixes, [trim(trim($slug), '/')]);
+
+        return $this->ensureSegmentFormat($segments);
+    }
+
     public function getPath($content)
     {
         return $this->ensurePathFormat($this->getSegments($content));

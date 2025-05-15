@@ -27,26 +27,7 @@ class ContentRouteObserver
     public function saved($model)
     {
         $content = $model->content;
-        if ($content) {
-
-            $segmentProvider = ContentSegmentFactory::create();
-
-            $content->children()->get()->load('routes')->each(function (Content | Model $child) use ($segmentProvider) {
-
-                $uri = $segmentProvider->getSegment($child);
-
-                $currentRoutes = collect($child->routes->where('is_default_pattern', true))
-                    ->map(fn (Model $model) => $model->toArray())
-                    ->map(function (array $data) use ($uri) {
-                        $data['uri'] = $uri;
-
-                        return $data;
-                    })
-                    ->all();
-
-                event(new UpsertRoute($child->withoutRelations(), $currentRoutes));
-            });
-        }
+        $this->updateChildrenRoutes($model, $content);
     }
 
     /**
@@ -70,5 +51,38 @@ class ContentRouteObserver
     protected function clearCached()
     {
         InspireCms::forgetCachedContentRoutes();
+    }
+
+    protected function updateChildrenRoutes(ContentRoute $contentRoute, ?Content $content): void {
+
+        if (! $contentRoute->is_default_pattern) {
+            return;
+        }
+        
+        $segmentProvider = ContentSegmentFactory::create();
+
+        $child = $content->children()
+            ->whereHas('routes', fn ($query) => $query
+                ->where('is_default_pattern', true)
+                ->where('language_id', $contentRoute->language_id)
+            )
+            ->with(['routes'])
+            ->get();
+
+        $child->each(function (Content | Model $child) use ($segmentProvider, $contentRoute) {
+
+            $uri = $segmentProvider->getRouteSegmentWithPrefix($child->slug, $contentRoute->uri);
+
+            $currentRoutes = collect($child->routes->where('is_default_pattern', true))
+                ->map(fn (Model $model) => $model->toArray())
+                ->map(function (array $data) use ($uri) {
+                    $data['uri'] = $uri;
+
+                    return $data;
+                })
+                ->all();
+
+            event(new UpsertRoute($child->withoutRelations(), $currentRoutes));
+        });
     }
 }
