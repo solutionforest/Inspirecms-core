@@ -168,12 +168,11 @@ class ImportDefaultData extends Command
 
     protected function importSampleData(): void
     {
-        $this->callSilent('vendor:publish', [
-            '--tag' => 'inspirecms-sample-assets',
-            '--force' => true,
-        ]);
-
         if (! $this->option('skip-samples')) {
+            $this->callSilent('vendor:publish', [
+                '--tag' => 'inspirecms-sample-assets',
+                '--force' => true,
+            ]);
             $this->call('db:seed', [
                 '--class' => SampleSeeder::class,
             ]);
@@ -184,8 +183,11 @@ class ImportDefaultData extends Command
     {
         $routeFile = base_path('routes/web.php');
 
-        // Replace content
-        file_put_contents($routeFile, $this->cmsRouteDefinition());
+        // Check file exists and contains the definition
+        if (file_exists($routeFile) && !Str::contains(file_get_contents($routeFile), 'InspireCms::routes()')) {
+            // Append at the end of the file
+            file_put_contents($routeFile, PHP_EOL . $this->cmsRouteDefinition(), FILE_APPEND);
+        }
     }
 
     protected function publishAssets(): void
@@ -200,14 +202,6 @@ class ImportDefaultData extends Command
 
     protected function cmsRouteDefinition(): string
     {
-        return <<<PHP
-<?php
-
-use Illuminate\Support\Facades\Route;
-
-// InspireCMS routes
-\SolutionForest\InspireCms\Facades\InspireCms::routes();
-
-PHP;
+        return '\SolutionForest\InspireCms\Facades\InspireCms::routes()';
     }
 }
