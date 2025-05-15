@@ -27,7 +27,7 @@ class FrontendController extends Controller
         $templateDto = $dto->template;
         $locale = $dto->locale;
 
-        if (is_null($contentDto) || is_null($templateDto)) {
+        if (is_null($contentDto)) {
             abort(404);
         }
 
@@ -41,6 +41,10 @@ class FrontendController extends Controller
 
             return redirect($redirectUrl, $contentDto->redirectType ?? 302);
 
+        }
+
+        if (is_null($templateDto)) {
+            abort(404);
         }
 
         if (blank($templateDto->content)) {
