@@ -70,4 +70,12 @@ class NavigationDto extends BaseTranslatableDto
     {
         return $this->children->isNotEmpty() && $this->type == 'group';
     }
+
+    public function toArray(): array
+    {
+        $list = parent::toArray();
+        $list['children'] = $this->children->map(fn ($child) => $child->toArray())->all();
+        unset($list['translatableAttributes']);
+        return $list;
+    }
 }
