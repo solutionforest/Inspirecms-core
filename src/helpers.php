@@ -116,14 +116,19 @@ if (! function_exists('has_super_admin_role')) {
         $roleName = inspirecms_permissions()->getSuperAdminRoleName();
         $guardName = AuthHelper::guardName();
 
-        if (method_exists($user, 'hasRole')) {
-            return $user->hasRole($roleName, $guardName);
+        
+        try {
+            if (in_array('Spatie\Permission\Traits\HasRoles', trait_uses_recursive($user))) {
+                return $user->hasRole($roleName, $guardName);
 
-        } elseif ($user instanceof Model) {
-            return $user->relationLoaded('roles')
-                ? $user->roles->contains(fn ($role) => $role->name === $roleName && $role->guard_name === $guardName)
-                : $user->roles()->where('name', $roleName)->where('guard_name', $guardName)->exists();
+            } elseif ($user instanceof Model) {
+                return $user->relationLoaded('roles')
+                    ? $user->roles->contains(fn ($role) => $role->name === $roleName && $role->guard_name === $guardName)
+                    : $user->roles()->where('name', $roleName)->where('guard_name', $guardName)->exists();
 
+            }
+        } catch (\Throwable $th) {
+            // Handle the exception if needed
         }
 
         return false;
