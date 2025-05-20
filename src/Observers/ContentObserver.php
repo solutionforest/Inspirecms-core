@@ -167,12 +167,19 @@ class ContentObserver
             return;
         }
 
+        $uriPrefix = collect($model->parent?->routes)
+            ->where('is_default_pattern', true)
+            ->where('language_id', null)
+            ->pluck('uri')
+            ->first();
+        $uri = $provider->getRouteSegmentWithPrefix($model->slug, $uriPrefix ?? '');
+
         event(new UpsertRoute(
             $model->withoutRelations(),
             [
                 [
                     'language_id' => null,
-                    'uri' => $provider->getSegment($model),
+                    'uri' => $uri,
                     'is_default_pattern' => true,
                 ],
             ]
@@ -189,11 +196,27 @@ class ContentObserver
             return;
         }
 
-        $uri = $provider->getSegment($model);
+        $uriPrefixes = collect($model->parent?->routes)
+            ->where('is_default_pattern', true);
 
         $currentRoutes = collect($model->routes()->where('is_default_pattern', true)->get())
             ->map(fn (Model $model) => $model->toArray())
-            ->map(function (array $data) use ($uri) {
+            ->map(function (array $data) use ($uriPrefixes, $provider, $model) {
+
+                $prefix = $uriPrefixes
+                    ->where('language_id', $data['language_id'])
+                    ->pluck('uri')
+                    ->first();
+                // fallback to default language (is null)
+                if (empty($prefix)) {
+                    $prefix = $uriPrefixes
+                        ->where('language_id', null)
+                        ->pluck('uri')
+                        ->first();
+                }
+
+                $uri = $provider->getRouteSegmentWithPrefix($model->slug, $prefix ?? '');
+
                 $data['uri'] = $uri;
 
                 return $data;
