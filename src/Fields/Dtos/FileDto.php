@@ -25,12 +25,14 @@ class FileDto extends BaseDto
     public function getFullPath()
     {
         $fs = filled($this->disk) ? Storage::disk($this->disk) : Storage::getDriver();
+
         return $fs->path($this->path);
     }
 
     public function getUrl(): ?string
     {
         $fs = filled($this->disk) ? Storage::disk($this->disk) : Storage::getDriver();
+
         return $fs->url($this->path);
     }
 

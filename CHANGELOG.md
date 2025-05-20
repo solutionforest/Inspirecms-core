@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.52 - 2025-05-13
+
+### What's Changed
+
+* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/4
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.51...0.0.52
+
 ## 0.0.51 - 2025-05-08
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.50...0.0.51
