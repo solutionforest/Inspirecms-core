@@ -28,21 +28,11 @@ class CmsInfoWidget extends Widget implements GuardWidget
 
     public function getDocumentUrl(): string
     {
-        return 'https://docs.inspirecms.io';
+        return 'https://inspirecms.net/docs';
     }
 
     public function getNewsUrl(): string
     {
-        return 'https://inspirecms.io/news';
-    }
-
-    public function getLightScreenShotUrl(): string
-    {
-        return 'https://laravel.com/assets/img/welcome/docs-light.svg';
-    }
-
-    public function getDarkScreenShotUrl(): string
-    {
-        return 'https://laravel.com/assets/img/welcome/docs-dark.svg';
+        return 'https://inspirecms.net/news';
     }
 }
