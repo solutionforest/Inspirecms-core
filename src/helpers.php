@@ -116,7 +116,6 @@ if (! function_exists('has_super_admin_role')) {
         $roleName = inspirecms_permissions()->getSuperAdminRoleName();
         $guardName = AuthHelper::guardName();
 
-        
         try {
             if (in_array('Spatie\Permission\Traits\HasRoles', trait_uses_recursive($user))) {
                 return $user->hasRole($roleName, $guardName);
