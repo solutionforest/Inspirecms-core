@@ -1,0 +1,377 @@
+[
+  {
+    "url": null,
+    "title": {"en": "Getting Started"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/requirements"},
+        "title": {"en": "Requirements"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/installing"},
+        "title": {"en": "Installing"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/quick-start"},
+        "title": {"en": "Quick Start Guide"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/upgrading"},
+        "title": {"en": "Upgrade Guide"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/configuration"},
+        "title": {"en": "Configuration"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "url": null,
+    "title": {"en": "Core Concepts"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/directory-structure"},
+        "title": {"en": "Directory Structure"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/control-panel"},
+        "title": {"en": "Control Panel"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/user-management"},
+        "title": {"en": "User Management"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/document-type"},
+        "title": {"en": "Document Type"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/language"},
+        "title": {"en": "Language"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/custom-fields"},
+        "title": {"en": "Custom Fields"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/themes"},
+        "title": {"en": "Themes"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/routing"},
+        "title": {"en": "Routing"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/media"},
+        "title": {"en": "Media"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/sitemaps"},
+        "title": {"en": "Sitemaps"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/export"},
+        "title": {"en": "Export"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/import"},
+        "title": {"en": "Import"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/caching"},
+        "title": {"en": "Caching"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/performance-optimization"},
+        "title": {"en": "Performance Optimization"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/security-best-practices"},
+        "title": {"en": "Security Best Practices"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "url": null,
+    "title": {"en": "Frontend"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/blade-templates"},
+        "title": {"en": "Blade Templates"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/fe-content"},
+        "title": {"en": "Content"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/assets-management"},
+        "title": {"en": "Assets Management"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/components"},
+        "title": {"en": "Components"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/navigation"},
+        "title": {"en": "Navigation"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/layouts"},
+        "title": {"en": "Layouts"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/templates"},
+        "title": {"en": "Templates"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "url": null,
+    "title": {"en": "Extending the CMS"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/extending-the-admin-panel"},
+        "title": {"en": "Admin Panel"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/middleware"},
+        "title": {"en": "Middleware"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/event-listeners"},
+        "title": {"en": "Event Listeners"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "url": null,
+    "title": {"en": "Advanced Topics"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/drafts-revisions"},
+        "title": {"en": "Drafts & Revisions"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/multilingual-content"},
+        "title": {"en": "Multilingual Content"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/customization"},
+        "title": {"en": "Customization"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  },
+  {
+    "url": null,
+    "title": {"en": "Troubleshooting"},
+    "target": null,
+    "category": "doc_1.x",
+    "type": "group",
+    "isActive": true,
+    "children": [
+      {
+        "url": {"en": "/docs/1.x/common-issues"},
+        "title": {"en": "Common Issues"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/debugging"},
+        "title": {"en": "Debugging"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      }
+    ]
+  }
+]
