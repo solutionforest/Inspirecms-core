@@ -53,18 +53,21 @@ class ContentRouteObserver
         InspireCms::forgetCachedContentRoutes();
     }
 
-    protected function updateChildrenRoutes(ContentRoute $contentRoute, ?Content $content): void {
+    protected function updateChildrenRoutes(ContentRoute $contentRoute, ?Content $content): void
+    {
 
         if (! $contentRoute->is_default_pattern) {
             return;
         }
-        
+
         $segmentProvider = ContentSegmentFactory::create();
 
         $child = $content->children()
-            ->whereHas('routes', fn ($query) => $query
-                ->where('is_default_pattern', true)
-                ->where('language_id', $contentRoute->language_id)
+            ->whereHas(
+                'routes',
+                fn ($query) => $query
+                    ->where('is_default_pattern', true)
+                    ->where('language_id', $contentRoute->language_id)
             )
             ->with(['routes'])
             ->get();

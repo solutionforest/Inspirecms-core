@@ -76,6 +76,7 @@ class NavigationDto extends BaseTranslatableDto
         $list = parent::toArray();
         $list['children'] = $this->children->map(fn ($child) => $child->toArray())->all();
         unset($list['translatableAttributes']);
+
         return $list;
     }
 }

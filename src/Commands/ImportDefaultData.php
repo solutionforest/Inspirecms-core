@@ -184,7 +184,7 @@ class ImportDefaultData extends Command
         $routeFile = base_path('routes/web.php');
 
         // Check file exists and contains the definition
-        if (file_exists($routeFile) && !Str::contains(file_get_contents($routeFile), 'InspireCms::routes()')) {
+        if (file_exists($routeFile) && ! Str::contains(file_get_contents($routeFile), 'InspireCms::routes()')) {
             // Append at the end of the file
             file_put_contents($routeFile, PHP_EOL . $this->cmsRouteDefinition(), FILE_APPEND);
         }

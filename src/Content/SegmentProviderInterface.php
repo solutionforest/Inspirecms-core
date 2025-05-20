@@ -32,11 +32,11 @@ interface SegmentProviderInterface
     /**
      * Retrieves a route segment based on the given slug and prefixes.
      *
-     * @param string $slug The slug to use for the route segment
-     * @param string|string[] ...$prefixes Variable number of prefixes to apply to the route segment
+     * @param  string  $slug  The slug to use for the route segment
+     * @param  string|string[]  ...$prefixes  Variable number of prefixes to apply to the route segment
      * @return string
      */
-    public function getRouteSegmentWithPrefix($slug, ... $prefixes);
+    public function getRouteSegmentWithPrefix($slug, ...$prefixes);
 
     /**
      * @param  Model & Content  $content
