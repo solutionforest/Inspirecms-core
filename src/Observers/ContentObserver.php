@@ -217,7 +217,7 @@ class ContentObserver
                         ->pluck('uri')
                         ->first();
                 }
-        
+
                 $formattedSlug = $model->is_default ? '' : $model->slug;
 
                 $uri = $provider->getRouteSegmentWithPrefix($formattedSlug, $prefix ?? '');
