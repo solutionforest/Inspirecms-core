@@ -70,7 +70,7 @@ class DefaultSegmentProvider implements SegmentProviderInterface
         return $slugs;
     }
 
-    public function getRouteSegmentWithPrefix($slug, ... $prefixes)
+    public function getRouteSegmentWithPrefix($slug, ...$prefixes)
     {
         $prefixes = collect(is_string($prefixes) ? [$prefixes] : $prefixes)
             ->flatten()
