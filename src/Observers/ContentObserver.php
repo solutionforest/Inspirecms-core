@@ -172,7 +172,10 @@ class ContentObserver
             ->where('language_id', null)
             ->pluck('uri')
             ->first();
-        $uri = $provider->getRouteSegmentWithPrefix($model->slug, $uriPrefix ?? '');
+
+        $formattedSlug = $model->is_default ? '' : $model->slug;
+
+        $uri = $provider->getRouteSegmentWithPrefix($formattedSlug, $uriPrefix ?? '');
 
         event(new UpsertRoute(
             $model->withoutRelations(),
@@ -214,8 +217,10 @@ class ContentObserver
                         ->pluck('uri')
                         ->first();
                 }
+        
+                $formattedSlug = $model->is_default ? '' : $model->slug;
 
-                $uri = $provider->getRouteSegmentWithPrefix($model->slug, $prefix ?? '');
+                $uri = $provider->getRouteSegmentWithPrefix($formattedSlug, $prefix ?? '');
 
                 $data['uri'] = $uri;
 
