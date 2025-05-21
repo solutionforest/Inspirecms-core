@@ -4,6 +4,7 @@ slug: fe-content
 path: docs/v1/fe-content
 uri: /docs/1.x/fe-content
 ---
+
 # Content
 
 Learn how to work with content in your frontend templates.
@@ -91,10 +92,10 @@ You can also access properties programmatically:
 if ($content->hasProperty('hero', 'title')) {
     // Get property value
     $title = $content->getPropertyValue('hero', 'title');
-    
+
     // Get property value with fallback
     $subtitle = $content->getPropertyValue('hero', 'subtitle') ?? 'Default subtitle';
-    
+
     // Get multilingual property with specific locale
     $frenchTitle = $content->getPropertyValue('hero', 'title', 'fr');
 }
@@ -132,18 +133,18 @@ Filter and sort content collections:
 ```php
 // Get recent blog posts
 $recentPosts = inspirecms_content()->getUnderRealPath(
-    path: 'blogs', 
-    isPublished: true, 
+    path: 'blogs',
+    isPublished: true,
     sorting: ['__latest_version_publish_dt' => 'desc'],
     limit: 5,
 );
 
 // Get paginated recent blog posts
 $recentPosts = inspirecms_content()->getPaginatedUnderRealPath(
-    path: 'blogs', 
+    path: 'blogs',
     page: 1,
     perPage: 10,
-    isPublished: true, 
+    isPublished: true,
     sorting: ['__latest_version_publish_dt' => 'desc'],
 );
 
@@ -201,12 +202,14 @@ $paginatedContent = inspirecms_content()->getPaginatedByDocumentType(documentTyp
 
 ## Best Practices
 
-- Use `inspirecms_content()` helper for retrieving content instead of direct database queries
-- Always check if properties exist before using them
-- Cache frequent content queries for better performance
-- For large content sets, use pagination to improve page load times
-- Use property directives in Blade templates for cleaner syntax
+-   Use `inspirecms_content()` helper for retrieving content instead of direct database queries
+-   Always check if properties exist before using them
+-   Cache frequent content queries for better performance
+-   For large content sets, use pagination to improve page load times
+-   Use property directives in Blade templates for cleaner syntax
 
-> [!note] 
+> [!note]
+>
 > For details on how to use content properties in templates, see the [Blade](./blade-templates){.doc-link} documentation.
+>
 > For examples of displaying content in components and layouts, see the [Components](./components){.doc-link} and [Layouts](./layouts){.doc-link} documentation.

@@ -4,6 +4,7 @@ slug: blade-templates
 path: docs/v1/blade-templates
 uri: /docs/1.x/blade-templates
 ---
+
 # Blade Templates
 
 InspireCMS leverages Laravel's powerful Blade templating engine to create dynamic templates. This guide covers core Blade functionality specific to InspireCMS.
@@ -47,7 +48,7 @@ InspireCMS extends Blade with custom directives for accessing content properties
 > [!note]
 > For comprehensive coverage of property directives, see the [Content](./fe-content){.doc-link} documentation.
 
-```php
+```blade
 <!-- Basic property access -->
 <h1>@property('hero', 'title')</h1>
 
@@ -74,12 +75,11 @@ InspireCMS extends Blade with custom directives for accessing content properties
 ```
 
 > [!note]
+>
 > For layouts and template inheritance, see the [Layouts](./layouts){.doc-link} documentation.
-
-> [!note]
+>
 > For components and reusable UI elements, see the [Components](./components){.doc-link} documentation.
-
-> [!note]
+>
 > For template implementation examples, see the [Templates](./templates){.doc-link} documentation.
 
 ---

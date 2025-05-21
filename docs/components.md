@@ -4,6 +4,7 @@ slug: components
 path: docs/v1/components
 uri: /docs/1.x/components
 ---
+
 # Components
 
 InspireCMS offers a powerful component system based on Laravel's Blade components to help you build modular, reusable interface elements.
@@ -14,11 +15,11 @@ InspireCMS offers a powerful component system based on Laravel's Blade component
 
 Components in InspireCMS serve as the building blocks of your frontend templates. They:
 
-- Encapsulate reusable interface elements
-- Allow passing parameters and content
-- Support theme-specific implementations
-- Enable advanced template composition
-- Improve code organization and maintainability
+-   Encapsulate reusable interface elements
+-   Allow passing parameters and content
+-   Support theme-specific implementations
+-   Enable advanced template composition
+-   Improve code organization and maintainability
 
 ---
 
@@ -30,28 +31,28 @@ InspireCMS supports several types of components:
 
 Theme-specific components that define your site's visual elements:
 
-- Layout components (header, footer, sidebar)
-- Content display components (cards, tabs, modals)
-- Navigation components (menus, breadcrumbs)
-- Media display components (galleries, sliders)
+-   Layout components (header, footer, sidebar)
+-   Content display components (cards, tabs, modals)
+-   Navigation components (menus, breadcrumbs)
+-   Media display components (galleries, sliders)
 
 ### 2. Content Components
 
 Components that render specific types of content:
 
-- Blog post components
-- Event listing components
-- Product display components
-- Team member components
+-   Blog post components
+-   Event listing components
+-   Product display components
+-   Team member components
 
 ### 3. Utility Components
 
 Helper components for common UI patterns:
 
-- Pagination components
-- Alert/notification components
-- Form input components
-- Loading indicators
+-   Pagination components
+-   Alert/notification components
+-   Form input components
+-   Loading indicators
 
 ## Component Directory Structure
 
@@ -109,9 +110,9 @@ Use named slots to organize content within components:
     <x-slot:header>
         <h3>{{ $title }}</h3>
     </x-slot>
-    
+
     <p>{{ $content }}</p>
-    
+
     <x-slot:footer>
         <a href="{{ $url }}" class="btn">Read more</a>
     </x-slot>
@@ -133,7 +134,7 @@ Create a simple component:
             <span aria-hidden="true">&times;</span>
         </button>
     @endif
-    
+
     <div class="alert-content">
         {{ $slot }}
     </div>
@@ -188,10 +189,10 @@ Create a component with defined props:
 Use this component:
 
 ```blade
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('button')"  
-    type="success" 
-    size="lg" 
-    url="#" 
+<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('button')"
+    type="success"
+    size="lg"
+    url="#"
     icon="check"
     class="my-4"
 >
@@ -213,19 +214,19 @@ class Gallery extends Component
     public $images;
     public $columns;
     public $lightbox;
-    
+
     public function __construct($images = [], $columns = 3, $lightbox = true)
     {
         $this->images = $this->processImages($images);
         $this->columns = max(1, min(12, (int) $columns));
         $this->lightbox = $lightbox;
     }
-    
+
     public function render()
     {
         return view('components.gallery');
     }
-    
+
     private function processImages($images)
     {
         // Process and normalize image data
@@ -243,7 +244,7 @@ class Gallery extends Component
                 }
                 return null;
             }
-            
+
             return [
                 'url' => $image['url'] ?? '',
                 'thumbnail' => $image['thumbnail'] ?? $image['url'] ?? '',
@@ -253,7 +254,7 @@ class Gallery extends Component
             ];
         })->filter();
     }
-    
+
     public function columnClass()
     {
         return 'col-' . (12 / $this->columns);
@@ -309,11 +310,11 @@ Build complex components by combining smaller ones:
         @if($title)
             <x-inspirecms-my-theme::section-title :text="$title" :subtitle="$subtitle" />
         @endif
-        
+
         <div class="content-block-body">
             {{ $slot }}
         </div>
-        
+
         @if(isset($footer))
             <div class="content-block-footer">
                 {{ $footer }}
@@ -341,9 +342,9 @@ Create variants of components using attributes:
         'outline' => 'card-outline border-primary',
         'simple' => 'card-simple shadow-sm',
     ];
-    
+
     $variantClass = $variants[$variant] ?? $variants['default'];
-    
+
     $classes = [
         'card',
         $variantClass,
@@ -374,7 +375,7 @@ Create components that render differently based on input:
         'card' => 'components.content.card-display',
         'minimal' => 'components.content.minimal-display',
     ];
-    
+
     $view = $modes[$mode] ?? $modes['full'];
 @endphp
 
@@ -390,10 +391,10 @@ Group related components together:
 
 <div class="form-group">
     <label for="{{ $name }}">{{ $label }}</label>
-    <input 
-        type="{{ $type }}" 
-        id="{{ $name }}" 
-        name="{{ $name }}" 
+    <input
+        type="{{ $type }}"
+        id="{{ $name }}"
+        name="{{ $name }}"
         {{ $attributes->merge(['class' => 'form-control']) }}
     >
     @error($name)
@@ -415,7 +416,7 @@ Create components that intelligently display content:
 
 @php
     $documentTypeName = $content->documentType : 'default';
-    
+
     // Try to find a specialized component for this document type
     $componentName = collect(["content.{$documentTypeName}-{$format}", "content.generic-{$format}"])
         // Check if the specialized component exists
@@ -440,6 +441,8 @@ Create components that intelligently display content:
 6. **Follow Naming Conventions**: Use consistent naming for components and props
 7. **Test Components**: Write tests to verify component rendering
 
-> [!note] 
+> [!note]
+>
 > For detailed examples of using components in templates, see the [Templates](./templates){.doc-link} documentation.
+>
 > For integrating components into layouts, see the [Layouts](./layouts){.doc-link} documentation.
