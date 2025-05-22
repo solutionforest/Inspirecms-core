@@ -17,7 +17,13 @@ class ContentVersionDetailScope implements Scope
             $query = $builder->getQuery();
 
             $cvModel = $model->contentVersions()->getRelated();
+            /**
+             * @var string cms_content_verions's **content_id**
+             */
             $cvFK = $model->contentVersions()->getForeignKeyName();
+            /**
+             * @var string cms_content_verions's **id**
+             */
             $cvPK = $cvModel->getKeyName();
             $cvCreationColumn = $cvModel->getCreatedAtColumn();
 
@@ -25,8 +31,14 @@ class ContentVersionDetailScope implements Scope
              * @var Model
              */
             $cvPublishedModel = $cvModel->publishLog()->getRelated();
+            /**
+             * @var string cms_content_verions's publish_log's **version_id**
+             */
             $cvPublishedFK = $cvModel->publishLog()->getForeignKeyName();
 
+            /**
+             * @var \Illuminate\Database\Query\Builder Content Version Query group by content_id (fetch latest version id `joined_version_id`)
+             */
             $baseQ = DB::table($cvModel->getTable())
                 ->groupBy($cvFK)
                 ->select([
@@ -50,11 +62,13 @@ class ContentVersionDetailScope implements Scope
                     fn (JoinClause $join) => $join
                         ->on('_cv_t1_base.joined_version_id', '=', "_cv_t2_p.$cvPK")
                 )
+                // Where exist publish log
                 ->whereExists(
                     fn (\Illuminate\Database\Query\Builder | \Illuminate\Database\Eloquent\Builder $query) => $query
-                        ->select(DB::raw(1))
+                        ->select()
                         ->from($cvPublishedModel->getTable(), '_cv_base_p')
-                        ->where("_cv_base_p.$cvPublishedFK", '=', "_cv_t2_p.$cvPK")
+                        // content version id = publish log version id
+                        ->whereRaw("_cv_t2_p.{$cvPK} = _cv_base_p.$cvPublishedFK")
                 )
                 ->select('_cv_t2_p.*');
 
