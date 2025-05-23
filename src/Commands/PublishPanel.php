@@ -28,6 +28,16 @@ class PublishPanel extends Command
             file_exists($bootstrapProvidersPath = App::getBootstrapProvidersPath());
 
         if ($isLaravel11OrHigherWithBootstrapProvidersFile) {
+
+            // Publish the panel provider to the bootstrap providers file if it doesn't exist
+            if (file_exists($bootstrapProvidersPath)) {
+                $bootstrapProviders = file_get_contents($bootstrapProvidersPath);
+                if (Str::contains($bootstrapProviders, $panelProviderFQCN)) {
+                    $this->components->info('CMS panel provider already exists in bootstrap providers file.');
+
+                    return;
+                }
+            }
             /** @phpstan-ignore-next-line */
             ServiceProvider::addProviderToBootstrapFile(
                 $panelProviderFQCN,
