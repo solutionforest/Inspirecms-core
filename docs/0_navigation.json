@@ -274,15 +274,33 @@
   },
   {
     "url": null,
-    "title": {"en": "Extending the CMS"},
+    "title": {"en": "Advanced Topics"},
     "target": null,
     "category": "doc_1.x",
     "type": "group",
     "isActive": true,
     "children": [
       {
-        "url": {"en": "/docs/1.x/extending-the-admin-panel"},
-        "title": {"en": "Admin Panel"},
+        "url": {"en": "/docs/1.x/customize-the-admin-panel"},
+        "title": {"en": "Customize the Admin Panel"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/content-drafts-revisions"},
+        "title": {"en": "Content Drafts & Revisions"},
+        "target": null,
+        "category": "doc_1.x",
+        "type": "link",
+        "isActive": true,
+        "children": []
+      },
+      {
+        "url": {"en": "/docs/1.x/multilingual-content"},
+        "title": {"en": "Multilingual Content"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",
@@ -301,43 +319,6 @@
       {
         "url": {"en": "/docs/1.x/event-listeners"},
         "title": {"en": "Event Listeners"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      }
-    ]
-  },
-  {
-    "url": null,
-    "title": {"en": "Advanced Topics"},
-    "target": null,
-    "category": "doc_1.x",
-    "type": "group",
-    "isActive": true,
-    "children": [
-      {
-        "url": {"en": "/docs/1.x/drafts-revisions"},
-        "title": {"en": "Drafts & Revisions"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/multilingual-content"},
-        "title": {"en": "Multilingual Content"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/customization"},
-        "title": {"en": "Customization"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",

@@ -79,7 +79,7 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\AlertOverview::class,
                 Widgets\TemplateInfo::class,
                 TreeNavigation::class,
-                ...InspireCmsConfig::get('admin.widgets', []),
+                ...InspireCmsConfig::get('admin.extra_widgets', []),
             ]);
         // Discover resources, pages, clusters, and widgets in the specified directories
         $panel = $panel

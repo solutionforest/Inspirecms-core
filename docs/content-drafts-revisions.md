@@ -1,12 +1,13 @@
 ---
-title: Drafts Revisions
-slug: drafts-revisions
-path: docs/v1/drafts-revisions
-uri: /docs/1.x/drafts-revisions
+title: Content Drafts & Revisions
+slug: content-drafts-revisions
+path: docs/v1/content-drafts-revisions
+uri: /docs/1.x/content-drafts-revisions
 ---
-# Drafts & Revisions
 
-InspireCMS provides a powerful content versioning system that allows you to work with drafts and track revisions of your content. This guide explains how to use these features to manage your content workflow effectively.
+# Content Drafts & Revisions
+
+InspireCMS provides a content versioning system that allows you to work with drafts and track revisions of your content. This guide explains how to use these features to manage your content workflow effectively.
 
 ---
 
@@ -38,9 +39,9 @@ Drafts are visible only in the admin panel and not on your live site.
 
 Drafts are clearly marked in the content list:
 
-- Status indicator shows "Draft"
-- Often color-coded differently from published content
-- Show an editing icon
+-   Status indicator shows "Draft"
+-   Often color-coded differently from published content
+-   Show an editing icon
 
 ### Editing Drafts
 
@@ -162,9 +163,10 @@ For organizations that require approval before publishing:
 A basic approval workflow can be set up using custom states and notifications:
 
 ```php {title="app/Providers/AppServiceProvider.php"}
-use SolutionForest\InspireCms\Facades\ContentStatusManifest;
-use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use Filament\Actions\Action;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Facades\ContentStatusManifest;
+use SolutionForest\InspireCms\Helpers\ContentHelper;
 
 // In your service provider
 public function boot()
@@ -172,26 +174,51 @@ public function boot()
      // Add "In Review" status
      ContentStatusManifest::addOption(
           new ContentStatusOption(
-                value: 2,
+                value: 2, // Raw db value
                 name: 'in_review',
                 formAction: fn () => Action::make('submit_for_review')
                     ->authorize('inReview')
                     ->successNotificationTitle('Send to Review')
-                    ->action(function ($record, $action) {
+                    ->action(function ($record, $action, $livewire) {
                         $if (is_null($record)) {
                         $action->cancel();
 
                         return;
                     }
-            
+
                     $publishableState = 'in_review';
 
-                    if (! \SolutionForest\InspireCms\Helpers\ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
+                    if (! ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
                         return;
                     }
 
                     $action->success();
-                    })
+                })
+          )
+     );
+     // Add "Approved" status
+     ContentStatusManifest::addOption(
+          new ContentStatusOption(
+                value: 5, // Raw db value
+                name: 'approved',
+                formAction: fn () => Action::make('approved')
+                    ->authorize('approved')
+                    ->successNotificationTitle('Approved')
+                    ->action(function ($record, $action, $livewire) {
+                        $if (is_null($record)) {
+                        $action->cancel();
+
+                        return;
+                    }
+
+                    $publishableState = 'approved';
+
+                    if (! ContentHelper::handlePublishableRecord($record, $publishableState, $livewire, [])) {
+                        return;
+                    }
+
+                    $action->success();
+                })
           )
      );
 }
@@ -200,18 +227,6 @@ public function boot()
 ### Customizing Models and Authorization Policies
 
 To fully implement a review workflow, you may need to extend the default content model and define authorization policies:
-
-#### Custom Content Model
-
-```php
-namespace App\Models;
-
-use SolutionForest\InspireCms\Models\Content as BaseContent;
-
-class Content extends BaseContent
-{
-}
-```
 
 #### Custom Content Policy
 
@@ -228,24 +243,24 @@ class ContentPolicy extends BasePolicy
     {
         return true;
     }
-    
+
     public function view(User $user, Content $content): bool
     {
         return true;
     }
-    
+
     public function create(User $user): bool
     {
         return $user->hasAnyRole(['author', 'editor', 'admin']);
     }
-    
+
     public function update(User $user, Content $content): bool
     {
         // Authors can only edit drafts they created
         if ($user->hasRole('author') && $content->user_id === $user->id) {
             return $content?->display_status?->getName() === 'draft';
         }
-        
+
         // Editors can review content in review status and edit any draft
         if ($user->hasRole('editor')) {
             return in_array($content?->display_status?->getName(), [
@@ -253,11 +268,11 @@ class ContentPolicy extends BasePolicy
                 'in_review',
             ]);
         }
-        
+
         // Admins can edit anything
         return $user->hasRole('admin');
     }
-    
+
     public function publish(User $user, Content $content): bool
     {
         return $user->hasAnyRole(['editor', 'admin']);
@@ -267,6 +282,23 @@ class ContentPolicy extends BasePolicy
     {
         return $content?->display_status?->getName() !== 'in_review';
     }
+
+    public function approved(User $user, Content $content): bool
+    {
+        return $content?->display_status?->getName() === 'in_review';
+    }
+}
+```
+
+#### Custom Content Model
+
+```php
+namespace App\Models;
+
+use SolutionForest\InspireCms\Models\Content as BaseContent;
+
+class Content extends BaseContent
+{
 }
 ```
 
@@ -317,18 +349,18 @@ When conflicting edits occur:
 1. The system detects when two users have edited the same content
 2. On save, the second user is shown a conflict resolution screen
 3. They can choose to:
-   - Merge changes manually
-   - Keep their version (overwrite)
-   - Discard their changes
-   - Save as a new draft
+    - Merge changes manually
+    - Keep their version (overwrite)
+    - Discard their changes
+    - Save as a new draft
 
 ---
 
 ## Best Practices
 
-- **Regular Saves**: Save your work frequently to create revision points
-- **Meaningful Comments**: Add descriptive comments when making significant changes
-- **Test Before Publishing**: Always preview your content before publishing
-- **Schedule Major Updates**: Use scheduling for significant changes to go live during off-peak hours
-- **Limit Draft Duration**: Try not to keep drafts unpublished for extended periods to avoid outdated content
-- **Regular Cleanup**: Periodically review and remove unnecessary drafts and revisions
+-   **Regular Saves**: Save your work frequently to create revision points
+-   **Meaningful Comments**: Add descriptive comments when making significant changes
+-   **Test Before Publishing**: Always preview your content before publishing
+-   **Schedule Major Updates**: Use scheduling for significant changes to go live during off-peak hours
+-   **Limit Draft Duration**: Try not to keep drafts unpublished for extended periods to avoid outdated content
+-   **Regular Cleanup**: Periodically review and remove unnecessary drafts and revisions
