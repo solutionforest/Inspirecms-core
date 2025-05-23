@@ -33,6 +33,6 @@ class CmsInfoWidget extends Widget implements GuardWidget
 
     public function getNewsUrl(): string
     {
-        return 'https://inspirecms.net/news';
+        return 'https://inspirecms.net/blog';
     }
 }
