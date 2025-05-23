@@ -271,7 +271,9 @@ class ContentResource extends Resource implements ClusterSectionResource
 
                 Tables\Columns\TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
-                    ->width('1%')->sortable(),
+                    ->width('1%')->sortable()
+                    ->searchable(isIndividual: true)
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('inspirecms::resources/content.deleted_at.label'))
@@ -283,7 +285,15 @@ class ContentResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label'))
                     ->sortable()
-                    ->grow(),
+                    ->searchable(isIndividual: true)
+                    ->limit(20)->tooltip(fn ($state) => $state),
+
+                Tables\Columns\TextColumn::make('slug')
+                    ->label(__('inspirecms::resources/content.slug.label'))
+                    ->searchable(isIndividual: true)
+                    ->fontFamily('mono')
+                    ->limit(20)->tooltip(fn ($state) => $state),
+
                 Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
                     ->getStateUsing(function (Model | ModelsContent $record) {
