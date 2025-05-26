@@ -1,33 +1,24 @@
 <div {{ 
     $attributes->class([
-        'alert-dialog',
-        'py-2' => $size == 'sm',
-        'py-3' => $size == 'md',
-        'py-4' => $size == 'lg',
-        'border-custom-400 bg-custom-50 dark:bg-custom-900/95' => $color != 'gray',
-        'border-gray-400 bg-gray-50 dark:bg-gray-900/95' => $color == 'gray',
+        'alert-dialog px-4 bg-custom-50 dark:bg-custom-900',
+        "alert-dialog-{$size}" => in_array($size, ['sm', 'md', 'lg']),
+        'py-2' => $size === 'sm',
+        'py-3' => $size === 'md',
+        'py-4' => $size === 'lg',
     ])->style(\Filament\Support\get_color_css_variables(
         $color,
         shades: [50, 200, 400, 700, 900],
     ))
-}}>
-    <div class="flex items-center h-full truncate">
-        <div class="flex-shrink-0">
-            <x-filament::icon 
-                :icon="$icon" 
-                @class([
-                    'alert-dialog-icon',
-                    'text-custom-400 dark:text-custom-200/80' => $color != 'gray',
-                    'text-gray-400 dark:text-gray-200/80' => $color == 'gray',
-                ])
-            />
+}}
+    x-data="{}"
+    x-load-css="[@js(\Filament\Support\Facades\FilamentAsset::getStyleHref('filament-alert', package: 'solution-forest/inspirecms'))]"
+>
+    <div class="alert-dialog-body flex items-center h-full truncate">
+        <div class="alert-dialog-icon-ctn">
+            <x-filament::icon :icon="$icon" class="w-6 h-6 text-custom-400 text-custom-200" />
         </div>
-        <div class="alert-dialog-content-ctn">
-            <p @class([
-                'alert-dialog-content',
-                'text-custom-700 dark:text-custom-400' => $color != 'gray',
-                'text-gray-700 dark:text-gray-400' => $color == 'gray',
-            ])>
+        <div class="alert-dialog-content-ctn ml-4 text-sm text-custom-700 dark:text-custom-400">
+            <p>
                 {{ $message }}
             </p>
         </div>

@@ -202,6 +202,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
             Css::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.css')->loadedOnRequest(),
             AlpineComponent::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.js')->loadedOnRequest(),
+            Css::make('filament-alert', __DIR__ . '/../resources/dist/components/alert.css')->loadedOnRequest(),
         ];
     }
 

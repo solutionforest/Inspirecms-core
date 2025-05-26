@@ -1,0 +1,43 @@
+.alert-dialog {
+    @apply px-4;
+
+    background-color: rgb(var(--c-50));
+    &:is(.dark *) {
+        background-color: rgb(var(--c-900));
+    }
+
+    .alert-dialog-body {
+        @apply flex items-center h-full truncate;
+
+        .alert-dialog-icon-ctn {
+            @apply flex-shrink-0;
+
+            svg {
+                @apply w-6 h-6;
+                color: rgb(var(--c-400));
+                
+                &:is(.dark *) {
+                    color: rgb(var(--c-200));
+                }
+            }
+        }
+        .alert-dialog-content-ctn {
+            @apply ml-4 text-sm;
+            color: rgb(var(--c-700));
+            
+            &:is(.dark *) {
+                color: rgb(var(--c-400));
+            }
+        }
+    }
+}
+
+.alert-dialog-sm {
+    @apply py-2;
+}
+.alert-dialog-md {
+    @apply py-3;
+}
+.alert-dialog-lg {
+    @apply py-4;
+}
