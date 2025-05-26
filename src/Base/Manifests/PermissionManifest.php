@@ -53,16 +53,56 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getResourcePermissions(): array
     {
-        return collect($this->getResourceData())
+        $resourcesInConfig = InspireCmsConfig::getFilamentResources();
+
+        $panel = filament()->getPanel(InspireCmsConfig::getPanelId());
+        $resourcesFromDiscover = collect($panel?->getResourceNamespaces() ?? [])
+            ->combine($panel?->getResourceDirectories() ?? [])
+            // get all resource from the discover directories
+            ->flatMap(function ($dir, $namespace) {
+                // get the fully qualified class names of the pages
+                $files = glob($dir . '/*.php');
+                return collect($files)
+                    ->map(fn ($file) => str_replace(['/', '.php'], ['\\', ''], $file))
+                    ->map(fn ($fqcn) => $namespace . '\\' . class_basename($fqcn));
+            })
+            ->all();
+            
+        $resourcePermissions = collect($resourcesInConfig)
+            ->merge($resourcesFromDiscover)
+            ->unique() // ensure no duplicates
+            ->where(
+                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
+                in_array(ClusterSectionResource::class, class_implements($fqcn))
+            )
+            ->map(fn (string $fqcn) => [
+                'model' => $fqcn::getModel(),
+                'customModelName' => $fqcn::getCustomModelPermissionPrefix(),
+                'customModelDisplay' => $fqcn::getCustomModelPermissionDisplay(),
+                'permissionPrefixes' => $fqcn::getPermissionPrefixes(),
+            ])
+            // add MediaAsset model permissions
+            ->merge([
+                [
+                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(MediaAsset::class),
+                    'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
+                ],
+            ])
+            ->all();
+
+        return collect($resourcePermissions)
             ->map(function (array $data) {
 
                 $model = $data['model'];
-                $modelShortName = class_basename($model);
+                $customModelPermissionPrefix = $data['customModelName'] ?? null;
+                $modelShortName = $data['customModelDisplay'] ?? class_basename($model);
 
                 $permissionNames = collect($data['permissionPrefixes'])
-                    ->mapWithKeys(function (string $suffix) use ($model) {
+                    ->mapWithKeys(callback: function (string $suffix) use ($model, $customModelPermissionPrefix) {
 
-                        $permissionName = $this->getPermissionNameForModel($suffix, $model);
+                        $permissionName = is_string($customModelPermissionPrefix) && filled($customModelPermissionPrefix)
+                            ? $this->getPermissionNameForModelShort($suffix, $customModelPermissionPrefix)
+                            : $this->getPermissionNameForModel($suffix, $model);
 
                         $permissionLabel = str($suffix)
                             ->kebab()
@@ -115,7 +155,24 @@ class PermissionManifest implements PermissionManifestInterface
 
     public function getPagePermissions(): array
     {
-        return collect(InspireCmsConfig::getFilamentPages())
+        $pagesInConfig = InspireCmsConfig::getFilamentPages();
+
+        $panel = filament()->getPanel(InspireCmsConfig::getPanelId());
+        $pagesFromDiscover = collect($panel?->getPageNamespaces() ?? [])
+            ->combine($panel?->getPageDirectories() ?? [])
+            // get all pages from the discover directories
+            ->flatMap(function ($dir, $namespace) {
+                // get the fully qualified class names of the pages
+                $files = glob($dir . '/*.php');
+                return collect($files)
+                    ->map(fn ($file) => str_replace(['/', '.php'], ['\\', ''], $file))
+                    ->map(fn ($fqcn) => $namespace . '\\' . class_basename($fqcn));
+            })
+            ->all();
+
+        return collect($pagesInConfig)
+            ->merge($pagesFromDiscover)
+            ->unique() // ensure no duplicates
             ->where(fn ($fqcn) => in_array(GuardPage::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getPermissionName() => $fqcn::getPermissionDisplayName()])
             ->sortKeys()
@@ -162,7 +219,12 @@ class PermissionManifest implements PermissionManifestInterface
     {
         $modelShortName = class_basename($model);
 
-        return str($modelShortName)
+        return $this->getPermissionNameForModelShort($ability, $modelShortName);
+    }
+
+    protected function getPermissionNameForModelShort(string $ability, string $model): string
+    {
+        return str($model)
             ->lower()
             ->snake('_')
             ->finish('.')
@@ -256,26 +318,6 @@ class PermissionManifest implements PermissionManifestInterface
             ->map(fn ($permission) => str($permission)->lower()->toString())
             ->values()
             ->unique()
-            ->toArray();
-    }
-
-    protected function getResourceData(): array
-    {
-        return collect(InspireCmsConfig::getFilamentResources())
-            ->where(
-                fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
-                in_array(ClusterSectionResource::class, class_implements($fqcn))
-            )
-            ->map(fn (string $fqcn) => [
-                'model' => $fqcn::getModel(),
-                'permissionPrefixes' => $fqcn::getPermissionPrefixes(),
-            ])
-            ->merge([
-                [
-                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(MediaAsset::class),
-                    'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
-                ],
-            ])
             ->toArray();
     }
 
