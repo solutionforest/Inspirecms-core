@@ -62,12 +62,13 @@ class PermissionManifest implements PermissionManifestInterface
             ->flatMap(function ($dir, $namespace) {
                 // get the fully qualified class names of the pages
                 $files = glob($dir . '/*.php');
+
                 return collect($files)
                     ->map(fn ($file) => str_replace(['/', '.php'], ['\\', ''], $file))
                     ->map(fn ($fqcn) => $namespace . '\\' . class_basename($fqcn));
             })
             ->all();
-            
+
         $resourcePermissions = collect($resourcesInConfig)
             ->merge($resourcesFromDiscover)
             ->unique() // ensure no duplicates
@@ -164,6 +165,7 @@ class PermissionManifest implements PermissionManifestInterface
             ->flatMap(function ($dir, $namespace) {
                 // get the fully qualified class names of the pages
                 $files = glob($dir . '/*.php');
+
                 return collect($files)
                     ->map(fn ($file) => str_replace(['/', '.php'], ['\\', ''], $file))
                     ->map(fn ($fqcn) => $namespace . '\\' . class_basename($fqcn));

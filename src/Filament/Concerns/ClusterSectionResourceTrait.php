@@ -8,12 +8,12 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 trait ClusterSectionResourceTrait
 {
     use CanAuthorizeResource;
-    
+
     public static function getCustomModelPermissionPrefix(): ?string
     {
         return null;
     }
-    
+
     public static function getCustomModelPermissionDisplay(): ?string
     {
         return null;
