@@ -7,7 +7,7 @@ use Filament\Forms;
 trait HasColumnsLayoutConfig
 {
     public array $columnsLayout = [];
-    
+
     protected static function getHasColumnsLayoutConfigComponent()
     {
         return Forms\Components\KeyValue::make('columnsLayout')

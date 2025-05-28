@@ -23,8 +23,8 @@ use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 #[Translatable(false)]
 class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 {
-    use HasInnerField;
     use HasColumnsLayoutConfig;
+    use HasInnerField;
 
     public array $fields = [];
 
@@ -35,13 +35,17 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
     public bool $cloneable = false;
 
     public bool $collapsible = false;
+
     public bool $defaultCollapsed = false;
 
     public bool $reorderable = false;
+
     public bool $reorderableWithButtons = false;
+
     public bool $reorderableWithButtonsreorderableWithDragAndDrop = false;
 
     public ?int $minItems = null;
+
     public ?int $maxItems = null;
 
     public array $gridLayout = [];
@@ -74,7 +78,6 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->placeholder('e.g. title, key, etc.')
                                 ->helperText(str('The label for each item in the repeater. Using **`Name`** in the **Fields**')->markdown()->toHtmlString()),
 
-                                
                             Forms\Components\KeyValue::make('gridLayout')
                                 ->keyLabel('Column')
                                 ->keyLabel('Width')
@@ -135,7 +138,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
             //
             $component->cloneable($this->cloneable);
-            
+
             $component->collapsible($this->collapsible);
             $component->collapsed($this->defaultCollapsed ?? false);
 
