@@ -365,6 +365,8 @@ return [
 
             Fields\Configs\ContentPicker::class,
             Fields\Configs\MediaPicker::class,
+
+            Fields\Configs\IconPicker::class,
         ],
     ],
 
