@@ -42,7 +42,7 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public bool $reorderableWithButtons = false;
 
-    public bool $reorderableWithButtonsreorderableWithDragAndDrop = false;
+    public bool $reorderableWithDragAndDrop = false;
 
     public ?int $minItems = null;
 
