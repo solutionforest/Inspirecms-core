@@ -76,7 +76,7 @@ class TemplatesRelationManager extends RelationManager
                     Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.content'))
                         ->schema([
                             TemplateResourceHelper::getPageComponentInstructionsFormComponent(),
-                            TemplateResourceHelper::getContentFormComponent('html_content'),
+                            TemplateResourceHelper::getContentFormComponent('html_content')->hiddenLabel(),
                         ]),
                     Forms\Components\Tabs\Tab::make(__('inspirecms::resources/template.editor.tabs.instructions'))
                         ->schema([
@@ -127,6 +127,12 @@ class TemplatesRelationManager extends RelationManager
 
                         $this->dispatch('$refresh');
                     }),
+                Tables\Actions\EditAction::make('rename')
+                    ->label(__('inspirecms::buttons.rename.label'))
+                    ->icon(FilamentIcon::resolve('inspirecms::edit.simple'))
+                    ->successNotificationTitle(__('inspirecms::buttons.rename.messages.success.title'))
+                    ->failureNotificationTitle(__('inspirecms::buttons.rename.messages.failure.title'))
+                    ->link(),
                 Tables\Actions\ActionGroup::make([
                     EditAndPreviewAction::make()->builderName('templateViewBuilder')->authorize(static fn (RelationManager $livewire, Model $record): bool => (! $livewire->isReadOnly()) && $livewire->canEdit($record)),
                     Tables\Actions\EditAction::make(),
@@ -210,7 +216,18 @@ class TemplatesRelationManager extends RelationManager
     {
         parent::configureEditAction($action);
 
-        $this->configureViewOrEditAction($action);
+        if ($action->getName() == 'rename') {
+            $action
+                ->form(fn (Form $form): Form => $this->createForm($form->columns(1)))
+                ->using(function (array $data, Model | Template $record) {
+                    $record->update(['slug' => $data['slug']]);
+                });
+        } else {
+
+            $this->configureViewOrEditAction($action);
+
+        }
+
     }
 
     protected function configureViewOrEditAction(Tables\Actions\Action $action)

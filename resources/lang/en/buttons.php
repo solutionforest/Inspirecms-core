@@ -172,6 +172,18 @@ return [
         ],
     ],
 
+    'rename' => [
+        'label' => 'Rename',
+        'messages' => [
+            'success' => [
+                'title' => 'Renamed successfully',
+            ],
+            'failure' => [
+                'title' => 'Failed to rename',
+            ],
+        ],
+    ],
+
     'reorder_children' => [
         'label' => 'Reorder children',
         'messages' => [

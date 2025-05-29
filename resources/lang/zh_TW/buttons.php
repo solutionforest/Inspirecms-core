@@ -172,6 +172,18 @@ return [
         ],
     ],
 
+    'rename' => [
+        'label' => '重命名',
+        'messages' => [
+            'success' => [
+                'title' => '重命名成功',
+            ],
+            'failure' => [
+                'title' => '重命名失敗',
+            ],
+        ],
+    ],
+
     'reorder_children' => [
         'label' => '重新排序子項',
         'messages' => [
