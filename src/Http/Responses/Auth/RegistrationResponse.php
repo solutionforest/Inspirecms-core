@@ -13,7 +13,7 @@ class RegistrationResponse extends FilamentRegistrationResponse implements Regis
 {
     public function toResponse($request): RedirectResponse | Redirector
     {
-        if (filament()->getCurrentPanel()?->getId() === InspireCmsConfig::getPanelId() && ($importDataUrl = InspireCms::getImportDataUrl())) {  
+        if (filament()->getCurrentPanel()?->getId() === InspireCmsConfig::getPanelId() && ($importDataUrl = InspireCms::getImportDataUrl())) {
             return redirect()->intended($importDataUrl);
         }
 
