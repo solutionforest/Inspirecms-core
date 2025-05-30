@@ -1,7 +1,16 @@
+@use('SolutionForest\InspireCms\InspireCmsConfig')
+@php
+    $logoTitle = InspireCmsConfig::get('brand.admin.logo_title', 'InspireCMS');
+    $hasTitle = InspireCmsConfig::get('admin.brand.logo_show_text', true);
+    $svgHeight = 48;
+    $svgWidth = $hasTitle ? 220 : $svgHeight;
+@endphp
 <svg
-    viewBox="0 0 140 26"
+    width="{{ $svgWidth }}"
+    height="{{ $svgHeight }}"
+    viewBox="0 0 {{ $svgWidth }} {{ $svgHeight }}"
     xmlns="http://www.w3.org/2000/svg"
-    class="h-full text-custom-500 dark:text-custom-400 inspirecms-logo font-mono font-bold tracking-wide"
+    class="inspirecms-logo h-full w-auto text-custom-500 dark:text-custom-400 font-sans font-bold tracking-wide"
     @style([
         \Filament\Support\get_color_css_variables(
             'primary',
@@ -15,6 +24,8 @@
             <stop offset="100%" style="stop-color: rgba(var(--c-300), var(--tw-text-opacity)); stop-opacity:1" />
         </linearGradient>
     </defs>
-    <circle cx="10" cy="13" r="10" fill="url(#grad1)" />
-    <text x="30" y="20" font-size="18" fill="currentColor">InspireCms</text>
+    @if ($hasTitle)
+        <text x="50" y="36" font-size="28" fill="currentColor">{{ $logoTitle }}</text>
+    @endif
+    <path d="M6 6H42L36 24L42 42H6L12 24L6 6Z" fill="url(#grad1)"></path>
 </svg>

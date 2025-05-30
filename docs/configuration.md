@@ -4,6 +4,7 @@ slug: configuration
 path: docs/v1/configuration
 uri: /docs/1.x/configuration
 ---
+
 # Configuration
 
 This guide covers the essential configuration options for InspireCMS and how to customize them to fit your needs.
@@ -254,6 +255,8 @@ use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
     'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
         'name' => 'InspireCMS',        // Display name shown in admin header
         'logo' => fn () => view('inspirecms::logo'), // Logo component (can be replaced with custom view)
+        'logo_title' => 'InspireCMS',
+        'logo_show_text' => true,
         'favicon' => fb () => asset('images/favicon.png'), // Browser tab icon
     ],
     'database_notification' => [

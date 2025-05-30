@@ -213,6 +213,8 @@ return [
         'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
             'name' => 'InspireCMS',
             'logo' => fn () => view('inspirecms::logo'),
+            'logo_title' => 'InspireCMS',
+            'logo_show_text' => true,
             'favicon' => fn () => asset('images/favicon.png'),
         ],
 
