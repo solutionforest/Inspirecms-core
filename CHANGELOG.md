@@ -2,6 +2,10 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.63 - 2025-06-02
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.62...0.0.63
+
 ## 0.0.62 - 2025-05-30
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.61...0.0.62
