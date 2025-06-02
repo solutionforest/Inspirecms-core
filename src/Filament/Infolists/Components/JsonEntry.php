@@ -18,4 +18,4 @@ class JsonEntry extends Entry
 
         return $state;
     }
-}    
+}
