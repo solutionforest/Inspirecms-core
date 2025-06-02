@@ -116,21 +116,9 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ))
                     ->copyable()->copyableState(fn ($record) => $record->author?->email),
 
-                Infolists\Components\TextEntry::make('payload')
-                    ->label(__('inspirecms::resources/import.payload.label'))
+                \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
                     ->columnSpanFull()
-                    ->size('xs')->color('gray')
-                    ->extraAttributes([
-                        'class' => 'bg-gray-100 dark:bg-gray-800 rounded-md p-2 overflow-x-auto',
-                    ])
-                    ->getStateUsing(function ($record) {
-                        $payload = $record->payload;
-                        if (! is_array($payload)) {
-                            return '';
-                        }
-
-                        return str(json_encode($payload, JSON_PRETTY_PRINT))->wrap('<code>', '</code>')->wrap('<pre>', '</pre>')->toHtmlString();
-                    }),
+                    ->label(__('inspirecms::resources/import.payload.label')),
             ]);
     }
 
