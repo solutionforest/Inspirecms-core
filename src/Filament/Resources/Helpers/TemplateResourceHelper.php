@@ -38,8 +38,6 @@ class TemplateResourceHelper
     public static function getContentFormComponent($name = 'content')
     {
         return \SolutionForest\InspireCms\Filament\Forms\Components\CodeEditor::make($name)
-            ->darkModeTheme('basic-dark')
-            ->lightModeTheme('basic-light')
             ->minHeight('48rem');
     }
 

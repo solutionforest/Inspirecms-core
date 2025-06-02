@@ -1,127 +1,98 @@
 import { basicSetup } from "codemirror";
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from "@codemirror/view";
-import { indentWithTab } from "@codemirror/commands";
-import { javascript } from "@codemirror/lang-javascript";
+
+import { indentWithTab } from "@codemirror/commands"
+
 import { Compartment } from '@codemirror/state';
-import { json } from "@codemirror/lang-json";
+
+import { basicLight } from '@fsegurai/codemirror-theme-basic-light'
+import { basicDark } from '@fsegurai/codemirror-theme-basic-dark'
+
+import { javascript } from "@codemirror/lang-javascript";
 import { php } from "@codemirror/lang-php";
 import { css } from "@codemirror/lang-css";
 import { html } from "@codemirror/lang-html";
-import { basicLight } from 'cm6-theme-basic-light'
-import { basicDark } from 'cm6-theme-basic-dark'
-import { solarizedDark } from 'cm6-theme-solarized-dark'
-import { solarizedLight } from 'cm6-theme-solarized-light'
-import { materialDark } from 'cm6-theme-material-dark'
-import { nord } from 'cm6-theme-nord'
-import { gruvboxLight } from 'cm6-theme-gruvbox-light'
-import { gruvboxDark } from 'cm6-theme-gruvbox-dark'
+import { json } from "@codemirror/lang-json";
 
-export default function codeEditorFormComponentEnhace({
+export default function codeEditorFormComponent({
     state, 
-    darkTheme, 
-    lightTheme,
+    isDarkMode, 
     isReadOnly, 
 }) {
     return {
         state,
+        isDarkMode,
+        isReadOnly,
+
         editor: undefined,
-        isReadOnly: false,
+
         themeConfig: undefined,
-        mode: 'light',
-        theme: {
-            styles: {
-                'basic-light': {
-                    extension: basicLight,
-                    name: 'Basic Light'
-                },
-                'basic-dark': {
-                    extension: basicDark,
-                    name: 'Basic Dark'
-                },
-                'solarized-dark': {
-                    extension: solarizedDark,
-                    name: 'Solarized Dark'
-                },
-                'solarized-light': {
-                    extension: solarizedLight,
-                    name: 'Solarized Light'
-                },
-                'material-dark': {
-                    extension: materialDark,
-                    name: 'Material Dark'
-                },
-                'nord': {
-                    extension: nord,
-                    name: 'Nord'
-                },
-                'gruvbox-light': {
-                    extension: gruvboxLight,
-                    name: 'Gruvbox Light'
-                },
-                'gruvbox-dark': {
-                    extension: gruvboxDark,
-                    name: 'Gruvbox Dark'
-                }
-            },
-            current: basicLight,
-            light: basicDark,
-            dark: basicDark,
-        },
-        init: function () {
-            let theme = window.Alpine.store('theme') || 'system';
-            if (theme === 'system') {
-                theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
 
-            this.isReadOnly = isReadOnly;
-            this.theme.dark = darkTheme;
-            this.theme.light = lightTheme;
+        init() {
             this.themeConfig = new Compartment();
-            this.mode = theme;
-            this.render();
-
-            this.toggleTheme(theme);
-
+            this.configureEditor();
         },
-        toggleTheme(mode) {
-            const selectedStyle = mode === 'dark' ? this.theme.dark : this.theme.light;
-            this.theme.current = this.theme.styles[selectedStyle];
+        getTheme() {
+            return this.isDarkMode ? basicDark : basicLight;
+        },
+        toggleTheme(isDarkMode) {
+            this.isDarkMode = isDarkMode;
         
             if (this.editor) {
                 this.editor.dispatch({
-                    effects: this.themeConfig.reconfigure(this.theme.current)
+                    effects: this.themeConfig.reconfigure(this.getTheme())
                 });
             }
         },
-        render() {
+        configureEditor() {
+
+            const themeExtension = this.themeConfig.of(this.getTheme());
+
             this.editor = new EditorView({
                 state: EditorState.create({
-                    autofocus: true,
+                    autofocus: false,
                     indentWithTabs: true,
                     smartIndent: true,
                     lineNumbers: true,
                     matchBrackets: true,
-                    tabSize: 2,
+                    lineWrapping: true,
                     styleSelectedText: true,
+                    indentUnit: 6,
+                    tabSize: 4,
                     extensions: [
+
                         basicSetup,
-                        keymap.of([indentWithTab]),
+
+                        keymap.of([
+                            indentWithTab,
+                        ]),
+
+                        html({
+                            matchClosingTags: true,
+                            selfClosingTags: true,
+                            autoCloseTags: true,
+                        }),
                         javascript(),
+                        css(),
                         php(),
                         json(),
-                        css(),
-                        html(),
-                        this.themeConfig.of(this.theme.current),
+
+                        themeExtension,
+
                         EditorView.updateListener.of((v) => {
                             if (v.docChanged) {
                                 this.state = v.state.doc.toString();
                             }
                         }),
-                        EditorState.readOnly.of(this.isReadOnly)
+
+                        EditorState.readOnly.of(this.isReadOnly),
+                        
                     ],
+
                     doc: this.state
                 }),
+
                 parent: this.$refs.codeEditor,
             });
         },

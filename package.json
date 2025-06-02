@@ -40,14 +40,7 @@
         "@codemirror/lang-json": "^6.0.1",
         "@codemirror/lang-php": "^6.0.1",
         "@codemirror/view": "^6.26.0",
-        "cm6-theme-basic-dark": "^0.2.0",
-        "cm6-theme-basic-light": "^0.2.0",
-        "cm6-theme-gruvbox-dark": "^0.2.0",
-        "cm6-theme-gruvbox-light": "^0.2.0",
-        "cm6-theme-material-dark": "^0.2.0",
-        "cm6-theme-nord": "^0.2.0",
-        "cm6-theme-solarized-dark": "^0.2.0",
-        "cm6-theme-solarized-light": "^0.2.0",
+        "@fsegurai/codemirror-theme-bundle": "^6.2.0-beta",
         "codemirror": "^6.0.1"
     }
 }

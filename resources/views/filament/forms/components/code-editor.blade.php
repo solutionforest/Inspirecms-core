@@ -22,12 +22,13 @@
       "
     >
         <div class="code-editor-textarea-wrapper-ctn overflow-auto"
-            @theme-changed.window="(e) => toggleTheme(e.detail)" 
-            x-data="codeEditorFormComponentEnhace({
+            @theme-changed.window="(e) => toggleTheme(
+                e.detail === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : e.detail === 'dark'
+            )" 
+            x-data="codeEditorFormComponent({
                 state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')') }},
-                darkTheme: @js($getDarkModeTheme()),
-                lightTheme: @js($getLightModeTheme()),
                 isReadOnly: @js($isDisabled()),
+                isDarkMode: (Alpine.store('theme') || 'light') === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : (Alpine.store('theme') || 'light') === 'dark',
             })"
             x-load
             x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('filament-code-editor', 'solution-forest/inspirecms') }}"

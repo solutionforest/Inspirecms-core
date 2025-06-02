@@ -14,27 +14,9 @@ class CodeEditor extends Field
 
     protected int | string | Closure | null $minHeight = 420;
 
-    protected string | Closure | null $darkModeTheme = null;
-
-    protected string | Closure | null $lightModeTheme = null;
-
     public function minHeight(int | string | Closure | null $minHeight = 768): static
     {
         $this->minHeight = $minHeight;
-
-        return $this;
-    }
-
-    public function lightModeTheme(?string $lightModeTheme): static
-    {
-        $this->lightModeTheme = $lightModeTheme;
-
-        return $this;
-    }
-
-    public function darkModeTheme(?string $darkModeTheme): static
-    {
-        $this->darkModeTheme = $darkModeTheme;
 
         return $this;
     }
@@ -55,21 +37,5 @@ class CodeEditor extends Field
         }
 
         return null;
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getDarkModeTheme()
-    {
-        return $this->evaluate($this->darkModeTheme);
-    }
-
-    /**
-     * @return ?string
-     */
-    public function getLightModeTheme()
-    {
-        return $this->evaluate($this->lightModeTheme);
     }
 }
