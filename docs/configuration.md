@@ -40,8 +40,6 @@ php artisan vendor:publish --tag="inspirecms-config"
     'license' => [
         // Your InspireCMS license key from your subscription
         'key' => env('INSPIRECMS_LICENSE_KEY'),
-        // Your InspireCMS license secret used for validation
-        'secret' => env('INSPIRECMS_LICENSE_SECRET'),
     ],
 
     /**
@@ -199,39 +197,39 @@ Optimize performance with caching configurations:
 ```php
 'cache' => [
      'languages' => [
-            'store' => null, // null: Fallback to default store
-            'key' => 'inspirecms.languages',  // Cache key for storing language data
-            'ttl' => 60 * 60 * 24,            // Time-to-live in seconds (24 hours)
-                            // Decrease for more frequent updates
-                            // Increase for better performance
-        ],
-        'navigation' => [
-            'store' => null, // null: Fallback to default store
-            'key' => 'inspirecms.navigation', // Cache key for menu structures
-            'ttl' => 60 * 60 * 24,            // 24 hour cache duration
-                            // Clear with: php artisan cache:clear
-                            // Critical for site performance under high traffic
-        ],
-        'content_routes' => [
-            'store' => null, // null: Fallback to default store
-            'key' => 'inspirecms.content_routes', // Cache key for content URL routing data
-            'ttl' => 120 * 60 * 24,               // 5-day cache duration (longer than other caches)
-                                // Extended duration improves routing performance
-                                // Clear after adding new content types
-        ],
-        'key_value' => [
-            'store' => null, // null: Fallback to default store
-            'ttl' => 60 * 60 * 24,              // Cache duration for system settings
-                                // Affects all configuration values retrieved at runtime
-                                // Consider shorter values during development
-                                // Longer values (3-7 days) for production
-            'prefix' => 'inspire_key_value.',
-        ],
-        // For production environments, consider enabling a persistent cache driver
-        // such as Redis or Memcached in your .env file:
-        // CACHE_DRIVER=redis
+					'store' => null, // null: Fallback to default store
+					'key' => 'inspirecms.languages',  // Cache key for storing language data
+					'ttl' => 60 * 60 * 24,            // Time-to-live in seconds (24 hours)
+													// Decrease for more frequent updates
+													// Increase for better performance
+			],
+			'navigation' => [
+					'store' => null, // null: Fallback to default store
+					'key' => 'inspirecms.navigation', // Cache key for menu structures
+					'ttl' => 60 * 60 * 24,            // 24 hour cache duration
+													// Clear with: php artisan cache:clear
+													// Critical for site performance under high traffic
+			],
+			'content_routes' => [
+					'store' => null, // null: Fallback to default store
+					'key' => 'inspirecms.content_routes', // Cache key for content URL routing data
+					'ttl' => 120 * 60 * 24,               // 5-day cache duration (longer than other caches)
+															// Extended duration improves routing performance
+															// Clear after adding new content types
+			],
+			'key_value' => [
+					'store' => null, // null: Fallback to default store
+					'ttl' => 60 * 60 * 24,              // Cache duration for system settings
+															// Affects all configuration values retrieved at runtime
+															// Consider shorter values during development
+															// Longer values (3-7 days) for production
+					'prefix' => 'inspire_key_value.',
+			],
+			// For production environments, consider enabling a persistent cache driver
+			// such as Redis or Memcached in your .env file:
+			// CACHE_DRIVER=redis
 
-        // Monitor cache usage with: php artisan inspirecms:cache-stats
+			// Monitor cache usage with: php artisan inspirecms:cache-stats
 ],
 ```
 

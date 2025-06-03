@@ -30,8 +30,6 @@ return [
         'license' => [
             // Your InspireCMS license key from your subscription
             'key' => env('INSPIRECMS_LICENSE_KEY'),
-            // Your InspireCMS license secret used for validation
-            'secret' => env('INSPIRECMS_LICENSE_SECRET'),
         ],
 
         /**
