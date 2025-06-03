@@ -208,6 +208,8 @@ return [
 
         'path' => 'cms',
 
+        'allow_registration' => false, // Whether to allow user registration via the admin panel
+
         'brand' => [ // More info https://filamentphp.com/docs/3.x/panels/themes#adding-a-logo
             'name' => 'InspireCMS',
             'logo' => fn () => view('inspirecms::logo'),

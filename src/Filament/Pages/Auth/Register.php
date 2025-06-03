@@ -56,6 +56,16 @@ class Register extends BasePage
         }
 
         $this->isAlreadyInitialized = ! inspirecms()->needInstall();
+
+        if ($this->isAlreadyInitialized && ! InspireCmsConfig::get('admin.allow_registration', false)) {
+            // If registration is not allowed, redirect to login page
+            $loginUrl = filament()->getPanel(InspireCmsConfig::getPanelId())?->getLoginUrl();
+            if ($loginUrl) {
+                return redirect()->intended($loginUrl);
+            } else {
+                throw new \Exception('Registration is not allowed, and no login URL is configured.');
+            }
+        }
     }
 
     public function mount(): void

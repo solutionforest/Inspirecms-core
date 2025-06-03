@@ -1,5 +1,6 @@
+@use('SolutionForest\InspireCms\InspireCmsConfig')
 <x-inspirecms::page.split-image-form class="w-full px-6 py-8 md:px-24 lg:px-44 lg:py-12">
-    @if (filament()->hasRegistration())
+    @if (filament()->hasRegistration() && InspireCmsConfig::get('admin.allow_registration', false))
         <x-slot name="subheading">
             {{ __('filament-panels::pages/auth/login.actions.register.before') }}
 
