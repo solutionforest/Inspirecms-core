@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Pages;
 use Filament\Pages\Page;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Dashboard extends Page
 {
@@ -43,6 +44,7 @@ class Dashboard extends Page
             Widgets\CmsInfoWidget::class,
             Widgets\PageActivity::class,
             Widgets\UserActivity::class,
+            ...InspireCmsConfig::get('admin.extra_widgets', []),
         ];
     }
 

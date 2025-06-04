@@ -251,7 +251,7 @@ return [
         ],
 
         'extra_widgets' => [
-            // Extra widgets to be added to the CMS
+            // Extra widgets to be added to the CMS Dashboard
         ],
     ],
 
