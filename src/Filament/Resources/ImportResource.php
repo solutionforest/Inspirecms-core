@@ -19,7 +19,6 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
-use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
 use SolutionForest\InspireCms\Services\ImportServiceInterface;
