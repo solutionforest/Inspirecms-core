@@ -16,13 +16,13 @@ use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Forms\Components\Actions\DownloadSampleAction;
 use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Import;
+use SolutionForest\InspireCms\Services\ImportServiceInterface;
 
 class ImportResource extends Resource implements ClusterSectionResource
 {
@@ -146,8 +146,26 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->preserveFilenames(false),
 
                 Forms\Components\Actions::make([
-                    DownloadSampleAction::make()
-                        ->url(fn () => UrlHelper::attemptToGetRoute('inspirecms.import.sample')),
+                    Forms\Components\Actions\Action::make('download_sample')
+                        ->label(__('inspirecms::buttons.download_sample.label'))
+                        ->icon(FilamentIcon::resolve('inspirecms::download'))
+                        ->button()
+                        ->outlined()
+                        ->color('warning')
+                        ->failureNotificationTitle('Download Failed')
+                        ->action(function (Forms\Components\Actions\Action $action) {
+                            try {
+                                $importService = app(ImportServiceInterface::class);
+
+                                $file = $importService->buildSampleZip();
+
+                                return response()
+                                    ->download($file, 'import-sample-' . uniqid() . '.zip')
+                                    ->deleteFileAfterSend(true);
+                            } catch (\Throwable $th) {
+                                $action->failure();
+                            }
+                        }),
                 ])->alignEnd(),
                 Forms\Components\Placeholder::make('file_structure_instructions')
                     ->label(__('inspirecms::resources/import.file_structure_instructions.label'))
