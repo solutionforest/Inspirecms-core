@@ -63,21 +63,8 @@
         <div class="post-content-wrapper">
             <div class="container">
                 <div class="row">
-                    <!-- Left Column - Social Media -->
-                    <div class="col-md-1 ps-0 pe-0">
-                        <div class="social-share-fixed">
-                            <ul class="social-icons">
-                                <li><a href="#"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a></li>
-                                <li><a href="#"><img src="{{ asset('images/icon/ball-socialmedia.svg') }}" alt=""></a></li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- Right Column - Main Content -->
-                    <div class="col-md-11 ps-0 pe-0">
-                        <div class="main-content">
+                    <div class="col-md-12 ps-0 pe-0">
+                        <div class="">
                             <!-- Author Info -->
                             <div class="author-info">
                                 <img src="{{ asset('images/icon/avator.svg') }} " alt="Author Avatar" class="author-avatar">

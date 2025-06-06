@@ -1,5 +1,18 @@
 @php
-    $cases = $content->getPaginatedChildren(3, 'children', request()->get('children'));
+    use SolutionForest\InspireCms\Dtos\ContentDto;
+    
+    $cases = inspirecms_content()
+        ->getPaginatedUnderRealPath(
+            path: 'home/' . $content->slug, 
+            perPage: 2,
+            pageName: 'page',
+            page: request()->query('page') ?? 1,
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
 @endphp
 <x-cms-template :content="$content" type="page">
     <main>
@@ -14,7 +27,9 @@
                         @foreach ($cases as $item)
                             @php
                                 $case_page_banner = $item->getPropertyGroup('page_banner');
-                                $case_page_banner_image = collect($case_page_banner?->getPropertyData('image')?->getValue())->first();
+                                $case_page_banner_image = collect(
+                                    $case_page_banner?->getPropertyData('image')?->getValue(),
+                                )->first();
                                 $case_content = $item->getPropertyGroup('case_content');
                                 $case_content_category = $case_content?->getPropertyData('category')?->getValue();
                                 $case_content_year = $case_content?->getPropertyData('year')?->getValue();
@@ -24,7 +39,7 @@
                                     <div class="article-image">
                                         <div class="image-wrapper">
                                             @propertyArray('page_banner', 'image', 'c_banner_image', $item)
-                                            @if (($media = collect($c_banner_image ?? [])->first()))
+                                            @if ($media = collect($c_banner_image ?? [])->first())
                                                 <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                                             @endif
                                         </div>
@@ -32,15 +47,20 @@
                                     <div class="article-content">
                                         <span class="badge1">Analytics</span>
                                         <h3 class="article-title">
-                                            <a href="{{ $item->getUrl() }}">Many desktop publishing packages and web page</a>
+                                            <a href="{{ $item->getUrl() }}">Many desktop publishing packages and web
+                                                page</a>
                                         </h3>
                                         <div class="article-meta">
                                             <span class="date">Added: 23 October 2020</span>
-                                            <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}" alt=""></i> 23</span>
+                                            <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}"
+                                                    alt=""></i> 23</span>
                                         </div>
-                                        <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                                        <p class="article-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing
+                                            elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.
+                                        </p>
                                         <div class="article-author">
-                                            <img src="{{ asset('images/icon/avator.svg') }}" alt="Author" class="author-avatar">
+                                            <img src="{{ asset('images/icon/avator.svg') }}" alt="Author"
+                                                class="author-avatar">
                                             <span class="author-name">Anna Profeska</span>
                                         </div>
                                     </div>
@@ -48,8 +68,11 @@
                             </div>
                         @endforeach
 
-                        <div class="load-more">Loading More...</div>
+                        <div class="load-more">
+                            {{ $cases->links('pagination::bootstrap-5') }}
+                        </div>
                     </div>
+                </div>
             </div>
         </section>
     </main>

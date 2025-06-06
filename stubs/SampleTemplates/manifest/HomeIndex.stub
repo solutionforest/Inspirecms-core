@@ -16,30 +16,18 @@
 @endphp
 
 <x-cms-template :content="$content" type="page">
-    <!-- Hero Section -->
-    <section class="hero-section">
-        <div class="container">
-            <h1>
-                @property('hero_banner', 'brief')
-            </h1>
-        </div>
-    </section>
-    
-    <!-- Swiper Slider -->
-    <div class="swiper">
-        <div class="swiper-wrapper">
-            @propertyArray('hero_banner', 'image_slider')
+    <x-slot name="heroTitle">
+        @property('hero_banner', 'brief')
+    </x-slot>
+    <x-slot name="swiper">
+        @propertyArray('hero_banner', 'image_slider')
             @foreach ($hero_banner_image_slider ?? [] as $item)
                 <div class="swiper-slide">
                     <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
                     <p>{{ $item?->description }}</p>
                 </div>
             @endforeach
-        </div>
-        <!-- <div class="swiper-pagination"></div> -->
-        <div class="swiper-button-next" style="--icon-url:'{{ asset('images/icon/arrow1.svg') }}'"></div>
-        <div class="swiper-button-prev" style="--icon-url:'{{ asset('images/icon/arrow1.svg') }}'"></div>
-    </div>
+    </x-slot>
 
     <!-- Profile Section -->
     <section class="profile-section">
@@ -76,27 +64,4 @@
             </div>
         </div>
     </section>
-    
-    @section('scripts')
-        <script>
-            const swiper = new Swiper('.swiper', {
-                slidesPerView: 'auto',
-                spaceBetween: 30,
-                centeredSlides: true,
-                loop: true,
-                // pagination: {
-                //     el: '.swiper-pagination',
-                //     clickable: true,
-                // },
-                navigation: {
-                    nextEl: '.swiper-button-next',
-                    prevEl: '.swiper-button-prev',
-                },
-                autoplay: {
-                    delay: 3000,
-                    disableOnInteraction: false,
-                }
-            });
-        </script>
-    @endsection
 </x-cms-template>

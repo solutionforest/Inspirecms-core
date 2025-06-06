@@ -34,12 +34,8 @@
                             </div>
                         @endforeach
 
-                        <div class="load-more" 
-                            style="cursor:pointer;"
-                             data-link="{{ url()->current() . '?page=' }}" 
-                             data-page="@js($blogs->hasMorePages() ? ($blogs->currentPage() + 1) : null)"
-                        >
-                            Loading More...
+                        <div class="" >
+                            {{ $blogs->links('pagination::bootstrap-5') }}
                         </div>
                     </div>
                     <!-- Article Card -->
@@ -122,29 +118,5 @@
             </div>
         </section>
     </main>
-
-    @section('scripts')
-        <script type="text/javascript">
-            $(function() {
-
-                $(".load-more").click(function() {
-
-                    let link = $(this).data("link");
-                    let page = $(this).data("page");
-
-                    $.get(link + page, function (response) {
-
-                        let html = $(response).find(".blog-posts-grid").html();
-
-                        $(".blog-posts-grid").append(html);
-
-                    })
-                    .then((data) => $(this).data('page', $(data).find(".load-more")?.data("page")))
-                    .then((div) => $(div).data("page") == null ? $(div).hide() : "");
-
-                });
-            });
-        </script>
-    @endsection
 
 </x-cms-template>

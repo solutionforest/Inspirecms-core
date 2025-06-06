@@ -1,67 +1,20 @@
-@php
-    $locale ??= $content->getLocale();
-    $page_banner = $content->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    $case_content = $content->getPropertyGroup('case_content');
-    $case_content_overview = $case_content?->getPropertyData('overview')?->getValue();
-    $case_content_category = $case_content?->getPropertyData('category')?->getValue();
-    $case_content_year = $case_content?->getPropertyData('year')?->getValue();
-    $case_content_deliverables = $case_content?->getPropertyData('deliverables')?->getValue();
-    $case_content_platforms = collect($case_content?->getPropertyData('platforms')?->getValue())->implode(', ');
-    $case_content_roles = collect($case_content?->getPropertyData('roles')?->getValue())->implode(', ');
-    $case_content_ = collect($case_content?->getPropertyData('roles')?->getValue())->implode(', ');
-    $case_content_content = $case_content?->getPropertyData('content')?->getValue();
-@endphp
 <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
-    <div class="case-study-container">
-        <header class="case-study-header">
-            <p class="label">CASE STUDY</p>
-            <h1 class="title">{{ $page_banner_title }}</h1>
-
-            <div class="hero-image">
-                @if ($page_banner_image)
-                    <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
-                @endif
-            </div>
-        </header>
-
-        <div class="case-study-content">
-            <div class="main-content">
-                <div class="case-study-content">
-                    <div class="">
-                        <div class="row overview-section">
-                            <div class="col-md-8 overview-left">
-                                <h2>Project Overview</h2>
-                                {{ $case_content_overview }}
-                            </div>
-
-                            <div class="col-md-4 overview-right">
-                                <div class="details-grid">
-                                    <div class="detail-item">
-                                        <h3>Year</h3>
-                                        <p>{{ $case_content_year }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Platform</h3>
-                                        <p>{{ $case_content_platforms }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Role</h3>
-                                        <p>{{ $case_content_roles }}</p>
-                                    </div>
-                                    <div class="detail-item">
-                                        <h3>Deliverables</h3>
-                                        <p>{{ $case_content_deliverables }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {{ $case_content_content }}
+    <!-- About Section -->
+    <section class="landing-about-section">
+        <div class="container">
+            <div class="about-wrapper">
+                <div class="about-image">
+                    @propertyArray('page_banner', 'image')
+                    @if (($media = collect($page_banner_image)->first()))
+                        <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
+                    @endif
+                </div>
+                <div class="about-content">
+                    <span class="section-label">About US</span>
+                    <h2 class="heading-title">@property('page_banner', 'title')</h2>
+                    <p class="about-text">@property('page_banner', 'description')</p>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 </x-dynamic-component>

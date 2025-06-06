@@ -12,8 +12,8 @@
             </div>
         </header>
 
-        <div class="case-study-content">
-            <div class="main-content">
+        <div class="container">
+            <div class="">
                 <div class="case-study-content">
                     <div class="">
                         <div class="row overview-section">
