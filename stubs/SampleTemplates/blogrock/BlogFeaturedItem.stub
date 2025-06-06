@@ -1,3 +1,6 @@
+@php
+    $blogUrl = url("/$locale/blog/$content?->slug"); // custom route
+@endphp
 <!-- Featured Blog Post -->
 <div class="featured-post">
     <div class="row align-items-start">
@@ -18,24 +21,12 @@
                         @endif
                     @endforeach
                 </div>
-                <h2 class="featured-title">@property('page_banner', 'title')</h2>
+                <h2 class="featured-title"> <a href="{{ $blogUrl }}">@property('page_banner', 'title')</a></h2>
                 <div class="post-date">{{ $content?->publishAt }}</div>
                 <p class="featured-excerpt">
                     @property('page_banner', 'description')
                     <span class=""> <img src="{{ asset('images/icon/arrow1.svg') }}" alt=""></span>
                 </p>
-                <div class="pagination">
-                    @isset($pagination)
-                        @for ($i = 1; $i <= 3; $i++)
-                            @php
-                                $page = $pagination->currentPage();
-                            @endphp
-                            <a href="{{ $pagination->url($i) }}" class="text-decoration-none text-dark">
-                                <span @class(['active' => $page == $i])>{{ $i }}</span>
-                            </a>
-                        @endfor
-                    @endisset
-                </div>
             </div>
         </div>
     </div>

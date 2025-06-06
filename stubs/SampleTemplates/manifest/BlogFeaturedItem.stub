@@ -21,7 +21,7 @@
                         @endif
                     @endforeach
                 </div>
-                <h2 class="featured-title">@property('page_banner', 'title')</h2>
+                <h2 class="featured-title"> <a href="{{ $blogUrl }}">@property('page_banner', 'title')</a></h2>
                 <div class="post-date">{{ $content?->publishAt }}</div>
                 <p class="featured-excerpt">
                     @property('page_banner', 'description')
