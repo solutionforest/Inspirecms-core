@@ -68,6 +68,7 @@ class UserResource extends Resource implements ClusterSectionResource
                     ->alignCenter(),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\EditAction::make()->iconButton(),
             ]);
     }
