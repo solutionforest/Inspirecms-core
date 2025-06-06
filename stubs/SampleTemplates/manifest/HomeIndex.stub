@@ -4,7 +4,7 @@
     
     $blogs = inspirecms_content()
         ->getUnderRealPath(
-            path: 'blogs', 
+            path: 'blog-management', 
             withRelations: ['documentType.templates', 'templates'],
             limit: 3,
             sorting: [
@@ -49,7 +49,7 @@
         <div class="container">
             <div class="d-flex justify-content-between align-items-center mb-5 ">
                 <h2>Latest Posts</h2>
-                <a href="/blog" class="view-all-btn">View all
+                <a href="/blogs" class="view-all-btn">View all
                     <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
                 </a>
             </div>
