@@ -198,6 +198,7 @@ class RoleResource extends Resource implements ClusterSectionResource
                     ->limit(50),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make()->iconButton(),
                 Tables\Actions\EditAction::make()->iconButton(),
             ]);
     }
@@ -207,7 +208,8 @@ class RoleResource extends Resource implements ClusterSectionResource
         return [
             'index' => Pages\ListRoles::route('/'),
             'create' => Pages\CreateRole::route('/create'),
-            'edit' => Pages\EditRole::route('/edit/{record}'),
+            'view' => Pages\ViewRole::route('{record}'),
+            'edit' => Pages\EditRole::route('/{record}/edit'),
         ];
     }
 

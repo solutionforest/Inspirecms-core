@@ -4,15 +4,16 @@ namespace SolutionForest\InspireCms\Filament\Resources\RoleResource\Pages;
 
 use Filament\Actions;
 use Filament\Support\Facades\FilamentIcon;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditRecord;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewRecord;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
-class EditRole extends BaseEditRecord
+class ViewRole extends BaseViewRecord
 {
     public function getActions(): array
     {
         return [
+            Actions\EditAction::make(),
             Actions\DeleteAction::make(),
         ];
     }
@@ -29,6 +30,6 @@ class EditRole extends BaseEditRecord
 
     public function getContentTabIcon(): ?string
     {
-        return FilamentIcon::resolve('inspirecms::edit') ?? FilamentIcon::resolve('actions::edit-action');
+        return FilamentIcon::resolve('inspirecms::view') ?? FilamentIcon::resolve('actions::view-action');
     }
 }
