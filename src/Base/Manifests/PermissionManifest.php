@@ -10,6 +10,8 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Contracts\GuardAction;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
+use SolutionForest\InspireCms\Filament\Resources\ExportResource;
+use SolutionForest\InspireCms\Filament\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
@@ -71,6 +73,10 @@ class PermissionManifest implements PermissionManifestInterface
 
         $resourcePermissions = collect($resourcesInConfig)
             ->merge($resourcesFromDiscover)
+            ->merge([
+                ImportResource::class,
+                ExportResource::class,
+            ])
             ->unique() // ensure no duplicates
             ->where(
                 fn (string $fqcn): bool => is_subclass_of($fqcn, \Filament\Resources\Resource::class) &&
