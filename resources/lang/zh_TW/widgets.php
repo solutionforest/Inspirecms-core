@@ -34,6 +34,10 @@ return [
         'permission_display_name' => '查看模板資訊',
     ],
 
+    'theme_info' => [
+        'permission_display_name' => '查看主題資訊',
+    ],
+
     'user_activity' => [
         'title' => '用戶活動',
         'empty_state' => [

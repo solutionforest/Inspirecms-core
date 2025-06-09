@@ -391,6 +391,7 @@ return [
          */
         'guard_widgets' => [
             FilamentWidgets\CmsInfoWidget::class,
+            FilamentWidgets\ThemeInfo::class,
             FilamentWidgets\TemplateInfo::class,
             FilamentWidgets\UserActivity::class,
         ],

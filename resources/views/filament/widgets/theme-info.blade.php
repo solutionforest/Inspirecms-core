@@ -1,15 +1,17 @@
-<x-filament-widgets::widget class="fi-wi-template-info">
-        
+<x-filament-widgets::widget class="fi-wi-theme-info">
+    
     <x-filament::section :header-actions="[
-        $this->exportContentTemplatesAction,
+        $this->createThemeAction,
+        $this->cloneThemeAction,
     ]">
         <x-slot name="heading">
-            Template info
+            Theme info
         </x-slot>
 
         {{ $this->infolist }}
 
     </x-filament::section>
+    
 
     <x-filament-actions::modals />
 

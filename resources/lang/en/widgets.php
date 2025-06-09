@@ -34,6 +34,10 @@ return [
         'permission_display_name' => 'View Template Info',
     ],
 
+    'theme_info' => [
+        'permission_display_name' => 'View Theme Info',
+    ],
+
     'user_activity' => [
         'title' => 'User Activity',
         'empty_state' => [

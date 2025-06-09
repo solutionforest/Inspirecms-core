@@ -11,6 +11,7 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\Helpers\TemplateResourceHelper;
 use SolutionForest\InspireCms\Filament\Resources\TemplateResource;
 use SolutionForest\InspireCms\Filament\Widgets\TemplateInfo;
+use SolutionForest\InspireCms\Filament\Widgets\ThemeInfo;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 
@@ -73,6 +74,7 @@ class ListTemplates extends BaseListRecords
     protected function getHeaderWidgets(): array
     {
         return [
+            ThemeInfo::class,
             TemplateInfo::class,
         ];
     }
