@@ -172,7 +172,7 @@ class LicenseManager
         $data = [
             'license_key' => $this->getLicenseKey(),
             'domain' => $this->getCurrentDomain(),
-            'product_id' => 'cms',
+            'product_id' => 'inspirecms-licenses',
         ];
 
         $dataForChecksum = Arr::only($data, [
