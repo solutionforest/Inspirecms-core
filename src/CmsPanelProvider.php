@@ -184,6 +184,11 @@ class CmsPanelProvider extends PanelProvider
                     'class' => 'cursor-default',
                     'aria-label' => 'Version',
                 ], true),
+
+            MenuItem::make()
+                ->label('Create license')
+                ->icon('heroicon-o-key')
+                ->url('https://inspirecms.net/#pricing', true),
         ];
 
         return $panel
