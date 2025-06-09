@@ -58,7 +58,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     {
         return __('inspirecms::pages/health.title');
     }
-    
+
     protected function getHeaderWidgets(): array
     {
         return [

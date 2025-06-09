@@ -139,7 +139,7 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
                     ->fontFamily(FontFamily::Mono)
                     ->size('xs')
                     ->placeholder(fn () => strval(__('inspirecms::inspirecms.n/a')))
-                    ->extraAttributes(['class' => 'overflow-x-auto overflow-y-hidden'])
+                    ->extraAttributes(['class' => 'overflow-x-auto overflow-y-hidden']),
             ]);
     }
 
@@ -151,7 +151,6 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
             ->live(true, 500)
             ->afterStateUpdated(fn ($component, ?string $state) => $component->state(Str::slug($state)));
     }
-    
 
     public function createThemeAction(): Action
     {

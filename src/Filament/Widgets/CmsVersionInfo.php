@@ -11,6 +11,7 @@ class CmsVersionInfo extends Widget implements GuardWidget
 {
     use GuardWidgetTrait;
     use InteractsWithActions;
+
     protected static string $view = 'inspirecms::filament.widgets.cms-version-info';
 
     protected int | string | array $columnSpan = 'full';

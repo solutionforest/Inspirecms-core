@@ -90,7 +90,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
                     ->fontFamily(FontFamily::Mono)
                     ->size('xs')
                     ->placeholder(fn () => strval(__('inspirecms::inspirecms.n/a')))
-                    ->extraAttributes(['class' => 'overflow-x-auto overflow-y-hidden'])
+                    ->extraAttributes(['class' => 'overflow-x-auto overflow-y-hidden']),
             ]);
     }
 
