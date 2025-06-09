@@ -124,7 +124,7 @@ class ModelManifest implements ModelManifestInterface
             $namespace = 'SolutionForest\\InspireCms\\Models';
         } elseif (str($namespace)->startsWith('SolutionForest\\InspireCms\\Support\\Models')) {
             $namespace = 'SolutionForest\\InspireCms\\Support\\Models';
-        } 
+        }
         // If user customized in the config, namespace is different.
         else {
 
