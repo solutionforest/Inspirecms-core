@@ -20,8 +20,8 @@ class ModelManifest implements ModelManifestInterface
     {
         $modelClasses = static::getDefaultModels();
 
-        foreach ($modelClasses as $modelClass) {
-            $interfaceClass = $this->guessContractClass($modelClass);
+        foreach ($modelClasses as $key => $modelClass) {
+            $interfaceClass = $this->guessContractClass($modelClass, $key);
             $this->models[$interfaceClass] = $modelClass;
         }
     }
@@ -47,7 +47,7 @@ class ModelManifest implements ModelManifestInterface
 
         foreach ($modelClasses as $key => $origianlmodelClass) {
 
-            $interfaceClass = $this->guessContractClass($origianlmodelClass);
+            $interfaceClass = $this->guessContractClass($origianlmodelClass, $key);
 
             $policyClass = $this->guessPolicyClass($interfaceClass);
 
@@ -105,9 +105,10 @@ class ModelManifest implements ModelManifestInterface
      * Guess the contract class for a given model class.
      *
      * @param  string  $modelClass  The model class to guess the contract for.
+     * @param  string  $configKey  The configuration key to use for the contract.
      * @return string The guessed contract class name.
      */
-    protected function guessContractClass(string $modelClass): string
+    protected function guessContractClass(string $modelClass, $configKey): string
     {
         $class = new \ReflectionClass($modelClass);
 
@@ -123,6 +124,25 @@ class ModelManifest implements ModelManifestInterface
             $namespace = 'SolutionForest\\InspireCms\\Models';
         } elseif (str($namespace)->startsWith('SolutionForest\\InspireCms\\Support\\Models')) {
             $namespace = 'SolutionForest\\InspireCms\\Support\\Models';
+        } 
+        // If user customized in the config, namespace is different.
+        else {
+
+            // Retrieve the interface class from the model
+            $interfaces = $class->getInterfaceNames();
+
+            $guessContractName = collect([
+                'SolutionForest\\InspireCms\\Models',
+                'SolutionForest\\InspireCms\\Support\\Models',
+            ])
+                ->map(fn ($namespace) => "{$namespace}\\Contracts\\{$shortName}")
+                ->filter(fn ($contract) => interface_exists($contract))
+                ->where(fn ($contract) => in_array($contract, $interfaces))
+                ->first();
+
+            if ($guessContractName) {
+                return $guessContractName;
+            }
         }
 
         return "{$namespace}\\Contracts\\$shortName";
