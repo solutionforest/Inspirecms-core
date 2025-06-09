@@ -48,4 +48,13 @@ class MediaAssetPolicy extends BasePolicy
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, MediaAsset::class));
     }
+
+    /**
+     * @param  Authenticatable|User|Model  $user
+     * @return bool
+     */
+    public function deleteAny($user)
+    {
+        return $user?->can(static::guessPermissionName(__FUNCTION__, MediaAsset::class));
+    }
 }
