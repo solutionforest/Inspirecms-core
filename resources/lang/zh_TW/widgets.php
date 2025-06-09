@@ -6,6 +6,10 @@ return [
         'permission_display_name' => '查看 CMS 資訊',
     ],
 
+    'cms_version_info' => [
+        'permission_display_name' => '查看 CMS 版本資訊',
+    ],
+
     'content_page_overview' => [
         'default_page' => [
             'title' => '預設頁面',

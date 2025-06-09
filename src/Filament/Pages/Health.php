@@ -18,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
+use SolutionForest\InspireCms\Filament\Widgets\CmsVersionInfo;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -56,6 +57,13 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     public static function getNavigationLabel(): string
     {
         return __('inspirecms::pages/health.title');
+    }
+    
+    protected function getHeaderWidgets(): array
+    {
+        return [
+            CmsVersionInfo::class,
+        ];
     }
 
     public function getStatusInfo(): array

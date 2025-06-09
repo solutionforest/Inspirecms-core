@@ -6,6 +6,10 @@ return [
         'permission_display_name' => 'View CMS Info',
     ],
 
+    'cms_version_info' => [
+        'permission_display_name' => 'View CMS Version Info',
+    ],
+
     'content_page_overview' => [
         'default_page' => [
             'title' => 'Default Page',

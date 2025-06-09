@@ -390,6 +390,7 @@ return [
          * Dashboard widgets requiring permissions to view
          */
         'guard_widgets' => [
+            FilamentWidgets\CmsVersionInfo::class,
             FilamentWidgets\CmsInfoWidget::class,
             FilamentWidgets\ThemeInfo::class,
             FilamentWidgets\TemplateInfo::class,

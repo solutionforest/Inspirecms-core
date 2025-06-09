@@ -74,6 +74,7 @@ class CmsPanelProvider extends PanelProvider
             ))
             ->widgets([
                 Widgets\CmsInfoWidget::class,
+                Widgets\CmsVersionInfo::class,
                 Widgets\PageActivity::class,
                 Widgets\UserActivity::class,
                 Widgets\AlertOverview::class,
