@@ -133,9 +133,6 @@ Configure media uploads, storage, and processing:
      */
     'media_library' => [
         'disk' => 'public',        // Storage disk (public makes files accessible via URL)
-                                  // Use 's3' or other drivers for cloud storage
-        'directory' => '',         // Base directory for media files (empty for root)
-                                  // Set to 'media' or similar for better organization
 
         /**
          * Allowed file types
