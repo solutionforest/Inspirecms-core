@@ -65,14 +65,10 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
 
         $layoutPath = inspirecms_templates()->getThemeDefaultLayoutPath($currentTheme);
 
-        if (str_contains($layoutPath, 'resources/views/')) {
-            $layoutRelativePath = str($layoutPath)
-                ->after('resources/views/')
-                ->prepend('resources/views/')
-                ->toString();
-        } else {
-            $layoutRelativePath = $layoutPath;
-        }
+        $layoutRelativePath = str($layoutPath ? str_replace(base_path(), '', $layoutPath) : '')
+            ->replace('\\', '/')
+            ->trim('/')
+            ->toString();
 
         $this->themeData = [
             'current_theme' => $currentTheme,

@@ -58,14 +58,10 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
     {
         $fullPath = TemplateHelper::getDirectoryForExportedTemplates();
 
-        if (str_contains($fullPath, 'resources/')) {
-            $relativePath = str($fullPath)
-                ->after('resources/')
-                ->prepend('resources/')
-                ->toString();
-        } else {
-            $relativePath = $fullPath;
-        }
+        $relativePath = str($fullPath ? str_replace(base_path(), '', $fullPath) : '')
+            ->replace('\\', '/')
+            ->trim('/')
+            ->toString();
 
         $this->templateInfoData = [
             'exported_content_template_directory' => $relativePath,
