@@ -25,6 +25,6 @@ class CmsVersionInfo extends Widget implements GuardWidget
 
     public static function getPermissionDisplayName(): string
     {
-        return strval(__('inspirecms::widgets.cms_info.permission_display_name'));
+        return strval(__('inspirecms::widgets.cms_version_info.permission_display_name'));
     }
 }
