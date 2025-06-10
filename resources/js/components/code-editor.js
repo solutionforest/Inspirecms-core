@@ -87,6 +87,7 @@ export default function codeEditorFormComponent({
                         }),
 
                         EditorState.readOnly.of(this.isReadOnly),
+                        EditorView.editable.of(!this.isReadOnly),
                         
                     ],
 
