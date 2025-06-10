@@ -31,27 +31,26 @@ class LicenseManager
     public function canUpgrade(): bool
     {
         $licenseKey = $this->getLicenseKey();
-        if (empty($licenseKey)) {
-            return false; // No license key configured
-        }
 
-        try {
+        if (filled($licenseKey)) {
+            try {
 
-            $this->verify();
+                $this->verify();
 
-            $cacheKey = $this->buildCacheKey();
+                $cacheKey = $this->buildCacheKey();
 
-            if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
-                $data = $verificationResult->getData();
+                if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
+                    $data = $verificationResult->getData();
 
-                return ($data['custom_data']['can_upgrade'] ?? false) === true;
+                    return ($data['custom_data']['can_upgrade'] ?? false) === true;
+                }
+
+            } catch (\Throwable $th) {
+                //
             }
-
-        } catch (\Throwable $th) {
-            //
         }
 
-        return false;
+        return true;
     }
 
     /**
@@ -72,6 +71,8 @@ class LicenseManager
 
             return $offlineResult;
         }
+
+        $failedMessage = null;
 
         try {
 
@@ -98,6 +99,8 @@ class LicenseManager
                     $this->cache()->put($cacheKey, $result, now()->addHours(24));
 
                     return $result;
+                } else {
+                    $failedMessage = $data['reason'] ?? null;
                 }
             }
 
@@ -107,7 +110,11 @@ class LicenseManager
 
         }
 
-        return LicenseVerificationResult::failureOnline('License verification failed');
+        return LicenseVerificationResult::failureOnline(
+            str('License verification failed')->finish(
+                $failedMessage ? ": {$failedMessage}" : ''
+            )->toString(),
+        );
     }
 
     public function refresh(): void
