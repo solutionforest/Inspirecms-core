@@ -317,15 +317,19 @@ class ImportDataHelper
                                 'children' => [
                                     [
                                         'category' => 'footer',
-                                        ...$generateTranslationArray(['title' => 'About Us']),
+                                        ...$generateTranslationArray([
+                                            'title' => 'About Us',
+                                            'url' => '/about-us',
+                                        ]),
                                         'type' => 'link',
-                                        'url' => '/about-us',
                                     ],
                                     [
                                         'category' => 'footer',
-                                        ...$generateTranslationArray(['title' => 'Contact Us']),
+                                        ...$generateTranslationArray([
+                                            'title' => 'Contact Us',
+                                            'url' => '/contact-us',
+                                        ]),
                                         'type' => 'link',
-                                        'url' => '/contact-us',
                                     ],
                                 ],
                             ],
