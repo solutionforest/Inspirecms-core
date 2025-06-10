@@ -28,6 +28,32 @@ class LicenseManager
         return InspireCmsConfig::get('system.license.key');
     }
 
+    public function canUpgrade(): bool
+    {
+        $licenseKey = $this->getLicenseKey();
+        if (empty($licenseKey)) {
+            return false; // No license key configured
+        }
+        
+        try {
+
+            $this->verify();
+        
+            $cacheKey = $this->buildCacheKey();
+
+            if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
+                $data = $verificationResult->getData();
+
+                return ($data['custom_data']['can_upgrade'] ?? false) === true;
+            }
+
+        } catch (\Throwable $th) {
+            //
+        }
+
+        return false;
+    }
+
     /**
      * @return LicenseVerificationResult
      */
@@ -68,7 +94,7 @@ class LicenseManager
                     }
 
                     // Cache the result
-                    $result = LicenseVerificationResult::successOnline($data['message'] ?? null);
+                    $result = LicenseVerificationResult::successOnline($data['message'] ?? null, $data);
                     $this->cache()->put($cacheKey, $result, now()->addHours(24));
 
                     return $result;
@@ -114,7 +140,7 @@ class LicenseManager
 
             $licenseData = json_decode(File::get($this->licenseKeyPath()), true);
 
-            return $this->dataVerification($licenseData) ?? LicenseVerificationResult::successOffline();
+            return $this->dataVerification($licenseData) ?? LicenseVerificationResult::successOffline(data: $licenseData);
 
         } catch (\Throwable $th) {
 
