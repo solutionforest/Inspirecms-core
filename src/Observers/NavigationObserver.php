@@ -20,9 +20,6 @@ class NavigationObserver
         if ($model->type instanceof NavigationTypeEnumInterface) {
             $model->type = $model->type->value;
         }
-        if ($model->category instanceof NavigationCategoryEnumInterface) {
-            $model->category = $model->category->value;
-        }
         switch ($model->type) {
             case NavigationTypeEnum::Content->value:
                 $model->url = null;
@@ -39,7 +36,7 @@ class NavigationObserver
                 break;
         }
         if (blank($model->category)) {
-            $model->category = $model->getNavigationCategoryEnumClass()::getDefaultValue()->value;
+            $model->category = 'main';
         }
 
         // If the category is changed, make the model root
