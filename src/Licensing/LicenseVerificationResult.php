@@ -16,7 +16,7 @@ class LicenseVerificationResult
         /** @var ?array */
         protected $data = null
     ) {
-        if (!is_array($data)) {
+        if (! is_array($data)) {
             unset($this->data);
         }
     }
@@ -37,7 +37,7 @@ class LicenseVerificationResult
         return $this->message;
     }
 
-    public function getData(): array|null
+    public function getData(): ?array
     {
         return $this->data;
     }

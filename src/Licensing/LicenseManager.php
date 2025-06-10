@@ -34,11 +34,11 @@ class LicenseManager
         if (empty($licenseKey)) {
             return false; // No license key configured
         }
-        
+
         try {
 
             $this->verify();
-        
+
             $cacheKey = $this->buildCacheKey();
 
             if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
