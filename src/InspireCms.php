@@ -214,9 +214,8 @@ class InspireCms
                 );
         }
 
-        return collect($this->processNavigationData($this->cachedNavigation['navigation'] ?? [], $this->cachedNavigation['alias'] ?? []))
+        return collect($this->processNavigationData($this->cachedNavigation['navigation'] ?? [], $this->cachedNavigation['alias'] ?? [], true))
             ->where('category', $category)
-            ->where('isActive', true)
             ->map(fn ($arr) => NavigationDto::fromTranslatableArray($arr, $locale, $this->getFallbackLanguage()?->code, array_keys($this->getAllAvailableLanguages())))
             ->values()
             ->all();
@@ -375,14 +374,14 @@ class InspireCms
         return array_values(array_unique(array_merge($attributes, $relations)));
     }
 
-    private function processNavigationData(array $navigationData, array $alias)
+    private function processNavigationData(array $navigationData, array $alias, bool $activeOnly = true)
     {
         return collect($navigationData)
             ->where(fn ($v) => is_array($v))
             ->map(fn ($arr) => array_combine($alias, $arr))
-            ->map(function (array $data) use ($alias) {
+            ->map(function (array $data) use ($alias, $activeOnly) {
                 if (isset($data['children']) && is_array($data['children'])) {
-                    $data['children'] = $this->processNavigationData($data['children'], $alias);
+                    $data['children'] = $this->processNavigationData($data['children'], $alias, $activeOnly);
                 } else {
                     $data['children'] = [];
                 }
@@ -391,6 +390,9 @@ class InspireCms
                 unset($data['is_active']);
 
                 return $data;
+            })
+            ->when($activeOnly, function (Collection $collection) {
+                return $collection->where('isActive', true)->values();
             })
             ->all();
     }
