@@ -18,6 +18,15 @@
         $valueType = PropertyTypeHelper::getFieldDisplayValueType($fieldType);
 
         $propertyVarName = TemplateHelper::generatePropertyVarName($group, $field);
+
+        if ($valueType == 'boolean') {
+            return [
+                "
+@if (\$content?->getPropertyGroup('{$group}')?->getPropertyData('{$field}')?->getValue() ?? false)
+@endif"
+            ];
+        }
+
         if ($valueType != 'array' || $translatable) {
             $result[] = "
 @property('{$group}', '{$field}')";
