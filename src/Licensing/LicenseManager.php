@@ -42,7 +42,9 @@ class LicenseManager
                 if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
                     $data = $verificationResult->getData();
 
-                    return ($data['custom_data']['can_upgrade'] ?? false) === true;
+                    $pvSlug = data_get($data, 'meta.product_variant_slug', '');
+
+                    return is_string($pvSlug) && $pvSlug == 'free';
                 }
 
             } catch (\Throwable $th) {
@@ -72,7 +74,7 @@ class LicenseManager
             return $offlineResult;
         }
 
-        $failedMessage = null;
+        $failedReason = null;
 
         try {
 
@@ -82,6 +84,7 @@ class LicenseManager
             $response = Http::timeout(self::REQUEST_TIMEOUT)->post($this->fetchActionPath('validate'), $payload);
 
             if ($response->successful()) {
+                
                 $data = $response->json();
 
                 if ($data['valid'] === true) {
@@ -100,7 +103,7 @@ class LicenseManager
 
                     return $result;
                 } else {
-                    $failedMessage = $data['reason'] ?? null;
+                    $failedReason = $data['reason'] ?? null;
                 }
             }
 
@@ -111,9 +114,8 @@ class LicenseManager
         }
 
         return LicenseVerificationResult::failureOnline(
-            str('License verification failed')->finish(
-                $failedMessage ? ": {$failedMessage}" : ''
-            )->toString(),
+            message: 'License verification failed',
+            reason: $failedReason,
         );
     }
 
@@ -140,7 +142,7 @@ class LicenseManager
     protected function verifyOffline()
     {
         if (! $this->usingLicenseKeyFile()) {
-            return LicenseVerificationResult::failureOffline('License file not found');
+            return LicenseVerificationResult::failureOffline(message: 'License file not found');
         }
 
         try {
@@ -153,7 +155,7 @@ class LicenseManager
 
             logger()->warning('Failed to read license file', ['exception' => $th]);
 
-            return LicenseVerificationResult::failureOffline('Failed to read license file');
+            return LicenseVerificationResult::failureOffline(message: 'Failed to read license file');
 
         }
     }
@@ -162,22 +164,22 @@ class LicenseManager
     {
         // Verify the license key is the same
         if ($licenseData['license_key'] !== $this->getLicenseKey()) {
-            return LicenseVerificationResult::failureOffline('The license key in the file does not match the configured license key');
+            return LicenseVerificationResult::failureOffline(reason: 'The license key in the file does not match the configured license key');
         }
 
         // Verify the data is for the current domain
         if ($licenseData['domain'] !== $this->getCurrentDomain()) {
-            return LicenseVerificationResult::failureOffline('License file does not match the current domain');
+            return LicenseVerificationResult::failureOffline(reason: 'domain_mismatch');
         }
 
         // Verify the license is not expired
         if (Carbon::parse($licenseData['expiry_date'])->isPast(Carbon::now('UTC'))) {
-            return LicenseVerificationResult::failureOffline('License expired');
+            return LicenseVerificationResult::failureOffline(reason: 'expired');
         }
 
         // Verify the checksum
         if ($licenseData['checksum'] !== $this->calculateChecksum(Arr::except($licenseData, 'checksum'))) {
-            return LicenseVerificationResult::failureOffline('License file verification failed due to checksum mismatch');
+            return LicenseVerificationResult::failureOffline(reason: 'checksum mismatch');
         }
 
         return null;

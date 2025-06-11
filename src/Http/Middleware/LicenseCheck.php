@@ -29,18 +29,18 @@ class LicenseCheck
                 ], 403);
             }
 
-            $this->addWarningAlert();
+            $this->addWarningAlert($result->getReason());
         }
 
         return $next($request);
     }
 
-    private function addWarningAlert()
+    private function addWarningAlert($reason = null)
     {
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_START,
-            function () {
-                $alert = Alert::make(fn () => (string) __('inspirecms::messages.invalid_license'))
+            function () use ($reason) {
+                $alert = Alert::make(fn () => str_contains($reason, 'expired') ? 'License has expired. Please renew your license.' : __('inspirecms::messages.invalid_license'))
                     ->type('warn')
                     ->size('sm')
                     ->withAttributes([
