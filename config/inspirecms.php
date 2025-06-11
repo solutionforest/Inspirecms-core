@@ -115,7 +115,6 @@ return [
          */
         'media_library' => [
             'disk' => 'public', // Storage disk (public makes files accessible via URL)
-            'directory' => '', // Subdirectory where media will be stored (empty for root)
 
             /**
              * Allowed file types
