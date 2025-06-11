@@ -78,15 +78,14 @@ class ContentHistoryAction extends Action
 
                     return ! isset($arguments['itemKey']);
                 })
-                ->label(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Avoid to clean' : 'Wait to clean')
+                ->label(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ?  'Wait to clean' : 'Avoid to clean')
                 ->color(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'gray' : 'danger')
                 ->outlined()
-                ->successNotificationTitle(fn ($arguments) => ($arguments['avoidToClear'] ?? false) ? 'Now avoiding to clean' : 'Now waiting to clean')
                 ->successNotification(
-                    fn (Notification $notification) => $notification
+                    fn (Notification $notification, $arguments) => $notification
                         ->icon(FilamentIcon::resolve('inspirecms::warn'))
-                        ->color('warning')
-                        ->iconColor('warning')
+                        ->title(($arguments['avoidToClear'] ?? false) ? 'Now waiting to clean': 'Now avoiding to clean')
+                        ->status(($arguments['avoidToClear'] ?? false) ? 'info' : 'warning')
                 )
                 ->action(function (array $arguments, Action $action, Model | Content $record) {
                     if (! isset($arguments['itemKey'])) {
