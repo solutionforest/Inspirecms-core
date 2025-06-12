@@ -26,7 +26,6 @@ class ImportDefaultDataCommand extends Command
 
     public function handle(): int
     {
-        // dd($this->options());
         $steps = [
             'publishAssets' => 'Publishing assets',
             'createSymlink' => 'Creating symlink',
@@ -136,57 +135,6 @@ class ImportDefaultDataCommand extends Command
         }
 
         PermissionHelper::setupSuperAdminRole();
-
-        // Add example roles
-        $roleClass = InspireCmsConfig::getRoleModelClass();
-        $guardName = AuthHelper::guardName();
-        $allPermissions = PermissionHelper::setupPermissions()->filter(fn (SpatiePermissionContract $permission) => $permission->guard_name === $guardName);
-
-        $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);
-        $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
-
-        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-        $reviewer = $roleClass::findOrCreate('Reviewer', $guardName);
-        $reviewer->givePermissionTo(
-            $allPermissions
-                ->filter(
-                    fn (SpatiePermissionContract $permission) => (
-                        Str::startsWith($permission->name, 'view') &&
-                        ! (
-                            Str::endsWith($permission->name, 'user') ||
-                            Str::endsWith($permission->name, 'role')
-                        )
-                    ) ||
-                    str_starts_with($permission->name, 'widgets') ||
-                    $clusterPermissionFilter($permission->name, ['content', 'media', 'settings'])
-                )
-        );
-        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-        $writer = $roleClass::findOrCreate('Writer', $guardName);
-        $writer->givePermissionTo(
-            $allPermissions
-                ->filter(
-                    fn (SpatiePermissionContract $permission) => str_starts_with($permission->name, 'widgets') ||
-                    $modelPermissionFilter($permission->name, 'view', ['content']) ||
-                    $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
-                    $modelPermissionFilter($permission->name, 'update', ['content']) ||
-                    $modelPermissionFilter($permission->name, 'create', ['content']) ||
-                    $clusterPermissionFilter($permission->name, ['content'])
-                )
-        );
-        /** @var \Spatie\Permission\Models\Role | \Spatie\Permission\Contracts\Role */
-        $editor = $roleClass::findOrCreate('Editor', $guardName);
-        $editor->givePermissionTo(
-            $allPermissions
-                ->filter(
-                    fn (SpatiePermissionContract $permission) => str_starts_with($permission->name, 'widgets') ||
-                    $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
-                    $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
-                    $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
-                    $modelPermissionFilter($permission->name, 'update', ['content', 'mediaasset']) ||
-                    $clusterPermissionFilter($permission->name, ['content', 'media'])
-                )
-        );
     }
 
     protected function importSampleData(): void
