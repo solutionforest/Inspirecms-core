@@ -3,11 +3,8 @@ title: Upgrading
 slug: upgrading
 path: docs/v1/upgrading
 uri: /docs/1.x/upgrading
----
-# Upgrading
-
-This guide will help you upgrade your InspireCMS installation to the latest version.
-
+heading: Upgrading
+brief:
 ---
 
 ## Before Upgrading
@@ -16,7 +13,6 @@ Before upgrading, always:
 
 1. **Back up your database**
 2. **Back up your files**
-3. **Review the [changelog](./changlog){.doc-link}** for breaking changes
 
 ---
 
@@ -54,16 +50,16 @@ php artisan inspirecms:update
 
 This command handles:
 
-- Running migrations
-- Clearing caches
-- Publishing cms panel
-- Updating permissions
+-   Running migrations
+-   Clearing caches
+-   Publishing cms panel
+-   Updating permissions
 
 **Option B: Manual Update**
 
 Alternatively, you can run each step manually:
 
-- Publish updated assets
+-   Publish updated assets
 
 ```bash
 php artisan vendor:publish --tag="inspirecms-migrations" --force
@@ -73,19 +69,19 @@ php artisan vendor:publish --tag="inspirecms-support-translations" --force
 php artisan vendor:publish --tag="inspirecms-config" --force
 ```
 
-- Run migrations
+-   Run migrations
 
 ```bash
 php artisan migrate
 ```
 
-- Update permissions
+-   Update permissions
 
 ```bash
 php artisan inspirecms:repair-permissions
 ```
 
-- Import cms default data, e.g. Language
+-   Import cms default data, e.g. Language
 
 ```bash
 php artisan inspirecms:import-default-data
@@ -121,11 +117,3 @@ If the admin panel appears broken after upgrade:
 php artisan optimize:clear
 php artisan filament:assets
 ```
-
-### Still Having Issues?
-If you continue to experience problems after upgrading, please:
-
-1. Check the GitHub issues
-2. Review the changelog for breaking changes
-3. Contact support
-

@@ -3,12 +3,8 @@ title: Content Drafts & Revisions
 slug: content-drafts-revisions
 path: docs/v1/content-drafts-revisions
 uri: /docs/1.x/content-drafts-revisions
----
-
-# Content Drafts & Revisions
-
-InspireCMS provides a content versioning system that allows you to work with drafts and track revisions of your content. This guide explains how to use these features to manage your content workflow effectively.
-
+heading: Content Drafts & Revisions
+brief: InspireCMS provides a content versioning system that allows you to work with drafts and track revisions of your content. This guide explains how to use these features to manage your content workflow effectively.
 ---
 
 ## Content States Overview
@@ -353,14 +349,3 @@ When conflicting edits occur:
     - Keep their version (overwrite)
     - Discard their changes
     - Save as a new draft
-
----
-
-## Best Practices
-
--   **Regular Saves**: Save your work frequently to create revision points
--   **Meaningful Comments**: Add descriptive comments when making significant changes
--   **Test Before Publishing**: Always preview your content before publishing
--   **Schedule Major Updates**: Use scheduling for significant changes to go live during off-peak hours
--   **Limit Draft Duration**: Try not to keep drafts unpublished for extended periods to avoid outdated content
--   **Regular Cleanup**: Periodically review and remove unnecessary drafts and revisions

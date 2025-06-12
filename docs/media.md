@@ -3,52 +3,29 @@ title: Media
 slug: media
 path: docs/v1/media
 uri: /docs/1.x/media
----
-# Media
-
-InspireCMS provides a comprehensive media management system for handling images, documents, videos, and other files. This guide explains how to upload, organize, and use media in your content.
-
+heading: Media
+brief: InspireCMS provides a comprehensive media management system for handling images, documents, videos, and other files. This guide explains how to upload, organize, and use media in your content.
 ---
 
 ## Overview
 
-The media system in InspireCMS allows you to:
-
-- Upload various file types (images, documents, videos, etc.)
-- Organize files in folders and collections
-- Search and filter media assets
-- Add metadata to media files
-- Insert media into content
-- Generate thumbnails and responsive images
-- Manage permissions for media access
-
----
-
-## Media Library
-
-### Accessing the Media Library
-
-The media library is accessible from: **Admin Panel** > **Media** 
+The media library is accessible from: **Admin Panel** > **Media**
 
 ### Browsing Media
 
 The media library interface includes:
 
-- **Grid Views**: Toggle between visual grid list
-- **Folders**: Organize media in a hierarchical structure
-- **Search**: Find media by filename, type, or metadata
-- **Filters**: Filter by date, file type, or custom attributes
-- **Sorting**: Arrange files by name, date, size, or type
+-   **Folders**: Organize media in a hierarchical structure
+-   **Search**: Find media by filename, type, or metadata
+-   **Filters**: Filter by date, file type, or custom attributes
+-   **Sorting**: Arrange files by name, date or size
 
 ### File Details
 
 Click on a file to view detailed information:
 
-- **Preview**: Visual preview (when applicable)
-- **Metadata**: File information and custom metadata
-- **Usage**: Where the file is being used
-- **Properties**: Technical information (dimensions, format, size)
-- **Actions**: Download, edit, move, or delete
+-   **Properties**: Technical information (dimensions, format, size)
+-   **Actions**: Download, edit, move, or delete
 
 ---
 
@@ -60,7 +37,6 @@ InspireCMS supports multiple upload methods:
 
 1. **Drag and Drop**: Drag files directly into the media library
 2. **File Browser**: Click "Upload" and select files from your computer
-3. **Bulk Upload**: Upload multiple files simultaneously
 
 ### Upload Configuration
 
@@ -68,13 +44,8 @@ Configure upload settings in `config/inspirecms.php`:
 
 ```php {title="config/inspirecms.php"}
 'media' => [
-    'user_avatar' => [
-        'disk' => 'public',
-        'directory' => 'avatars',
-    ],
     'media_library' => [
         'disk' => 'public',
-        'directory' => '',
         'allowed_mime_types' => [], // Allowed file types
         'max_file_size' => null, // Maximum file size in KB
         'thumbnail' => [
@@ -182,8 +153,8 @@ Generate responsive image variants:
 ```blade
 @propertyArray('hero', 'image')
 @if(!empty($hero_image))
-    <img 
-        src="{{ $hero_image[0]->getUrl() }}" 
+    <img
+        src="{{ $hero_image[0]->getUrl() }}"
         srcset="{{ $hero_image[0]->getSrcset(['small', 'medium']) }}"
         sizes="(max-width: 768px) 100vw, 50vw"
         alt="{{ $hero_image[0]->description }}"
@@ -199,13 +170,13 @@ Generate responsive image variants:
 
 Every media file includes standard metadata:
 
-- Filename
-- File type and extension
-- File size
-- Upload date
-- Uploader
-- Dimensions (for images)
-- Duration (for audio/video)
+-   Filename
+-   File type and extension
+-   File size
+-   Upload date
+-   Uploader
+-   Dimensions (for images)
+-   Duration (for audio/video)
 
 ### Custom Metadata
 
@@ -214,10 +185,10 @@ Add custom metadata to media files:
 1. Select a file in the media library
 2. Click "Edit"
 3. Add metadata fields:
-   - **Title**: Display name for the media
-   - **Alt Text**: Alternative text for accessibility
-   - **Caption**: Explanatory text shown with the media
-   - **Description**: Longer description for internal use
+    - **Title**: Display name for the media
+    - **Alt Text**: Alternative text for accessibility
+    - **Caption**: Explanatory text shown with the media
+    - **Description**: Longer description for internal use
 
 ### Metadata in Templates
 
@@ -249,7 +220,7 @@ Configure where media is stored:
         'url' => env('APP_URL').'/storage',
         'visibility' => 'public',
     ],
-    
+
     's3' => [
         'driver' => 's3',
         'key' => env('AWS_ACCESS_KEY_ID'),
@@ -294,7 +265,7 @@ Control who can access and manage media by registering a custom policy class:
 ```php {title="config/inspirecms.php"}
 return [
     // Other config options...
-    
+
     'models' => [
         'policies' => [
             'media_asset' => \App\Policies\MediaAssetPolicy::class,
@@ -308,27 +279,33 @@ Create your custom policy class:
 ```php
 namespace App\Policies;
 
-use SolutionForest\InspireCms\Models\MediaAsset;
 use App\Models\User;
+use SolutionForest\InspireCms\Base\BasePolicy;
+use SolutionForest\InspireCms\Models\MediaAsset;
 
-class MediaAssetPolicy
+class MediaAssetPolicy extends BasePolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->hasPermissionTo('view_media');
+        return static::authorizeModel($user, __FUNCTION__);
     }
-    
+
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('upload_media');
+        return static::authorizeModel($user, __FUNCTION__);
     }
-    
+
     public function delete(User $user, MediaAsset $mediaAsset): bool
     {
-        return $user->hasPermissionTo('delete_media');
+        return static::authorizeModel($user, __FUNCTION__);
     }
-    
+
     // Define other permissions as needed
+
+    protected static function authorizeModel($user, $ability)
+    {
+        return $user?->can(static::guessPermissionName($ability, MediaAsset::class));
+    }
 }
 ```
 
@@ -336,9 +313,9 @@ class MediaAssetPolicy
 
 ## Best Practices
 
-- **Organize Logically**: Use a consistent folder structure
-- **Meaningful Filenames**: Use descriptive, URL-friendly filenames
-- **Complete Metadata**: Add alt text and descriptions for accessibility
-- **Optimize Images**: Use appropriate file formats and compression
-- **Responsive Images**: Use responsive techniques for different screen sizes
-- **Accessibility**: Ensure all media has appropriate alt text
+-   **Organize Logically**: Use a consistent folder structure
+-   **Meaningful Filenames**: Use descriptive, URL-friendly filenames
+-   **Complete Metadata**: Add alt text and descriptions for accessibility
+-   **Optimize Images**: Use appropriate file formats and compression
+-   **Responsive Images**: Use responsive techniques for different screen sizes
+-   **Accessibility**: Ensure all media has appropriate alt text

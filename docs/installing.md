@@ -3,11 +3,8 @@ title: Installing
 slug: installing
 path: docs/v1/installing
 uri: /docs/1.x/installing
----
-# Installing
-
-This guide provides detailed instructions for installing InspireCMS in various environments.
-
+heading: Installing
+brief:
 ---
 
 ## Prerequisites
@@ -49,18 +46,12 @@ Add InspireCMS to your project:
 composer require solution-forest/inspirecms-core
 ```
 
-### Step 4: Run the Installer
+### Step 4: Run the Install Command
 
 The installer will set up the database, publish assets, and configure InspireCMS:
 
 ```bash
 php artisan inspirecms:install
-```
-
-To skip sample data, use the --skip-samples flag:
-
-```bash
-php artisan inspirecms:install --skip-samples
 ```
 
 ### Step 5: Access the Admin Panel
@@ -115,28 +106,43 @@ php artisan inspirecms:repair-permissions
 
 ---
 
-## Docker Installation
+## Creating Your First Content
 
-InspireCMS can be installed in a Docker environment using Laravel Sail:
+1. Log in to the admin panel at `/cms`
+2. Navigate to **Settings** > **Document Types**
+3. Click "Create" to add a new document type (e.g., "Blog Post")
+4. Add custom fields to your document type
+5. Navigate to **Content** > **Pages**
+6. Click "Create" to add new content using your document type
 
-1. Install Laravel with Sail:
+---
 
-```bash
-curl -s "https://laravel.build/my-inspirecms-project" | bash
-cd my-inspirecms-project
+## Setting Up Your Frontend
+
+1. Create a blade template in `resources/views/components/inspirecms/your-theme/page.blade.php`
+
+2. Use the `@property` directive to access your content fields:
+
+```blade
+<html>
+    <head>
+        <title>{{ $content->getTitle() }}</title>
+    </head>
+    <body>
+        <h1>@property('hero', 'title')</h1>
+        <div class="content">
+            @property('content', 'body')
+        </div>
+    </body>
+</html>
 ```
 
-2. Start Docker containers:
+3. Navigate to **Settings** > **Document Types** > **Templates** to assign your template to content
 
-```bash
-./vendor/bin/sail up -d
-```
-
-3. Install InspireCMS using Sail:
-
-```bash
-./vendor/bin/sail composer require solution-forest/inspirecms-core
-./vendor/bin/sail artisan inspirecms:install
+```blade
+<x-cms-template :content="$content" type="page">
+// Adding content here
+</x-cms-template>
 ```
 
 ---

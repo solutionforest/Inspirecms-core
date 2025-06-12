@@ -3,12 +3,8 @@ title: Content
 slug: fe-content
 path: docs/v1/fe-content
 uri: /docs/1.x/fe-content
----
-
-# Content
-
-Learn how to work with content in your frontend templates.
-
+heading: Content
+brief: Learn how to work with content in your frontend templates.
 ---
 
 ## Content Helper
@@ -210,6 +206,4 @@ $paginatedContent = inspirecms_content()->getPaginatedByDocumentType(documentTyp
 
 > [!note]
 >
-> For details on how to use content properties in templates, see the [Blade](./blade-templates){.doc-link} documentation.
->
-> For examples of displaying content in components and layouts, see the [Components](./components){.doc-link} and [Layouts](./layouts){.doc-link} documentation.
+> For examples of displaying content in layouts, see the [Layouts](./fe-layouts){.doc-link} documentation.

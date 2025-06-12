@@ -1,16 +1,13 @@
 ---
-title: Middleware
-slug: middleware
-path: docs/v1/middleware
-uri: /docs/1.x/middleware
----
-# Middleware
-
-Middleware provides a mechanism for filtering HTTP requests entering your application. For example, middleware can be used for authentication, localization, content caching, or response modification. This guide explains how to create and use custom middleware in InspireCMS.
-
+title: Installing
+slug: installing
+path: docs/v1/installing
+uri: /docs/1.x/installing
+heading: Middleware
+brief:
 ---
 
-## Understanding Middleware in InspireCMS
+## Overview
 
 InspireCMS uses Laravel's middleware architecture, which allows code to be executed before and after an HTTP request is processed. There are several types of middleware in InspireCMS:
 
@@ -317,71 +314,3 @@ class CacheControl
     }
 }
 ```
-
----
-
-## Middleware Groups
-
-You can organize related middleware into groups for easier application to routes. Define middleware groups in `app/Http/Kernel.php`:
-
-```php
-protected $middlewareGroups = [
-    'web' => [
-        // Laravel's default web middleware...
-    ],
-
-    'api' => [
-        // Laravel's default API middleware...
-    ],
-
-    'inspirecms.frontend' => [
-        \App\Http\Middleware\TrackPageViews::class,
-        \App\Http\Middleware\CacheControl::class,
-        \App\Http\Middleware\LocaleMiddleware::class,
-    ],
-];
-```
-
-Then apply the group to routes:
-
-```php
-Route::middleware('inspirecms.frontend')->group(function () {
-    // Routes here will have all the middleware in the group applied
-});
-```
-
----
-
-## Middleware Priority
-
-The order in which middleware is executed matters. You can set the priority in `app/Http/Kernel.php`:
-
-```php
-protected $middlewarePriority = [
-    // High priority (executed first)
-    \App\Http\Middleware\CheckMaintenanceMode::class,
-    \Illuminate\Session\Middleware\StartSession::class,
-
-    // Medium priority
-    \App\Http\Middleware\LocaleMiddleware::class,
-    \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-    \App\Http\Middleware\VerifyCsrfToken::class,
-
-    // Low priority (executed last)
-    \App\Http\Middleware\TrackPageViews::class,
-    \App\Http\Middleware\CacheControl::class,
-];
-```
-
----
-
-## Best Practices
-
-1. **Keep middleware focused**: Each middleware should have a single responsibility
-2. **Use middleware parameters** when configurability is needed
-3. **Consider performance impact**, especially for middleware applied globally
-4. **Document your middleware** to explain its purpose and behavior
-5. **Test thoroughly**, especially edge cases
-6. **Check for existing middleware** before creating a new one—Laravel and InspireCMS already include many useful middleware classes
-
-By following these guidelines, you can effectively extend InspireCMS's request handling capability through custom middleware.

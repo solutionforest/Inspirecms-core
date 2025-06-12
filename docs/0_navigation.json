@@ -26,15 +26,6 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/quick-start"},
-        "title": {"en": "Quick Start Guide"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
         "url": {"en": "/docs/1.x/upgrading"},
         "title": {"en": "Upgrade Guide"},
         "target": null,
@@ -126,8 +117,8 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/routing"},
-        "title": {"en": "Routing"},
+        "url": {"en": "/docs/1.x/content-routing"},
+        "title": {"en": "Content Routing"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",
@@ -178,24 +169,6 @@
         "type": "link",
         "isActive": true,
         "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/performance-optimization"},
-        "title": {"en": "Performance Optimization"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/security-best-practices"},
-        "title": {"en": "Security Best Practices"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
       }
     ]
   },
@@ -208,15 +181,6 @@
     "isActive": true,
     "children": [
       {
-        "url": {"en": "/docs/1.x/blade-templates"},
-        "title": {"en": "Blade Templates"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
         "url": {"en": "/docs/1.x/fe-content"},
         "title": {"en": "Content"},
         "target": null,
@@ -226,8 +190,8 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/assets-management"},
-        "title": {"en": "Assets Management"},
+        "url": {"en": "/docs/1.x/fe-assets"},
+        "title": {"en": "Assets"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",
@@ -244,7 +208,7 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/navigation"},
+        "url": {"en": "/docs/1.x/fe-navigation"},
         "title": {"en": "Navigation"},
         "target": null,
         "category": "doc_1.x",
@@ -253,17 +217,8 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/layouts"},
+        "url": {"en": "/docs/1.x/fe-layouts"},
         "title": {"en": "Layouts"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/templates"},
-        "title": {"en": "Templates"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",
@@ -299,15 +254,6 @@
         "children": []
       },
       {
-        "url": {"en": "/docs/1.x/multilingual-content"},
-        "title": {"en": "Multilingual Content"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
         "url": {"en": "/docs/1.x/middleware"},
         "title": {"en": "Middleware"},
         "target": null,
@@ -319,34 +265,6 @@
       {
         "url": {"en": "/docs/1.x/event-listeners"},
         "title": {"en": "Event Listeners"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      }
-    ]
-  },
-  {
-    "url": null,
-    "title": {"en": "Troubleshooting"},
-    "target": null,
-    "category": "doc_1.x",
-    "type": "group",
-    "isActive": true,
-    "children": [
-      {
-        "url": {"en": "/docs/1.x/common-issues"},
-        "title": {"en": "Common Issues"},
-        "target": null,
-        "category": "doc_1.x",
-        "type": "link",
-        "isActive": true,
-        "children": []
-      },
-      {
-        "url": {"en": "/docs/1.x/debugging"},
-        "title": {"en": "Debugging"},
         "target": null,
         "category": "doc_1.x",
         "type": "link",

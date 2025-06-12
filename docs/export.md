@@ -3,29 +3,25 @@ title: Export
 slug: export
 path: docs/v1/export
 uri: /docs/1.x/export
----
-# Export
-
-InspireCMS provides powerful export capabilities for migrating content, creating backups, and transferring data between systems. This guide explains how to use the export features effectively.
-
+heading: Export
+brief: InspireCMS provides powerful export capabilities for migrating content, creating backups, and transferring data between systems. This guide explains how to use the export features effectively.
 ---
 
 ## Overview
 
 The export system in InspireCMS allows you to:
 
-- Export content and configuration in various formats
-- Select specific elements to include in exports
-- Schedule automatic exports
-- Create data backups
-- Prepare content for migration to other systems
+-   Export content and configuration in various formats
+-   Select specific elements to include in exports
+-   Schedule automatic exports
+-   Create data backups
+-   Prepare content for migration to other systems
 
 ---
 
 ## Export Interface
 
-Access the export interface through: **Admin Panel** > **Settings** > **Export**
-
+Access the export interface through: **Settings** > **Export**
 
 ### Export Types
 
@@ -40,7 +36,7 @@ InspireCMS supports several export types:
 
 Available export formats include:
 
-- **JSON**: Complete structured data (default)
+-   **JSON**: Complete structured data (default)
 
 ---
 
@@ -61,8 +57,8 @@ To create a basic content export:
 
 Depending on the export type, additional options may include:
 
-- **Content Selection**: Which content items to include
-- **Include Dependencies**: Whether to include related records
+-   **Content Selection**: Which content items to include
+-   **Include Dependencies**: Whether to include related records
 
 ---
 
@@ -82,14 +78,14 @@ class CustomExporter extends BaseExporter
     {
         // Implement your custom export logic
         $data = $this->collectData();
-        
+
         // Generate export file
         $path = storage_path('app/exports/' . uniqid('export_') . '.json');
         file_put_contents($path, json_encode($data, JSON_PRETTY_PRINT));
-        
+
         return $path;
     }
-    
+
     protected function collectData(): array
     {
         // Logic to collect data for export
@@ -114,26 +110,6 @@ Register your custom exporter:
     ],
 ],
 ```
-
----
-
-## Security Considerations
-
-Export files may contain sensitive information:
-
-- Exports are only accessible to users with appropriate permissions
-- Password-protect sensitive exports
-- Consider encrypting export files that contain user data
-- Limit which users can create and download exports
-
-## Export Performance
-
-For large sites, consider these performance optimizations:
-
-1. **Chunked Exports**: Split large exports into manageable chunks
-2. **Off-peak Scheduling**: Schedule large exports during off-peak hours
-3. **Selective Exports**: Export only what's needed rather than everything
-4. **Resource Allocation**: Increase PHP memory limits for large exports
 
 ---
 
@@ -167,7 +143,7 @@ For cloud storage:
         'root' => storage_path('app'),
         'throw' => false,
     ],
-    
+
     // S3 for export storage
     'export_s3' => [
         'driver' => 's3',
@@ -179,16 +155,3 @@ For cloud storage:
     ],
 ],
 ```
-
----
-
-## Export Best Practices
-
-1. **Regular Backups**: Schedule regular exports for backup purposes
-2. **Version Control**: Include version information in export files
-3. **Documentation**: Document what's included in each export type
-4. **Testing**: Test export and import processes in a staging environment
-5. **Selective Exports**: Export only what you need for better performance
-6. **Storage Management**: Implement retention policies to avoid accumulating old exports
-7. **Security**: Secure export files that contain sensitive information
-8. **Validation**: Verify export data integrity before distribution or import

@@ -3,12 +3,8 @@ title: Customize the Admin Panel
 slug: customize-the-admin-panel
 path: docs/v1/customize-the-admin-panel
 uri: /docs/1.x/customize-the-admin-panel
----
-
-# Customize the Admin Panel
-
-InspireCMS provides a flexible and powerful admin interface built on the Filament framework. This guide explains how to customize and extend the admin panel to meet your specific needs, including creating custom resources, pages, widgets, and modifying the appearance to match your brand. Whether you need to add new functionality or tailor the existing features, InspireCMS offers multiple extension points for developers.
-
+heading: Customize the Admin Panel
+brief: This guide explains how to customize and extend the admin panel to meet your specific needs, including creating custom resources, pages, widgets, and modifying the appearance to match your brand. Whether you need to add new functionality or tailor the existing features, InspireCMS offers multiple extension points for developers.
 ---
 
 ## Overview
@@ -180,31 +176,6 @@ class MyCmsPanelProvider extends CmsPanelProvider
                     ->icon('heroicon-o-chart-bar')
                     ->group('Reports'),
             ]);
-    }
-}
-```
-
-### Adding Global Search
-
-Enable and customize global search:
-
-```php
-<?php
-
-namespace App\Providers;
-
-use Filament\Panel;
-use SolutionForest\InspireCms\CmsPanelProvider;
-
-class MyCmsPanelProvider extends CmsPanelProvider
-{
-    protected function configureCmsPanel(Panel $panel): Panel
-    {
-        $panel = parent::configureCmsPanel($panel);
-
-        return $panel
-            ->globalSearch(true)
-            ->globalSearchKeyBindings(['command+k', 'ctrl+k']);
     }
 }
 ```
@@ -724,64 +695,6 @@ class Settings extends Page implements ClusterSectionPage, GuardPage, HasActions
 }
 ```
 
-### Creating a Custom View
-
-Create a view file at `resources/views/filament/pages/settings.blade.php`:
-
-```blade
-<x-filament::page>
-    <form wire:submit.prevent="save">
-        {{ $this->form }}
-
-        <div class="flex justify-end mt-4">
-            <x-filament::button type="submit">
-                Save Settings
-            </x-filament::button>
-        </div>
-    </form>
-</x-filament::page>
-```
-
-### Advanced Page Features
-
-You can further customize pages with actions, tabs, and more:
-
-```php
-<?php
-
-namespace App\Filament\Pages;
-
-use Filament\Actions\Action;
-use Filament\Pages\Page;
-
-class Dashboard extends Page
-{
-    // ... other properties
-
-    protected function getHeaderActions(): array
-    {
-        return [
-            Action::make('settings')
-                ->label('Settings')
-                ->url(route('filament.admin.pages.settings'))
-                ->icon('heroicon-s-cog'),
-            Action::make('visit')
-                ->label('Visit Site')
-                ->url('/')
-                ->icon('heroicon-s-external-link')
-                ->openUrlInNewTab(),
-        ];
-    }
-
-    protected function getFooterWidgets(): array
-    {
-        return [
-            // Add widgets that appear at the bottom of the page
-        ];
-    }
-}
-```
-
 ---
 
 ## Custom Widgets
@@ -884,40 +797,9 @@ class StatsOverview extends BaseWidget
 
 ---
 
-## Best Practices
-
-1. **Follow a Consistent Structure**: Organize your extensions logically in their own namespaces
-2. **Register Extensions in Service Providers**: Keep all extension registrations in dedicated service providers
-3. **Avoid Duplicating Functionality**: Extend existing components rather than recreating them
-4. **Respect User Permissions**: Always check permissions before allowing access to custom functionality
-5. **Stay Updated**: Keep track of InspireCMS updates and adjust your extensions accordingly
-6. **Test Thoroughly**: Ensure your extensions work correctly across different scenarios
-7. **Document Your Extensions**: Provide clear documentation for team members or clients
-
----
-
-## Troubleshooting
-
-### Common Issues
-
--   **Resources Not Appearing**: Ensure you've registered them correctly with `InspireCmsConfig::addAdminResource()`
--   **Permission Problems**: Check that your user has the necessary roles and permissions
--   **Navigation Issues**: Verify your navigation items have the correct structure and labels
--   **Style Conflicts**: Use Filament's styling conventions to avoid CSS conflicts
-
-### Debugging Tips
-
-1. Check Laravel logs at `storage/logs/laravel.log`
-2. Enable debugging in config/app.php (`'debug' => true`)
-3. Use `dd()` or `dump()` helpers in your code to inspect variables
-4. Verify your service providers are registered in the correct order
-
----
-
 ## Further Resources
 
 -   [Filament Documentation](https://filamentphp.com/docs)
 -   [Laravel Documentation](https://laravel.com/docs)
--   [InspireCMS GitHub Repository](https://github.com/solutionforest/inspire-cms)
 
 With these tools and techniques, you can extend and customize the InspireCMS admin panel to suit your specific requirements while maintaining a consistent and user-friendly interface.

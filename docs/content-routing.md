@@ -1,35 +1,13 @@
 ---
-title: Routing
-slug: routing
-path: docs/v1/routing
-uri: /docs/1.x/routing
----
-# Routing
-
-InspireCMS provides a flexible and powerful routing system to control how content is accessed on your website. This guide covers how routing works, customization options, and best practices.
-
+title: Content Routing
+slug: content-routing
+path: docs/v1/content-routing
+uri: /docs/1.x/content-routing
+heading: Content Routing
+brief:
 ---
 
-## How Routing Works
-
-InspireCMS uses a hierarchical routing system that combines standard Laravel routes with content-based dynamic routing. The system determines which content to display based on the requested URL.
-
-### Route Types
-
-InspireCMS handles several types of routes:
-
-1. **Content Routes**: Dynamic routes that map to content entries
-2. **Admin Routes**: Routes for the administrative control panel
-3. **Asset Routes**: Routes for media and static assets
-4. **Custom Routes**: Developer-defined routes for custom functionality
-
----
-
-## Content Routing
-
-Content routing is the heart of the system, determining how URLs map to content entries.
-
-### URL Structure
+## Overview
 
 By default, content URLs follow a hierarchical structure:
 
@@ -42,15 +20,9 @@ For example:
 -   `/about`: A top-level "About" page
 -   `/products/widgets/blue-widget`: A "Blue Widget" page under the "Widgets" section of "Products"
 
-### Route Patterns
+---
 
-Each content item can have:
-
-1. **Default Route**: The system-generated path based on content hierarchy
-2. **Custom Route**: A user-defined URL that overrides the default
-3. **Aliases**: Additional URLs that redirect to the content
-
-### Setting Content Routes
+## Setting Content Routes
 
 To set a custom route for content:
 
@@ -113,42 +85,10 @@ Slugs must:
 
 InspireCMS registers routes during application bootstrap:
 
-```php {title="InspireCms.php"}
-
+```php {title="routes/web.php"}
 use Illuminate\Support\Facades\Route;
 
-public function routes(): void
-{
-    Route::name('inspirecms.')
-        ->group(function () {
-            Route::name('sitemap')
-                ->get('sitemap.xml', CmsControllers\SitemapController::class);
-
-            $frontendMiddlewares = InspireCmsConfig::get('frontend.routes.middleware', [
-                CmsMiddlewares\SetUpPoweredBy::class,
-            ]);
-            Route::name('frontend.')
-                ->middleware($frontendMiddlewares)
-                ->group(function () {
-
-                        $factory = ContentSegmentFactory::create();
-                        $customFrontendRoutes = Schema::hasTable(InspireCmsConfig::getContentRouteTableName()) && Schema::hasTable('cache')
-                                ? $this->getContentRoutes()
-                                : [];
-
-                        foreach ($customFrontendRoutes as $index => $item) {
-                                Route::any($item['uri'], CmsControllers\FrontendController::class)
-                                        ->where($item['regex_constraints'] ?? [])
-                                        ->name($item['alias'] ?? 'content_' . $index);
-                        }
-
-                        // default route
-                        Route::any($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
-                                ->where($factory->getDefaultRouteConstraints())
-                                ->name('default');
-                });
-        });
-}
+\SolutionForest\InspireCms\Facades\InspireCms::routes();
 ```
 
 ## Customizing Routes
@@ -213,6 +153,8 @@ This is useful after:
 -   Changing route configuration
 -   Upgrading InspireCMS
 
+---
+
 ## Advanced Routing
 
 ### Content Route Resolution
@@ -241,7 +183,7 @@ class CustomSegmentProvider implements SegmentProviderInterface
 {
     public function getUrlSegmentFromDefaultRoute($route)
     {
-        // Custom logic 
+        // Custom logic
     }
 }
 ```
@@ -269,15 +211,13 @@ use SolutionForest\InspireCms\Resolvers\PublishedContentResolver;
 
 class CustomContentResolver extends PublishedContentResolver
 {
-    protected function getContentAndLocaleByRoute($route)
+    protected function resolve(...$args)
     {
         // Custom implementation for finding content based on route
         // You can add additional logic here before or after the parent method
 
-        return parent::getContentAndLocaleByRoute($route);
+        return parent::resolve($args);
     }
-
-    // Override other methods as needed
 }
 ```
 
@@ -301,14 +241,6 @@ class AppServiceProvider extends ServiceProvider
 }
 ```
 
-#### Use Cases for Custom Resolvers
-
--   Implementing A/B testing for content pages
--   Adding personalization based on user attributes
--   Supporting custom URL formats or legacy URL structures
--   Integrating with external content sources
--   Implementing content access restrictions based on user role or subscription
-
 ---
 
 ## Redirects and URL Management
@@ -328,7 +260,7 @@ class AppServiceProvider extends ServiceProvider
 For troubleshooting routing issues:
 
 ```bash
-php artisan inspirecms:list-routes
+php artisan inspirecms:routes
 ```
 
 This command shows all registered content routes with:
@@ -337,14 +269,3 @@ This command shows all registered content routes with:
 -   Name
 -   Bindings
 -   Middleware
-
-## Best Practices
-
--   **Intuitive Structure**: Design URLs that are logical and easy to remember
--   **SEO-Friendly**: Use descriptive words in URLs instead of IDs or codes
--   **Consistent Patterns**: Maintain consistent URL structures for similar content
--   **Avoid Deep Nesting**: Keep URL hierarchies reasonably flat (3-4 levels max)
--   **Use Redirects**: Maintain redirects when changing established URLs
--   **Cache Management**: Clear route caches after significant content structure changes
--   **Performance**: Monitor route resolution times and optimize when necessary
--   **Avoid Conflicts**: Prevent content routes from conflicting with system routes

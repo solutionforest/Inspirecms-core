@@ -3,21 +3,8 @@ title: Event Listeners
 slug: event-listeners
 path: docs/v1/event-listeners
 uri: /docs/1.x/event-listeners
----
-# Event Listeners
-
-Event listeners provide a powerful way to extend InspireCMS functionality without modifying core code. They allow you to execute custom code when specific events occur in the system, such as content creation, user registration, or media uploads.
-
----
-
-## Understanding the Event System
-
-InspireCMS uses Laravel's event broadcasting system, which follows the observer pattern:
-
-1. **Events**: Classes that represent something that happened in the system
-2. **Listeners**: Classes that respond to events with custom logic
-3. **Subscribers**: Classes that group related event listeners together
-
+heading: Event Listeners
+brief:
 ---
 
 ## Available Events in InspireCMS
@@ -89,7 +76,7 @@ use Illuminate\Support\Facades\Log;
 class YourListener implements ShouldQueue
 {
     use InteractsWithQueue;
-    
+
     /**
      * Handle the event.
      *
@@ -101,14 +88,14 @@ class YourListener implements ShouldQueue
         $content = $event->content;
         $version = $event->version;
         $status = $event->status;
-        
+
         Log::info('New content version created:', [
             'content_id' => $content->id,
             'version_id' => $version->id,
             'status' => $status ? $status->name : 'none',
             'is_publishing' => $event->isPublishing,
         ]);
-        
+
         // Your custom logic here
         // E.g., send notifications, update external systems, etc.
     }
@@ -149,75 +136,7 @@ class EventServiceProvider extends ServiceProvider
 
 ## Practical Examples of Event Listeners
 
-### 1. Send Notification When Theme Changes
-
-```php
-<?php
-
-namespace App\Listeners;
-
-use SolutionForest\InspireCms\Events\Template\ChangeTheme;
-use App\Notifications\ThemeChangedNotification;
-use Illuminate\Support\Facades\Notification;
-use App\Models\User;
-
-class NotifyThemeChange
-{
-    public function handle(ChangeTheme $event)
-    {
-        // Find admin users to notify
-        $admins = User::role('administrator')->get();
-        
-        // Send notification to all admin users
-        Notification::send($admins, new ThemeChangedNotification(
-            $event->oldTheme,
-            $event->newTheme
-        ));
-        
-        // Log the theme change
-        \Log::info('Theme changed', [
-            'from' => $event->oldTheme,
-            'to' => $event->newTheme,
-            'user' => auth()->user() ? auth()->user()->name : 'System',
-        ]);
-    }
-}
-```
-
-### 2. Regenerate Sitemap After Content Version Published
-
-```php
-<?php
-
-namespace App\Listeners;
-
-use SolutionForest\InspireCms\Events\Content\CreatedPublishContentVersion;
-use Illuminate\Contracts\Queue\ShouldQueue;
-use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
-use Illuminate\Support\Facades\Event;
-
-class RegenerateSitemap implements ShouldQueue
-{
-    public function handle(CreatedPublishContentVersion $event)
-    {
-        $content = $event->content;
-        
-        // Only trigger sitemap generation for certain content types
-        $relevantTypes = ['page', 'post', 'product'];
-        
-        if (in_array($content->document_type, $relevantTypes)) {
-            // Dispatch the generate sitemap event
-            Event::dispatch(new GenerateSitemap(
-                get_class($content),
-                $content->getKey(),
-                'content_published'
-            ));
-        }
-    }
-}
-```
-
-### 3. Track Content Status Changes
+### 1. Track Content Status Changes
 
 ```php
 <?php
@@ -234,7 +153,7 @@ class LogContentStatusChange
         $content = $event->content;
         $oldStatus = $event->oldStatus ? $event->oldStatus->name : null;
         $newStatus = $event->status ? $event->status->name : null;
-        
+
         // Record status change in history table
         ContentStatusHistory::create([
             'content_id' => $content->id,
@@ -248,7 +167,7 @@ class LogContentStatusChange
 }
 ```
 
-### 4. Generate Sitemap After Content Changes
+### 2. Generate Sitemap After Content Changes
 
 ```php
 <?php
@@ -265,10 +184,10 @@ class RegenerateSitemap implements ShouldQueue
     public function handle(CreatedPublishContentVersion $event)
     {
         $content = $event->content;
-        
+
         // Only trigger sitemap generation for certain content types
         $relevantTypes = ['page', 'post', 'product'];
-        
+
         if (in_array($content->document_type, $relevantTypes)) {
             // Dispatch the generate sitemap event
             Event::dispatch(new GenerateSitemap(
@@ -281,7 +200,7 @@ class RegenerateSitemap implements ShouldQueue
 }
 ```
 
-### 5. Track User Activity
+### 3. Track User Activity
 
 ```php
 <?php
@@ -298,10 +217,10 @@ class TrackUserLogin
     {
         $user = $event->user;
         $request = request();
-        
+
         $agent = new Agent();
         $agent->setUserAgent($request->userAgent());
-        
+
         UserActivity::create([
             'user_id' => $user->id,
             'activity_type' => 'login',
@@ -313,7 +232,7 @@ class TrackUserLogin
             'platform' => $agent->platform(),
             'platform_version' => $agent->version($agent->platform()),
         ]);
-        
+
         // Update user's last login time
         $user->last_login_at = now();
         $user->last_login_ip = $request->ip();
@@ -321,92 +240,3 @@ class TrackUserLogin
     }
 }
 ```
-
----
-
-## Testing Event Listeners
-
-Testing event listeners is crucial to ensure they respond correctly to events:
-
-```php
-<?php
-
-namespace Tests\Feature;
-
-use Tests\TestCase;
-use Illuminate\Support\Facades\Event;
-use Illuminate\Support\Facades\Queue;
-use App\Listeners\YourListener;
-use SolutionForest\InspireCms\Events\Content\CreatedContentVersion;
-use SolutionForest\InspireCms\Models\Content;
-
-class YourListenerTest extends TestCase
-{
-    public function testListenerDispatchedWhenContentVersionCreated()
-    {
-        Event::fake();
-        
-        // Create a content version (implementation depends on your specific models)
-        // This is a simplified example
-        $content = Content::factory()->create();
-        $version = $content->createVersion(['data' => ['title' => 'Test']]);
-        
-        // Assert that the event was dispatched
-        Event::assertDispatched(CreatedContentVersion::class);
-        
-        // Assert that the listener was dispatched for the event
-        Event::assertListening(
-            CreatedContentVersion::class,
-            YourListener::class
-        );
-    }
-    
-    public function testListenerProcessesCorrectly()
-    {
-        Queue::fake();
-        
-        $listener = new YourListener();
-        $content = Content::factory()->create();
-        $version = $content->createVersion(['data' => ['title' => 'Test']]);
-        $event = new CreatedContentVersion($content, $version, null, false);
-        
-        // Call the listener directly
-        $listener->handle($event);
-        
-        // Assert the expected outcome using your application's logic
-        // This will depend on what your listener should do
-    }
-}
-```
-
-## Performance Considerations
-
-When creating event listeners, consider these performance best practices:
-
-1. **Use Queued Listeners**: Implement `ShouldQueue` for non-critical listeners to process events asynchronously
-2. **Set Queue Priority**: For time-sensitive listeners, set a higher priority:
-
-```php
-class YourListener implements ShouldQueue
-{
-    public $queue = 'high';
-}
-```
-
-3. **Avoid Circular Events**: Be careful not to create circular event chains that trigger each other
-4. **Use Database Transactions**: For listeners that update multiple records, use database transactions
-5. **Batch Related Operations**: If an event triggers multiple similar operations, consider batching them
-
----
-
-## Event-Driven Architecture Tips
-
-To build a robust event-driven architecture in your InspireCMS project:
-
-1. **Keep Events Focused**: Each event should represent a single specific occurrence
-2. **Use Past Tense for Event Names**: Events represent something that has already happened (`UserRegistered` not `RegisterUser`)
-3. **Listeners Should Be Single-Purpose**: Each listener should do just one thing in response to an event
-4. **Consider Event Sourcing**: For complex applications, track events as the source of truth for application state
-5. **Document Events and Listeners**: Keep documentation of all events and their listeners for easier maintenance
-
-By following these guidelines, you can effectively extend InspireCMS functionality using the event system while maintaining code organization and performance.

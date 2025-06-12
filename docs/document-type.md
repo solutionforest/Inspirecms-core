@@ -1,23 +1,19 @@
 ---
-title: Document type
+title: Document Type
 slug: document-type
 path: docs/v1/document-type
 uri: /docs/1.x/document-type
----
-# Document type
-
-Document Types in InspireCMS define the structure and behavior of your content. They determine what fields are available, how content is organized, and how it's presented to visitors.
-
+heading: Document Type
+brief: Document Types in InspireCMS define the structure and behavior of your content. They determine what fields are available, how content is organized, and how it's presented to visitors.
 ---
 
-## Understanding Document Types
+## Overview
 
 A document type is essentially a **blueprint** for content, similar to a class in object-oriented programming. It defines:
 
-- What fields are available for content entry
-- How content is organized in the admin interface
-- What templates can be used for rendering
-- How content is structured in the URL hierarchy
+-   What fields are available for content entry
+-   How content is organized in the admin interface
+-   What templates can be used for rendering
 
 ---
 
@@ -31,16 +27,16 @@ To create a document type:
 
 ### Basic Settings
 
-- **Name**: Human-readable name (e.g., "Blog Post")
-- **Slug**: Machine-readable identifier (e.g., "blog-post")
-- **Icon**: Visual identifier in the admin interface
-- **Category**: For organizing document types (e.g., "web", "data")
+-   **Name**: Human-readable name (e.g., "Blog Post")
+-   **Slug**: Machine-readable identifier (e.g., "blog-post")
+-   **Icon**: Visual identifier in the admin interface
+-   **Category**: For organizing document types (e.g., "web", "data")
 
 ### Advanced Settings
 
-- **Show as Table**: Whether to display content in a table view
-- **Show at Root**: Whether content can be created at the root level
-- **Allowed document types**: Document types that can be children of this type
+-   **Show as Table**: Whether to display content in a table view
+-   **Show at Root**: Whether content can be created at the root level
+-   **Allowed document types**: Document types that can be children of this type
 
 ---
 
@@ -89,31 +85,9 @@ Once document types are configured, content editors can use them to create struc
 
 ---
 
-## Managing Document Types
-
-Over time, you may need to modify your document types:
-
-### Editing Document Types
-
-1. Navigate to **Settings** > **Document Types**
-2. Click on the document type you want to modify
-3. Make changes to settings, field groups, or templates
-4. Click **Save** to apply changes
-
-### Deleting Document Types
-
-Be cautious when deleting document types, as it may affect existing content:
-
-1. Navigate to **Settings** > **Document Types**
-2. Select the document type you want to remove
-3. Click **Delete** and confirm your choice
-
----
-
 ## Best Practices
 
-- Create document types that align with your content strategy
-- Use clear, descriptive names for document types
-- Group related fields for better organization
-- Define parent-child relationships carefully to create logical content hierarchies
-- Test your document types with sample content before full implementation
+-   Create document types that align with your content strategy
+-   Use clear, descriptive names for document types
+-   Group related fields for better organization
+-   Define parent-child relationships carefully to create logical content hierarchies

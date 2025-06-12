@@ -3,11 +3,8 @@ title: Import
 slug: import
 path: docs/v1/import
 uri: /docs/1.x/import
----
-# Import
-
-InspireCMS provides import capabilities for migrating content and system configurations. This guide explains how to use the import features effectively.
-
+heading: Import
+brief: InspireCMS provides import capabilities for migrating content and system configurations. This guide explains how to use the import features effectively.
 ---
 
 ## Overview
@@ -105,9 +102,9 @@ archive.zip/
 4. Compress the directories into a ZIP file
 5. Upload through the admin interface
 
-### Example JSON Structures
+## Example JSON Structures
 
-1. Content:
+### 1. Content
 
 ```json {title="Content/sample-page.json"}
 {
@@ -155,7 +152,7 @@ archive.zip/
 }
 ```
 
-2. Document Type:
+### 2. Document Type
 
 ```json {title="DocumentTypes/page.json"}
 {
@@ -172,7 +169,7 @@ archive.zip/
 }
 ```
 
-3. Field Groups:
+### 3. Field Groups
 
 ```json {title="FieldGroups/content.json"}
 {
@@ -210,7 +207,7 @@ archive.zip/
 }
 ```
 
-4. Navigation Menus:
+### 4. Navigation Menus
 
 ```json {title="NavigationMenus/navigation-menu-1.json"}
 {
@@ -258,7 +255,7 @@ archive.zip/
 }
 ```
 
-5. Languages:
+### 5. Languages
 
 ```json {title="Languages/en.json"}
 {
@@ -267,7 +264,7 @@ archive.zip/
 }
 ```
 
-6. Templates:
+### 6. Templates
 
 ```blade {title="Templates/template-1/theme-1.blade.php"}
 <x-cms-template :content="$content" type="page" class="sample-class">
@@ -275,7 +272,7 @@ archive.zip/
 </x-cms-template>
 ```
 
-7. Views:
+### 7. Views
 
 ```blade {title="Views/components/inspirecms/theme-1/page.blade.php"}
 @php
@@ -318,7 +315,7 @@ archive.zip/
 </html>
 ```
 
-```blade {title="Views/components/inspirecms/theme-1/topbar.blade.php"}
+````blade {title="Views/components/inspirecms/theme-1/topbar.blade.php"}
 ```php
 @php
     $locale ??= request()->getLocale();
@@ -343,4 +340,4 @@ archive.zip/
         </div>
     @endforeach
 </nav>
-```
+````

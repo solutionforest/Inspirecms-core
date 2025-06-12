@@ -3,12 +3,8 @@ title: Configuration
 slug: configuration
 path: docs/v1/configuration
 uri: /docs/1.x/configuration
----
-
-# Configuration
-
-This guide covers the essential configuration options for InspireCMS and how to customize them to fit your needs.
-
+heading: Configuration
+brief:
 ---
 
 ## Configuration Files
@@ -133,6 +129,7 @@ Configure media uploads, storage, and processing:
      */
     'media_library' => [
         'disk' => 'public',        // Storage disk (public makes files accessible via URL)
+                                  // Use 's3' or other drivers for cloud storage
 
         /**
          * Allowed file types
@@ -569,59 +566,3 @@ Configure language and translation settings:
     // To generate translation files: php artisan lang:publish
 ],
 ```
-
----
-
-## Using Environment Variables
-
-For sensitive or environment-specific settings, use environment variables in your `.env` file:
-
-```ini {title=".env"}
-INSPIRECMS_LICENSE_KEY=your-license-key
-APP_LOCALE=en
-FILESYSTEM_DISK=public
-```
-
----
-
-## Extending the Configuration
-
-You can extend or override the default configuration by creating a service provider:
-
-```php
-<?php
-namespace App\Providers;
-
-use Illuminate\Support\ServiceProvider;
-use SolutionForest\InspireCms\InspireCmsConfig;
-
-class InspireCmsConfigServiceProvider extends ServiceProvider
-{
-    public function boot()
-    {
-        InspireCmsConfig::set('custom.setting', 'value');
-
-        // Override existing settings
-        InspireCmsConfig::set('template.default_theme', 'custom-theme');
-    }
-}
-```
-
-Register your provider in `config/app.php`:
-
-```php
-'providers' => [
-    // Other providers...
-    App\Providers\InspireCmsConfigServiceProvider::class,
-],
-```
-
----
-
-## Configuration Best Practices
-
-1. **Use environment variables** for sensitive information and settings that change between environments
-2. **Create a separate configuration file** for complex custom configurations
-3. **Don't edit the vendor files** directly, always extend and override using Laravel's configuration system
-4. **Clear configuration cache** after making changes: `php artisan config:clear`
-5. **Document your customizations** for team members and future reference

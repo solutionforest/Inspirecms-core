@@ -1,16 +1,13 @@
 ---
-title: Custom Fields
+title:
 slug: custom-fields
 path: docs/v1/custom-fields
 uri: /docs/1.x/custom-fields
----
-# Custom Fields
-
-Custom fields allow you to define structured content types in InspireCMS. This guide explains how to create, configure, and use custom fields to build flexible content models.
-
+heading: Custom Fields
+brief:
 ---
 
-## Field Types Overview
+## Overview
 
 InspireCMS offers a wide range of field types for different content needs:
 
@@ -45,453 +42,6 @@ Field groups organize related fields together. To create a field group:
 2. Click **New Custom Fields**
 3. Add fields to the group using the form
 4. Enter a name and slug for your field group
-
-### Field Configuration Options
-
-Each field type has specific configuration options, but most share these common settings:
-
--   **Label**: The display name shown to content editors
--   **Name**: The technical identifier used in templates
--   **Helper Text**: Additional guidance shown below the field
--   **Required**: Whether the field must be filled
--   **Translatable**: Whether the field should be multilingual
-
-### Field Type Specific Settings
-
-#### Rich Editor
-
--   **Toolbar Buttons**: Customize available formatting options
--   **Character Limit**: Set maximum content length
--   **Media Upload**: Enable/disable image embedding
-
-#### Repeater
-
--   **Field Types**: Define the sub-fields within each repeated item
--   **Min/Max Items**: Control how many items can be added
--   **Collapsible**: Allow collapsing of items for better organization
-
-#### Select
-
--   **Options**: Define available choices
--   **Multiple**: Allow multiple selections
--   **Default Value**: Pre-select values
-
-### Field Type Configuration and Usage
-
-#### Text
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Rule**: Validation rules for the field.
-> -   **Length**: The exact length of the input.
-> -   **Max Length**: The maximum allowed length of the input.
-> -   **Min Length**: The minimum required length of the input.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('hero', 'title')
-> ```
->
-> </details>
-
-#### Text Area
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Rows**: The number of visible rows in the text area.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('intro', 'text')
-> ```
->
-> </details>
-
-#### Email
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('contact', 'email')
-> ```
->
-> </details>
-
-#### Password
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('user', 'password')
-> ```
->
-> </details>
-
-#### Number
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Rule**: Validation rules for the field.
-> -   **Min Value**: The minimum allowed value.
-> -   **Max Value**: The maximum allowed value.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('event', 'max_ppl')
-> ```
->
-> </details>
-
-#### URL
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('contact', 'facebook')
-> ```
->
-> </details>
-
-#### Select
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Options**: The predefined choices available in the dropdown.
-> -   **Multiple**: Whether multiple selections are allowed.
-> -   **Default Value**: The initial value of the field.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> Multiple is false:
->
-> ```blade
-> @property('event', 'type')
-> ```
->
-> Multiple is true:
->
-> ```blade
-> @propertyArray('event', 'types')
-> {{ implode(', ', $event_types ?? []) }}
-> ```
->
-> </details>
-
-#### Toggle
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @if ($content?->getPropertyGroup('event')?->getPropertyData('active')?->getValue() ?? false)
-> @endif
-> ```
->
-> </details>
-
-#### Radio
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Options**: The predefined choices available for selection.
-> -   **Default Value**: The initial value of the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('user', 'gender')
-> ```
->
-> </details>
-
-#### File
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Disk**: The storage disk where files are saved.
-> -   **Directory**: The directory path within the disk.
-> -   **Visibility**: The visibility of the uploaded files.
-> -   **Multiple**: Whether multiple files can be uploaded.
-> -   **Rule**: Validation rules for the field.
-> -   **Accepted File Types**: The allowed file types for upload.
-> -   **Min File**: The minimum number of files required.
-> -   **Max File**: The maximum number of files allowed.
-> -   **Min Size**: The minimum file size allowed.
-> -   **Max Size**: The maximum file size allowed.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyArray('event', 'docs')
-> @foreach ($event_docs ?? [] as $doc)
->     <a href="{{ \Storage::disk($doc->disk)->url(implode('/', array_filter([$doc->directory, $doc->path], 'filled'))) }}">Doc</a>
-> @endforeach
-> ```
->
-> Or
->
-> ```blade
-> @propertyArray('event', 'docs')
-> @foreach ($event_docs ?? [] as $doc)
->     <a href="{{ $doc }}">Doc</a>
-> @endforeach
-> ```
->
-> </details>
-
-#### Image
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Disk**: The storage disk where images are saved.
-> -   **Directory**: The directory path within the disk.
-> -   **Visibility**: The visibility of the uploaded images.
-> -   **Multiple**: Whether multiple images can be uploaded.
-> -   **Rule**: Validation rules for the field.
-> -   **Accepted File Types**: The allowed file types for upload.
-> -   **Min File**: The minimum number of images required.
-> -   **Max File**: The maximum number of images allowed.
-> -   **Min Size**: The minimum image size allowed.
-> -   **Max Size**: The maximum image size allowed.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyArray('event', 'images')
-> @foreach ($event_images ?? [] as $img)
->     <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], 'filled'))) }}" alt="Event Image">
-> @endforeach
-> ```
->
-> Or
->
-> ```blade
-> @propertyArray('event', 'images')
-> @foreach ($event_images ?? [] as $img)
->     <img src="{{ $img }}" alt="Event Image">
-> @endforeach
-> ```
->
-> </details>
-
-#### Color Picker
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyNotEmpty('user', 'fav_color')
-> <p style="color: {{ $user_fav_color }}">$user_fav_color</p>
-> @endif
-> ```
->
-> </details>
-
-#### DateTime Picker
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Default Value**: The initial value of the field.
-> -   **Placeholder**: Text displayed inside the field when empty.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Has Time**: Whether the field includes time selection.
-> -   **Has Date**: Whether the field includes date selection.
-> -   **Rule**: Validation rules for the field.
-> -   **Format**: The format of the date/time value.
-> </detail>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyNotEmpty('event', 'date')
-> <p>Year: {{ $event_date?->format('Y') }}</p>
-> @endif
-> ```
->
-> </details>
-
-#### Content Picker
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Types**: The types of media files allowed.
-> -   **Min**: The minimum number of items required.
-> -   **Max**: The maximum number of items allowed.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
->  @propertyArray('hero', 'image_slider')
->  @foreach ($hero_image_slider ?? [] as $item)
->      <div class="swiper-slide">
->          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
->          <p>{{ $item?->description }}</p>
->      </div>
->  @endforeach
-> ```
->
-> </details>
-
-#### Media Picker
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Types**: The types of media files allowed.
-> -   **Min**: The minimum number of items required.
-> -   **Max**: The maximum number of items allowed.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
->  @propertyArray('hero', 'image_slider')
->  @foreach ($hero_image_slider ?? [] as $item)
->      <div class="swiper-slide">
->          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
->          <p>{{ $item?->description }}</p>
->      </div>
->  @endforeach
-> ```
->
-> </details>
-
-#### Repeater
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Fields**: The sub-fields included in the repeater.
-> -   **Collapsible**: Whether the repeater sections can be collapsed.
-> -   **Cloneable**: Whether the repeater sections can be cloned.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyArray('document_content', 'sections')
-> @foreach ($document_content_sections ?? [] as $item)
->     <section>
->         <h1>{{ $item->getPropertyData('title')?->getValue() }}</h1>
->         <p>{{ $item->getPropertyData('description')?->getValue() }}</p>
->         {{ $item->getPropertyData('content')?->getValue() ?? '' }}
->     </section>
-> @endforeach
-> ```
->
-> </details>
-
-#### Tags
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Prefix Label**: Text displayed before the field.
-> -   **Suffix Label**: Text displayed after the field.
-> -   **Prefix**: Text added before each tag.
-> -   **Suffix**: Text added after each tag.
-> -   **Separator**: The character used to separate tags.
-> -   **Suggestions**: Predefined suggestions for tags.
-> -   **Reorderable**: Whether tags can be reordered.
-> -   **Color**: The color of the tags.
-> -   **Rule**: Validation rules for the field.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @propertyArray('event', 'categories')
-> <p>{{ implode(' | ', $event_categories ?? []) }}</p>
-> ```
->
-> </details>
-
-#### Rich Editor
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Toolbar** Buttons: The buttons available in the editor toolbar.
-> -   **Disk**: The storage disk where files are saved.
-> -   **Directory**: The directory path within the disk.
-> -   **Visibility**: The visibility of the uploaded files.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('event', 'content')
-> ```
->
-> </details>
-
-#### Markdown Editor
-
-> <details><summary>Configuration Options</summary>
->
-> -   **Translatable**: Whether the field supports multiple languages.
-> -   **Toolbar** Buttons: The buttons available in the editor toolbar.
-> -   **Disk**: The storage disk where files are saved.
-> -   **Directory**: The directory path within the disk.
-> -   **Visibility**: The visibility of the uploaded files.
-> </details>
-> <details open><summary>Template Usage</summary>
->
-> ```blade
-> @property('document', 'content')
-> ```
->
-> </details>
 
 ---
 
@@ -549,6 +99,437 @@ You can also access field data through the content object:
 
 ---
 
+## Field Configuration Options
+
+Each field type has specific configuration options, but most share these common settings:
+
+-   **Label**: The display name shown to content editors
+-   **Name**: The technical identifier used in templates
+-   **Helper Text**: Additional guidance shown below the field
+-   **Required**: Whether the field must be filled
+-   **Translatable**: Whether the field should be multilingual
+
+## Field Type Configuration and Usage
+
+### Text
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Rule**: Validation rules for the field.
+> -   **Length**: The exact length of the input.
+> -   **Max Length**: The maximum allowed length of the input.
+> -   **Min Length**: The minimum required length of the input.
+> </details>
+> <details open><summary>Template Usage</summary>
+
+> ```blade
+> @property('hero', 'title')
+> ```
+>
+> </details>
+
+### Text Area
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Rows**: The number of visible rows in the text area.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('intro', 'text')
+> ```
+>
+> </details>
+
+### Email
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('contact', 'email')
+> ```
+>
+> </details>
+
+### Password
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('user', 'password')
+> ```
+>
+> </details>
+
+### Number
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Rule**: Validation rules for the field.
+> -   **Min Value**: The minimum allowed value.
+> -   **Max Value**: The maximum allowed value.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('event', 'max_ppl')
+> ```
+>
+> </details>
+
+### URL
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('contact', 'facebook')
+> ```
+>
+> </details>
+
+### Select
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Options**: The predefined choices available in the dropdown.
+> -   **Multiple**: Whether multiple selections are allowed.
+> -   **Default Value**: The initial value of the field.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> Multiple is false:
+>
+> ```blade
+> @property('event', 'type')
+> ```
+>
+> Multiple is true:
+>
+> ```blade
+> @propertyArray('event', 'types')
+> {{ implode(', ', $event_types ?? []) }}
+> ```
+>
+> </details>
+
+### Toggle
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @if ($content?->getPropertyGroup('event')?->getPropertyData('active')?->getValue() ?? false)
+> @endif
+> ```
+>
+> </details>
+
+### Radio
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Options**: The predefined choices available for selection.
+> -   **Default Value**: The initial value of the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('user', 'gender')
+> ```
+>
+> </details>
+
+### File
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Disk**: The storage disk where files are saved.
+> -   **Directory**: The directory path within the disk.
+> -   **Visibility**: The visibility of the uploaded files.
+> -   **Multiple**: Whether multiple files can be uploaded.
+> -   **Rule**: Validation rules for the field.
+> -   **Accepted File Types**: The allowed file types for upload.
+> -   **Min File**: The minimum number of files required.
+> -   **Max File**: The maximum number of files allowed.
+> -   **Min Size**: The minimum file size allowed.
+> -   **Max Size**: The maximum file size allowed.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyArray('event', 'docs')
+> @foreach ($event_docs ?? [] as $doc)
+>     <a href="{{ \Storage::disk($doc->disk)->url(implode('/', array_filter([$doc->directory, $doc->path], 'filled'))) }}">Doc</a>
+> @endforeach
+> ```
+>
+> Or
+>
+> ```blade
+> @propertyArray('event', 'docs')
+> @foreach ($event_docs ?? [] as $doc)
+>     <a href="{{ $doc }}">Doc</a>
+> @endforeach
+> ```
+>
+> </details>
+
+### Image
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Disk**: The storage disk where images are saved.
+> -   **Directory**: The directory path within the disk.
+> -   **Visibility**: The visibility of the uploaded images.
+> -   **Multiple**: Whether multiple images can be uploaded.
+> -   **Rule**: Validation rules for the field.
+> -   **Accepted File Types**: The allowed file types for upload.
+> -   **Min File**: The minimum number of images required.
+> -   **Max File**: The maximum number of images allowed.
+> -   **Min Size**: The minimum image size allowed.
+> -   **Max Size**: The maximum image size allowed.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyArray('event', 'images')
+> @foreach ($event_images ?? [] as $img)
+>     <img src="{{ \Storage::disk($img->disk)->url(implode('/', array_filter([$img->directory, $img->path], 'filled'))) }}" alt="Event Image">
+> @endforeach
+> ```
+>
+> Or
+>
+> ```blade
+> @propertyArray('event', 'images')
+> @foreach ($event_images ?? [] as $img)
+>     <img src="{{ $img }}" alt="Event Image">
+> @endforeach
+> ```
+>
+> </details>
+
+### Color Picker
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> </details>
+>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyNotEmpty('user', 'fav_color')
+> <p style="color: {{ $user_fav_color }}">$user_fav_color</p>
+> @endif
+> ```
+>
+> </details>
+
+### DateTime Picker
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Default Value**: The initial value of the field.
+> -   **Placeholder**: Text displayed inside the field when empty.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Has Time**: Whether the field includes time selection.
+> -   **Has Date**: Whether the field includes date selection.
+> -   **Rule**: Validation rules for the field.
+> -   **Format**: The format of the date/time value.
+> </details>
+>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyNotEmpty('event', 'date')
+> <p>Year: {{ $event_date?->format('Y') }}</p>
+> @endif
+> ```
+>
+> </details>
+
+### Content Picker
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Types**: The types of media files allowed.
+> -   **Min**: The minimum number of items required.
+> -   **Max**: The maximum number of items allowed.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+>  @propertyArray('hero', 'image_slider')
+>  @foreach ($hero_image_slider ?? [] as $item)
+>      <div class="swiper-slide">
+>          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+>          <p>{{ $item?->description }}</p>
+>      </div>
+>  @endforeach
+> ```
+>
+> </details>
+
+### Media Picker
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Types**: The types of media files allowed.
+> -   **Min**: The minimum number of items required.
+> -   **Max**: The maximum number of items allowed.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+>  @propertyArray('hero', 'image_slider')
+>  @foreach ($hero_image_slider ?? [] as $item)
+>      <div class="swiper-slide">
+>          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+>          <p>{{ $item?->description }}</p>
+>      </div>
+>  @endforeach
+> ```
+>
+> </details>
+
+### Repeater
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Fields**: The sub-fields included in the repeater.
+> -   **Collapsible**: Whether the repeater sections can be collapsed.
+> -   **Cloneable**: Whether the repeater sections can be cloned.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyArray('document_content', 'sections')
+> @foreach ($document_content_sections ?? [] as $item)
+>     <section>
+>         <h1>{{ $item->getPropertyData('title')?->getValue() }}</h1>
+>         <p>{{ $item->getPropertyData('description')?->getValue() }}</p>
+>         {{ $item->getPropertyData('content')?->getValue() ?? '' }}
+>     </section>
+> @endforeach
+> ```
+>
+> </details>
+
+### Tags
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Prefix Label**: Text displayed before the field.
+> -   **Suffix Label**: Text displayed after the field.
+> -   **Prefix**: Text added before each tag.
+> -   **Suffix**: Text added after each tag.
+> -   **Separator**: The character used to separate tags.
+> -   **Suggestions**: Predefined suggestions for tags.
+> -   **Reorderable**: Whether tags can be reordered.
+> -   **Color**: The color of the tags.
+> -   **Rule**: Validation rules for the field.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyArray('event', 'categories')
+> <p>{{ implode(' | ', $event_categories ?? []) }}</p>
+> ```
+>
+> </details>
+
+### Rich Editor
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Toolbar** Buttons: The buttons available in the editor toolbar.
+> -   **Disk**: The storage disk where files are saved.
+> -   **Directory**: The directory path within the disk.
+> -   **Visibility**: The visibility of the uploaded files.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('event', 'content')
+> ```
+>
+> </details>
+
+#### Markdown Editor
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **Toolbar** Buttons: The buttons available in the editor toolbar.
+> -   **Disk**: The storage disk where files are saved.
+> -   **Directory**: The directory path within the disk.
+> -   **Visibility**: The visibility of the uploaded files.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @property('document', 'content')
+> ```
+>
+> </details>
+
+---
+
 ## Field Type Attributes
 
 Field types in InspireCMS are defined by a set of attributes that control their behavior, storage, and presentation. These attributes ensure seamless integration with the system.
@@ -564,16 +545,6 @@ Field types in InspireCMS are defined by a set of attributes that control their 
 -   **Translatable**: Indicates whether the field supports multilingual content. If enabled, the system stores separate values for each configured language.
 -   **Converter**: A class responsible for transforming data between its raw database format and the format used in templates. Converters handle data processing during both saving and retrieval.
 
-### How Attributes Work Together
-
-These attributes work together to provide a cohesive experience:
-
--   **ConfigName**: Identifies the field type and loads its configuration.
--   **DbType**: Determines the database column type for storing the field's data.
--   **FormComponent**: Specifies the UI element displayed in the admin panel.
--   **Translatable**: Enables multilingual support by storing values for each language.
--   **Converter**: Transforms data between its storage format and display format.
-
 ### Example Configuration
 
 For a simple text field:
@@ -581,7 +552,7 @@ For a simple text field:
 -   **ConfigName**: `text`
 -   **DbType**: `string`
 -   **FormComponent**: `TextInput::class`
--   **Translatable**: `true` (if multilingual support is required)
+-   **Translatable**: `true`
 -   **Converter**: `TextConverter::class`
 
 ---
@@ -769,8 +740,6 @@ For more information, see:
 
 The Field Type system supports macros, allowing you to extend functionality without creating full custom field types. This approach is useful for adding small enhancements or modifications to existing field types.
 
-### Adding Macros
-
 You can use the mixin method to add multiple macros at once:
 
 ```php
@@ -791,43 +760,6 @@ FieldTypeBaseConfig::macro('addHelpText', function ($text) {
     return $this;
 });
 ```
-
-### Usage Examples
-
-#### Enhancing Field Validation
-
-```php
-FieldTypeBaseConfig::macro('requireHttps', function () {
-    $this->rule('regex:/^https:\/\/.+$/');
-    $this->helperText('Must be an HTTPS URL');
-    return $this;
-});
-
-// Usage in field configuration
-$field->requireHttps();
-```
-
-#### Adding Custom UI Behavior
-
-```php
-FieldTypeBaseConfig::macro('withCharacterCount', function () {
-    $this->extraAttributes([
-        'x-data' => '{
-            charCount: 0,
-            updateCount: function(el) { this.charCount = el.value.length; }
-        }',
-        'x-init' => 'updateCount($el)',
-        'x-on:keyup' => 'updateCount($el)',
-    ]);
-    $this->helperText('Character count: <span x-text="charCount"></span>');
-    return $this;
-});
-
-// Usage in field configuration
-$field->withCharacterCount();
-```
-
-Macros provide a lightweight way to extend field functionality without creating full custom field types, making them ideal for project-specific customizations and reusable functionality.
 
 ---
 

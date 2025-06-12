@@ -3,32 +3,22 @@ title: User Management
 slug: user-management
 path: docs/v1/user-management
 uri: /docs/1.x/user-management
----
-# User Management
-
-InspireCMS provides a comprehensive system for managing users, roles, and permissions. This guide explains how to work with users in the system and configure access controls.
-
+heading: User Management
+brief: InspireCMS provides a comprehensive system for managing users, roles, and permissions
 ---
 
 ## Overview
 
 The user management system in InspireCMS is built on:
 
-- A flexible authentication system
-- Role-based access control
-- Granular permissions
-- User profiles and preferences
+-   A flexible authentication system
+-   Role-based access control
+-   Granular permissions
+-   User profiles and preferences
 
 ---
 
 ## User Roles
-
-InspireCMS comes with several predefined roles:
-
-1. **Administrator**: Full access to all system features
-2. **Editor**: Can create and edit content but cannot modify system settings
-3. **Author**: Can create content but typically only edit their own work
-4. **Viewer**: Read-only access to content
 
 ### Managing Roles
 
@@ -36,10 +26,10 @@ Access role management through: **Admin Panel** > **Users** > **Roles**
 
 From here you can:
 
-- Create new roles
-- Edit existing roles
-- Assign permissions to roles
-- Delete roles (except system roles)
+-   Create new roles
+-   Edit existing roles
+-   Assign permissions to roles
+-   Delete roles
 
 ### Creating a Custom Role
 
@@ -47,19 +37,13 @@ From here you can:
 2. Click **Create Role**
 3. Fill in the form:
     - **Name**: Unique identifier for the role (e.g., "Marketing")
-    - **Guard Name**: Set to "inspirecms" (this is the default guard used by InspireCMS)
+    - **Guard Name**: Set to "inspirecms" (this is the default guard used by InspireCMS, which can configure on `config/inspirecms.php`)
     - **Permissions**: Select the permissions for this role
 4. Click **Save** to create the role
 
 ---
 
-## Permissions System
-
-InspireCMS uses a granular permission system that controls access to specific actions:
-
-- Content permissions: view, create, edit, publish, delete
-- User permissions: view, create, edit, delete
-- System permissions: manage settings, access system tools
+## Permissions
 
 ### Permission Structure
 
@@ -70,131 +54,37 @@ Permissions follow a standard naming convention:
 ```
 
 For example:
-- `content.view`: Ability to view content
-- `content.create`: Ability to create content
-- `settings.update`: Ability to modify system settings
 
-### Customizing Permissions
-
-You can add custom permissions directly using [Spatie's Permission](https://spatie.be/docs/laravel-permission/v6/introduction) package:
-
-```php
-use Spatie\Permission\Models\Permission;
-use SolutionForest\InspireCms\Helpers\AuthHelper;
-
-// In a service provider or seeder
-Permission::create(['name' => 'manage_product_inventory', 'guard_name' => AuthHelper::guardName()]);
-```
-
-You can also create permissions in a database seeder:
-
-```php
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
-use SolutionForest\InspireCms\Helpers\AuthHelper;
-use SolutionForest\InspireCms\Facades\PermissionManifest;
-
-class PermissionSeeder extends Seeder
-{
-    public function run()
-    {
-        // Create permissions
-        $permissions = [
-            'manage_product_inventory',
-            'view_analytics',
-            'export_reports',
-        ];
-        
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission, 'guard_name' => AuthHelper::guardName()]);
-        }
-        
-        // Optionally assign to existing roles
-        $adminRole = Role::findByName(PermissionManifest::getSuperAdminRoleName(), AuthHelper::guardName());
-        $adminRole->givePermissionTo('manage_product_inventory');
-    }
-}
-```
-
-Run the seeder with:
-
-```bash
-php artisan db:seed --class=PermissionSeeder
-```
-
-### Using Permissions in Blade Templates
-
-```blade
-@if(auth()->user()->can('manage_product_inventory'))
-    <a href="{{ route('products.inventory') }}">Manage Inventory</a>
-@endif
-```
+-   `content.view`: Ability to view content
+-   `content.create`: Ability to create content
 
 ---
 
-## User Management
+## Managing Users
 
-Access user management through: **Admin Panel** > **Users** > **Users**
+Access user management through: **Users** > **Users**
 
 ### User Operations
 
 From the users section, you can:
 
-- **View Users**: See all registered users in the system
-- **Create Users**: Add new user accounts manually
-- **Edit Users**: Modify user information and roles
-- **Block Users**: Temporarily prevent users from logging in
-- **Delete Users**: Remove user accounts from the system
-
-### Creating a New User
-
-1. Navigate to **Users → Users**
-2. Click **Create User**
-3. Fill in the required information:
-   - Name
-   - Email
-   - Password
-   - Role assignment
-4. Click **Save** to create the user
+-   **View Users**: See all registered users in the system
+-   **Create Users**: Add new user accounts manually
+-   **Edit Users**: Modify user information and roles
+-   **Delete Users**: Remove user accounts from the system
 
 ### User Authentication
 
 InspireCMS supports various authentication features:
 
-- Password-based login
-- Password reset functionality
-- Remember me capability
-- Account lockout after failed attempts
-- Optional email verification
+-   Password-based login
+-   Password reset functionality
+-   Remember me capability
+-   Account lockout after failed attempts
 
 ### Configuring Authentication
 
-Authentication settings can be modified in `config/inspirecms.php`:
-
-```php
-'auth' => [
-    'guard' => [
-        'name' => 'inspirecms',
-        'driver' => 'session',
-        'provider' => 'cms_users',
-    ],
-    'provider' => [
-        'name' => 'cms_users',
-        'driver' => 'eloquent',
-        'model' => \SolutionForest\InspireCms\Models\User::class,
-    ],
-    'resetting_password' => [
-        'enabled' => true,
-        'name' => 'inspirecms',
-        'provider' => 'cms_users',
-        'table' => 'password_reset_tokens',
-        'expire' => 60,
-        'throttle' => 60,
-    ],
-    'failed_login_attempts' => 5,
-    'lockout_duration' => 120, // minutes
-],
-```
+Authentication settings can be modified in `config/inspirecms.php`, please reference on [configuration documentation](./configuration#content-authentication){.doc-link}
 
 ---
 
@@ -202,10 +92,10 @@ Authentication settings can be modified in `config/inspirecms.php`:
 
 Each user has a profile that includes:
 
-- Basic information (name, email)
-- Profile picture
-- Role assignments
-- Last login information
+-   Basic information (name, email)
+-   Profile picture
+-   Role assignments
+-   Last login information
 
 Users can edit their own profiles through the user menu: **User Menu (top-right)** > **Profile**
 
@@ -220,13 +110,13 @@ To use a custom user provider:
     'provider' => [
         'name' => 'cms_users',
         'driver' => 'eloquent',
-        'model' => \App\Models\CustomUser::class, // Your custom user model
+        'model' => \App\Models\CmsUser::class, // Your custom user model
     ],
 ],
 //...
 'models' => [
     'fqcn' => [
-        'user' => \App\Models\CustomUser::class,
+        'user' => \App\Models\CmsUser::class,
     ],
 ],
 ```
@@ -236,26 +126,11 @@ Ensure your custom user model implements required interfaces:
 ```php
 namespace App\Models;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
-use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
-use SolutionForest\InspireCms\Models\Contracts\CmsUser;
+use SolutionForest\InspireCms\Models\Contracts\User as UserContract;
+use SolutionForest\InspireCms\Models\User as Authenticatable;
 
-class CustomUser extends Authenticatable implements CmsUser
+class CmsUser extends Authenticatable implements UserContract
 {
-    use CmsUserTrait;
-    use HasRoles;
-    
     // Your custom implementation...
 }
 ```
-
----
-
-## Best Practices
-
-- **Principle of Least Privilege**: Give users only the permissions they need
-- **Role-Based Design**: Design roles based on job functions, not individuals
-- **Regular Audits**: Review user accounts and permissions periodically
-- **Password Policies**: Enforce strong passwords and regular changes
-- **Activity Monitoring**: Review unusual login patterns or suspicious activity

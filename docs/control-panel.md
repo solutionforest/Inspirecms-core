@@ -3,11 +3,9 @@ title: Control Panel
 slug: control-panel
 path: docs/v1/control-panel
 uri: /docs/1.x/control-panel
----
-# Control Panel
+heading: Control Panel
 
-The InspireCMS Control Panel provides a powerful and intuitive interface for managing your content and site settings. This guide walks you through the key features and customization options of the admin interface.
-
+brief:
 ---
 
 ## Accessing the Control Panel
@@ -26,14 +24,6 @@ The path can be customized in your configuration if needed:
     // other settings...
 ],
 ```
-
-## Dashboard Overview
-
-The InspireCMS dashboard provides insights and quick access to important areas of your site:
-
--   **Content Statistics**: Shows number of pages, drafts, and published content
--   **Recent Activity**: Displays recent content updates and user actions
--   **Quick Links**: Shortcuts to commonly used sections
 
 ---
 
@@ -54,8 +44,7 @@ The control panel is organized into several main sections:
 
 The Content section lists all your content items with filtering and search capabilities:
 
--   Filter by status (draft, published, archived)
--   Sort by various attributes (title, date, author)
+-   Filter by status (draft, published, unpublish)
 -   Search content by keyword
 -   Bulk operations for multiple items
 
@@ -63,7 +52,6 @@ The Content section lists all your content items with filtering and search capab
 
 The content editor includes:
 
--   **WYSIWYG Editor**: Rich text editing with formatting tools
 -   **Media Integration**: Insert and manage media within content
 -   **Custom Fields**: Input fields based on your defined content types
 -   **SEO Settings**: Meta title, description, and other optimization options
@@ -88,12 +76,11 @@ The Media Library provides tools for managing digital assets:
 
 The Settings section includes:
 
--   **Site Configuration**: Basic site settings and metadata
+-   **Document Types**: Configure content type structures
+-   **Customer Fields**: Define custom fields for document type
 -   **Template Management**: Create and edit templates
 -   **Navigation**: Manage site menus and navigation structure
 -   **Languages**: Configure multilingual support
--   **Field Groups**: Define custom fields
--   **Document Types**: Configure content type structures
 -   **Import/Export**: Tools for data migration
 
 ---
@@ -108,8 +95,10 @@ You can customize the appearance of the control panel through the configuration 
 'admin' => [
     'brand' => [
         'name' => 'Your Site Name',
-        'logo' => 'path/to/your-logo.svg',
-        'favicon' => 'path/to/favicon.ico', // Optional
+        'logo' => fn () => 'path/to/your-logo.svg',
+				'logo_title' => 'Your Site Name',
+				'logo_show_text' => true,
+        'favicon' => fn () => 'path/to/favicon.ico', // Optional
     ],
 ],
 ```
@@ -189,25 +178,15 @@ Next, register your custom provider in `bootstrap/providers.php`:
 <?php
 
 return [
-    App\Providers\CustomCmsPanelProvider::class,
-    // Other providers...
+	App\Providers\CustomCmsPanelProvider::class,
+	// SolutionForest\InspireCms\CmsPanelProvider::class,
+		// Other providers...
 ];
 ```
 
 For more advanced theme customization options, refer to the [Filament Panels documentation](https://filamentphp.com/docs/3.x/panels/themes).
 
-## Widgets
-
-InspireCMS comes with several dashboard widgets:
-
--   **Content Page Overview**: Shows content statistics and quick links
--   **Page Activity**: Displays recent content changes
--   **User Activity**: Display current user activities
--   **CMS Info**: Shows system information and version
--   **Template Info**: Provides information about available templates
--   **Tree Navigation**: Visual navigation builder
-
-### Adding Custom Widgets
+#### Adding Custom Widgets
 
 You can add custom widgets by extending your custom panel provider:
 
@@ -237,8 +216,6 @@ class CustomCmsPanelProvider extends CmsPanelProvider
 }
 ```
 
-Remember to register your custom provider in `bootstrap/providers.php` as shown in the Customizing the Control Panel section.
-
 ---
 
 ## User Preferences
@@ -248,7 +225,6 @@ Users can customize their experience through the profile page:
 -   **Personal Information**: Update name, email, and profile picture
 -   **Password Management**: Change password and security settings
 -   **Interface Preferences**: Theme preferences and display options
--   **Notification Settings**: Configure how and when to receive alerts
 
 ---
 
@@ -258,37 +234,3 @@ The control panel supports various keyboard shortcuts for power users:
 
 -   `Ctrl+S` or `Cmd+S`: Save the current item
 -   `Esc`: Close modals or cancel operations
--   `/`: Focus the global search
-
----
-
-## Mobile Experience
-
-The control panel is fully responsive and optimized for mobile devices:
-
--   **Responsive Layout**: Adapts to different screen sizes
--   **Touch-Friendly**: Optimized for touch interactions
--   **Simplified Navigation**: Collapsible menu for mobile screens
-
----
-
-## Browser Compatibility
-
-InspireCMS control panel works best with:
-
--   Chrome (latest 2 versions)
--   Firefox (latest 2 versions)
--   Safari (latest 2 versions)
--   Edge (latest 2 versions)
-
----
-
-## Performance Optimization
-
-For optimal control panel performance:
-
-1. Enable caching for production environments
-2. Use a CDN for static assets
-3. Configure proper database indexing
-4. Consider upgrading server resources for larger sites
-5. Limit the number of custom fields per content type
