@@ -13,13 +13,15 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class LicenseManager
 {
-    const ENDPOINT = 'https://license.solutionforest.com';
+    private const ENDPOINT = 'https://license.solutionforest.com';
 
-    const REQUEST_TIMEOUT = 5;
+    private const REQUEST_TIMEOUT = 5;
 
-    const CACHE_KEY_PREFIX = 'license:';
+    private const CACHE_KEY_PREFIX = 'license:';
 
-    const SUPPORT_EMAIL = 'info@solutionforest.net';
+    private const SUPPORT_EMAIL = 'info@solutionforest.net';
+
+    private const SUBSCRIPTION_URL = 'https://inspirecms.net/#pricing';
 
     private $cacheManager;
 
@@ -134,6 +136,11 @@ class LicenseManager
     public function getSupportEmail(): ?string
     {
         return self::SUPPORT_EMAIL;
+    }
+
+    public function getSubscriptionUrl(): ?string
+    {
+        return self::SUBSCRIPTION_URL;
     }
 
     /**

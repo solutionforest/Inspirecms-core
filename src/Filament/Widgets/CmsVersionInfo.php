@@ -42,9 +42,8 @@ class CmsVersionInfo extends Widget implements GuardWidget, HasActions, HasForms
     public function upgradeAction(): Action
     {
         return Action::make('upgrade')
-            // ->label(__('inspirecms::widgets.cms_version_info.upgrade_action.label'))
             ->icon('heroicon-o-arrow-up-tray')
-            ->url('http://localhost:8011/user/sites')
+            ->url(app(LicenseManager::class)->getSubscriptionUrl())
             ->openUrlInNewTab()
             ->color('primary');
     }
