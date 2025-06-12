@@ -20,7 +20,7 @@ class ClearCacheCommand extends Command
         $this->addOption('all', null, InputOption::VALUE_NONE, 'Clear all caches');
         foreach (static::CACHE_TYPES as $option => $description) {
             $this->addOption($option, null, InputOption::VALUE_NONE, "Clear {$description} cache");
-        };
+        }
     }
 
     public function handle(): int

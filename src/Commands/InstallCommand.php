@@ -10,7 +10,6 @@ use SolutionForest\InspireCms\InspireCms;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-
 #[AsCommand(name: 'inspirecms:install')]
 class InstallCommand extends Command
 {
@@ -28,6 +27,7 @@ class InstallCommand extends Command
         ));
         if (! $license) {
             $this->error('License key is required. Installation aborted.');
+
             return static::FAILURE;
         }
 
@@ -37,7 +37,7 @@ class InstallCommand extends Command
         // 2) Publish config
         if ($this->confirm('Do you want to publish the configuration files?', false)) {
             $this->call('vendor:publish', [
-                '--tag'      => InspireCms::CORE_SLUG . '-config',
+                '--tag' => InspireCms::CORE_SLUG . '-config',
             ]);
             $this->info('Configuration files published.');
         } else {
@@ -47,7 +47,7 @@ class InstallCommand extends Command
         // 3) Publish migrations
         if ($this->confirm('Do you want to publish the migrations?', true)) {
             $this->call('vendor:publish', [
-                '--tag'      => InspireCms::CORE_SLUG . '-migrations',
+                '--tag' => InspireCms::CORE_SLUG . '-migrations',
             ]);
             $this->info('Migrations published.');
         } else {
@@ -75,6 +75,7 @@ class InstallCommand extends Command
         $this->call(ImportDefaultDataCommand::class);
 
         $this->info('InspireCMS installation complete!');
+
         return static::SUCCESS;
     }
 
@@ -96,9 +97,10 @@ class InstallCommand extends Command
                 throw new RuntimeException('Failed to update license in .env');
             }
             $this->info('License key saved.');
+
             return;
         }
-        
+
         // If not, append it
         if (file_put_contents($envPath, $entry, FILE_APPEND | LOCK_EX) === false) {
             throw new RuntimeException('Failed to append license to .env');
@@ -108,7 +110,7 @@ class InstallCommand extends Command
         if (! is_readable($envPath)) {
             chmod($envPath, 0644);
         }
-            
+
         $this->info('License key saved.');
     }
 }

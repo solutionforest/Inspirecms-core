@@ -19,8 +19,8 @@ class UpdateCommand extends Command
         // 1) Publish config
         if ($this->confirm('Do you want to publish the configuration files?', true)) {
             $this->call('vendor:publish', [
-                '--tag'      => InspireCms::CORE_SLUG . '-config',
-                '--force'    => true, // Force overwrite existing files
+                '--tag' => InspireCms::CORE_SLUG . '-config',
+                '--force' => true, // Force overwrite existing files
             ]);
             $this->info('Configuration files published.');
         } else {
@@ -30,7 +30,7 @@ class UpdateCommand extends Command
         // 2) Publish migrations
         if ($this->confirm('Do you want to publish the migrations?', true)) {
             $this->call('vendor:publish', [
-                '--tag'      => InspireCms::CORE_SLUG . '-migrations',
+                '--tag' => InspireCms::CORE_SLUG . '-migrations',
             ]);
             $this->info('Migrations published.');
         } else {
