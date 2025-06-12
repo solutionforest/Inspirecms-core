@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Content;
 
+use Exception;
 use Illuminate\Support\Str;
 
 class DefaultSlugGenerator implements SlugGeneratorInterface
