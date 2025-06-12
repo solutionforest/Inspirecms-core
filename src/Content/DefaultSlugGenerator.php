@@ -5,11 +5,16 @@ namespace SolutionForest\InspireCms\Content;
 class DefaultSlugGenerator implements SlugGeneratorInterface
 {
     const LANG_CHINESE = 'chinese';
+
     const LANG_RUSSIAN = 'russian';
+
     const LANG_ARABIC = 'arabic';
+
     const LANG_JAPANESE = 'japanese';
-    const LANG_ENGLISH  = 'english';
-    const LANG_AUTO     = 'auto';
+
+    const LANG_ENGLISH = 'english';
+
+    const LANG_AUTO = 'auto';
 
     private static $transliterationRules = [
         self::LANG_CHINESE  => 'Han-Latin; Latin-ASCII; Lower()',
@@ -29,15 +34,15 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
         // Try transliteration first
         if (function_exists('transliterator_transliterate') && isset(self::$transliterationRules[$language])) {
             $transliterated = transliterator_transliterate(
-                self::$transliterationRules[$language], 
+                self::$transliterationRules[$language],
                 $text
             );
-            
+
             if ($transliterated) {
                 $slug = preg_replace('/[^a-z0-9]+/', $separator, $transliterated);
                 $slug = trim($slug, $separator);
-                
-                if (!empty($slug)) {
+
+                if (! empty($slug)) {
                     return $slug;
                 }
             }
@@ -58,17 +63,17 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
         if (preg_match('/[\x{4e00}-\x{9fff}]/u', $text)) {
             return self::LANG_CHINESE;
         }
-        
+
         // Cyrillic characters (Russian)
         if (preg_match('/[\x{0400}-\x{04FF}]/u', $text)) {
             return self::LANG_RUSSIAN;
         }
-        
+
         // Arabic characters
         if (preg_match('/[\x{0600}-\x{06FF}]/u', $text)) {
             return self::LANG_ARABIC;
         }
-        
+
         return self::LANG_ENGLISH; // Default fallback to English
     }
 
@@ -106,13 +111,13 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
             'О' => 'O', 'П' => 'P', 'Р' => 'R', 'С' => 'S', 'Т' => 'T',
             'У' => 'U', 'Ф' => 'F', 'Х' => 'Kh', 'Ц' => 'Ts', 'Ч' => 'Ch',
             'Ш' => 'Sh', 'Щ' => 'Shch', 'Ъ' => '', 'Ы' => 'Y', 'Ь' => '',
-            'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya'
+            'Э' => 'E', 'Ю' => 'Yu', 'Я' => 'Ya',
         ];
 
         $result = strtr($text, $russianMap);
         $result = preg_replace('/[^a-zA-Z0-9\s]/', '', $result);
         $result = preg_replace('/\s+/', $separator, $result);
-        
+
         return strtolower(trim($result, $separator));
     }
 
@@ -121,7 +126,7 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
         // Use timestamp-based fallback for Chinese
         $hash = substr(md5($text), 0, 8);
         $timestamp = date('Ymd');
-        
+
         return "content{$separator}{$timestamp}{$separator}{$hash}";
     }
 
@@ -135,7 +140,7 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
     {
         $result = preg_replace('/[^a-zA-Z0-9\s]/', '', $text);
         $result = preg_replace('/\s+/', $separator, $result);
-        
+
         return strtolower(trim($result, $separator));
     }
 }
