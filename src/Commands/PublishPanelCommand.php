@@ -9,8 +9,8 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\CmsPanelProvider;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:publish-panel', description: 'Publish CMS panel for InspireCMS')]
-class PublishPanel extends Command
+#[AsCommand(name: 'inspirecms:publish-panel', description: 'Publish CMS panel')]
+class PublishPanelCommand extends Command
 {
     public function handle(): int
     {

@@ -4,16 +4,18 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use RuntimeException;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Spatie\Permission\Contracts\Permission as SpatiePermissionContract;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:import-default-data', description: 'Import default data for InspireCMS')]
-class ImportDefaultData extends Command
+#[AsCommand(name: 'inspirecms:import-default-data')]
+class ImportDefaultDataCommand extends Command
 {
     protected function configure()
     {
@@ -36,10 +38,22 @@ class ImportDefaultData extends Command
             'publishRouteDefinition' => 'Publishing route definition',
         ];
 
+        $stepCanSkip = [
+            'importSampleData',
+        ];
+
         $skipAfter = false;
         $processErrors = [];
 
         foreach ($steps as $method => $description) {
+
+            if (! method_exists($this, $method)) {
+                throw new RuntimeException("Method {$method} does not exist in " . static::class);
+            }
+
+            if ($this->option('skip-samples') && in_array($method, $stepCanSkip)) {
+                continue;
+            }
 
             $displayStep = "  # <options=bold>{$description}</>" . PHP_EOL;
             $taskDescription = PHP_EOL;
@@ -117,7 +131,7 @@ class ImportDefaultData extends Command
         // Add example roles
         $roleClass = InspireCmsConfig::getRoleModelClass();
         $guardName = AuthHelper::guardName();
-        $allPermissions = PermissionHelper::setupPermissions()->filter(fn (\Spatie\Permission\Contracts\Permission $permission) => $permission->guard_name === $guardName);
+        $allPermissions = PermissionHelper::setupPermissions()->filter(fn (SpatiePermissionContract $permission) => $permission->guard_name === $guardName);
 
         $modelPermissionFilter = fn (string $permissionName, string $action, array $models) => Str::after($permissionName, '.') == $action && in_array(Str::before($permissionName, '.'), $models);
         $clusterPermissionFilter = fn (string $permissionName, array $clusters) => Str::startsWith($permissionName, 'access_section_cluster') && in_array(Str::afterLast($permissionName, '_'), $clusters);
@@ -127,7 +141,7 @@ class ImportDefaultData extends Command
         $reviewer->givePermissionTo(
             $allPermissions
                 ->filter(
-                    fn (\Spatie\Permission\Contracts\Permission $permission) => (
+                    fn (SpatiePermissionContract $permission) => (
                         Str::startsWith($permission->name, 'view') &&
                         ! (
                             Str::endsWith($permission->name, 'user') ||
@@ -143,7 +157,7 @@ class ImportDefaultData extends Command
         $writer->givePermissionTo(
             $allPermissions
                 ->filter(
-                    fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                    fn (SpatiePermissionContract $permission) => str_starts_with($permission->name, 'widgets') ||
                     $modelPermissionFilter($permission->name, 'view', ['content']) ||
                     $modelPermissionFilter($permission->name, 'view_any', ['content']) ||
                     $modelPermissionFilter($permission->name, 'update', ['content']) ||
@@ -156,7 +170,7 @@ class ImportDefaultData extends Command
         $editor->givePermissionTo(
             $allPermissions
                 ->filter(
-                    fn (\Spatie\Permission\Contracts\Permission $permission) => str_starts_with($permission->name, 'widgets') ||
+                    fn (SpatiePermissionContract $permission) => str_starts_with($permission->name, 'widgets') ||
                     $modelPermissionFilter($permission->name, 'view', ['content', 'mediaasset']) ||
                     $modelPermissionFilter($permission->name, 'view_any', ['content', 'mediaasset']) ||
                     $modelPermissionFilter($permission->name, 'create', ['content', 'mediaasset']) ||
@@ -168,15 +182,13 @@ class ImportDefaultData extends Command
 
     protected function importSampleData(): void
     {
-        if (! $this->option('skip-samples')) {
-            $this->callSilent('vendor:publish', [
-                '--tag' => 'inspirecms-sample-assets',
-                '--force' => true,
-            ]);
-            $this->call('db:seed', [
-                '--class' => SampleSeeder::class,
-            ]);
-        }
+        $this->callSilent('vendor:publish', [
+            '--tag' => 'inspirecms-sample-assets',
+            '--force' => true,
+        ]);
+        $this->call('db:seed', [
+            '--class' => SampleSeeder::class,
+        ]);
     }
 
     protected function publishRouteDefinition(): void

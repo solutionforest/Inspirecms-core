@@ -6,8 +6,8 @@ use Illuminate\Console\Command;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(name: 'inspirecms:data-cleanup', description: 'Cleanup data for InspireCMS')]
-class DataCleanup extends Command
+#[AsCommand(name: 'inspirecms:data-cleanup', description: 'Prune data from prunable models')]
+class DataCleanupCommand extends Command
 {
     public function handle(): int
     {

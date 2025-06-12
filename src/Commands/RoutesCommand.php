@@ -3,14 +3,14 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
+use SolutionForest\InspireCms\Base\Commnads\Concerns\WithPixelArt;
 use Symfony\Component\Console\Attribute\AsCommand;
 
-#[AsCommand(
-    name: 'inspirecms:list-routes',
-    description: 'List all registered content routes for the InspireCMS plugin'
-)]
-class ListRoutes extends Command
+#[AsCommand(name: 'inspirecms:routes', description: 'List all registered content routes')]
+class RoutesCommand extends Command
 {
+    use WithPixelArt;
+
     public function handle()
     {
         $routes = $this->getRoutes();
@@ -21,8 +21,8 @@ class ListRoutes extends Command
             return;
         }
 
-        $this->info('InspireCMS Registered Routes:');
-        $this->line('----------------------------------');
+        $this->displayPixelArtBanner('InspireCMS Registered Routes');
+
         $this->table(
             ['URL Pattern', 'Name', 'Bindings', 'Middleware'],
             $routes,

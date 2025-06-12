@@ -4,12 +4,10 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputOption;
 
-#[AsCommand(
-    name: 'inspirecms:clear-cache',
-    description: 'Clear the InspireCMS cache'
-)]
-class ClearCache extends Command
+#[AsCommand(name: 'inspirecms:clear-cache')]
+class ClearCacheCommand extends Command
 {
     const CACHE_TYPES = [
         'languages' => 'languages',
@@ -17,16 +15,12 @@ class ClearCache extends Command
         'navigation' => 'navigation',
     ];
 
-    public function __construct()
+    protected function configure()
     {
-        parent::__construct();
-
-        // options
-        $this->addOption('all', null, \Symfony\Component\Console\Input\InputOption::VALUE_NONE, 'Clear all caches');
+        $this->addOption('all', null, InputOption::VALUE_NONE, 'Clear all caches');
         foreach (static::CACHE_TYPES as $option => $description) {
-            $this->addOption($option, null, \Symfony\Component\Console\Input\InputOption::VALUE_NONE, "Clear {$description} cache");
-        }
-
+            $this->addOption($option, null, InputOption::VALUE_NONE, "Clear {$description} cache");
+        };
     }
 
     public function handle(): int

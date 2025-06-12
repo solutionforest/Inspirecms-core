@@ -11,11 +11,8 @@ use SolutionForest\InspireCms\Services\ExportServiceInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 
-#[AsCommand(
-    name: 'inspirecms:export',
-    description: 'Execute pending export jobs.',
-)]
-class ExecuteExport extends Command
+#[AsCommand(name: 'inspirecms:export', description: 'Execute pending export jobs.')]
+class ExecuteExportCommand extends Command
 {
     protected function configure()
     {

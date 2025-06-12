@@ -31,7 +31,6 @@ use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
-use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 
@@ -50,28 +49,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
          */
         $package->name(static::$name)
             ->hasCommands($this->getCommands())
-            ->hasRoutes($this->getRoutes())
-            ->hasInstallCommand(function (InstallCommand $command) {
-                $command
-                    ->addOption(
-                        name: 'skip-samples',
-                        shortcut: 's',
-                        description: 'Skip importing sample data',
-                    )
-                    ->publishConfigFile()
-                    ->publishMigrations()
-                    ->startWith(function (InstallCommand $command) {
-                        $command->call(Commands\InstallRequirePacakges::class);
-                    })
-                    ->endWith(function (InstallCommand $command) {
-                        $command->call('migrate');
-                        $command->call(Commands\PublishPanel::class);
-                        $command->call(Commands\ImportDefaultData::class, [
-                            '--skip-samples' => $command->option('skip-samples'),
-                        ]);
-                    });
-
-            });
+            ->hasRoutes($this->getRoutes());
 
         $configFileName = $package->shortName();
 
@@ -212,19 +190,20 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
+            Commands\InstallCommand::class,
             Commands\AboutCommand::class,
-            Commands\CacheStats::class,
-            Commands\GenerateSitemap::class,
-            Commands\UpdatePluginCommand::class,
-            Commands\PublishPanel::class,
-            Commands\InstallRequirePacakges::class,
-            Commands\ImportDefaultData::class,
-            Commands\ExecuteImport::class,
-            Commands\ExecuteExport::class,
-            Commands\DataCleanup::class,
+            Commands\CacheStatsCommand::class,
+            Commands\GenerateSitemapCommand::class,
+            Commands\UpdateCommand::class,
+            Commands\PublishPanelCommand::class,
+            Commands\InstallRequirePacakgesCommand::class,
+            Commands\ImportDefaultDataCommand::class,
+            Commands\ExecuteImportCommand::class,
+            Commands\ExecuteExportCommand::class,
+            Commands\DataCleanupCommand::class,
             Commands\RepairPermissionsCommand::class,
-            Commands\ListRoutes::class,
-            Commands\ClearCache::class,
+            Commands\RoutesCommand::class,
+            Commands\ClearCacheCommand::class,
         ];
     }
 

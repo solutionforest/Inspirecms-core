@@ -4,19 +4,21 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use SolutionForest\InspireCms\Base\Commnads\Concerns\WithPixelArt;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 #[AsCommand(
     name: 'inspirecms:cache-stats',
-    description: 'Display information about the InspireCMS plugin'
+    description: 'Display InspireCMS cache statistics including cache keys, stores, and TTLs.',
 )]
-class CacheStats extends Command
+class CacheStatsCommand extends Command
 {
+    use WithPixelArt;
+
     public function handle()
     {
-        $this->info('InspireCMS Cache Stats:');
-        $this->line('----------------------------------');
+        $this->displayPixelArtBanner('InspireCMS Cache Stats');
         $this->line('Cache Driver: ' . config('cache.default'));
         $this->line('Cache Prefix: ' . config('cache.prefix'));
         $this->line('Cache Tags: ' . implode(', ', config('cache.tags', [])));

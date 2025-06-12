@@ -446,7 +446,7 @@ return [
         'execute_export_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteExport::class,
+            'command' => \SolutionForest\InspireCms\Commands\ExecuteExportCommand::class,
             'arguments' => [
                 '--limit 50', // limit
             ],
@@ -454,7 +454,7 @@ return [
         'data_cleanup' => [
             'enabled' => true,
             'schedule' => 'daily',
-            'command' => \SolutionForest\InspireCms\Commands\DataCleanup::class,
+            'command' => \SolutionForest\InspireCms\Commands\DataCleanupCommand::class,
         ],
     ],
 

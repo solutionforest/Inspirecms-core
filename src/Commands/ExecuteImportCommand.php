@@ -11,11 +11,8 @@ use SolutionForest\InspireCms\Services\ImportServiceInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 
-#[AsCommand(
-    name: 'inspirecms:import',
-    description: 'Execute pending import jobs.',
-)]
-class ExecuteImport extends Command
+#[AsCommand(name: 'inspirecms:import', description: 'Execute pending import jobs.')]
+class ExecuteImportCommand extends Command
 {
     protected function configure()
     {
