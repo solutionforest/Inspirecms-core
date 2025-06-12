@@ -50,6 +50,10 @@ return [
             'title' => 'Assign user role failed',
             'body' => 'Please ensure you have already run the migration and imported the default data.',
         ],
+        'license_limit_exceeded' => [
+            'title' => 'User Limit Reached',
+            'body' => 'You have reached the maximum number of users allowed by your current license. Please upgrade your plan to add more users.',
+        ],
     ],
 
 ];

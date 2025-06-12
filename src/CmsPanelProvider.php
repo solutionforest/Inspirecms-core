@@ -100,10 +100,10 @@ class CmsPanelProvider extends PanelProvider
             SubstituteBindings::class,
             DisableBladeIconComponents::class,
             DispatchServingFilamentEvent::class,
+            CmsMiddleware\LicenseCheck::class,
             CmsMiddleware\SetUpPoweredBy::class,
         ];
         $authMiddleware = [
-            CmsMiddleware\LicenseCheck::class,
             CmsMiddleware\CmsAuthenticate::class,
             CmsMiddleware\UserPreference::class,
         ];

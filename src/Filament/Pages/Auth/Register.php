@@ -19,6 +19,7 @@ use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -83,6 +84,12 @@ class Register extends BasePage
 
     public function register(): ?RegistrationResponse
     {
+        if (! app(LicenseManager::class)->canCreateUser()) {
+            $this->getLicenseLimitNotification()?->send();
+
+            return null;
+        }
+        
         try {
             $this->rateLimit(2);
         } catch (TooManyRequestsException $exception) {
@@ -264,6 +271,14 @@ class Register extends BasePage
         return Notification::make()
             ->title(__('inspirecms::pages/auth/register.messages.assign_role_failed.title'))
             ->body(array_key_exists('body', __('inspirecms::pages/auth/register.messages.assign_role_failed') ?: []) ? __('inspirecms::pages/auth/register.messages.assign_role_failed.body') : null)
+            ->danger();
+    }
+
+    protected function getLicenseLimitNotification(): ?Notification
+    {
+        return Notification::make()
+            ->title(__('inspirecms::pages/auth/register.messages.license_limit_exceeded.title'))
+            ->body(__('inspirecms::pages/auth/register.messages.license_limit_exceeded.body'))
             ->danger();
     }
 
