@@ -503,6 +503,13 @@ Control how InspireCMS handles frontend requests:
      * Override with a custom class to implement specialized preview behavior
      */
     'preview_provider' => \SolutionForest\InspireCms\Content\DefaultPreviewProvider::class,
+
+    /**
+     * Controls how URL slugs are generated for content
+     *
+     * Override to implement custom slug generation rules
+     */
+    'slug_generator' => \SolutionForest\InspireCms\Content\DefaultSlugGenerator::class,
 ],
 ```
 
