@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use RuntimeException;
 use SolutionForest\InspireCms\Base\Commnads\Concerns\WithPixelArt;
 use SolutionForest\InspireCms\InspireCms;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 
 
@@ -29,7 +30,11 @@ class InstallCommand extends Command
         $this->displayPixelArtBanner('Welcome to the InspireCMS Installer');
 
         // 1) Ask for license key
-        $license = $this->ask('Enter your license key');
+        $license = $this->ask(str_replace(
+            ':subscribeUrl',
+            app(LicenseManager::class)->getSubscriptionUrl(),
+            'Please enter your license key (you can get one at :subscribeUrl):'
+        ));
         if (! $license) {
             $this->error('License key is required. Installation aborted.');
             return static::FAILURE;

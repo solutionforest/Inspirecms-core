@@ -21,7 +21,7 @@ class LicenseManager
 
     private const SUPPORT_EMAIL = 'info@solutionforest.net';
 
-    private const SUBSCRIPTION_URL = 'https://inspirecms.net/#pricing';
+    private const SUBSCRIPTION_URL = 'https://inspirecms.net/user';
 
     private $cacheManager;
 
