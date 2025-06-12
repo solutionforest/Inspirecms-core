@@ -2,6 +2,12 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.76 - 2025-06-12
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.75...0.0.76
+
+- Add slug handling for content's slug
+
 ## 0.0.75 - 2025-06-12
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.74...0.0.75
