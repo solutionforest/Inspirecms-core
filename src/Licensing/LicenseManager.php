@@ -86,7 +86,7 @@ class LicenseManager
             $response = Http::timeout(self::REQUEST_TIMEOUT)->post($this->fetchActionPath('validate'), $payload);
 
             if ($response->successful()) {
-                
+
                 $data = $response->json();
 
                 if ($data['valid'] === true) {
