@@ -362,7 +362,7 @@ class RoleResource extends Resource implements ClusterSectionResource
             ]);
     }
     // endregion Form field(s)/component(s)
-    
+
     public static function canCreate(): bool
     {
         if (! app(LicenseManager::class)->canCreateRole()) {

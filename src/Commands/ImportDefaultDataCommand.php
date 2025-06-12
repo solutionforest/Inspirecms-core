@@ -6,12 +6,10 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 use RuntimeException;
 use SolutionForest\InspireCms\Database\Seeders\SampleSeeder;
-use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use Spatie\Permission\Contracts\Permission as SpatiePermissionContract;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
 

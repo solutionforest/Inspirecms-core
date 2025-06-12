@@ -108,9 +108,10 @@ class LicenseManager
         if (! $tier || ! is_string($tier)) {
             return true;
         }
+
         return $this->isFree();
     }
-    
+
     public function getLimitedUserCount(): ?int
     {
         return match ($this->getLicenseTier()) {
@@ -136,6 +137,7 @@ class LicenseManager
         $existingUserCount = InspireCmsConfig::getUserModelClass()::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->count();
+
         return $existingUserCount < $limitedUserCount;
     }
 
@@ -148,6 +150,7 @@ class LicenseManager
         $existingRoleCount = InspireCmsConfig::getRoleModelClass()::query()
             ->withoutGlobalScope(SoftDeletingScope::class)
             ->count();
+
         return $existingRoleCount < $limitedRoleCount;
     }
 
