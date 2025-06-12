@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Licensing;
 
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -28,33 +29,6 @@ class LicenseManager
     public function getLicenseKey()
     {
         return InspireCmsConfig::get('system.license.key');
-    }
-
-    public function canUpgrade(): bool
-    {
-        $licenseKey = $this->getLicenseKey();
-
-        if (filled($licenseKey)) {
-            try {
-
-                $this->verify();
-
-                $cacheKey = $this->buildCacheKey();
-
-                if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
-                    $data = $verificationResult->getData();
-
-                    $pvSlug = data_get($data, 'meta.product_variant_slug', '');
-
-                    return is_string($pvSlug) && $pvSlug == 'free';
-                }
-
-            } catch (\Throwable $th) {
-                //
-            }
-        }
-
-        return true;
     }
 
     /**
@@ -123,9 +97,88 @@ class LicenseManager
 
     public function refresh(): void
     {
-        $this->cache()->forget(self::CACHE_KEY_PREFIX . "verification_{$this->getLicenseKey()}_{$this->getCurrentDomain()}");
+        $this->cache()->forget($this->buildCacheKey());
 
         event(new LicensesRefreshed);
+    }
+
+    public function canUpgrade(): bool
+    {
+        $tier = $this->getLicenseTier();
+        if (! $tier || ! is_string($tier)) {
+            return true;
+        }
+        return $this->isFree();
+    }
+    
+    public function getLimitedUserCount(): ?int
+    {
+        return match ($this->getLicenseTier()) {
+            'pro' => null, // Pro tier has unlimited users
+            default => 3,
+        };
+    }
+
+    public function getLimitedRoleCount(): ?int
+    {
+        return match ($this->getLicenseTier()) {
+            'pro' => null, // Pro tier has unlimited roles
+            default => 1,
+        };
+    }
+
+    public function canCreateUser(): bool
+    {
+        $limitedUserCount = $this->getLimitedUserCount();
+        if (is_null($limitedUserCount)) {
+            return true; // Unlimited users
+        }
+        $existingUserCount = InspireCmsConfig::getUserModelClass()::query()
+            ->withoutGlobalScope(SoftDeletingScope::class)
+            ->count();
+        return $existingUserCount < $limitedUserCount;
+    }
+
+    public function canCreateRole(): bool
+    {
+        $limitedRoleCount = $this->getLimitedRoleCount();
+        if (is_null($limitedRoleCount)) {
+            return true; // Unlimited roles
+        }
+        $existingRoleCount = InspireCmsConfig::getRoleModelClass()::query()
+            ->withoutGlobalScope(SoftDeletingScope::class)
+            ->count();
+        return $existingRoleCount < $limitedRoleCount;
+    }
+
+    public function getLicenseTier(): ?string
+    {
+        $licenseKey = $this->getLicenseKey();
+
+        if (filled($licenseKey)) {
+            try {
+
+                $this->verify();
+
+                $cacheKey = $this->buildCacheKey();
+
+                if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
+                    $data = $verificationResult->getData();
+
+                    return data_get($data, 'meta.product_variant_slug', null);
+                }
+
+            } catch (\Throwable $th) {
+                //
+            }
+        }
+
+        return null;
+    }
+
+    private function isFree(): bool
+    {
+        return $this->getLicenseTier() === 'free';
     }
 
     public function usingLicenseKeyFile(): bool

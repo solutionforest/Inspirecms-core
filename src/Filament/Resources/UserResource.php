@@ -16,6 +16,7 @@ use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserResource extends Resource implements ClusterSectionResource
@@ -109,4 +110,13 @@ class UserResource extends Resource implements ClusterSectionResource
         return UIHelper::generateTextWithDescription($record->name, $record->email);
     }
     // endregion Global search
+
+    public static function canCreate(): bool
+    {
+        if (! app(LicenseManager::class)->canCreateUser()) {
+            return false;
+        }
+
+        return parent::canCreate();
+    }
 }

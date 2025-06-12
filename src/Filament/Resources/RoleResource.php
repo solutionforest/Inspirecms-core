@@ -21,6 +21,7 @@ use SolutionForest\InspireCms\Filament\Resources\RoleResource\RelationManagers;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use Spatie\Permission\Contracts\Role as RoleContract;
 use Spatie\Permission\Models\Role;
 
@@ -361,4 +362,13 @@ class RoleResource extends Resource implements ClusterSectionResource
             ]);
     }
     // endregion Form field(s)/component(s)
+    
+    public static function canCreate(): bool
+    {
+        if (! app(LicenseManager::class)->canCreateRole()) {
+            return false;
+        }
+
+        return parent::canCreate();
+    }
 }
