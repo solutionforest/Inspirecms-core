@@ -5,6 +5,7 @@ use SolutionForest\InspireCms\Commands\ExecuteExportCommand;
 use SolutionForest\InspireCms\Commands\ExecuteImportCommand;
 use SolutionForest\InspireCms\Content\DefaultPreviewProvider;
 use SolutionForest\InspireCms\Content\DefaultSegmentProvider;
+use SolutionForest\InspireCms\Content\DefaultSlugGenerator;
 use SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter;
 use SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter;
 use SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter;
@@ -444,6 +445,7 @@ return [
         ],
         'segment_provider' => DefaultSegmentProvider::class,
         'preview_provider' => DefaultPreviewProvider::class,
+        'slug_generator' => DefaultSlugGenerator::class,
     ],
 
     'sitemap' => [

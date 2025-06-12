@@ -26,6 +26,7 @@ use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentViewPage;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Factories\ContentSlugFactory;
 use SolutionForest\InspireCms\Filament\Clusters\Content;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -512,10 +513,10 @@ class ContentResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.title.placeholder'))
             ->helperText(__('inspirecms::resources/content.title.instructions'))
-            ->live(true, 500)->afterStateUpdated(function ($state, $get, $set, $operation, ContentForm $livewire) {
+            ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContentForm $livewire) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
-                    $set('slug', Str::slug($state));
+                    $set('slug', ContentSlugFactory::create()->generate($state));
                 }
                 $locale = $livewire->getActiveActionsLocale();
                 $set("webSetting.seo.meta_title.{$locale}", $state);
@@ -536,7 +537,10 @@ class ContentResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/content.slug.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.slug.placeholder'))
             ->helperText(__('inspirecms::resources/content.slug.instructions'))
-            ->live(true, 500)->afterStateUpdated(fn ($component, $state) => $component->state(Str::slug($state)))
+            ->live(true, 5000)
+            ->afterStateUpdated(function ($component, $state) {
+                return $component->state(ContentSlugFactory::create()->generate($state));
+            })
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get, ContentForm $livewire, string $operation) {
                 $model = new (static::getModel());
 
