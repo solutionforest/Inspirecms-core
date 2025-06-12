@@ -438,7 +438,7 @@ return [
         'execute_import_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteImport::class,
+            'command' => \SolutionForest\InspireCms\Commands\ExecuteImportCommand::class,
             'arguments' => [
                 '--limit 50', // limit
             ],
