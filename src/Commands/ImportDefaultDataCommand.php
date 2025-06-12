@@ -51,7 +51,7 @@ class ImportDefaultDataCommand extends Command
                 $step => $this->confirm(
                     "Do you want to skip {$description}?",
                     true
-                )
+                ),
             ];
         })->all();
 
@@ -63,7 +63,7 @@ class ImportDefaultDataCommand extends Command
             if (! method_exists($this, $method)) {
                 throw new RuntimeException("Method {$method} does not exist in " . static::class);
             }
-            
+
             if (array_key_exists($method, $stepCanSkip) && $stepCanSkip[$method]) {
                 $skipAfter = true;
             }
