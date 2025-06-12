@@ -17,15 +17,6 @@ use Symfony\Component\Console\Attribute\AsCommand;
 #[AsCommand(name: 'inspirecms:import-default-data')]
 class ImportDefaultDataCommand extends Command
 {
-    protected function configure()
-    {
-        $this->addOption(
-            name: 'skip-samples',
-            shortcut: 's',
-            description: 'Skip importing sample data',
-        );
-    }
-
     public function handle(): int
     {
         $steps = [
@@ -38,9 +29,18 @@ class ImportDefaultDataCommand extends Command
             'publishRouteDefinition' => 'Publishing route definition',
         ];
 
-        $stepCanSkip = [
+        $stepCanSkip = collect([
             'importSampleData',
-        ];
+        ])->mapWithKeys(function ($step) use ($steps) {
+            $description = lcfirst($steps[$step] ?? $step);
+
+            return [
+                $step => $this->confirm(
+                    "Do you want to skip {$description}?",
+                    true
+                )
+            ];
+        })->all();
 
         $skipAfter = false;
         $processErrors = [];
@@ -50,23 +50,19 @@ class ImportDefaultDataCommand extends Command
             if (! method_exists($this, $method)) {
                 throw new RuntimeException("Method {$method} does not exist in " . static::class);
             }
-
-            if ($this->option('skip-samples') && in_array($method, $stepCanSkip)) {
-                continue;
+            
+            if (array_key_exists($method, $stepCanSkip) && $stepCanSkip[$method]) {
+                $skipAfter = true;
             }
-
-            $displayStep = "  # <options=bold>{$description}</>" . PHP_EOL;
-            $taskDescription = PHP_EOL;
-
-            $this->components->twoColumnDetail($displayStep);
 
             if ($skipAfter) {
-                $this->components->twoColumnDetail($taskDescription, 'Skipped');
+                $this->components->twoColumnDetail($description, 'Skipped');
+                $this->line('');
 
                 continue;
             }
 
-            $this->components->task($taskDescription, function () use ($method, &$skipAfter, &$processErrors) {
+            $this->components->task($description, function () use ($method, &$skipAfter, &$processErrors) {
                 try {
                     $this->$method();
                 } catch (\Throwable $th) {
@@ -204,12 +200,12 @@ class ImportDefaultDataCommand extends Command
 
     protected function publishAssets(): void
     {
-        $this->call('filament:assets');
+        $this->callSilent('filament:assets');
     }
 
     protected function createSymlink(): void
     {
-        $this->call('storage:link');
+        $this->callSilent('storage:link');
     }
 
     protected function cmsRouteDefinition(): string

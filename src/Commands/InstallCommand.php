@@ -16,15 +16,6 @@ class InstallCommand extends Command
 {
     use WithPixelArt;
 
-    protected function configure()
-    {
-        $this->addOption(
-            name: 'skip-samples',
-            shortcut: 's',
-            description: 'Skip importing sample data',
-        );
-    }
-
     public function handle()
     {
         $this->displayPixelArtBanner('Welcome to the InspireCMS Installer');
@@ -79,11 +70,9 @@ class InstallCommand extends Command
         $this->info('Publishing CMS panel...');
         $this->call(PublishPanelCommand::class);
 
-        // 7) Import sample data
-        $this->info('Import sample data...');
-        $this->call(ImportDefaultDataCommand::class, [
-            '--skip-samples' => $this->option('skip-samples'),
-        ]);
+        // 7) Import default data
+        $this->info('Import default data...');
+        $this->call(ImportDefaultDataCommand::class);
 
         $this->info('InspireCMS installation complete!');
         return static::SUCCESS;

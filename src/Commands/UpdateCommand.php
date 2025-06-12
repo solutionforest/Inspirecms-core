@@ -53,11 +53,9 @@ class UpdateCommand extends Command
         $this->info('Publishing CMS panel...');
         $this->call(PublishPanelCommand::class);
 
-        // 6) Import sample data
-        $this->info('Import sample data...');
-        $this->call(ImportDefaultDataCommand::class, [
-            '--skip-samples' => true,
-        ]);
+        // 6) Import default data
+        $this->info('Import default data...');
+        $this->call(ImportDefaultDataCommand::class);
 
         $this->updatePlugin(inspirecms()->version());
 
