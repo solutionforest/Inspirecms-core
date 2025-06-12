@@ -17,9 +17,9 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
     const LANG_AUTO = 'auto';
 
     private static $transliterationRules = [
-        self::LANG_CHINESE  => 'Han-Latin; Latin-ASCII; Lower()',
-        self::LANG_RUSSIAN  => 'Russian-Latin/BGN; Latin-ASCII; Lower()',
-        self::LANG_ARABIC   => 'Arabic-Latin; Latin-ASCII; Lower()',
+        self::LANG_CHINESE => 'Han-Latin; Latin-ASCII; Lower()',
+        self::LANG_RUSSIAN => 'Russian-Latin/BGN; Latin-ASCII; Lower()',
+        self::LANG_ARABIC => 'Arabic-Latin; Latin-ASCII; Lower()',
         // include Han-Latin to transliterate Kanji
         self::LANG_JAPANESE => 'Han-Latin; Hiragana-Latin; Katakana-Latin; Latin-ASCII; Lower()',
     ];
