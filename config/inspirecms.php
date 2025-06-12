@@ -1,15 +1,36 @@
 <?php
 
-use SolutionForest\InspireCms\Exports\Exporters;
-use SolutionForest\InspireCms\Fields;
+use SolutionForest\InspireCms\Commands\DataCleanupCommand;
+use SolutionForest\InspireCms\Commands\ExecuteExportCommand;
+use SolutionForest\InspireCms\Commands\ExecuteImportCommand;
+use SolutionForest\InspireCms\Content\DefaultPreviewProvider;
+use SolutionForest\InspireCms\Content\DefaultSegmentProvider;
+use SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter;
+use SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter;
+use SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter;
+use SolutionForest\InspireCms\Exports\Exporters\TemplateExporter;
+use SolutionForest\InspireCms\Fields\Configs\ContentPicker;
+use SolutionForest\InspireCms\Fields\Configs\IconPicker;
+use SolutionForest\InspireCms\Fields\Configs\MarkdownEditor;
+use SolutionForest\InspireCms\Fields\Configs\MediaPicker;
+use SolutionForest\InspireCms\Fields\Configs\Repeater;
+use SolutionForest\InspireCms\Fields\Configs\RichEditor;
+use SolutionForest\InspireCms\Fields\Configs\Tags;
 use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
 use SolutionForest\InspireCms\Filament\Pages as FilamentPages;
 use SolutionForest\InspireCms\Filament\Resources as FilamentResources;
-use SolutionForest\InspireCms\Filament\Widgets as FilamentWidgets;
-use SolutionForest\InspireCms\Http\Middleware;
+use SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget;
+use SolutionForest\InspireCms\Filament\Widgets\CmsVersionInfo;
+use SolutionForest\InspireCms\Filament\Widgets\TemplateInfo;
+use SolutionForest\InspireCms\Filament\Widgets\ThemeInfo;
+use SolutionForest\InspireCms\Filament\Widgets\UserActivity;
+use SolutionForest\InspireCms\Http\Middleware\SetUpPoweredBy;
 use SolutionForest\InspireCms\Models;
-use SolutionForest\InspireCms\Policies;
+use SolutionForest\InspireCms\Policies\ContentStatusPolicy;
+use SolutionForest\InspireCms\Resolvers\PublishedContentResolver;
+use SolutionForest\InspireCms\Sitemap\SitemapGenerator;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
+use SolutionForest\InspireCms\Support\Resolvers\UserResolver;
 
 // config for SolutionForest/InspireCms
 return [
@@ -151,7 +172,7 @@ return [
              * HTTP middleware applied to media requests
              */
             'middleware' => [
-                Middleware\SetUpPoweredBy::class,
+                SetUpPoweredBy::class,
                 'cache.headers:public;max_age=2628000;etag',
             ],
 
@@ -294,10 +315,10 @@ return [
             ],
 
             'exporters' => [
-                Exporters\ImportUsedExporter::class,
-                Exporters\DocumentTypeExporter::class,
-                Exporters\FieldGroupExporter::class,
-                Exporters\TemplateExporter::class,
+                ImportUsedExporter::class,
+                DocumentTypeExporter::class,
+                FieldGroupExporter::class,
+                TemplateExporter::class,
             ],
         ],
     ],
@@ -336,7 +357,7 @@ return [
          * Policy mappings control authorization
          */
         'policies' => [
-            'content' => Policies\ContentStatusPolicy::class,
+            'content' => ContentStatusPolicy::class,
         ],
 
         /**
@@ -357,17 +378,13 @@ return [
 
     'custom_fields' => [
         'extra_config' => [
-
-            Fields\Configs\Repeater::class,
-            Fields\Configs\Tags::class,
-
-            Fields\Configs\RichEditor::class,
-            Fields\Configs\MarkdownEditor::class,
-
-            Fields\Configs\ContentPicker::class,
-            Fields\Configs\MediaPicker::class,
-
-            Fields\Configs\IconPicker::class,
+            Repeater::class,
+            Tags::class,
+            RichEditor::class,
+            MarkdownEditor::class,
+            ContentPicker::class,
+            MediaPicker::class,
+            IconPicker::class,
         ],
     ],
 
@@ -389,11 +406,11 @@ return [
          * Dashboard widgets requiring permissions to view
          */
         'guard_widgets' => [
-            FilamentWidgets\CmsVersionInfo::class,
-            FilamentWidgets\CmsInfoWidget::class,
-            FilamentWidgets\ThemeInfo::class,
-            FilamentWidgets\TemplateInfo::class,
-            FilamentWidgets\UserActivity::class,
+            CmsVersionInfo::class,
+            CmsInfoWidget::class,
+            ThemeInfo::class,
+            TemplateInfo::class,
+            UserActivity::class,
         ],
     ],
 
@@ -415,22 +432,22 @@ return [
     ],
 
     'resolvers' => [
-        'user' => \SolutionForest\InspireCms\Support\Resolvers\UserResolver::class,
-        'published_content' => \SolutionForest\InspireCms\Resolvers\PublishedContentResolver::class,
+        'user' => UserResolver::class,
+        'published_content' => PublishedContentResolver::class,
     ],
 
     'frontend' => [
         'routes' => [
             'middleware' => [
-                Middleware\SetUpPoweredBy::class,
+                SetUpPoweredBy::class,
             ],
         ],
-        'segment_provider' => \SolutionForest\InspireCms\Content\DefaultSegmentProvider::class,
-        'preview_provider' => \SolutionForest\InspireCms\Content\DefaultPreviewProvider::class,
+        'segment_provider' => DefaultSegmentProvider::class,
+        'preview_provider' => DefaultPreviewProvider::class,
     ],
 
     'sitemap' => [
-        'generator' => \SolutionForest\InspireCms\Sitemap\SitemapGenerator::class,
+        'generator' => SitemapGenerator::class,
         'file_path' => public_path('sitemap.xml'),
     ],
 
@@ -438,7 +455,7 @@ return [
         'execute_import_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteImportCommand::class,
+            'command' => ExecuteImportCommand::class,
             'arguments' => [
                 '--limit 50', // limit
             ],
@@ -446,7 +463,7 @@ return [
         'execute_export_job' => [
             'enabled' => true,
             'schedule' => 'everyFiveMinutes',
-            'command' => \SolutionForest\InspireCms\Commands\ExecuteExportCommand::class,
+            'command' => ExecuteExportCommand::class,
             'arguments' => [
                 '--limit 50', // limit
             ],
@@ -454,7 +471,7 @@ return [
         'data_cleanup' => [
             'enabled' => true,
             'schedule' => 'daily',
-            'command' => \SolutionForest\InspireCms\Commands\DataCleanupCommand::class,
+            'command' => DataCleanupCommand::class,
         ],
     ],
 
