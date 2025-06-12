@@ -89,7 +89,7 @@ class Register extends BasePage
 
             return null;
         }
-        
+
         try {
             $this->rateLimit(2);
         } catch (TooManyRequestsException $exception) {
