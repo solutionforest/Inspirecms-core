@@ -55,7 +55,9 @@ class UpdateCommand extends Command
 
         // 6) Import default data
         $this->info('Import default data...');
-        $this->call(ImportDefaultDataCommand::class);
+        $this->call(ImportDefaultDataCommand::class, [
+            '--skip-samples' => true, // Skip sample data import
+        ]);
 
         $this->updatePlugin(inspirecms()->version());
 

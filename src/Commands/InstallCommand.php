@@ -72,7 +72,9 @@ class InstallCommand extends Command
 
         // 7) Import default data
         $this->info('Import default data...');
-        $this->call(ImportDefaultDataCommand::class);
+        $this->call(ImportDefaultDataCommand::class, [
+            '--skip-samples' => false, // Import sample data
+        ]);
 
         $this->info('InspireCMS installation complete!');
 

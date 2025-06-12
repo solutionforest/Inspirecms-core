@@ -13,12 +13,20 @@ use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Spatie\Permission\Contracts\Permission as SpatiePermissionContract;
 use Symfony\Component\Console\Attribute\AsCommand;
+use Symfony\Component\Console\Input\InputArgument;
 
 #[AsCommand(name: 'inspirecms:import-default-data')]
 class ImportDefaultDataCommand extends Command
 {
+    protected function configure()
+    {
+        // canbe null, true, or false
+        $this->addOption('skip-samples', 's', InputArgument::OPTIONAL, 'Skip importing sample data');
+    }
+
     public function handle(): int
     {
+        // dd($this->options());
         $steps = [
             'publishAssets' => 'Publishing assets',
             'createSymlink' => 'Creating symlink',
@@ -30,8 +38,13 @@ class ImportDefaultDataCommand extends Command
         ];
 
         $stepCanSkip = collect([
-            'importSampleData',
-        ])->mapWithKeys(function ($step) use ($steps) {
+            'importSampleData' => $this->option('skip-samples'),
+        ])->map(function ($condition, $step) use ($steps) {
+
+            if (is_bool($condition)) {
+                return $condition;
+            }
+
             $description = lcfirst($steps[$step] ?? $step);
 
             return [
@@ -182,7 +195,7 @@ class ImportDefaultDataCommand extends Command
             '--tag' => 'inspirecms-sample-assets',
             '--force' => true,
         ]);
-        $this->call('db:seed', [
+        $this->callSilent('db:seed', [
             '--class' => SampleSeeder::class,
         ]);
     }
