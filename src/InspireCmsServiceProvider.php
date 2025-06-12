@@ -465,9 +465,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             }
         }
 
-        // auth guard
-        Support\Facades\AuthenticationManager::setAuthGuard(InspireCmsConfig::get('auth.guard.name'));
-
         // Resolvers
 
         foreach (InspireCmsConfig::get('resolvers', []) as $name => $resolver) {
