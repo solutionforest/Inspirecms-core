@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Livewire;
 
-use Filament\Actions;
 use Filament\Actions\Action;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Model;
