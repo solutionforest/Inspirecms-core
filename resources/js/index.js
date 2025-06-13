@@ -1,5 +1,3 @@
-// import "./tour-guide";
-
 // Function to disable links within the iframe
 function disableIframeLinks(iframe) {
     const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;

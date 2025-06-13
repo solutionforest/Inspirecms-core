@@ -1,7 +1,0 @@
-@import "boarding.js/styles/main.css";
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-@import "../../vendor/filament/filament/resources/css/theme.css";
