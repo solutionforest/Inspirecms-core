@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
 
 class MoveContentAction extends Action
 {

@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\UpdateContentRouteActionTrait;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
 
 class UpdateContentItemRouteAction extends Action
 {

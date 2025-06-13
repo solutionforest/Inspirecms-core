@@ -24,7 +24,7 @@
 
     @if (count($items) > 0)
         @if ($this->isFilteringBySearch())
-            <x-inspirecms-support::model-explorer.groups
+            <x-inspirecms-support::tree-node.model-explorer.groups
                 :items="$items" 
                 :model-explorer="$this->getModelExplorer()"
                 :is-disabled="$isDisabled"
@@ -37,7 +37,7 @@
                 extreme-links
             />
         @else
-            <x-inspirecms-support::model-explorer
+            <x-inspirecms-support::tree-node.model-explorer
                 skip-alpine="true"
                 :items="$items" 
                 :model-explorer="$this->getModelExplorer()"

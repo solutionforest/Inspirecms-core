@@ -39,7 +39,7 @@
                         {{ $this->localeSwitcher }}
                     </div>
                     
-                    <x-inspirecms-support::model-explorer
+                    <x-inspirecms-support::tree-node.model-explorer
                         :livewire-key="$this->getId()"
                         :livewire-name="$this->getName()"
                         :items="$items" 
@@ -58,7 +58,7 @@
                 {{ $this->localeSwitcher }}
             </div>
             
-            <x-inspirecms-support::model-explorer
+            <x-inspirecms-support::tree-node.model-explorer
                 class="px-1"
                 :livewire-key="$this->getId()"
                 :livewire-name="$this->getName()"

@@ -10,7 +10,7 @@ use Illuminate\Support\Collection;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
 
 class ContentTreeNode extends BaseContentTreeNode
 {

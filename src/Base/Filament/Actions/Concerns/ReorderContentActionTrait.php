@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
 
 trait ReorderContentActionTrait
 {

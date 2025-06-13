@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CreateContentActionTrait;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
 
 class CreateContentItemAction extends Action
 {

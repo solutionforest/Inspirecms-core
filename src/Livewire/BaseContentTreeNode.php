@@ -8,8 +8,8 @@ use Livewire\Attributes\Lazy;
 use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
-use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorerComponent;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
 
 #[Lazy]
 abstract class BaseContentTreeNode extends ModelExplorerComponent

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -17,9 +18,9 @@ use SolutionForest\InspireCms\Filament\TreeNode\Actions\UpdateContentItemRouteAc
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action as TreeNodeAction;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\ActionGroup;
-use SolutionForest\InspireCms\Support\TreeNodes\ModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\ActionGroup;
+use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
 
 class ContentSidebar extends BaseContentTreeNode
 {
@@ -245,7 +246,7 @@ class ContentSidebar extends BaseContentTreeNode
         ]);
     }
 
-    protected function configureSelectedModelItemFormAction(Actions\Action | TreeNodeAction $action): void
+    protected function configureSelectedModelItemFormAction(Action | TreeNodeAction $action): void
     {
         // mount record
         if (

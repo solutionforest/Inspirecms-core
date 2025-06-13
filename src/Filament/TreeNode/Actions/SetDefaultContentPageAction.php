@@ -4,8 +4,8 @@ namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 
 use Filament\Support\Facades\FilamentIcon;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
-use SolutionForest\InspireCms\Support\TreeNodes\Contracts\HasModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasModelExplorer;
 
 class SetDefaultContentPageAction extends Action
 {

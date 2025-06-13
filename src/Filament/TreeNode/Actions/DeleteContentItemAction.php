@@ -5,7 +5,7 @@ namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\TreeNodes\Actions\Action;
+use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
 
 class DeleteContentItemAction extends Action
 {
