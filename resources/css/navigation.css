@@ -1,10 +1,12 @@
-.fi-page-sub-navigation-sidebar-ctn {
-    @apply w-44;
-}
-.fi-sidebar-item-button {
-    @apply gap-x-1.5;
+@layer utilities {
+    .fi-page-sub-navigation-sidebar-ctn {
+        @apply w-44!;
+    }
+    .fi-sidebar-item-button {
+        @apply gap-x-1.5;
 
-    .fi-sidebar-item-icon {
-        @apply w-5 h-5;
+        .fi-sidebar-item-icon {
+            @apply w-5 h-5;
+        }
     }
 }
