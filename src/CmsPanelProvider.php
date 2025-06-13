@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms;
 
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -20,7 +21,6 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
-use SolutionForest\InspireCms\Filament\Navigation\MenuItem;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
@@ -29,7 +29,6 @@ use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
-use SolutionForest\InspireCms\View\Components as ViewComponents;
 
 class CmsPanelProvider extends PanelProvider
 {
@@ -179,11 +178,7 @@ class CmsPanelProvider extends PanelProvider
             MenuItem::make()
                 ->label(fn () => __('inspirecms::inspirecms.version') . ': ' . InspireCms::version())
                 ->icon(fn () => FilamentIcon::resolve('inspirecms::info'))
-                ->url('#')
-                ->extraAttributes([
-                    'class' => 'cursor-default',
-                    'aria-label' => 'Version',
-                ], true),
+                ->url('#'),
 
             MenuItem::make()
                 ->label('Create license')
@@ -220,17 +215,6 @@ class CmsPanelProvider extends PanelProvider
         return $panel->livewireComponents([
             ListImportNExport::class,
         ]);
-    }
-
-    protected function replaceViewComponents()
-    {
-        Blade::component('filament-panels::topbar', ViewComponents\Filament\TopBar::class);
-        Blade::component('filament-panels::sidebar', ViewComponents\Filament\Sidebar::class);
-        Blade::component('filament-panels::sidebar.group', ViewComponents\Filament\SidebarGroup::class);
-
-        Blade::component('filament-panels::user-menu', ViewComponents\Filament\UserMenu::class);
-
-        Blade::component('filament-panels::resources.relation-managers', ViewComponents\Filament\Resources\RelationManagers::class);
     }
 
     protected function configureFilamentActions(Panel $panel): Panel
@@ -347,8 +331,6 @@ class CmsPanelProvider extends PanelProvider
 
                     return $tmp;
                 });
-
-                $this->replaceViewComponents();
 
                 \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
                     $action->extraAttributes([
