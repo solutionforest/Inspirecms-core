@@ -23,41 +23,40 @@ trait ClusterSectionTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     * @param  \Filament\Navigation\NavigationItem  $navigationItem
+     * @return \Filament\Navigation\NavigationItem
      */
     public static function configureSectionKeyOnNavigationItem($navigationItem)
     {
-        return $navigationItem->section(static::getSectionKey());
+        // todo: implement section key configuration
+        return $navigationItem;
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     * @param  \Filament\Navigation\NavigationItem  $navigationItem
+     * @return \Filament\Navigation\NavigationItem
      */
     public static function configureResourceKeyOnNavigationItem($resourceFqcn, $navigationItem)
     {
-        return $navigationItem
-            ->section(static::getSectionKey())
-            ->itemKey((string) str(class_basename($resourceFqcn))->trim()->beforeLast('Resource')->snake()->lower());
+        // todo: implement resource key configuration
+        return $navigationItem;
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     * @param  \Filament\Navigation\NavigationItem  $navigationItem
+     * @return \Filament\Navigation\NavigationItem
      */
     public static function configurePageKeyOnNavigationItem($pageFqcn, $navigationItem)
     {
-        return $navigationItem
-            ->section(static::getSectionKey())
-            ->itemKey((string) str(class_basename($pageFqcn))->trim()->snake()->lower());
+        // todo: implement page key configuration
+        return $navigationItem;
     }
 
     public static function getNavigationItems(): array
     {
         $items = collect(parent::getNavigationItems())
             ->map(function ($item) {
-                if ($item instanceof \Filament\Navigation\NavigationItem || $item instanceof \SolutionForest\InspireCms\Filament\Navigation\NavigationItem) {
+                if ($item instanceof NavigationItem) {
                     return static::configureSectionKeyOnNavigationItem($item);
                 }
 

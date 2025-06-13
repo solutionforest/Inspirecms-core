@@ -72,8 +72,8 @@ trait ClusterSectionResourceTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     * @param  \Filament\Navigation\NavigationItem  $navigationItem
+     * @return \Filament\Navigation\NavigationItem
      */
     public static function configureResourceKeyOnNavigationItem($navigationItem)
     {

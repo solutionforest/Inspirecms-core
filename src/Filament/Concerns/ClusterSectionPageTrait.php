@@ -8,7 +8,6 @@ use Filament\Navigation\NavigationItem;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
-use SolutionForest\InspireCms\Filament\Navigation\NavigationItem as CustomNavigationItem;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ClusterSectionPageTrait
@@ -67,7 +66,7 @@ trait ClusterSectionPageTrait
     }
 
     /**
-     * @return array<NavigationItem | CustomNavigationItem | NavigationGroup>
+     * @return array<NavigationItem | NavigationGroup>
      */
     public function getSubNavigation(): array
     {
@@ -88,8 +87,8 @@ trait ClusterSectionPageTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem|\SolutionForest\InspireCms\Filament\Navigation\NavigationItem
+     * @param  \Filament\Navigation\NavigationItem  $navigationItem
+     * @return \Filament\Navigation\NavigationItem
      */
     public static function configurePageKeyOnNavigationItem($navigationItem)
     {

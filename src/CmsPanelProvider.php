@@ -10,15 +10,18 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Actions\Action as TablesAction;
+use Filament\Tables\Actions\ReplicateAction as TablesReplicateAction;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
+use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
+use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Pages;
@@ -132,7 +135,6 @@ class CmsPanelProvider extends PanelProvider
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
         $this->configureFilamentActions($panel);
-        $this->configureTourGuideElements($panel);
         $this->registerLivewireComponents($panel);
 
         return $panel;

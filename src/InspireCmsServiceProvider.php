@@ -101,8 +101,6 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(PropertyValueTransformerInterface::class, PropertyValueTransformer::class);
 
-        $this->app->singleton(\Filament\Navigation\NavigationItem::class, \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class);
-
         \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition);
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
