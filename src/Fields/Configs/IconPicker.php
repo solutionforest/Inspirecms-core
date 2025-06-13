@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
 use Guava\FilamentIconPicker\Forms\IconPicker as FormsIconPicker;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
@@ -22,9 +24,9 @@ class IconPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Tabs::make('tabs')
+            Tabs::make('tabs')
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Presentation')
+                    Tab::make('Presentation')
                         ->schema([
                             static::getHasColumnsLayoutConfigComponent(),
                         ]),
@@ -32,7 +34,7 @@ class IconPicker extends FieldTypeBaseConfig implements FieldTypeConfig
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
         if ($component instanceof FormsIconPicker) {
             if (is_array($this->columnsLayout) && ($filterColumns = $this->filterColumnsData($this->columnsLayout)) && ! empty($filterColumns)) {

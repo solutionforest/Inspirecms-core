@@ -11,6 +11,7 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
 use SolutionForest\InspireCms\Support\TreeNode\Actions\Action as TreeNodeAction;
 
@@ -44,11 +45,11 @@ trait ReorderContentActionTrait
         $this->groupedIcon(FilamentIcon::resolve('inspirecms::sort'));
 
         /**
-         * @var class-string<\SolutionForest\InspireCms\Models\Contracts\Content & Model> $contentModel
+         * @var class-string<Content & Model> $contentModel
          */
         $contentModel = InspireCmsConfig::getContentModelClass();
         /**
-         * @var class-string<\SolutionForest\InspireCms\Support\Models\Contracts\NestableTree & Model> $nestableTreeModel
+         * @var class-string<NestableTree & Model> $nestableTreeModel
          */
         $nestableTreeModel = InspireCmsConfig::getNestableTreeModelClass();
 

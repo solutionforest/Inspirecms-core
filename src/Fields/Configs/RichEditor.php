@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\RichEditor as FormsRichEditor;
+use Filament\Forms\Components\Section;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
@@ -13,7 +15,7 @@ use SolutionForest\InspireCms\Fields\Configs\Concerns\EditorBasicTrait;
 use SolutionForest\InspireCms\Fields\Converters\RichEditorConverter;
 
 #[ConfigName('richEditor', 'Rich Editor', 'Rich', 'heroicon-o-document-text')]
-#[FormComponent(Forms\Components\RichEditor::class)]
+#[FormComponent(FormsRichEditor::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
 #[Converter(RichEditorConverter::class)]
@@ -41,11 +43,11 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Section::make()
+            Section::make()
                 ->schema([
                     static::getEditorBasicTraitComponent('toolbarButtons'),
                 ]),
-            Forms\Components\Section::make('File Attachments')
+            Section::make('File Attachments')
                 ->schema([
                     static::getEditorBasicTraitComponent('fileAttachmentsDisk'),
                     static::getEditorBasicTraitComponent('fileAttachmentsDirectory'),
@@ -54,9 +56,9 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
-        if ($component instanceof Forms\Components\RichEditor) {
+        if ($component instanceof FormsRichEditor) {
             $component->toolbarButtons($this->toolbarButtons);
             if (filled($this->fileAttachmentsDisk)) {
                 $component->fileAttachmentsDisk($this->fileAttachmentsDisk);

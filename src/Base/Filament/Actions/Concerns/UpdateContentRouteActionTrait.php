@@ -2,7 +2,13 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
-use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
@@ -68,9 +74,9 @@ trait UpdateContentRouteActionTrait
             ])
             ->form([
 
-                Forms\Components\Hidden::make('exists'),
+                Hidden::make('exists'),
 
-                Forms\Components\Repeater::make('data')
+                Repeater::make('data')
                     ->hiddenLabel()
                     ->validationAttribute('data')
                     ->addActionLabel(__('inspirecms::buttons.add.label'))
@@ -79,27 +85,27 @@ trait UpdateContentRouteActionTrait
                     ->columns(2)
                     ->schema([
 
-                        Forms\Components\Hidden::make('id'),
+                        Hidden::make('id'),
 
-                        Forms\Components\Checkbox::make('is_default_pattern')
+                        Checkbox::make('is_default_pattern')
                             ->live()
                             ->label(__('inspirecms::resources/content.routes.is_default_pattern.label'))
                             ->validationAttribute(__('inspirecms::resources/content.routes.is_default_pattern.validation_attribute'))
                             ->hint(fn () => __('inspirecms::resources/content.routes.is_default_pattern.hints', ['format' => $factory->getDefaultRoutePattern()]))
                             ->default(true),
 
-                        Forms\Components\Grid::make(2)
+                        Grid::make(2)
                             ->columnSpanFull()
                             ->schema([
 
-                                Forms\Components\Select::make('language_id')
+                                Select::make('language_id')
                                     ->label(__('inspirecms::resources/content.routes.language_id.label'))
                                     ->validationAttribute(__('inspirecms::resources/content.routes.language_id.validation_attribute'))
                                     ->placeholder(__('inspirecms::resources/content.routes.language_id.placeholder'))
                                     ->options(collect(inspirecms()->getAllAvailableLanguages())->mapWithKeys(fn ($langDto) => [$langDto->id => $langDto->code]))
                                     ->markAsRequired(),
 
-                                Forms\Components\TextInput::make('uri')
+                                TextInput::make('uri')
                                     ->label(__('inspirecms::resources/content.routes.uri.label'))
                                     ->validationAttribute(__('inspirecms::resources/content.routes.uri.validation_attribute'))
                                     ->hint(__('inspirecms::resources/content.routes.uri.hints'))
@@ -107,7 +113,7 @@ trait UpdateContentRouteActionTrait
                                     ->required(),
                             ]),
 
-                        Forms\Components\KeyValue::make('regex_constraints')
+                        KeyValue::make('regex_constraints')
                             ->columnSpanFull()
                             ->label(__('inspirecms::resources/content.routes.regex_constraints.label'))
                             ->validationAttribute(__('inspirecms::resources/content.routes.regex_constraints.validation_attribute'))

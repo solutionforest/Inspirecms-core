@@ -2,7 +2,11 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
@@ -56,22 +60,22 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
         };
 
         return [
-            Forms\Components\Tabs::make('tabs')
+            Tabs::make('tabs')
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Validation')
+                    Tab::make('Validation')
                         ->schema([
-                            Forms\Components\TextInput::make('min')->numeric(),
-                            Forms\Components\TextInput::make('max')->numeric(),
+                            TextInput::make('min')->numeric(),
+                            TextInput::make('max')->numeric(),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Presentation')
+                    Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\Select::make('documentType')
+                            Select::make('documentType')
                                 ->inlineLabel()
                                 ->searchable()
                                 ->optionsLimit(10)
                                 ->allowHtml()
-                                ->options(fn (Forms\Components\Select $component) => $documentTypeOptions($component, null))
-                                ->getSearchResultsUsing(fn (Forms\Components\Select $component, $search) => $documentTypeOptions($component, $search)),
+                                ->options(fn (Select $component) => $documentTypeOptions($component, null))
+                                ->getSearchResultsUsing(fn (Select $component, $search) => $documentTypeOptions($component, $search)),
                             ContentPickerComponent::make('startNode')
                                 ->inlineLabel()
                                 ->maxItems(1)
@@ -91,7 +95,7 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
         if ($component instanceof ContentPickerComponent) {
 

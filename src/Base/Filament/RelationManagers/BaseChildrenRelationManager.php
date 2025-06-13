@@ -4,7 +4,8 @@ namespace SolutionForest\InspireCms\Base\Filament\RelationManagers;
 
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Actions\CreateAction;
+use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -31,7 +32,7 @@ class BaseChildrenRelationManager extends RelationManager
             ->pluralModelLabel(fn () => __('inspirecms::inspirecms.children'))
             ->emptyStateHeading(null)
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
             ]);
     }
 
@@ -40,7 +41,7 @@ class BaseChildrenRelationManager extends RelationManager
         return __('inspirecms::inspirecms.children');
     }
 
-    protected function configureCreateAction(Tables\Actions\CreateAction $action): void
+    protected function configureCreateAction(CreateAction $action): void
     {
         parent::configureCreateAction($action);
 
@@ -63,7 +64,7 @@ class BaseChildrenRelationManager extends RelationManager
             ->modalWidth('7xl');
     }
 
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
+    protected function configureEditAction(EditAction $action): void
     {
         parent::configureEditAction($action);
 

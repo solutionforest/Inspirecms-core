@@ -2,7 +2,12 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
-use Filament\Forms;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
@@ -17,11 +22,11 @@ trait HasInnerField
     {
         $getItemKeyForRepeaterAction = fn (array $arguments): string => $arguments['item'];
 
-        $getItemStateForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): array => $component->getRawItemState($getItemKeyForRepeaterAction($arguments));
+        $getItemStateForRepeaterAction = fn (array $arguments, Repeater $component): array => $component->getRawItemState($getItemKeyForRepeaterAction($arguments));
 
-        $getFieldForRepeaterAction = fn (array $arguments, Forms\Components\Repeater $component): ?string => $getItemStateForRepeaterAction($arguments, $component)['field'] ?? null;
+        $getFieldForRepeaterAction = fn (array $arguments, Repeater $component): ?string => $getItemStateForRepeaterAction($arguments, $component)['field'] ?? null;
 
-        $getFieldIconForRepeaterAction = function (array $arguments, Forms\Components\Repeater $component) use ($getFieldForRepeaterAction): ?string {
+        $getFieldIconForRepeaterAction = function (array $arguments, Repeater $component) use ($getFieldForRepeaterAction): ?string {
             if (($field = $getFieldForRepeaterAction($arguments, $component)) && ($icons = FieldTypeHelper::getFieldTypeIcon($field))) {
                 return is_array($icons) ? $icons[0] : $icons;
             }
@@ -29,7 +34,7 @@ trait HasInnerField
             return null;
         };
 
-        return Forms\Components\Repeater::make('fields')
+        return Repeater::make('fields')
             ->columnSpanFull()
             ->collapsible()
             ->itemLabel(fn (array $state): ?string => $state['name'] ?? null)
@@ -37,16 +42,16 @@ trait HasInnerField
             ->schema(static::getHasInnerFieldFieldsSchema())
             ->defaultItems(1)
             ->extraItemActions([
-                Forms\Components\Actions\Action::make('editConfig')
+                Action::make('editConfig')
                     ->icon(FilamentIcon::resolve('inspirecms::setting'))
                     ->slideOver()
                     ->label(fn () => __('inspirecms::buttons.edit_config.label'))
-                    ->modalHeading(fn (array $arguments, Forms\Components\Repeater $component) => __('inspirecms::buttons.edit_config.heading', [
+                    ->modalHeading(fn (array $arguments, Repeater $component) => __('inspirecms::buttons.edit_config.heading', [
                         'name' => $getFieldForRepeaterAction($arguments, $component) ?? Str::lower(__('inspirecms::inspirecms.field')),
                     ]))
-                    ->modalIcon(fn (array $arguments, Forms\Components\Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
-                    ->disabled(fn (array $arguments, Forms\Components\Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
-                    ->form(function (Forms\Form $form, array $arguments, Forms\Components\Repeater $component) use ($getFieldForRepeaterAction) {
+                    ->modalIcon(fn (array $arguments, Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
+                    ->disabled(fn (array $arguments, Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
+                    ->form(function (array $arguments, Repeater $component) use ($getFieldForRepeaterAction) {
 
                         $innerFieldTypeName = $getFieldForRepeaterAction($arguments, $component);
 
@@ -63,13 +68,13 @@ trait HasInnerField
 
                         return [];
                     })
-                    ->fillForm(function (array $arguments, Forms\Components\Repeater $component) use ($getItemStateForRepeaterAction) {
+                    ->fillForm(function (array $arguments, Repeater $component) use ($getItemStateForRepeaterAction) {
                         $existingFieldConfig = $getItemStateForRepeaterAction($arguments, $component)['fieldConfig'];
                         if (! empty($existingFieldConfig)) {
                             return $existingFieldConfig;
                         }
                     })
-                    ->action(function (array $data, array $arguments, Forms\Components\Repeater $component) use ($getItemKeyForRepeaterAction) {
+                    ->action(function (array $data, array $arguments, Repeater $component) use ($getItemKeyForRepeaterAction) {
 
                         $itemKey = $getItemKeyForRepeaterAction($arguments);
 
@@ -89,11 +94,11 @@ trait HasInnerField
     protected static function getHasInnerFieldFieldsSchema(): array
     {
         return [
-            Forms\Components\Hidden::make('fieldConfig')
+            Hidden::make('fieldConfig')
                 ->dehydrated()
                 ->dehydrateStateUsing(fn ($state) => $state ?? []),
 
-            Forms\Components\Select::make('field')
+            Select::make('field')
                 ->options(fn () => FieldTypeHelper::getFieldTypeOptions(excepts: static::getExceptsInnerFields()))
                 ->getSearchResultsUsing(fn ($search) => FieldTypeHelper::getFieldTypeOptions($search, excepts: static::getExceptsInnerFields()))
                 ->searchable()->allowHtml()
@@ -107,18 +112,18 @@ trait HasInnerField
                     }
                 }),
 
-            Forms\Components\TextInput::make('label')
+            TextInput::make('label')
                 ->required()
                 ->helperText('Label for the field')
                 ->live()->afterStateUpdated(fn ($state, $set) => $state ? $set('name', Str::slug($state)) : null),
 
-            Forms\Components\TextInput::make('name')
+            TextInput::make('name')
                 ->required()
                 ->helperText('Unique name for the field'),
 
-            Forms\Components\TextInput::make('helperText'),
+            TextInput::make('helperText'),
 
-            Forms\Components\Toggle::make('isRequired')
+            Toggle::make('isRequired')
                 ->label('Is Required?')
                 ->default(false),
         ];

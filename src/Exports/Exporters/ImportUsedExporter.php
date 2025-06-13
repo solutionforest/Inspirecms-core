@@ -4,12 +4,17 @@ namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Filament\Forms\Components\CheckboxList;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts as ModelContracts;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\Navigation;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class ImportUsedExporter extends BaseImportUsedDataExporter
 {
@@ -104,7 +109,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             $currentExportType,
         );
 
-        if ($currentExportType == ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION && $query->getModel() instanceof ModelContracts\Navigation) {
+        if ($currentExportType == ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION && $query->getModel() instanceof Navigation) {
 
             $allRecord = $query->get();
 
@@ -115,7 +120,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             $page = 1;
 
             // Create a paginator for the tree structure
-            $records = new \Illuminate\Pagination\LengthAwarePaginator(
+            $records = new LengthAwarePaginator(
                 items: $tree,
                 total: $totalTreeItems,
                 perPage: $perPage,
@@ -185,15 +190,15 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
 
             $label = null;
 
-            if ($record instanceof ModelContracts\DocumentType) {
+            if ($record instanceof DocumentType) {
                 $label = $record->title;
-            } elseif ($record instanceof ModelContracts\FieldGroup) {
+            } elseif ($record instanceof FieldGroup) {
                 $label = $record->title;
-            } elseif ($record instanceof ModelContracts\Template) {
+            } elseif ($record instanceof Template) {
                 $label = $record->slug;
-            } elseif ($record instanceof ModelContracts\Content) {
+            } elseif ($record instanceof Content) {
                 $label = $record->title;
-            } elseif ($record instanceof ModelContracts\Navigation) {
+            } elseif ($record instanceof Navigation) {
                 $label = "{$record->title} ({$record->type})";
             }
 
@@ -218,15 +223,15 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
 
             $label = null;
 
-            if ($record instanceof ModelContracts\DocumentType) {
+            if ($record instanceof DocumentType) {
                 $label = $record->slug;
-            } elseif ($record instanceof ModelContracts\FieldGroup) {
+            } elseif ($record instanceof FieldGroup) {
                 $label = $record->name;
-            } elseif ($record instanceof ModelContracts\Template) {
+            } elseif ($record instanceof Template) {
                 $label = $record->slug;
-            } elseif ($record instanceof ModelContracts\Content) {
+            } elseif ($record instanceof Content) {
                 $label = $record->slug;
-            } elseif ($record instanceof ModelContracts\Navigation) {
+            } elseif ($record instanceof Navigation) {
                 $label = "{$record->category}";
             }
 

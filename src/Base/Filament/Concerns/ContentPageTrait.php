@@ -4,8 +4,10 @@ namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 
@@ -21,7 +23,7 @@ trait ContentPageTrait
     public function mountContentPageTrait(): void
     {
         if (blank($this->activeLocale)) {
-            if ($this instanceof CreateRecord || $this instanceof \Filament\Resources\Pages\ListRecords) {
+            if ($this instanceof CreateRecord || $this instanceof ListRecords) {
                 $this->activeLocale = static::getResource()::getDefaultTranslatableLocale();
             } else {
                 $this->activeLocale = $this->getDefaultTranslatableLocale();
@@ -29,7 +31,7 @@ trait ContentPageTrait
         }
     }
 
-    public function getTitle(): string | \Illuminate\Contracts\Support\Htmlable
+    public function getTitle(): string | Htmlable
     {
         $title = parent::getTitle();
 

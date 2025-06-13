@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Sitemap;
 
+use Filament\Notifications\Notification;
 use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
@@ -32,7 +33,7 @@ class SitemapGenerator implements SitemapGeneratorInterface
 
     public function sendFailedNotification(\Throwable $exception, $notifiables = [])
     {
-        \Filament\Notifications\Notification::make()
+        Notification::make()
             ->title(__('inspirecms::messages.sitemap_generation_failure'))
             ->danger()
             ->body($exception->getMessage())

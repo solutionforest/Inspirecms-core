@@ -9,7 +9,13 @@ use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
-use SolutionForest\InspireCms\ImportData\Entities;
+use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
+use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
+use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
+use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
+use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
+use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
@@ -21,7 +27,7 @@ use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 class ImportDataService implements ImportDataServiceInterface
 {
     /**
-     * @var array{documentTypes: array<string,Entities\DocumentType>, fieldGroups: array<string,Entities\FieldGroup>, templates: array<string,Entities\Template>, fields: array<string,Entities\Field>, content: array<string,Entities\Content>, navigation: array<string,Entities\Navigation>}
+     * @var array{documentTypes: array<string,EntitiesDocumentType>, fieldGroups: array<string,EntitiesFieldGroup>, templates: array<string,EntitiesTemplate>, fields: array<string,EntitiesField>, content: array<string,EntitiesContent>, navigation: array<string,EntitiesNavigation>}
      */
     protected array $pendingData = [];
 
@@ -63,7 +69,7 @@ class ImportDataService implements ImportDataServiceInterface
     ) {}
 
     /** {@inheritDoc} */
-    public function addDocumentType(Entities\DocumentType $data)
+    public function addDocumentType(EntitiesDocumentType $data)
     {
         $slug = $data->slug;
         if (empty($slug)) {
@@ -76,7 +82,7 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addFieldGroup(Entities\FieldGroup $data)
+    public function addFieldGroup(EntitiesFieldGroup $data)
     {
         $slug = $data->slug;
         if (empty($slug)) {
@@ -101,7 +107,7 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addTemplate(Entities\Template $data)
+    public function addTemplate(EntitiesTemplate $data)
     {
         $slug = $data->slug;
         if (empty($slug)) {
@@ -118,7 +124,7 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addContent(Entities\Content $data)
+    public function addContent(EntitiesContent $data)
     {
         $parent = $data->parent;
         $slug = $data->slug;
@@ -137,13 +143,13 @@ class ImportDataService implements ImportDataServiceInterface
     }
 
     /** {@inheritDoc} */
-    public function addNavigation(Entities\Navigation $data)
+    public function addNavigation(EntitiesNavigation $data)
     {
         $this->pendingData['navigation'][] = $data;
     }
 
     /** {@inheritDoc} */
-    public function addLanguage(Entities\Language $data)
+    public function addLanguage(EntitiesLanguage $data)
     {
         $code = $data->code;
         if (empty($code)) {
@@ -543,7 +549,7 @@ class ImportDataService implements ImportDataServiceInterface
         $this->guardAgaintsTableExist($model);
 
         $flatNavigation = collect($this->pendingData['navigation'] ?? [])
-            ->map(fn (Entities\Navigation $item) => array_merge([$item], $this->getFlatNavigationFor($item)))
+            ->map(fn (EntitiesNavigation $item) => array_merge([$item], $this->getFlatNavigationFor($item)))
             ->flatten(1)
             ->all();
 
@@ -955,7 +961,7 @@ class ImportDataService implements ImportDataServiceInterface
         return $data;
     }
 
-    protected function mutateNavigationData(Entities\Navigation $item): array
+    protected function mutateNavigationData(EntitiesNavigation $item): array
     {
         $data = $item->getDataForModel();
 
@@ -978,9 +984,9 @@ class ImportDataService implements ImportDataServiceInterface
         return $data;
     }
 
-    private function getFlatNavigationFor(Entities\Navigation $item): array
+    private function getFlatNavigationFor(EntitiesNavigation $item): array
     {
-        return collect($item->children)->flatMap(function (Entities\Navigation $child) {
+        return collect($item->children)->flatMap(function (EntitiesNavigation $child) {
             return array_merge([$child], $this->getFlatNavigationFor($child));
         })->toArray();
     }

@@ -6,8 +6,10 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection as BaseCollection;
 
-class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Collection
+class ContentCollection extends BaseCollection
 {
     protected $paginator = null;
 
@@ -15,7 +17,7 @@ class ContentCollection extends \Staudenmeir\LaravelAdjacencyList\Eloquent\Colle
     {
         $items = $this
             ->map(fn ($item) => match (true) {
-                $item instanceof \SolutionForest\InspireCms\Models\Contracts\Content => $item->toDto(...$args),
+                $item instanceof Content => $item->toDto(...$args),
                 default => $item,
             })
             ->reject(fn ($item) => is_null($item))

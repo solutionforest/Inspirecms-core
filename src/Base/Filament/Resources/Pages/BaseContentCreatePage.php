@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
-use Filament\Actions;
+use Filament\Actions\Action;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
@@ -38,7 +38,7 @@ abstract class BaseContentCreatePage extends BaseCreateRecord implements Content
         ];
     }
 
-    protected function getCreateFormAction(): Actions\Action
+    protected function getCreateFormAction(): Action
     {
         return parent::getCreateFormAction()
             ->label(__('inspirecms::buttons.save_draft.label'))

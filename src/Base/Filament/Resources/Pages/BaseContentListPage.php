@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
-use Filament\Actions;
+use Filament\Actions\Action;
 use Filament\Pages\SubNavigationPosition;
 use Filament\Resources\Pages\ListRecords\Tab;
 use Illuminate\Database\Eloquent\Builder;
@@ -66,7 +66,7 @@ abstract class BaseContentListPage extends BaseListRecords
         return SubNavigationPosition::Start;
     }
 
-    protected function configureAction(Actions\Action $action): void
+    protected function configureAction(Action $action): void
     {
         parent::configureAction($action);
 

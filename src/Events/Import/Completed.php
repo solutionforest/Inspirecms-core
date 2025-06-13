@@ -2,19 +2,21 @@
 
 namespace SolutionForest\InspireCms\Events\Import;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\Models\Contracts\Import;
 
 class Completed
 {
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Import&\Illuminate\Database\Eloquent\Model
+     * @var Import&Model
      */
     public $import;
 
     /**
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Import&\Illuminate\Database\Eloquent\Model  $import
+     * @param  Import&Model  $import
      */
     public function __construct($import)
     {

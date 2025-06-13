@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Base\Enums;
 
-enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as InterfacesDocumentTypeCategory;
+
+enum DocumentTypeCategory: string implements InterfacesDocumentTypeCategory
 {
     case Web = 'web';
 
@@ -65,7 +67,7 @@ enum DocumentTypeCategory: string implements Interfaces\DocumentTypeCategory
         ];
     }
 
-    public static function getDefaultValue(): Interfaces\DocumentTypeCategory
+    public static function getDefaultValue(): InterfacesDocumentTypeCategory
     {
         return self::Web;
     }

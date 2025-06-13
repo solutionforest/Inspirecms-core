@@ -2,9 +2,18 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Pages\Concerns;
 
-use Filament\Forms;
+use Filament\Forms\Components\Actions;
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\Placeholder;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
-use Filament\Pages\Concerns;
+use Filament\Pages\Concerns\HasMaxWidth;
+use Filament\Pages\Concerns\HasTopbar;
 use Filament\Panel;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
@@ -21,39 +30,39 @@ use SolutionForest\InspireCms\Models\Contracts\User;
 
 trait ProfilePageTrait
 {
-    use Concerns\HasMaxWidth;
-    use Concerns\HasTopbar;
+    use HasMaxWidth;
+    use HasTopbar;
 
     public function form(Form $form): Form
     {
         return $form
             ->columns(3)
             ->schema([
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
                                 $this->getNameFormComponent(),
                                 $this->getEmailFormComponent(),
                                 $this->getPreferredLanguageFormComponent(),
                             ]),
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
                                 $this->getRolesFormComponent(),
                             ]),
                     ])
                     ->columnSpan(2),
-                Forms\Components\Group::make()
+                Group::make()
                     ->schema([
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
                                 $this->getAvatarFormComponent(),
                             ]),
-                        Forms\Components\Section::make()
+                        Section::make()
                             ->schema([
                                 $this->getPasswordFormComponent(),
                                 $this->getPasswordConfirmationFormComponent()
-                                    ->visible(fn (Forms\Get $get): bool => filled($get('password'))),
+                                    ->visible(fn ($get): bool => filled($get('password'))),
                             ]),
                         $this->getUserActivityDisplayFormComponent(),
                     ])
@@ -63,20 +72,20 @@ trait ProfilePageTrait
     }
 
     // region Form field(s)/component(s)
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected function getNameFormComponent(): Forms\Components\Component
+    /** @return Field|Component */
+    protected function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return TextInput::make('name')
             ->label(__('inspirecms::resources/user.name.label'))
             ->required()
             ->maxLength(255)
             ->autofocus();
     }
 
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected function getEmailFormComponent(): Forms\Components\Component
+    /** @return Field|Component */
+    protected function getEmailFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('email')
+        return TextInput::make('email')
             ->label(__('inspirecms::resources/user.email.label'))
             ->validationAttribute(__('inspirecms::resources/user.email.validation_attribute'))
             ->email()
@@ -85,10 +94,10 @@ trait ProfilePageTrait
             ->unique(ignoreRecord: true);
     }
 
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected function getPasswordFormComponent(): Forms\Components\Component
+    /** @return Field|Component */
+    protected function getPasswordFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('password')
+        return TextInput::make('password')
             ->label(__('inspirecms::resources/user.password.label'))
             ->validationAttribute(__('inspirecms::resources/user.password.validation_attribute'))
             ->password()
@@ -101,10 +110,10 @@ trait ProfilePageTrait
             ->same('passwordConfirmation');
     }
 
-    /** @return Forms\Components\Field|Forms\Components\Component */
-    protected function getPasswordConfirmationFormComponent(): Forms\Components\Component
+    /** @return Field|Component */
+    protected function getPasswordConfirmationFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('passwordConfirmation')
+        return TextInput::make('passwordConfirmation')
             ->label(__('inspirecms::resources/user.password_confirmation.label'))
             ->validationAttribute(__('inspirecms::resources/user.password_confirmation.validation_attribute'))
             ->password()
@@ -114,11 +123,11 @@ trait ProfilePageTrait
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|Component
      */
     protected function getPreferredLanguageFormComponent()
     {
-        return Forms\Components\Select::make('preferred_language')
+        return Select::make('preferred_language')
             ->label(__('inspirecms::resources/user.preferred_language.label'))
             ->validationAttribute(__('inspirecms::resources/user.preferred_language.validation_attribute'))
             ->options(LocalizationManager::getLocaleLabelsFor(LocalizationManager::getUserPreferredLocales()))
@@ -127,7 +136,7 @@ trait ProfilePageTrait
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|Component
      */
     protected function getRolesFormComponent()
     {
@@ -137,11 +146,11 @@ trait ProfilePageTrait
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|Component
      */
     protected function getAvatarFormComponent()
     {
-        return Forms\Components\FileUpload::make('avatar')
+        return FileUpload::make('avatar')
             ->label(__('inspirecms::resources/user.avatar.label'))
             ->validationAttribute(__('inspirecms::resources/user.avatar.validation_attribute'))
             ->disk(InspireCmsConfig::get('media.user_avatar.driver', 'public'))
@@ -150,24 +159,24 @@ trait ProfilePageTrait
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|Component
      */
     protected function getUserActivityDisplayFormComponent()
     {
-        return Forms\Components\Section::make()
+        return Section::make()
             ->columns(1)
             ->visibleOn(['edit', 'view'])
             ->inlineLabel()
             ->schema([
-                Forms\Components\Placeholder::make('id')
+                Placeholder::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->content(fn (User | Model $record) => UIHelper::generateCopyableText($record->getKey())),
-                Forms\Components\Placeholder::make('last_logged_in_at')
+                Placeholder::make('last_logged_in_at')
                     ->label(__('inspirecms::resources/user.last_logged_in_at.label'))
                     ->content(fn (User | Model $record) => $record->last_logged_in_at),
 
-                Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('resetLockout')
+                Actions::make([
+                    Actions\Action::make('resetLockout')
                         ->label(__('inspirecms::resources/user.buttons.reset_lockout.label'))
                         ->requiresConfirmation()
                         ->color('gray')
@@ -178,18 +187,18 @@ trait ProfilePageTrait
                         ->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && $record->is_locked),
                 ])->alignEnd(),
 
-                Forms\Components\Placeholder::make('failed_login_attempt')
+                Placeholder::make('failed_login_attempt')
                     ->label(__('inspirecms::resources/user.failed_login_attempt.label'))
                     ->content(fn (User | Model $record) => str("<b>{$record->failed_login_attempt}</b>/" . AuthHelper::maxAttempts())->toHtmlString()),
-                Forms\Components\Placeholder::make('last_lockouted_at')
+                Placeholder::make('last_lockouted_at')
                     ->label(__('inspirecms::resources/user.last_lockouted_at.label'))
                     ->content(fn (User | Model $record) => UIHelper::generateTextWithDescription(
                         text: UIHelper::generateTooltip(text: $record->last_lockouted_at, tooltip: $record->last_lockouted_at?->diffForHumans())->toHtml(),
                         description: $record->locked_until ? UIHelper::generateTooltip(text: __('inspirecms::resources/user.last_lockouted_at.hints', ['time' => $record->locked_until]), tooltip: $record->locked_until?->diffForHumans())->toHtml() : '',
                     )),
 
-                Forms\Components\Actions::make([
-                    Forms\Components\Actions\Action::make('setAccountVerified')
+                Actions::make([
+                    Action::make('setAccountVerified')
                         ->label(__('inspirecms::resources/user.buttons.set_account_verified.label'))
                         ->requiresConfirmation()
                         ->color('success')
@@ -198,7 +207,7 @@ trait ProfilePageTrait
                         ->icon(FilamentIcon::resolve('inspirecms::verified') ?? 'heroicon-s-check-badge')
                         ->successNotificationTitle(__('inspirecms::messages.updated'))
                         ->action(fn (User | Model $record) => $record->markEmailAsVerified()),
-                    Forms\Components\Actions\Action::make('resendVerificationEmail')
+                    Action::make('resendVerificationEmail')
                         ->label(__('inspirecms::resources/user.buttons.resend_verification_email.label'))
                         ->requiresConfirmation()
                         ->color('gray')
@@ -207,7 +216,7 @@ trait ProfilePageTrait
                         ->icon(FilamentIcon::resolve('inspirecms::email'))
                         ->successNotificationTitle(__('inspirecms::messages.sent'))
                         ->failureNotificationTitle(__('inspirecms::messages.something_went_wrong'))
-                        ->action(function (User | Model $record, Forms\Components\Actions\Action $action) {
+                        ->action(function (User | Model $record, Action $action) {
                             try {
                                 $record->sendEmailVerificationNotification();
                                 $action->success();
@@ -216,14 +225,14 @@ trait ProfilePageTrait
                             }
                         }),
                 ])->alignEnd()->visible(fn (User | Model $record) => has_super_admin_role(filament()->auth()->user()) && ! $record->hasVerifiedEmail()),
-                Forms\Components\Placeholder::make('email_confirmed_at')
+                Placeholder::make('email_confirmed_at')
                     ->label(__('inspirecms::resources/user.email_confirmed_at.label'))
                     ->content(fn (User | Model $record) => $record->email_confirmed_at),
 
-                Forms\Components\Placeholder::make('created_at')
+                Placeholder::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
                     ->content(fn (User | Model $record) => $record->created_at),
-                Forms\Components\Placeholder::make('updated_at')
+                Placeholder::make('updated_at')
                     ->label(__('inspirecms::inspirecms.last_updated_at'))
                     ->content(fn (User | Model $record) => $record->updated_at),
             ]);

@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Base\Enums;
 
-enum NavigationType: string implements Interfaces\NavigationType
+use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as InterfacesNavigationType;
+
+enum NavigationType: string implements InterfacesNavigationType
 {
     case Content = 'content';
 
@@ -17,7 +19,7 @@ enum NavigationType: string implements Interfaces\NavigationType
         };
     }
 
-    public static function getDefaultValue(): Interfaces\NavigationType
+    public static function getDefaultValue(): InterfacesNavigationType
     {
         return self::Group;
     }

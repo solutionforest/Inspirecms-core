@@ -5,8 +5,10 @@ namespace SolutionForest\InspireCms\Resolvers;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\Dtos\PublishedContentDto;
+use SolutionForest\InspireCms\Dtos\TemplateDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
 
 class PublishedContentResolver implements PublishedContentResolverInterface

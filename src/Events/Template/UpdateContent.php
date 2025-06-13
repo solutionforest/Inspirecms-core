@@ -2,14 +2,16 @@
 
 namespace SolutionForest\InspireCms\Events\Template;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
 class UpdateContent
 {
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Template&\Illuminate\Database\Eloquent\Model
+     * @var Template&Model
      */
     public $model;
 
@@ -19,7 +21,7 @@ class UpdateContent
     public $theme;
 
     /**
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Template&\Illuminate\Database\Eloquent\Model  $model
+     * @param  Template&Model  $model
      * @param  ?string  $theme
      */
     public function __construct($model, $theme)

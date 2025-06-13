@@ -2,7 +2,14 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Concerns\HasAffixes;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TagsInput;
+use Filament\Forms\Components\TextInput;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
@@ -11,7 +18,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConf
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 
 #[ConfigName('tags', 'Tags', 'List', 'heroicon-o-tag')]
-#[FormComponent(Forms\Components\TagsInput::class)]
+#[FormComponent(TagsInput::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
 class Tags extends FieldTypeBaseConfig implements FieldTypeConfig
@@ -34,33 +41,33 @@ class Tags extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Tabs::make('tabs')
+            Tabs::make('tabs')
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Validation')
+                    Tab::make('Validation')
                         ->schema([
                             static::getHasRulesFormComponent('rule'),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Presentation')
+                    Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\Grid::make(2)
+                            Grid::make(2)
                                 ->schema([
                                     static::getHasAffixesFormComponent('prefixLabel'),
                                     static::getHasAffixesFormComponent('suffixLabel'),
-                                    Forms\Components\TextInput::make('prefix'),
-                                    Forms\Components\TextInput::make('suffix'),
+                                    TextInput::make('prefix'),
+                                    TextInput::make('suffix'),
                                 ]),
-                            Forms\Components\TextInput::make('separator')->helperText('You may allow the tags to be stored in a separated string, instead of JSON array. e.g. comma, space, etc.'),
-                            Forms\Components\TagsInput::make('suggestions'),
-                            Forms\Components\Checkbox::make('reorderable'),
-                            Forms\Components\TextInput::make('color')->datalist(['sanger', 'gray', 'info', 'primary', 'success', 'warning']),
+                            TextInput::make('separator')->helperText('You may allow the tags to be stored in a separated string, instead of JSON array. e.g. comma, space, etc.'),
+                            TagsInput::make('suggestions'),
+                            Checkbox::make('reorderable'),
+                            TextInput::make('color')->datalist(['sanger', 'gray', 'info', 'primary', 'success', 'warning']),
                         ]),
                 ]),
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
-        if (static::fiComponentHasTrait($component, \Filament\Forms\Components\Concerns\HasAffixes::class)) {
+        if (static::fiComponentHasTrait($component, HasAffixes::class)) {
             if ($this->prefixLabel) {
                 $component->prefix($this->prefixLabel);
             }
@@ -68,7 +75,7 @@ class Tags extends FieldTypeBaseConfig implements FieldTypeConfig
                 $component->suffix($this->suffixLabel);
             }
         }
-        if ($component instanceof Forms\Components\TagsInput) {
+        if ($component instanceof TagsInput) {
             if ($this->prefix) {
                 $component->tagPrefix($this->prefix);
             }

@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter;
+use SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter;
+use SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter;
+use SolutionForest\InspireCms\Exports\Exporters\TemplateExporter;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ExportDataHelper
@@ -34,10 +38,10 @@ class ExportDataHelper
     public static function getExporters(): array
     {
         $exporters = InspireCmsConfig::get('import_export.exports.exporters', [
-            \SolutionForest\InspireCms\Exports\Exporters\ImportUsedExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\DocumentTypeExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\FieldGroupExporter::class,
-            \SolutionForest\InspireCms\Exports\Exporters\TemplateExporter::class,
+            ImportUsedExporter::class,
+            DocumentTypeExporter::class,
+            FieldGroupExporter::class,
+            TemplateExporter::class,
         ]);
 
         return collect($exporters)

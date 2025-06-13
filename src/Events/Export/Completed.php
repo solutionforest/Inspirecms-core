@@ -2,19 +2,21 @@
 
 namespace SolutionForest\InspireCms\Events\Export;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\Models\Contracts\Export;
 
 class Completed
 {
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Export&\Illuminate\Database\Eloquent\Model
+     * @var Export&Model
      */
     public $export;
 
     /**
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Export&\Illuminate\Database\Eloquent\Model  $export
+     * @param  Export&Model  $export
      */
     public function __construct($export)
     {

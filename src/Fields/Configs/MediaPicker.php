@@ -2,7 +2,11 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TextInput;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
@@ -29,16 +33,16 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Tabs::make('tabs')
+            Tabs::make('tabs')
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Validation')
+                    Tab::make('Validation')
                         ->schema([
-                            Forms\Components\TextInput::make('min')->numeric(),
-                            Forms\Components\TextInput::make('max')->numeric(),
+                            TextInput::make('min')->numeric(),
+                            TextInput::make('max')->numeric(),
                         ]),
-                    Forms\Components\Tabs\Tab::make('Presentation')
+                    Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\Select::make('types')
+                            Select::make('types')
                                 ->inlineLabel()
                                 ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
                                 ->options(FilterType::class)
@@ -48,7 +52,7 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
         if ($component instanceof MediaPickerComponent) {
             $component->filterTypes($this->types);

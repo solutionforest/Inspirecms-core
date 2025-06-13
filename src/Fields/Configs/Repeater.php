@@ -2,7 +2,15 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms;
+use Exception;
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\KeyValue;
+use Filament\Forms\Components\Repeater as FormsRepeater;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
@@ -16,7 +24,7 @@ use SolutionForest\InspireCms\Fields\Converters\RepeaterConverter;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 
 #[ConfigName('repeater', 'Repeater', 'List', 'heroicon-o-queue-list')]
-#[FormComponent(Forms\Components\Repeater::class)]
+#[FormComponent(FormsRepeater::class)]
 #[DbType('mysql', 'text')]
 #[DbType('sqlite', 'text')]
 #[Converter(RepeaterConverter::class)]
@@ -53,32 +61,32 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Forms\Components\Tabs::make('tabs')
+            Tabs::make('tabs')
                 ->tabs([
-                    Forms\Components\Tabs\Tab::make('Presentation')
+                    Tab::make('Presentation')
                         ->schema([
-                            Forms\Components\Grid::make(2)
+                            Grid::make(2)
                                 ->schema([
-                                    Forms\Components\Toggle::make('cloneable'),
+                                    Toggle::make('cloneable'),
                                 ]),
-                            Forms\Components\Grid::make(2)
+                            Grid::make(2)
                                 ->schema([
-                                    Forms\Components\Toggle::make('collapsible'),
-                                    Forms\Components\Toggle::make('defaultCollapsed'),
+                                    Toggle::make('collapsible'),
+                                    Toggle::make('defaultCollapsed'),
                                 ]),
-                            Forms\Components\Grid::make(2)
+                            Grid::make(2)
                                 ->schema([
-                                    Forms\Components\Toggle::make('reorderable')->default(true),
-                                    Forms\Components\Toggle::make('reorderableWithButtons')->default(true),
-                                    Forms\Components\Toggle::make('reorderableWithDragAndDrop')->default(false),
+                                    Toggle::make('reorderable')->default(true),
+                                    Toggle::make('reorderableWithButtons')->default(true),
+                                    Toggle::make('reorderableWithDragAndDrop')->default(false),
                                 ]),
 
-                            Forms\Components\TextInput::make('itemLabel')
+                            TextInput::make('itemLabel')
                                 ->inlineLabel()
                                 ->placeholder('e.g. title, key, etc.')
                                 ->helperText(str('The label for each item in the repeater. Using **`Name`** in the **Fields**')->markdown()->toHtmlString()),
 
-                            Forms\Components\KeyValue::make('gridLayout')
+                            KeyValue::make('gridLayout')
                                 ->keyLabel('Column')
                                 ->keyLabel('Width')
                                 ->keyPlaceholder('e.g. default, sm, md, lg, xl')
@@ -88,15 +96,15 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
                             static::getHasColumnsLayoutConfigComponent(),
 
                         ]),
-                    Forms\Components\Tabs\Tab::make('Fields')
+                    Tab::make('Fields')
                         ->schema([
-                            Forms\Components\TextInput::make('minItems')
+                            TextInput::make('minItems')
                                 ->inlineLabel()
                                 ->integer(),
-                            Forms\Components\TextInput::make('maxItems')
+                            TextInput::make('maxItems')
                                 ->inlineLabel()
                                 ->integer(),
-                            Forms\Components\TextInput::make('defaultItems')
+                            TextInput::make('defaultItems')
                                 ->inlineLabel()
                                 ->placeholder('e.g. 1, 2, 3, etc.')
                                 ->integer()
@@ -109,19 +117,19 @@ class Repeater extends FieldTypeBaseConfig implements FieldTypeConfig
         ];
     }
 
-    public function applyConfig(Forms\Components\Component $component): void
+    public function applyConfig(Component $component): void
     {
-        if ($component instanceof Forms\Components\Repeater) {
+        if ($component instanceof FormsRepeater) {
 
             $components = [];
 
             foreach ($this->fields as $index => $data) {
 
                 if (! isset($data['field']) || blank($data['field'])) {
-                    throw new \Exception('The field type is required.');
+                    throw new Exception('The field type is required.');
                 }
                 if (! isset($data['name']) || blank($data['name'])) {
-                    throw new \Exception('The field name is required.');
+                    throw new Exception('The field name is required.');
                 }
 
                 $components[] = FieldTypeHelper::buildFieldForFieldType(

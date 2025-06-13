@@ -2,7 +2,26 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\ColorPicker;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Email;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Number;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Password;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Radio;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Select;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Text;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Textarea;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Toggle;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Url;
+use SolutionForest\InspireCms\Fields\Configs\ContentPicker;
+use SolutionForest\InspireCms\Fields\Configs\MarkdownEditor;
+use SolutionForest\InspireCms\Fields\Configs\MediaPicker;
+use SolutionForest\InspireCms\Fields\Configs\Repeater;
+use SolutionForest\InspireCms\Fields\Configs\RichEditor;
+use SolutionForest\InspireCms\Fields\Configs\Tags;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class PropertyTypeHelper
@@ -42,7 +61,7 @@ class PropertyTypeHelper
      */
     public static function fakeDisplayValueForFieldType($fieldType)
     {
-        if ($fieldType  instanceof \SolutionForest\InspireCms\Fields\Configs\Repeater) {
+        if ($fieldType  instanceof Repeater) {
 
             return collect(range(1, 3))
                 ->map(
@@ -60,42 +79,42 @@ class PropertyTypeHelper
         }
 
         return match (true) {
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\ColorPicker => '#000000',
+            $fieldType instanceof ColorPicker => '#000000',
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker => fake()->dateTime(),
+            $fieldType instanceof DateTimePicker => fake()->dateTime(),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Email => fake()->email(),
+            $fieldType instanceof Email => fake()->email(),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File,
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image => $fieldType->multiple
+            $fieldType instanceof File,
+            $fieldType instanceof Image => $fieldType->multiple
                 ? collect(range(1, 3))->map(fn () => fake()->filePath())->values()->toArray()
                 : fake()->filePath(),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Number => 123,
+            $fieldType instanceof Number => 123,
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Password => 'password',
+            $fieldType instanceof Password => 'password',
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Radio => array_key_first($fieldType->options),
+            $fieldType instanceof Radio => array_key_first($fieldType->options),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Select => $fieldType->multiple
+            $fieldType instanceof Select => $fieldType->multiple
                 ? collect($fieldType->options)->take(3)->keys()->toArray()
                 : array_key_first($fieldType->options),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Text => 'Lorem ipsum dolor sit amet',
+            $fieldType instanceof Text => 'Lorem ipsum dolor sit amet',
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Textarea => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+            $fieldType instanceof Textarea => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Toggle => fake()->boolean(),
+            $fieldType instanceof Toggle => fake()->boolean(),
 
-            $fieldType instanceof \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Url => 'https://example.com',
+            $fieldType instanceof Url => 'https://example.com',
 
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MediaPicker,
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\ContentPicker => [KeyHelper::generateMinUuid()],
+            $fieldType instanceof MediaPicker,
+            $fieldType instanceof ContentPicker => [KeyHelper::generateMinUuid()],
 
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\MarkdownEditor => 'Lorem **ipsum** dolor sit amet, consectetur adipiscing <em>elit</em>.',
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\RichEditor => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p><p>Curabitur non nulla sit amet nisl <b>tempus</b> convallis quis ac lectus.</p>',
+            $fieldType instanceof MarkdownEditor => 'Lorem **ipsum** dolor sit amet, consectetur adipiscing <em>elit</em>.',
+            $fieldType instanceof RichEditor => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p><p>Curabitur non nulla sit amet nisl <b>tempus</b> convallis quis ac lectus.</p>',
 
-            $fieldType instanceof \SolutionForest\InspireCms\Fields\Configs\Tags => ['tag1', 'tag2'],
+            $fieldType instanceof Tags => ['tag1', 'tag2'],
 
             default => null,
         };

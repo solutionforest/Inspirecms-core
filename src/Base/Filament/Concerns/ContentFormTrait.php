@@ -2,22 +2,24 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
+use Closure;
 use Filament\Actions\Action;
 use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
+use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable as CmsCreateContentRecordsTranslatable;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Throwable;
-
-use function Filament\Support\is_app_url;
 
 trait ContentFormTrait
 {
@@ -160,7 +162,7 @@ trait ContentFormTrait
         }
     }
 
-    public function handlePublishableRecord(\Closure $callback)
+    public function handlePublishableRecord(Closure $callback)
     {
         $isSuccess = $this->wrapPublisableSavingEventIntoDbTransaction($callback);
 
@@ -179,13 +181,13 @@ trait ContentFormTrait
 
         if ($isCreating) {
 
-            /** @var Model|\SolutionForest\InspireCms\Models\Contracts\Content */
+            /** @var Model & Content */
             $record = app(static::getModel());
 
             $isLivewireHandleTranslatable = collect(class_uses_recursive($this))
                 ->where(fn ($traitClass) => in_array($traitClass, [
-                    \Filament\Resources\Pages\CreateRecord\Concerns\Translatable::class,
-                    \SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable::class,
+                    Translatable::class,
+                    CmsCreateContentRecordsTranslatable::class,
                 ]))
                 ->isNotEmpty();
             if ($isLivewireHandleTranslatable) {
@@ -224,7 +226,7 @@ trait ContentFormTrait
         } else {
 
             // region Handle Record Updating
-            /** @var Model&\SolutionForest\InspireCms\Models\Contracts\Content */
+            /** @var Model&Content */
             $record = $this->getRecord();
 
             $record->setPublishableData($publishableData);
@@ -372,7 +374,7 @@ trait ContentFormTrait
         return $this->publishOperation !== 'edit';
     }
 
-    protected function wrapPublisableSavingEventIntoDbTransaction(\Closure $callback)
+    protected function wrapPublisableSavingEventIntoDbTransaction(Closure $callback)
     {
 
         try {

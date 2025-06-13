@@ -2,15 +2,22 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
-use Filament\Actions;
-use Filament\Resources\Pages\ViewRecord;
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Resources\Pages\ViewRecord\Concerns\Translatable as ViewRecordTranslatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use Livewire\Attributes\Computed;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
+use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewRecord;
 use SolutionForest\InspireCms\Factories\PreviewFactory;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
@@ -26,9 +33,9 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
     use ContentFormTrait;
     use ContentPageTrait;
     use HasPreviewModal;
-    use ViewRecord\Concerns\Translatable {
-        ContentFormTrait::updatedActiveLocale insteadof ViewRecord\Concerns\Translatable;
-        ContentFormTrait::fillForm insteadof ViewRecord\Concerns\Translatable;
+    use ViewRecordTranslatable {
+        ContentFormTrait::updatedActiveLocale insteadof ViewRecordTranslatable;
+        ContentFormTrait::fillForm insteadof ViewRecordTranslatable;
     }
 
     protected function getHeaderActions(): array
@@ -41,18 +48,18 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
                 ->label(__('inspirecms::buttons.preview.label'))
                 ->hidden(fn (Model $record) => $record->trashed()),
 
-            Actions\EditAction::make()->iconButton(),
+            EditAction::make()->iconButton(),
 
-            Actions\ActionGroup::make([
+            ActionGroup::make([
 
-                Actions\ActionGroup::make([
+                ActionGroup::make([
 
-                    Actions\DeleteAction::make()
+                    DeleteAction::make()
                         ->visible(fn (Model $record) => ! $record->isLocked()),
 
-                    Actions\RestoreAction::make(),
+                    RestoreAction::make(),
 
-                    Actions\ForceDeleteAction::make(),
+                    ForceDeleteAction::make(),
 
                     LockContentAction::make()
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
@@ -61,31 +68,31 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 
-                Actions\ActionGroup::make([
+                ActionGroup::make([
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }
 
-    protected function configureAction(Actions\Action $action): void
+    protected function configureAction(Action $action): void
     {
         parent::configureAction($action);
 
         $resource = static::getResource();
 
         switch (true) {
-            case $action instanceof Actions\RestoreAction:
+            case $action instanceof RestoreAction:
                 $action
                     ->successRedirectUrl(fn () => FilamentResourceHelper::attemptToGetUrl($resource, ['index'], [], false));
 
                 break;
-            case $action instanceof Actions\EditAction:
+            case $action instanceof EditAction:
 
                 if ($resource::hasPage('edit')) {
                     $action->url(fn (): string => static::getResource()::getUrl('edit', ['record' => $this->getRecord(), ...$this->getRedirectUrlParameters()]));
@@ -152,7 +159,7 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
     // endregion Preview
 
     // region Computed properties
-    #[\Livewire\Attributes\Computed(persist: true, seconds: 7200)]
+    #[Computed(persist: true, seconds: 7200)]
     public function contentDto()
     {
         $content = $this->getRecord();

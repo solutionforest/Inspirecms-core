@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
+use Filament\Forms\Components\Component;
 use Filament\Resources\Pages\CreateRecord;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -38,7 +39,7 @@ trait ContentPreviewEditorTrait
         );
     }
 
-    public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
+    public static function getBuilderEditorSchema(string $builderName): Component | array
     {
         $resource = static::getResource();
 

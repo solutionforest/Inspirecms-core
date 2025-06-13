@@ -2,6 +2,13 @@
 
 namespace SolutionForest\InspireCms;
 
+use Filament\Actions\Action;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Actions\Action as FormComponentsAction;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
@@ -151,7 +158,7 @@ class CmsPanelProvider extends PanelProvider
         $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
         $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {
 
-            $lang = data_get(\SolutionForest\InspireCms\Facades\InspireCms::getAllAvailableLanguages(), $locale);
+            $lang = data_get(inspirecms()->getAllAvailableLanguages(), $locale);
 
             if (! $lang) {
                 return null;
@@ -224,13 +231,13 @@ class CmsPanelProvider extends PanelProvider
         return $panel->bootUsing(function () {
 
             // Confiure alignment
-            \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
+            Action::configureUsing(function (Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
-            \Filament\Tables\Actions\Action::configureUsing(function (\Filament\Tables\Actions\Action $action) {
+            TablesAction::configureUsing(function (TablesAction $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
-            \Filament\Forms\Components\Actions\Action::configureUsing(function (\Filament\Forms\Components\Actions\Action $action) {
+            FormComponentsAction::configureUsing(function (FormComponentsAction $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
 
@@ -238,107 +245,52 @@ class CmsPanelProvider extends PanelProvider
                 $page::alignFormActionsEnd();
             }
 
-            \Filament\Actions\EditAction::configureUsing(function (\Filament\Actions\EditAction $action) {
-                $action->icon(function (\Filament\Actions\EditAction $action) {
+            EditAction::configureUsing(function (EditAction $action) {
+                $action->icon(function (EditAction $action) {
                     return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::edit')
                         : null;
                 });
             });
-            \Filament\Actions\ViewAction::configureUsing(function (\Filament\Actions\ViewAction $action) {
-                $action->icon(function (\Filament\Actions\ViewAction $action) {
+            ViewAction::configureUsing(function (ViewAction $action) {
+                $action->icon(function (ViewAction $action) {
                     return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::visible')
                         : null;
                 });
             });
-            \Filament\Actions\DeleteAction::configureUsing(function (\Filament\Actions\DeleteAction $action) {
-                $action->icon(function (\Filament\Actions\DeleteAction $action) {
+            DeleteAction::configureUsing(function (DeleteAction $action) {
+                $action->icon(function (DeleteAction $action) {
                     return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::delete')
                         : null;
                 });
             });
-            \Filament\Actions\ForceDeleteAction::configureUsing(function (\Filament\Actions\ForceDeleteAction $action) {
-                $action->icon(function (\Filament\Actions\ForceDeleteAction $action) {
+            ForceDeleteAction::configureUsing(function (ForceDeleteAction $action) {
+                $action->icon(function (ForceDeleteAction $action) {
                     return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::delete')
                         : null;
                 });
             });
-            \Filament\Actions\RestoreAction::configureUsing(function (\Filament\Actions\RestoreAction $action) {
-                $action->icon(function (\Filament\Actions\RestoreAction $action) {
+            RestoreAction::configureUsing(function (RestoreAction $action) {
+                $action->icon(function (RestoreAction $action) {
                     return $action->isIconButton()
                         ? FilamentIcon::resolve('inspirecms::restore')
                         : null;
                 });
             });
-            \Filament\Tables\Actions\ReplicateAction::configureUsing(function (\Filament\Tables\Actions\ReplicateAction $action) {
+            TablesReplicateAction::configureUsing(function (TablesReplicateAction $action) {
                 $action
                     ->color('gray')
                     ->modalIcon(FilamentIcon::resolve('inspirecms::clone'));
             });
-            \Pboivin\FilamentPeek\Pages\Actions\PreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Pages\Actions\PreviewAction $action) {
+            PreviewAction::configureUsing(function (PreviewAction $action) {
                 $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
-            \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::configureUsing(function (\Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction $action) {
+            InlinePreviewAction::configureUsing(function (InlinePreviewAction $action) {
                 $action->icon(FilamentIcon::resolve('inspirecms::preview'));
             });
         });
-    }
-
-    protected function configureTourGuideElements(Panel $panel): Panel
-    {
-        return $panel
-            // ->userMenuItems([
-            //     MenuItem::make()
-            //         ->label('Reset Tour Guide')
-            //         ->icon('heroicon-s-arrow-path')
-            //         ->button()
-            //         ->extraAttributes([
-            //             'class' => 'tour-guide-reset-btn',
-            //             'aria-label' => 'Reset Tour Guide',
-            //         ], true),
-            // ])
-            ->bootUsing(function () {
-                \Filament\Navigation\NavigationItem::macro('section', function ($section) {
-                    $cast = $this->cloneAsCustom();
-                    $cast->section = $section;
-
-                    return $cast;
-                });
-                \Filament\Navigation\NavigationItem::macro('itemKey', function ($itemKey) {
-                    $cast = $this->cloneAsCustom();
-                    $cast->itemKey = $itemKey;
-
-                    return $cast;
-                });
-                \Filament\Navigation\NavigationItem::macro('cloneAsCustom', function ($fqcn = \SolutionForest\InspireCms\Filament\Navigation\NavigationItem::class) {
-                    $tmp = new $fqcn;
-                    $tmp->label = $this->label;
-                    $tmp->group = $this->group;
-                    $tmp->parentItem = $this->parentItem;
-                    $tmp->isActive = $this->isActive;
-                    $tmp->icon = $this->icon;
-                    $tmp->activeIcon = $this->activeIcon;
-                    $tmp->badge = $this->badge;
-                    $tmp->badgeColor = $this->badgeColor;
-                    $tmp->badgeTooltip = $this->badgeTooltip;
-                    $tmp->shouldOpenUrlInNewTab = $this->shouldOpenUrlInNewTab;
-                    $tmp->sort = $this->sort;
-                    $tmp->url = $this->url;
-                    $tmp->isHidden = $this->isHidden;
-                    $tmp->isVisible = $this->isVisible;
-                    $tmp->childItems = $this->childItems;
-
-                    return $tmp;
-                });
-
-                \Filament\Actions\Action::configureUsing(function (\Filament\Actions\Action $action) {
-                    $action->extraAttributes([
-                        'data-action-name' => $action->getName(),
-                    ], true);
-                });
-            });
     }
 }

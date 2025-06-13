@@ -3,10 +3,11 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Filament\Actions\Action;
+use Livewire\WithPagination as LivewireWithPagination;
 
 trait WithPagination
 {
-    use \Livewire\WithPagination;
+    use LivewireWithPagination;
 
     public array $pageOptions = [];
 

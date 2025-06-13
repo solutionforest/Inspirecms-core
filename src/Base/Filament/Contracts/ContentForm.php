@@ -2,12 +2,14 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Contracts;
 
+use Closure;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 interface ContentForm
 {
     /**
-     * @return null | Model & \SolutionForest\InspireCms\Models\Contracts\DocumentType
+     * @return null | Model & DocumentType
      */
     public function getDocumentType();
 
@@ -22,9 +24,9 @@ interface ContentForm
     /**
      * Handles the publishable record by executing the provided callback.
      *
-     * @param  \Closure  $callback  The callback function to handle the publishable record.
+     * @param  Closure  $callback  The callback function to handle the publishable record.
      */
-    public function handlePublishableRecord(\Closure $callback);
+    public function handlePublishableRecord(Closure $callback);
 
     /**
      * Get/validate the form state for publishable data.

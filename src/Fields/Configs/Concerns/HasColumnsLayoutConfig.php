@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
-use Filament\Forms;
+use Filament\Forms\Components\KeyValue;
 
 trait HasColumnsLayoutConfig
 {
@@ -10,7 +10,7 @@ trait HasColumnsLayoutConfig
 
     protected static function getHasColumnsLayoutConfigComponent()
     {
-        return Forms\Components\KeyValue::make('columnsLayout')
+        return KeyValue::make('columnsLayout')
             ->label('Columns')
             ->keyLabel('Field')
             ->valueLabel('Width')

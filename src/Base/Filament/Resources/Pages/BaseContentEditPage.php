@@ -2,10 +2,15 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
-use Filament\Actions;
 use Filament\Actions\Action;
-use Filament\Resources\Pages\EditRecord;
+use Filament\Actions\ActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\RestoreAction;
+use Filament\Actions\ViewAction;
+use Filament\Resources\Pages\EditRecord\Concerns\Translatable as EditRecordTranslatable;
 use Filament\Support\Facades\FilamentView;
+use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
@@ -24,16 +29,14 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 
-use function Filament\Support\is_app_url;
-
 abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 {
     use ContentFormTrait;
     use ContentPageTrait;
     use ContentPreviewEditorTrait;
-    use EditRecord\Concerns\Translatable{
-        ContentFormTrait::updatedActiveLocale insteadof EditRecord\Concerns\Translatable;
-        ContentFormTrait::fillForm insteadof EditRecord\Concerns\Translatable;
+    use EditRecordTranslatable {
+        ContentFormTrait::updatedActiveLocale insteadof EditRecordTranslatable;
+        ContentFormTrait::fillForm insteadof EditRecordTranslatable;
     }
 
     public function booted(): void
@@ -52,18 +55,18 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
             BackToParentContentAction::make(),
 
-            Actions\ActionGroup::make([
+            ActionGroup::make([
 
-                Actions\ActionGroup::make([
+                ActionGroup::make([
 
-                    Actions\ViewAction::make(),
+                    ViewAction::make(),
 
-                    Actions\DeleteAction::make()
+                    DeleteAction::make()
                         ->visible(fn (Model $record) => ! $record->isLocked()),
 
-                    Actions\RestoreAction::make(),
+                    RestoreAction::make(),
 
-                    Actions\ForceDeleteAction::make(),
+                    ForceDeleteAction::make(),
 
                     LockContentAction::make()
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
@@ -72,15 +75,15 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
                         ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 
-                Actions\ActionGroup::make([
+                ActionGroup::make([
                     UpdateRouteAction::make(),
                     ContentHistoryAction::make(),
                     ReorderContentAction::make(),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (Actions\ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }
@@ -100,7 +103,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         }
 
         return [
-            \Filament\Actions\ActionGroup::make([
+            ActionGroup::make([
                 $this->getPublishFormAction('edit', $this->getRecord()),
                 $this->getPublishFormAction('edit', $this->getRecord())
                     ->name('publish_descendants_and_self')
@@ -117,7 +120,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
             $this->getSaveFormAction(),
 
-            \Filament\Actions\ActionGroup::make(inspirecms_content_statuses()->getFormActions())
+            ActionGroup::make(inspirecms_content_statuses()->getFormActions())
                 ->label(__('inspirecms::buttons.more_actions.label'))
                 ->button()
                 ->color('gray'),
@@ -229,16 +232,16 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         return $record;
     }
 
-    protected function configureAction(Actions\Action $action): void
+    protected function configureAction(Action $action): void
     {
         parent::configureAction($action);
 
         switch (true) {
             case $action instanceof ReorderContentAction:
                 $action
-                    ->nodeParentId(fn (\SolutionForest\InspireCms\Models\Contracts\Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
+                    ->nodeParentId(fn (Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
                     ->hidden(
-                        fn (?Model $record) => ! $record instanceof \SolutionForest\InspireCms\Models\Contracts\Content ||
+                        fn (?Model $record) => ! $record instanceof Content ||
                         $record->trashed()
                     )->successRedirectUrl(function ($record) {
                         return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);

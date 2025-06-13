@@ -8,7 +8,13 @@ use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
-use SolutionForest\InspireCms\ImportData\Entities;
+use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
+use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
+use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
+use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
+use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
+use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
 
 class ImportService implements ImportServiceInterface
@@ -159,7 +165,7 @@ class ImportService implements ImportServiceInterface
 
                         $themeContent = $fs->get($filePath) ?? TemplateHelper::retrieveDefaultThemeContent();
 
-                        $data = new Entities\Template(slug: $slug, content: [$theme => $themeContent]);
+                        $data = new EntitiesTemplate(slug: $slug, content: [$theme => $themeContent]);
 
                         $this->importDataService->addTemplate(
                             data: $data,
@@ -187,15 +193,15 @@ class ImportService implements ImportServiceInterface
 
                 switch ($forType) {
                     case ImportDataHelper::FOLDER_IDENTIFIER_DOCUMENTTYPE:
-                        $data = Entities\DocumentType::fromArray($jsonData);
+                        $data = EntitiesDocumentType::fromArray($jsonData);
                         $this->importDataService->addDocumentType(
                             data: $data
                         );
 
                         break;
                     case ImportDataHelper::FOLDER_IDENTIFIER_FIELDGROUP:
-                        $data = Entities\FieldGroup::fromArray(Arr::except($jsonData, 'fields'));
-                        $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => Entities\Field::fromArray($i));
+                        $data = EntitiesFieldGroup::fromArray(Arr::except($jsonData, 'fields'));
+                        $fields = Arr::map($jsonData['fields'] ?? [], fn ($i) => EntitiesField::fromArray($i));
                         $data->fields = $fields;
                         $this->importDataService->addFieldGroup(
                             data: $data,
@@ -203,14 +209,14 @@ class ImportService implements ImportServiceInterface
 
                         break;
                     case ImportDataHelper::FOLDER_IDENTIFIER_CONTENT:
-                        $data = Entities\Content::fromArray($jsonData);
+                        $data = EntitiesContent::fromArray($jsonData);
                         $this->importDataService->addContent(
                             data: $data,
                         );
 
                         break;
                     case ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION:
-                        $data = Entities\Navigation::fromArray($jsonData);
+                        $data = EntitiesNavigation::fromArray($jsonData);
                         $this->importDataService->addNavigation(
                             data: $data,
                         );

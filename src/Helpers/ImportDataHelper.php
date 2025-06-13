@@ -6,7 +6,12 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
-use SolutionForest\InspireCms\ImportData\Entities;
+use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
+use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
+use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
+use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
+use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
@@ -202,7 +207,7 @@ class ImportDataHelper
                                     ->merge($item)
                                     ->all()
                             )
-                            ->map(fn (array $item) => Entities\DocumentType::fromArray($item)->toArray())
+                            ->map(fn (array $item) => EntitiesDocumentType::fromArray($item)->toArray())
                             ->all();
 
                         break;
@@ -211,33 +216,33 @@ class ImportDataHelper
 
                         $sequence = collect([
                             [
-                                new Entities\Field(
+                                new EntitiesField(
                                     slug: 'field-1',
                                     label: 'Field 1',
                                     type: 'text',
                                     config: ['translatable' => true],
                                 ),
-                                new Entities\Field(
+                                new EntitiesField(
                                     slug: 'field-2',
                                     label: 'Field 2',
                                     type: 'mediaPicker',
                                     config: ['mimeTypes' => ['image'], 'max' => 1],
                                 ),
                             ], [
-                                new Entities\Field(
+                                new EntitiesField(
                                     slug: 'field-3',
                                     label: 'Field 3',
                                     type: 'contentPicker',
                                     config: ['documentType' => 'article'],
                                 ),
-                                new Entities\Field(
+                                new EntitiesField(
                                     slug: 'field-4',
                                     label: 'Field 4',
                                     type: 'text',
                                     config: [],
                                 ),
                             ], [
-                                new Entities\Field(
+                                new EntitiesField(
                                     slug: 'field-5',
                                     label: 'Field 5',
                                     type: 'text',
@@ -245,12 +250,12 @@ class ImportDataHelper
                                 ),
                             ],
                         ])
-                            ->map(fn (array $fields, $index) => new Entities\FieldGroup(
+                            ->map(fn (array $fields, $index) => new EntitiesFieldGroup(
                                 slug: $itemSlug,
                                 title: Str::title($itemSlug),
                                 fields: $fields,
                             ))
-                            ->map(fn (Entities\FieldGroup $fieldGroup) => $fieldGroup->toArray())
+                            ->map(fn (EntitiesFieldGroup $fieldGroup) => $fieldGroup->toArray())
                             ->all();
 
                         break;
@@ -296,7 +301,7 @@ class ImportDataHelper
                                     ])
                                     ->all();
                             })
-                            ->map(fn (array $item) => Entities\Content::fromArray($item)->toArray())
+                            ->map(fn (array $item) => EntitiesContent::fromArray($item)->toArray())
                             ->all();
 
                         break;
@@ -334,7 +339,7 @@ class ImportDataHelper
                                 ],
                             ],
                         ])
-                            ->map(fn (array $item) => Entities\Navigation::fromArray($item)->toArray())
+                            ->map(fn (array $item) => EntitiesNavigation::fromArray($item)->toArray())
                             ->all();
 
                         break;
@@ -350,11 +355,11 @@ class ImportDataHelper
                     case self::FOLDER_IDENTIFIER_LANGUAGE:
 
                         $sequence = collect($locales)
-                            ->map(fn ($locale) => new Entities\Language(
+                            ->map(fn ($locale) => new EntitiesLanguage(
                                 code: $locale,
                                 isDefault: $locale == 'en',
                             ))
-                            ->map(fn (Entities\Language $language) => $language->toArray())
+                            ->map(fn (EntitiesLanguage $language) => $language->toArray())
                             ->all();
 
                         break;

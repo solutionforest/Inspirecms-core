@@ -6,7 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
-use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
+use SolutionForest\InspireCms\ImportData\Entities\Content as ImportEntitiesContent;
+use SolutionForest\InspireCms\ImportData\Entities\DocumentType as ImportEntitiesDocumentType;
+use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as ImportEntitiesFieldGroup;
+use SolutionForest\InspireCms\ImportData\Entities\Language as ImportEntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\Navigation as ImportEntitiesNavigation;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
@@ -58,12 +62,12 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
         switch (true) {
 
             case $record instanceof DocumentType:
-                $array = ImportDataEntities\DocumentType::fromRecord($record)->toArray();
+                $array = ImportEntitiesDocumentType::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
             case $record instanceof FieldGroup:
-                $array = ImportDataEntities\FieldGroup::fromRecord($record)->toArray();
+                $array = ImportEntitiesFieldGroup::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
@@ -75,18 +79,18 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                 //     return $themeContent;
 
             case $record instanceof Content:
-                $array = ImportDataEntities\Content::fromRecord($record)->toArray();
+                $array = ImportEntitiesContent::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
             case $record instanceof Navigation:
 
-                $array = ImportDataEntities\Navigation::fromRecord($record)->toArray();
+                $array = ImportEntitiesNavigation::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
             case $record instanceof Language:
-                $array = ImportDataEntities\Language::fromRecord($record)->toArray();
+                $array = ImportEntitiesLanguage::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
         }

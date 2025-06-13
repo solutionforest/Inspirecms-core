@@ -104,6 +104,8 @@ class ImportDefaultDataCommand extends Command
         // /** @var class-string<\Illuminate\Database\Eloquent\Model> */
         $model = InspireCmsConfig::getLanguageModelClass();
 
+        $tableName = null;
+
         if (! ModelHelper::isTableExists($model, $tableName)) {
 
             $this->components->error("Table $tableName does not exist.");

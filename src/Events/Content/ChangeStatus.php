@@ -3,32 +3,34 @@
 namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 class ChangeStatus
 {
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Content|Model
+     * @var Content|Model
      */
     public $content;
 
     /**
-     * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
+     * @var ?ContentStatusOption
      */
     public $oldStatus;
 
     /**
-     * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
+     * @var ?ContentStatusOption
      */
     public $status;
 
     /**
      * Create a new event instance.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content  $content
-     * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $oldStatus
-     * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $status
+     * @param  Content  $content
+     * @param  ?ContentStatusOption  $oldStatus
+     * @param  ?ContentStatusOption  $status
      * @return void
      */
     public function __construct($content, $oldStatus, $status)

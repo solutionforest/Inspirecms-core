@@ -19,7 +19,7 @@ abstract class BaseExporter
     ) {}
 
     /**
-     * @return \SolutionForest\InspireCms\Exports\ExportResult
+     * @return ExportResult
      */
     abstract public function export();
 

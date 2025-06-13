@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Livewire;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Locked;
+use Livewire\Component;
 use Livewire\WithoutUrlPagination;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
@@ -12,8 +13,9 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\SearchHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
-class DocumentTypePaginator extends \Livewire\Component
+class DocumentTypePaginator extends Component
 {
     use WithoutUrlPagination;
     use WithPagination;
@@ -58,7 +60,7 @@ class DocumentTypePaginator extends \Livewire\Component
             $this->getDocumentTypes(),
             fn ($paginatedInstance) => $paginatedInstance
                 ->getCollection()
-                ->transform(function (\SolutionForest\InspireCms\Models\Contracts\DocumentType | Model $documentType) {
+                ->transform(function (DocumentType | Model $documentType) {
 
                     $parameters = [
                         'documentType' => $documentType->getKey(),

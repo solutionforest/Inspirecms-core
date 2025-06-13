@@ -4,23 +4,26 @@ namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
 class CreatedContentVersion
 {
     use SerializesModels;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\Content|Model
+     * @var Content|Model
      */
     public $content;
 
     /**
-     * @var \SolutionForest\InspireCms\Models\Contracts\ContentVersion|Model
+     * @var ContentVersion|Model
      */
     public $version;
 
     /**
-     * @var ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption
+     * @var ?ContentStatusOption
      */
     public $status;
 
@@ -34,9 +37,9 @@ class CreatedContentVersion
     /**
      * Create a new event instance.
      *
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content  $content
-     * @param  \SolutionForest\InspireCms\Models\Contracts\ContentVersion  $version
-     * @param  ?\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption  $status
+     * @param  Content  $content
+     * @param  ContentVersion  $version
+     * @param  ?ContentStatusOption  $status
      * @param  bool  $isPublishing
      * @return void
      */
