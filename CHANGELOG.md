@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.77 - 2025-06-13
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.76...0.0.77
+
+- Naming
+- Remove tour guide
+- Update styles
+
 ## 0.0.76 - 2025-06-12
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.75...0.0.76
