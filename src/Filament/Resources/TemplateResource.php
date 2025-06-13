@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources;
 
 use Filament\Resources\Resource;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -36,7 +37,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return 'inspirecms::templates';
+        return FilamentIcon::resolve('inspirecms::templates');
     }
 
     public static function table(Table $table): Table

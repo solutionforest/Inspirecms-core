@@ -240,9 +240,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'email' => 'heroicon-m-envelope',
 
             'json_file' => view('inspirecms::icons.json-file'),
-            'fields' => view('inspirecms::icons.fields'),
-            'templates' => view('inspirecms::icons.templates'),
-            'document_type' => view('inspirecms::icons.document-type'),
+            'fields' => 'css-edit-flip-h',
+            'templates' => 'css-template',
+            'document_type' => 'css-collage',
 
         ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }

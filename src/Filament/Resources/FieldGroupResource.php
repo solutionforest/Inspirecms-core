@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
@@ -47,7 +48,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     public static function getNavigationIcon(): string | Htmlable | null
     {
-        return 'inspirecms::fields';
+        return FilamentIcon::resolve('inspirecms::fields');
     }
 
     public static function form(Form $form): Form
