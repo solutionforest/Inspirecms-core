@@ -9,7 +9,6 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
-
 class CreatedPublishContentVersion
 {
     use SerializesModels;

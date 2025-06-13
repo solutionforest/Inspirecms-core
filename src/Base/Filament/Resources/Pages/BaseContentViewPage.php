@@ -17,7 +17,6 @@ use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
-use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseViewRecord;
 use SolutionForest\InspireCms\Factories\PreviewFactory;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;

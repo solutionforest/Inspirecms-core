@@ -4,9 +4,9 @@ namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Queue\SerializesModels;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
-use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 class CreatingPublishContentVersion
 {

@@ -12,7 +12,6 @@ use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
 use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
 use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
 use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
-use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;

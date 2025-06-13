@@ -3,8 +3,8 @@
 namespace SolutionForest\InspireCms\Events\Content;
 
 use Illuminate\Queue\SerializesModels;
-use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ChangeStatus
 {

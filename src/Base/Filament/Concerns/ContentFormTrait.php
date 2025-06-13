@@ -10,7 +10,6 @@ use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
-use function Filament\Support\is_app_url;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
@@ -20,6 +19,8 @@ use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Throwable;
+
+use function Filament\Support\is_app_url;
 
 trait ContentFormTrait
 {

@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Facades;
 
 use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
-use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
 /**
  * @method static void addOption(\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $option, bool $replace = false) Adds a new option to the manifest.
