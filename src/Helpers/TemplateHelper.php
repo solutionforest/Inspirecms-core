@@ -97,10 +97,11 @@ class TemplateHelper
         $componentName = static::getDefaultThemedLayoutComponentName();
 
         return <<<HTML
+        @props(['isPeekPreviewModal' => false])
         @php
             \$locale ??= \$content->getLocale();
         @endphp
-        <x-cms-template :content="\$content" type="{$componentName}">
+        <x-cms-template type="{$componentName}" :content="\$content" :locale="\$locale" :isPeekPreviewModal="\$isPeekPreviewModal">
             Your content here
         </x-cms-template>
         HTML;

@@ -15,6 +15,10 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 class DefaultPreviewProvider implements PreviewProviderInterface
 {
+    private const PREVIEW_DATA = [
+        'isPeekPreviewModal' => true,
+    ];
+    
     public function renderContentPreview($documentType, $content, $template, $locale = null, $propertyData = [], $data = [])
     {
         $documentType = $this->findDocumentType($documentType);
@@ -76,6 +80,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 array_merge([
                     'locale' => $locale,
                     'content' => $contentDTO,
+                    ... self::PREVIEW_DATA,
                 ], $data),
                 true
             )
@@ -105,7 +110,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         $viewData = array_merge([
             'content' => $contentDTO,
             'locale' => $contentDTO->getLocale() ?? $locale,
-            'isPeekPreviewModal' => true,
+            ... self::PREVIEW_DATA,
         ], $data);
 
         if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $templateContent)) {
@@ -133,7 +138,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
      * @param  int|Model|null  $template
      * @return ?string
      */
-    private function findTemplateContent($template)
+    protected function findTemplateContent($template)
     {
         if (is_null($template)) {
             return null;
@@ -149,7 +154,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
      * @param  int|Model|null  $documentType
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    private function findDocumentType($documentType)
+    protected function findDocumentType($documentType)
     {
         if (is_null($documentType)) {
             return null;
@@ -164,12 +169,12 @@ class DefaultPreviewProvider implements PreviewProviderInterface
     /**
      * @return class-string<Content|Model>
      */
-    private static function getContentModelClass()
+    protected static function getContentModelClass()
     {
         return InspireCmsConfig::getContentModelClass();
     }
 
-    private function renderBuilderPreview(string $htmlContent)
+    protected function renderBuilderPreview(string $htmlContent)
     {
         return Html::injectPreviewModalStyle($htmlContent);
     }
@@ -178,7 +183,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
      * @param  DocumentType|Model|null  $documentType
      * @param  ?string  $locale
      */
-    private function buildFakeContentDto($documentType, $locale)
+    protected function buildFakeContentDto($documentType, $locale)
     {
         if (is_null($documentType)) {
             return null;
