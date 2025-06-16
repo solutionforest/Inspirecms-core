@@ -24,9 +24,7 @@ use SolutionForest\InspireCms\Models\Contracts\Template;
 class TemplatesRelationManager extends RelationManager
 {
     use CanAuthorizeRelationManager;
-    use HasBuilderPreview {
-        openPreviewModalForBuidler as protected traitOpenPreviewModalForBuidler;
-    }
+    use HasBuilderPreview;
     use HasPreviewModal;
 
     protected static string $relationship = 'templates';
@@ -154,6 +152,8 @@ class TemplatesRelationManager extends RelationManager
         return __('inspirecms::resources/document-type.templates.label');
     }
 
+    //region Actions
+
     protected function configureCreateAction(CreateAction $action): void
     {
         parent::configureCreateAction($action);
@@ -267,50 +267,12 @@ class TemplatesRelationManager extends RelationManager
             });
         }
     }
+    //endregion Actions
 
-    // region Preview
+    //region Preview
     protected function getBuilderPreviewView(string $builderName): ?string
     {
-        $templateRecord = $this->cachedMountedTableActionRecord;
-        if (! $templateRecord || ! ($templateRecord instanceof Template)) {
-            return null;
-        }
-
-        return $templateRecord->slug;   // wouldn't use this, but it's required
-    }
-
-    public function openPreviewModalForBuidler(string $builderName): void
-    {
-        $this->checkCustomListener();
-
-        $editorData = $this->mutateInitialBuilderEditorData(
-            $builderName,
-            $this->prepareBuilderEditorData($builderName)
-        );
-
-        if (! isset($editorData['html_content']) || blank($editorData['html_content'])) {
-
-            Notification::make()
-                ->title(__('inspirecms::notification.template_not_found.title'))
-                ->body(__('inspirecms::notification.template_not_found.body'))
-                ->danger()
-                ->seconds(60)
-                ->send();
-
-            // Avoid opening the modal if the template is not found
-            return;
-        }
-
-        $this->dispatch(
-            'openBuilderEditor',
-            previewView: $this->getBuilderPreviewView($builderName),
-            previewUrl: $this->getBuilderPreviewUrl($builderName),
-            modalTitle: $this->getPreviewModalTitle(),
-            editorTitle: $this->getBuilderEditorTitle(),
-            editorData: $editorData,
-            builderName: $builderName,
-            pageClass: static::class,
-        );
+        return 'handle by previewFactory';
     }
 
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array
@@ -386,9 +348,9 @@ class TemplatesRelationManager extends RelationManager
     {
         return __('inspirecms::resources/template.editor.title');
     }
-    // endregion Preview
+    //endregion Preview
 
-    // region Helpers
+    //region Helpers
     protected function refreshPageAlerts(): void
     {
         $this->dispatch('refreshAlerts');
@@ -398,5 +360,5 @@ class TemplatesRelationManager extends RelationManager
     {
         inspirecms_templates()->assignDefaultTemplateIfNotSet($this->getOwnerRecord(), $template);
     }
-    // endregion Helpers
+    //endregion Helpers
 }

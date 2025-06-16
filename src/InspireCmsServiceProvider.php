@@ -317,7 +317,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         if (InspireCmsConfig::get('system.override_plugins.spatie_permission', false)) {
 
             config()->set('permission.enable_wildcard_permission', true);
-
+        }
+        
+        if (InspireCmsConfig::get('system.override_plugins.filament_peek', true)) {
+            PreviewFactory::create()->configureFilamentPeekAsInternalLink();
         }
     }
 

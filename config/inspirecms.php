@@ -60,6 +60,7 @@ return [
         'override_plugins' => [
             'field_group_models' => true, // Whether to override field group models
             'spatie_permission' => true,  // Whether to override Spatie Permission package functionality
+            'filament_peek' => true, // Whether to override Filament Peek package functionality
         ],
     ],
 

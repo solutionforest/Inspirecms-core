@@ -77,7 +77,7 @@ class CmsPanelProvider extends PanelProvider
 
         $panel = $panel
             ->bootUsing(function () {
-
+    
                 $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
                 if ($skipSuperAdminCheck == 'before') {
                     Gate::before(function ($user, $ability) {
@@ -202,7 +202,8 @@ class CmsPanelProvider extends PanelProvider
 
         $plugins[] = $translatablePlugin;
 
-        return $panel->plugins($plugins);
+        return $panel
+            ->plugins($plugins);
     }
 
     protected function configureNavigation(Panel $panel): Panel
