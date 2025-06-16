@@ -76,50 +76,6 @@ class CmsPanelProvider extends PanelProvider
         }
 
         $panel = $panel
-            ->resources(InspireCmsConfig::getFilamentResources())
-            ->pages(array_merge(
-                array_values(InspireCmsConfig::getFilamentPages()),
-                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
-            ))
-            ->widgets([
-                Widgets\CmsInfoWidget::class,
-                Widgets\CmsVersionInfo::class,
-                Widgets\PageActivity::class,
-                Widgets\UserActivity::class,
-                Widgets\AlertOverview::class,
-                Widgets\ThemeInfo::class,
-                Widgets\TemplateInfo::class,
-                TreeNavigation::class,
-                ...InspireCmsConfig::get('admin.extra_widgets', []),
-            ]);
-        // Discover resources, pages, clusters, and widgets in the specified directories
-        $panel = $panel
-            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources')
-            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages')
-            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters')
-            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
-
-        $middleware = [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            CmsMiddleware\CmsAuthenticateSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-            DisableBladeIconComponents::class,
-            DispatchServingFilamentEvent::class,
-            CmsMiddleware\LicenseCheck::class,
-            CmsMiddleware\SetUpPoweredBy::class,
-        ];
-        $authMiddleware = [
-            CmsMiddleware\CmsAuthenticate::class,
-            CmsMiddleware\UserPreference::class,
-        ];
-
-        $panel = $panel
-            ->middleware($middleware)
-            ->authMiddleware($authMiddleware)
             ->bootUsing(function () {
 
                 $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
@@ -138,6 +94,11 @@ class CmsPanelProvider extends PanelProvider
                 }
             });
 
+        $this->configureResources($panel);
+        $this->configurePages($panel);
+        $this->configureWidgets($panel);
+        $this->configureClusters($panel);
+        $this->configureMiddleware($panel);
         $this->configurePlugins($panel);
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
@@ -145,6 +106,71 @@ class CmsPanelProvider extends PanelProvider
         $this->registerLivewireComponents($panel);
 
         return $panel;
+    }
+
+    protected function configureClusters(Panel $panel): Panel
+    {
+        return $panel
+            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters');
+    }
+
+    protected function configureWidgets(Panel $panel): Panel
+    {
+        return $panel
+            ->widgets([
+                Widgets\CmsInfoWidget::class,
+                Widgets\CmsVersionInfo::class,
+                Widgets\PageActivity::class,
+                Widgets\UserActivity::class,
+                Widgets\AlertOverview::class,
+                Widgets\ThemeInfo::class,
+                Widgets\TemplateInfo::class,
+                TreeNavigation::class,
+                ...InspireCmsConfig::get('admin.extra_widgets', []),
+            ])
+            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
+    }
+
+    protected function configurePages(Panel $panel): Panel
+    {
+        return $panel
+            ->pages(array_merge(
+                array_values(InspireCmsConfig::getFilamentPages()),
+                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
+            ))
+            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages');
+    }
+
+    protected function configureResources(Panel $panel): Panel
+    {
+        return $panel
+            ->resources(InspireCmsConfig::getFilamentResources())
+            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources');
+    }
+
+    protected function configureMiddleware(Panel $panel): Panel
+    {
+        $middleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            CmsMiddleware\CmsAuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+            CmsMiddleware\LicenseCheck::class,
+            CmsMiddleware\SetUpPoweredBy::class,
+        ];
+        $authMiddleware = [
+            CmsMiddleware\CmsAuthenticate::class,
+            CmsMiddleware\UserPreference::class,
+        ];
+
+        return $panel
+            ->middleware($middleware)
+            ->authMiddleware($authMiddleware);
     }
 
     protected function configurePlugins(Panel $panel): Panel
