@@ -20,4 +20,13 @@ return [
         'title' => '已保存',
     ],
 
+    'document_type_not_found' => [
+        'title' => '找不到文檔類型',
+        'body' => '指定的文檔類型不存在。請檢查您的配置。',
+    ],
+
+    'content_not_found' => [
+        'title' => '找不到內容',
+        'body' => '指定的內容不存在。請檢查您的配置。',
+    ],
 ];
