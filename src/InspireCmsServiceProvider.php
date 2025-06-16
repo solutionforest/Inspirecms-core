@@ -21,6 +21,7 @@ use Livewire\Features\SupportTesting\Testable;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Factories\PreviewFactory;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
@@ -294,7 +295,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function customPlugins(): void
     {
-        if (InspireCmsConfig::get('system.override_plugins.field_group_models', false)) {
+        if (InspireCmsConfig::get('system.override_plugins.field_group_models', true)) {
 
             // override field group models
             FilamentFieldGroup::setFieldGroupModelClass(
@@ -314,8 +315,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
         }
-        if (InspireCmsConfig::get('system.override_plugins.spatie_permission', false)) {
 
+        if (InspireCmsConfig::get('system.override_plugins.spatie_permission', true)) {
             config()->set('permission.enable_wildcard_permission', true);
         }
         
