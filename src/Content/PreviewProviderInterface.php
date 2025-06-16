@@ -15,9 +15,9 @@ interface PreviewProviderInterface
      * @return string The preview type identifier ('view' or 'internalUrl').
      */
     public function getPeekPreviewType(): string;
-    
+
     public function configureFilamentPeekAsInternalLink(): void;
-    
+
     /**
      * @param  int|Model|DocumentType|null  $documentType
      * @param  string|int|Model|Content|array|null  $content

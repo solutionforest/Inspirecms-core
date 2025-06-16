@@ -19,7 +19,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
     private const PREVIEW_DATA = [
         'isPeekPreviewModal' => true,
     ];
-    
+
     protected static $previewType = 'internalUrl'; // internalUrl, view
 
     public function getPeekPreviewType(): string
@@ -34,7 +34,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
             config()->set('filament-peek.internalPreviewUrl.enabled', true);
         }
     }
-    
+
     public function renderContentPreview($documentType, $content, $template, $locale = null, $propertyData = [], $data = [])
     {
         [$htmlContent, $viewData] = $this->prepareContentPreviewContentAndData(
@@ -47,7 +47,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         );
 
         return $this->renderBuilderPreview(
-            Blade::render($htmlContent,$viewData, true)
+            Blade::render($htmlContent, $viewData, true)
         );
     }
 
@@ -98,6 +98,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->danger()
                 ->seconds(60)
                 ->send();
+
             return ['Content not found', []];
         }
 
@@ -121,7 +122,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         return [$templateContent, array_merge([
             'locale' => $locale,
             'content' => $contentDTO,
-            ... self::PREVIEW_DATA,
+            ...self::PREVIEW_DATA,
         ], $data)];
     }
 
@@ -135,6 +136,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->danger()
                 ->seconds(60)
                 ->send();
+
             return ['Document type not found', []];
         }
 
@@ -143,7 +145,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         $viewData = array_merge([
             'content' => $contentDTO,
             'locale' => $contentDTO->getLocale() ?? $locale,
-            ... self::PREVIEW_DATA,
+            ...self::PREVIEW_DATA,
         ], $data);
 
         if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $templateContent)) {

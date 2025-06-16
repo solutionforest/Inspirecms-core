@@ -152,7 +152,7 @@ class TemplatesRelationManager extends RelationManager
         return __('inspirecms::resources/document-type.templates.label');
     }
 
-    //region Actions
+    // region Actions
 
     protected function configureCreateAction(CreateAction $action): void
     {
@@ -267,9 +267,9 @@ class TemplatesRelationManager extends RelationManager
             });
         }
     }
-    //endregion Actions
+    // endregion Actions
 
-    //region Preview
+    // region Preview
     protected function getBuilderPreviewView(string $builderName): ?string
     {
         return 'handle by previewFactory';
@@ -348,9 +348,9 @@ class TemplatesRelationManager extends RelationManager
     {
         return __('inspirecms::resources/template.editor.title');
     }
-    //endregion Preview
+    // endregion Preview
 
-    //region Helpers
+    // region Helpers
     protected function refreshPageAlerts(): void
     {
         $this->dispatch('refreshAlerts');
@@ -360,5 +360,5 @@ class TemplatesRelationManager extends RelationManager
     {
         inspirecms_templates()->assignDefaultTemplateIfNotSet($this->getOwnerRecord(), $template);
     }
-    //endregion Helpers
+    // endregion Helpers
 }

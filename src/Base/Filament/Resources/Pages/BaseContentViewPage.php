@@ -115,9 +115,9 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
         }
     }
 
-    //region Preview
+    // region Preview
     protected function getPreviewModalView(): ?string
-    {        
+    {
         return 'handle by previewFactory';
     }
 
@@ -155,9 +155,9 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
 
         return $data;
     }
-    //endregion Preview
+    // endregion Preview
 
-    //region Computed properties
+    // region Computed properties
     #[Computed(persist: true, seconds: 7200)]
     public function contentDto()
     {
@@ -174,5 +174,5 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
 
         return null;
     }
-    //endregion Computed properties
+    // endregion Computed properties
 }
