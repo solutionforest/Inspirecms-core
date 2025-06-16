@@ -146,13 +146,21 @@ resources/views/components/inspirecms/abc/
 #### Applying Layouts to Templates
 
 ```blade {title="Template: home"}
-<x-cms-template :content="$content" type="page">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     Home
 </x-cms-template>
 ```
 
 ```blade {title="Template: tnc"}
-<x-cms-template :content="$content" type="simple-page">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="simple-page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     TNC Here
 </x-cms-template>
 ```

@@ -140,7 +140,11 @@ php artisan inspirecms:repair-permissions
 3. Navigate to **Settings** > **Document Types** > **Templates** to assign your template to content
 
 ```blade
-<x-cms-template :content="$content" type="page">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
 // Adding content here
 </x-cms-template>
 ```

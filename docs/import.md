@@ -267,7 +267,11 @@ archive.zip/
 ### 6. Templates
 
 ```blade {title="Templates/template-1/theme-1.blade.php"}
-<x-cms-template :content="$content" type="page" class="sample-class">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" class="sample-class" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     @property('content', 'body')
 </x-cms-template>
 ```
