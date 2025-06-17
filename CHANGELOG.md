@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.80 - 2025-06-17
+
+- Performance tunning for MediaPicker
+- Add doc link and view site link on top right
+- Remove AssetController (replace URL logic by spatie media library)
+
+### What's Changed
+
+* build(deps): bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/5
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.79...0.0.80
+
 ## 0.0.79 - 2025-06-16
 
 - Update Page component instructions on template preview
