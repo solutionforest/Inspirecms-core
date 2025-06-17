@@ -171,14 +171,6 @@ return [
             'should_map_video_properties_with_ffmpeg' => false,
 
             /**
-             * HTTP middleware applied to media requests
-             */
-            'middleware' => [
-                SetUpPoweredBy::class,
-                'cache.headers:public;max_age=2628000;etag',
-            ],
-
-            /**
              * Responsive image generation settings
              */
             'responsive_images' => [

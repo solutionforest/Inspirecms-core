@@ -161,13 +161,6 @@ Configure media uploads, storage, and processing:
                       // Increases processing time for video uploads
 
         /**
-         * HTTP middleware applied to media requests
-         */
-        'middleware' => [
-            'cache.headers:public;max_age=2628000;etag',
-        ],
-
-        /**
          * Responsive image generation settings
          */
         'responsive_images' => [
