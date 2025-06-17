@@ -563,8 +563,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         }
 
         foreach (app(Filesystem::class)->allFiles(__DIR__ . '/../stubs/SampleAssets/Assets') as $file) {
-            $dir = str($file->getRelativePath())->explode('/')
-                ->map(fn ($path) => (string) str($path)->kebab())
+            $dir = str($file->getRelativePath())
+                ->replace('\\', '/')
+                ->explode('/')
+                ->filter(fn ($path) => filled($path))
+                ->map(fn ($path) => Str::kebab($path))
                 ->implode('/');
             $fullPath = (string) str(public_path($dir))
                 ->finish('/')
