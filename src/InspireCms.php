@@ -26,6 +26,10 @@ class InspireCms
 
     const PACKAGE = 'solution-forest/inspirecms-core';
 
+    const URL_DOCUMENTATION = 'https://inspirecms.net/docs';
+
+    const URL_NEWS = 'https://inspirecms.net/blog';
+
     protected CacheManager $cacheManager;
 
     /**

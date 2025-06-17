@@ -17,8 +17,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
 use Filament\Tables\Actions\Action as TablesAction;
 use Filament\Tables\Actions\ReplicateAction as TablesReplicateAction;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -35,6 +37,7 @@ use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
@@ -230,7 +233,42 @@ class CmsPanelProvider extends PanelProvider
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
             ])
-            ->userMenuItems($userMenuItems);
+            ->userMenuItems($userMenuItems)
+            ->bootUsing(function () {
+                FilamentView::registerRenderHook(
+                    PanelsRenderHook::USER_MENU_BEFORE,
+                    function () {
+                        $links = [];
+                        $links[] = UIHelper::generateIconButton(
+                            icon: 'heroicon-o-book-open',
+                            color: 'gray',
+                            url: InspireCms::URL_DOCUMENTATION,
+                            size: 'lg',
+                            attributes: [
+                                'target' => '_blank',
+                                'rel' => 'noopener noreferrer',
+                                'class' => 'px-0.5',
+                                'alt' => 'Documentation',
+                                'title' => 'Documentation',
+                            ]
+                        )->toHtml();
+                        $links[] = UIHelper::generateIconButton(
+                            icon: 'heroicon-o-globe-alt',
+                            color: 'gray',
+                            url: config('app.url'),
+                            size: 'lg',
+                            attributes: [
+                                'target' => '_blank',
+                                'rel' => 'noopener noreferrer',
+                                'class' => 'px-0.5',
+                                'alt' => 'View Website',
+                                'title' => 'View Website',
+                            ]
+                        )->toHtml();
+                        return implode('', $links);
+                    }
+                );
+            });
     }
 
     protected function configureNotification(Panel $panel): Panel

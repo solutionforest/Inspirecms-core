@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Widgets;
 use Filament\Widgets\Widget;
 use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
+use SolutionForest\InspireCms\InspireCms;
 
 class CmsInfoWidget extends Widget implements GuardWidget
 {
@@ -28,11 +29,11 @@ class CmsInfoWidget extends Widget implements GuardWidget
 
     public function getDocumentUrl(): string
     {
-        return 'https://inspirecms.net/docs';
+        return InspireCms::URL_DOCUMENTATION;
     }
 
     public function getNewsUrl(): string
     {
-        return 'https://inspirecms.net/blog';
+        return InspireCms::URL_NEWS;
     }
 }
