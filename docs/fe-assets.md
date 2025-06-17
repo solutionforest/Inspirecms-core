@@ -86,7 +86,7 @@ Use property directives to access media assets linked to content:
     @foreach($gallery_images as $image)
         <figure>
             <img
-                src="{{ $image->getUrl(['width' => 800]) }}"
+                src="{{ $image->getUrl() }}"
                 alt="{{ $image->caption }}"
                 srcset="{{ $image->getSrcset(['small', 'medium']) }}"
                 loading="lazy"
@@ -107,15 +107,8 @@ Implement responsive images:
 <!-- Basic responsive image -->
 <img
     src="{{ $asset->getUrl() }}"
-    srcset="{{ $asset->getSrcset(['small', 'medium', 'large']) }}"
+    srcset="{{ $asset->getSrcset(['small', 'medium']) }}"
     sizes="(max-width: 768px) 100vw, 50vw"
     alt="{{ $asset->caption }}"
 >
-
-<!-- Picture element for art direction -->
-<picture>
-    <source media="(max-width: 768px)" srcset="{{ $asset->getUrl(['width' => 600, 'height' => 400, 'fit' => 'crop']) }}">
-    <source media="(max-width: 1200px)" srcset="{{ $asset->getUrl(['width' => 1200, 'height' => 600, 'fit' => 'crop']) }}">
-    <img src="{{ $asset->getUrl() }}" alt="{{ $asset->caption }}">
-</picture>
 ```
