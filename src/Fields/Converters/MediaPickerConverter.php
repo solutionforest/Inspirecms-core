@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCms\Fields\Converters;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
@@ -21,7 +19,7 @@ class MediaPickerConverter extends BaseConverter
         $formattedSourceValue = is_array($value) ? $value : [$value];
 
         return collect($formattedSourceValue)
-            ->map(function ($item) use ($locale) {
+            ->map(function ($item) {
                 if (is_array($item)) {
                     return MediaAssetDto::fromArray($item);
                 } elseif ($item instanceof MediaAsset) {

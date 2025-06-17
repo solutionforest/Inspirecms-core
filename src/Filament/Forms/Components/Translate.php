@@ -154,7 +154,7 @@ class Translate extends Component
                     ->required(false);
             }
 
-        } 
+        }
         // Is layout component
         else {
 

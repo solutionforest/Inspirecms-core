@@ -265,6 +265,7 @@ class CmsPanelProvider extends PanelProvider
                                 'title' => 'View Website',
                             ]
                         )->toHtml();
+
                         return implode('', $links);
                     }
                 );
