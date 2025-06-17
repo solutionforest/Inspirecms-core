@@ -49,8 +49,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
          * More info: https://github.com/spatie/laravel-package-tools
          */
         $package->name(static::$name)
-            ->hasCommands($this->getCommands())
-            ->hasRoutes($this->getRoutes());
+            ->hasCommands($this->getCommands());
 
         $configFileName = $package->shortName();
 
@@ -252,7 +251,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getRoutes(): array
     {
         return [
-            'inspirecms',
+            //
         ];
     }
 
