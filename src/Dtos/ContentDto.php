@@ -9,11 +9,11 @@ use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Dtos\Collection\PropertyGroupCollection;
 use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\Helpers\SeoHelper;
-use SolutionForest\InspireCms\Models\Content;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 
 /**
- * @extends BaseTranslatableModelDto<Content,ContentDto>
+ * @extends BaseTranslatableModelDto<Content|Model,ContentDto>
  */
 class ContentDto extends BaseTranslatableModelDto
 {
