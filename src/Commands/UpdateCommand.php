@@ -27,7 +27,11 @@ class UpdateCommand extends Command
             $this->warn('Skipping configuration publishing.');
         }
 
-        // 2) Publish migrations
+        // 2) Install dependencies
+        $this->info('Installing dependencies...');
+        $this->call(InstallRequirePacakgesCommand::class);
+
+        // 3) Publish migrations
         if ($this->confirm('Do you want to publish the migrations?', true)) {
             $this->call('vendor:publish', [
                 '--tag' => InspireCms::CORE_SLUG . '-migrations',
@@ -36,10 +40,6 @@ class UpdateCommand extends Command
         } else {
             $this->warn('Skipping migration publishing.');
         }
-
-        // 3) Install dependencies
-        $this->info('Installing dependencies...');
-        $this->call(InstallRequirePacakgesCommand::class);
 
         // 4) Run migrations
         if ($this->confirm('Do you want to run the migrations now?', true)) {
