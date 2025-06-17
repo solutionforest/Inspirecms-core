@@ -1,4 +1,5 @@
-<x-cms-template :content="$content" type="page">
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <div class="case-study-container">
         <header class="case-study-header">
             <p class="label">CASE STUDY</p>

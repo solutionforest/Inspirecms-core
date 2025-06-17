@@ -1,6 +1,8 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     use SolutionForest\InspireCms\Dtos\ContentDto;
     
+    $locale ??= $content->getLocale();
     $cases = inspirecms_content()
         ->getPaginatedUnderRealPath(
             path: 'home/' . $content->slug, 
@@ -14,7 +16,7 @@
         )
         ->toDto($locale);
 @endphp
-<x-cms-template :content="$content" type="page">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <main>
         <section class="latest-articles">
             <div class="container">

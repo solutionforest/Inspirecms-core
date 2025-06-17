@@ -1,7 +1,9 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     use SolutionForest\InspireCms\Dtos\ContentDto;
     use Illuminate\Support\Arr;
     
+    $locale ??= $content->getLocale();
     $blogs = inspirecms_content()
         ->getUnderRealPath(
             path: 'blogs', 
@@ -14,7 +16,7 @@
         )
         ->toDto($locale);
 @endphp
-<x-cms-template :content="$content" type="page">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     
     <main>
         <!-- Hero Section -->

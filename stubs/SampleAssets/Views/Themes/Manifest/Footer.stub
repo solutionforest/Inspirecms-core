@@ -1,3 +1,5 @@
+@props(['locale' => null])
+@aware(['isPreviewing'])
 @php
     $locale ??= request()->getLocale();
     $nav = collect(inspirecms()->getNavigation('footer', $locale))->flatMap(fn ($nav) => $nav->children ?? [])->all();

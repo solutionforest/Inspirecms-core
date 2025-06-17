@@ -1,3 +1,4 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $title ??= $content->getTitle() ?? config('app.name');
     $locale ??= $content->getLocale() ?? request()->getLocale();

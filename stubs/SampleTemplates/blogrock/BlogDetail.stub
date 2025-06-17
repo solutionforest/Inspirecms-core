@@ -1,7 +1,9 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     use SolutionForest\InspireCms\Dtos\ContentDto;
 
-    if (isset($isPeekPreviewModal)) {
+    $locale ??= $content->getLocale();
+    if (isset($isPeekPreviewModal) && $isPeekPreviewModal == true) {
         $blog = inspirecms_content()
             ->getUnderRealPath(path: "blog-management", limit: 1)
             ?->first()?->toDto($locale);
@@ -16,7 +18,7 @@
         abort(404);
     }
 @endphp
-<x-cms-template :content="$content" type="page">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <article class="blog-post">
         <!-- Header -->
         <header class="post-header">

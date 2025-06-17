@@ -1,4 +1,8 @@
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <!-- About Section -->
     <section class="landing-about-section">
         <div class="container">
@@ -17,4 +21,4 @@
             </div>
         </div>
     </section>
-</x-dynamic-component>
+</x-cms-template>

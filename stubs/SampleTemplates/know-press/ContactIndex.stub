@@ -1,8 +1,9 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $config = inspirecms_content()->findByRealPath(path: 'config', limit: 1)->first()->toDto($locale);
 @endphp
 
-<x-cms-template :content="$content" type="page">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <div class="contact-header">
         <div class="header-content">
             <h1 class="contact-title">@property('page_banner', 'title')</h1>

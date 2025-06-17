@@ -1,4 +1,5 @@
 
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     use SolutionForest\InspireCms\Dtos\ContentDto;
     
@@ -15,7 +16,7 @@
         ->toDto($locale);
 @endphp
 
-<x-cms-template :content="$content" type="page">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <x-slot name="heroTitle">
         @property('hero_banner', 'brief')
     </x-slot>

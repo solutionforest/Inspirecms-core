@@ -70,6 +70,7 @@ class TemplateHelper
     public static function retrieveDefaultLayoutContent()
     {
         return <<<'HTML'
+        @props(['content' => null, 'locale' => null, 'isPeekPreviewModal' => false])
         @php
             $locale ??= $content->getLocale() ?? request()->getLocale();
             $seo = $content->getSeo()?->getHtml();
@@ -97,7 +98,7 @@ class TemplateHelper
         $componentName = static::getDefaultThemedLayoutComponentName();
 
         return <<<HTML
-        @props(['isPeekPreviewModal' => false])
+        @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
         @php
             \$locale ??= \$content->getLocale();
         @endphp

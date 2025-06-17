@@ -124,6 +124,8 @@ php artisan inspirecms:repair-permissions
 2. Use the `@property` directive to access your content fields:
 
 ```blade
+@props(['content', 'locale' => null])
+@aware(['isPreviewing'])
 <html>
     <head>
         <title>{{ $content->getTitle() }}</title>
@@ -144,7 +146,7 @@ php artisan inspirecms:repair-permissions
 @php
     $locale ??= $content->getLocale();
 @endphp
-<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPreviewing="$isPeekPreviewModal">
 // Adding content here
 </x-cms-template>
 ```

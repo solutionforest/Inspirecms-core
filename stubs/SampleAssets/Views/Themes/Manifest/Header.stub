@@ -1,3 +1,5 @@
+@props(['locale' => null])
+@aware(['isPreviewing'])
 @php
     $locale ??= request()->getLocale();
     $nav = inspirecms()->getNavigation('main', $locale);

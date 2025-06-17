@@ -1,7 +1,8 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $locale ??= $content->getLocale();
 
-    if (isset($isPeekPreviewModal)) {
+    if (isset($isPeekPreviewModal) && $isPeekPreviewModal == true) {
         $blog = inspirecms_content()
             ->getUnderRealPath(path: "blog-management", limit: 1)
             ?->first()?->toDto($locale);
@@ -30,7 +31,7 @@
     $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
 
 @endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('page')" :content="$content">
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <article class="blog-post-single page-main-container">
         <!-- Post Header - Full Width -->
         <div class="container-fluid ps-0 pe-0">
@@ -194,4 +195,4 @@
                 </div>
             </div>
     </article>
-</x-dynamic-component>
+</x-cms-template>
