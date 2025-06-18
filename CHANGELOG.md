@@ -2,6 +2,10 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.81 - 2025-06-17
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.80...0.0.81
+
 ## 0.0.80 - 2025-06-17
 
 - Performance tunning for MediaPicker
