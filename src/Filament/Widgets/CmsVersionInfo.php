@@ -47,4 +47,21 @@ class CmsVersionInfo extends Widget implements GuardWidget, HasActions, HasForms
             ->openUrlInNewTab()
             ->color('primary');
     }
+
+
+    public function getVersionDisplayText()
+    {
+        $pluginVersion = inspirecms()->version();
+        if (is_string($pluginVersion) && !str_contains($pluginVersion, 'dev')) {
+            $pluginVersion = 'v' . $pluginVersion;
+        }
+        $licenseTier = app(LicenseManager::class)->getLicenseTier();
+        if ($licenseTier && filled($licenseTier)) {
+            $licenseTier = ucfirst($licenseTier);
+        }
+        return implode(' ', [
+            $licenseTier,
+            $pluginVersion,
+        ]);
+    }
 }
