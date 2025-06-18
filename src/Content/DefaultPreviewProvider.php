@@ -148,7 +148,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
             ...self::PREVIEW_DATA,
         ], $data);
 
-        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $templateContent)) {
+        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
 
             // get the layout
             $layoutName = inspirecms_templates()->getComponentWithTheme(TemplateHelper::getDefaultThemedLayoutComponentName());
