@@ -294,11 +294,6 @@ class LicenseManager
         File::put($this->licenseKeyPath(), $fileContent);
     }
 
-    private function getSecretKey()
-    {
-        return InspireCmsConfig::get('system.license.secret');
-    }
-
     private function licenseKeyPath()
     {
         return storage_path('app/license.lic');
