@@ -154,6 +154,11 @@ class LicenseManager
         return $existingRoleCount < $limitedRoleCount;
     }
 
+    public function canGlobalSearch(): bool
+    {
+        return $this->getLicenseTier() === 'pro';
+    }
+
     public function getLicenseTier(): ?string
     {
         $licenseKey = $this->getLicenseKey();

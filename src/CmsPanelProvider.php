@@ -40,6 +40,7 @@ use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 
@@ -48,7 +49,8 @@ class CmsPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         $panel = $panel
-            ->id(InspireCmsConfig::getPanelId());
+            ->id(InspireCmsConfig::getPanelId())
+            ->globalSearch(app(LicenseManager::class)->canGlobalSearch());
 
         return $this->configureCmsPanel($panel);
     }
