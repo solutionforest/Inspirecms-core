@@ -173,7 +173,7 @@ class LicenseManager
                 if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
                     $data = $verificationResult->getData();
 
-                    return data_get($data, 'meta.product_variant_slug', null);
+                    return data_get($data, 'license.meta.product_variant_slug', null);
                 }
 
             } catch (\Throwable $th) {
