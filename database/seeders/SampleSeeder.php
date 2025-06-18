@@ -200,12 +200,11 @@ class SampleSeeder extends Seeder
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'blog_content',
+            slug: 'post_content',
             fields: [
                 new ImportDataEntities\Field(slug: 'categories', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'tags', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'post_date', type: 'dateTimePicker', config: ['hasTime' => true, 'hasDate' => true, 'displayFormat' => 'Y-m-d H:i:s']),
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
@@ -267,38 +266,50 @@ class SampleSeeder extends Seeder
                 'hero_banner',
                 'profile',
             ],
-            templates: ['home-index'],
-            defaultTemplate: 'home-index',
+            templates: ['index'],
+            defaultTemplate: 'index',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-home',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'about-index-page',
+            slug: 'about-us-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
             fieldGroups: [
                 'about_section',
             ],
-            templates: ['about-index'],
-            defaultTemplate: 'about-index',
+            templates: ['about-us'],
+            defaultTemplate: 'about-us',
             inheritance: [], // ['general-page-banner'],
             icon: 'heroicon-o-information-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-index-page',
+            slug: 'blog-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
             fieldGroups: ['featured_blogs'],
-            templates: ['blog-index'],
-            defaultTemplate: 'blog-index',
+            templates: ['blog'],
+            defaultTemplate: 'blog',
             inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-newspaper',
-            allowed: ['blog-detail-page'],
+            icon: 'heroicon-o-document',
+            allowed: ['post-page'],
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'contact-us-index-page',
+            slug: 'post-page',
+            showAsTable: false,
+            showAtRoot: true,
+            category: 'web',
+            fieldGroups: [],
+            templates: [
+                'post',
+            ],
+            defaultTemplate: 'post',
+            icon: 'heroicon-o-document',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'contact-us-page',
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
@@ -306,9 +317,22 @@ class SampleSeeder extends Seeder
                 'page_banner',
                 'contact',
             ],
-            templates: ['contact-index'],
-            defaultTemplate: 'contact-index',
+            templates: ['contact-us'],
+            defaultTemplate: 'contact-us',
             icon: 'heroicon-o-question-mark-circle',
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'case-study-index-page',
+            showAsTable: true,
+            showAtRoot: true,
+            category: 'web',
+            fieldGroups: [
+                'page_banner',
+            ],
+            templates: ['case-study-index'],
+            defaultTemplate: 'case-study-index',
+            icon: 'heroicon-o-document',
+            allowed: ['case-study-detail-page'],
         );
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'case-study-detail-page',
@@ -321,20 +345,7 @@ class SampleSeeder extends Seeder
             ],
             templates: ['case-study-detail'],
             defaultTemplate: 'case-study-detail',
-            icon: 'heroicon-o-clipboard-document-check',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'case-study-index-page',
-            showAsTable: true,
-            showAtRoot: true,
-            category: 'web',
-            fieldGroups: [
-                'page_banner',
-            ],
-            templates: ['case-study-index'],
-            defaultTemplate: 'case-study-index',
-            icon: 'heroicon-o-clipboard-document-list',
-            allowed: ['case-study-detail-page'],
+            icon: 'heroicon-o-document',
         );
 
         $items[] = new ImportDataEntities\DocumentType(
@@ -359,7 +370,7 @@ class SampleSeeder extends Seeder
             templates: [],
             defaultTemplate: null,
             inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-newspaper',
+            icon: 'heroicon-o-folder',
             allowed: ['blog-data'],
         );
         $items[] = new ImportDataEntities\DocumentType(
@@ -370,7 +381,7 @@ class SampleSeeder extends Seeder
             fieldGroups: [
                 'page_banner',
                 'social_media',
-                'blog_content',
+                'post_content',
             ],
             templates: [
                 'blog-featured-item',
@@ -378,18 +389,6 @@ class SampleSeeder extends Seeder
                 'blog-grid-item',
             ],
             defaultTemplate: null,
-            icon: 'heroicon-o-newspaper',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-detail-page',
-            showAsTable: false,
-            showAtRoot: true,
-            category: 'web',
-            fieldGroups: [],
-            templates: [
-                'blog-detail',
-            ],
-            defaultTemplate: 'blog-detail',
             icon: 'heroicon-o-newspaper',
         );
 
@@ -405,7 +404,7 @@ class SampleSeeder extends Seeder
                         ->where(fn ($slug) => ! in_array($slug, [
                             'homepage', // self
                             'case-study',   // children under case-study index page
-                            'blog-detail', // data-type
+                            'post', // data-type
                         ]))
                         ->values()
                         ->toArray();
@@ -477,7 +476,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\Content(
             slug: 'about',
             title: ['en' => 'About', 'fr' => 'À propos'],
-            documentType: 'about-index-page',
+            documentType: 'about-us-page',
             properties: [
                 'about_section' => [
                     'brief' => [
@@ -496,9 +495,9 @@ class SampleSeeder extends Seeder
             parent: 'home',
         );
         $items[] = new ImportDataEntities\Content(
-            slug: 'blogs',
-            title: ['en' => 'Blogs', 'fr' => 'Blogs'],
-            documentType: 'blog-index-page',
+            slug: 'blog',
+            title: ['en' => 'Blog', 'fr' => 'Blog'],
+            documentType: 'blog-page',
             properties: [
                 'featured_blogs' => [],
             ],
@@ -507,9 +506,42 @@ class SampleSeeder extends Seeder
         );
         foreach (range(1, 10) as $i) {
 
+            $sampleCatOrTags = [
+                'Technology',
+                'Travel',
+                'Food',
+                'Lifestyle',
+                'Health',
+                'Fitness',
+                'Photography',
+                'Education',
+                'Business',
+                'Fashion',
+                'DIY',
+                'Parenting',
+                'Gardening',
+                'Finance',
+                'Mental Health',
+                'Art',
+                'Music',
+                'Science',
+                'Culture',
+                'Sports',
+                'Nature',
+                'History',
+                'Writing',
+                'Marketing',
+                'Productivity',
+                'Meditation',
+                'Home Decor',
+                'Personal Development',
+                'Social Media',
+                'Sustainability',
+            ];
+
             $items[] = new ImportDataEntities\Content(
-                slug: "blog-$i",
-                title: ['en' => "Blog $i", 'fr' => "Blog $i"],
+                slug: "post-$i",
+                title: ['en' => "Post $i", 'fr' => "Post $i"],
                 documentType: 'blog-data', // data-type
                 properties: [
                     'page_banner' => [
@@ -523,14 +555,13 @@ class SampleSeeder extends Seeder
                             'fr' => fake()->sentence(10),
                         ],
                     ],
-                    'blog_content' => [
-                        'categories' => ['Technology', 'Interface Design'],
-                        'tags' => ['Technology', 'Interface Design', 'Visual Design'],
+                    'post_content' => [
+                        'categories' => collect($sampleCatOrTags)->random(2)->values()->all(),
+                        'tags' => collect($sampleCatOrTags)->random(3)->values()->all(),
                         'content' => [
                             'en' => $this->generateFakeHtmlParagraph(),
                             'fr' => $this->generateFakeHtmlParagraph(),
                         ],
-                        'post_date' => fake()->dateTimeThisYear()->format('Y-m-d H:i:s'),
                     ],
                     'social_media' => [
                         'facebook' => 'https://facebook.com',
@@ -547,7 +578,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\Content(
             slug: 'contact-us',
             title: ['en' => 'Contact Us', 'fr' => 'Contactez-nous'],
-            documentType: 'contact-us-index-page',
+            documentType: 'contact-us-page',
             properties: [
                 'page_banner' => [
                     'title' => [
@@ -571,26 +602,32 @@ class SampleSeeder extends Seeder
         );
 
         $items[] = new ImportDataEntities\Content(
-            slug: 'blog',
-            title: ['en' => 'Blog', 'fr' => 'Blog'],
-            documentType: 'blog-detail-page',
+            slug: 'dynamic-post-page',
+            title: ['en' => 'Dynamic Post Page', 'fr' => 'Dynamic Post Page'],
+            documentType: 'post-page',
             publishState: 'publish',
             parent: 'home',
             routes: [
                 [
                     'locale' => null,
-                    'uri' => 'blog/{slug}',
-                    'is_default_pattern' => true,
+                    'uri' => 'blog/post/{slug}',
+                    'is_default_pattern' => false,
                 ],
                 [
                     'locale' => 'en',
-                    'uri' => 'en/blog/{slug}',
+                    'uri' => 'en/blog/post/{slug}',
                     'is_default_pattern' => false,
                 ],
                 [
                     'locale' => 'fr',
-                    'uri' => 'fr/blog/{slug}',
+                    'uri' => 'fr/blog/post/{slug}',
                     'is_default_pattern' => false,
+                ],
+            ],
+            webSetting: [
+                'seo' => [
+                    'meta_title' => 'Post',
+                    'og_title' => 'Post',
                 ],
             ],
         );
@@ -681,7 +718,7 @@ class SampleSeeder extends Seeder
             ],
             [
                 'title' => ['en' => 'Blog', 'fr' => 'Blog'],
-                'contentSlugPath' => 'home/blogs',
+                'contentSlugPath' => 'home/blog',
                 'type' => 'content',
             ],
             [
@@ -714,7 +751,7 @@ class SampleSeeder extends Seeder
                     [
                         'title' => ['en' => 'Blog', 'fr' => 'Blog'],
                         'type' => 'content',
-                        'contentSlugPath' => 'home/blogs',
+                        'contentSlugPath' => 'home/blog',
                     ],
                 ],
             ],

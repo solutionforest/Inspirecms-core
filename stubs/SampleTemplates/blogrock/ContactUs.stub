@@ -14,7 +14,6 @@
                     @endif
                 </div>
                 <div class="about-content">
-                    <span class="section-label">About US</span>
                     <h2 class="heading-title">@property('page_banner', 'title')</h2>
                     <p class="about-text">@property('page_banner', 'description')</p>
                 </div>

@@ -1,5 +1,5 @@
 @php
-    $blogUrl = url("/$locale/blog/$content?->slug"); // custom route
+    $blogUrl = url("/$locale/blog/post/$content?->slug"); // custom route
 @endphp
 <article class="article-card">
     <div class="article-image">

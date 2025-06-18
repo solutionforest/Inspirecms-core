@@ -1,5 +1,5 @@
 @php
-    $blogUrl = url("/$locale/blog/$content?->slug"); // custom route
+    $blogUrl = url("/$locale/blog/post/$content?->slug"); // custom route
 @endphp
 <a href="{{ $blogUrl }}" class="text-decoration-none">
     <article class="blog-post">
@@ -9,8 +9,8 @@
         @endif
         <div class="post-content">
             <div class="post-meta">
-                @propertyArray('blog_content', 'categories')
-                <span class="category">{{ implode(', ', $blog_content_categories ?? []) }}</span>
+                @propertyArray('post_content', 'categories')
+                <span class="category">{{ implode(', ', $post_content_categories ?? []) }}</span>
                 <span class="date">
                     {{ $content?->publishAt?->format('d M, Y') }}
                 </span>

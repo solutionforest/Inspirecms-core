@@ -1,5 +1,5 @@
 @php
-    $blogUrl = url("/$locale/blog/$content?->slug"); // custom route
+    $blogUrl = url("/$locale/blog/post/$content?->slug"); // custom route
 @endphp
 <!-- Featured Blog Post -->
 <div class="featured-post">
@@ -13,8 +13,8 @@
         <div class="col-md-6">
             <div class="featured-content">
                 <div class="post-categories">
-                    @propertyArray('blog_content', 'categories')
-                    @foreach ($blog_content_categories ?? [] as $category)
+                    @propertyArray('post_content', 'categories')
+                    @foreach ($post_content_categories ?? [] as $category)
                         <span class="category">{{ $category }}</span>
                         @if (!$loop->last)
                             <span class="separator">,</span>

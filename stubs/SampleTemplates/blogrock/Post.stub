@@ -38,7 +38,7 @@
 
         <!-- Post Content -->
         <div class="post-content-single">
-            @property('blog_content', 'content', 'b_content', $blog)
+            @property('post_content', 'content', 'b_content', $blog)
         </div>
 
 

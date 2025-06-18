@@ -5,6 +5,7 @@
     $blogPage = request()->query('page') ?? 1;
     $featuredPage = request()->query('featured') ?? 1;
 
+    $locale ??= $content->getLocale();
     $blogs = inspirecms_content()
         ->getPaginatedUnderRealPath(
             path: 'blog-management', 
@@ -19,7 +20,6 @@
         )
         ->toDto($locale);
 @endphp
-
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <div class="page-main-container">
         <section class="blog-section-ma">
@@ -39,17 +39,6 @@
                     @endif
                 @endif
 
-                <div class="categories-wrapper">
-                    <label class="categories-label">Categories:</label>
-                    <div class="categories-select">
-                        <select class="custom-select">
-                            <option value="interaction-design">Interaction Design</option>
-                            <option value="ui-design">UI Design</option>
-                            <option value="ux-design">UX Design</option>
-                            <option value="user-research">User Research</option>
-                        </select>
-                    </div>
-                </div>
                 <!-- Regular Blog Posts Grid -->
                 <div class="row blog-posts-grid">
                     @foreach ($blogs as $blog)
