@@ -37,11 +37,15 @@ class ContentSidebar extends BaseContentTreeNode
     {
         $this->cacheModelExplorerNodesOn(parentKey: $this->getModelRootLevelParentId());
 
+        // Init selected model item
         if (! empty($this->selectedModelItemKeys)) {
             $record = $this->resolveSelectedModelItems($this->selectedModelItemKeys)->first();
+            // Do not show seleccted record if it is a table node
             if ($this->isDisplayChildrenAsTable($record?->parent)) {
                 $this->setSelectedModelItem([$record->parent->getKey()], merge: false, replace: true);
-            } else {
+            } 
+            // Expand ancestors nodes
+            else {
                 $this->expandParentModelItemIfSelected($this->selectedModelItemKeys);
             }
         }

@@ -299,7 +299,7 @@ class SampleSeeder extends Seeder
         $items[] = new ImportDataEntities\DocumentType(
             slug: 'post-page',
             showAsTable: false,
-            showAtRoot: true,
+            showAtRoot: false,
             category: 'web',
             fieldGroups: [],
             templates: [
@@ -401,10 +401,10 @@ class SampleSeeder extends Seeder
                         ->merge($allSlugs)
                         ->unique()
                         ->filter()
-                        ->where(fn ($slug) => ! in_array($slug, [
+                        ->reject(fn ($slug) => in_array($slug, [
                             'homepage', // self
-                            'case-study',   // children under case-study index page
-                            'post', // data-type
+                            'case-study-detail-page',   // children under case-study index page
+                            'blog-data', // data-type
                         ]))
                         ->values()
                         ->toArray();
@@ -504,6 +504,31 @@ class SampleSeeder extends Seeder
             publishState: 'publish',
             parent: 'home',
         );
+
+        $items[] = new ImportDataEntities\Content(
+            slug: 'post',
+            title: ['en' => 'Post', 'fr' => 'Post'],
+            documentType: 'post-page',
+            publishState: 'publish',
+            parent: 'home/blog',
+            routes: [
+                [
+                    'locale' => null,
+                    'uri' => 'blog/post/{slug}',
+                    'is_default_pattern' => false,
+                ],
+                [
+                    'locale' => 'en',
+                    'uri' => '{locale}/blog/post/{slug}',
+                    'is_default_pattern' => false,
+                ],
+                [
+                    'locale' => 'fr',
+                    'uri' => 'fr/blog/post/{slug}',
+                    'is_default_pattern' => false,
+                ],
+            ],
+        );
         foreach (range(1, 10) as $i) {
 
             $sampleCatOrTags = [
@@ -599,37 +624,6 @@ class SampleSeeder extends Seeder
             ],
             publishState: 'publish',
             parent: 'home',
-        );
-
-        $items[] = new ImportDataEntities\Content(
-            slug: 'dynamic-post-page',
-            title: ['en' => 'Dynamic Post Page', 'fr' => 'Dynamic Post Page'],
-            documentType: 'post-page',
-            publishState: 'publish',
-            parent: 'home',
-            routes: [
-                [
-                    'locale' => null,
-                    'uri' => 'blog/post/{slug}',
-                    'is_default_pattern' => false,
-                ],
-                [
-                    'locale' => 'en',
-                    'uri' => 'en/blog/post/{slug}',
-                    'is_default_pattern' => false,
-                ],
-                [
-                    'locale' => 'fr',
-                    'uri' => 'fr/blog/post/{slug}',
-                    'is_default_pattern' => false,
-                ],
-            ],
-            webSetting: [
-                'seo' => [
-                    'meta_title' => 'Post',
-                    'og_title' => 'Post',
-                ],
-            ],
         );
 
         $items[] = new ImportDataEntities\Content(

@@ -53,11 +53,11 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
                     return 0;
                 }
 
-                $parentDepth = collect($this->cachedModelExplorerItems)
-                    ->flatten(1)
-                    ->firstWhere('key', $parentKey)['depth'] ?? -1;
+                if ($record->ancestorsAndSelf != null) {
+                    return count($record->ancestorsAndSelf);
+                }
 
-                return $parentDepth + 1;
+                return 0;
             })
             ->determineItemTitleUsing(fn (Model | Content $record) => $record->title)
             ->determineItemHasChildrenUsing(fn (Model | Content $record) => $record->children_count > 0);
