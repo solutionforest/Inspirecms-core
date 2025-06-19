@@ -23,7 +23,7 @@ class InstallCommand extends Command
         $license = $this->ask(str_replace(
             ':subscribeUrl',
             app(LicenseManager::class)->getSubscriptionUrl(),
-            'Please enter your license key (you can get one at :subscribeUrl):'
+            'Please enter your license key (you can get one at :subscribeUrl)'
         ));
         if (! $license) {
             $this->error('License key is required. Installation aborted.');
