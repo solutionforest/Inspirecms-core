@@ -120,7 +120,7 @@ trait UpdateContentRouteActionTrait
                             ->addActionLabel(fn () => __('inspirecms::buttons.add_with_name.label', ['name' => (string) str(__('inspirecms::resources/content.routes.regex_constraints.label'))->lower()]))
                             ->keyLabel(__('inspirecms::resources/content.routes.regex_constraints.key_label'))
                             ->valueLabel(__('inspirecms::resources/content.routes.regex_constraints.value_label'))
-                            ->keyPlaceholder('{slug}')
+                            ->keyPlaceholder('slug')
                             ->valuePlaceholder('^[a-z0-9-]+$')
                             ->hint(
                                 fn () => str(__('inspirecms::resources/content.routes.regex_constraints.hints', ['examples' => collect($factory->getDefaultRouteConstraints())->take(2)->merge(['id' => '[0-9]+'])->map(fn ($v, $k) => "{{$k}} = {$v}")->values()->join(' ; ', ' ; ')]))
