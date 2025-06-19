@@ -1,4 +1,4 @@
-@props(['message', 'type' => 'info', 'size' => 'md', 'icon' => null, 'assetReady' => false])
+@props(['message', 'type' => 'info', 'size' => 'md', 'color' => 'gray', 'icon' => null, 'assetReady' => false])
 @use('SolutionForest\InspireCms\InspireCmsConfig')
 @php
     if (($fiPanelId = filament()->getCurrentPanel()?->getId()) && $fiPanelId === InspireCmsConfig::getPanelId()) {
