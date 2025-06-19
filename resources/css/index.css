@@ -10,6 +10,9 @@
 @import "./forms.css";
 @import "./tree.css";
 
+@import "./components/alert.css";
+@import "./components/code-editor.css";
+
 /* Login */
 .split-image-layout {
     @apply bg-center bg-no-repeat bg-cover bg-[image:var(--panel-background-image)] bg-blend-multiply;
