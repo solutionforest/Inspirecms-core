@@ -1,5 +1,5 @@
 .alert-dialog {
-    @apply px-4;
+    @apply px-4 overflow-x-auto;
 
     background-color: rgb(var(--c-50));
     &:is(.dark *) {
@@ -7,7 +7,7 @@
     }
 
     .alert-dialog-body {
-        @apply flex items-center h-full truncate;
+        @apply flex items-center gap-x-1;
 
         .alert-dialog-icon-ctn {
             @apply flex-shrink-0;
@@ -21,10 +21,11 @@
                 }
             }
         }
-        .alert-dialog-content-ctn {
-            @apply ml-4 text-sm;
+
+        .alert-dialog-content {
+            @apply text-sm inline-block whitespace-nowrap;
+
             color: rgb(var(--c-700));
-            
             &:is(.dark *) {
                 color: rgb(var(--c-400));
             }
