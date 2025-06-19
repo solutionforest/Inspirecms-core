@@ -12,7 +12,7 @@ brief: Document Types in InspireCMS define the structure and behavior of your co
 A document type is essentially a **blueprint** for content, similar to a class in object-oriented programming. It defines:
 
 -   What fields are available for content entry
--   How content is organized in the admin interface
+-   How content is organized in the admin panel
 -   What templates can be used for rendering
 
 ---
@@ -21,7 +21,7 @@ A document type is essentially a **blueprint** for content, similar to a class i
 
 To create a document type:
 
-1. Navigate to **Settings** > **Document Types** in the admin panel
+1. Navigate to Admin Panel > **Settings** > **Document Types**
 2. Click **Create Document Type**
 3. Configure the following settings:
 
@@ -29,12 +29,18 @@ To create a document type:
 
 -   **Name**: Human-readable name (e.g., "Blog Post")
 -   **Slug**: Machine-readable identifier (e.g., "blog-post")
--   **Icon**: Visual identifier in the admin interface
+-   **Icon**: Visual identifier in the admin panel
 -   **Category**: For organizing document types (e.g., "web", "data")
+    -   **web**  
+         Pages with built-in routing and SEO settings  
+         (e.g., Blog Post, Landing Page)
+    -   **data**  
+         Reusable data entities without their own URL  
+         (e.g., Company Email, Site Settings)
 
 ### Advanced Settings
 
--   **Show as Table**: Whether to display content in a table view
+-   **Show as Table**: Whether to display content under this content (children) in a table view
 -   **Show at Root**: Whether content can be created at the root level
 -   **Allowed document types**: Document types that can be children of this type
 

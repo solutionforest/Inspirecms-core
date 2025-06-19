@@ -27,7 +27,7 @@ For example:
 To set a custom route for content:
 
 1. Edit the content item in the admin panel
-2. Navigate to the "**URL & Routing**" button in the top-right corner of the interface
+2. Navigate to the "**URL & Routing**" button in the top-right corner of the admin panel
 3. Enter your custom route in the "Path" field
 4. Save the content
 

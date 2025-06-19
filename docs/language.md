@@ -21,7 +21,7 @@ The language system in InspireCMS allows you to:
 
 ### Managing Languages
 
-Languages are managed through the admin interface:
+Languages are managed through the admin panel:
 
 1. Navigate to **Settings** > **Languages**
 2. Here you can:
@@ -61,7 +61,7 @@ InspireCMS manages content translations through a flexible system based on local
 
 ### Setting Up Translatable Fields
 
-Configuring fields through the admin interface:
+Configuring fields through the admin panel:
 
 1. Go to **Settings** > **Custom Fields** > **[Your Field Group]**
 2. Edit the field you want to make translatable

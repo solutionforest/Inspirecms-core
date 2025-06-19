@@ -100,7 +100,7 @@ archive.zip/
 2. Add your JSON files in the appropriate directories
 3. Add your Blade template files in the Views directory
 4. Compress the directories into a ZIP file
-5. Upload through the admin interface
+5. Upload through the admin panel
 
 ## Example JSON Structures
 

@@ -222,7 +222,7 @@ Optimize performance with caching configurations:
 
 ### Admin Panel
 
-Configure the administration dashboard and interface:
+Configure the admin panel:
 
 ```php
 use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
@@ -556,13 +556,8 @@ Configure language and translation settings:
 
 ```php
 'localization' => [
-    // Languages available in the admin interface
+    // Languages available in the admin panel
     // Format: language code or locale identifier
     'user_preferred_locales' => ['en','zh_CN','zh_TW'],
-
-    // Add new languages via the admin interface
-    // or directly in the languages table
-
-    // To generate translation files: php artisan lang:publish
 ],
 ```

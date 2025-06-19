@@ -49,7 +49,7 @@ The theme change takes effect immediately on your site.
 
 ## Creating a New Theme
 
-### Using the Admin Interface
+### Using the Admin Panel
 
 1. Go to **Settings** > **Templates**
 2. Click "Create theme"

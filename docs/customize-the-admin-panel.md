@@ -16,7 +16,7 @@ The InspireCMS admin panel is built on [Filament](https://filamentphp.com/), a p
 -   Organize related functionality into clusters
 -   Define custom dashboard widgets
 -   Extend existing admin functionality
--   Customize the look and feel of the admin interface
+-   Customize the look and feel of the admin panel
 
 ---
 

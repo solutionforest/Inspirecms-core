@@ -45,7 +45,7 @@ Manage sitemap configuration through: **Settings** > **Sitemap**
 
 Control which content appears in your sitemap through two available methods:
 
-#### Method 1: Content Management via Admin Interface
+#### Method 1: Content Management via Admin Panel
 
 1. Navigate to **Content**
 2. Select your content and go to the **"Sitemap"** tab
