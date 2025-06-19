@@ -39,3 +39,9 @@
         }
     }
 }
+
+/* Actions */
+/* Header actions on page */
+.fi-main .fi-header > div:nth-child(2) {
+    @apply flex-row-reverse;
+}
