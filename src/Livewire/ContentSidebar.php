@@ -43,7 +43,7 @@ class ContentSidebar extends BaseContentTreeNode
             // Do not show seleccted record if it is a table node
             if ($this->isDisplayChildrenAsTable($record?->parent)) {
                 $this->setSelectedModelItem([$record->parent->getKey()], merge: false, replace: true);
-            } 
+            }
             // Expand ancestors nodes
             else {
                 $this->expandParentModelItemIfSelected($this->selectedModelItemKeys);
