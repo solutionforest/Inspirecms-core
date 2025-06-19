@@ -483,12 +483,12 @@ class SampleSeeder extends Seeder
                         'en' => "<p>I'm Manifest</p><p>Full-time UI/UX designer</p><p>Head of Design at VeronaLabs.com</p>",
                         'fr' => '<p>Je suis Manifest</p><p>Designer UI/UX à plein temps</p><p>Responsable du design chez VeronaLabs.com</p>',
                     ],
-                    'image' => Arr::first($this->getRandomMediaAssetInPropertyData(1, 'png')),
+                    'image' => $this->getRandomMediaAssetInPropertyData(1, 'png'),
                     'description' => [
                         'en' => '<p>I was born in January 1990. After getting my Degree in computer science in 2002, I persuaded my higher study in Human Computer Interaction Design. I got my first job as Graphic Designer in the year 2008. After getting experience in graphic for a year, I moved to UI-UX Designing.</p><p>In 2010, I decided to work as a Freelance Web, UI-UX & Mobile Interface Designer. I find myself still in the learning phase and have strong desire to achieve as many skills as I can.</p>',
                         'fr' => '<p>Je suis né en janvier 1990. Après avoir obtenu mon diplôme en informatique en 2002, j’ai poursuivi mes études supérieures en conception d’interaction homme-machine. J’ai obtenu mon premier emploi en tant que graphiste en 2008. Après avoir acquis de l’expérience en graphisme pendant un an, je suis passé à la conception UI-UX.</p><p>En 2010, j’ai décidé de travailler en tant que designer d’interface Web, UI-UX et mobile indépendant. Je me trouve toujours en phase d’apprentissage et j’ai un fort dés ir d’acquérir autant de compétences que possible.</p>',
                     ],
-                    'resume' => Arr::first($this->getRandomMediaAssetInPropertyData(1, 'txt')),
+                    'resume' => $this->getRandomMediaAssetInPropertyData(1, 'txt'),
                 ],
             ],
             publishState: 'publish',
@@ -549,7 +549,7 @@ class SampleSeeder extends Seeder
                             'en' => fake()->sentence(5),
                             'fr' => fake()->sentence(5),
                         ],
-                        'image' => Arr::first($this->getRandomMediaAssetInPropertyData(1, 'png')),
+                        'image' => $this->getRandomMediaAssetInPropertyData(1, 'png'),
                         'description' => [
                             'en' => fake()->sentence(10),
                             'fr' => fake()->sentence(10),
@@ -589,7 +589,7 @@ class SampleSeeder extends Seeder
                         'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
                         'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
                     ],
-                    'image' => Arr::first($this->getRandomMediaAssetInPropertyData(1, 'png')),
+                    'image' => $this->getRandomMediaAssetInPropertyData(1, 'png'),
                 ],
                 'contact' => [
                     'email' => 'example@example.com',
@@ -664,7 +664,7 @@ class SampleSeeder extends Seeder
                             'en' => fake()->sentence(3),
                             'fr' => fake()->sentence(3),
                         ],
-                        'image' => Arr::first($this->getRandomMediaAssetInPropertyData(1, 'png')),
+                        'image' => $this->getRandomMediaAssetInPropertyData(1, 'png'),
                     ],
                     'case_content' => [
                         'category' => 'Product Design',
