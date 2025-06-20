@@ -1,59 +1,37 @@
 @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $locale ??= $content->getLocale();
-
-    if (isset($isPeekPreviewModal) && $isPeekPreviewModal == true) {
-        $blog = inspirecms_content()
-            ->getUnderRealPath(path: "blog-management", limit: 1)
-            ?->first()?->toDto($locale);
-    } else if (isset($slug)) {
-        $blog = inspirecms_content()
-            ->findByRealPath(path: "blog-management/{$slug}", limit: 1)
-            ->first()?->toDto($locale);
-    } else {
-        $blog = null;
-    }
-    if (is_null($blog)) {
-        abort(404);
-    }
-
-    $social_media = $blog->getPropertyGroup('social_media');
-    
-    $post_content = $blog->getPropertyGroup('post_content');
-    $post_content_content = $post_content?->getPropertyData('content')?->getValue();
-    $post_content_categories = collect($post_content?->getPropertyData('categories')?->getValue());
-    $post_content_tags = collect($post_content?->getPropertyData('tags')?->getValue());
-
-    $page_banner = $blog->getPropertyGroup('page_banner');
-    $page_banner_title = $page_banner?->getPropertyData('title')?->getValue();
-    $page_banner_image = collect($page_banner?->getPropertyData('image')?->getValue())->first();
-    $page_banner_description = $page_banner?->getPropertyData('description')?->getValue();
-
 @endphp
+
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <article class="blog-post-single page-main-container">
         <!-- Post Header - Full Width -->
         <div class="container-fluid ps-0 pe-0">
             <header class="post-header">
                 <div class="post-meta">
-                    @foreach ($post_content_categories as $category)
+                    @propertyArray('post_content', 'categories')
+                    @foreach ($post_content_categories ?? [] as $category)
                         <span class="category">{{ $category }}</span>
                         @if (!$loop->last)
                             <span class="separator">,</span>
                         @endif
                     @endforeach
                 </div>
-                <h1 class="post-title">{{ $page_banner_title }}</h1>
+                <h1 class="post-title">@property('page_banner', 'title')</h1>
                 <div class="header-meta">
-                    {{ $blog->publishAt?->format('d M, Y') }}
+                    <span class="post-date">
+                        {{ $content->publishAt?->format('d M, Y') }}
+                    </span>
+                    <span class="post-date"> <img src="{{ asset('images/icon/comment-dialog-box.svg') }}" alt="" class="me-2">8 comments</span>
                 </div>
 
             </header>
 
             <!-- Featured Image - Full Width -->
             <div class="post-featured-image">
-                @if ($page_banner_image)
-                    <img src="{{ $page_banner_image->getUrl() }}" alt="{{ $page_banner_image->caption }}">
+                @propertyArray('page_banner', 'image')
+                @if (($media = collect($page_banner_image)->first()))
+                    <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                 @endif
             </div>
         </div>
@@ -62,7 +40,8 @@
         <div class="post-content-wrapper">
             <div class="container">
                 <div class="row">
-                    <div class="col-md-12 ps-0 pe-0">
+                    <!-- Main Content -->
+                    <div class="">
                         <div class="">
                             <!-- Author Info -->
                             <div class="author-info">
@@ -79,13 +58,14 @@
                             </div>
                             <!-- Post Content -->
                             <div class="post-content">
-                                {{ $post_content_content }}
+                                @property('post_content', 'content')
                             </div>
                             <!-- tag -->
                             <div class="tag-wrapper">
                                 <span>Tags: </span>
                                 <span class="post-tag">
-                                    @foreach ($post_content_tags as $tag)
+                                    @propertyArray('post_content', 'tags')
+                                    @foreach ($post_content_tags ?? [] as $tag)
                                         <span class="category">{{ $tag }}</span>
                                         @if (!$loop->last)
                                             <span class="separator">,</span>

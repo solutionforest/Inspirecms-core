@@ -1,33 +1,22 @@
 @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <div class="about-container">
         <div class="about-left">
             <h1 class="about-title">{{ $content->getTitle($locale) }}</h1>
             <div class="about-intro">
-                @property('about_section', 'brief')
+                @property('page_banner', 'title')
             </div>
             
             <div class="about-image">
                 <div class="image-wrapper">
-                    @propertyArray('about_section', 'image')
-                    @if (($media = collect($about_section_image)->first()))
+                    @propertyArray('page_banner', 'image')
+                    @if (($media = collect($page_banner_image)->first()))
                         <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                     @endif
                 </div>
-            </div>
-        </div>
-    
-        <div class="about-right">
-            <div class="bio-content">
-                @property('about_section', 'description')
-    
-                @propertyArray('about_section', 'resume')
-                @if (($media = collect($about_section_resume)->first()))
-                    <button type="submit" class="send-button" onclick="window.open('{{ $media->getUrl() }}')">
-                        resume
-                        <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
-                    </button>
-                @endif
             </div>
         </div>
     </div>

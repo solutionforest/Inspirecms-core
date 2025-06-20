@@ -1,4 +1,7 @@
 @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     <!-- Content Area -->
     <div class="content-area">

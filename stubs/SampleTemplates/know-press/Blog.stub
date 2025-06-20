@@ -1,18 +1,12 @@
 @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
-    use SolutionForest\InspireCms\Dtos\ContentDto;
-
-    $blogPage = request()->query('page') ?? 1;
-    $featuredPage = request()->query('featured') ?? 1;
-
     $locale ??= $content->getLocale();
     $blogs = inspirecms_content()
         ->getPaginatedUnderRealPath(
-            path: 'blog-management', 
+            path: 'home/blog', 
             perPage: 4,
             pageName: 'page',
-            page: $blogPage,
-            withRelations: ['documentType.templates', 'templates'],
+            page: request()->query('page') ?? 1,
             sorting: [
                 '__latest_version_dt' => 'desc',
             ],
@@ -21,39 +15,59 @@
         ->toDto($locale);
 @endphp
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
-    <div class="page-main-container">
-        <section class="blog-section-ma">
-            <section class="hero-section">
-                <div class="container-fluid ps-0">
-                    <h1>{{ $content->getTitle($locale) }}</h1>
-                </div>
-            </section>
-            <div class="container ps-0">
-                @propertyNotEmpty('featured_blogs', 'blogs')
-                    @php
-                        $featuredBlog = collect($featured_blogs_blogs)->skip($featuredPage - 1)->first();
-                        $featuredBlogTemplate = $featuredBlog instanceof ContentDto ? $featuredBlog?->getTemplate('blog-featured-item') : null;
-                    @endphp
-                    @if ($featuredBlogTemplate)
-                        {!! $featuredBlogTemplate->render(['content' => $featuredBlog, 'locale' => $locale]) !!}
-                    @endif
-                @endif
-
-                <!-- Regular Blog Posts Grid -->
-                <div class="row blog-posts-grid">
-                    @foreach ($blogs as $blog)
-                        <!-- Post -->
-                        <div class="col-12 col-md-6 mb-4">
-                            {!! $blog->getTemplate('blog-grid-item')?->render(['content' => $blog, 'locale' => $locale]) !!}
+    <main>
+        <section class="latest-articles">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <div class="page-meta">
+                            <div class="line"></div>
+                            <span>{{ $content->getTitle($locale) }}</span>
                         </div>
-                    @endforeach
-                </div>
+                        @foreach ($blogs as $blog)
+                            @if($blog)
+                                <a href="{{ $blog->getUrl($locale) }}" class="blog-posts-grid">
+                                    <article class="article-card">
+                                        <div class="article-image">
+                                            <div class="image-wrapper">
+                                                @propertyArray('page_banner', 'image', 'post_img', $blog)
+                                                @if (($media = collect($post_img)->first()))
+                                                    <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="article-content">
+                                            @propertyArray('post_content', 'tags', 'post_img_tags', $blog)
+                                            @foreach ($post_img_tags ?? [] as $post_img_tag)
+                                                <span class="badge1">{{ $post_img_tag }}</span>
+                                            @endforeach
+                                            <h3 class="article-title">
+                                                @property('page_banner', 'title', 'post_title', $blog)
+                                            </h3>
+                                            <div class="article-meta">
+                                                <span class="date">Added: {{ $blog?->publishAt?->format('d M, Y') }}</span>
+                                                <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}" alt=""></i> 23</span>
+                                            </div>
+                                            <p class="article-excerpt">
+                                                @property('page_banner', 'content', 'post_content', $blog)
+                                            </p>
+                                            <div class="article-author">
+                                                <img src="{{ asset('images/icon/avator.svg') }}" alt="Author" class="author-avatar">
+                                                <span class="author-name">Anna Profeska</span>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </a>
+                            @endif
+                        @endforeach
 
-                <div class="text-center mt-4">
-                    {{ $blogs->links('pagination::bootstrap-5') }}
+                        <div class="" >
+                            {{ $blogs->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
-    </div>
+    </main>
 
 </x-cms-template>

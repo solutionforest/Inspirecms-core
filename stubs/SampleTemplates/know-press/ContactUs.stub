@@ -1,6 +1,7 @@
 @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
-    $config = inspirecms_content()->findByRealPath(path: 'config', limit: 1)->first()->toDto($locale);
+    $locale ??= $content->getLocale();
+    $setting = inspirecms_content()->findByRealPath(path: 'home/site-settings', limit: 1)->first()->toDto($locale);
 @endphp
 
 <x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
@@ -16,29 +17,35 @@
     <div class="contact-container">
         <div class="contact-left">
             <div class="contact-info">
-                <h3>Contact information</h3>
-                <address>
-                    <p>@property('contact', 'address')</p>
-                </address>
-                <div class="contact-details">
-                    @propertyNotEmpty('contact', 'phone')
-                        <p><img src="{{ asset('images/icon/tel.svg') }}" alt=""><a href="tel:{{ $contact_phone }}">{{ $contact_phone }}</a></p>
-                    @endif
-                    @propertyNotEmpty('contact', 'email')
-                        <p><img src="{{ asset('images/icon/email.svg') }}" alt=""><a href="tel:{{ $contact_email }}">{{ $contact_email }}</a></p>
-                    @endif
-                </div>
+                @if ($setting)
+                  <h3>Contact information</h3>
+                  <div class="contact-details">
+                      @propertyNotEmpty('contact_information', 'phone', 'contact_phone', $setting)
+                          <p><img src="{{ asset('images/icon/tel.svg') }}" alt=""><a href="tel:{{ $contact_phone }}">{{ $contact_phone }}</a></p>
+                      @endif
+                      @propertyNotEmpty('contact_information', 'email', 'contact_email', $setting)
+                          <p><img src="{{ asset('images/icon/email.svg') }}" alt=""><a href="tel:{{ $contact_email }}">{{ $contact_email }}</a></p>
+                      @endif
+                  </div>
+                @endif
             </div>
 
-            <div class="follow-links">
-                <h3>Follow Us</h3>
-                <div class="social-icons">
-                   <a href="@property('social_media', 'facebook')"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'twitter')"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'linkedin')"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a>
-                   <a href="@property('social_media', 'email')"><img src="{{ asset('images/icon/ball-socialmedia.svg') }}" alt=""></a>
-                </div>
-            </div>
+            @if ($setting)
+              <div class="follow-links">
+                  <h3>Follow Us</h3>
+                  <div class="social-icons">
+                      @propertyNotEmpty('social_media', 'facebook', 'sns_facebook', $setting)
+                         <a href="{{ $sns_facebook }}"><img src="{{ asset('images/icon/fb.svg') }}" alt=""></a>
+                      @endif
+                      @propertyNotEmpty('social_media', 'twitter', 'sns_twitter', $setting)
+                         <a href="{{ $sns_twitter }}"><img src="{{ asset('images/icon/birdx.svg') }}" alt=""></a>
+                      @endif
+                      @propertyNotEmpty('social_media', 'linkedin', 'sns_linkedin', $setting)
+                         <a href="{{ $sns_linkedin }}"><img src="{{ asset('images/icon/linkedin.svg') }}" alt=""></a>
+                      @endif
+                  </div>
+              </div>
+            @endif
         </div>
 
         <div class="contact-right">
@@ -51,17 +58,6 @@
                 <div class="form-group">
                     <label for="email">Email*</label>
                     <input type="email" id="email" placeholder="info@manifest.com" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="reason">Reason for contact</label>
-                    <select id="reason">
-                        <option value="" disabled selected>Select reason</option>
-                        <option value="support">Technical Support</option>
-                        <option value="account">Account Issues</option>
-                        <option value="billing">Billing Questions</option>
-                        <option value="other">Other</option>
-                    </select>
                 </div>
 
                 <div class="form-group">

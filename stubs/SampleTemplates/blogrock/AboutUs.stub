@@ -8,15 +8,15 @@
         <div class="container">
             <div class="about-wrapper">
                 <div class="about-image">
-                    @propertyArray('about_section', 'image')
-                    @if (($media = collect($about_section_image)->first()))
+                    @propertyArray('page_banner', 'image')
+                    @if (($media = collect($page_banner_image)->first()))
                         <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
                     @endif
                 </div>
                 <div class="about-content">
                     <span class="section-label">About US</span>
-                    <h2 class="heading-title">@property('about_section', 'brief')</h2>
-                    <p class="about-text">@property('about_section', 'description')</p>
+                    <h2 class="heading-title">@property('page_banner', 'title')</h2>
+                    <p class="about-text">@property('page_banner', 'description')</p>
                     <button class="styled-button green-btn">Learn More</button>
                 </div>
             </div>
