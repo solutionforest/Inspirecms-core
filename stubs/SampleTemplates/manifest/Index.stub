@@ -27,21 +27,6 @@
             @endforeach
     </x-slot>
 
-    <!-- Profile Section -->
-    <section class="profile-section">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 intro-title">
-                    <p>@property('profile', 'brief')</p>
-                    <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
-                </div>
-                <div class="col-md-6 intro-text">
-                    @property('profile', 'description')
-                </div>
-            </div>
-        </div>
-    </section>
-
     <!-- Blog Section -->
     <section class="blog-section">
         <div class="container">

@@ -193,13 +193,6 @@ class SampleSeeder extends Seeder
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'profile',
-            fields: [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'fileAttachmentsDisk' => 'public', 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'fileAttachmentsDisk' => 'public', 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-            ],
-        );
-        $items[] = new ImportDataEntities\FieldGroup(
             slug: 'social_media',
             fields: [
                 new ImportDataEntities\Field(slug: 'github', type: 'text'),
@@ -242,7 +235,6 @@ class SampleSeeder extends Seeder
             defaultTemplate: 'index',
             fieldGroups: [
                 'hero_banner',
-                'profile',
             ],
             inheritance: [], // ['general-page-banner'],
             allowed: [
@@ -331,20 +323,10 @@ class SampleSeeder extends Seeder
             properties: [
                 'hero_banner' => [
                     'brief' => [
-                        'en' => 'Manifest is a newborn theme. <br/> Clean, simple and fast.',
-                        'fr' => 'Manifest est un thème nouveau-né. <br/> Propre, simple et rapide.',
+                        'en' => 'InspireCMS is a newborn CMS. <br/>Clean, simple and fast.',
+                        'fr' => 'InspireCMS is a newborn CMS. <br/>Clean, simple and fast.',
                     ],
                     'image_slider' => $this->getRandomMediaAssetInPropertyData(3, 'png'),
-                ],
-                'profile' => [
-                    'brief' => [
-                        'en' => 'Full-time UI/UX designer <br/> Head of Design at VeronaLabs.com',
-                        'fr' => 'Designer UI/UX à plein temps <br/> Responsable du design chez VeronaLabs.com',
-                    ],
-                    'description' => [
-                        'en' => '<p>We work with clients around the world from our headquarters in Charlotte, South Carolina</p><p>We focus on naming, branding, brand innovation, mobility design and development, and brand experiences.</p>',
-                        'fr' => '<p>Nous travaillons avec des clients du monde entier depuis notre siège social à Charlotte, en Caroline du Sud</p><p>Nous nous concentrons sur la dénomination, le branding, l’innovation de la marque, la conception et le développement de la mobilité, et les expériences de marque.</p>',
-                    ],
                 ],
             ],
             publishState: 'publish'
@@ -356,8 +338,12 @@ class SampleSeeder extends Seeder
             properties: [
                 'page_banner' => [
                     'title' => [
-                        'en' => 'Full-time UI/UX designer Head of Design at VeronaLabs.com',
-                        'fr' => 'Designer UI/UX à plein temps Responsable du design chez VeronaLabs.com',
+                        'en' => 'Lorem ipsum dolor sit amet',
+                        'fr' => 'Lorem ipsum dolor sit amet',
+                    ],
+                    'description' => [
+                        'en' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                        'fr' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                     ],
                 ],
             ],
@@ -376,8 +362,8 @@ class SampleSeeder extends Seeder
                         'fr' => 'Contactez-nous',
                     ],
                     'description' => [
-                        'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
-                        'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
+                        'en' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                        'fr' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                     ],
                 ],
             ],
