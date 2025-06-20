@@ -50,7 +50,7 @@
     <!-- Copyright -->
     <div class="copyright">
         <div class="container">
-            <p>{{ config('app.name') }} © {{ date('Y') }} All Right Reserved</p>
+            <p>Copyright inspireCMS. All rights reserved</p>
         </div>
     </div>
 </footer>

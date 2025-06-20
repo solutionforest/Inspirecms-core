@@ -23,7 +23,7 @@
                 </div>
                 <div class="col-md-4">
                     <p class="mb-0 copyright">
-                        © Copyright {{ config('app.name') }}. All rights reserved
+                        Copyright inspireCMS. All rights reserved
                     </p>
                 </div>
             </div>

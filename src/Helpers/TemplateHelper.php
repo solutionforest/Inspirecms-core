@@ -40,7 +40,6 @@ class TemplateHelper
         return [
             'manifest',
             'blogrock',
-            'know-press',
         ];
     }
 
