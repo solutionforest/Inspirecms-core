@@ -246,9 +246,9 @@ class SampleSeeder extends Seeder
             ],
             inheritance: [], // ['general-page-banner'],
             allowed: [
-                "general-page",
-                "settings",
-                "blog-page"
+                'general-page',
+                'settings',
+                'blog-page',
             ],
         );
         $items[] = new ImportDataEntities\DocumentType(
@@ -258,9 +258,9 @@ class SampleSeeder extends Seeder
             category: 'web',
             icon: 'heroicon-o-document',
             templates: [
-                "general-page",
-                "about-us",
-                "contact-us"
+                'general-page',
+                'about-us',
+                'contact-us',
             ],
             defaultTemplate: 'general-page',
             fieldGroups: [
@@ -286,16 +286,16 @@ class SampleSeeder extends Seeder
             category: 'web',
             icon: 'heroicon-o-document',
             templates: [
-                "blog",
+                'blog',
             ],
             defaultTemplate: 'blog',
             fieldGroups: [
-                "page_banner",
-                "featured_posts",
+                'page_banner',
+                'featured_posts',
             ],
             inheritance: [], // ['general-page-banner'],
             allowed: [
-                "post-page"
+                'post-page',
             ],
         );
         $items[] = new ImportDataEntities\DocumentType(
@@ -305,12 +305,12 @@ class SampleSeeder extends Seeder
             category: 'web',
             icon: 'heroicon-o-document',
             templates: [
-                "post",
+                'post',
             ],
             defaultTemplate: 'post',
             fieldGroups: [
-                "page_banner",
-                "post_content",
+                'page_banner',
+                'post_content',
             ],
             inheritance: [], // ['general-page-banner'],
         );
