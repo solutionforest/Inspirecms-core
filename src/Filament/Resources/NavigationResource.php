@@ -280,17 +280,17 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/navigation.parent_id.validation_attribute'))
             ->options(function ($record, $get) {
                 $keyName = app(static::getModel())->getKeyName();
-                
+
                 $traverse = function ($categories, $prefix = '-') use (&$traverse, $keyName) {
                     return collect($categories)->map(function ($category) use ($traverse, $prefix, $keyName) {
-                        $label = $prefix.' '.$category->title;
+                        $label = $prefix . ' ' . $category->title;
 
                         $key = $category->{$keyName};
 
-                        $children = $traverse($category->children, $prefix.'-');
+                        $children = $traverse($category->children, $prefix . '-');
 
                         return [
-                            'label' => $label, 
+                            'label' => $label,
                             'value' => $key,
                             'children' => $children,
                         ];
@@ -308,7 +308,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 $tmpOpts = collect($traverse($records))
                     ->flatten()
                     // even = labels, odd = values
-                    ->reduce(function ($carry, $item, $index)  {
+                    ->reduce(function ($carry, $item, $index) {
                         $carry ??= [];
                         // array<0> = labels, array<1> = values
                         if ($index % 2 === 0) {
@@ -316,6 +316,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                         } else {
                             $carry[1][] = $item;
                         }
+
                         return $carry;
                     }, []);
 
