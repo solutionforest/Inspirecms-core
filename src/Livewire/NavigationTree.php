@@ -102,7 +102,7 @@ class NavigationTree extends Component implements HasActions, HasForms
             ->modalHeading('Delete Navigation Item')
             ->modalDescription('Are you sure you want to delete this navigation item?')
             ->modalAlignment(Alignment::Center)
-            ->action(function ($arguments){
+            ->action(function ($arguments) {
                 $this->confirmDelete($arguments['id'] ?? null);
             })
             ->after(function () {
@@ -165,7 +165,7 @@ class NavigationTree extends Component implements HasActions, HasForms
     protected function mutateBeforeFill($models): array
     {
         return collect($models)
-            ->map(fn (Navigation|Model $model) => [
+            ->map(fn (Navigation | Model $model) => [
                 'id' => $model->id,
                 'name' => $model->hasTranslation('title', $this->activeLocale) ? $model->getTranslation('title', $this->activeLocale) : $model->title,
                 'visible' => $model->isVisibility(),
@@ -201,7 +201,7 @@ class NavigationTree extends Component implements HasActions, HasForms
     }
 
     /**
-     * @return class-string<Resource>
+     * @return class-string<resource>
      */
     protected function getResource(): string
     {
