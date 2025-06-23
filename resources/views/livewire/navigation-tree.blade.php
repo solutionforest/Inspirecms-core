@@ -47,6 +47,13 @@
             >
                 Save Changes
             </x-filament::button>
+            <x-filament::icon-button
+                title="Reset"
+                icon="heroicon-m-arrow-path"
+                color="gray"
+                size="sm"
+                wire:click="resetTree"
+            ></x-filament::icon-button>
         </div>
     
         <div class="min-h-[200px]">

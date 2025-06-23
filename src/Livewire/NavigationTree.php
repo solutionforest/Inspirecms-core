@@ -51,6 +51,11 @@ class NavigationTree extends Component implements HasActions, HasForms
         $this->nodes = $this->mutateBeforeFill($records);
     }
 
+    public function resetTree()
+    {
+        $this->refreshNodes();
+    }
+
     public function editNode($id)
     {
         $url = FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'edit', [
