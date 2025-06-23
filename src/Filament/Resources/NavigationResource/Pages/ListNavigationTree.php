@@ -19,10 +19,6 @@ class ListNavigationTree extends BaseListRecords
      */
     protected static string $view = 'inspirecms::filament.pages.list-navigation';
 
-    protected $listeners = [
-        'refreshAllTree' => 'getAllCategories',
-    ];
-
     public function getActions(): array
     {
         return [
@@ -36,8 +32,14 @@ class ListNavigationTree extends BaseListRecords
         return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
     }
 
+    #[On('refreshAllTree')]
     public function getAllCategories(): array
     {
         return $this->getModel()::query()->groupBy('category')->pluck('category')->toArray();
+    }
+
+    public function updatingActiveLocale($value)
+    {
+        $this->dispatch('refreshAllTree');
     }
 }
