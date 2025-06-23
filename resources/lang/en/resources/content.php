@@ -90,11 +90,13 @@ return [
         ],
         'og_description' => [
             'label' => 'Open Graph Description',
+            'validation_attribute' => 'open graph description',
             'placeholder' => 'Enter open graph description',
             'instructions' => 'Enter the open graph description of the content',
         ],
         'og_image' => [
             'label' => 'Open Graph Image',
+            'validation_attribute' => 'open graph image',
             'instructions' => 'Enter the open graph image of the content',
         ],
     ],
