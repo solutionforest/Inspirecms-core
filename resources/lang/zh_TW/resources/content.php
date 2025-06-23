@@ -90,11 +90,13 @@ return [
         ],
         'og_description' => [
             'label' => 'Open Graph 描述',
+            'validation_attribute' => 'open graph 描述',
             'placeholder' => '輸入 open graph 描述',
             'instructions' => '輸入內容的 open graph 描述',
         ],
         'og_image' => [
             'label' => 'Open Graph 圖片',
+            'validation_attribute' => 'open graph 圖片',
             'instructions' => '輸入內容的 open graph 圖片',
         ],
     ],
