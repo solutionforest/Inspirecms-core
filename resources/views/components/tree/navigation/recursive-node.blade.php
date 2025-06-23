@@ -62,7 +62,7 @@
                     
                     <!-- Node description -->
                     <span x-show="{{ $nodeVariable }}.description" 
-                        class="text-xs text-gray-700 dark:text-gray-500 truncate max-w-[12rem] md:max-w-[7rem] lg:max-w-full"
+                        class="text-xs text-gray-700 dark:text-gray-400 truncate max-w-[12rem] md:max-w-[7rem] lg:max-w-full"
                         x-html="{{ $nodeVariable }}.description"></span>
                 </div>
                 
