@@ -280,12 +280,46 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->validationAttribute(__('inspirecms::resources/navigation.parent_id.validation_attribute'))
             ->options(function ($record, $get) {
                 $keyName = app(static::getModel())->getKeyName();
+                
+                $traverse = function ($categories, $prefix = '-') use (&$traverse, $keyName) {
+                    return collect($categories)->map(function ($category) use ($traverse, $prefix, $keyName) {
+                        $label = $prefix.' '.$category->title;
 
-                return static::getEloquentQuery()
+                        $key = $category->{$keyName};
+
+                        $children = $traverse($category->children, $prefix.'-');
+
+                        return [
+                            'label' => $label, 
+                            'value' => $key,
+                            'children' => $children,
+                        ];
+                    })->all();
+                };
+
+                $records = static::getEloquentQuery()
                     ->where('category', $get('category'))
                     ->when($record, fn ($query) => $query->whereNot($keyName, $record->getKey()))
-                    ->pluck('title', $keyName)
-                    ->toArray();
+                    ->withDepth()
+                    ->defaultOrder()
+                    ->get()
+                    ->toTree();
+
+                $tmpOpts = collect($traverse($records))
+                    ->flatten()
+                    // even = labels, odd = values
+                    ->reduce(function ($carry, $item, $index)  {
+                        $carry ??= [];
+                        // array<0> = labels, array<1> = values
+                        if ($index % 2 === 0) {
+                            $carry[0][] = $item;
+                        } else {
+                            $carry[1][] = $item;
+                        }
+                        return $carry;
+                    }, []);
+
+                return array_combine($tmpOpts[1] ?? [], $tmpOpts[0] ?? []);
             })
             ->saveRelationshipsUsing(function ($record, $state) {
                 $record->setParentId($state);
