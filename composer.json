@@ -29,7 +29,6 @@
         "khatabwedaa/blade-css-icons": "^1.5",
         "pboivin/filament-peek": "^2.0",
         "solution-forest/filament-field-group": "^1.0.14",
-        "solution-forest/filament-tree": "^2.1.0",
         "solution-forest/inspirecms-support": "self.version",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0"

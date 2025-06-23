@@ -4,11 +4,9 @@ namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages;
 
 use Filament\Actions;
 use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
-use Livewire\Attributes\On;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concerns\NavigationListPageTrait;
-use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ListNavigationTree extends BaseListRecords
@@ -21,6 +19,10 @@ class ListNavigationTree extends BaseListRecords
      */
     protected static string $view = 'inspirecms::filament.pages.list-navigation';
 
+    protected $listeners = [
+        'refreshAllTree' => 'getAllCategories',
+    ];
+
     public function getActions(): array
     {
         return [
@@ -29,38 +31,12 @@ class ListNavigationTree extends BaseListRecords
         ];
     }
 
-    protected function getWidgets(): array
-    {
-        $commonNavWidgetData = [
-            'resource' => static::getResource(),
-            'activeLocale' => $this->getActiveActionsLocale(),
-            'translatableContentDriver' => $this->getFilamentTranslatableContentDriver(),
-        ];
-
-        $widgets = collect($this->getAllCategories())
-            ->map(fn ($c) => Widgets\TreeNavigation::make([...$commonNavWidgetData, 'category' => $c]))
-            ->all();
-
-        return $widgets;
-    }
-
-    #[On('refreshAllTree')]
-    public function getVisibleWidgets(): array
-    {
-        return $this->filterVisibleWidgets($this->getWidgets());
-    }
-
-    public function getWidgetsColumns(): int | string | array
-    {
-        return 1;
-    }
-
     public static function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
     }
 
-    protected function getAllCategories(): array
+    public function getAllCategories(): array
     {
         return $this->getModel()::query()->groupBy('category')->pluck('category')->toArray();
     }

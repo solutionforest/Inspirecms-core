@@ -1,6 +1,3 @@
-@php
-    $widgetData = $this->getWidgetData();
-@endphp
 <x-inspirecms::page.extra-sub-navigation
     @class([
         'fi-resource-list-records-page',
@@ -12,13 +9,20 @@
             
             <x-filament-panels::resources.tabs />
             
-            @if ($widgets = $this->getVisibleWidgets())
-                <x-filament-widgets::widgets
-                    :columns="$this->getWidgetsColumns()"
-                    :data="$widgetData"
-                    :widgets="$widgets"
-                />
-            @endif
+            @foreach ($this->getAllCategories() as $cat)
+                @php
+                    $navTreeKey = 'navigation_tree_' . $cat;
+                @endphp
+                <x-filament::section>
+                    <x-slot name="heading">
+                        {{ $cat }}
+                    </x-slot>
+                    @livewire('inspirecms::navigation-tree', [
+                        'category' => $cat,
+                        'activeLocale' => $activeLocale ?? null,
+                    ], key($navTreeKey))
+                </x-filament::section>
+            @endforeach
 
             @break
         @default

@@ -1,8 +1,6 @@
 <div class="flex flex-col space-y-2"
-    ax-load
-    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('tree-node-component', 'solution-forest/inspirecms-support') }}"
     x-modelable="selected" x-model="{{ $modelable }}"
-    x-data="treeNode({
+    x-data="TreeNode({
         selected: $wire.entangle('selectedModelItemKeys').live,
         expanded: $wire.entangle('expandedModelItemKeys').live,
     })"

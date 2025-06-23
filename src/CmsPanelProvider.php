@@ -26,18 +26,19 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Livewire\Livewire;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Pages;
-use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Widgets\TreeNavigation;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
+use SolutionForest\InspireCms\Livewire\NavigationTree;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
 
 class CmsPanelProvider extends PanelProvider
@@ -89,7 +90,6 @@ class CmsPanelProvider extends PanelProvider
                 Widgets\AlertOverview::class,
                 Widgets\ThemeInfo::class,
                 Widgets\TemplateInfo::class,
-                TreeNavigation::class,
                 ...InspireCmsConfig::get('admin.extra_widgets', []),
             ]);
         // Discover resources, pages, clusters, and widgets in the specified directories
@@ -223,7 +223,10 @@ class CmsPanelProvider extends PanelProvider
     {
         return $panel->livewireComponents([
             ListImportNExport::class,
-        ]);
+            NavigationTree::class,
+        ])->bootUsing(function () {
+            Livewire::component('inspirecms::navigation-tree', NavigationTree::class);
+        });
     }
 
     protected function configureFilamentActions(Panel $panel): Panel
