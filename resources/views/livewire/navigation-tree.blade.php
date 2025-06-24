@@ -4,6 +4,7 @@
 @endphp
 <div x-data="TreeView({
     data: $wire.entangle('nodes'),
+    maxDepth: @js($maxDepth),
     maxVisibleDepth: @js($maxDepth),
 })">
     <div class="tree-view-container">
