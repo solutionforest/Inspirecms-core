@@ -2,11 +2,20 @@
     $maxDepth = 10;
     $actions = $this->getAvailableActions();
 @endphp
-<div x-data="TreeView({
-    data: $wire.entangle('nodes'),
-    maxDepth: @js($maxDepth),
-    maxVisibleDepth: @js($maxDepth),
-})">
+<div 
+    x-data="TreeView({
+        data: $wire.entangle('nodes'),
+        maxDepth: @js($maxDepth),
+        maxVisibleDepth: @js($maxDepth),
+        enableKeyboardNav: false,
+        allowDragDrop: true,
+        allowCrossCategory: false,
+        highlightSearch: true,
+        onSearch: (query, results, tree) => {
+            tree.expandSearchResults();
+        }
+    })"
+>
     <div class="tree-view-container">
 
         <x-filament::input.wrapper

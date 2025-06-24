@@ -8,7 +8,6 @@ use Filament\Actions\Contracts\HasActions;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Notifications\Notification;
-use Filament\Resources\Resource;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -182,8 +181,9 @@ class NavigationTree extends Component implements HasActions, HasForms
         return collect($models)
             ->map(fn (Navigation | Model $model) => [
                 'id' => $model->id,
-                'name' => $model->hasTranslation('title', $this->activeLocale) ? $model->getTranslation('title', $this->activeLocale) : $model->title,
-                'visible' => $model->isVisibility(),
+                'name' => str($model->hasTranslation('title', $this->activeLocale) ? $model->getTranslation('title', $this->activeLocale) : $model->title)
+                    ->when(! $model->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
+                    ->toString(),
                 'description' => ($url = $model->getUrl($this->activeLocale)) && filled($url) ? $url : null,
                 'children' => $this->mutateBeforeFill($model->children),
             ])
