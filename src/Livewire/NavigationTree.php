@@ -27,6 +27,10 @@ class NavigationTree extends Component implements HasActions, HasForms
 
     public string $category;
 
+    public int $maxDepth = -1;
+
+    public int $maxVisibleDepth = 20;
+
     #[Reactive]
     public ?string $activeLocale = null;
 
@@ -225,6 +229,9 @@ class NavigationTree extends Component implements HasActions, HasForms
 
     public function render()
     {
-        return view('inspirecms::livewire.navigation-tree');
+        return view('inspirecms::livewire.navigation-tree', [
+            'maxDepth' => $this->maxDepth,
+            'maxVisibleDepth' => $this->maxVisibleDepth,
+        ]);
     }
 }

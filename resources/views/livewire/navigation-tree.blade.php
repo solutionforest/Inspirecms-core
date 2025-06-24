@@ -1,12 +1,11 @@
 @php
-    $maxDepth = 10;
     $actions = $this->getAvailableActions();
 @endphp
 <div 
     x-data="TreeView({
         data: $wire.entangle('nodes'),
         maxDepth: @js($maxDepth),
-        maxVisibleDepth: @js($maxDepth),
+        maxVisibleDepth: @js($maxVisibleDepth),
         enableKeyboardNav: false,
         allowDragDrop: true,
         allowCrossCategory: false,

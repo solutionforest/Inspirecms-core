@@ -42,4 +42,13 @@ class ListNavigationTree extends BaseListRecords
     {
         $this->dispatch('refreshAllTree');
     }
+
+    public function getNavigationTreeData($category): array
+    {
+        return [
+            'activeLocale' => $this->getActiveActionsLocale() ?? null,
+            'maxDepth' => -1,
+            'maxVisibleDepth' => 20,
+        ];
+    }
 }

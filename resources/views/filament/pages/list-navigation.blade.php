@@ -19,7 +19,7 @@
                     </x-slot>
                     @livewire('inspirecms::navigation-tree', [
                         'category' => $cat,
-                        'activeLocale' => $activeLocale ?? null,
+                        ... $this->getNavigationTreeData($cat),
                     ], key($navTreeKey))
                 </x-filament::section>
             @endforeach
