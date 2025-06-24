@@ -444,8 +444,6 @@ Configure themes and templates:
 
 ```php
 'template' => [
-    'default_theme' => 'manifest',  // Base theme for frontend
-                                   // Create custom themes in resources/views/themes/
     'component_prefix' => 'inspirecms', // Prefix for Blade layout components
                                        // Example usage: <x-inspirecms.{theme-name}.component-name>
     'exported_template_dir' => resource_path('views/inspirecms/templates'),

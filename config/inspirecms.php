@@ -410,11 +410,6 @@ return [
 
     'template' => [
         /**
-         * Default template theme for the CMS
-         */
-        'default_theme' => 'manifest',
-
-        /**
          * The prefix for the component names used in the CMS
          */
         'component_prefix' => 'inspirecms',

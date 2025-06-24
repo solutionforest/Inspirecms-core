@@ -37,7 +37,7 @@ class TemplateManager implements TemplateManagerInterface
 
     public function getAvailableThemes(): array
     {
-        return collect($this->getAvailableThemesFromFolder())
+        return collect(TemplateHelper::getAvailableThemesFromFolder())
             ->merge(TemplateHelper::getDefaultTemplateThemes())
             ->merge([$this->getCurrentTheme()])
             ->unique()->filter()->values()
@@ -195,26 +195,5 @@ class TemplateManager implements TemplateManagerInterface
         if (is_string($value) && filled($value)) {
             $this->theme = $value;
         }
-    }
-
-    private function getAvailableThemesFromFolder(): array
-    {
-        $themes = [];
-
-        $themeDir = TemplateHelper::getDirectoryForThemedComponents();
-
-        if (is_dir($themeDir)) {
-            $themeDirs = scandir($themeDir);
-
-            foreach ($themeDirs as $theme) {
-                if ($theme === '.' || $theme === '..') {
-                    continue;
-                }
-
-                $themes[] = $theme;
-            }
-        }
-
-        return array_values(array_filter(array_unique($themes)));
     }
 }

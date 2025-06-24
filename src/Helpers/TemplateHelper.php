@@ -32,15 +32,39 @@ class TemplateHelper
      */
     public static function getDefaultTemplateTheme(): string
     {
-        return trim(InspireCmsConfig::get('template.default_theme', 'manifest'));
+        return collect(static::getAvailableThemesFromFolder())
+            ->merge(static::getDefaultTemplateThemes())
+            ->unique()
+            ->first() ?? 'clarity';
     }
 
     public static function getDefaultTemplateThemes(): array
     {
         return [
-            'manifest',
-            'blogrock',
+            'clarity',
+            'essence',
         ];
+    }
+
+    public static function getAvailableThemesFromFolder(): array
+    {
+        $themes = [];
+
+        $themeDir = static::getDirectoryForThemedComponents();
+
+        if (is_dir($themeDir)) {
+            $themeDirs = scandir($themeDir);
+
+            foreach ($themeDirs as $theme) {
+                if ($theme === '.' || $theme === '..') {
+                    continue;
+                }
+
+                $themes[] = $theme;
+            }
+        }
+
+        return array_values(array_filter(array_unique($themes)));
     }
 
     public static function getComponentPrefixForThemes(): string

@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
@@ -136,7 +137,7 @@ class SampleSeeder extends Seeder
         };
 
         $slugs = collect($this->getSampleDocumentTypes())->flatMap(fn ($item) => $item->templates)->unique()->values()->toArray();
-        $themes = ['manifest', 'blogrock', 'know-press'];
+        $themes = TemplateHelper::getDefaultTemplateThemes();
 
         foreach ($slugs as $slug) {
             $themedContent = collect($themes)
