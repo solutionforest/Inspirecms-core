@@ -4,14 +4,15 @@ namespace SolutionForest\InspireCms\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Services\ContentServiceInterface;
 use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
+use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class SampleSeeder extends Seeder
@@ -59,15 +60,15 @@ class SampleSeeder extends Seeder
         // Configure the contentPicker field and data
         // ****
 
-        // update config of contentPicker field for featured_blogs
-        if (($dtBlogData = InspireCmsConfig::getDocumentTypeModelClass()::firstWhere('slug', 'blog-data'))
-            && ($fFeaturedBlogs = collect($this->getSampleFields())->first(fn (ImportDataEntities\FieldGroup $v) => $v->slug === 'featured_blogs'))
+        // update config of contentPicker field for featured_posts
+        if (($dtPost = InspireCmsConfig::getDocumentTypeModelClass()::firstWhere('slug', 'post-page'))
+            && ($fFeaturedPosts = collect($this->getSampleFields())->first(fn (ImportDataEntities\FieldGroup $v) => $v->slug === 'featured_posts'))
         ) {
-            $fFeaturedBlogs->fields = collect($fFeaturedBlogs->fields)
-                ->map(function (ImportDataEntities\Field $field) use ($dtBlogData) {
-                    if ($field->slug === 'blogs') {
+            $fFeaturedPosts->fields = collect($fFeaturedPosts->fields)
+                ->map(function (ImportDataEntities\Field $field) use ($dtPost) {
+                    if ($field->slug === 'posts') {
                         $field->config = array_merge($field->config ?? [], [
-                            'documentType' => $dtBlogData->getKey(),
+                            'documentType' => $dtPost->getKey(),
                         ]);
                     }
 
@@ -75,19 +76,19 @@ class SampleSeeder extends Seeder
                 })
                 ->all();
             $this->importDataService->addFieldGroup(
-                data: $fFeaturedBlogs,
+                data: $fFeaturedPosts,
             );
         }
 
         // handle the content have contentPicker field
         if (
-            ($cBlogData = $this->contentService->getUnderRealPath(path: 'blog-management', limit: 10))
-            && $cBlogData->isNotEmpty()
-            && ($cBlogIndex = collect($this->getSampleContent())->first(fn (ImportDataEntities\Content $v) => $v->slug === 'blogs' && $v->parent === 'parent'))
+            ($cPostPages = $this->contentService->getUnderRealPath(path: 'home/blog', limit: 10))
+            && $cPostPages->isNotEmpty()
+            && ($cBlogPage = collect($this->getSampleContent())->first(fn (ImportDataEntities\Content $v) => $v->slug === 'blog' && $v->parent === 'home'))
         ) {
-            $cBlogIndex->properties['featured_blogs']['blogs'] = $cBlogData->random(3)->map(fn ($item) => $item->getKey())->all();
+            $cBlogPage->properties['featured_posts']['posts'] = $cPostPages->random(3)->map(fn ($item) => $item->getKey())->all();
             $this->importDataService->addContent(
-                data: $cBlogIndex
+                data: $cBlogPage
             );
         }
 
@@ -136,7 +137,7 @@ class SampleSeeder extends Seeder
         };
 
         $slugs = collect($this->getSampleDocumentTypes())->flatMap(fn ($item) => $item->templates)->unique()->values()->toArray();
-        $themes = ['manifest', 'blogrock', 'know-press'];
+        $themes = TemplateHelper::getDefaultTemplateThemes();
 
         foreach ($slugs as $slug) {
             $themedContent = collect($themes)
@@ -157,37 +158,23 @@ class SampleSeeder extends Seeder
             'fileAttachmentsVisibility' => 'public',
         ];
         $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'social_media',
+            slug: 'contact_information',
             fields: [
-                new ImportDataEntities\Field(slug: 'github', type: 'text'),
-                new ImportDataEntities\Field(slug: 'twitter', type: 'text'),
-                new ImportDataEntities\Field(slug: 'instagram', type: 'text'),
-                new ImportDataEntities\Field(slug: 'linkedin', type: 'text'),
-                new ImportDataEntities\Field(slug: 'email', type: 'text'),
-                new ImportDataEntities\Field(slug: 'facebook', type: 'text'),
+                new ImportDataEntities\Field(slug: 'email', type: 'email'),
+                new ImportDataEntities\Field(slug: 'phone', type: 'text'),
             ]
+        );
+        $items[] = new ImportDataEntities\FieldGroup(
+            slug: 'featured_posts',
+            fields: [
+                new ImportDataEntities\Field(slug: 'posts', type: 'contentPicker', config: ['translatable' => false, 'documentType' => 'post-page']),
+            ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
             slug: 'hero_banner',
             fields: [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
+                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'fileAttachmentsDisk' => 'public', 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
                 new ImportDataEntities\Field(slug: 'image_slider', type: 'mediaPicker', config: ['types' => ['image']]),
-            ],
-        );
-        $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'profile',
-            fields: [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-            ],
-        );
-        $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'about_section',
-            fields: [
-                new ImportDataEntities\Field(slug: 'brief', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'description', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'image', type: 'mediaPicker', config: ['types' => ['image'], 'max' => 1]),
-                new ImportDataEntities\Field(slug: 'resume', type: 'mediaPicker', config: ['types' => ['pdf'], 'max' => 1]),
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
@@ -199,40 +186,22 @@ class SampleSeeder extends Seeder
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'blog_content',
+            slug: 'post_content',
             fields: [
                 new ImportDataEntities\Field(slug: 'categories', type: 'tags', config: ['translatable' => false]),
                 new ImportDataEntities\Field(slug: 'tags', type: 'tags', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'post_date', type: 'dateTimePicker', config: ['hasTime' => true, 'hasDate' => true, 'displayFormat' => 'Y-m-d H:i:s']),
+                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'fileAttachmentsDisk' => 'public', 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
             ],
         );
         $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'contact',
+            slug: 'social_media',
             fields: [
-                new ImportDataEntities\Field(slug: 'address', type: 'richEditor', config: ['translatable' => false, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'phone', type: 'text'),
-                new ImportDataEntities\Field(slug: 'email', type: 'text'),
-                new ImportDataEntities\Field(slug: 'map', type: 'text'),
-            ],
-        );
-        $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'case_content',
-            fields: [
-                new ImportDataEntities\Field(slug: 'category', type: 'text', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'overview', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-                new ImportDataEntities\Field(slug: 'year', type: 'dateTimePicker', config: ['hasTime' => false, 'hasDate' => true, 'displayFormat' => 'Y']),
-                new ImportDataEntities\Field(slug: 'platforms', type: 'tags', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'roles', type: 'tags', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'deliverables', type: 'url', config: ['translatable' => false]),
-                new ImportDataEntities\Field(slug: 'content', type: 'richEditor', config: ['translatable' => true, 'toolbarButtons' => $toolbarButtonsForRichEditor, ...$extraConfigForRichEditor]),
-            ],
-        );
-        $items[] = new ImportDataEntities\FieldGroup(
-            slug: 'featured_blogs',
-            fields: [
-                new ImportDataEntities\Field(slug: 'blogs', type: 'contentPicker', config: ['translatable' => false, 'documentType' => 'blog']),
-            ],
+                new ImportDataEntities\Field(slug: 'github', type: 'text'),
+                new ImportDataEntities\Field(slug: 'twitter', type: 'text'),
+                new ImportDataEntities\Field(slug: 'instagram', type: 'text'),
+                new ImportDataEntities\Field(slug: 'linkedin', type: 'text'),
+                new ImportDataEntities\Field(slug: 'facebook', type: 'text'),
+            ]
         );
 
         return $items;
@@ -262,156 +231,82 @@ class SampleSeeder extends Seeder
             showAsTable: false,
             showAtRoot: true,
             category: 'web',
+            icon: 'heroicon-o-home',
+            templates: ['index'],
+            defaultTemplate: 'index',
             fieldGroups: [
                 'hero_banner',
-                'profile',
             ],
-            templates: ['home-index'],
-            defaultTemplate: 'home-index',
             inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-home',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'about-index-page',
-            showAsTable: false,
-            showAtRoot: true,
-            category: 'web',
-            fieldGroups: [
-                'about_section',
+            allowed: [
+                'general-page',
+                'settings',
+                'blog-page',
             ],
-            templates: ['about-index'],
-            defaultTemplate: 'about-index',
-            inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-information-circle',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-index-page',
-            showAsTable: false,
-            showAtRoot: true,
-            category: 'web',
-            fieldGroups: ['featured_blogs'],
-            templates: ['blog-index'],
-            defaultTemplate: 'blog-index',
-            inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-newspaper',
-            allowed: ['blog-detail-page'],
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'contact-us-index-page',
-            showAsTable: false,
-            showAtRoot: true,
-            category: 'web',
-            fieldGroups: [
-                'page_banner',
-                'contact',
-            ],
-            templates: ['contact-index'],
-            defaultTemplate: 'contact-index',
-            icon: 'heroicon-o-question-mark-circle',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'case-study-detail-page',
+            slug: 'general-page',
             showAsTable: false,
             showAtRoot: false,
             category: 'web',
-            fieldGroups: [
-                'page_banner',
-                'case_content',
+            icon: 'heroicon-o-document',
+            templates: [
+                'general-page',
+                'about-us',
+                'contact-us',
             ],
-            templates: ['case-study-detail'],
-            defaultTemplate: 'case-study-detail',
-            icon: 'heroicon-o-clipboard-document-check',
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'case-study-index-page',
-            showAsTable: true,
-            showAtRoot: true,
-            category: 'web',
+            defaultTemplate: 'general-page',
             fieldGroups: [
                 'page_banner',
             ],
-            templates: ['case-study-index'],
-            defaultTemplate: 'case-study-index',
-            icon: 'heroicon-o-clipboard-document-list',
-            allowed: ['case-study-detail-page'],
-        );
-
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'config',
-            showAsTable: false,
-            showAtRoot: true,
-            category: 'data',
-            fieldGroups: [
-                'social_media',
-            ],
-            templates: [],
-            defaultTemplate: null,
             inheritance: [], // ['general-page-banner'],
+        );
+        $items[] = new ImportDataEntities\DocumentType(
+            slug: 'settings',
+            showAsTable: false,
+            showAtRoot: false,
+            category: 'data',
             icon: 'heroicon-o-cog-6-tooth',
+            fieldGroups: [
+                'social_media',
+                'contact_infomation',
+            ],
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-management',
+            slug: 'blog-page',
             showAsTable: true,
-            showAtRoot: true,
-            category: 'data',
-            fieldGroups: [],
-            templates: [],
-            defaultTemplate: null,
-            inheritance: [], // ['general-page-banner'],
-            icon: 'heroicon-o-newspaper',
-            allowed: ['blog-data'],
-        );
-        $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-data',
-            showAsTable: false,
             showAtRoot: false,
-            category: 'data',
+            category: 'web',
+            icon: 'heroicon-o-document',
+            templates: [
+                'blog',
+            ],
+            defaultTemplate: 'blog',
             fieldGroups: [
                 'page_banner',
-                'social_media',
-                'blog_content',
+                'featured_posts',
             ],
-            templates: [
-                'blog-featured-item',
-                'blog-card-item',
-                'blog-grid-item',
+            inheritance: [], // ['general-page-banner'],
+            allowed: [
+                'post-page',
             ],
-            defaultTemplate: null,
-            icon: 'heroicon-o-newspaper',
         );
         $items[] = new ImportDataEntities\DocumentType(
-            slug: 'blog-detail-page',
+            slug: 'post-page',
             showAsTable: false,
-            showAtRoot: true,
+            showAtRoot: false,
             category: 'web',
-            fieldGroups: [],
+            icon: 'heroicon-o-document',
             templates: [
-                'blog-detail',
+                'post',
             ],
-            defaultTemplate: 'blog-detail',
-            icon: 'heroicon-o-newspaper',
+            defaultTemplate: 'post',
+            fieldGroups: [
+                'page_banner',
+                'post_content',
+            ],
+            inheritance: [], // ['general-page-banner'],
         );
-
-        $allSlugs = collect($items)->map(fn ($item) => $item->slug)->values()->toArray();
-
-        foreach ($items as &$item) {
-            switch ($item->slug) {
-                case 'homepage':
-                    $item->allowed = collect($item->allowed)
-                        ->merge($allSlugs)
-                        ->unique()
-                        ->filter()
-                        ->where(fn ($slug) => ! in_array($slug, [
-                            'homepage', // self
-                            'case-study',   // children under case-study index page
-                            'blog-detail', // data-type
-                        ]))
-                        ->values()
-                        ->toArray();
-
-                    break;
-            }
-        }
 
         return $items;
     }
@@ -423,130 +318,44 @@ class SampleSeeder extends Seeder
     {
         $items[] = new ImportDataEntities\Content(
             slug: 'home',
-            title: ['en' => 'Homepage', 'fr' => 'Page d\'accueil'],
+            title: ['en' => 'Home', 'fr' => 'Home'],
             documentType: 'homepage',
             isDefault: true,
             properties: [
                 'hero_banner' => [
                     'brief' => [
-                        'en' => 'Manifest is a newborn theme. <br/> Clean, simple and fast.',
-                        'fr' => 'Manifest est un thème nouveau-né. <br/> Propre, simple et rapide.',
+                        'en' => 'InspireCMS is a newborn CMS. <br/>Clean, simple and fast.',
+                        'fr' => 'InspireCMS is a newborn CMS. <br/>Clean, simple and fast.',
                     ],
-                    'image_slider' => $this->getRandomMediaAssetKeys(3, 'png'),
-                ],
-                'profile' => [
-                    'brief' => [
-                        'en' => 'Full-time UI/UX designer <br/> Head of Design at VeronaLabs.com',
-                        'fr' => 'Designer UI/UX à plein temps <br/> Responsable du design chez VeronaLabs.com',
-                    ],
-                    'description' => [
-                        'en' => '<p>We work with clients around the world from our headquarters in Charlotte, South Carolina</p><p>We focus on naming, branding, brand innovation, mobility design and development, and brand experiences.</p>',
-                        'fr' => '<p>Nous travaillons avec des clients du monde entier depuis notre siège social à Charlotte, en Caroline du Sud</p><p>Nous nous concentrons sur la dénomination, le branding, l’innovation de la marque, la conception et le développement de la mobilité, et les expériences de marque.</p>',
-                    ],
+                    'image_slider' => $this->getRandomMediaAssetInPropertyData(3, 'png'),
                 ],
             ],
             publishState: 'publish'
         );
         $items[] = new ImportDataEntities\Content(
-            slug: 'blog-management',
-            title: ['en' => 'Blog Management', 'fr' => 'Gestion des blogs'],
-            documentType: 'blog-management', // data-type
-            properties: [],
-            publishState: 'publish',
-            parent: null,
-            sitemap: ['enable' => false],
-        );
-        $items[] = new ImportDataEntities\Content(
-            slug: 'config',
-            title: ['en' => 'Config', 'fr' => 'Config'],
-            documentType: 'config', // data-type
+            slug: 'about-me',
+            title: ['en' => 'About Me', 'fr' => 'About Me'],
+            documentType: 'general-page',
             properties: [
-                'social_media' => [
-                    'facebook' => 'https://facebook.com',
-                    'twitter' => 'https://twitter.com',
-                    'linkedin' => 'https://linkedin.com',
-                    'instagram' => 'https://instagram.com',
-                ],
-            ],
-            publishState: 'publish',
-            parent: null,
-            sitemap: ['enable' => false],
-        );
-
-        $items[] = new ImportDataEntities\Content(
-            slug: 'about',
-            title: ['en' => 'About', 'fr' => 'À propos'],
-            documentType: 'about-index-page',
-            properties: [
-                'about_section' => [
-                    'brief' => [
-                        'en' => "<p>I'm Manifest</p><p>Full-time UI/UX designer</p><p>Head of Design at VeronaLabs.com</p>",
-                        'fr' => '<p>Je suis Manifest</p><p>Designer UI/UX à plein temps</p><p>Responsable du design chez VeronaLabs.com</p>',
+                'page_banner' => [
+                    'title' => [
+                        'en' => 'Lorem ipsum dolor sit amet',
+                        'fr' => 'Lorem ipsum dolor sit amet',
                     ],
-                    'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
                     'description' => [
-                        'en' => '<p>I was born in January 1990. After getting my Degree in computer science in 2002, I persuaded my higher study in Human Computer Interaction Design. I got my first job as Graphic Designer in the year 2008. After getting experience in graphic for a year, I moved to UI-UX Designing.</p><p>In 2010, I decided to work as a Freelance Web, UI-UX & Mobile Interface Designer. I find myself still in the learning phase and have strong desire to achieve as many skills as I can.</p>',
-                        'fr' => '<p>Je suis né en janvier 1990. Après avoir obtenu mon diplôme en informatique en 2002, j’ai poursuivi mes études supérieures en conception d’interaction homme-machine. J’ai obtenu mon premier emploi en tant que graphiste en 2008. Après avoir acquis de l’expérience en graphisme pendant un an, je suis passé à la conception UI-UX.</p><p>En 2010, j’ai décidé de travailler en tant que designer d’interface Web, UI-UX et mobile indépendant. Je me trouve toujours en phase d’apprentissage et j’ai un fort dés ir d’acquérir autant de compétences que possible.</p>',
+                        'en' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                        'fr' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                     ],
-                    'resume' => Arr::first($this->getRandomMediaAssetKeys(1, 'txt')),
                 ],
             ],
             publishState: 'publish',
             parent: 'home',
+            template: 'about-us',
         );
-        $items[] = new ImportDataEntities\Content(
-            slug: 'blogs',
-            title: ['en' => 'Blogs', 'fr' => 'Blogs'],
-            documentType: 'blog-index-page',
-            properties: [
-                'featured_blogs' => [],
-            ],
-            publishState: 'publish',
-            parent: 'home',
-        );
-        foreach (range(1, 10) as $i) {
-
-            $items[] = new ImportDataEntities\Content(
-                slug: "blog-$i",
-                title: ['en' => "Blog $i", 'fr' => "Blog $i"],
-                documentType: 'blog-data', // data-type
-                properties: [
-                    'page_banner' => [
-                        'title' => [
-                            'en' => fake()->sentence(5),
-                            'fr' => fake()->sentence(5),
-                        ],
-                        'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
-                        'description' => [
-                            'en' => fake()->sentence(10),
-                            'fr' => fake()->sentence(10),
-                        ],
-                    ],
-                    'blog_content' => [
-                        'categories' => ['Technology', 'Interface Design'],
-                        'tags' => ['Technology', 'Interface Design', 'Visual Design'],
-                        'content' => [
-                            'en' => $this->generateFakeHtmlParagraph(),
-                            'fr' => $this->generateFakeHtmlParagraph(),
-                        ],
-                        'post_date' => fake()->dateTimeThisYear()->format('Y-m-d H:i:s'),
-                    ],
-                    'social_media' => [
-                        'facebook' => 'https://facebook.com',
-                        'twitter' => 'https://twitter.com',
-                        'linkedin' => 'https://linkedin.com',
-                    ],
-                ],
-                publishState: 'publish',
-                parent: 'blog-management', // content's slug
-                sitemap: ['enable' => false],
-            );
-        }
-
         $items[] = new ImportDataEntities\Content(
             slug: 'contact-us',
             title: ['en' => 'Contact Us', 'fr' => 'Contactez-nous'],
-            documentType: 'contact-us-index-page',
+            documentType: 'general-page',
             properties: [
                 'page_banner' => [
                     'title' => [
@@ -554,99 +363,117 @@ class SampleSeeder extends Seeder
                         'fr' => 'Contactez-nous',
                     ],
                     'description' => [
-                        'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
-                        'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
+                        'en' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
+                        'fr' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
                     ],
-                    'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
-                ],
-                'contact' => [
-                    'email' => 'example@example.com',
-                    'phone' => '+1234567890',
-                    'address' => '<p>486 Rahi street, Berlin .98</p><p>Germany</p>',
                 ],
             ],
             publishState: 'publish',
             parent: 'home',
+            template: 'contact-us',
         );
-
+        $items[] = new ImportDataEntities\Content(
+            slug: 'site-settings',
+            title: ['en' => 'Site Settings', 'fr' => 'Site Settings'],
+            documentType: 'settings',
+            properties: [
+                'social_media' => [
+                    'facebook' => 'https://facebook.com',
+                    'twitter' => 'https://twitter.com',
+                    'linkedin' => 'https://linkedin.com',
+                    'instagram' => 'https://instagram.com',
+                ],
+                'contact_infomation' => [
+                    'phone' => '+1 (123) 456-7890',
+                    'email' => 'hello@example.com',
+                ],
+            ],
+            publishState: 'publish',
+            parent: 'home',
+            sitemap: ['enable' => false],
+        );
         $items[] = new ImportDataEntities\Content(
             slug: 'blog',
             title: ['en' => 'Blog', 'fr' => 'Blog'],
-            documentType: 'blog-detail-page',
-            publishState: 'publish',
-            parent: 'home',
-            routes: [
-                [
-                    'locale' => null,
-                    'uri' => 'blog/{slug}',
-                    'is_default_pattern' => true,
-                ],
-                [
-                    'locale' => 'en',
-                    'uri' => 'en/blog/{slug}',
-                    'is_default_pattern' => false,
-                ],
-                [
-                    'locale' => 'fr',
-                    'uri' => 'fr/blog/{slug}',
-                    'is_default_pattern' => false,
-                ],
-            ],
-        );
-
-        $items[] = new ImportDataEntities\Content(
-            slug: 'case-studies',
-            title: ['en' => 'Works', 'fr' => 'Travaux'],
-            documentType: 'case-study-index-page',
+            documentType: 'blog-page',
             properties: [
                 'page_banner' => [
                     'title' => [
-                        'en' => 'Works',
-                        'fr' => 'Travaux',
+                        'en' => 'Blog',
+                        'fr' => 'Blog',
                     ],
                     'description' => [
-                        'en' => 'If you need our help with your user account, have questions about how to use the platform or are experiencing technical difficulties, please do not hesitate to contact us.',
-                        'fr' => 'Si vous avez besoin de notre aide pour votre compte utilisateur, si vous avez des questions sur l’utilisation de la plateforme ou si vous rencontrez des difficultés techniques, n’hésitez pas à nous contacter.',
+                        'en' => 'Welcome to my blog! Here, I share my thoughts, experiences, and insights on various topics that interest me.',
+                        'fr' => 'Bienvenue sur mon blog ! Ici, je partage mes réflexions, expériences et idées sur divers sujets qui m’intéressent.',
                     ],
                 ],
+                'featured_posts' => [],
             ],
             publishState: 'publish',
             parent: 'home',
         );
-        foreach (range(1, 3) as $i) {
-            $caseTitle = fake()->sentence(3);
-            $content = collect(range(1, 3))->map(fn () => '<section class="research"><h3>User Research</h3><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p></section>')->implode('');
+        foreach (range(1, 10) as $i) {
+
+            $sampleCatOrTags = [
+                'Technology',
+                'Travel',
+                'Food',
+                'Lifestyle',
+                'Health',
+                'Fitness',
+                'Photography',
+                'Education',
+                'Business',
+                'Fashion',
+                'DIY',
+                'Parenting',
+                'Gardening',
+                'Finance',
+                'Mental Health',
+                'Art',
+                'Music',
+                'Science',
+                'Culture',
+                'Sports',
+                'Nature',
+                'History',
+                'Writing',
+                'Marketing',
+                'Productivity',
+                'Meditation',
+                'Home Decor',
+                'Personal Development',
+                'Social Media',
+                'Sustainability',
+            ];
+
             $items[] = new ImportDataEntities\Content(
-                slug: "case-$i",
-                title: ['en' => $caseTitle, 'fr' => $caseTitle],
-                documentType: 'case-study-detail-page',
+                slug: "post-$i",
+                title: ['en' => "Post $i", 'fr' => "Post $i"],
+                documentType: 'post-page',
                 properties: [
                     'page_banner' => [
                         'title' => [
-                            'en' => fake()->sentence(3),
-                            'fr' => fake()->sentence(3),
+                            'en' => fake()->sentence(5),
+                            'fr' => fake()->sentence(5),
                         ],
-                        'image' => Arr::first($this->getRandomMediaAssetKeys(1, 'png')),
+                        'image' => $this->getRandomMediaAssetInPropertyData(1, 'png'),
+                        'description' => [
+                            'en' => fake()->sentence(10),
+                            'fr' => fake()->sentence(10),
+                        ],
                     ],
-                    'case_content' => [
-                        'category' => 'Product Design',
-                        'overview' => [
-                            'en' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                            'fr' => '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. <b>Nulla nec purus feugiat</b>, molestie ipsum et, consectetur libero. Donec nec est)</p>',
-                        ],
-                        'year' => fake()->year(),
-                        'platforms' => ['Web', 'Mobile'],
-                        'roles' => ['UI/UX Designer', 'Frontend Developer'],
-                        'deliverables' => 'https://example.com',
+                    'post_content' => [
+                        'categories' => collect($sampleCatOrTags)->random(2)->values()->all(),
+                        'tags' => collect($sampleCatOrTags)->random(3)->values()->all(),
                         'content' => [
-                            'en' => $content,
-                            'fr' => $content,
+                            'en' => $this->generateFakeHtmlParagraph(),
+                            'fr' => $this->generateFakeHtmlParagraph(),
                         ],
                     ],
                 ],
                 publishState: 'publish',
-                parent: 'home/case-studies',
-                sitemap: ['enable' => false],
+                parent: 'home/blog', // content's slug
             );
         }
 
@@ -670,17 +497,12 @@ class SampleSeeder extends Seeder
             ],
             [
                 'title' => ['en' => 'About', 'fr' => 'À propos'],
-                'contentSlugPath' => 'home/about',
-                'type' => 'content',
-            ],
-            [
-                'title' => ['en' => 'Works', 'fr' => 'Travaux'],
-                'contentSlugPath' => 'home/case-studies',
+                'contentSlugPath' => 'home/about-me',
                 'type' => 'content',
             ],
             [
                 'title' => ['en' => 'Blog', 'fr' => 'Blog'],
-                'contentSlugPath' => 'home/blogs',
+                'contentSlugPath' => 'home/blog',
                 'type' => 'content',
             ],
             [
@@ -697,7 +519,7 @@ class SampleSeeder extends Seeder
                     [
                         'title' => ['en' => 'About', 'fr' => 'À propos'],
                         'type' => 'content',
-                        'contentSlugPath' => 'home/about',
+                        'contentSlugPath' => 'home/about-me',
                     ],
                 ],
             ],
@@ -706,14 +528,9 @@ class SampleSeeder extends Seeder
                 'type' => 'group',
                 'children' => [
                     [
-                        'title' => ['en' => 'Works', 'fr' => 'Travaux'],
-                        'type' => 'content',
-                        'contentSlugPath' => 'home/case-studies',
-                    ],
-                    [
                         'title' => ['en' => 'Blog', 'fr' => 'Blog'],
                         'type' => 'content',
-                        'contentSlugPath' => 'home/blogs',
+                        'contentSlugPath' => 'home/blog',
                     ],
                 ],
             ],
@@ -772,7 +589,9 @@ class SampleSeeder extends Seeder
                     ->addMediaFromBase64(
                         $base64,
                         ['mime_type' => $mime, 'name' => $fakeName]
-                    )->toMediaCollection();
+                    )
+                    ->usingFileName($fakeName)
+                    ->toMediaCollection();
 
             } catch (\Throwable $th) {
                 //
@@ -862,10 +681,12 @@ class SampleSeeder extends Seeder
 
     }
 
-    protected function getRandomMediaAssetKeys(int $total, $extension = null): array
+    protected function getRandomMediaAssetInPropertyData(int $total, $extension = null): array
     {
         return collect($this->getRandomMediaAsset($total, $extension))
-            ->map(fn (MediaAsset $asset) => $asset->getKey())
+            ->map(fn (MediaAsset $asset) => collect(MediaAssetDto::fromModel($asset)?->toArray() ?? [])
+                ->forget('model')
+                ->all())
             ->all();
     }
 

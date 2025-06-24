@@ -7,6 +7,20 @@ heading: Custom Fields
 brief:
 ---
 
+Note: This document depends on the [Filament Field Group](https://github.com/solutionforest/filament-field-group). Field types may not update automatically; for missing or updated field references, please consult that repository.
+
+Additional Note: The following field types are provided as custom fields by the InspireCMS plugin:
+
+-   Repeater
+-   Tags
+-   Rich Editor
+-   Markdown Editor
+-   Content Picker
+-   Media Picker
+-   Icon Picker
+
+All other field types listed in this document are sourced from the Filament Field Group package.
+
 ## Overview
 
 InspireCMS offers a wide range of field types for different content needs:
@@ -29,6 +43,7 @@ InspireCMS offers a wide range of field types for different content needs:
 | DateTime Picker | Date/time selector         | Publication dates, event times     |
 | Content Picker  | Reference other content    | Related articles, products         |
 | Media Picker    | Select from media library  | Gallery images, videos             |
+| Icon Picker     | Icon selection tool        | Heroicon identifiers               |
 | Repeater        | Group of repeatable fields | Team members, features list        |
 | Tags            | Multiple keyword input     | Blog tags, product attributes      |
 
@@ -434,13 +449,30 @@ Each field type has specific configuration options, but most share these common 
 > <details open><summary>Template Usage</summary>
 >
 > ```blade
->  @propertyArray('hero', 'image_slider')
->  @foreach ($hero_image_slider ?? [] as $item)
->      <div class="swiper-slide">
->          <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
->          <p>{{ $item?->description }}</p>
->      </div>
->  @endforeach
+> @propertyArray('hero', 'image_slider')
+> @foreach ($hero_image_slider ?? [] as $item)
+>     <div class="swiper-slide">
+>         <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+>         <p>{{ $item?->description }}</p>
+>     </div>
+> @endforeach
+> ```
+>
+> </details>
+
+### Icon Picker
+
+> <details><summary>Configuration Options</summary>
+>
+> -   **Translatable**: Whether the field supports multiple languages.
+> -   **ColumnsLayout**: Controls how many columns the icons are displayed in the selection interface.
+> </details>
+> <details open><summary>Template Usage</summary>
+>
+> ```blade
+> @propertyNotEmpty('section', 'icon')
+>   @svg($section_icon, ['class'=>'h-5 w-5'])
+> @endif
 > ```
 >
 > </details>
@@ -452,6 +484,7 @@ Each field type has specific configuration options, but most share these common 
 > -   **Fields**: The sub-fields included in the repeater.
 > -   **Collapsible**: Whether the repeater sections can be collapsed.
 > -   **Cloneable**: Whether the repeater sections can be cloned.
+> -   **ColumnsLayout**: Controls how many columns the repeater items are displayed in.
 > </details>
 > <details open><summary>Template Usage</summary>
 >

@@ -2,6 +2,76 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.91 - 2025-06-24
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.90...0.0.91
+
+## 0.0.90 - 2025-06-23
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.89...0.0.90
+
+## 0.0.89 - 2025-06-20
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.88...0.0.89
+
+## 0.0.88 - 2025-06-20
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.87...0.0.88
+
+## 0.0.87 - 2025-06-19
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.84...0.0.87
+
+## 0.0.86 - 2025-06-19
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.84...0.0.86
+
+## 0.0.85 - 2025-06-19
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.84...0.0.85
+
+## 0.0.84 - 2025-06-19
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.82...0.0.84
+
+## 0.0.83 - 2025-06-19
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.82...0.0.83
+
+## 0.0.82 - 2025-06-18
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.81...0.0.82
+
+## 0.0.81 - 2025-06-17
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.80...0.0.81
+
+## 0.0.80 - 2025-06-17
+
+- Performance tunning for MediaPicker
+- Add doc link and view site link on top right
+- Remove AssetController (replace URL logic by spatie media library)
+
+### What's Changed
+
+* build(deps): bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/5
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.79...0.0.80
+
+## 0.0.79 - 2025-06-16
+
+- Update Page component instructions on template preview
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.78...0.0.79
+
+## 0.0.78 - 2025-06-16
+
+### Fix
+
+- Preview with livewire
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.77...0.0.78
+
 ## 0.0.77 - 2025-06-13
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.76...0.0.77

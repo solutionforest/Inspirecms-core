@@ -123,7 +123,7 @@ class Translate extends Component
     }
 
     // region Helpers
-    protected function prepareTranslateLocaleComponent(Component &$component, string $locale): Component
+    protected function prepareTranslateLocaleComponent(Component $component, string $locale): Component
     {
         $localeComponent = clone $component;
 
@@ -143,7 +143,7 @@ class Translate extends Component
 
             $localeComponent->statePath($localeComponent->getName());
 
-            // Mark the field as translatable
+            // Mark the field as translatable (display at hints)
             $localeComponent->translatable();
 
             // If the locale is the default locale, we don't need to mark it as required
@@ -154,7 +154,9 @@ class Translate extends Component
                     ->required(false);
             }
 
-        } else {
+        }
+        // Is layout component
+        else {
 
             $childComponents = $localeComponent->getChildComponents();
 
@@ -170,7 +172,7 @@ class Translate extends Component
         return $localeComponent;
     }
 
-    protected function configureComponentForLivewire(Component &$component, string $locale, $livewire): Component
+    protected function configureComponentForLivewire(Component $component, string $locale, $livewire): Component
     {
         switch (true) {
             case $livewire instanceof ContentForm:
@@ -186,14 +188,14 @@ class Translate extends Component
         return $component;
     }
 
-    protected function configureComponentForContentForm(Component &$component, string $locale, ContentForm $livewire): Component
+    protected function configureComponentForContentForm(Component $component, string $locale, ContentForm $livewire): Component
     {
         return $component
             ->hidden($locale !== $livewire->getActiveActionsLocale())
             ->dehydratedWhenHidden();
     }
 
-    protected function configureComponentForBuilderEditor(Component &$component, string $locale, BuilderEditor $livewire): Component
+    protected function configureComponentForBuilderEditor(Component $component, string $locale, BuilderEditor $livewire): Component
     {
         $activeLocale = $livewire->editorData['activeLocale'] ?? null;
 

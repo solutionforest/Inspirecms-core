@@ -1,0 +1,59 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+    $blogs = inspirecms_content()
+        ->getUnderRealPath(
+            path: 'home/blog', 
+            limit: 3,
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
+@endphp
+
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+    <x-slot name="heroTitle">
+        @property('hero_banner', 'brief')
+    </x-slot>
+    <x-slot name="swiper">
+        @propertyArray('hero_banner', 'image_slider')
+            @foreach ($hero_banner_image_slider ?? [] as $item)
+                <div class="swiper-slide">
+                    <img src="{{ $item?->getUrl() }}" alt="Slide {{ $loop->iteration }}">
+                    <p>{{ $item?->description }}</p>
+                </div>
+            @endforeach
+    </x-slot>
+
+    <!-- Blog Section -->
+    <section class="blog-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-5 ">
+                <h2>Latest Posts</h2>
+                <a href="/blog" class="view-all-btn">View all
+                    <img src="{{ asset('images/icon/arrow1.svg') }}" alt="">
+                </a>
+            </div>
+            <div class="row">
+                @foreach ($blogs as $blog)
+                    @if ($blog != null)
+                        <a href="{{ $blog->getUrl($locale) }}" class="col-md-4">
+                            <div class="blog-card">
+                              @propertyArray('page_banner', 'image', 'latest_post_img', $blog)
+                              @if (($media = collect($latest_post_img)->first()))
+                                  <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
+                              @endif
+                              <div class="blog-meta">
+                                  <span>{{ $content?->publishAt?->format('d M, Y') }}</span>
+                              </div>
+                              <h3>@property('page_banner', 'title', 'latest_post_title', $blog)</h3>
+                          </div>
+                        </a>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+    </section>
+</x-cms-template>

@@ -1,16 +1,17 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
-@import "../../vendor/filament/filament/resources/css/theme.css";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'tailwindcss/variants';
 
-@import "icons.css";
-@import "widgets.css";
-@import "forms.css";
-@import "tables.css";
-@import "modals.css";
-@import "navigation.css";
-@import "tree.css";
+@import "../../vendor/filament/filament/resources/css/base.css";
+
+@import "./widgets.css";
+@import "./forms.css";
+@import "./tree.css";
+
+@import "./components/alert.css";
+@import "./components/code-editor.css";
 
 /* Login */
 .split-image-layout {
@@ -19,23 +20,44 @@
 
 /* Media Library */
 .fi-body:has(.top-alert) {
-    
     .fi-page :not(.media-library-browser-modal) .media-library__header {
         @apply top-24 !important;
     }
 }
 
 /* Top Alert */
-.fi-body {
-    .top-alert.alert-dialog {
-        @apply sticky top-0 z-20;
+.fi-body .top-alert.alert-dialog {
+    @apply sticky top-0 z-20;
 
-        ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
-            @apply top-10 !important;
-        }
-
-        ~ .fi-layout .content-sidebar .icon-btn, ~ .fi-layout .content-sidebar .content-sidebar_desktop {
-            @apply top-28 !important;
-        }
+    ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
+        @apply top-10 !important;
     }
+
+    ~ .fi-layout .content-sidebar .icon-btn, ~ .fi-layout .content-sidebar .content-sidebar_desktop {
+        @apply top-[6.5rem] !important;
+    }
+}
+
+/* Actions */
+/* Header actions on page */
+.fi-main .fi-header > div:nth-child(2) {
+    @apply flex-row-reverse;
+}
+/* Modals footer actions */
+.fi-modal-footer-actions {
+    @apply flex flex-row-reverse flex-wrap items-center;
+}
+/* Table actions */
+.fi-ta-content-grid .fi-ta-actions {
+    @apply justify-end;
+}
+
+/* Navigation */
+.fi-page-sub-navigation-sidebar-ctn {
+    width: 13rem !important;
+}
+
+/* Icon */
+.fi-icon > svg.custom-icon {
+    stroke: currentColor;
 }

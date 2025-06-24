@@ -19,4 +19,14 @@ return [
     'saved' => [
         'title' => 'Saved',
     ],
+
+    'document_type_not_found' => [
+        'title' => 'Document Type Not Found',
+        'body' => 'The specified document type does not exist. Please check your configuration.',
+    ],
+
+    'content_not_found' => [
+        'title' => 'Content Not Found',
+        'body' => 'The specified content does not exist. Please check your configuration.',
+    ],
 ];

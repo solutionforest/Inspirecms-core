@@ -1,0 +1,126 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+    $blogs = inspirecms_content()
+        ->getUnderRealPath(
+            path: 'home/blog', 
+            limit: 3,
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+    
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="row ">
+                    <div class="col-lg-6 content-left">
+                        <span class="badge1">Analytics</span>
+                        <h1>@property('hero_banner', 'brief')</h1>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus. </p>
+                    </div>
+                    <div class="col-lg-6 ">
+                        <div class="image-wrapper-featured">
+                            @propertyArray('hero_banner', 'image_slider')
+                            @if (($banner_image = collect($hero_banner_image_slider)->first()))
+                                <img src="{{ $banner_image->getUrl() }}" alt="Hero" class="img-fluid">
+                            @endif
+                        </div>
+                       
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <div class="row text-center g-4">
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('images/icon/responsive.svg') }}" alt="Responsive">
+                            </div>
+                            <h3 class="feature-title">Fully Responsive</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('images/icon/seo.svg') }}" alt="SEO">
+                            </div>
+                            <h3 class="feature-title">SEO Friendly</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="feature-item">
+                            <div class="feature-icon">
+                                <img src="{{ asset('images/icon/seo.svg') }}" alt="Customizable">
+                            </div>
+                            <h3 class="feature-title">Easily Customizable</h3>
+                            <p class="feature-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas quis eros sed risus sollicitudin fringilla dictum in metus.</p>
+                            <a href="#" class="styled-button ">Read Articles</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="latest-articles">
+            <div class="container">
+                <h3 class="text-center pb-4 mb-3">Latest Articles</h3>
+                <div class="row g-4">
+                    @foreach ($blogs as $blog)
+                    @if ($blog)
+                        <!-- Article Card -->
+                        <div class="col-lg-6">
+                            <article class="article-card">
+                                <div class="article-image">
+                                    <div class="image-wrapper">
+                                        @propertyArray('page_banner', 'image', 'latest_post_img', $blog)
+                                        @if (($media = collect($latest_post_img)->first()))
+                                            <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="article-content">
+                                    @propertyArray('post_content', 'tags', 'latest_post_tags', $blog)
+                                    @foreach ($latest_post_tags ?? [] as $latest_post_tag)
+                                        <span class="badge1">{{ $latest_post_tag }}</span>
+                                    @endforeach
+                                    <h3 class="article-title">
+                                        <a href="{{ $blog->getUrl($locale) }}">
+                                            @property('page_banner', 'title', 'latest_post_title', $blog)
+                                        </a>
+                                    </h3>
+                                    <div class="article-meta">
+                                        <span class="date">Added: {{ $blog?->publishAt?->format('d M, Y') }}</span>
+                                        <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}" alt=""></i> 23</span>
+                                    </div>
+                                    <p class="article-excerpt">
+                                        @property('page_banner', 'content', 'latest_post_content', $blog)
+                                    </p>
+                                    <div class="article-author">
+                                        <img src="{{ asset('images/icon/avator.svg') }}" alt="Author" class="author-avatar">
+                                        <span class="author-name">Anna Profeska</span>
+                                    </div>
+                                </div>
+                            </article>
+                        </div>
+                    @endif
+                    @endforeach
+                </div>
+            </div>
+        </section>
+    </main>
+</x-cms-template>

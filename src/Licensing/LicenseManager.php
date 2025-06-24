@@ -154,6 +154,11 @@ class LicenseManager
         return $existingRoleCount < $limitedRoleCount;
     }
 
+    public function canGlobalSearch(): bool
+    {
+        return $this->getLicenseTier() === 'pro';
+    }
+
     public function getLicenseTier(): ?string
     {
         $licenseKey = $this->getLicenseKey();
@@ -168,7 +173,7 @@ class LicenseManager
                 if (($verificationResult = $this->cache()->get($cacheKey)) && $verificationResult instanceof LicenseVerificationResult) {
                     $data = $verificationResult->getData();
 
-                    return data_get($data, 'meta.product_variant_slug', null);
+                    return data_get($data, 'license.meta.product_variant_slug', null);
                 }
 
             } catch (\Throwable $th) {
@@ -287,11 +292,6 @@ class LicenseManager
     private function saveLicenseFile($fileContent)
     {
         File::put($this->licenseKeyPath(), $fileContent);
-    }
-
-    private function getSecretKey()
-    {
-        return InspireCmsConfig::get('system.license.secret');
     }
 
     private function licenseKeyPath()

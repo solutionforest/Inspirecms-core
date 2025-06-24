@@ -40,35 +40,7 @@ InspireCMS supports multiple upload methods:
 
 ### Upload Configuration
 
-Configure upload settings in `config/inspirecms.php`:
-
-```php {title="config/inspirecms.php"}
-'media' => [
-    'media_library' => [
-        'disk' => 'public',
-        'allowed_mime_types' => [], // Allowed file types
-        'max_file_size' => null, // Maximum file size in KB
-        'thumbnail' => [
-            'width' => 300,
-            'height' => 300,
-        ],
-        'should_map_video_properties_with_ffmpeg' => false,
-        'middlewares' => [
-            'cache.headers:public;max_age=2628000;etag',
-        ],
-        'responsive_images' => [
-            'small' => [
-                'enabled' => true,
-                'width' => 400,
-            ],
-            'medium' => [
-                'enabled' => true,
-                'width' => 600,
-            ],
-        ],
-    ],
-],
-```
+Configure upload settings in `config/inspirecms.php`. For more details, see [Configuration](./configuration#content-media-management){.doc-link}
 
 ---
 

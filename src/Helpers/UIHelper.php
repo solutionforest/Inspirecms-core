@@ -66,8 +66,8 @@ class UIHelper
      */
     public static function generateIconButton(?string $icon, string $color = 'primary', string $size = 'md', string $url = '', array $attributes = []): HtmlString
     {
-        $bindings = ['color', 'size'];
-        $props['tag'] = 'button';
+        $bindings = ['color', 'size', 'icon'];
+        $props = [];
         if (filled($url)) {
             $props['href'] = $url;
             $props['tag'] = 'a';
@@ -79,11 +79,10 @@ class UIHelper
         ];
 
         $template = static::buildComponentTemplate(
-            componentName: 'filament::button',
+            componentName: 'filament::icon-button',
             bindings: $bindings,
             props: $props,
-            attributes: $attributes['btn'] ?? [],
-            slot: filled($icon) ? static::generateIcon(icon: $icon, color: $color, width: 5, attributes: $attributes['icon'] ?? []) : '',
+            attributes: $attributes,
         );
 
         return str(Blade::render($template, $data))->toHtmlString();
@@ -123,7 +122,7 @@ class UIHelper
         $textAttributes = static::mergeAttributes($attributes['text'] ?? [], ['class' => 'flex-1']);
 
         return str(static::wrapWithHtmlTag($text, 'span', $textAttributes))
-            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: ['btn' => $btnAttributes]))
+            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: $btnAttributes))
             ->wrap('<div class="flex items-center gap-2">', '</div>')
             ->toHtmlString();
     }
@@ -137,7 +136,7 @@ class UIHelper
         $textAttributes = static::mergeAttributes($attributes['text'] ?? [], ['class' => 'flex-1 truncate']);
 
         return str(static::generateCopyableText(text: $text, attributes: $textAttributes))
-            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: ['btn' => $btnAttributes]))
+            ->finish(static::generateIconButton(icon: $icon, color: $color, size: $size, url: $url, attributes: $btnAttributes))
             ->wrap('<div class="flex items-center gap-2">', '</div>')
             ->toHtmlString();
     }

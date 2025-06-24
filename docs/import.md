@@ -100,7 +100,7 @@ archive.zip/
 2. Add your JSON files in the appropriate directories
 3. Add your Blade template files in the Views directory
 4. Compress the directories into a ZIP file
-5. Upload through the admin interface
+5. Upload through the admin panel
 
 ## Example JSON Structures
 
@@ -267,7 +267,11 @@ archive.zip/
 ### 6. Templates
 
 ```blade {title="Templates/template-1/theme-1.blade.php"}
-<x-cms-template :content="$content" type="page" class="sample-class">
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" class="sample-class" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     @property('content', 'body')
 </x-cms-template>
 ```
@@ -275,25 +279,7 @@ archive.zip/
 ### 7. Views
 
 ```blade {title="Views/components/inspirecms/theme-1/page.blade.php"}
-@php
-    $locale ??= $content->getLocale() ?? request()->getLocale();
-@endphp
-<x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('layout')" :title="$content->getTitle()" :seo="$content->getSeo()?->getHtml()" :locale="$locale">
-
-    <main class="flex-1 overflow-y-auto">
-
-        <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('topbar')" :locale="$locale" />
-
-        <!-- Main Content Area -->
-        <div {{ $attributes->merge(['class' => 'lg:pr-8']) }}>
-            {{ $slot }}
-        </div>
-    </main>
-
-</x-dynamic-component>
-```
-
-```blade {title="Views/components/inspirecms/theme-1/layout.blade.php"}
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $title ??= config('app.name');
     $locale ??= request()->getLocale();
@@ -309,7 +295,15 @@ archive.zip/
         @yield('styles')
     </head>
     <body>
-        {{ $slot }}
+        <main class="flex-1 overflow-y-auto">
+
+            <x-dynamic-component :component="inspirecms_templates()->getComponentWithTheme('topbar')" :locale="$locale" />
+
+            <!-- Main Content Area -->
+            <div class="lg:pr-8">
+                {{ $slot }}
+            </div>
+        </main>
         @yield('scripts')
     </body>
 </html>
@@ -317,6 +311,7 @@ archive.zip/
 
 ````blade {title="Views/components/inspirecms/theme-1/topbar.blade.php"}
 ```php
+@props(['locale'])
 @php
     $locale ??= request()->getLocale();
 @endphp

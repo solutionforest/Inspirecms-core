@@ -60,9 +60,13 @@ resources/views/components/inspirecms/abc/
 #### Component Files
 
 ```blade {title="resources/views/components/inspirecms/abc/layout.blade.php"}
+@props(['title' => null, 'seo' => null, 'locale' => null, 'isPreviewing' => false, 'isSimple' => false])
 @php
     $title ??= config('app.name');
     $locale ??= request()->getLocale();
+
+    $headerComponent = inspirecms_templates()->getComponentWithTheme('header');
+    $footerComponent = inspirecms_templates()->getComponentWithTheme('footer');
 @endphp
 <html lang="{{ $locale }}">
     <head>
@@ -74,13 +78,17 @@ resources/views/components/inspirecms/abc/
         @yield('styles')
     </head>
     <body>
+        <x-dynamic-component :component="$headerComponent" :locale="$locale" />
         {{ $slot }}
+        <x-dynamic-component :component="$footerComponent" :locale="$locale" />
         @yield('scripts')
     </body>
 </html>
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/header.blade.php"}
+@props(['locale' => null])
+@aware(['isPreviewing'])
 <nav>
     @foreach (inspirecms()->getNavigation('main', $locale ?? request()->getLocale()) as $item)
         <a href="{{ $item->getUrl() }}">{{ $item->getTitle() }}</a>
@@ -89,6 +97,8 @@ resources/views/components/inspirecms/abc/
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/footer.blade.php"}
+@props(['locale' => null])
+@aware(['isPreviewing'])
 <footer>
     <div>
         @foreach (inspirecms()->getNavigation('footer', $locale ?? request()->getLocale()) as $item)
@@ -112,47 +122,57 @@ resources/views/components/inspirecms/abc/
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/page.blade.php"
+@props(['content' => null, 'locale' => null])
+@aware(['isPeekPreviewModal' => false])
 @php
     $locale ??= $content?->getLocale() ?? request()->getLocale();
     $title = $content?->getTitle();
     $seo = $content?->getSeo()?->getHtml();
 
     $layoutComponent = inspirecms_templates()->getComponentWithTheme('layout');
-    $headerComponent = inspirecms_templates()->getComponentWithTheme('header');
-    $footerComponent = inspirecms_templates()->getComponentWithTheme('footer');
 @endphp
-<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale">
-    <x-dynamic-component :component="$headerComponent" :locale="$locale" />
+<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale" :isPreviewing="$isPeekPreviewModal">
     {{ $slot }}
-    <x-dynamic-component :component="$footerComponent" :locale="$locale" />
 </x-dynamic-component>
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/simple-page.blade.php"}
+@props(['content' => null, 'locale' => null])
+@aware(['isPeekPreviewModal' => false])
 @php
     $locale ??= $content?->getLocale() ?? request()->getLocale();
     $title = $content?->getTitle();
     $seo = $content?->getSeo()?->getHtml();
 
     $layoutComponent = inspirecms_templates()->getComponentWithTheme('layout');
-    $footerComponent = inspirecms_templates()->getComponentWithTheme('footer');
 @endphp
-<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale">
+<x-dynamic-component :component="$layoutComponent" :title="$title" :seo="$seo" :locale="$locale" :isPreviewing="$isPeekPreviewModal" :isSimple="true">
     {{ $slot }}
-    <x-dynamic-component :component="$footerComponent" :locale="$locale" />
 </x-dynamic-component>
 ```
 
 #### Applying Layouts to Templates
 
 ```blade {title="Template: home"}
-<x-cms-template :content="$content" type="page">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+
+    $layoutComponent = inspirecms_templates()->getComponentWithTheme('page');
+@endphp
+<x-dynamic-component :component="$layoutComponent" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     Home
-</x-cms-template>
+</x-dynamic-component>
 ```
 
 ```blade {title="Template: tnc"}
-<x-cms-template :content="$content" type="simple-page">
+@props(['isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+
+    $layoutComponent = inspirecms_templates()->getComponentWithTheme('simple-page');
+@endphp
+<x-dynamic-component :component="$layoutComponent" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     TNC Here
 </x-cms-template>
 ```

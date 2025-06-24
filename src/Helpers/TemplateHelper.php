@@ -32,16 +32,39 @@ class TemplateHelper
      */
     public static function getDefaultTemplateTheme(): string
     {
-        return trim(InspireCmsConfig::get('template.default_theme', 'manifest'));
+        return collect(static::getAvailableThemesFromFolder())
+            ->merge(static::getDefaultTemplateThemes())
+            ->unique()
+            ->first() ?? 'clarity';
     }
 
     public static function getDefaultTemplateThemes(): array
     {
         return [
-            'manifest',
-            'blogrock',
-            'know-press',
+            'clarity',
+            'essence',
         ];
+    }
+
+    public static function getAvailableThemesFromFolder(): array
+    {
+        $themes = [];
+
+        $themeDir = static::getDirectoryForThemedComponents();
+
+        if (is_dir($themeDir)) {
+            $themeDirs = scandir($themeDir);
+
+            foreach ($themeDirs as $theme) {
+                if ($theme === '.' || $theme === '..') {
+                    continue;
+                }
+
+                $themes[] = $theme;
+            }
+        }
+
+        return array_values(array_filter(array_unique($themes)));
     }
 
     public static function getComponentPrefixForThemes(): string
@@ -70,6 +93,7 @@ class TemplateHelper
     public static function retrieveDefaultLayoutContent()
     {
         return <<<'HTML'
+        @props(['content' => null, 'locale' => null, 'isPeekPreviewModal' => false])
         @php
             $locale ??= $content->getLocale() ?? request()->getLocale();
             $seo = $content->getSeo()?->getHtml();
@@ -97,10 +121,11 @@ class TemplateHelper
         $componentName = static::getDefaultThemedLayoutComponentName();
 
         return <<<HTML
+        @props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
         @php
             \$locale ??= \$content->getLocale();
         @endphp
-        <x-cms-template :content="\$content" type="{$componentName}">
+        <x-cms-template type="{$componentName}" :content="\$content" :locale="\$locale" :isPeekPreviewModal="\$isPeekPreviewModal">
             Your content here
         </x-cms-template>
         HTML;

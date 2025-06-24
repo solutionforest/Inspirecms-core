@@ -34,7 +34,7 @@ class FieldGroupResourceHelper
             ->validationAttribute(__('inspirecms::resources/field-group.name.validation_attribute'))
             ->required()
             ->maxLength(255)
-            ->live(true, 500)
+            ->live(onBlur: true)
             ->autofocus()
             ->afterStateUpdated(function ($operation, Forms\Get $get, Forms\Set $set, $component, ?string $state) {
 

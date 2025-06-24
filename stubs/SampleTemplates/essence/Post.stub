@@ -1,0 +1,27 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+    <article class="blog-post">
+        <!-- Header -->
+        <header class="post-header">
+            <h1 class="post-title">@property('page_banner', 'title')</h1>
+        </header>
+
+        <!-- Main Image -->
+        <div class="post-image">
+            @propertyArray('page_banner', 'image')
+            @if (($media = collect($b_banner_image ?? [])->first()))
+                <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}" class="img-fluid">
+            @endif
+        </div>
+
+
+        <!-- Post Content -->
+        <div class="post-content-single">
+            @property('post_content', 'content')
+        </div>
+
+    </article>
+</x-cms-template>

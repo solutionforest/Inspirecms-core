@@ -115,7 +115,7 @@ trait HasInnerField
             TextInput::make('label')
                 ->required()
                 ->helperText('Label for the field')
-                ->live()->afterStateUpdated(fn ($state, $set) => $state ? $set('name', Str::slug($state)) : null),
+                ->live(onBlur: true)->afterStateUpdated(fn ($state, $set) => $state ? $set('name', Str::slug($state)) : null),
 
             TextInput::make('name')
                 ->required()

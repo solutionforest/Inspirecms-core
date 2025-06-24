@@ -1,0 +1,75 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+    $blogs = inspirecms_content()
+        ->getPaginatedUnderRealPath(
+            path: 'home/blog', 
+            perPage: 4,
+            pageName: 'page',
+            page: request()->query('page') ?? 1,
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
+@endphp
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+    <main>
+        <section class="latest-articles">
+            <div class="container">
+                <div class="row g-4">
+                    <div class="col-md-12">
+                        <div class="page-meta">
+                            <div class="line"></div>
+                            <span>{{ $content->getTitle($locale) }}</span>
+                        </div>
+                        @foreach ($blogs as $blog)
+                            @if($blog)
+                                <div class="blog-posts-grid">
+                                    <article class="article-card">
+                                        <div class="article-image">
+                                            <div class="image-wrapper">
+                                                @propertyArray('page_banner', 'image', 'post_img', $blog)
+                                                @if (($media = collect($post_img)->first()))
+                                                    <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}">
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="article-content">
+                                            @propertyArray('post_content', 'tags', 'post_img_tags', $blog)
+                                            @foreach ($post_img_tags ?? [] as $post_img_tag)
+                                                <span class="badge1">{{ $post_img_tag }}</span>
+                                            @endforeach
+                                            <h3 class="article-title">
+                                                <a href="{{ $blog->getUrl($locale) }}">
+                                                    @property('page_banner', 'title', 'post_title', $blog)
+                                                </a>
+                                            </h3>
+                                            <div class="article-meta">
+                                                <span class="date">Added: {{ $blog?->publishAt?->format('d M, Y') }}</span>
+                                                <span class="comments"><img src="{{ asset('images/icon/comment.svg') }}" alt=""></i> 23</span>
+                                            </div>
+                                            <p class="article-excerpt">
+                                                @property('page_banner', 'content', 'post_content', $blog)
+                                            </p>
+                                            <div class="article-author">
+                                                <img src="{{ asset('images/icon/avator.svg') }}" alt="Author" class="author-avatar">
+                                                <span class="author-name">Anna Profeska</span>
+                                            </div>
+                                        </div>
+                                    </article>
+                                </div>
+                            @endif
+                        @endforeach
+
+                        <div class="" >
+                            {{ $blogs->links('pagination::bootstrap-5') }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+</x-cms-template>

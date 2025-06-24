@@ -161,13 +161,6 @@ Configure media uploads, storage, and processing:
                       // Increases processing time for video uploads
 
         /**
-         * HTTP middleware applied to media requests
-         */
-        'middleware' => [
-            'cache.headers:public;max_age=2628000;etag',
-        ],
-
-        /**
          * Responsive image generation settings
          */
         'responsive_images' => [
@@ -229,7 +222,7 @@ Optimize performance with caching configurations:
 
 ### Admin Panel
 
-Configure the administration dashboard and interface:
+Configure the admin panel:
 
 ```php
 use SolutionForest\InspireCms\Filament\Clusters as FilamentClusters;
@@ -451,8 +444,6 @@ Configure themes and templates:
 
 ```php
 'template' => [
-    'default_theme' => 'manifest',  // Base theme for frontend
-                                   // Create custom themes in resources/views/themes/
     'component_prefix' => 'inspirecms', // Prefix for Blade layout components
                                        // Example usage: <x-inspirecms.{theme-name}.component-name>
     'exported_template_dir' => resource_path('views/inspirecms/templates'),
@@ -563,13 +554,8 @@ Configure language and translation settings:
 
 ```php
 'localization' => [
-    // Languages available in the admin interface
+    // Languages available in the admin panel
     // Format: language code or locale identifier
     'user_preferred_locales' => ['en','zh_CN','zh_TW'],
-
-    // Add new languages via the admin interface
-    // or directly in the languages table
-
-    // To generate translation files: php artisan lang:publish
 ],
 ```

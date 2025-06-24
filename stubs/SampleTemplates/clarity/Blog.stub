@@ -1,0 +1,114 @@
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
+@php
+    $locale ??= $content->getLocale();
+    $blogs = inspirecms_content()
+        ->getPaginatedUnderRealPath(
+            path: 'home/blog', 
+            perPage: 4,
+            pageName: 'page',
+            page: request()->query('page') ?? 1,
+            withRelations: ['documentType.templates', 'templates'],
+            sorting: [
+                '__latest_version_dt' => 'desc',
+            ],
+            isPublished: isset($isPeekPreviewModal) ? null : true,
+        )
+        ->toDto($locale);
+
+    $featurePostIds = $content->getPropertyGroup('featured_posts')?->getPropertyData('posts')?->getSourceValue() ?? [];
+    $featurePosts = empty($featurePostIds) ? [] : inspirecms_content()->getPaginatedByIds(
+        ids: $featurePostIds,
+        page: request()->query('featured') ?? 1,
+        perPage: 1,
+        pageName: 'featured',
+    )->toDto($locale);
+@endphp
+
+<x-cms-template type="page" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
+    <div class="page-main-container">
+        <section class="blog-section-ma">
+            <section class="hero-section">
+                <div class="container-fluid ps-0">
+                    <h1>{{ $content->getTitle($locale) }}</h1>
+                </div>
+            </section>
+            <div class="container ps-0">
+                @foreach ($featurePosts as $featuredPost)
+                    @php
+                        $postUrl = $featuredPost->getUrl($locale);
+                    @endphp
+                    <!-- Featured Blog Post -->
+                    <div class="featured-post">
+                        <div class="row align-items-start">
+                            <div class="col-md-6">
+                                @propertyArray('page_banner', 'image', 'ft_post_img', $featuredPost)
+                                @if (($media = collect($ft_post_img)->first()))
+                                    <img src="{{ $media->getUrl() }}" alt="{{ $media->caption }}" class="featured-image">
+                                @endif
+                            </div>
+                            <div class="col-md-6">
+                                <div class="featured-content">
+                                    <div class="post-categories">
+                                        @propertyArray('post_content', 'categories', 'ft_post_cats', $featuredPost)
+                                        @foreach ($ft_post_cats ?? [] as $cat)
+                                            <span class="category">{{ $cat }}</span>
+                                            @if (!$loop->last)
+                                                <span class="separator">,</span>
+                                            @endif
+                                        @endforeach
+                                    </div>
+                                    <h2 class="featured-title"> <a href="{{ $postUrl }}">@property('page_banner', 'title', 'ft_post_title', $featuredPost)</a></h2>
+                                    <div class="post-date">{{ $content?->publishAt }}</div>
+                                    <p class="featured-excerpt">
+                                        @property('page_banner', 'title', 'ft_post_des', $featuredPost)
+                                        <a href="{{ $postUrl }}"> <img src="{{ asset('images/icon/arrow1.svg') }}" alt=""></a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+
+                @unless (empty($featurePostIds))
+                    <div class="text-center my-2">
+                        {{ $featurePosts->links('pagination::bootstrap-5') }}
+                    </div>
+                    <hr class="my-4"/>
+                @endunless
+
+                <!-- Regular Blog Posts Grid -->
+                <div class="row blog-posts-grid">
+                    @foreach ($blogs as $blog)
+                        <!-- Post -->
+                        <div class="col-12 col-md-6 mb-4">
+                            <a href="{{ $blog->getUrl($locale) }}" class="text-decoration-none">
+                              <article class="blog-post">
+                                  @propertyArray('page_banner', 'image', 'lastest_post_img', $blog)
+                                  @if (($media = collect($lastest_post_img)->first()))
+                                      <img src="{{ $media?->getUrl() }}" alt="{{ $media->caption }}" class="blog-image">
+                                  @endif
+                                  <div class="post-content">
+                                      <div class="post-meta">
+                                          @propertyArray('post_content', 'categories', 'lastest_post_cats', $blog)
+                                          <span class="category">{{ implode(', ', $lastest_post_cats ?? []) }}</span>
+                                          <span class="date">
+                                              {{ $blog?->publishAt?->format('d M, Y') }}
+                                          </span>
+                                      </div>
+                                      <h3>@property('page_banner', 'title', 'lastest_post_title', $blog)</h3>
+                                      <p>@property('page_banner', 'description', 'lastest_post_description', $blog)</p>
+                                  </div>
+                              </article>
+                          </a>
+                        </div>
+                    @endforeach
+                </div>
+
+                <div class="text-center mt-4">
+                    {{ $blogs->links('pagination::bootstrap-5') }}
+                </div>
+            </div>
+        </section>
+    </div>
+
+</x-cms-template>

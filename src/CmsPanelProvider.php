@@ -17,8 +17,10 @@ use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
 use Filament\Tables\Actions\Action as TablesAction;
 use Filament\Tables\Actions\ReplicateAction as TablesReplicateAction;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
@@ -35,8 +37,10 @@ use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Filament\Pages;
 use SolutionForest\InspireCms\Filament\Widgets;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
+use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddleware;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 use SolutionForest\InspireCms\Livewire\NavigationTree;
 use SolutionForest\InspireCms\Support\Base\Filament\ThemeConfig;
@@ -46,7 +50,8 @@ class CmsPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         $panel = $panel
-            ->id(InspireCmsConfig::getPanelId());
+            ->id(InspireCmsConfig::getPanelId())
+            ->globalSearch(app(LicenseManager::class)->canGlobalSearch());
 
         return $this->configureCmsPanel($panel);
     }
@@ -77,49 +82,6 @@ class CmsPanelProvider extends PanelProvider
         }
 
         $panel = $panel
-            ->resources(InspireCmsConfig::getFilamentResources())
-            ->pages(array_merge(
-                array_values(InspireCmsConfig::getFilamentPages()),
-                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
-            ))
-            ->widgets([
-                Widgets\CmsInfoWidget::class,
-                Widgets\CmsVersionInfo::class,
-                Widgets\PageActivity::class,
-                Widgets\UserActivity::class,
-                Widgets\AlertOverview::class,
-                Widgets\ThemeInfo::class,
-                Widgets\TemplateInfo::class,
-                ...InspireCmsConfig::get('admin.extra_widgets', []),
-            ]);
-        // Discover resources, pages, clusters, and widgets in the specified directories
-        $panel = $panel
-            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources')
-            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages')
-            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters')
-            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
-
-        $middleware = [
-            EncryptCookies::class,
-            AddQueuedCookiesToResponse::class,
-            StartSession::class,
-            CmsMiddleware\CmsAuthenticateSession::class,
-            ShareErrorsFromSession::class,
-            VerifyCsrfToken::class,
-            SubstituteBindings::class,
-            DisableBladeIconComponents::class,
-            DispatchServingFilamentEvent::class,
-            CmsMiddleware\LicenseCheck::class,
-            CmsMiddleware\SetUpPoweredBy::class,
-        ];
-        $authMiddleware = [
-            CmsMiddleware\CmsAuthenticate::class,
-            CmsMiddleware\UserPreference::class,
-        ];
-
-        $panel = $panel
-            ->middleware($middleware)
-            ->authMiddleware($authMiddleware)
             ->bootUsing(function () {
 
                 $skipSuperAdminCheck = AuthHelper::skipSuperAdminCheck();
@@ -138,6 +100,11 @@ class CmsPanelProvider extends PanelProvider
                 }
             });
 
+        $this->configureResources($panel);
+        $this->configurePages($panel);
+        $this->configureWidgets($panel);
+        $this->configureClusters($panel);
+        $this->configureMiddleware($panel);
         $this->configurePlugins($panel);
         $this->configureNavigation($panel);
         $this->configureNotification($panel);
@@ -145,6 +112,70 @@ class CmsPanelProvider extends PanelProvider
         $this->registerLivewireComponents($panel);
 
         return $panel;
+    }
+
+    protected function configureClusters(Panel $panel): Panel
+    {
+        return $panel
+            ->discoverClusters(in: app_path('Filament/Cms/Clusters'), for: 'App\\Filament\\Cms\\Clusters');
+    }
+
+    protected function configureWidgets(Panel $panel): Panel
+    {
+        return $panel
+            ->widgets([
+                Widgets\CmsInfoWidget::class,
+                Widgets\CmsVersionInfo::class,
+                Widgets\PageActivity::class,
+                Widgets\UserActivity::class,
+                Widgets\AlertOverview::class,
+                Widgets\ThemeInfo::class,
+                Widgets\TemplateInfo::class,
+                ...InspireCmsConfig::get('admin.extra_widgets', []),
+            ])
+            ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
+    }
+
+    protected function configurePages(Panel $panel): Panel
+    {
+        return $panel
+            ->pages(array_merge(
+                array_values(InspireCmsConfig::getFilamentPages()),
+                collect(inspirecms()->getSections())->map(fn (ClusterSection $section) => $section->getFqcn())->all()
+            ))
+            ->discoverPages(in: app_path('Filament/Cms/Pages'), for: 'App\\Filament\\Cms\\Pages');
+    }
+
+    protected function configureResources(Panel $panel): Panel
+    {
+        return $panel
+            ->resources(InspireCmsConfig::getFilamentResources())
+            ->discoverResources(in: app_path('Filament/Cms/Resources'), for: 'App\\Filament\\Cms\\Resources');
+    }
+
+    protected function configureMiddleware(Panel $panel): Panel
+    {
+        $middleware = [
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            CmsMiddleware\CmsAuthenticateSession::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            SubstituteBindings::class,
+            DisableBladeIconComponents::class,
+            DispatchServingFilamentEvent::class,
+            CmsMiddleware\LicenseCheck::class,
+            CmsMiddleware\SetUpPoweredBy::class,
+        ];
+        $authMiddleware = [
+            CmsMiddleware\CmsAuthenticate::class,
+            CmsMiddleware\UserPreference::class,
+        ];
+
+        return $panel
+            ->middleware($middleware)
+            ->authMiddleware($authMiddleware);
     }
 
     protected function configurePlugins(Panel $panel): Panel
@@ -176,7 +207,8 @@ class CmsPanelProvider extends PanelProvider
 
         $plugins[] = $translatablePlugin;
 
-        return $panel->plugins($plugins);
+        return $panel
+            ->plugins($plugins);
     }
 
     protected function configureNavigation(Panel $panel): Panel
@@ -203,7 +235,43 @@ class CmsPanelProvider extends PanelProvider
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
                 'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
             ])
-            ->userMenuItems($userMenuItems);
+            ->userMenuItems($userMenuItems)
+            ->bootUsing(function () {
+                FilamentView::registerRenderHook(
+                    PanelsRenderHook::USER_MENU_BEFORE,
+                    function () {
+                        $links = [];
+                        $links[] = UIHelper::generateIconButton(
+                            icon: 'heroicon-o-book-open',
+                            color: 'gray',
+                            url: InspireCms::URL_DOCUMENTATION,
+                            size: 'lg',
+                            attributes: [
+                                'target' => '_blank',
+                                'rel' => 'noopener noreferrer',
+                                'class' => 'px-0.5',
+                                'alt' => 'Documentation',
+                                'title' => 'Documentation',
+                            ]
+                        )->toHtml();
+                        $links[] = UIHelper::generateIconButton(
+                            icon: 'heroicon-o-globe-alt',
+                            color: 'gray',
+                            url: config('app.url'),
+                            size: 'lg',
+                            attributes: [
+                                'target' => '_blank',
+                                'rel' => 'noopener noreferrer',
+                                'class' => 'px-0.5',
+                                'alt' => 'View Website',
+                                'title' => 'View Website',
+                            ]
+                        )->toHtml();
+
+                        return implode('', $links);
+                    }
+                );
+            });
     }
 
     protected function configureNotification(Panel $panel): Panel

@@ -60,6 +60,7 @@ return [
         'override_plugins' => [
             'field_group_models' => true, // Whether to override field group models
             'spatie_permission' => true,  // Whether to override Spatie Permission package functionality
+            'filament_peek' => true, // Whether to override Filament Peek package functionality
         ],
     ],
 
@@ -168,14 +169,6 @@ return [
              * Increases processing time for video uploads
              */
             'should_map_video_properties_with_ffmpeg' => false,
-
-            /**
-             * HTTP middleware applied to media requests
-             */
-            'middleware' => [
-                SetUpPoweredBy::class,
-                'cache.headers:public;max_age=2628000;etag',
-            ],
 
             /**
              * Responsive image generation settings
@@ -416,11 +409,6 @@ return [
     ],
 
     'template' => [
-        /**
-         * Default template theme for the CMS
-         */
-        'default_theme' => 'manifest',
-
         /**
          * The prefix for the component names used in the CMS
          */

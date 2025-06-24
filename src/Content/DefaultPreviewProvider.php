@@ -9,13 +9,62 @@ use Pboivin\FilamentPeek\Support\Html;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Helpers\PropertyTypeHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 class DefaultPreviewProvider implements PreviewProviderInterface
 {
+    private const PREVIEW_DATA = [
+        'isPeekPreviewModal' => true,
+    ];
+
+    protected static $previewType = 'internalUrl'; // internalUrl, view
+
+    public function getPeekPreviewType(): string
+    {
+        return static::$previewType;
+    }
+
+    public function configureFilamentPeekAsInternalLink(): void
+    {
+        if ($this->getPeekPreviewType() === 'internalUrl') {
+            config()->set('filament-peek.builderEditor.useInternalPreviewUrl', true);
+            config()->set('filament-peek.internalPreviewUrl.enabled', true);
+        }
+    }
+
     public function renderContentPreview($documentType, $content, $template, $locale = null, $propertyData = [], $data = [])
+    {
+        [$htmlContent, $viewData] = $this->prepareContentPreviewContentAndData(
+            documentType: $documentType,
+            content: $content,
+            template: $template,
+            locale: $locale,
+            propertyData: $propertyData,
+            data: $data
+        );
+
+        return $this->renderBuilderPreview(
+            Blade::render($htmlContent, $viewData, true)
+        );
+    }
+
+    public function renderTemplatePreview($templateContent, $documentType, $theme = null, $locale = null, $data = [])
+    {
+        if (empty($templateContent)) {
+            return '';
+        }
+
+        [$htmlContent, $viewData] = $this->prepareTemplatePreviewContentAndData($templateContent, $documentType, $theme, $locale, $data);
+
+        return $this->renderBuilderPreview(
+            Blade::render($templateContent, $viewData)
+        );
+    }
+
+    protected function prepareContentPreviewContentAndData($documentType, $content, $template, $locale = null, $propertyData = [], $data = [])
     {
         $documentType = $this->findDocumentType($documentType);
         if (! $documentType) {
@@ -26,7 +75,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->seconds(60)
                 ->send();
 
-            return $this->renderBuilderPreview('Document type not found');
+            return ['Document type not found', []];
         }
 
         $locale ??= $data['activeLocale'] ?? $data['locale'] ?? null;
@@ -50,7 +99,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->seconds(60)
                 ->send();
 
-            return $this->renderBuilderPreview('Content not found');
+            return ['Content not found', []];
         }
 
         $templateContent = $this->findTemplateContent($template) ?? $this->findTemplateContent($documentType->getDefaultTemplate());
@@ -62,7 +111,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->seconds(60)
                 ->send();
 
-            return $this->renderBuilderPreview('Template not found');
+            return ['Template not found', []];
         }
 
         if ($contentDTO instanceof ContentDto) {
@@ -70,24 +119,15 @@ class DefaultPreviewProvider implements PreviewProviderInterface
             $contentDTO = $contentDTO->setLocale($locale);
         }
 
-        return $this->renderBuilderPreview(
-            Blade::render(
-                $templateContent,
-                array_merge([
-                    'locale' => $locale,
-                    'content' => $contentDTO,
-                ], $data),
-                true
-            )
-        );
+        return [$templateContent, array_merge([
+            'locale' => $locale,
+            'content' => $contentDTO,
+            ...self::PREVIEW_DATA,
+        ], $data)];
     }
 
-    public function renderTemplatePreview($templateContent, $documentType, $theme = null, $locale = null, $data = [])
+    protected function prepareTemplatePreviewContentAndData($htmlContent, $documentType, $theme = null, $locale = null, $data = [])
     {
-        if (empty($templateContent)) {
-            return '';
-        }
-
         $documentType = $this->findDocumentType($documentType);
         if (! $documentType) {
             Notification::make()
@@ -97,7 +137,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
                 ->seconds(60)
                 ->send();
 
-            return $this->renderBuilderPreview('Document type not found');
+            return ['Document type not found', []];
         }
 
         $contentDTO = $this->buildFakeContentDto($documentType, $locale);
@@ -105,35 +145,39 @@ class DefaultPreviewProvider implements PreviewProviderInterface
         $viewData = array_merge([
             'content' => $contentDTO,
             'locale' => $contentDTO->getLocale() ?? $locale,
-            'isPeekPreviewModal' => true,
+            ...self::PREVIEW_DATA,
         ], $data);
 
-        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $templateContent)) {
+        if ($documentType->isDataType() && ! preg_match("/getComponentWithTheme\(\'(.*?)\'\)/", $htmlContent)) {
 
             // get the layout
-            $layoutName = inspirecms_templates()->getComponentWithTheme('layout');
+            $layoutName = inspirecms_templates()->getComponentWithTheme(TemplateHelper::getDefaultThemedLayoutComponentName());
 
             if (view()->exists('components.' . $layoutName)) {
 
-                $newHtmlContent = Blade::render(
-                    "@extends('components.$layoutName')" . $templateContent,
-                    array_merge($viewData, ['slot' => '', 'layoutName' => $layoutName]),
-                );
+                $viewData = array_merge($viewData, ['slot' => '', 'layoutName' => $layoutName]);
 
-                return $this->renderBuilderPreview($newHtmlContent);
+                return ["@extends('components.$layoutName')" . $htmlContent, $viewData];
             }
         }
 
-        return $this->renderBuilderPreview(
-            Blade::render($templateContent, $viewData)
-        );
+        return [$htmlContent, $viewData];
     }
 
     /**
      * @param  int|Model|null  $template
      * @return ?string
      */
-    private function findTemplateContent($template)
+    protected function findTemplateContent($template)
+    {
+        return $this->findTemplate($template)?->getContent() ?? null;
+    }
+
+    /**
+     * @param  int|Model|null  $template
+     * @return \Illuminate\Database\Eloquent\Model|null
+     */
+    protected function findTemplate($template)
     {
         if (is_null($template)) {
             return null;
@@ -142,14 +186,14 @@ class DefaultPreviewProvider implements PreviewProviderInterface
             $template = InspireCmsConfig::getTemplateModelClass()::find($template);
         }
 
-        return $template?->getContent() ?? null;
+        return $template;
     }
 
     /**
      * @param  int|Model|null  $documentType
      * @return \Illuminate\Database\Eloquent\Model|null
      */
-    private function findDocumentType($documentType)
+    protected function findDocumentType($documentType)
     {
         if (is_null($documentType)) {
             return null;
@@ -164,12 +208,12 @@ class DefaultPreviewProvider implements PreviewProviderInterface
     /**
      * @return class-string<Content|Model>
      */
-    private static function getContentModelClass()
+    protected static function getContentModelClass()
     {
         return InspireCmsConfig::getContentModelClass();
     }
 
-    private function renderBuilderPreview(string $htmlContent)
+    protected function renderBuilderPreview(string $htmlContent)
     {
         return Html::injectPreviewModalStyle($htmlContent);
     }
@@ -178,7 +222,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
      * @param  DocumentType|Model|null  $documentType
      * @param  ?string  $locale
      */
-    private function buildFakeContentDto($documentType, $locale)
+    protected function buildFakeContentDto($documentType, $locale)
     {
         if (is_null($documentType)) {
             return null;

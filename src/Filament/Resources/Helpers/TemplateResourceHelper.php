@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\Helpers;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResourceHelper
@@ -73,9 +74,7 @@ class TemplateResourceHelper
         return Forms\Components\ViewField::make('page_component_instructions')
             ->label(__('inspirecms::resources/template.page_component_instructions.label'))
             ->view('inspirecms::instructions.page-component-instructions', [
-                'plaintext' => '<x-cms-template :content="$content" type="page">
-    Your content here
-</x-cms-template>',
+                'plaintext' => TemplateHelper::retrieveDefaultThemeContent(),
             ]);
     }
 }

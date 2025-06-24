@@ -27,7 +27,7 @@
         "filament/spatie-laravel-translatable-plugin": "^3.2",
         "guava/filament-icon-picker": "^2.0",
         "khatabwedaa/blade-css-icons": "^1.5",
-        "pboivin/filament-peek": "^2.0",
+        "pboivin/filament-peek": "^2.4",
         "solution-forest/filament-field-group": "^1.0.14",
         "solution-forest/inspirecms-support": "self.version",
         "spatie/laravel-package-tools": "^1.15.0",

@@ -23,7 +23,7 @@ class InstallCommand extends Command
         $license = $this->ask(str_replace(
             ':subscribeUrl',
             app(LicenseManager::class)->getSubscriptionUrl(),
-            'Please enter your license key (you can get one at :subscribeUrl):'
+            'Please enter your license key (you can get one at :subscribeUrl)'
         ));
         if (! $license) {
             $this->error('License key is required. Installation aborted.');
@@ -44,7 +44,11 @@ class InstallCommand extends Command
             $this->warn('Skipping configuration publishing.');
         }
 
-        // 3) Publish migrations
+        // 3) Install dependencies
+        $this->info('Installing dependencies...');
+        $this->call(InstallRequirePacakgesCommand::class);
+
+        // 4) Publish migrations
         if ($this->confirm('Do you want to publish the migrations?', true)) {
             $this->call('vendor:publish', [
                 '--tag' => InspireCms::CORE_SLUG . '-migrations',
@@ -53,10 +57,6 @@ class InstallCommand extends Command
         } else {
             $this->warn('Skipping migration publishing.');
         }
-
-        // 4) Install dependencies
-        $this->info('Installing dependencies...');
-        $this->call(InstallRequirePacakgesCommand::class);
 
         // 5) Run migrations
         if ($this->confirm('Do you want to run the migrations now?', true)) {
