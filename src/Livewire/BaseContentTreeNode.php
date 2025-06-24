@@ -8,12 +8,19 @@ use Livewire\Attributes\Lazy;
 use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Support\TreeNode\Concerns\InteractsWithModelExplorer;
+use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasModelExplorer;
 use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
-use SolutionForest\InspireCms\Support\TreeNode\ModelExplorerComponent;
+use SolutionForest\InspireCms\Support\TreeNode\TreeComponent;
 
 #[Lazy]
-abstract class BaseContentTreeNode extends ModelExplorerComponent
+abstract class BaseContentTreeNode extends TreeComponent implements HasModelExplorer
 {
+    use InteractsWithModelExplorer {
+        resolveSelectedModelItems as protected traitResolveSelectedModelItems;
+        getGroupedNodeItems as protected traitGetGroupedNodeItems;
+    }
+
     public array $cachedModelExplorerRecords = [];
 
     public bool $filterByPermission = true;
@@ -65,7 +72,7 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
 
     public function getGroupedNodeItems()
     {
-        $items = parent::getGroupedNodeItems();
+        $items = $this->traitGetGroupedNodeItems();
 
         if (! $this->filterByPermission) {
             return $items;
@@ -111,7 +118,7 @@ abstract class BaseContentTreeNode extends ModelExplorerComponent
             ->filter(fn ($key) => (is_string($key) || is_int($key)) && $this->isValidSelectableModelItemKey($key))
             ->all();
 
-        $recordsToCache = count($missingKeys) > 0 ? parent::resolveSelectedModelItems($missingKeys) : collect();
+        $recordsToCache = count($missingKeys) > 0 ? $this->traitResolveSelectedModelItems($missingKeys) : collect();
 
         if ($recordsToCache != null) {
             foreach ($recordsToCache as $record) {
