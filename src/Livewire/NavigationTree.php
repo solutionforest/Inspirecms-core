@@ -56,7 +56,7 @@ class NavigationTree extends Component implements HasActions, HasForms
         $this->refreshNodes();
     }
 
-    public function editNode($id)
+    public function editTreeNode($id)
     {
         $url = FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'edit', [
             'record' => $id,
@@ -75,7 +75,7 @@ class NavigationTree extends Component implements HasActions, HasForms
         return redirect()->to($url);
     }
 
-    public function viewNode($id)
+    public function viewTreeNode($id)
     {
         $url = FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'view', [
             'record' => $id,
@@ -94,24 +94,7 @@ class NavigationTree extends Component implements HasActions, HasForms
         return redirect()->to($url);
     }
 
-    public function deleteAction()
-    {
-        return Action::make('delete')
-            ->model($this->getModel())
-            ->requiresConfirmation()
-            ->modalHeading('Delete Navigation Item')
-            ->modalDescription('Are you sure you want to delete this navigation item?')
-            ->modalAlignment(Alignment::Center)
-            ->action(function ($arguments) {
-                $this->confirmDelete($arguments['id'] ?? null);
-            })
-            ->after(function () {
-                // Reload 'nodes' after deletion
-                $this->refreshNodes();
-            });
-    }
-
-    private function confirmDelete($id)
+    public function deleteTreeNode($id)
     {
         try {
             $record = $this->getModel()::findOrFail($id);
@@ -127,15 +110,47 @@ class NavigationTree extends Component implements HasActions, HasForms
                 ->body('Navigation item not found.')
                 ->danger()
                 ->send();
+        } finally {
+            $this->dispatch('refreshAllTree');
         }
+    }
+
+    protected function getTreeNodeActions(): array
+    {
+        return [
+            Action::make('view')
+                ->icon('heroicon-m-eye')
+                ->iconButton()
+                ->color('gray')
+                ->label('View')
+                ->size('xs')
+                ->visible(fn () => $this->authorizeAction('view')),
+            Action::make('edit')
+                ->icon('heroicon-m-pencil')
+                ->iconButton()
+                ->color('primary')
+                ->label('Edit')
+                ->size('xs')
+                ->visible(fn () => $this->authorizeAction('update')),
+            Action::make('delete')
+                ->icon('heroicon-m-trash')
+                ->iconButton()
+                ->color('danger')
+                ->label('Delete')
+                ->size('xs')
+                ->model($this->getModel())
+                ->requiresConfirmation()
+                ->modalHeading('Delete Navigation Item')
+                ->modalDescription('Are you sure you want to delete this navigation item?')
+                ->modalAlignment(Alignment::Center),
+        ];
     }
 
     public function getAvailableActions(): array
     {
-        return collect(['view', 'update', 'delete'])
-            ->filter(function ($action) {
-                return $this->authorizeAction($action);
-            })->all();
+        return collect($this->getTreeNodeActions())
+            ->where(fn (Action $action) => $action->isVisible())
+            ->all();
     }
 
     public function save()

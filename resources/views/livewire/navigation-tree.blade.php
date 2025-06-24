@@ -59,7 +59,7 @@
         <div class="min-h-[200px]">
             <div class="relative tree-container">
                 <template x-for="(node, index) in treeData" :key="node.id + '-' + index">
-                    <x-inspirecms::tree.navigation.recursive-node 
+                    <x-inspirecms-support::tree-node.recursive-node 
                         :level="1" 
                         nodeVariable="node"
                         indexVariable="index"
