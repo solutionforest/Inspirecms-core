@@ -222,8 +222,8 @@ class ContentDto extends BaseTranslatableModelDto
         $result = $seo->get($locale);
 
         // Using fallback locale
-        if (! $result && 
-            ($fallbackLocale = $this->getFallbackLocale()) && 
+        if (! $result &&
+            ($fallbackLocale = $this->getFallbackLocale()) &&
             ($fallbackSeo = $seo->get($fallbackLocale))
         ) {
             $result = $fallbackSeo;
