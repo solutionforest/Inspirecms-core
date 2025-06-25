@@ -246,8 +246,8 @@ class SeoDto extends BaseDto
         if ($this->noFollow) {
             $robotsContent[] = 'nofollow';
         }
-        if (!empty($robotsContent)) {
-            $html .= "<meta name=\"robots\" content=\"" . implode(', ', $robotsContent) . "\">\n";
+        if (! empty($robotsContent)) {
+            $html .= '<meta name="robots" content="' . implode(', ', $robotsContent) . "\">\n";
         }
 
         return $html;
@@ -266,11 +266,12 @@ class SeoDto extends BaseDto
             if (filter_var($value, FILTER_VALIDATE_URL)) {
                 return $value;
             }
-            
+
             // If not, check if it is a relative URL (e.g., "/storage/images/example.jpg")
             if (str_starts_with($value, '/')) {
                 // Assuming the base URL is defined in your configuration
                 $baseUrl = config('app.url', 'http://localhost');
+
                 return rtrim($baseUrl, '/') . $value;
             }
 
@@ -289,7 +290,7 @@ class SeoDto extends BaseDto
             } catch (\Throwable $th) {
                 //
             }
-            
+
             return null;
         }
 
