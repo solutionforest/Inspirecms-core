@@ -434,6 +434,12 @@ return [
         'segment_provider' => DefaultSegmentProvider::class,
         'preview_provider' => DefaultPreviewProvider::class,
         'slug_generator' => DefaultSlugGenerator::class,
+        'fallback_seo' => [
+            'title' => env('APP_NAME', 'Home'),
+            'description' => 'Powered by InspireCMS',
+            'keywords' => '',
+            'image' => null,
+        ],
     ],
 
     'sitemap' => [

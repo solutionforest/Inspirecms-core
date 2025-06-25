@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Dtos;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
 
 class SeoDto extends BaseDto
@@ -258,6 +259,29 @@ class SeoDto extends BaseDto
         }
 
         $dto = parent::fromArray($parameters);
+
+        $fallbackSeo = InspireCmsConfig::get('frontend.fallback_seo', []);
+        $fallbackExtraMapper = [
+            'title' => ['ogTitle'],
+            'description' => ['ogDescription'],
+            'image' => ['ogImage'],
+        ];
+        if (is_array($fallbackSeo) && ! empty($fallbackSeo)) {
+            foreach ($fallbackSeo as $key => $value) {
+                $keysToMap = array_unique(array_merge(
+                    [$key],
+                    $fallbackExtraMapper[$key] ?? []
+                ));
+                foreach ($keysToMap ?? [] as $mappedKey) {
+                    if (! property_exists($dto, $mappedKey)) {
+                        continue;
+                    }
+                    if (! isset($dto->{$mappedKey}) || empty($dto->{$mappedKey})) {
+                        $dto->{$mappedKey} = $value;
+                    }
+                }
+            }
+        }
 
         return $dto;
     }
