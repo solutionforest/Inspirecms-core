@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.94 - 2025-06-25
+
+### Bug Fix
+
+- Cannot get license tier if verify via offline
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.93...0.0.94
+
 ## 0.0.93 - 2025-06-25
 
 ### New Features
