@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static void forgetCachedNavigation()
  * @method static array getContentRoutes()
  * @method static void forgetCachedContentRoutes()
+ * @method static SeoDto getFallbackSeo()
  *
  * @see \SolutionForest\InspireCms\InspireCms
  */

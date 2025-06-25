@@ -231,9 +231,9 @@ class ContentDto extends BaseTranslatableModelDto
 
         // Using default SEO data if not found
         if (! $result) {
-            $result = SeoDto::fromArray([]);
+            $result = inspirecms()->getFallbackSeo();
         }
-        
+
         return $result;
     }
 
