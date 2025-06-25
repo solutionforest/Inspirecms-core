@@ -222,22 +222,18 @@ class ContentDto extends BaseTranslatableModelDto
         $result = $seo->get($locale);
 
         // Using fallback locale
-        if (! $result) {
-            if (($fallbackLocale = $this->getFallbackLocale()) && ($fallbackSeo = $seo->get($fallbackLocale))) {
-                $fallbackSeo->locale = $fallbackLocale;
-                $result = $fallbackSeo;
-            }
-        } else {
-            $result->locale = $locale;
+        if (! $result && 
+            ($fallbackLocale = $this->getFallbackLocale()) && 
+            ($fallbackSeo = $seo->get($fallbackLocale))
+        ) {
+            $result = $fallbackSeo;
         }
 
         // Using default SEO data if not found
         if (! $result) {
-            $result = SeoDto::fromArray([
-                'locale' => $locale,
-            ]);
+            $result = SeoDto::fromArray([]);
         }
-
+        
         return $result;
     }
 

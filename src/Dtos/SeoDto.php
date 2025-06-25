@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 
 class SeoDto extends BaseDto
 {
@@ -74,81 +75,11 @@ class SeoDto extends BaseDto
     public $siteName;
 
     /**
-     *  The locale of the content.
-     *
-     * @var string
-     */
-    public $locale;
-
-    /**
-     *  The published time of the content.
-     *
-     * @var string
-     */
-    public $publishedTime;
-
-    /**
-     *  The last modified time of the content.
-     *
-     * @var string
-     */
-    public $modifiedTime;
-
-    /**
-     *  The author of the content.
-     *
-     * @var string
-     */
-    public $author;
-
-    /**
-     *  The section of the site where the content is located.
-     *
-     * @var string
-     */
-    public $section;
-
-    /**
-     *  The tag associated with the content.
-     *
-     * @var string
-     */
-    public $tag;
-
-    /**
-     *  The category of the content.
-     *
-     * @var string
-     */
-    public $category;
-
-    /**
      *  The canonical URL of the content.
      *
      * @var string
      */
     public $canonical;
-
-    /**
-     *  The alternate URL of the content.
-     *
-     * @var string
-     */
-    public $alternate;
-
-    /**
-     *  The AMP HTML version of the content.
-     *
-     * @var string
-     */
-    public $ampHtml;
-
-    /**
-     *  The AMP version of the content.
-     *
-     * @var string
-     */
-    public $amp;
 
     /**
      *  Indicates whether the content should not be indexed by search engines.
@@ -163,55 +94,6 @@ class SeoDto extends BaseDto
      * @var string
      */
     public $noFollow;
-
-    /**
-     *  Indicates whether the content should not be archived by search engines.
-     *
-     * @var string
-     */
-    public $noArchive;
-
-    /**
-     *  Indicates whether search engines should not show a snippet of the content.
-     *
-     * @var string
-     */
-    public $noSnippet;
-
-    /**
-     *  Indicates whether the content should not be included in the Open Directory Project.
-     *
-     * @var string
-     */
-    public $noOdp;
-
-    /**
-     *  Indicates whether the content should not be included in Yahoo Directory.
-     *
-     * @var string
-     */
-    public $noYdir;
-
-    /**
-     *  Indicates whether images on the content should not be indexed by search engines.
-     *
-     * @var string
-     */
-    public $noImageIndex;
-
-    /**
-     *  Indicates whether the content should not be translated by search engines.
-     *
-     * @var string
-     */
-    public $noTranslate;
-
-    /**
-     *  Indicates whether the content should not be cached by search engines.
-     *
-     * @var string
-     */
-    public $noCache;
 
     /**
      * @var Collection<self>|null
@@ -229,10 +111,6 @@ class SeoDto extends BaseDto
             'og_image' => 'ogImage',
             'noindex' => 'noIndex',
             'nofollow' => 'noFollow',
-            'noarchive' => 'noArchive',
-            'nosnippet' => 'noSnippet',
-            'noodp' => 'noOdp',
-            'noydir' => 'noYdir',
         ];
 
         foreach ($parameters as $key => $value) {
@@ -287,7 +165,7 @@ class SeoDto extends BaseDto
     }
 
     /**
-     * @param  self[]|Collection<slef>|null  $ancestors
+     * @param  self[]|Collection<self>|null  $ancestors
      * @return self
      */
     public function setAncestors($ancestors)
@@ -341,8 +219,8 @@ class SeoDto extends BaseDto
             $html .= "<meta property=\"og:description\" content=\"{$ogDescription}\">\n";
         }
 
-        if ($this->ogImage && ($mediaAssetUrl = inspirecms_asset()->findByKeys($this->ogImage)->first()?->getUrl())) {
-            $html .= "<meta property=\"og:image\" content=\"{$mediaAssetUrl}\">\n";
+        if ($odImageUrl = $this->transformImage($this->ogImage)) {
+            $html .= "<meta property=\"og:image\" content=\"{$odImageUrl}\">\n";
         }
 
         if ($this->url) {
@@ -357,86 +235,65 @@ class SeoDto extends BaseDto
             $html .= "<meta property=\"og:site_name\" content=\"{$this->siteName}\">\n";
         }
 
-        if ($this->locale) {
-            $html .= "<meta property=\"og:locale\" content=\"{$this->locale}\">\n";
-        }
-
-        if ($this->publishedTime) {
-            $html .= "<meta property=\"article:published_time\" content=\"{$this->publishedTime}\">\n";
-        }
-
-        if ($this->modifiedTime) {
-            $html .= "<meta property=\"article:modified_time\" content=\"{$this->modifiedTime}\">\n";
-        }
-
-        if ($this->author) {
-            $html .= "<meta property=\"article:author\" content=\"{$this->author}\">\n";
-        }
-
-        if ($this->section) {
-            $html .= "<meta property=\"article:section\" content=\"{$this->section}\">\n";
-        }
-
-        if ($this->tag) {
-            $html .= "<meta property=\"article:tag\" content=\"{$this->tag}\">\n";
-        }
-
-        if ($this->category) {
-            $html .= "<meta property=\"article:category\" content=\"{$this->category}\">\n";
-        }
-
         if ($this->canonical) {
             $html .= "<link rel=\"canonical\" href=\"{$this->canonical}\">\n";
         }
 
-        if ($this->alternate) {
-            $html .= "<link rel=\"alternate\" href=\"{$this->alternate}\">\n";
-        }
-
-        if ($this->ampHtml) {
-            $html .= "<link rel=\"amphtml\" href=\"{$this->ampHtml}\">\n";
-        }
-
-        if ($this->amp) {
-            $html .= "<link rel=\"amp\" href=\"{$this->amp}\">\n";
-        }
-
+        $robotsContent = [];
         if ($this->noIndex) {
-            $html .= "<meta name=\"robots\" content=\"noindex\">\n";
+            $robotsContent[] = 'noindex';
         }
-
         if ($this->noFollow) {
-            $html .= "<meta name=\"robots\" content=\"nofollow\">\n";
+            $robotsContent[] = 'nofollow';
         }
-
-        if ($this->noArchive) {
-            $html .= "<meta name=\"robots\" content=\"noarchive\">\n";
-        }
-
-        if ($this->noSnippet) {
-            $html .= "<meta name=\"robots\" content=\"nosnippet\">\n";
-        }
-
-        if ($this->noOdp) {
-            $html .= "<meta name=\"robots\" content=\"noodp\">\n";
-        }
-
-        if ($this->noYdir) {
-            $html .= "<meta name=\"robots\" content=\"noydir\">\n";
-        }
-
-        if ($this->noImageIndex) {
-            $html .= "<meta name=\"robots\" content=\"noimageindex\">\n";
-        }
-
-        if ($this->noTranslate) {
-            $html .= "<meta name=\"robots\" content=\"notranslate\">\n";
-        }
-
-        if ($this->noCache) {
-            $html .= "<meta name=\"robots\" content=\"nocache\">\n";
+        if (!empty($robotsContent)) {
+            $html .= "<meta name=\"robots\" content=\"" . implode(', ', $robotsContent) . "\">\n";
         }
 
         return $html;
+    }
+
+    protected function transformImage($value)
+    {
+        // If the value is empty or null, return null
+        if (empty($value)) {
+            return null;
+        }
+
+        // If the value is a string, check if it is a valid URL
+        if (is_string($value)) {
+
+            if (filter_var($value, FILTER_VALIDATE_URL)) {
+                return $value;
+            }
+            
+            // If not, check if it is a relative URL (e.g., "/storage/images/example.jpg")
+            if (str_starts_with($value, '/')) {
+                // Assuming the base URL is defined in your configuration
+                $baseUrl = config('app.url', 'http://localhost');
+                return rtrim($baseUrl, '/') . $value;
+            }
+
+            return null;
+        }
+
+        // If the value is an array (from MediaPicker)
+        if (is_array($value)) {
+
+            try {
+                $dto = MediaAssetDto::fromArray($value);
+                // Handle the case where the src is a string
+                if (filled($dto->src)) {
+                    return $this->transformImage($dto->src);
+                }
+            } catch (\Throwable $th) {
+                //
+            }
+            
+            return null;
+        }
+
+        // If the value is not a string or an array, return null
+        return null;
     }
 }
