@@ -198,7 +198,7 @@ class InspireCms
     }
 
     /**
-     * Get fallback SEO configuration
+     * Get fallback SEO
      *
      * @return SeoDto
      */

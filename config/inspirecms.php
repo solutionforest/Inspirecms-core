@@ -436,8 +436,8 @@ return [
         'slug_generator' => DefaultSlugGenerator::class,
         'fallback_seo' => [
             'title' => env('APP_NAME', 'Home'),
-            'description' => 'Powered by InspireCMS',
-            'keywords' => '',
+            'description' => null,
+            'keywords' => null,
             'image' => null,
         ],
     ],
