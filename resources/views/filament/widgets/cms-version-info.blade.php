@@ -2,8 +2,8 @@
     <x-filament::section>
         <div class="flex items-center justify-between">
             <div class="flex items-center gap-x-2">
-                <h1 class="text-xl font-semibold text-gray-900">InspireCMS</h1>
-                <p class="text-sm text-gray-500">{{ $this->getVersionDisplayText() }}</p>
+                <h1 class="text-xl font-semibold text-gray-950 dark:text-white">InspireCMS</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400">{{ $this->getVersionDisplayText() }}</p>
             </div>
             @if ($this->canUpgrade())
                 <div>
