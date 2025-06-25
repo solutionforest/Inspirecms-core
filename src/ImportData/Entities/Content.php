@@ -164,8 +164,8 @@ class Content extends BaseEntity
                 'og_image' => [],
             ],
             'robots' => [
-                'index' => true,
-                'follow' => true,
+                'noindex' => false,
+                'nofollow' => false,
             ],
             'redirect_path' => null,
             'redirect_content_id' => KeyHelper::generateMinUuid(),
