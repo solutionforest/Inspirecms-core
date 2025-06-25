@@ -52,7 +52,7 @@ class LicenseManager
 
         $failedReason = null;
 
-        // Then, Try to verify the license online 
+        // Then, Try to verify the license online
         try {
 
             $payload = $this->payload();
