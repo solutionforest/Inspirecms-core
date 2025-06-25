@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
+use SolutionForest\InspireCms\Dtos\SeoDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
@@ -194,6 +195,16 @@ class InspireCms
     public function getFallbackLanguage(): ?LanguageDto
     {
         return collect($this->getAllAvailableLanguages())->first(fn (LanguageDto $lang) => $lang->isDefault == true);
+    }
+
+    /**
+     * Get fallback SEO
+     *
+     * @return SeoDto
+     */
+    public function getFallbackSeo()
+    {
+        return SeoDto::fromArray([]);
     }
 
     public function forgetCachedLanguages(): void

@@ -217,7 +217,24 @@ class ContentDto extends BaseTranslatableModelDto
     {
         $seo = collect($this->seo);
 
-        return $seo->get($locale ?? $this->getLocale()) ?? $seo->get($this->getFallbackLocale());
+        $locale ??= $this->getLocale();
+
+        $result = $seo->get($locale);
+
+        // Using fallback locale
+        if (! $result &&
+            ($fallbackLocale = $this->getFallbackLocale()) &&
+            ($fallbackSeo = $seo->get($fallbackLocale))
+        ) {
+            $result = $fallbackSeo;
+        }
+
+        // Using default SEO data if not found
+        if (! $result) {
+            $result = inspirecms()->getFallbackSeo();
+        }
+
+        return $result;
     }
 
     public function isRedirectable(): bool
