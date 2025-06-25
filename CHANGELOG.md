@@ -2,6 +2,19 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 0.0.93 - 2025-06-25
+
+### New Features
+
+- Fallback seo
+
+### Bug FIx
+
+- Content Version Info Widget in dark mode
+- Invalid robot data for sample data
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.92...0.0.93
+
 ## 0.0.92 - 2025-06-24
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.91...0.0.92
