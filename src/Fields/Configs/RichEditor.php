@@ -64,10 +64,10 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                 $component->fileAttachmentsDisk($this->fileAttachmentsDisk);
             }
             if (filled($this->fileAttachmentsDirectory)) {
-                $component->fileAttachmentsDirectory($this->fileAttachmentsDisk);
+                $component->fileAttachmentsDirectory($this->fileAttachmentsDirectory);
             }
             if (filled($this->fileAttachmentsVisibility)) {
-                $component->fileAttachmentsVisibility($this->fileAttachmentsDisk);
+                $component->fileAttachmentsVisibility($this->fileAttachmentsVisibility);
             }
         }
     }
