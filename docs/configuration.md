@@ -1,12 +1,3 @@
----
-title: Configuration
-slug: configuration
-path: docs/v1/configuration
-uri: /docs/1.x/configuration
-heading: Configuration
-brief:
----
-
 ## Configuration Files
 
 InspireCMS's configuration is primarily managed through the `config/inspirecms.php` file. If this file doesn't exist after installation, you can publish it using:
@@ -501,6 +492,13 @@ Control how InspireCMS handles frontend requests:
      * Override to implement custom slug generation rules
      */
     'slug_generator' => \SolutionForest\InspireCms\Content\DefaultSlugGenerator::class,
+
+	'fallback_seo' => [
+		'title' => env('APP_NAME', 'Home'),
+		'description' => null,
+		'keywords' => null,
+		'image' => null,
+	],
 ],
 ```
 
