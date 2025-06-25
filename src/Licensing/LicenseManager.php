@@ -52,9 +52,8 @@ class LicenseManager
 
         $failedReason = null;
 
+        // Then, Try to verify the license online 
         try {
-
-            // Try to verify the license online first
 
             $payload = $this->payload();
             $response = Http::timeout(self::REQUEST_TIMEOUT)->post($this->fetchActionPath('validate'), $payload);
@@ -217,7 +216,14 @@ class LicenseManager
 
             $licenseData = json_decode(File::get($this->licenseKeyPath()), true);
 
-            return $this->dataVerification($licenseData) ?? LicenseVerificationResult::successOffline(data: $licenseData);
+            if ($dataValidationFailure = $this->dataVerification($licenseData)) {
+                return $dataValidationFailure;
+            }
+
+            return LicenseVerificationResult::successOffline(data: [
+                'success' => true,
+                'license' => $licenseData,
+            ]);
 
         } catch (\Throwable $th) {
 
