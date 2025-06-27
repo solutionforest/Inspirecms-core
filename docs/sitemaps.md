@@ -2,9 +2,10 @@
 title: Sitemaps
 slug: sitemaps
 path: docs/v1/sitemaps
-uri: /docs/1.x/sitemaps
+uri: /docs/v1/sitemaps
 heading: Sitemaps
 brief:
+quick_links: []
 ---
 
 ## Overview
@@ -40,6 +41,8 @@ Configure basic sitemap settings in your config file:
 ### Accessing Sitemap Settings
 
 Manage sitemap configuration through: **Settings** > **Sitemap**
+
+![Setting_sitemaps](https://inspirecms.net/storage/doc/lLEak5gV2RBUQK7TBsdEXV6ZNMPEAfdO8vsC2afn.png)
 
 ### Content Inclusion Rules
 
@@ -128,33 +131,3 @@ Register your custom generator:
 ---
 
 ## Sitemap Generation
-
-### Manual Generation
-
-Generate the sitemap manually:
-
-```bash
-php artisan inspirecms:generate-sitemap
-```
-
-### Scheduled Generation
-
-Configure automatic sitemap generation:
-
-```php {title="app/Console/Kernel.php"}
-protected function schedule(Schedule $schedule)
-{
-    // Generate sitemap daily at midnight
-    $schedule->command('inspirecms:generate-sitemap')->daily();
-}
-```
-
-### Automatic Generation
-
-The sitemap is automatically regenerated when:
-
--   A sitemap model is created
--   A sitemap model is updated
--   A sitemap model is deleted
-
-This ensures your sitemap always reflects the latest changes without manual intervention.

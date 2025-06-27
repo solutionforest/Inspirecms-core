@@ -2,10 +2,15 @@
 title: Import
 slug: import
 path: docs/v1/import
-uri: /docs/1.x/import
+uri: /docs/v1/import
 heading: Import
-brief: InspireCMS provides import capabilities for migrating content and system configurations. This guide explains how to use the import features effectively.
+brief: InspireCMS provides import capabilities for migrating content and system configurations. 
+
+This guide explains how to use the import features effectively.
+
+quick_links: []
 ---
+
 
 ## Overview
 

@@ -1,10 +1,11 @@
 ---
-title:
+title: Custom Fields
 slug: custom-fields
 path: docs/v1/custom-fields
-uri: /docs/1.x/custom-fields
+uri: /docs/v1/custom-fields
 heading: Custom Fields
 brief:
+quick_links: []
 ---
 
 Note: This document depends on the [Filament Field Group](https://github.com/solutionforest/filament-field-group). Field types may not update automatically; for missing or updated field references, please consult that repository.
@@ -54,6 +55,9 @@ InspireCMS offers a wide range of field types for different content needs:
 Field groups organize related fields together. To create a field group:
 
 1. Navigate to **Settings** > **Custom Fields** in the admin panel
+
+    ![Setting_custom_fields](https://inspirecms.net/storage/doc/E8Bb2dfWuVYlpgGZtB2w53EPWheLQYT16YzYD6Rj.png)
+
 2. Click **New Custom Fields**
 3. Add fields to the group using the form
 4. Enter a name and slug for your field group
@@ -65,8 +69,14 @@ Field groups organize related fields together. To create a field group:
 After creating field groups, associate them with document types:
 
 1. Navigate to **Settings** > **Document Types**
+
+    ![Setting_document_types](https://inspirecms.net/storage/doc/E0M1cUvrKfFvjMLqBUeUakAC4ZIuhKFz4nvAGLkn.png)
+
 2. Create or edit a document type
 3. Under "Structures," select the relevant field groups
+
+    ![select_field_group](https://inspirecms.net/storage/doc/TWqCvxdmz9jjT8pW0NG0vlMUJfrDsnldEK7KRp3L.png)
+
 4. Save your document type
 
 ---

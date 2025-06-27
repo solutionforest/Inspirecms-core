@@ -2,10 +2,13 @@
 title: Upgrading
 slug: upgrading
 path: docs/v1/upgrading
-uri: /docs/1.x/upgrading
+uri: /docs/v1/upgrading
 heading: Upgrading
-brief:
+brief: 
+quick_links: []
 ---
+
+
 
 ## Before Upgrading
 
@@ -50,16 +53,16 @@ php artisan inspirecms:update
 
 This command handles:
 
--   Running migrations
--   Clearing caches
--   Publishing cms panel
--   Updating permissions
+- Running migrations
+- Clearing caches
+- Publishing cms panel
+- Updating permissions
 
 **Option B: Manual Update**
 
 Alternatively, you can run each step manually:
 
--   Publish updated assets
+- Publish updated assets
 
 ```bash
 php artisan vendor:publish --tag="inspirecms-migrations" --force
@@ -69,19 +72,19 @@ php artisan vendor:publish --tag="inspirecms-support-translations" --force
 php artisan vendor:publish --tag="inspirecms-config" --force
 ```
 
--   Run migrations
+- Run migrations
 
 ```bash
 php artisan migrate
 ```
 
--   Update permissions
+- Update permissions
 
 ```bash
 php artisan inspirecms:repair-permissions
 ```
 
--   Import cms default data, e.g. Language
+- Import cms default data, e.g. Language
 
 ```bash
 php artisan inspirecms:import-default-data

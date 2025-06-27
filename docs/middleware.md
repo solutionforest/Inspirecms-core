@@ -1,11 +1,13 @@
 ---
-title: Installing
-slug: installing
-path: docs/v1/installing
-uri: /docs/1.x/installing
+title: Middleware
+slug: middleware
+path: docs/v1/middleware
+uri: /docs/v1/middleware
 heading: Middleware
-brief:
+brief: 
+quick_links: []
 ---
+
 
 ## Overview
 

@@ -2,19 +2,21 @@
 title: Caching
 slug: caching
 path: docs/v1/caching
-uri: /docs/1.x/caching
+uri: /docs/v1/caching
 heading: Caching
-brief:
+brief: 
+quick_links: []
 ---
+
 
 ## Overview
 
 Caching in InspireCMS accelerates content delivery by storing frequently accessed data in fast-access storage. The system employs several caching strategies:
 
--   **Language Cache**
--   **Navigation Cache**: Makes menu loading faster
--   **Route Cache**: Improves URL resolution
--   **KeyValue Cache**: Stores simple configuration and settings data
+- **Language Cache**
+- **Navigation Cache**: Makes menu loading faster
+- **Route Cache**: Improves URL resolution
+- **KeyValue Cache**: Stores simple configuration and settings data
 
 ---
 
@@ -105,7 +107,6 @@ Clear the language cache manually:
 // Clear all language cache
 \SolutionForest\InspireCms\Facades\InspireCms::forgetCachedLanguages();
 ```
-
 ---
 
 ## Navigation Caching
@@ -153,6 +154,7 @@ php artisan inspirecms:clear-cache --routes
 ## KeyValue Caching
 
 InspireCMS provides a persistent key-value storage system with caching capabilities through the `KeyValue` model.
+
 
 ### Working with KeyValue Model
 
@@ -212,7 +214,7 @@ php artisan inspirecms:clear-cache --navigation
 
 InspireCMS automatically clears relevant caches when:
 
--   Content is created, updated or deleted
--   Settings are changed
--   Templates are modified
--   Navigation is restructured
+- Content is created, updated or deleted
+- Settings are changed
+- Templates are modified
+- Navigation is restructured

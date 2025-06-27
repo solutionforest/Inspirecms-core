@@ -1,4 +1,16 @@
 ---
+title: Assets
+slug: fe-assets
+path: docs/v1/fe-assets
+uri: /docs/v1/fe-assets
+heading: Assets
+brief: Learn how to work with assets in your frontend templates.
+
+
+quick_links: []
+---
+
+---
 title: Content
 slug: fe-content
 path: docs/v1/fe-content

@@ -1,3 +1,13 @@
+---
+title: Configuration
+slug: configuration
+path: docs/v1/configuration
+uri: /docs/v1/configuration
+heading: Configuration
+brief: 
+quick_links: []
+---
+
 ## Configuration Files
 
 InspireCMS's configuration is primarily managed through the `config/inspirecms.php` file. If this file doesn't exist after installation, you can publish it using:
@@ -41,7 +51,7 @@ php artisan vendor:publish --tag="inspirecms-config"
 
 ### Authentication
 
-Configure how users authenticate with your CMS \([learn more about laravel authentication](<(https://laravel.com/docs/12.x/authentication#adding-custom-guards)>)\):
+Configure how users authenticate with your CMS \([learn more about laravel authentication](https://laravel.com/docs/12.x/authentication#adding-custom-guards)\):
 
 ```php
 'auth' => [
@@ -492,7 +502,7 @@ Control how InspireCMS handles frontend requests:
      * Override to implement custom slug generation rules
      */
     'slug_generator' => \SolutionForest\InspireCms\Content\DefaultSlugGenerator::class,
-
+	
 	'fallback_seo' => [
 		'title' => env('APP_NAME', 'Home'),
 		'description' => null,

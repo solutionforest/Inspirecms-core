@@ -2,14 +2,18 @@
 title: Media
 slug: media
 path: docs/v1/media
-uri: /docs/1.x/media
+uri: /docs/v1/media
 heading: Media
 brief: InspireCMS provides a comprehensive media management system for handling images, documents, videos, and other files. This guide explains how to upload, organize, and use media in your content.
+
+quick_links: []
 ---
 
 ## Overview
 
 The media library is accessible from: **Admin Panel** > **Media**
+
+![Media](https://inspirecms.net/storage/doc/lBheX18YSaOIGZPMEBSTa8fEeConp2MNKIobugaB.png)
 
 ### Browsing Media
 
@@ -32,6 +36,8 @@ Click on a file to view detailed information:
 ## Uploading Files
 
 ### Upload Methods
+
+![Media_upload](https://inspirecms.net/storage/doc/Wg1Qa8wxctzBrC5Lyai6qMouzDew3A9N3m73mAF6.png)
 
 InspireCMS supports multiple upload methods:
 

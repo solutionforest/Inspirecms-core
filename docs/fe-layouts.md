@@ -2,9 +2,10 @@
 title: Layouts
 slug: fe-layouts
 path: docs/v1/fe-layouts
-uri: /docs/1.x/fe-layouts
+uri: /docs/v1/fe-layouts
 heading: Layouts
-brief:
+brief: 
+quick_links: []
 ---
 
 ## Overview
@@ -122,7 +123,7 @@ resources/views/components/inspirecms/abc/
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/page.blade.php"
-@props(['content' => null, 'locale' => null])
+@props(['content', 'locale' => null])
 @aware(['isPeekPreviewModal' => false])
 @php
     $locale ??= $content?->getLocale() ?? request()->getLocale();
@@ -137,7 +138,7 @@ resources/views/components/inspirecms/abc/
 ```
 
 ```blade {title="resources/views/components/inspirecms/abc/simple-page.blade.php"}
-@props(['content' => null, 'locale' => null])
+@props(['content', 'locale' => null])
 @aware(['isPeekPreviewModal' => false])
 @php
     $locale ??= $content?->getLocale() ?? request()->getLocale();
@@ -154,7 +155,7 @@ resources/views/components/inspirecms/abc/
 #### Applying Layouts to Templates
 
 ```blade {title="Template: home"}
-@props(['isPeekPreviewModal' => false])
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $locale ??= $content->getLocale();
 
@@ -166,7 +167,7 @@ resources/views/components/inspirecms/abc/
 ```
 
 ```blade {title="Template: tnc"}
-@props(['isPeekPreviewModal' => false])
+@props(['content', 'locale' => null, 'isPeekPreviewModal' => false])
 @php
     $locale ??= $content->getLocale();
 
@@ -174,5 +175,5 @@ resources/views/components/inspirecms/abc/
 @endphp
 <x-dynamic-component :component="$layoutComponent" :content="$content" :locale="$locale" :isPeekPreviewModal="$isPeekPreviewModal">
     TNC Here
-</x-cms-template>
+</x-dynamic-component>
 ```

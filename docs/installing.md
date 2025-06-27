@@ -2,9 +2,10 @@
 title: Installing
 slug: installing
 path: docs/v1/installing
-uri: /docs/1.x/installing
+uri: /docs/v1/installing
 heading: Installing
-brief:
+brief: 
+quick_links: []
 ---
 
 ## Prerequisites
@@ -56,10 +57,27 @@ php artisan inspirecms:install
 
 ### Step 5: Access the Admin Panel
 
-After installation, you can access the admin panel at `/cms` (or your configured prefix). Use the credentials you provided during installation or the default admin user:
+After installation, you can access the admin panel at `/cms` (or your configured path) and create your first admin user.
 
--   Username: `admin@example.com`
--   Password: `password`
+### Step 6: Remove Default Welcome Route (New Projects Only)
+
+If you're working with a new Laravel application, remove the default welcome route from `routes/web.php`:
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+// Remove or comment out this line:
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+\SolutionForest\InspireCms\Facades\InspireCms::routes();
+
+```
+
+This allows InspireCMS to handle your site's routing properly.
 
 ---
 

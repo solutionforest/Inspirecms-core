@@ -2,14 +2,18 @@
 title: Content Drafts & Revisions
 slug: content-drafts-revisions
 path: docs/v1/content-drafts-revisions
-uri: /docs/1.x/content-drafts-revisions
+uri: /docs/v1/content-drafts-revisions
 heading: Content Drafts & Revisions
 brief: InspireCMS provides a content versioning system that allows you to work with drafts and track revisions of your content. This guide explains how to use these features to manage your content workflow effectively.
+
+quick_links: []
 ---
 
-## Content States Overview
+## Overview
 
 In InspireCMS, content can exist in various states:
+
+![Content](https://inspirecms.net/storage/doc/eYLJ6RJp8oYQQAgdXI7flQOGsktGGiMe4vmqvXDU.png)
 
 1. **Draft**: Content that is being worked on but not yet published
 2. **Published**: Content that is live and visible to site visitors

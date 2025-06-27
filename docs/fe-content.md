@@ -2,10 +2,13 @@
 title: Content
 slug: fe-content
 path: docs/v1/fe-content
-uri: /docs/1.x/fe-content
+uri: /docs/v1/fe-content
 heading: Content
 brief: Learn how to work with content in your frontend templates.
+
+quick_links: []
 ---
+
 
 ## Content Helper
 

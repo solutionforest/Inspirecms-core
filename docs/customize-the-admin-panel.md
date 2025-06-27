@@ -2,9 +2,12 @@
 title: Customize the Admin Panel
 slug: customize-the-admin-panel
 path: docs/v1/customize-the-admin-panel
-uri: /docs/1.x/customize-the-admin-panel
+uri: /docs/v1/customize-the-admin-panel
 heading: Customize the Admin Panel
-brief: This guide explains how to customize and extend the admin panel to meet your specific needs, including creating custom resources, pages, widgets, and modifying the appearance to match your brand. Whether you need to add new functionality or tailor the existing features, InspireCMS offers multiple extension points for developers.
+brief: This guide explains how to customize and extend the admin panel to meet your specific needs, including creating custom resources, pages, widgets, and modifying the appearance to match your brand. 
+
+Whether you need to add new functionality or tailor the existing features, InspireCMS offers multiple extension points for developers.
+quick_links: []
 ---
 
 ## Overview

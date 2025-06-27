@@ -2,9 +2,11 @@
 title: Language
 slug: language
 path: docs/v1/language
-uri: /docs/1.x/language
+uri: /docs/v1/language
 heading: Language
 brief: This guide covers language configuration, content translation, and multilingual site setup.
+
+quick_links: []
 ---
 
 ## Overview
@@ -24,6 +26,9 @@ The language system in InspireCMS allows you to:
 Languages are managed through the admin panel:
 
 1. Navigate to **Settings** > **Languages**
+
+![Setting_languages](https://inspirecms.net/storage/doc/HUuyrPO8n5On5jvCOdtF3DGqETgkRvMOJsfXWn2u.png)
+
 2. Here you can:
     - View existing languages
     - Add new languages

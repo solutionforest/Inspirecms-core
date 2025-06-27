@@ -2,9 +2,10 @@
 title: User Management
 slug: user-management
 path: docs/v1/user-management
-uri: /docs/1.x/user-management
+uri: /docs/v1/user-management
 heading: User Management
 brief: InspireCMS provides a comprehensive system for managing users, roles, and permissions
+quick_links: []
 ---
 
 ## Overview
@@ -24,6 +25,8 @@ The user management system in InspireCMS is built on:
 
 Access role management through: **Admin Panel** > **Users** > **Roles**
 
+![UserRole](https://inspirecms.net/storage/doc/pMu77FONCvIUlvZyOVwMg1xt5H9ETiOJ6V3PP2nW.png)
+
 From here you can:
 
 -   Create new roles
@@ -31,7 +34,7 @@ From here you can:
 -   Assign permissions to roles
 -   Delete roles
 
-### Creating a Custom Role
+### Creating a Custom Role (only on Pro)
 
 1. Navigate to **Users** > **Roles** in the admin panel
 2. Click **Create Role**
@@ -63,6 +66,8 @@ For example:
 ## Managing Users
 
 Access user management through: **Users** > **Users**
+
+![User](https://inspirecms.net/storage/doc/GnGnaJhgLji2Qv3JUYAIjnelj1WxQonlw6m0E5Y6.png)
 
 ### User Operations
 

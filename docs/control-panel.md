@@ -2,10 +2,10 @@
 title: Control Panel
 slug: control-panel
 path: docs/v1/control-panel
-uri: /docs/1.x/control-panel
+uri: /docs/v1/control-panel
 heading: Control Panel
-
 brief:
+quick_links: []
 ---
 
 ## Accessing the Control Panel
@@ -30,6 +30,8 @@ The path can be customized in your configuration if needed:
 ## Navigation Structure
 
 The control panel is organized into several main sections:
+
+![Dashboard](https://inspirecms.net/storage/doc/V07Wy5bOcg2wwMD40qwBP32izQNvfi5F2eKEwZ8R.png)
 
 1. **Content**: Manage pages, blog posts, and other content types
 2. **Media**: Upload and organize images, documents, and other media

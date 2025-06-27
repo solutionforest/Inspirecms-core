@@ -2,10 +2,12 @@
 title: Navigation
 slug: fe-navigation
 path: docs/v1/fe-navigation
-uri: /docs/1.x/fe-navigation
+uri: /docs/v1/fe-navigation
 heading: Navigation
-brief:
+brief: 
+quick_links: []
 ---
+
 
 ## Overview
 

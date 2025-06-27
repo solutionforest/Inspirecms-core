@@ -2,10 +2,12 @@
 title: Event Listeners
 slug: event-listeners
 path: docs/v1/event-listeners
-uri: /docs/1.x/event-listeners
+uri: /docs/v1/event-listeners
 heading: Event Listeners
-brief:
+brief: 
+quick_links: []
 ---
+
 
 ## Available Events in InspireCMS
 
@@ -76,7 +78,7 @@ use Illuminate\Support\Facades\Log;
 class YourListener implements ShouldQueue
 {
     use InteractsWithQueue;
-
+    
     /**
      * Handle the event.
      *
@@ -88,14 +90,14 @@ class YourListener implements ShouldQueue
         $content = $event->content;
         $version = $event->version;
         $status = $event->status;
-
+        
         Log::info('New content version created:', [
             'content_id' => $content->id,
             'version_id' => $version->id,
             'status' => $status ? $status->name : 'none',
             'is_publishing' => $event->isPublishing,
         ]);
-
+        
         // Your custom logic here
         // E.g., send notifications, update external systems, etc.
     }
@@ -153,7 +155,7 @@ class LogContentStatusChange
         $content = $event->content;
         $oldStatus = $event->oldStatus ? $event->oldStatus->name : null;
         $newStatus = $event->status ? $event->status->name : null;
-
+        
         // Record status change in history table
         ContentStatusHistory::create([
             'content_id' => $content->id,
@@ -184,10 +186,10 @@ class RegenerateSitemap implements ShouldQueue
     public function handle(CreatedPublishContentVersion $event)
     {
         $content = $event->content;
-
+        
         // Only trigger sitemap generation for certain content types
         $relevantTypes = ['page', 'post', 'product'];
-
+        
         if (in_array($content->document_type, $relevantTypes)) {
             // Dispatch the generate sitemap event
             Event::dispatch(new GenerateSitemap(
@@ -217,10 +219,10 @@ class TrackUserLogin
     {
         $user = $event->user;
         $request = request();
-
+        
         $agent = new Agent();
         $agent->setUserAgent($request->userAgent());
-
+        
         UserActivity::create([
             'user_id' => $user->id,
             'activity_type' => 'login',
@@ -232,7 +234,7 @@ class TrackUserLogin
             'platform' => $agent->platform(),
             'platform_version' => $agent->version($agent->platform()),
         ]);
-
+        
         // Update user's last login time
         $user->last_login_at = now();
         $user->last_login_ip = $request->ip();
@@ -240,3 +242,4 @@ class TrackUserLogin
     }
 }
 ```
+
