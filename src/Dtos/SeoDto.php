@@ -187,7 +187,7 @@ class SeoDto extends BaseDto
     {
         $html = '';
 
-        $parentSeo = $this->ancestors->filter()->last();
+        $parentSeo = ($this->ancestors ?? collect())->filter()->last();
 
         if ($this->title) {
             $title = $this->title;
