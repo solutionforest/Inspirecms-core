@@ -4,7 +4,7 @@ slug: installing
 path: docs/v1/installing
 uri: /docs/v1/installing
 heading: Installing
-brief: 
+brief:
 quick_links: []
 ---
 
@@ -79,6 +79,17 @@ use Illuminate\Support\Facades\Route;
 
 This allows InspireCMS to handle your site's routing properly.
 
+### Step 7: Set Up Queue Workers and Scheduled Jobs
+
+InspireCMS requires queue workers and scheduled jobs for image conversion, background processing, and other essential operations.
+
+For development, you can run these commands manually in separate terminals:
+
+-   `php artisan queue:work` (for background jobs)
+-   `php artisan schedule:work` (for scheduled tasks)
+
+For detailed configuration options, refer to the [Laravel Queue documentation](https://laravel.com/docs/queues) and [Task Scheduling documentation](https://laravel.com/docs/scheduling).
+
 ---
 
 ## Manual Installation Steps
@@ -132,6 +143,8 @@ php artisan inspirecms:repair-permissions
 4. Add custom fields to your document type
 5. Navigate to **Content** > **Pages**
 6. Click "Create" to add new content using your document type
+
+For detailed information about creating and configuring document types, see the [Document Types documentation](./document-type){.doc-link}.
 
 ---
 

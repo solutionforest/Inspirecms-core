@@ -61,6 +61,8 @@ Associate custom fields with your document type to define what data can be enter
 
 3. Arrange field groups in the desired order
 
+For detailed information about creating and configuring custom fields, see the [Custom Fields documentation](./custom-field){.doc-link}.
+
 ---
 
 ## Templates
@@ -77,6 +79,8 @@ Define which templates are available for rendering your content:
 3. Set a default template for new content
 
     ![Document Type's Templates](https://inspirecms.net/storage/doc/JuAg9jBK0Eb9y46nPm3MuLtTljiSc7dlx6dAKAgS.png)
+
+For detailed information about creating frontend layouts and templates, see the [Frontend Layouts documentation](./fe-layouts){.doc-link}.
 
 ---
 
