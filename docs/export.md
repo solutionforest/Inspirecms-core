@@ -4,9 +4,7 @@ slug: export
 path: docs/v1/export
 uri: /docs/v1/export
 heading: Export
-brief: InspireCMS provides powerful export capabilities for migrating content, creating backups, and transferring data between systems. 
-
-This guide explains how to use the export features effectively.
+brief: InspireCMS provides powerful export capabilities for migrating content, creating backups, and transferring data between systems. This guide explains how to use the export features effectively.
 
 quick_links: []
 ---

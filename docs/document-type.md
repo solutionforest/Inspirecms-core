@@ -4,9 +4,7 @@ slug: document-type
 path: docs/v1/document-type
 uri: /docs/v1/document-type
 heading: Document Type
-brief: Document Types in InspireCMS define the structure and behavior of your content. 
-
-They determine what fields are available, how content is organized, and how it's presented to visitors.
+brief: Document Types in InspireCMS define the structure and behavior of your content. They determine what fields are available, how content is organized, and how it's presented to visitors.
 quick_links: []
 ---
 

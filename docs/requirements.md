@@ -4,7 +4,7 @@ slug: requirements
 path: docs/v1/requirements
 uri: /docs/v1/requirements
 heading: Requirements
-brief: Before installing InspireCMS, ensure your environment meets the following requirements:
+brief: Before installing InspireCMS, ensure your environment meets the following requirements
 quick_links: []
 ---
 
