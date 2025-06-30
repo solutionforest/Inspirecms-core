@@ -74,8 +74,8 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 ->columns(1)
                 ->aside()
                 ->schema([
-                    static::getSlugFormComponent()->inlineLabel(),
                     static::getTitleFormComponent()->inlineLabel(),
+                    static::getSlugFormComponent()->inlineLabel(),
                     static::getShowAsTableFormComponent(),
                     static::getCategoryFormComponent()->inlineLabel(),
                     static::getIconFormComponent()->inlineLabel(),
@@ -274,7 +274,14 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/document-type.title.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.title.category'))
-            ->required();
+            ->required()
+            ->live(true, 5000)
+            ->afterStateUpdated(function ($component, $state, Forms\Get $get, Forms\Set $set, $operation) {
+                // Fill slug if empty / operation is create
+                if ($operation === 'create' || empty($get('slug'))) {
+                    $set('slug', Str::slug($state));
+                }
+            });
     }
 
     /**
@@ -285,17 +292,13 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::resources/document-type.slug.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.slug.category'))
-            ->live(true, 300)
-            ->afterStateUpdated(function ($component, $state, Forms\Get $get, Forms\Set $set, $operation) {
-                $component->state(Str::slug($state));
-                // Fill slug if empty / operation is create
-                if ($operation === 'create' || empty($get('title'))) {
-                    $set('title', $state);
-                }
-            })
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true)
             ->autofocus()
-            ->required();
+            ->required()
+            ->live(true, 5000)
+            ->afterStateUpdated(function ($component, $state) {
+                return $component->state(Str::slug($state));
+            });
     }
 
     /**
