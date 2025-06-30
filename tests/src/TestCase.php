@@ -198,6 +198,8 @@ abstract class TestCase extends Orchestra
             'name' => 'Super Admin',
             'email' => 'superadmin@example.com',
             'password' => \Hash::make('password'), // Change this to a secure password
+            'preferred_language' => 'en',
+            'uuid' => (string) \Str::uuid7(),
         ]);
 
         $user->syncRoles($role);

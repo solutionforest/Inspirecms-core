@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
+use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
 use SolutionForest\InspireCms\Models\Contracts\User as UserContract;
@@ -11,7 +11,6 @@ use SolutionForest\InspireCms\Support\Base\Models\BaseAuthenticatableModel;
 class User extends BaseAuthenticatableModel implements UserContract
 {
     use CmsUserTrait;
-    use HasUuids;
 
     protected $guarded = ['id'];
 
@@ -37,5 +36,16 @@ class User extends BaseAuthenticatableModel implements UserContract
     public function userActivities()
     {
         return $this->hasMany(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        
+        static::creating(function ($model) {
+            if (empty($model->uuid)) {
+                $model->uuid = (string) Str::uuid7();
+            }
+        });
     }
 }

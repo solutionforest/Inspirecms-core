@@ -12,10 +12,10 @@ class InstallRequirePacakgesCommand extends Command
 {
     public function handle(): int
     {
+        $this->publishNotificationDataTable();
         $this->installFieldGroupPackage();
         $this->installSpatiePackages();
         $this->installSupportPackage();
-        $this->publishNotificationDataTable();
 
         return static::SUCCESS;
     }
