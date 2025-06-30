@@ -20,6 +20,16 @@ trait CmsUserTrait
     use HasRoles;
     use Notifiable;
 
+    public static function bootCmsUserTrait()
+    {
+        static::creating(function (self $model) {
+            // Fill "preferred_language" if empty
+            if (blank($model->preferred_language)) {
+                $model->preferred_language = config('app.locale') ?? app()->getLocale();
+            }
+        });
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
@@ -272,16 +282,4 @@ trait CmsUserTrait
         );
     }
     // endregion Attributes
-
-    public static function boot()
-    {
-        parent::boot();
-
-        static::creating(function (self $model) {
-            // Fill "preferred_language" if empty
-            if (blank($model->preferred_language)) {
-                $model->preferred_language = config('app.locale') ?? app()->getLocale();
-            }
-        });
-    }
 }
