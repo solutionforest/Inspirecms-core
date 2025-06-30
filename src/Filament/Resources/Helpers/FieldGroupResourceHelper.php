@@ -177,6 +177,7 @@ class FieldGroupResourceHelper
                 // throw a validation exception
                 if ($nameToCheck && $exisingState->contains('name', $nameToCheck)) {
                     $validationAttribute = __('inspirecms::resources/field.name.validation_attribute');
+
                     throw ValidationException::withMessages([
                         'mountedFormComponentActionsData.0.name' => __('validation.distinct', ['attribute' => $validationAttribute]),
                     ]);
