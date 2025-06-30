@@ -13,6 +13,7 @@ class UpdateCommand extends Command
     use WithPixelArt;
 
     private bool $forcePublishMigrations = false;
+
     private bool $forceRunMigration = false;
 
     public function handle()
@@ -40,7 +41,7 @@ class UpdateCommand extends Command
         if ($this->forcePublishMigrations || $this->confirm('Do you want to publish the migrations?', true)) {
             $this->call('vendor:publish', [
                 '--tag' => InspireCms::CORE_SLUG . '-migrations',
-                '--force' => $this->forceRunMigration, 
+                '--force' => $this->forceRunMigration,
             ]);
             $this->info('Migrations published.');
         } else {
