@@ -7,6 +7,7 @@ use Filament\Forms\Form;
 use Filament\Support\Enums\ActionSize;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -166,6 +167,21 @@ class FieldGroupResourceHelper
                 'name' => $modelName,
             ]))
             ->modalSubmitActionLabel(__('inspirecms::buttons.add.label'))
+            ->before(function (array $data, Forms\Components\Repeater $component) {
+                // Add Uniqiue name validation
+                $exisingState = collect($component->getState());
+                // Get the existing names from the repeater state (can get form data from the action aftger original form validation)
+                $nameToCheck = $data['name'] ?? null;
+
+                // If the name is not empty and already exists in the existing names
+                // throw a validation exception
+                if ($nameToCheck && $exisingState->contains('name', $nameToCheck)) {
+                    $validationAttribute = __('inspirecms::resources/field.name.validation_attribute');
+                    throw ValidationException::withMessages([
+                        'mountedFormComponentActionsData.0.name' => __('validation.distinct', ['attribute' => $validationAttribute]),
+                    ]);
+                }
+            })
             ->action(function (array $data, Forms\Components\Repeater $component) {
                 $newUuid = $component->generateUuid();
 
