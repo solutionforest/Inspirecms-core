@@ -13,6 +13,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
@@ -172,6 +173,16 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
             ])
+            ->checkIfRecordIsSelectableUsing(function (DocumentType|Model $record) {
+                $hasContent = $record->content()->withoutGlobalScopes([
+                    SoftDeletingScope::class,
+                ])->count() > 0;
+                if ($hasContent) {
+                    // Disallow delete this document type if have content
+                    return false;
+                }
+                return true;
+            })
             ->filters([
                 Tables\Filters\TernaryFilter::make('show_as_table')
                     ->label(__('inspirecms::resources/document-type.show_as_table.label')),

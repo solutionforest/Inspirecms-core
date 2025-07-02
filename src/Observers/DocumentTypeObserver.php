@@ -32,12 +32,12 @@ class DocumentTypeObserver
      */
     public function deleting($model)
     {
-        $content = $model->content()->withoutGlobalScopes([
+        $hasContent = $model->content()->withoutGlobalScopes([
             SoftDeletingScope::class,
-        ])->get();
+        ])->count() > 0;
 
         // Guard: If there is any content, then prevent deleting.
-        if ($content->isNotEmpty()) {
+        if ($hasContent) {
             throw new \Exception('Cannot delete this document type because it has content.');
         }
     }
