@@ -82,8 +82,6 @@ class UpdateCommand extends Command
             return;
         }
 
-        $currentVersion = '0.0.96';
-
         if (str_starts_with($currentVersion, 'dev') || ! str_contains($currentVersion, '.')) {
             return;
         }
@@ -96,7 +94,7 @@ class UpdateCommand extends Command
             return;
         }
 
-        if ($versionParts[0] === '0' && $versionParts[1] === '0') {
+        if ($versionParts[0] === '0' && $versionParts[1] === '0' && $versionParts[2] === '96') {
             $this->forcePublishMigrations = true;
             $this->forceRunMigration = true;
         }
