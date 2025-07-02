@@ -14,7 +14,7 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property ?\Carbon\CarbonInterface $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
  * @property-read \Illuminate\Database\Eloquent\Collection<Model & DocumentType> $documentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model & Content> $content
+ * @property-read \Illuminate\Database\Eloquent\Collection<Model & Content> $contents
  */
 interface Template extends HasDtoModel
 {
@@ -33,7 +33,7 @@ interface Template extends HasDtoModel
     /**
      * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
      */
-    public function content();
+    public function contents();
 
     /**
      * Initialize the template with the given theme.
