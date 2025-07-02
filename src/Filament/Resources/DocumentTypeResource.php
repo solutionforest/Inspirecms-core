@@ -173,7 +173,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     Tables\Actions\DeleteBulkAction::make(),
                 ])->iconButton(),
             ])
-            ->checkIfRecordIsSelectableUsing(function (DocumentType|Model $record) {
+            ->checkIfRecordIsSelectableUsing(function (DocumentType | Model $record) {
                 $hasContent = $record->content()->withoutGlobalScopes([
                     SoftDeletingScope::class,
                 ])->count() > 0;
@@ -181,6 +181,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                     // Disallow delete this document type if have content
                     return false;
                 }
+
                 return true;
             })
             ->filters([
