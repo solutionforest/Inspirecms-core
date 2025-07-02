@@ -86,50 +86,53 @@ class ListTemplates extends BaseListRecords
                     ->modalSubmitAction(fn () => false) // Disable the form submission
                     ->color('gray')
                     ->icon(FilamentIcon::resolve('actions::view-action') ?? 'heroicon-m-eye')
-                    ->infolist(fn (Infolist $infolist) => $infolist
-                        ->schema([
-                            TextEntry::make('id')
-                                ->label(__('inspirecms::inspirecms.id')),
-                            TextEntry::make('slug')
-                                ->label(__('inspirecms::resources/template.slug.label'))
-                                ->badge(),
-                            TextEntry::make('documentTypes')
-                                ->label(__('inspirecms::inspirecms.document_type'))
-                                ->getStateUsing(fn (Template | Model $record) => $record->documentTypes)
-                                ->formatStateUsing(function ($state) {
-                                    if (!$state instanceof Model) {
-                                        return __('inspirecms::inspirecms.n/a');
-                                    }
-                                    $url = FilamentResourceHelper::attemptToGetUrl(
-                                        InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class),
-                                        ['edit', 'view'],
-                                        ['record' => $state],
-                                        false
-                                    );
-                                    return UIHelper::generateLink($state->slug, $url, [
-                                        'target' => '_blank',
-                                    ]);
-                                })
-                                ->listWithLineBreaks(),
-                            TextEntry::make('contents')
-                                ->label(__('inspirecms::inspirecms.content'))
-                                ->getStateUsing(fn (Template | Model $record) => $record->contents)
-                                ->formatStateUsing(function ($state) {
-                                    if (!$state instanceof Model) {
-                                        return __('inspirecms::inspirecms.n/a');
-                                    }
-                                    $url = FilamentResourceHelper::attemptToGetUrl(
-                                        InspireCmsConfig::getFilamentResource('content', ContentResource::class),
-                                        ['edit', 'view'],
-                                        ['record' => $state],
-                                        false
-                                    );
-                                    return UIHelper::generateLink($state->slug, $url, [
-                                        'target' => '_blank',
-                                    ]);
-                                })
-                                ->listWithLineBreaks(),
-                        ])
+                    ->infolist(
+                        fn (Infolist $infolist) => $infolist
+                            ->schema([
+                                TextEntry::make('id')
+                                    ->label(__('inspirecms::inspirecms.id')),
+                                TextEntry::make('slug')
+                                    ->label(__('inspirecms::resources/template.slug.label'))
+                                    ->badge(),
+                                TextEntry::make('documentTypes')
+                                    ->label(__('inspirecms::inspirecms.document_type'))
+                                    ->getStateUsing(fn (Template | Model $record) => $record->documentTypes)
+                                    ->formatStateUsing(function ($state) {
+                                        if (! $state instanceof Model) {
+                                            return __('inspirecms::inspirecms.n/a');
+                                        }
+                                        $url = FilamentResourceHelper::attemptToGetUrl(
+                                            InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class),
+                                            ['edit', 'view'],
+                                            ['record' => $state],
+                                            false
+                                        );
+
+                                        return UIHelper::generateLink($state->slug, $url, [
+                                            'target' => '_blank',
+                                        ]);
+                                    })
+                                    ->listWithLineBreaks(),
+                                TextEntry::make('contents')
+                                    ->label(__('inspirecms::inspirecms.content'))
+                                    ->getStateUsing(fn (Template | Model $record) => $record->contents)
+                                    ->formatStateUsing(function ($state) {
+                                        if (! $state instanceof Model) {
+                                            return __('inspirecms::inspirecms.n/a');
+                                        }
+                                        $url = FilamentResourceHelper::attemptToGetUrl(
+                                            InspireCmsConfig::getFilamentResource('content', ContentResource::class),
+                                            ['edit', 'view'],
+                                            ['record' => $state],
+                                            false
+                                        );
+
+                                        return UIHelper::generateLink($state->slug, $url, [
+                                            'target' => '_blank',
+                                        ]);
+                                    })
+                                    ->listWithLineBreaks(),
+                            ])
                     ),
             ]);
     }
