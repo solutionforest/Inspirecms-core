@@ -20,9 +20,9 @@ class MediaPickerConverter extends BaseConverter
 
         // fetch media assets from the database using primary keys (In Preview mode)
         $mediaAssetIds = collect($formattedSourceValue)->where(fn ($v) => is_string($v));
-        
-        $mediaAssets = (count($mediaAssetIds) > 0) ? 
-            collect(inspirecms_asset()->findByKeys($mediaAssetIds->all()))->mapWithKeys(fn ($item) => [$item->getKey() => $item]) : 
+
+        $mediaAssets = (count($mediaAssetIds) > 0) ?
+            collect(inspirecms_asset()->findByKeys($mediaAssetIds->all()))->mapWithKeys(fn ($item) => [$item->getKey() => $item]) :
             collect();
 
         return collect($formattedSourceValue)
