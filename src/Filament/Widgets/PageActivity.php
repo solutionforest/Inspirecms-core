@@ -28,6 +28,9 @@ class PageActivity extends BaseWidget
             ->striped()
             ->emptyStateIcon(FilamentIcon::resolve('inspirecms::info'))
             ->emptyStateHeading(__('inspirecms::widgets.page_activity.empty_state.heading'))
+            ->modifyQueryUsing(fn ($query) => $query->with([
+                'publishedVersions',
+            ]))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label'))
@@ -44,17 +47,15 @@ class PageActivity extends BaseWidget
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('inspirecms::resources/content.published_at.label'))
                     ->getStateUsing(function (Model $record) {
-
-                        if ($record->hasAttribute('__latest_version_publish_dt') && $record->__latest_version_publish_dt) {
-                            return $record->__latest_version_publish_dt->diffForHumans();
-                        }
-
-                        return $record->getLatestPublishedContentVersion()?->pivot->published_at?->diffForHumans();
+                        return $record->getPublishedVersions()?->sortByDesc('pivot.published_at')?->first()?->pivot->published_at;
                     })
+                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => ($state && $state instanceof \DateTimeInterface) ? $state->diffForHumans(now()) : null)
+                    ->tooltip(fn ($state) => ($state && $state instanceof \DateTimeInterface) ? $state->toDateTimeString() : null)
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/content.updated_at.label'))
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->tooltip(fn ($state) => $state?->toDateTimeString())
                     ->width('5%'),
             ]);
     }
