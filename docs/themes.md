@@ -4,7 +4,7 @@ slug: themes
 path: docs/v1/themes
 uri: /docs/v1/themes
 heading: Themes
-brief:
+brief: 
 quick_links: []
 ---
 
@@ -40,7 +40,7 @@ To switch themes:
 
 1. Go to **Settings** > **Templates**
 
-    ![Setting_templates](https://inspirecms.net/storage/doc/ow4U79uhj4TvLoskWUv0lLWfI6iOZJwMmEtxtDOU.png)
+     ![Setting_templates](https://inspirecms.net/storage/doc/ow4U79uhj4TvLoskWUv0lLWfI6iOZJwMmEtxtDOU.png)
 
 2. Find the theme you want to activate
 3. Click "Change theme" next to that theme
@@ -59,8 +59,8 @@ The theme change takes effect immediately on your site.
 2. Click "Create theme"
 3. Enter a name for your new theme
 
-    ![create_theme](https://inspirecms.net/storage/doc/H2GVIaqH6yJX3xarVebs2TExUG2YrEtWksDPVHFc.png)
-
+     ![create_theme](https://inspirecms.net/storage/doc/H2GVIaqH6yJX3xarVebs2TExUG2YrEtWksDPVHFc.png)
+		 
 4. Choose whether to base it on an existing theme
 5. Submit a form
 
@@ -125,8 +125,8 @@ To create a new theme based on an existing one:
 2. Find the theme you want to clone
 3. Click "Clone theme"
 
-    ![select_theme](https://inspirecms.net/storage/doc/70XzMf3uMmb6QqfEiWMlNZhDW69yPcJ8YkDVDmVm.png)
-
+     ![select_theme](https://inspirecms.net/storage/doc/70XzMf3uMmb6QqfEiWMlNZhDW69yPcJ8YkDVDmVm.png)
+		 
 4. Enter a name for the new theme
 5. Click "Clone"
 
@@ -142,14 +142,14 @@ In InspireCMS, you can easily export your content templates to local storage. Th
 
 2. **Export Content Templates**:
    Locate the "Export content templates" button in the Template info section. Click on it to export the blade files to your local storage.
-
-    ![Export Content Templates](https://inspirecms.net/storage/doc/uxV0O3KHe35TU7Aa43u4Z427DehIWzpnd5IbaBdo.png)
+	 
+	 ![Export Content Templates](https://inspirecms.net/storage/doc/uxV0O3KHe35TU7Aa43u4Z427DehIWzpnd5IbaBdo.png)
 
 3. **Build Your CSS**:
    Once the templates are exported, you can integrate them into your local environment. To build your CSS using Tailwind, run the following command in your terminal:
-    ```bash
-    npm run build
-    ```
+   ```bash
+   npm run build
+   ```
 
 This will compile your Tailwind CSS files based on the exported templates, allowing you to customize your site's appearance effectively.
 

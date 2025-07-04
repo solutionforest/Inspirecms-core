@@ -4,9 +4,10 @@ slug: control-panel
 path: docs/v1/control-panel
 uri: /docs/v1/control-panel
 heading: Control Panel
-brief:
+brief: 
 quick_links: []
 ---
+
 
 ## Accessing the Control Panel
 

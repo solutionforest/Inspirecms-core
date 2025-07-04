@@ -9,6 +9,7 @@ brief: This guide covers language configuration, content translation, and multil
 quick_links: []
 ---
 
+
 ## Overview
 
 The language system in InspireCMS allows you to:

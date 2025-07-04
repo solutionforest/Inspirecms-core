@@ -353,3 +353,4 @@ When conflicting edits occur:
     - Keep their version (overwrite)
     - Discard their changes
     - Save as a new draft
+

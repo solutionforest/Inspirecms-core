@@ -4,7 +4,7 @@ slug: custom-fields
 path: docs/v1/custom-fields
 uri: /docs/v1/custom-fields
 heading: Custom Fields
-brief:
+brief: 
 quick_links: []
 ---
 
@@ -88,7 +88,7 @@ InspireCMS provides several directives to access field data in templates:
 ### Basic Field Access
 
 ```blade
-@property('field_group_name', 'field_name')
+<div>@property('field_group_name', 'field_name')</div>
 ```
 
 This outputs the field value and creates a variable `$field_group_name_field_name` accessible in your template.

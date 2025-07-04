@@ -24,7 +24,7 @@ To create a document type:
 
 1. Navigate to Admin Panel > **Settings** > **Document Types**
 
-    ![Setting_document_types](https://inspirecms.net/storage/doc/95Elc780jqsWYfvMedtRJIxUInjTWIQdouBt79H2.png)
+     ![Setting_document_types](https://inspirecms.net/storage/doc/95Elc780jqsWYfvMedtRJIxUInjTWIQdouBt79H2.png)
 
 2. Click **Create Document Type**
 3. Configure the following settings:
@@ -57,7 +57,7 @@ Associate custom fields with your document type to define what data can be enter
 1. In the **Structure** section, click **New field** or **Attach**
 2. Select from available field groups or create new ones
 
-    ![select_field_group](https://inspirecms.net/storage/doc/qfxAVeRIdYZe9CxOE25v3qeUwUQDSlEyRgJnz4p0.png)
+     ![select_field_group](https://inspirecms.net/storage/doc/qfxAVeRIdYZe9CxOE25v3qeUwUQDSlEyRgJnz4p0.png)
 
 3. Arrange field groups in the desired order
 
@@ -72,13 +72,13 @@ Define which templates are available for rendering your content:
 1. In the **Templates** section, click **Add Template** or **Attach**
 2. Create a new template or select an existing one
 
-    ![create_theme](https://inspirecms.net/storage/doc/Q2si1NwdzDsUmctkStwQzmP5eCg789QdQeUgDuzy.png)
+     ![create_theme](https://inspirecms.net/storage/doc/Q2si1NwdzDsUmctkStwQzmP5eCg789QdQeUgDuzy.png)
 
-    ![attach_theme](https://inspirecms.net/storage/doc/gpfYsFQqwRSnN28rPoSzGuQsUeFBmNBo8jtfsjOs.png)
+     ![attach_theme](https://inspirecms.net/storage/doc/gpfYsFQqwRSnN28rPoSzGuQsUeFBmNBo8jtfsjOs.png)
 
 3. Set a default template for new content
 
-    ![Document Type's Templates](https://inspirecms.net/storage/doc/JuAg9jBK0Eb9y46nPm3MuLtTljiSc7dlx6dAKAgS.png)
+     ![Document Type's Templates](https://inspirecms.net/storage/doc/JuAg9jBK0Eb9y46nPm3MuLtTljiSc7dlx6dAKAgS.png)
 
 For detailed information about creating frontend layouts and templates, see the [Frontend Layouts documentation](./fe-layouts){.doc-link}.
 
@@ -96,8 +96,8 @@ Define which document types can be children of the current type:
 2. This determines what content types can be created underneath this content
 3. Leave empty to prevent child content from being created
 
-    ![Allowed Document Type](https://inspirecms.net/storage/doc/Pze46WfLnkkY9fBWP81Lf0E7SbUuQWw6R945hqfj.png)
-
+     ![Allowed Document Type](https://inspirecms.net/storage/doc/7MB2Ov340DkNBV27yGSvTxopCACCkoP2QZWYjw6Y.png)
+		 
 ---
 
 ## Using Document Types
@@ -107,7 +107,7 @@ Once document types are configured, content editors can use them to create struc
 1. Navigate to the **Content** section in the admin panel
 2. Click **Create Content** and select your document type
 
-    ![select_document_type](https://inspirecms.net/storage/doc/fuA1tWhoR7xfddhFjWmtCIMUAVGlLeXayYldVbYw.png)
+     ![select_document_type](https://inspirecms.net/storage/doc/fuA1tWhoR7xfddhFjWmtCIMUAVGlLeXayYldVbYw.png)
 
 3. Fill in the fields defined by your field groups
 4. Save and publish your content

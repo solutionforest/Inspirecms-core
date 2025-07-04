@@ -4,7 +4,7 @@ slug: installing
 path: docs/v1/installing
 uri: /docs/v1/installing
 heading: Installing
-brief:
+brief: 
 quick_links: []
 ---
 
@@ -181,6 +181,8 @@ For detailed information about creating and configuring document types, see the 
 // Adding content here
 </x-cms-template>
 ```
+
+For detailed information about creating frontend layouts and templates, see the [Custom Fields documentation](./custom-fields){.doc-link} and [Frontend Layouts documentation](./fe-layouts){.doc-link}.
 
 ---
 

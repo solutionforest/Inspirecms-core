@@ -12,10 +12,10 @@ quick_links: []
 
 The user management system in InspireCMS is built on:
 
--   A flexible authentication system
--   Role-based access control
--   Granular permissions
--   User profiles and preferences
+- A flexible authentication system
+- Role-based access control
+- Granular permissions
+- User profiles and preferences
 
 ---
 
@@ -29,10 +29,10 @@ Access role management through: **Admin Panel** > **Users** > **Roles**
 
 From here you can:
 
--   Create new roles
--   Edit existing roles
--   Assign permissions to roles
--   Delete roles
+- Create new roles
+- Edit existing roles
+- Assign permissions to roles
+- Delete roles
 
 ### Creating a Custom Role (only on Pro)
 
@@ -58,8 +58,8 @@ Permissions follow a standard naming convention:
 
 For example:
 
--   `content.view`: Ability to view content
--   `content.create`: Ability to create content
+- `content.view`: Ability to view content
+- `content.create`: Ability to create content
 
 ---
 
@@ -73,19 +73,19 @@ Access user management through: **Users** > **Users**
 
 From the users section, you can:
 
--   **View Users**: See all registered users in the system
--   **Create Users**: Add new user accounts manually
--   **Edit Users**: Modify user information and roles
--   **Delete Users**: Remove user accounts from the system
+- **View Users**: See all registered users in the system
+- **Create Users**: Add new user accounts manually
+- **Edit Users**: Modify user information and roles
+- **Delete Users**: Remove user accounts from the system
 
 ### User Authentication
 
 InspireCMS supports various authentication features:
 
--   Password-based login
--   Password reset functionality
--   Remember me capability
--   Account lockout after failed attempts
+- Password-based login
+- Password reset functionality
+- Remember me capability
+- Account lockout after failed attempts
 
 ### Configuring Authentication
 
@@ -97,10 +97,10 @@ Authentication settings can be modified in `config/inspirecms.php`, please refer
 
 Each user has a profile that includes:
 
--   Basic information (name, email)
--   Profile picture
--   Role assignments
--   Last login information
+- Basic information (name, email)
+- Profile picture
+- Role assignments
+- Last login information
 
 Users can edit their own profiles through the user menu: **User Menu (top-right)** > **Profile**
 
