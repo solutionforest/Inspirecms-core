@@ -262,6 +262,38 @@ class NavigationResource extends Resource implements ClusterSectionResource
                 'footer',
             ])
             ->default('main')
+            ->suffixActions([
+                Forms\Components\Actions\Action::make('fillFromExist')
+                    ->icon('heroicon-o-pencil')
+                    ->fillForm(fn ($state) => [
+                        'category' => $state,
+                    ])
+                    ->form(function () {
+                        $getCategoryOptions = function ($search = null, $limit = 50) {
+                            $query = static::getEloquentQuery()
+                                ->select('category')
+                                ->distinct()
+                                ->when($search, function ($query, $search) {
+                                    $query->where('category', 'like', '%' . $search . '%');
+                                })
+                                ->limit($limit);
+                            return $query->pluck('category', 'category')->all();
+                        };
+                        return [
+                            Forms\Components\Select::make('category')
+                                ->label(__('inspirecms::resources/navigation.category.label'))
+                                ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
+                                ->options(fn () => $getCategoryOptions())
+                                ->searchable()
+                                ->getSearchResultsUsing(fn ($search) => $getCategoryOptions($search))
+                                ->default(fn ($record, $get) => $get('category'))
+                                ->required(),
+                        ];
+                    })
+                    ->action(function ($data, $set) {
+                        $set('category', $data['category']);
+                    }),
+            ])
             ->live()
             ->afterStateUpdated(function ($old, $state, $set) {
                 if (trim($old) !== trim($state)) {
