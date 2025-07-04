@@ -31,6 +31,16 @@ class LicenseManager
         return InspireCmsConfig::get('system.license.key');
     }
 
+    public function optimize()
+    {
+        // Clear the cache for license verification
+        $this->cache()->forget($this->buildCacheKey());
+        // Remove the license file if it exists
+        if ($this->usingLicenseKeyFile()) {
+            File::delete($this->licenseKeyPath());
+        }
+    }
+
     /**
      * @return LicenseVerificationResult
      */

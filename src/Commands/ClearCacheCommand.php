@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -13,6 +14,7 @@ class ClearCacheCommand extends Command
         'languages' => 'languages',
         'routes' => 'routes',
         'navigation' => 'navigation',
+        'offline_licenses' => 'offline licenses',
     ];
 
     protected function configure()
@@ -63,22 +65,24 @@ class ClearCacheCommand extends Command
 
     protected function clearCache(string $type): void
     {
-        if (in_array($type, ['languages', 'routes', 'navigation'])) {
+        if (in_array($type, array_keys(static::CACHE_TYPES))) {
             $this->wrapClearCache($type, function ($type) {
 
                 switch ($type) {
                     case 'languages':
                         inspirecms()->forgetCachedLanguages();
-
                         break;
+
                     case 'routes':
                         inspirecms()->forgetCachedContentRoutes();
-
-                        // $this->callSilent('route:clear');
                         break;
+
                     case 'navigation':
                         inspirecms()->forgetCachedNavigation();
+                        break;
 
+                    case 'offline_licenses':
+                        app(LicenseManager::class)->optimize();
                         break;
                 }
             });
