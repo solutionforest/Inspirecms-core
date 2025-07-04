@@ -377,7 +377,7 @@ class Content extends BaseModel implements ContentContract
     }
     // endregion ContentVersion
 
-    public static function boot()
+    protected static function boot()
     {
         parent::boot();
 
