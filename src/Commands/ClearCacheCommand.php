@@ -71,18 +71,22 @@ class ClearCacheCommand extends Command
                 switch ($type) {
                     case 'languages':
                         inspirecms()->forgetCachedLanguages();
+
                         break;
 
                     case 'routes':
                         inspirecms()->forgetCachedContentRoutes();
+
                         break;
 
                     case 'navigation':
                         inspirecms()->forgetCachedNavigation();
+
                         break;
 
                     case 'offline_licenses':
                         app(LicenseManager::class)->optimize();
+
                         break;
                 }
             });
