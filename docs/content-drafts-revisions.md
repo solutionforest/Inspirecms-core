@@ -20,6 +20,8 @@ In InspireCMS, content can exist in various states:
 3. **Unpublished**: Previously published content that has been taken offline
 4. **Scheduled**: Content set to be published automatically at a future date
 
+> **Note**: The system will not create a new revision entry if the content data remains unchanged, even if other metadata like publish time differs. This prevents unnecessary revision clutter and maintains a clean content history focused on actual content modifications.
+
 ---
 
 ## Working with Drafts
@@ -81,8 +83,6 @@ For content that should go live at a specific time:
 2. In the publishing options, select **Schedule**
 3. Set the desired publish date and time
 4. Click **Schedule**
-
-The system will automatically change the content status from "Scheduled" to "Published" at the specified time.
 
 ---
 
@@ -353,4 +353,3 @@ When conflicting edits occur:
     - Keep their version (overwrite)
     - Discard their changes
     - Save as a new draft
-
