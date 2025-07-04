@@ -277,8 +277,10 @@ class NavigationResource extends Resource implements ClusterSectionResource
                                     $query->where('category', 'like', '%' . $search . '%');
                                 })
                                 ->limit($limit);
+
                             return $query->pluck('category', 'category')->all();
                         };
+
                         return [
                             Forms\Components\Select::make('category')
                                 ->label(__('inspirecms::resources/navigation.category.label'))
