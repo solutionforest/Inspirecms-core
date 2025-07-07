@@ -46,6 +46,7 @@ return [
     'used_by' => 'Used by',
     'user' => 'User',
     'users' => 'Users',
+    'uuid' => 'UUID',
     'version' => 'Version',
 
     'page_status' => [

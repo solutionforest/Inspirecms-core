@@ -46,6 +46,7 @@ return [
     'used_by' => '被引用',
     'user' => '用戶',
     'users' => '用戶',
+    'uuid' => 'UUID',
     'version' => '版本',
 
     'page_status' => [

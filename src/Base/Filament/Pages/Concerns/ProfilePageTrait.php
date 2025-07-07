@@ -171,6 +171,9 @@ trait ProfilePageTrait
                 Placeholder::make('id')
                     ->label(__('inspirecms::inspirecms.id'))
                     ->content(fn (User | Model $record) => UIHelper::generateCopyableText($record->getKey())),
+                Placeholder::make('uuid')
+                    ->label(__('inspirecms::inspirecms.uuid'))
+                    ->content(fn (User | Model $record) => UIHelper::generateCopyableText($record->uuid)),
                 Placeholder::make('last_logged_in_at')
                     ->label(__('inspirecms::resources/user.last_logged_in_at.label'))
                     ->content(fn (User | Model $record) => $record->last_logged_in_at),
