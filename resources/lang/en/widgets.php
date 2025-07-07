@@ -35,10 +35,12 @@ return [
     ],
 
     'template_info' => [
+        'title' => 'Template Info',
         'permission_display_name' => 'View Template Info',
     ],
 
     'theme_info' => [
+        'title' => 'Theme Info',
         'permission_display_name' => 'View Theme Info',
     ],
 

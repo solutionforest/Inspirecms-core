@@ -42,6 +42,7 @@ class ListTemplates extends BaseListRecords
     {
         return parent::table($table)
             ->modifyQueryUsing(fn ($query) => $query->with(['documentTypes', 'contents' => fn ($query) => $query->withoutGlobalScopes([SoftDeletingScope::class])]))
+            ->recordTitle(fn (Model | Template $record) => $record->slug)
             ->headerActions([
                 Tables\Actions\SelectAction::make('theme')
                     ->options(TemplateResourceHelper::getThemeSelectOptions())
@@ -83,6 +84,8 @@ class ListTemplates extends BaseListRecords
                             count($record->contents ?? []) <= 0;
                     }),
                 Tables\Actions\Action::make('viewUsage')
+                    ->label(__('inspirecms::buttons.view_usage.label'))
+                    ->modalHeading(fn (Tables\Actions\Action $action, $record) => __('inspirecms::buttons.view_usage.heading', ['name' => ($record ? $action->getRecordTitle($record) : null) ?? $this->getModelLabel()]))
                     ->modalSubmitAction(fn () => false) // Disable the form submission
                     ->color('gray')
                     ->icon(FilamentIcon::resolve('actions::view-action') ?? 'heroicon-m-eye')

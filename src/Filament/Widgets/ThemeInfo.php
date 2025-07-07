@@ -92,8 +92,10 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
             ->schema([
                 Infolists\Components\TextEntry::make('current_theme')
                     ->weight('bold')->color('primary')
+                    ->label(__('inspirecms::inspirecms.current_xxx', ['name' => __('inspirecms::inspirecms.theme')]))
                     ->hintAction(
                         Infolists\Components\Actions\Action::make('changeTheme')
+                            ->label(__('inspirecms::buttons.change_theme.label'))
                             ->icon(FilamentIcon::resolve('inspirecms::edit'))
                             ->link()
                             ->color('gray')
@@ -103,10 +105,12 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
                             ->form([
                                 Forms\Components\Select::make('theme')
                                     ->inlineLabel()
+                                    ->label(__('inspirecms::inspirecms.theme'))
                                     ->options(TemplateResourceHelper::getThemeSelectOptions())
                                     ->required(),
                             ])
-                            ->successNotificationTitle('Theme updated')
+                            ->successNotificationTitle(__('inspirecms::buttons.change_theme.messages.success.title'))
+                            ->failureNotificationTitle(__('inspirecms::buttons.change_theme.messages.failure.title'))
                             ->action(function (array $data, $component, Infolists\Components\Actions\Action $action, $livewire) {
 
                                 $oldTheme = $component->getState();
@@ -132,6 +136,7 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
                     ),
 
                 Infolists\Components\TextEntry::make('layout')
+                    ->label(__('inspirecms::inspirecms.layout'))
                     ->fontFamily(FontFamily::Mono)
                     ->size('xs')
                     ->placeholder(fn () => strval(__('inspirecms::inspirecms.n/a')))

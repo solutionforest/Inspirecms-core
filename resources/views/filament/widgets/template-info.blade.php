@@ -4,7 +4,7 @@
         $this->exportContentTemplatesAction,
     ]">
         <x-slot name="heading">
-            Template info
+            {{ __('inspirecms::widgets.template_info.title') }}
         </x-slot>
 
         {{ $this->infolist }}

@@ -27,6 +27,18 @@ return [
         'label' => 'Cancel',
     ],
 
+    'change_theme' => [
+        'label' => 'Change theme',
+        'messages' => [
+            'success' => [
+                'title' => 'Theme updated.',
+            ],
+            'failure' => [
+                'title' => 'Failed to change theme.',
+            ],
+        ],
+    ],
+
     'choose' => [
         'label' => 'Choose',
     ],
@@ -111,6 +123,18 @@ return [
 
     'export' => [
         'label' => 'Export',
+    ],
+
+    'export_content_templates' => [
+        'label' => 'Export content templates',
+        'messages' => [
+            'success' => [
+                'title' => 'Content templates exported successfully.',
+            ],
+            'failure' => [
+                'title' => 'Failed to export content templates.',
+            ],
+        ],
     ],
 
     'fix' => [
@@ -276,6 +300,11 @@ return [
 
     'view' => [
         'label' => 'View',
+    ],
+
+    'view_usage' => [
+        'label' => 'View usage',
+        'heading' => 'View usage of :name',
     ],
 
 ];

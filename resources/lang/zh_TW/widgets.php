@@ -35,10 +35,12 @@ return [
     ],
 
     'template_info' => [
+        'title' => '模板資訊',
         'permission_display_name' => '查看模板資訊',
     ],
 
     'theme_info' => [
+        'title' => '主題資訊',
         'permission_display_name' => '查看主題資訊',
     ],
 

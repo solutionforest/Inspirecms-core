@@ -27,6 +27,18 @@ return [
         'label' => '取消',
     ],
 
+    'change_theme' => [
+        'label' => '更改主題',
+        'messages' => [
+            'success' => [
+                'title' => '主題更改成功。',
+            ],
+            'failure' => [
+                'title' => '更改主題失敗。',
+            ],
+        ],
+    ],
+
     'choose' => [
         'label' => '選擇',
     ],
@@ -111,6 +123,18 @@ return [
 
     'export' => [
         'label' => '匯出',
+    ],
+
+    'export_content_templates' => [
+        'label' => '匯出內容模板',
+        'messages' => [
+            'success' => [
+                'title' => '內容模板匯出成功。',
+            ],
+            'failure' => [
+                'title' => '匯出內容模板失敗。',
+            ],
+        ],
     ],
 
     'fix' => [
@@ -276,6 +300,11 @@ return [
 
     'view' => [
         'label' => '查看',
+    ],
+
+    'view_usage' => [
+        'label' => '查看使用情況',
+        'heading' => '查看 :name 的使用情況',
     ],
 
 ];

@@ -83,6 +83,7 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
             ->columns(1)
             ->schema([
                 Infolists\Components\TextEntry::make('exported_content_template_directory')
+                    ->label(__('inspirecms::inspirecms.exported_content_template_directory'))
                     ->fontFamily(FontFamily::Mono)
                     ->size('xs')
                     ->placeholder(fn () => strval(__('inspirecms::inspirecms.n/a')))
@@ -93,11 +94,12 @@ class TemplateInfo extends Widget implements GuardWidget, HasActions, HasForms, 
     public function exportContentTemplatesAction(): Action
     {
         return Action::make('exportContentTemplates')
+            ->label(__('inspirecms::buttons.export_content_templates.label'))
             ->icon(FilamentIcon::resolve('inspirecms::export'))
             ->modalIcon(FilamentIcon::resolve('inspirecms::export'))
             ->color('gray')
-            ->successNotificationTitle(__('inspirecms::messages.success'))
-            ->failureNotificationTitle(__('inspirecms::messages.failure'))
+            ->successNotificationTitle(__('inspirecms::buttons.export_content_templates.messages.success.title'))
+            ->failureNotificationTitle(__('inspirecms::buttons.export_content_templates.messages.failure.title'))
             ->action(function (Action $action) {
 
                 $templates = InspireCmsConfig::getTemplateModelClass()::all();

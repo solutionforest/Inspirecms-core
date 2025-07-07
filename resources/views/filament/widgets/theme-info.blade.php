@@ -5,7 +5,7 @@
         $this->cloneThemeAction,
     ]">
         <x-slot name="heading">
-            Theme info
+            {{ __('inspirecms::widgets.theme_info.title') }}
         </x-slot>
 
         {{ $this->infolist }}
