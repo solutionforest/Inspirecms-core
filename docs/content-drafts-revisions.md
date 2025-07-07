@@ -20,7 +20,9 @@ In InspireCMS, content can exist in various states:
 3. **Unpublished**: Previously published content that has been taken offline
 4. **Scheduled**: Content set to be published automatically at a future date
 
-> **Note**: The system will not create a new revision entry if the content data remains unchanged, even if other metadata like publish time differs. This prevents unnecessary revision clutter and maintains a clean content history focused on actual content modifications.
+> [!note]
+>
+> The system will not create a new revision entry if the content data remains unchanged, even if other metadata like publish time differs. This prevents unnecessary revision clutter and maintains a clean content history focused on actual content modifications.
 
 ---
 
