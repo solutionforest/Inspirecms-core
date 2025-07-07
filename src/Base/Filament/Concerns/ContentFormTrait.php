@@ -234,6 +234,8 @@ trait ContentFormTrait
 
             $record->setPublishableState($publishableAction);
 
+            $this->propertyDataIsDirtyPreCheck($record->getLatestVersionPropertyData(), $data['propertyData'] ?? []);
+
             $this->record = $this->handleRecordUpdate($record, $data);
             // endregion Handle Record Updating
 
@@ -373,6 +375,45 @@ trait ContentFormTrait
     protected function isCreatingPublishableData(): bool
     {
         return $this->publishOperation !== 'edit';
+    }
+
+    protected function propertyDataIsDirtyPreCheck($from, $to)
+    {
+        try {
+
+            if (! is_array($from) || ! is_array($to)) {
+                return;
+            }
+
+            if (empty($from) && empty($to)) {
+                return;
+            }
+
+
+            $modelTmpContentVersion = app(InspireCmsConfig::getContentVersionModelClass(), [
+                'attributes' => [
+                    'from_data' => $from,
+                    'to_data' => $to,
+                ],
+            ]);
+
+            $diff = $modelTmpContentVersion->getDifferences();
+
+
+            // Display notification if no differences found
+            if (empty($diff)) {
+                Notification::make()
+                    ->title(__('inspirecms::resources/content.notification.property_data_not_changed.title'))
+                    ->body(__('inspirecms::resources/content.notification.property_data_not_changed.body'))
+                    ->info()
+                    ->send();
+
+                return;
+            }
+
+        } catch (Throwable $th) {
+            //throw $th;
+        }
     }
 
     protected function wrapPublisableSavingEventIntoDbTransaction(Closure $callback)

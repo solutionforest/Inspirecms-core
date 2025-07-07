@@ -203,6 +203,10 @@ return [
             'title' => 'Remove Content',
             'body' => 'A content with the same slug already exists in the same parent. Please remove the existing content first.',
         ],
+        'property_data_not_changed' => [
+            'title' => 'No Changes',
+            'body' => 'There are no changes to save.',
+        ],
     ],
 
     'tabs' => [

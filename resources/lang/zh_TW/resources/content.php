@@ -202,6 +202,10 @@ return [
             'title' => '刪除內容',
             'body' => '在同一父級中已存在具有相同短網址的內容。請先刪除現有內容。',
         ],
+        'property_data_not_changed' => [
+            'title' => '無變更',
+            'body' => '沒有要保存的變更。',
+        ],
     ],
 
     'tabs' => [
