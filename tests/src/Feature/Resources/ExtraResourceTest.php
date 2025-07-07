@@ -1,13 +1,14 @@
 <?php
 
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource;
 use SolutionForest\InspireCms\Tests\TestCase;
 
 uses(TestCase::class);
 
 beforeEach(function () {
-    $this->panelPath = '/cms';
-    $this->panelId = 'cms';
+    $this->panelPath = '/' . InspireCmsConfig::get('admin.path', 'cms');
+    $this->panelId = InspireCmsConfig::getPanelId();
     $this->createSuperAdminUser();
 });
 
