@@ -86,6 +86,8 @@ For content that should go live at a specific time:
 3. Set the desired publish date and time
 4. Click **Schedule**
 
+The system will automatically change the content status from "Scheduled" to "Published" at the specified time.
+
 ---
 
 ## Content Revisions
@@ -355,3 +357,4 @@ When conflicting edits occur:
     - Keep their version (overwrite)
     - Discard their changes
     - Save as a new draft
+
