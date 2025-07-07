@@ -13,6 +13,7 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Khatabwedaa\BladeCssIcons\BladeCssIconsServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
@@ -47,6 +48,8 @@ abstract class TestCase extends Orchestra
             BladeCaptureDirectiveServiceProvider::class,
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
+            BladeCssIconsServiceProvider::class,
+            
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
