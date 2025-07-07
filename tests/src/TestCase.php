@@ -49,7 +49,7 @@ abstract class TestCase extends Orchestra
             BladeHeroiconsServiceProvider::class,
             BladeIconsServiceProvider::class,
             BladeCssIconsServiceProvider::class,
-            
+
             FilamentServiceProvider::class,
             FormsServiceProvider::class,
             InfolistsServiceProvider::class,
