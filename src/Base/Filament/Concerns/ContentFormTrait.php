@@ -389,7 +389,6 @@ trait ContentFormTrait
                 return;
             }
 
-
             $modelTmpContentVersion = app(InspireCmsConfig::getContentVersionModelClass(), [
                 'attributes' => [
                     'from_data' => $from,
@@ -398,7 +397,6 @@ trait ContentFormTrait
             ]);
 
             $diff = $modelTmpContentVersion->getDifferences();
-
 
             // Display notification if no differences found
             if (empty($diff)) {
@@ -412,7 +410,7 @@ trait ContentFormTrait
             }
 
         } catch (Throwable $th) {
-            //throw $th;
+            // throw $th;
         }
     }
 

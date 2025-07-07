@@ -69,7 +69,7 @@ class ContentVersionDetailScope implements Scope
                         ->from($cvPublishedModel->getTable(), '_cv_base_p')
                         // content version id = publish log version id
                         ->whereRaw("_cv_t2_p.{$cvPK} = _cv_base_p.$cvPublishedFK")
-                        ->whereRaw("_cv_base_p.published_at <= ?", [now()])
+                        ->whereRaw('_cv_base_p.published_at <= ?', [now()])
                 )
                 ->select('_cv_t2_p.*');
 
@@ -99,7 +99,6 @@ class ContentVersionDetailScope implements Scope
                     DB::raw("{$cvPublishedTableName}.to_data AS __latest_version_publish_data"),
                 ])
                 ->addSelect($model->qualifyColumn('*'));
-
 
             $model->withCasts([
                 '__latest_version_publish_dt' => 'datetime',
