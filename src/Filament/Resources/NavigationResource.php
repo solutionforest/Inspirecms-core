@@ -52,15 +52,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     ->schema([
                         static::getCategoryFormComponent(),
                         static::getParentFormComponent(),
-                        Forms\Components\Grid::make(2)
-                            ->schema([
-                                static::getTitleFormComponent(),
-                                static::getIsActiveFormComponent(),
-                            ]),
+                        static::getIsActiveFormComponent(),
                     ]),
                 Forms\Components\Section::make()
                     ->columns(2)
                     ->schema([
+                        static::getTitleFormComponent()->columnSpanFull(),
                         static::getTypeFormComponent(),
                         static::getContentFormComponent(),
                         static::getUrlFormComponent(),
