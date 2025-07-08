@@ -1,6 +1,6 @@
 {
     "name": "solution-forest/inspirecms-core",
-    "description": "This is my package inspirecms-core",
+    "description": "InspireCMS is a flexible, un-opinionated content engine for Laravel, built on Filament. Visually model any content structure, empower editors with a modern UI, and render everything using standard Blade templates. Features include live preview, granular user roles, SEO tools, effortless media management, and a powerful Blueprint Builder.",
     "keywords": [
         "solution-forest",
         "laravel",
