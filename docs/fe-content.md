@@ -37,6 +37,15 @@ $blogPosts = inspirecms_content()->getByDocumentType(documentType: 'blog_post', 
 $blogPosts = inspirecms_content()->getPaginatedByDocumentType(documentType: 'blog_post', isPublished: true, page: 1, perPage: 10);
 ```
 
+> [!note]
+>
+> These functions return Content model instances. To access content properties and use them in templates, convert the model to a DTO using the `toDto()` method:
+>
+> ```php
+> $contentDto = $content->toDto($locale ?? app()->getLocale());
+> $title = $contentDto->getTitle();
+> ```
+
 ---
 
 ## Accessing Content Properties
