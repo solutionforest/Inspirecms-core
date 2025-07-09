@@ -4,7 +4,7 @@ slug: configuration
 path: docs/v1/configuration
 uri: /docs/v1/configuration
 heading: Configuration
-brief: 
+brief:
 quick_links: []
 ---
 
@@ -140,7 +140,7 @@ Configure media uploads, storage, and processing:
         'allowed_mime_types' => [],
 
         /**
-         * Maximum file size in KB
+         * Maximum file size in Bytes
          */
         'max_file_size' => null,
 
@@ -502,7 +502,7 @@ Control how InspireCMS handles frontend requests:
      * Override to implement custom slug generation rules
      */
     'slug_generator' => \SolutionForest\InspireCms\Content\DefaultSlugGenerator::class,
-	
+
 	'fallback_seo' => [
 		'title' => env('APP_NAME', 'Home'),
 		'description' => null,

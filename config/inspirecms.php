@@ -147,7 +147,7 @@ return [
             'allowed_mime_types' => [],
 
             /**
-             * Maximum file size in KB
+             * Maximum file size in Bytes
              */
             'max_file_size' => null,
 
