@@ -62,6 +62,10 @@ abstract class TestCase extends Orchestra
             \Spatie\Permission\PermissionServiceProvider::class,
 
             FilamentFieldGroupServiceProvider::class,
+
+            \Staudenmeir\LaravelAdjacencyList\IdeHelperServiceProvider::class,
+            \Kirschbaum\PowerJoins\PowerJoinsServiceProvider::class,
+
             \Kalnoy\Nestedset\NestedSetServiceProvider::class,
 
             \Pboivin\FilamentPeek\FilamentPeekServiceProvider::class,
@@ -169,6 +173,7 @@ abstract class TestCase extends Orchestra
 
         // plugin migrations
         $this->loadMigrationsFrom([
+            __DIR__ . '/../../vendor/solution-forest/filament-field-group/database/migrations',
             __DIR__ . '/../../vendor/solution-forest/inspirecms-support/database/migrations',
             // __DIR__ . '/../../vendor/spatie/laravel-permission/database/migrations',
             // __DIR__ . '/../../vendor/spatie/laravel-medialibrary/database/migrations',
