@@ -21,7 +21,7 @@ beforeEach(function () {
     $defaultLangCode = 'en';
     Language::updateOrCreate(
         ['code' => $defaultLangCode],
-        ['is_default' => true,]
+        ['is_default' => true]
     );
     // Ensure the theme is set up correctly
     $this->theme = 'default'; // Set the theme to default
@@ -37,10 +37,10 @@ describe('Page Template', function () {
 
         $theme = $this->theme;
 
-        $sampleTemplateContent = <<<EOL
+        $sampleTemplateContent = <<<'EOL'
 <div class="page-template">
     <h1>@property('hero', 'title')</h1>
-    <p>{{ \$content->getTitle() }}</p>
+    <p>{{ $content->getTitle() }}</p>
 </div>
 EOL;
 
@@ -54,7 +54,7 @@ EOL;
                                 'slug' => 'page', // Ensure the template is named 'page'
                                 'content' => [
                                     $theme => $sampleTemplateContent,
-                                ]
+                                ],
                             ]),
                         ['is_default' => true] // Set as default template
                     )
@@ -79,14 +79,13 @@ EOL;
                         'slug' => 'page-document-type',
                         'category' => 'web', // Ensure it's a web type document
                     ])
-
             )
             ->create([
                 'title' => 'Test Page',
                 'slug' => 'test-page',
             ]);
         $content->refresh();
-            
+
         // Create publish version
         $status = ContentStatusManifest::getOption('publish');
         $content->status = $status->getValue();

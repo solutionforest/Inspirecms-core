@@ -10,6 +10,7 @@ class FieldGroupFactory extends Factory
     {
         $slug = $this->faker->unique()->slug(1);
         $title = str($slug)->replace('-', ' ')->ucfirst()->toString();
+
         return [
             'title' => $title,
             'name' => $slug,
