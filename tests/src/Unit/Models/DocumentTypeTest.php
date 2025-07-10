@@ -34,4 +34,3 @@ it('does not throw an exception when deleting a document type without content', 
 
     expect(true)->toBeTrue(); // If no exception is thrown, the test passes
 });
-
