@@ -10,40 +10,37 @@ use SolutionForest\InspireCms\Tests\TestCase;
 use Spatie\Permission\Models\Role;
 
 uses(TestCase::class);
+pest()->group('unit', 'model');
 
-describe('user management', function () {
+it('can create super admin user', function () {
+    $this->createSuperAdminUser();
 
-    it('can create super admin user', function () {
-        $this->createSuperAdminUser();
+    $user = User::first();
 
-        $user = User::first();
+    expect($user)->not->toBeNull();
+    expect($user->name)->toBe('Super Admin');
+    expect($user->email)->toBe('superadmin@example.com');
+    expect($user->preferred_language)->toBe('en');
+    expect($user->uuid)->not->toBeNull();
+    expect(Str::isUuid($user->uuid))->toBeTrue();
+    expect(Hash::check('password', $user->password))->toBeTrue();
+});
 
-        expect($user)->not->toBeNull();
-        expect($user->name)->toBe('Super Admin');
-        expect($user->email)->toBe('superadmin@example.com');
-        expect($user->preferred_language)->toBe('en');
-        expect($user->uuid)->not->toBeNull();
-        expect(Str::isUuid($user->uuid))->toBeTrue();
-        expect(Hash::check('password', $user->password))->toBeTrue();
-    });
+it('assigns super admin role to created user', function () {
+    $this->createSuperAdminUser();
 
-    it('assigns super admin role to created user', function () {
-        $this->createSuperAdminUser();
+    $user = User::first();
+    $superAdminRoleName = PermissionManifest::getSuperAdminRoleName();
+    $superAdminRole = Role::where('name', $superAdminRoleName)->first();
 
-        $user = User::first();
-        $superAdminRoleName = PermissionManifest::getSuperAdminRoleName();
-        $superAdminRole = Role::where('name', $superAdminRoleName)->first();
+    expect($user->hasRole($superAdminRole))->toBeTrue();
+});
 
-        expect($user->hasRole($superAdminRole))->toBeTrue();
-    });
+it('can login as super admin', function () {
+    $this->createSuperAdminUser();
 
-    it('can login as super admin', function () {
-        $this->createSuperAdminUser();
+    $response = $this->loginCmsPanelAsSuperAdmin();
 
-        $response = $this->loginCmsPanelAsSuperAdmin();
-
-        expect(Auth::guard(AuthHelper::guardName())->check())->toBeTrue();
-        expect(Auth::guard(AuthHelper::guardName())->user())->toBeInstanceOf(User::class);
-    });
-
+    expect(Auth::guard(AuthHelper::guardName())->check())->toBeTrue();
+    expect(Auth::guard(AuthHelper::guardName())->user())->toBeInstanceOf(User::class);
 });

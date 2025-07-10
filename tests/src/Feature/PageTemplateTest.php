@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Tests\Models\Template;
 use SolutionForest\InspireCms\Tests\TestCase;
 
 uses(TestCase::class);
+pest()->group('feature');
 
 beforeEach(function () {
     // Add routes
@@ -31,89 +32,85 @@ beforeEach(function () {
     );
 });
 
-describe('Page Template', function () {
+it('renders_page_template_correctly', function () {
 
-    it('renders_page_template_correctly', function () {
+    $theme = $this->theme;
 
-        $theme = $this->theme;
-
-        $sampleTemplateContent = <<<'EOL'
+    $sampleTemplateContent = <<<'EOL'
 <div class="page-template">
     <h1>@property('hero', 'title')</h1>
     <p>{{ $content->getTitle() }}</p>
 </div>
 EOL;
 
-        // Create a test content record
-        $content = Content::factory()
-            ->for(
-                DocumentType::factory()
-                    ->hasAttached(
-                        Template::factory()
-                            ->create([
-                                'slug' => 'page', // Ensure the template is named 'page'
-                                'content' => [
-                                    $theme => $sampleTemplateContent,
-                                ],
+    // Create a test content record
+    $content = Content::factory()
+        ->for(
+            DocumentType::factory()
+                ->hasAttached(
+                    Template::factory()
+                        ->create([
+                            'slug' => 'page', // Ensure the template is named 'page'
+                            'content' => [
+                                $theme => $sampleTemplateContent,
+                            ],
+                        ]),
+                    ['is_default' => true] // Set as default template
+                )
+                ->has(
+                    FieldGroup::factory()
+                        ->has(
+                            Field::factory([
+                                'name' => 'title',
+                                'label' => 'Hero Title',
+                                'type' => 'text',
                             ]),
-                        ['is_default' => true] // Set as default template
-                    )
-                    ->has(
-                        FieldGroup::factory()
-                            ->has(
-                                Field::factory([
-                                    'name' => 'title',
-                                    'label' => 'Hero Title',
-                                    'type' => 'text',
-                                ]),
-                                'fields'
-                            )
-                            ->state([
-                                'title' => 'Hero',
-                                'name' => 'hero',
-                            ]),
-                        'fieldGroups'
-                    )
-                    ->create([
-                        'title' => 'Page Document Type',
-                        'slug' => 'page-document-type',
-                        'category' => 'web', // Ensure it's a web type document
-                    ])
-            )
-            ->create([
-                'title' => 'Test Page',
-                'slug' => 'test-page',
-            ]);
-        $content->refresh();
-
-        // Create publish version
-        $status = ContentStatusManifest::getOption('publish');
-        $content->status = $status->getValue();
-        $publishTime = now();
-        $content->propertyData = json_encode([
-            'hero' => [
-                'title' => 'Test Hero Title',
-            ],
+                            'fields'
+                        )
+                        ->state([
+                            'title' => 'Hero',
+                            'name' => 'hero',
+                        ]),
+                    'fieldGroups'
+                )
+                ->create([
+                    'title' => 'Page Document Type',
+                    'slug' => 'page-document-type',
+                    'category' => 'web', // Ensure it's a web type document
+                ])
+        )
+        ->create([
+            'title' => 'Test Page',
+            'slug' => 'test-page',
         ]);
-        $content->setPublishableData([
-            'published_at' => $publishTime,
-        ]);
-        $content->setPublishableState($status->getName());
-        $content->save();
+    $content->refresh();
 
-        $content->refresh();
+    // Create publish version
+    $status = ContentStatusManifest::getOption('publish');
+    $content->status = $status->getValue();
+    $publishTime = now();
+    $content->propertyData = json_encode([
+        'hero' => [
+            'title' => 'Test Hero Title',
+        ],
+    ]);
+    $content->setPublishableData([
+        'published_at' => $publishTime,
+    ]);
+    $content->setPublishableState($status->getName());
+    $content->save();
 
-        // Visit the page
+    $content->refresh();
 
-        $response = $this->get($content->getUrl());
+    // Visit the page
 
-        // Assert response and content
+    $response = $this->get($content->getUrl());
 
-        $response->assertStatus(200);
+    // Assert response and content
 
-        $response->assertSee('Test Hero Title');
+    $response->assertStatus(200);
 
-        $response->assertSee('Test Page');
-    });
+    $response->assertSee('Test Hero Title');
 
-})->group('page-template', 'feature');
+    $response->assertSee('Test Page');
+});
