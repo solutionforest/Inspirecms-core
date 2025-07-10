@@ -2,6 +2,14 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.0.2 - 2025-07-10
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+- Add test case for template render
+- fix content sidebar: ensure a after "notification & before "trix" & "filament button"
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.0.1...1.0.2
+
 ## 0.0.95 - 2025-06-25
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.94...0.0.95
