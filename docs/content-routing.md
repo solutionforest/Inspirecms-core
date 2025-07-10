@@ -44,15 +44,19 @@ To set a custom route for content:
 3. Enter your custom route in the "Path" field
 4. Save the content
 
+> [!note]
+>
+> Remember to uncheck the checkbox `Is default pattern` if not using default pattern
+
 ### Route Constraints
 
 You can define URL patterns with parameters:
 
 ```plaintext
-/blog/{year}/{month}/{slug}
+blog/{year}/{month}/{slug}
 ```
 
-Define constraints to validate parameters:
+Define [constraints](https://laravel.com/docs/11.x/routing#parameters-regular-expression-constraints) to validate parameters:
 
 ```php
 [
@@ -71,6 +75,8 @@ After setting a content route with parameters, you can access those variables in
 ```
 
 This allows you to dynamically display content based on the URL parameters.
+
+For more information on route parameters, refer to the [Laravel documentation](https://laravel.com/docs/11.x/routing#route-parameters).
 
 ---
 
