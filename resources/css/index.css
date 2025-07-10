@@ -25,6 +25,11 @@
     }
 }
 
+/* Content Sidebar */
+.content-sidebar_desktop {
+    z-index: 1;
+}
+
 /* Top Alert */
 .fi-body .top-alert.alert-dialog {
     @apply sticky top-0 z-20;
