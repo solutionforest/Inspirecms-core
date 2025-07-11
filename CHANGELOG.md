@@ -2,6 +2,19 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.0.3 - 2025-07-11
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### 🐛 Bug fixes
+
+- Fix typo
+
+### Other Changes
+
+- Update navigation page's form layout
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.0.2...1.0.3
+
 ## 1.0.2 - 2025-07-10
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
