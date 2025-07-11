@@ -240,7 +240,7 @@ class InspireCms
     public function forgetCachedNavigation(): void
     {
         $this->cacheManager
-            ->store(InspireCmsConfig::get('cache.content_routes.store'))
+            ->store(InspireCmsConfig::get('cache.navigation.store'))
             ->forget(InspireCmsConfig::get('cache.navigation.key'));
     }
 
