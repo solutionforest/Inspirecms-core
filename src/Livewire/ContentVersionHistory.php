@@ -36,6 +36,11 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
     protected $queryString = [
         'page' => ['except' => 1, 'as' => self::PAGE_NAME],
     ];
+    
+    public function getTableRecordTitle(Model $record): ?string
+    {
+        return '#' . $record->getKey();
+    }
 
     public function table(Table $table): Table
     {
@@ -52,6 +57,10 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                 Stack::make([
                     Split::make([
                         Stack::make([
+                            TextColumn::make('id')
+                                ->label(__('inspirecms::inspirecms.id'))
+                                ->prefix('#')
+                                ->weight('semibold'),
                             TextColumn::make('created_at')
                                 ->label(__('inspirecms::inspirecms.created_at'))
                                 ->dateTime('Y-m-d H:i:s')
@@ -114,9 +123,6 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             ])
             ->actions([
                 TableAction::make('toggleAvoidToClean')
-                    ->label(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['label'] ?? null)
-                    ->color(fn (Model | ContentVersion $record): mixed => $this->getAvoidToCleanActionConfigFromRecord($record)['color'] ?? null)
-                    ->icon(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['icon'] ?? null)
                     ->action(function (Model | ContentVersion $record, TableAction $action) {
 
                         $record->avoid_to_clean = ! $record->avoid_to_clean;
@@ -139,29 +145,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     ->after(fn () => $this->dispatch('refresh')),
                 TableAction::make('viewDifferences')
                     ->label(__('inspirecms::resources/content-version.buttons.view_differences.label'))
-                    ->icon('heroicon-o-eye')
-                    ->disabledForm()
-                    ->modalFooterActions(fn () => []) // Disable footer actions
-                    ->slideOver()
-                    ->modalWidth(MaxWidth::ScreenTwoExtraLarge)
-                    ->modalHeading(__('inspirecms::resources/content-version.buttons.view_differences.heading'))
-                    ->modalDescription(fn ($record) => __('inspirecms::resources/content-version.buttons.view_differences.description', [
-                        'author' => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user'),
-                        'date' => $record->created_at?->format('Y-m-d H:i:s') ?? __('inspirecms::inspirecms.n/a'),
-                    ]))
-                    ->modalContent(function (Model | ContentVersion $record) {
-                        return view('inspirecms::filament.actions.content-history-detail', [
-                            'record' => $record,
-                            'diff' => collect($this->getDiffKeysFromRecord($record))
-                                ->mapWithKeys(fn ($key) => [
-                                    $key => $this->computeDiff(
-                                        originalContent: $record->from_data[$key] ?? null, 
-                                        newContent: $record->to_data[$key] ?? null
-                                    ),
-                                ])
-                                ->all(),
-                        ]);
-                    }),
+                    ->icon('heroicon-o-eye'),
             ])
             ->bulkActions([
                 TableBulkAction::make('bulkUpdateState')
@@ -223,6 +207,41 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                 }
                 return ! $record->exists && ! $record instanceof ContentVersion;
             });
+
+        switch ($action->getName()) {
+            case 'toggleAvoidToClean':
+                $action
+                    ->label(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['label'] ?? null)
+                    ->color(fn (Model | ContentVersion $record): mixed => $this->getAvoidToCleanActionConfigFromRecord($record)['color'] ?? null)
+                    ->icon(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['icon'] ?? null);
+                break;
+            case 'viewDifferences':
+                $action
+                    ->color('gray')
+                    ->disabledForm()
+                    // Disable footer actions
+                    ->modalSubmitAction(false)->modalCancelAction(false)
+                    ->slideOver()
+                    ->modalWidth(MaxWidth::ScreenTwoExtraLarge)
+                    ->modalHeading(fn (TableAction $action) => str(__('inspirecms::resources/content-version.buttons.view_differences.heading'))->when($action->getRecordTitle(), fn ($str, $value) => $str->finish(' - ' . $value)))
+                    ->modalDescription(fn ($record) => __('inspirecms::resources/content-version.buttons.view_differences.description', [
+                        'author' => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user'),
+                        'date' => $record->created_at?->format('Y-m-d H:i:s') ?? __('inspirecms::inspirecms.n/a'),
+                    ]))
+                    ->modalContent(function (Model | ContentVersion $record) {
+                        $diff = collect($this->getDiffKeysFromRecord($record))
+                            ->mapWithKeys(fn ($key) => $this->computeDiffItem(
+                                key: $key, 
+                                fromData: $record?->from_data ?? [],
+                                toData: $record?->to_data ?? [])
+                            )
+                            ->all();
+                        return view('inspirecms::filament.actions.content-history-detail', [
+                            'diff' => $diff,
+                        ]);
+                    });
+                break;
+        }
     }
 
     protected function configureTableBulkAction(TableBulkAction $action): void
@@ -233,6 +252,22 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             ->hidden(function ($arguments) {
                 return ($this->getOwnerRecord()->isLocked() || $this->getOwnerRecord()->trashed());
             });
+    }
+
+    protected function computeDiffItem(string $key, array $fromData, array $toData): array
+    {
+        $originalContent = data_get($fromData, $key, null);
+        $newContent = data_get($toData, $key, null);
+        if ($key == 'propertyData') {
+            // Convert to array if it is a JSON string
+            foreach (['originalContent', 'newContent'] as $var) {
+                if (is_string($$var) && is_array(json_decode($$var, true))) {
+                    $$var = json_decode($$var, true);
+                }
+            }
+        }
+        $diff = $this->computeDiff($originalContent, $newContent);
+        return [$key => $diff];
     }
 
     protected function computeDiff($originalContent, $newContent)
