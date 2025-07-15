@@ -40,8 +40,9 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query
-                ->with(['publishLog', 'author'])
+            ->modifyQueryUsing(
+                fn ($query) => $query
+                    ->with(['publishLog', 'author'])
             )
             ->defaultSort('created_at', 'desc')
             ->heading('')
@@ -67,12 +68,12 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         ]),
                         TextColumn::make('publish_state')
                             ->badge()
-                            ->getStateUsing(fn ($record) => !blank($record->publish_state) ? inspirecms_content_statuses()->getOption($record->publish_state) : null)
+                            ->getStateUsing(fn ($record) => ! blank($record->publish_state) ? inspirecms_content_statuses()->getOption($record->publish_state) : null)
                             ->formatStateUsing(fn ($state) => $state instanceof ContentStatusOption ? $state->getLabel() : null)
                             ->color(fn ($state) => $state instanceof ContentStatusOption ? $state->getColor() : 'gray')
                             ->placeholder(__('inspirecms::inspirecms.n/a'))
-                            ->icon(function ($state, ContentVersion|Model $record) {
-        
+                            ->icon(function ($state, ContentVersion | Model $record) {
+
                                 if (($unpublishOption = ContentStatusManifest::getOption('unpublish'))) {
                                     if ($state instanceof ContentStatusOption) {
                                         $state = $state->getValue();
@@ -87,7 +88,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                                 }
 
                                 return null;
-                            })
+                            }),
                     ]),
                 ]),
 
@@ -100,6 +101,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         if (empty($state) || ! $state instanceof DateTimeInterface) {
                             return null;
                         }
+
                         return ' (' . $state->diffForHumans() . ')';
                     })
                     ->color('primary')
@@ -121,17 +123,18 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
 
                         $record->avoid_to_clean = ! $record->avoid_to_clean;
                         $record->save();
-                        $record->refresh(); 
+                        $record->refresh();
 
                         $notificationConfig = $this->getAvoidToCleanNotificationConfig($record->avoid_to_clean);
                         $notificationTitle = $notificationConfig['title'] ?? null;
 
                         if (filled($notificationTitle)) {
-                            $action->successNotification(fn (Notification $notification) => $notification
-                                ->icon(FilamentIcon::resolve('inspirecms::warn'))
-                                ->title($notificationTitle)
-                                ->body($notificationConfig['body'] ?? null)
-                                ->status($notificationConfig['status'] ?? null)
+                            $action->successNotification(
+                                fn (Notification $notification) => $notification
+                                    ->icon(FilamentIcon::resolve('inspirecms::warn'))
+                                    ->title($notificationTitle)
+                                    ->body($notificationConfig['body'] ?? null)
+                                    ->status($notificationConfig['status'] ?? null)
                             );
                         }
                         $action->success();
@@ -155,7 +158,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                             'diff' => collect($this->getDiffKeysFromRecord($record))
                                 ->mapWithKeys(fn ($key) => [
                                     $key => $this->computeDiff(
-                                        originalContent: $record->from_data[$key] ?? null, 
+                                        originalContent: $record->from_data[$key] ?? null,
                                         newContent: $record->to_data[$key] ?? null
                                     ),
                                 ])
@@ -205,7 +208,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     ->placeholder('All States'),
                 TernaryFilter::make('avoid_to_clean')
                     ->label(__('inspirecms::resources/content-version.avoid_to_clean.label')),
-                    
+
             ]);
     }
 
@@ -221,6 +224,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                 if (is_null($record)) {
                     return true;
                 }
+
                 return ! $record->exists && ! $record instanceof ContentVersion;
             });
     }
@@ -231,7 +235,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
 
         $action
             ->hidden(function ($arguments) {
-                return ($this->getOwnerRecord()->isLocked() || $this->getOwnerRecord()->trashed());
+                return $this->getOwnerRecord()->isLocked() || $this->getOwnerRecord()->trashed();
             });
     }
 
@@ -242,13 +246,15 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                 return collect($newContent)
                     ->map(function ($item, $itemKey) use ($originalContent) {
                         $oldItem = $originalContent[$itemKey] ?? null;
+
                         return $this->computeDiff($oldItem, $item);
                     })
                     ->all();
-            } elseif (!is_array($newContent) && is_array($originalContent)) {
+            } elseif (! is_array($newContent) && is_array($originalContent)) {
                 return collect($originalContent)
                     ->map(function ($item, $itemKey) use ($newContent) {
                         $newItem = $newContent[$itemKey] ?? null;
+
                         return $this->computeDiff($item, $newItem);
                     })
                     ->all();
@@ -270,7 +276,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
         } catch (\Exception $e) {
             return __('inspirecms::inspirecms.n/a');
         }
-    } 
+    }
 
     protected function getDiffKeysFromRecord(Model | ContentVersion $record): array
     {
@@ -303,7 +309,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
 
     protected function getAvoidToCleanNotificationConfig($newState)
     {
-        if (!is_bool($newState)) {
+        if (! is_bool($newState)) {
             return [];
         }
         // Now: avoid to clean = true
@@ -318,6 +324,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             $body = __('inspirecms::resources/content-version.buttons.toggle_avoid_to_clean.messages.wait_to_cleanup.body');
             $status = 'info';
         }
+
         return compact('title', 'body', 'status');
     }
 }
