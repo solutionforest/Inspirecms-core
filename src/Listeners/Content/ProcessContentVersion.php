@@ -38,7 +38,7 @@ class ProcessContentVersion
         $contentVersionData['from_data'] = $contentVersionData['from'] ?? [];
         $contentVersionData['to_data'] = $contentVersionData['to'] ?? [];
         unset($contentVersionData['from'], $contentVersionData['to']);
-        $contentVersionData['avoid_to_clean'] = $isPublishing;
+        $contentVersionData['avoid_to_clean'] = $contentVersionData['avoid_to_clean'] ?? $isPublishing;
 
         $contentVersion = $model->contentVersions()->make($contentVersionData);
 

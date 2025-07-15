@@ -20,8 +20,12 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
+use SolutionForest\InspireCms\Licensing\LicenseTierAction;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 use SolutionForest\InspireCms\Support\Diff\Diff;
 
@@ -42,12 +46,16 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
         return '#' . $record->getKey();
     }
 
+    public function getOwnerRecord(): Model
+    {
+        return parent::getOwnerRecord()->loadMissing(['latestContentVersion']);
+    }
+
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(
-                fn ($query) => $query
-                    ->with(['publishLog', 'author'])
+            ->modifyQueryUsing(fn ($query) => $query
+                ->with(['publishLog', 'author'])
             )
             ->defaultSort('created_at', 'desc')
             ->heading('')
@@ -146,6 +154,45 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         $action->success();
                     })
                     ->after(fn () => $this->dispatch('refresh')),
+                TableAction::make('rollbackToVersion')
+                    ->label(__('inspirecms::resources/content-version.buttons.rollback.label'))
+                    ->icon('heroicon-o-arrow-path')
+                    ->authorize(function ($record) {
+                        // Check via ContentPolicy
+                        return Gate::check('rollbackVersion', [$this->getOwnerRecord(), $record]);
+                    })
+                    ->visible(function (Model|ContentVersion $record) {
+                        // Check 1 - Can visible if is allow rollback on current license
+                        if (! LicenseTierAction::RollbackContentVersion->isAllowed()) {
+                            return false;
+                        }
+
+                        // Check 2 - Can visible if not a latest version
+                        if ($this->getCurrentContentVersion()?->getKey() === $record->getKey()) {
+                            return false;
+                        }
+
+                        return true;
+                    })
+                    ->action(function (Model|ContentVersion $record, TableAction $action) {
+                        try {
+                            DB::beginTransaction();
+                            $this->rollbackVersion($record);
+                            DB::commit();
+                            $action->success();
+                        } catch (\Throwable $th) {
+                            DB::rollBack();
+                            $action
+                                ->failureNotification(function (Notification $notification) use ($th) {
+                                    return $notification
+                                        ->title(__('inspirecms::resources/content-version.buttons.rollback.messages.failure.title'))
+                                        ->body(__('inspirecms::resources/content-version.buttons.rollback.messages.failure.body', [
+                                            'details' => $th->getMessage(),
+                                        ]));
+                                })
+                                ->failure();
+                        }
+                    }),
                 TableAction::make('viewDifferences')
                     ->label(__('inspirecms::resources/content-version.buttons.view_differences.label'))
                     ->icon('heroicon-o-eye'),
@@ -219,6 +266,42 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     ->color(fn (Model | ContentVersion $record): mixed => $this->getAvoidToCleanActionConfigFromRecord($record)['color'] ?? null)
                     ->icon(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['icon'] ?? null);
                 break;
+            case 'rollbackToVersion':
+                $action->requiresConfirmation();
+                
+                foreach (['slideOver', 'modalWidth', 'modalHeading', 'modalDescription'] as $method) {
+                    $action->{$method}(fn (Model | ContentVersion $record) => $this->getRollbackToVersionActionConfigFromRecord($record)[$method] ?? null);
+                }
+                foreach (['modalSubmitAction' => 'enableSubmitAction', 'modalCancelAction' => 'enableCancelAction'] as $method => $key) {
+                    $action->{$method}(function ($record, $action) use ($key) {
+                        $enableAction = $this->getRollbackToVersionActionConfigFromRecord($record)[$key] ?? false;
+                        if (! $enableAction) {
+                            return false;
+                        }
+                        return $action;
+                    });
+                }
+                $action
+                    ->successNotificationTitle(__('inspirecms::resources/content-version.buttons.rollback.messages.success.title'))
+                    ->modalContent(function (Model | ContentVersion $record) {
+                        $currentContentVersion = $this->getCurrentContentVersion();
+        
+                        if ($currentContentVersion && $currentContentVersion->getKey() === $record->getKey()) {
+                            return str(__('inspirecms::inspirecms.n/a'))->toHtmlString();
+                        }
+
+                        $from = $this->getDiffItemDataForRollback($currentContentVersion);
+                        $to = $this->getDiffItemDataForRollback($record);
+                        $diff = collect(array_keys($from))->merge(array_keys($to))->unique()
+                            ->mapWithKeys(fn ($key) => [
+                                $key => $this->computeDiff($from[$key] ?? null, $to[$key] ?? null),
+                            ])
+                            ->all();
+                        return view('inspirecms::filament.actions.content-history-detail', [
+                            'diff' => $diff,
+                        ]);
+                    });
+                break;
             case 'viewDifferences':
                 $action
                     ->color('gray')
@@ -233,12 +316,12 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         'date' => $record->created_at?->format('Y-m-d H:i:s') ?? __('inspirecms::inspirecms.n/a'),
                     ]))
                     ->modalContent(function (Model | ContentVersion $record) {
-                        $diff = collect($this->getDiffKeysFromRecord($record))
-                            ->mapWithKeys(fn ($key) => $this->computeDiffItem(
-                                key: $key, 
-                                fromData: $record?->from_data ?? [],
-                                toData: $record?->to_data ?? [])
-                            )
+                        $from = $this->mututeDiffItemDataForRecord($record, $record?->from_data ?? []);
+                        $to = $this->mututeDiffItemDataForRecord($record, $record?->to_data ?? []);
+                        $diff = collect(array_keys($from))->merge(array_keys($to))->unique()
+                            ->mapWithKeys(fn ($key) => [
+                                $key => $this->computeDiff($from[$key] ?? null, $to[$key] ?? null),
+                            ])
                             ->all();
                         return view('inspirecms::filament.actions.content-history-detail', [
                             'diff' => $diff,
@@ -258,20 +341,24 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             });
     }
 
-    protected function computeDiffItem(string $key, array $fromData, array $toData): array
+    protected function getDiffItemDataForRollback(Model | ContentVersion $targetVersion): array
     {
-        $originalContent = data_get($fromData, $key, null);
-        $newContent = data_get($toData, $key, null);
-        if ($key == 'propertyData') {
-            // Convert to array if it is a JSON string
-            foreach (['originalContent', 'newContent'] as $var) {
-                if (is_string($$var) && is_array(json_decode($$var, true))) {
-                    $$var = json_decode($$var, true);
-                }
-            }
+        return $this->mututeDiffItemDataForRecord($targetVersion, $targetVersion?->to_data ?? []);
+    }
+
+    protected function mututeDiffItemDataForRecord(null | Model | ContentVersion $record, array $data): array
+    {
+        $propertyData = $data['propertyData'] ?? [];
+        // Convert to array if it is a JSON string
+        if (is_string($propertyData) && is_array(json_decode($propertyData, true))) {
+            $propertyData = json_decode($propertyData, true);
         }
-        $diff = $this->computeDiff($originalContent, $newContent);
-        return [$key => $diff];
+        return [
+            'publish_state' => $record->publish_state,
+            'avoid_to_clean' => $record->avoid_to_clean,
+            // ...$data,
+            'propertyData' => $propertyData
+        ];
     }
 
     protected function computeDiff($originalContent, $newContent)
@@ -313,15 +400,6 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
         }
     }
 
-    protected function getDiffKeysFromRecord(Model | ContentVersion $record): array
-    {
-        return collect($record->to_data)
-            ->keys()
-            ->merge(array_keys($record->from_data))
-            ->unique()
-            ->all();
-    }
-
     protected function getAvoidToCleanActionConfigFromRecord(Model | ContentVersion $record): array
     {
         $currentStateIsAvoidCleanup = boolval($record->avoid_to_clean);
@@ -361,5 +439,67 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
         }
 
         return compact('title', 'body', 'status');
+    }
+
+    protected function getRollbackToVersionActionConfigFromRecord(Model | ContentVersion $record): array
+    {
+        $currentContentVersion = $this->getCurrentContentVersion();
+
+        if ($currentContentVersion && $currentContentVersion->getKey() === $record->getKey()) {
+            $modalHeading = __('inspirecms::resources/content-version.buttons.rollback.invalid_heading');
+            $modalDescription = __('inspirecms::resources/content-version.buttons.rollback.invalid_description');
+            $modalWidth = MaxWidth::Medium;
+            $slideOver = false;
+            $enableSubmitAction = false;
+            $enableCancelAction = false;
+        } else {
+            $modalHeading = __('inspirecms::resources/content-version.buttons.rollback.heading', [
+                'from' => ($currentContentVersion->created_at?->format('Y-m-d H:i:s') ?? __('inspirecms::inspirecms.n/a')) . ' (' . $this->getTableRecordTitle($currentContentVersion) . ')',
+                'to' => ($record->created_at?->format('Y-m-d H:i:s') ?? __('inspirecms::inspirecms.n/a')) . ' (' . $this->getTableRecordTitle($record) . ')',
+            ]);
+            $modalDescription = __('inspirecms::resources/content-version.buttons.rollback.description');
+            $modalWidth = MaxWidth::ScreenTwoExtraLarge;
+            $slideOver = true;
+            $enableSubmitAction = true;
+            $enableCancelAction = true;
+        }
+
+        return compact('modalHeading', 'modalDescription', 'modalWidth', 'enableSubmitAction', 'enableCancelAction',  'slideOver');
+    }
+
+    protected function getCurrentContentVersion(): null | Model | ContentVersion
+    {
+        return $this->getOwnerRecord()->latestContentVersion;
+    }
+
+    protected function rollbackVersion(Model | ContentVersion $targetVersion)
+    {
+        $modelCurrentContentVersion = $this->getCurrentContentVersion();
+        /**
+         * @var Model | Content
+         */
+        $modelContent = $this->getOwnerRecord();
+
+        $from = $this->getDiffItemDataForRollback($modelCurrentContentVersion);
+        $to = $this->getDiffItemDataForRollback($targetVersion);
+
+        // // Content_Publish_Version
+        // $publishableData = [];
+
+        $locale = $modelContent->getLocale() ?? app()->getLocale();
+
+        $toPublishState = $targetVersion->publish_state;
+        $modelContent->setTranslation('propertyData', $locale, $from['propertyData'] ?? []);
+
+        $modelContent->syncOriginal();
+        $modelContent->setTranslation('propertyData', $locale, $to['propertyData'] ?? []);
+
+        collect($to)->except(['propertyData', 'publish_state'])->each(function ($value, $key) use ($modelContent) {
+            $modelContent->setPreloadVersionData($key, $value);
+        });
+
+        $modelContent->setPublishableState($toPublishState);
+        $modelContent->setVersioningEvent('rollback');
+        $modelContent->save();
     }
 }

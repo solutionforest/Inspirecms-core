@@ -57,5 +57,21 @@ return [
                 ],
             ],
         ],
+        'rollback' => [
+            'label' => '恢復',
+            'heading' => '從 :from 恢復到 :to',
+            'description' => '您確定要恢復到此版本嗎？此操作無法撤銷。',
+            'invalid_heading' => '發生錯誤',
+            'invalid_description' => '發生錯誤。選定的版本無法恢復。',
+            'messages' => [
+                'success' => [
+                    'title' => '內容已恢復到選定的版本。',
+                ],
+                'failure' => [
+                    'title' => '恢復失敗。',
+                    'body' => '恢復內容時發生錯誤。(詳情: :details)',
+                ],
+            ],
+        ],
     ],
 ];

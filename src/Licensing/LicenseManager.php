@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Licensing;
 
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -139,33 +138,22 @@ class LicenseManager
 
     public function canCreateUser(): bool
     {
-        $limitedUserCount = $this->getLimitedUserCount();
-        if (is_null($limitedUserCount)) {
-            return true; // Unlimited users
-        }
-        $existingUserCount = InspireCmsConfig::getUserModelClass()::query()
-            ->withoutGlobalScope(SoftDeletingScope::class)
-            ->count();
-
-        return $existingUserCount < $limitedUserCount;
+        return LicenseTierAction::CreateUser->isAllowed();
     }
 
     public function canCreateRole(): bool
     {
-        $limitedRoleCount = $this->getLimitedRoleCount();
-        if (is_null($limitedRoleCount)) {
-            return true; // Unlimited roles
-        }
-        $existingRoleCount = InspireCmsConfig::getRoleModelClass()::query()
-            ->withoutGlobalScope(SoftDeletingScope::class)
-            ->count();
-
-        return $existingRoleCount < $limitedRoleCount;
+        return LicenseTierAction::CreateRole->isAllowed();
     }
 
     public function canGlobalSearch(): bool
     {
-        return $this->getLicenseTier() === 'pro';
+        return LicenseTierAction::GlobalSearch->isAllowed();
+    }
+
+    public function canRollbackVersion(): bool
+    {
+        return LicenseTierAction::RollbackContentVersion->isAllowed();
     }
 
     public function getLicenseTier(): ?string

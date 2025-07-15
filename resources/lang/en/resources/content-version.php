@@ -57,5 +57,21 @@ return [
                 ],
             ],
         ],
+        'rollback' => [
+            'label' => 'Rollback',
+            'heading' => 'Rollback version from :from to :to',
+            'description' => 'Are you sure you want to rollback to this version? This action cannot be undone.',
+            'invalid_heading' => 'Has error',
+            'invalid_description' => 'Something went wrong. The selected version is invalid for rollback.',
+            'messages' => [
+                'success' => [
+                    'title' => 'The content has been rolled back to the selected version.',
+                ],
+                'failure' => [
+                    'title' => 'Rollback failed.',
+                    'body' => 'An error occurred while rolling back the content. (Details: :details)',
+                ],
+            ],
+        ],
     ],
 ];

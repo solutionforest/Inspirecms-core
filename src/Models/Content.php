@@ -53,6 +53,8 @@ class Content extends BaseModel implements ContentContract
      */
     protected array $tempRelationData = [];
 
+    protected array $tempOriginalRelationData = [];
+
     protected $casts = [
         'is_default' => 'boolean',
     ];
@@ -321,9 +323,9 @@ class Content extends BaseModel implements ContentContract
     protected function prepareContentVersionData(): array
     {
         $data = $this->traitPrepareContentVersionData();
-        $data['from']['propertyData'] = $this->getLatestVersionPropertyData();
+        $data['from']['propertyData'] = $this->tempOriginalRelationData['propertyData'] ?? $this->getLatestVersionPropertyData();
         $data['to']['propertyData'] = $this->tempRelationData['propertyData'] ?? $this->getLatestVersionPropertyData();
-        unset($this->tempRelationData['propertyData']);
+        unset($this->tempRelationData['propertyData'], $this->tempOriginalRelationData['propertyData']);
 
         if (isset($data['to']['status']) && $toStatus = inspirecms_content_statuses()->getOption($data['to']['status'])) {
             $data['to']['status'] = $toStatus->getName();
@@ -333,6 +335,15 @@ class Content extends BaseModel implements ContentContract
         }
 
         return $data;
+    }
+
+    public function syncOriginal()
+    {
+        foreach ($this->tempRelationData as $key => $value) {
+            $this->tempOriginalRelationData[$key] = $value;
+        }
+
+        return parent::syncOriginal();
     }
 
     public function setTranslation(string $key, string $locale, $value): Content
