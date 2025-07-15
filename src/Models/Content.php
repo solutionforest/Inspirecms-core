@@ -379,7 +379,6 @@ class Content extends BaseModel implements ContentContract
     {
         return [
             'title',
-            'parent_id',
         ];
     }
     // endregion ContentVersion

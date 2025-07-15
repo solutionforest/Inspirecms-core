@@ -44,14 +44,6 @@ class ContentVersion extends BaseModel implements ContentVersionContract
         );
     }
 
-    protected function getVersioningCheckDiffAttribtues()
-    {
-        return [
-            'publish_state',
-            'avoid_to_clean',
-        ];
-    }
-
     public function getVersioningCheckDiffData()
     {
         return [
