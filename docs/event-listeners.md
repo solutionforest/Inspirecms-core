@@ -56,7 +56,7 @@ SolutionForest\InspireCms\Events\Licensing\LicensesRefreshed::class     // When 
 You can create an event listener using Laravel's artisan command:
 
 ```bash
-php artisan make:listener YourListener --event=SolutionForest\\InspireCms\\Events\\Content\\CreatedContentVersion
+php artisan make:listener YourListener --event=\\SolutionForest\\InspireCms\\Events\\Content\\CreatedPublishContentVersion
 ```
 
 This creates a new listener in the `app/Listeners` directory.

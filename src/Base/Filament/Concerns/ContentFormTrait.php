@@ -16,6 +16,7 @@ use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable as CmsCreateContentRecordsTranslatable;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
+use SolutionForest\InspireCms\Helpers\DiffHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Throwable;
@@ -234,7 +235,10 @@ trait ContentFormTrait
 
             $record->setPublishableState($publishableAction);
 
-            $this->propertyDataIsDirtyPreCheck($record->getLatestVersionPropertyData(), $data['propertyData'] ?? []);
+            $this->propertyDataIsDirtyPreCheck(
+                array_merge($record->getLatestVersionPropertyData(), $record->latestContentVersion?->getVersioningCheckDiffData() ?? []),
+                array_merge($data['propertyData'] ?? [], $record->contentVersions()->make([...$publishableData, 'publish_state' => $publishableAction])?->getVersioningCheckDiffData() ?? []),
+            );
 
             $this->record = $this->handleRecordUpdate($record, $data);
             // endregion Handle Record Updating
@@ -389,14 +393,7 @@ trait ContentFormTrait
                 return;
             }
 
-            $modelTmpContentVersion = app(InspireCmsConfig::getContentVersionModelClass(), [
-                'attributes' => [
-                    'from_data' => $from,
-                    'to_data' => $to,
-                ],
-            ]);
-
-            $diff = $modelTmpContentVersion->getDifferences();
+            $diff = DiffHelper::compareArrays($from, $to);
 
             // Display notification if no differences found
             if (empty($diff)) {

@@ -136,7 +136,7 @@ class ContentDto extends BaseTranslatableModelDto
 
     public function getParent()
     {
-        return $this->getAncestors()->first();
+        return $this->getAncestors()->last();
     }
 
     public function getAncestors()

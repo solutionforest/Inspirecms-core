@@ -10,6 +10,7 @@ use SolutionForest\InspireCms\Events\Content\CreatingContentVersion;
 use SolutionForest\InspireCms\Events\Content\CreatingPublishContentVersion;
 use SolutionForest\InspireCms\Events\Content\DispatchContentVersion;
 use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
+use SolutionForest\InspireCms\Helpers\DiffHelper;
 use SolutionForest\InspireCms\Models\Contracts\Base\HasContentVersions;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 
@@ -41,8 +42,15 @@ class ProcessContentVersion
 
         $contentVersion = $model->contentVersions()->make($contentVersionData);
 
-        if ($contentVersion instanceof ContentVersion && count($contentVersion->getDifferences()) === 0) {
-            return;
+        $latestVersion = $model->latestContentVersion;
+        if ($contentVersion instanceof ContentVersion) {
+            $from = array_merge($contentVersion->from_data ?? [], $latestVersion?->getVersioningCheckDiffData() ?? []);
+            $to = array_merge($contentVersion->to_data ?? [], $contentVersion?->getVersioningCheckDiffData() ?? []);
+            $diff = DiffHelper::compareArrays($from, $to);
+            // If there are no differences, skip creating the version.
+            if (count($diff) === 0) {
+                return;
+            }
         }
 
         // Unload the relations to prevent large amounts of unnecessary data from being serialized.

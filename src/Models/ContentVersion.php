@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Prunable;
+use SolutionForest\InspireCms\Helpers\DiffHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
 use SolutionForest\InspireCms\Observers\ContentVersionObserver;
@@ -37,26 +38,26 @@ class ContentVersion extends BaseModel implements ContentVersionContract
 
     public function getDifferences()
     {
-        $from = $this->from_data;
-        $to = $this->to_data;
+        return DiffHelper::compareArrays(
+            $this->from_data ?? [],
+            $this->to_data ?? []
+        );
+    }
 
-        $diff = [];
+    protected function getVersioningCheckDiffAttribtues()
+    {
+        return [
+            'publish_state',
+            'avoid_to_clean',
+        ];
+    }
 
-        foreach ($to as $key => $value) {
-            if (! array_key_exists($key, $from)) {
-                $diff[$key] = [
-                    'from' => null,
-                    'to' => $value,
-                ];
-            } elseif ($from[$key] !== $value) {
-                $diff[$key] = [
-                    'from' => $from[$key],
-                    'to' => $value,
-                ];
-            }
-        }
-
-        return $diff;
+    public function getVersioningCheckDiffData()
+    {
+        return [
+            'publish_state' => $this->publish_state ?? 'draft',
+            'avoid_to_clean' => $this->avoid_to_clean ?? inspirecms_content_statuses()->getOption($this->publish_state ?? 'draft')?->isPublishable() ?? null,
+        ];
     }
 
     // region Scopes
