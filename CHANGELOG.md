@@ -2,6 +2,16 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.0.4 - 2025-07-15
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### 🐛 Bug fixes
+
+- Fix: get root while call `getParent` for ContentDto
+- Fix: Cannot publish content if previous states is "draft" and propertyData is no changes
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.0.3...1.0.4
+
 ## 1.0.3 - 2025-07-11
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
