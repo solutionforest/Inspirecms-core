@@ -10,6 +10,7 @@ return [
     'invalid_license' => 'Invalid license.',
     'locked' => 'Locked',
     'media_item_moved' => 'Media Item Moved',
+    'no_published_yet' => 'No published yet',
     'pending' => 'Pending',
     'please_refer_to_doc_link' => 'Please refer to the <a href=":link" target="_blank"><u>documentation</u></a> for more information',
     'same_theme_name_already_exists' => 'A theme with the same name already exists.',

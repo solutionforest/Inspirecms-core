@@ -9,6 +9,7 @@ return [
     'in_progress' => '進行中',
     'invalid_license' => '無效的許可證。',
     'locked' => '已鎖定',
+    'no_published_yet' => '尚未發布',
     'media_item_moved' => '媒體項目已移動',
     'pending' => '待處理',
     'please_refer_to_doc_link' => '請參閱 <a href=":link" target="_blank"><u>文檔</u></a> 以獲取更多信息',

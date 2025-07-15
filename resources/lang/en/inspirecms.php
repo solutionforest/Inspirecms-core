@@ -51,6 +51,7 @@ return [
     'user' => 'User',
     'users' => 'Users',
     'uuid' => 'UUID',
+    'unknown_user' => 'Unknown User',
     'version' => 'Version',
 
     'page_status' => [

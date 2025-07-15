@@ -368,11 +368,7 @@ class Content extends BaseModel implements ContentContract
     {
         return [
             'title',
-            'slug',
-            'status',
-            'document_type_id',
             'parent_id',
-            'is_default',
         ];
     }
     // endregion ContentVersion
