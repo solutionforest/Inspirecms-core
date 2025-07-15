@@ -40,7 +40,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
     protected $queryString = [
         'page' => ['except' => 1, 'as' => self::PAGE_NAME],
     ];
-    
+
     public function getTableRecordTitle(Model $record): ?string
     {
         return '#' . $record->getKey();
@@ -54,8 +54,9 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
     public function table(Table $table): Table
     {
         return $table
-            ->modifyQueryUsing(fn ($query) => $query
-                ->with(['publishLog', 'author'])
+            ->modifyQueryUsing(
+                fn ($query) => $query
+                    ->with(['publishLog', 'author'])
             )
             ->defaultSort('created_at', 'desc')
             ->heading('')
@@ -161,7 +162,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         // Check via ContentPolicy
                         return Gate::check('rollbackVersion', [$this->getOwnerRecord(), $record]);
                     })
-                    ->visible(function (Model|ContentVersion $record) {
+                    ->visible(function (Model | ContentVersion $record) {
                         // Check 1 - Can visible if is allow rollback on current license
                         if (! LicenseTierAction::RollbackContentVersion->isAllowed()) {
                             return false;
@@ -174,7 +175,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
 
                         return true;
                     })
-                    ->action(function (Model|ContentVersion $record, TableAction $action) {
+                    ->action(function (Model | ContentVersion $record, TableAction $action) {
                         try {
                             DB::beginTransaction();
                             $this->rollbackVersion($record);
@@ -265,10 +266,11 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     ->label(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['label'] ?? null)
                     ->color(fn (Model | ContentVersion $record): mixed => $this->getAvoidToCleanActionConfigFromRecord($record)['color'] ?? null)
                     ->icon(fn (Model | ContentVersion $record) => $this->getAvoidToCleanActionConfigFromRecord($record)['icon'] ?? null);
+
                 break;
             case 'rollbackToVersion':
                 $action->requiresConfirmation();
-                
+
                 foreach (['slideOver', 'modalWidth', 'modalHeading', 'modalDescription'] as $method) {
                     $action->{$method}(fn (Model | ContentVersion $record) => $this->getRollbackToVersionActionConfigFromRecord($record)[$method] ?? null);
                 }
@@ -278,6 +280,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         if (! $enableAction) {
                             return false;
                         }
+
                         return $action;
                     });
                 }
@@ -285,7 +288,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     ->successNotificationTitle(__('inspirecms::resources/content-version.buttons.rollback.messages.success.title'))
                     ->modalContent(function (Model | ContentVersion $record) {
                         $currentContentVersion = $this->getCurrentContentVersion();
-        
+
                         if ($currentContentVersion && $currentContentVersion->getKey() === $record->getKey()) {
                             return str(__('inspirecms::inspirecms.n/a'))->toHtmlString();
                         }
@@ -297,10 +300,12 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                                 $key => $this->computeDiff($from[$key] ?? null, $to[$key] ?? null),
                             ])
                             ->all();
+
                         return view('inspirecms::filament.actions.content-history-detail', [
                             'diff' => $diff,
                         ]);
                     });
+
                 break;
             case 'viewDifferences':
                 $action
@@ -323,10 +328,12 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                                 $key => $this->computeDiff($from[$key] ?? null, $to[$key] ?? null),
                             ])
                             ->all();
+
                         return view('inspirecms::filament.actions.content-history-detail', [
                             'diff' => $diff,
                         ]);
                     });
+
                 break;
         }
     }
@@ -353,11 +360,12 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
         if (is_string($propertyData) && is_array(json_decode($propertyData, true))) {
             $propertyData = json_decode($propertyData, true);
         }
+
         return [
             'publish_state' => $record->publish_state,
             'avoid_to_clean' => $record->avoid_to_clean,
             // ...$data,
-            'propertyData' => $propertyData
+            'propertyData' => $propertyData,
         ];
     }
 
@@ -464,7 +472,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             $enableCancelAction = true;
         }
 
-        return compact('modalHeading', 'modalDescription', 'modalWidth', 'enableSubmitAction', 'enableCancelAction',  'slideOver');
+        return compact('modalHeading', 'modalDescription', 'modalWidth', 'enableSubmitAction', 'enableCancelAction', 'slideOver');
     }
 
     protected function getCurrentContentVersion(): null | Model | ContentVersion

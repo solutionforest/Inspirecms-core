@@ -45,7 +45,7 @@ enum LicenseTierAction
 
         // Validate each action based on the tier
         switch ($this) {
-            
+
             case self::CreateUser:
                 $limitedUserCount = $licenseManager->getLimitedUserCount();
                 if (is_null($limitedUserCount)) {
@@ -54,8 +54,9 @@ enum LicenseTierAction
                 $existingUserCount = InspireCmsConfig::getUserModelClass()::query()
                     ->withoutGlobalScope(SoftDeletingScope::class)
                     ->count();
+
                 return $existingUserCount < $limitedUserCount;
-                
+
             case self::CreateRole:
                 $limitedRoleCount = $licenseManager->getLimitedRoleCount();
                 if (is_null($limitedRoleCount)) {
@@ -64,6 +65,7 @@ enum LicenseTierAction
                 $existingRoleCount = InspireCmsConfig::getRoleModelClass()::query()
                     ->withoutGlobalScope(SoftDeletingScope::class)
                     ->count();
+
                 return $existingRoleCount < $limitedRoleCount;
 
             default:
