@@ -236,8 +236,8 @@ trait ContentFormTrait
             $record->setPublishableState($publishableAction);
 
             $this->propertyDataIsDirtyPreCheck(
-                array_merge($record->getLatestVersionPropertyData(), $record->latestContentVersion?->getVersioningCheckDiffData() ?? []), 
-                array_merge($data['propertyData'] ?? [], $record->contentVersions()->make([... $publishableData, 'publish_state' => $publishableAction])?->getVersioningCheckDiffData() ?? []), 
+                array_merge($record->getLatestVersionPropertyData(), $record->latestContentVersion?->getVersioningCheckDiffData() ?? []),
+                array_merge($data['propertyData'] ?? [], $record->contentVersions()->make([...$publishableData, 'publish_state' => $publishableAction])?->getVersioningCheckDiffData() ?? []),
             );
 
             $this->record = $this->handleRecordUpdate($record, $data);
