@@ -39,6 +39,13 @@ interface ContentVersion extends CanPrunable, HasAuthor
     public function getDifferences();
 
     /**
+     * Get the attributes to check for versioning differences.
+     *
+     * @return array
+     */
+    public function getVersioningCheckDiffData();
+
+    /**
      * Scope a query to only include published content versions.
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $query
