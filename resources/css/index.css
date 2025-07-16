@@ -39,9 +39,6 @@
     @apply text-xs font-medium;
     @apply flex items-center justify-center gap-1;
 }
-.content-history .fi-ta-record .fi-ta-actions {
-    @apply min-w-[24rem];
-}
 .version-diff .version-diff-item {
     @apply text-sm;
 }
