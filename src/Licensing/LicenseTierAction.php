@@ -35,8 +35,7 @@ enum LicenseTierAction
 
         $preCheck = match ($tier) {
             'pro' => in_array($this, self::RESTRICTED_ACTIONS_PRO),
-            'free' => in_array($this, self::RESTRICTED_ACTIONS_FREE),
-            default => null,
+            default => in_array($this, self::RESTRICTED_ACTIONS_FREE),
         };
 
         if ($preCheck === false) {
