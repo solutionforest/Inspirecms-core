@@ -64,50 +64,54 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             ->emptyStateHeading(__('inspirecms::resources/content-version.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/content-version.empty_state.description'))
             ->columns([
-                Stack::make([
-                    Split::make([
-                        Stack::make([
-                            TextColumn::make('id')
-                                ->label(__('inspirecms::inspirecms.id'))
-                                ->prefix('#')
-                                ->weight('semibold'),
-                            TextColumn::make('created_at')
-                                ->label(__('inspirecms::inspirecms.created_at'))
-                                ->dateTime('Y-m-d H:i:s')
-                                ->sortable(),
-                            TextColumn::make('author_name')
-                                ->searchable(true, fn ($query, $search) => $query->whereHas('author', function ($q) use ($search) {
-                                    $q->where('name', 'like', "%{$search}%");
-                                }))
-                                ->color('gray')
-                                ->size('sm')
-                                ->prefix(fn (ContentVersion | Model $record) => ucfirst($record->event_name) . ' by ')
-                                ->getStateUsing(fn (ContentVersion | Model $record) => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user')),
-                        ]),
-                        TextColumn::make('publish_state')
-                            ->badge()
-                            ->getStateUsing(fn ($record) => ! blank($record->publish_state) ? inspirecms_content_statuses()->getOption($record->publish_state) : null)
-                            ->formatStateUsing(fn ($state) => $state instanceof ContentStatusOption ? $state->getLabel() : null)
-                            ->color(fn ($state) => $state instanceof ContentStatusOption ? $state->getColor() : 'gray')
-                            ->placeholder(__('inspirecms::inspirecms.n/a'))
-                            ->icon(function ($state, ContentVersion | Model $record) {
+                Split::make([
+                    Stack::make([
+                        
+                        TextColumn::make('id')
+                            ->label(__('inspirecms::inspirecms.id'))
+                            ->prefix('#')
+                            ->weight('semibold')
+                            ->size('sm')
+                            ->fontFamily('mono'),
 
-                                if (($unpublishOption = ContentStatusManifest::getOption('unpublish'))) {
-                                    if ($state instanceof ContentStatusOption) {
-                                        $state = $state->getValue();
-                                    }
-                                    if ($state === $unpublishOption->getValue()) {
-                                        return 'heroicon-o-eye-slash';
-                                    }
-                                }
+                        TextColumn::make('created_at')
+                            ->label(__('inspirecms::inspirecms.created_at'))
+                            ->dateTime('Y-m-d H:i:s')
+                            ->sortable(),
 
-                                if ($record->publishLog?->published_at != null) {
-                                    return 'heroicon-o-eye';
-                                }
-
-                                return null;
-                            }),
+                        TextColumn::make('author_name')
+                            ->searchable(true, fn ($query, $search) => $query->whereHas('author', function ($q) use ($search) {
+                                $q->where('name', 'like', "%{$search}%");
+                            }))
+                            ->color('gray')
+                            ->size('sm')
+                            ->prefix(fn (ContentVersion | Model $record) => ucfirst($record->event_name) . ' by ')
+                            ->getStateUsing(fn (ContentVersion | Model $record) => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user')),
                     ]),
+                    TextColumn::make('publish_state')
+                        ->badge()
+                        ->getStateUsing(fn ($record) => ! blank($record->publish_state) ? inspirecms_content_statuses()->getOption($record->publish_state) : null)
+                        ->formatStateUsing(fn ($state) => $state instanceof ContentStatusOption ? $state->getLabel() : null)
+                        ->color(fn ($state) => $state instanceof ContentStatusOption ? $state->getColor() : 'gray')
+                        ->placeholder(__('inspirecms::inspirecms.n/a'))
+                        ->icon(function ($state, ContentVersion | Model $record) {
+
+                            if (($unpublishOption = ContentStatusManifest::getOption('unpublish'))) {
+                                if ($state instanceof ContentStatusOption) {
+                                    $state = $state->getValue();
+                                }
+                                if ($state === $unpublishOption->getValue()) {
+                                    return 'heroicon-o-eye-slash';
+                                }
+                            }
+
+                            if ($record->publishLog?->published_at != null) {
+                                return 'heroicon-o-eye';
+                            }
+
+                            return null;
+                        })
+                        ->alignEnd(),
                 ]),
 
                 TextColumn::make('publishLog.published_at')
@@ -155,6 +159,9 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         $action->success();
                     })
                     ->after(fn () => $this->dispatch('refresh')),
+                TableAction::make('viewDifferences')
+                    ->label(__('inspirecms::resources/content-version.buttons.view_differences.label'))
+                    ->icon('heroicon-o-eye'),
                 TableAction::make('rollbackToVersion')
                     ->label(__('inspirecms::resources/content-version.buttons.rollback.label'))
                     ->icon('heroicon-o-arrow-path')
@@ -194,9 +201,6 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                                 ->failure();
                         }
                     }),
-                TableAction::make('viewDifferences')
-                    ->label(__('inspirecms::resources/content-version.buttons.view_differences.label'))
-                    ->icon('heroicon-o-eye'),
             ])
             ->bulkActions([
                 TableBulkAction::make('bulkUpdateState')
