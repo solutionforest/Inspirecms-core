@@ -211,6 +211,8 @@ abstract class TestCase extends Orchestra
         ]);
 
         $user->syncRoles($role);
+
+        return $user;
     }
 
     public function loginCmsPanelAsSuperAdmin()
