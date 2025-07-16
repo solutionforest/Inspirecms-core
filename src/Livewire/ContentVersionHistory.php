@@ -170,17 +170,18 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         return Gate::check('rollbackVersion', [$this->getOwnerRecord(), $record]);
                     })
                     ->visible(function (Model | ContentVersion $record) {
-                        // Check 1 - Can visible if is allow rollback on current license
                         if (! app(LicenseManager::class)->canRollbackVersion()) {
                             return false;
                         }
 
-                        // Check 2 - Can visible if not a latest version
+                        return true;
+                    })
+                    ->disabled(function (Model | ContentVersion $record) {
                         if ($this->getCurrentContentVersion()?->getKey() === $record->getKey()) {
-                            return false;
+                            return true;
                         }
 
-                        return true;
+                        return false;
                     })
                     ->action(function (Model | ContentVersion $record, TableAction $action) {
                         try {
