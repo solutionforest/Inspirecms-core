@@ -17,7 +17,7 @@ function createContent(array $data = [], array $publishableData = [], ?string $p
     $facDocumentType = DocumentType::factory(['category' => 'web']);
 
     foreach ($data as $key => $value) {
-        if (!is_array($value)) {
+        if (! is_array($value)) {
             continue;
         }
         $facFieldGroup = FieldGroup::factory(['name' => $key]);
@@ -28,7 +28,7 @@ function createContent(array $data = [], array $publishableData = [], ?string $p
     }
 
     $facContent = Content::factory()->for($facDocumentType);
-    if (!empty($data)) {
+    if (! empty($data)) {
         $facContent = $facContent->havePropertyData($data);
     }
 
@@ -36,7 +36,7 @@ function createContent(array $data = [], array $publishableData = [], ?string $p
     if ($publishState) {
         $content->setPublishableState($publishState);
     }
-    if (!empty($publishableData)) {
+    if (! empty($publishableData)) {
         $content->setPublishableData($publishableData);
     }
     $content->save();
@@ -47,13 +47,13 @@ function createContent(array $data = [], array $publishableData = [], ?string $p
 
 function addContentVersion(Content $content, array $data = [], array $publishableData = [], ?string $publishState = 'publish'): Content
 {
-    if (!empty($data)) {
+    if (! empty($data)) {
         $content->propertyData = json_encode($data);
     }
     if ($publishState) {
         $content->setPublishableState($publishState);
     }
-    if (!empty($publishableData)) {
+    if (! empty($publishableData)) {
         $content->setPublishableData($publishableData);
     }
     $content->save();
@@ -105,7 +105,6 @@ test('rollback_content_version', function () {
     expect($latestVersion)->not->toBeNull();
     expect($firstVersion->id != $latestVersion->id)->toBeTrue();
 
-
     Livewire::test('inspirecms::content-version-history', getLivewireParams($content))
         ->assertCountTableRecords(2)
         ->assertTableActionHidden('rollbackToVersion', $firstVersion);
@@ -114,7 +113,7 @@ test('rollback_content_version', function () {
         $mock->shouldReceive('canRollbackVersion')->andReturn(true);
     });
     expect(app(LicenseManager::class)->canRollbackVersion())->toBe(true);
-    
+
     Livewire::test('inspirecms::content-version-history', getLivewireParams($content))
         ->assertTableActionHidden('rollbackToVersion', $latestVersion)
         ->callTableAction('rollbackToVersion', $firstVersion)

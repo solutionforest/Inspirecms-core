@@ -66,7 +66,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
             ->columns([
                 Split::make([
                     Stack::make([
-                        
+
                         TextColumn::make('id')
                             ->label(__('inspirecms::inspirecms.id'))
                             ->prefix('#')
