@@ -24,7 +24,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
-use SolutionForest\InspireCms\Licensing\LicenseTierAction;
+use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 use SolutionForest\InspireCms\Support\Diff\Diff;
@@ -81,8 +81,8 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                                 }))
                                 ->color('gray')
                                 ->size('sm')
-                                ->prefix('By ')
-                                ->getStateUsing(fn ($record) => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user')),
+                                ->prefix(fn (ContentVersion | Model $record) => ucfirst($record->event_name) . ' by ')
+                                ->getStateUsing(fn (ContentVersion | Model $record) => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user')),
                         ]),
                         TextColumn::make('publish_state')
                             ->badge()
@@ -164,7 +164,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                     })
                     ->visible(function (Model | ContentVersion $record) {
                         // Check 1 - Can visible if is allow rollback on current license
-                        if (! LicenseTierAction::RollbackContentVersion->isAllowed()) {
+                        if (! app(LicenseManager::class)->canRollbackVersion()) {
                             return false;
                         }
 
