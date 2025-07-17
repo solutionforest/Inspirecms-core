@@ -5,8 +5,9 @@ namespace SolutionForest\InspireCms\Filament\Clusters;
 use Filament\Clusters\Cluster;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
+use SolutionForest\InspireCms\Support\MediaLibrary\Contracts\MediaLibraryPage;
 
-class Media extends Cluster implements ClusterSection
+class Media extends Cluster implements ClusterSection, MediaLibraryPage
 {
     use ClusterSectionTrait;
 
