@@ -131,7 +131,7 @@ class ContentDto extends BaseTranslatableModelDto
     public function getPaginatedChildren($perPage = 10, $pageName = 'page', $page = null, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
     {
         $query = $this->getModel()->children();
-        
+
         $query->with(static::getNecessaryRelationships());
         $query->with($withRelations);
 
@@ -141,7 +141,7 @@ class ContentDto extends BaseTranslatableModelDto
         if ($isPublished != null) {
             $query->whereIsPublished($isPublished);
         }
-        if (!empty($sorting)) {
+        if (! empty($sorting)) {
             foreach ($sorting as $column => $direction) {
                 if (! is_string($column) || ! is_string($direction)) {
                     continue;
