@@ -43,10 +43,10 @@ php artisan make:filament-panel my-cms
 
 2. Extend the base CMS Panel Provider:
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
 use Filament\Panel;
 use SolutionForest\InspireCms\CmsPanelProvider;
@@ -69,14 +69,14 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 3. Register the provider in `config/app.php`:
 
-```php
+```php{title="config/app.php"}
 'providers' => [
     // Other providers...
     // Comment out or remove the default CmsPanelProvider
     // SolutionForest\InspireCms\CmsPanelProvider::class,
 
     // Add your custom provider
-    App\Providers\MyCmsPanelProvider::class,
+    App\Providers\Filament\MyCmsPanelProvider::class,
 ],
 ```
 
@@ -84,10 +84,10 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 Here's how to customize various aspects of the panel:
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
 use Filament\Panel;
 use Filament\Navigation\NavigationGroup;
@@ -145,10 +145,10 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 You can customize the navigation structure:
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
 use Filament\Panel;
 use Filament\Navigation\NavigationGroup;
@@ -185,11 +185,12 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 Configure default widgets and resources:
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
+use App\Filament\Pages\Settings;
 use App\Filament\Widgets\StatsOverview;
 use App\Filament\Resources\ProductResource;
 use Filament\Panel;
@@ -209,7 +210,7 @@ class MyCmsPanelProvider extends CmsPanelProvider
                 ProductResource::class,
             ])
             ->pages([
-                App\Filament\Pages\Settings::class,
+                Settings::class,
             ]);
     }
 }
@@ -219,10 +220,10 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 For more advanced customization:
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
 use Filament\Panel;
 use SolutionForest\InspireCms\CmsPanelProvider;
@@ -266,26 +267,32 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 ## Adding Custom Clusters
 
-### Creating Custom Clusters
+### Creating Custom Cluster
 
-1. Generate a new resource class:
+1. Generate a new cluster class:
+
+You can create a Filament cluster for the CMS panel or any other panel:
 
 ```bash
-php artisan make:filament-cluster YourClusterName
+# Create a cluster for the CMS panel (auto-registered)
+php artisan make:filament-cluster YourClusterName --panel=cms
+
+# Create a cluster for another panel (requires manual registration)
+php artisan make:filament-cluster YourClusterName --panel=admin
 ```
 
 2. Register your cluster:
 
-You can register your custom cluster in two ways:
+If you created the cluster under the CMS panel (`--panel=cms`), it will be automatically registered. However, if you created the cluster under a different panel or want to customize the registration, you can register your custom cluster in two ways:
 
 **Option 1: Using configuration**
 
-```php
+```php{title="app/Providers/AppServiceProvider.php"}
 <?php
 
 namespace App\Providers;
 
-use App\Filament\Clusters\YourClusterName;
+use App\Filament\Admin\Clusters\YourClusterName;
 use Illuminate\Support\ServiceProvider;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -293,7 +300,7 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // Register your custom resource
+        // Register your custom cluster
         InspireCmsConfig::set('admin.clusters.your_cluster_name', YourClusterName::class);
     }
 }
@@ -301,13 +308,12 @@ class AppServiceProvider extends ServiceProvider
 
 **Option 2: Using a custom panel provider**
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
-use App\Filament\Clusters\YourClusterName;
-use App\Filament\Resources\YourModelResource;
+use App\Filament\Admin\Clusters\YourClusterName;
 use Filament\Panel;
 use SolutionForest\InspireCms\CmsPanelProvider;
 
@@ -328,16 +334,16 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 ### Example Cluster Class
 
-```php
+```php{title="app/Filament/Cms/Clusters/Shops.php"}
 <?php
 
-namespace App\Filament\Clusters;
+namespace App\Filament\Cms\Clusters;
 
 use Filament\Clusters\Cluster;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 
-class ShopCluster extends Cluster implements ClusterSection
+class Shops extends Cluster implements ClusterSection
 {
     use ClusterSectionTrait;
 
@@ -358,12 +364,12 @@ To associate a resource or page with a cluster, specify the cluster class in the
 
 For resources:
 
-```php
+```php{title="app/Filament/Cms/Resources/ProductResource.php"}
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Cms\Resources;
 
-use App\Filament\Clusters\ShopCluster;
+use App\Filament\Cms\Clusters\Shops;
 use Filament\Resources\Resource;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -372,7 +378,7 @@ class ProductResource extends Resource implements ClusterSectionResource
 {
     use ClusterSectionResourceTrait;
 
-    protected static ?string $cluster = ShopCluster::class;
+    protected static ?string $cluster = Shops::class;
 
     // Other resource configuration...
 }
@@ -380,12 +386,12 @@ class ProductResource extends Resource implements ClusterSectionResource
 
 For pages:
 
-```php
+```php{title="app/Filament/Cms/Pages/ShopSettings.php"}
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Cms\Pages;
 
-use App\Filament\Clusters\ShopCluster;
+use App\Filament\Cms\Clusters\Shops;
 use Filament\Pages\Page;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
@@ -394,7 +400,7 @@ class ShopSettings extends Page implements ClusterSectionPage
 {
     use ClusterSectionPageTrait;
 
-    protected static ?string $cluster = ShopCluster::class;
+    protected static ?string $cluster = Shops::class;
 
     // Other page configuration...
 }
@@ -410,24 +416,30 @@ Resources in Filament represent database models and provide a complete CRUD inte
 
 1. Generate a new resource class:
 
+You can create a Filament resource for the CMS panel or any other panel:
+
 ```bash
-php artisan make:filament-resource YourModel
+# Create a resource for the CMS panel (auto-registered)
+php artisan make:filament-resource YourModel --panel=cms
+
+# Create a resource for another panel (requires manual registration)
+php artisan make:filament-resource YourModel --panel=admin
 ```
 
 2. Register your resource:
 
-You can register your custom resources in two ways:
+If you created the resource under the CMS panel (`--panel=cms`), it will be automatically registered. However, if you created the resource under a different panel or want to customize the registration, you can register your custom resources in two ways:
 
 **Option 1: Using configuration**
 
-```php
+```php{title="app/Providers/AppServiceProvider.php"}
 <?php
 
 namespace App\Providers;
 
+use App\Filament\Admin\Resources\YourModelResource;
 use Illuminate\Support\ServiceProvider;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use App\Filament\Resources\YourModelResource;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -441,12 +453,12 @@ class AppServiceProvider extends ServiceProvider
 
 **Option 2: Using a custom panel provider**
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
-use App\Filament\Resources\YourModelResource;
+use App\Filament\Admin\Resources\YourModelResource;
 use Filament\Panel;
 use SolutionForest\InspireCms\CmsPanelProvider;
 
@@ -467,12 +479,13 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 ### Example Resource Class
 
-```php
+```php{title="app/Filament/Cms/Resources/ProductResource.php"}
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Cms\Resources;
 
-use App\Filament\Clusters\Shop;
+use App\Filament\Cms\Clusters\Shops;
+use App\Filament\Cms\Resources\ProductResource\Pages;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Resources\Form;
@@ -495,7 +508,7 @@ class ProductResource extends Resource implements ClusterSectionResource
 
     protected static ?int $navigationSort = 1;
 
-    protected static ?string $cluster = Shop::class;
+    protected static ?string $cluster = Shops::class;
 
     public static function form(Form $form): Form
     {
@@ -560,43 +573,49 @@ You can add standalone pages to the admin panel that aren't tied to a specific r
 
 1. Generate a new page class:
 
+You can create a Filament page for the CMS panel or any other panel:
+
 ```bash
-php artisan make:filament-page Settings
+# Create a page for the CMS panel (auto-registered)
+php artisan make:filament-page YourPage --panel=cms
+
+# Create a page for another panel (requires manual registration)
+php artisan make:filament-page YourPage --panel=admin
 ```
 
 2. Register your page:
 
-You can register your custom pages in two ways:
+If you created the page under the CMS panel (`--panel=cms`), it will be automatically registered. However, if you created the page under a different panel or want to customize the registration, you can register your custom pages in two ways:
 
 **Option 1: Using configuration**
 
-```php
+```php{title="app/Providers/AppServiceProvider.php"}
 <?php
 
 namespace App\Providers;
 
+use App\Filament\Admin\Pages\YourPage;
 use Illuminate\Support\ServiceProvider;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use App\Filament\Pages\Settings;
 
 class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
         // Register your custom page
-        InspireCmsConfig::set('admin.pages.settings', Settings::class);
+        InspireCmsConfig::set('admin.pages.settings', YourPage::class);
     }
 }
 ```
 
 **Option 2: Using a custom panel provider**
 
-```php
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
 <?php
 
-namespace App\Providers;
+namespace App\Providers\Filament;
 
-use App\Filament\Pages\Settings;
+use App\Filament\Admin\Pages\YourPage;
 use Filament\Panel;
 use SolutionForest\InspireCms\CmsPanelProvider;
 
@@ -608,7 +627,7 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
         return $panel
             ->pages([
-                Settings::class,
+                YourPage::class,
                 // Add more pages here
             ]);
     }
@@ -617,11 +636,12 @@ class MyCmsPanelProvider extends CmsPanelProvider
 
 ### Example Page Class
 
-```php
+```php{title="app/Filament/Cms/Pages/ShopSettings.php"}
 <?php
 
-namespace App\Filament\Pages;
+namespace App\Filament\Cms\Pages;
 
+use App\Filament\Cms\Clusters\Shops;
 use Filament\Actions\Action;
 use Filament\Actions\Concerns\InteractsWithActions;
 use Filament\Actions\Contracts\HasActions;
@@ -636,7 +656,7 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Contracts\GuardPage;
 
-class Settings extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
+class ShopSettings extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
 {
     use ClusterSectionPageTrait;
     use InteractsWithActions;
@@ -652,7 +672,7 @@ class Settings extends Page implements ClusterSectionPage, GuardPage, HasActions
 
     protected static string $view = 'filament.pages.settings';
 
-    protected static ?string $cluster = \SolutionForest\InspireCms\Filament\Clusters\Settings::class;
+    protected static ?string $cluster = Shops::class;
 
     public ?array $data = [];
 
@@ -704,17 +724,27 @@ You can add widgets to the admin dashboard to display important information, sta
 
 ### Creating a Custom Widget
 
-1. Generate a new widget class to your panel provider:
+1. Generate a new widget class:
+
+You can create a Filament widget for the CMS panel or any other panel:
 
 ```bash
+# Create a widget for the CMS panel (auto-registered to CMS dashboard)
 php artisan make:filament-widget StatsOverview --panel=cms
+
+# Create a widget for another panel (requires manual registration)
+php artisan make:filament-widget StatsOverview --panel=admin
 ```
 
-2. Then, you can optionally register your widget to dashboard page:
+2. Register your widget:
 
-You can register your custom widgets in two ways:
+If you created the widget under the CMS panel (`--panel=cms`), you can optionally register it to the CMS dashboard. However, if you created the widget under a different panel, you need to manually register it to that panel's dashboard.
 
-**Option 1: Register on service provider**
+**For CMS Panel widgets - Optional registration to CMS Dashboard:**
+
+You can register CMS widgets to the CMS Dashboard in two ways:
+
+**Option 1: Using service provider**
 
 ```php{title="app/Providers/AppServiceProvider.php"}
 <?php
@@ -743,10 +773,38 @@ class AppServiceProvider extends ServiceProvider
     // ...
     'extra_widgets' => [
         // Extra widgets to be added to the CMS Dashboard
-        \App\Filament\Cms\Widgets\Test::class,
+        \App\Filament\Cms\Widgets\StatsOverview::class,
     ],
     //..
 ],
+```
+
+### Widgets for Other Filament Panels
+
+If you created a widget for a different panel (e.g., `--panel=admin`), you need to register it manually:
+
+```php{title="app/Providers/Filament/MyCmsPanelProvider.php"}
+<?php
+
+namespace App\Providers\Filament;
+
+use App\Filament\Admin\Widgets\StatsOverview;
+use Filament\Panel;
+use SolutionForest\InspireCms\CmsPanelProvider;
+
+class MyCmsPanelProvider extends CmsPanelProvider
+{
+    protected function configureCmsPanel(Panel $panel): Panel
+    {
+        $panel = parent::configureCmsPanel($panel);
+
+        return $panel
+            ->widgets([
+                StatsOverview::class,
+                // Add more widgets here
+            ]);
+    }
+}
 ```
 
 ### Example Widget Class
@@ -754,7 +812,7 @@ class AppServiceProvider extends ServiceProvider
 ```php
 <?php
 
-namespace App\Filament\Widgets;
+namespace App\Filament\Cms\Widgets;
 
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Card;
