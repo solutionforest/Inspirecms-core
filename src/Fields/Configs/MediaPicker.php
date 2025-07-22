@@ -30,6 +30,8 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public ?int $max = null;
 
+    public ?int $limitDisplay = null;
+
     public function getFormSchema(): array
     {
         return [
@@ -42,6 +44,10 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                         ]),
                     Tab::make('Presentation')
                         ->schema([
+                            TextInput::make('limitDisplay')
+                                ->numeric()
+                                ->minValue(1)
+                                ->helperText('The maximum number of media items to display in preview.'),
                             Select::make('types')
                                 ->inlineLabel()
                                 ->placeholder(__('inspirecms-support::media-library.filter.type.placeholder'))
@@ -61,6 +67,9 @@ class MediaPicker extends FieldTypeBaseConfig implements FieldTypeConfig
             }
             if ($this->max) {
                 $component->max($this->max);
+            }
+            if ($this->limitDisplay) {
+                $component->limitDisplay($this->limitDisplay);
             }
         }
     }
