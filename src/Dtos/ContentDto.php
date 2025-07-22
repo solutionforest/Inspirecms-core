@@ -128,10 +128,52 @@ class ContentDto extends BaseTranslatableModelDto
         return $this->children = $result;
     }
 
-    public function getPaginatedChildren($perPage = 10, $pageName = 'page', $page = null)
+    public function getPaginatedChildren($perPage = 10, $pageName = 'page', $page = null, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
     {
-        // todo: implement pagination for children
-        return $this->getChildren()->paginate($perPage, $pageName, $page);
+        $query = $this->getModel()->children();
+        
+        $query->with(static::getNecessaryRelationships());
+        $query->with($withRelations);
+
+        if ($isWebPage != null) {
+            $query->whereIsWebPage($isWebPage);
+        }
+        if ($isPublished != null) {
+            $query->whereIsPublished($isPublished);
+        }
+        if (!empty($sorting)) {
+            foreach ($sorting as $column => $direction) {
+                if (! is_string($column) || ! is_string($direction)) {
+                    continue;
+                }
+                $direction = strtolower(trim($direction));
+                if (! in_array($direction, ['asc', 'desc'])) {
+                    $direction = 'asc';
+                }
+                $query->orderBy($column, $direction);
+            }
+        }
+
+        $currLocale = $this->getLocale();
+
+        return $query->paginate($perPage, ['*'], $pageName, $page)
+            ->tap(function ($paginator) {
+                if ($paginator instanceof \Illuminate\Contracts\Pagination\Paginator) {
+
+                    $items = $paginator->getCollection();
+
+                    // for "toDto" method
+                    if ($items instanceof ContentCollection) {
+                        $items = $items->setPaginator($paginator);
+                    }
+
+                    $paginator->setCollection($items);
+
+                }
+
+                return $paginator;
+            })
+            ->toDto($currLocale);
     }
 
     public function getParent()
