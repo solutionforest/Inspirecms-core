@@ -107,7 +107,7 @@ test('rollback_content_version', function () {
 
     Livewire::test('inspirecms::content-version-history', getLivewireParams($content))
         ->assertCountTableRecords(2)
-        ->assertTableActionHidden('rollbackToVersion', $firstVersion);
+        ->assertTableActionDisabled('rollbackToVersion', $firstVersion);
 
     $this->mock(LicenseManager::class, function (MockInterface $mock) {
         $mock->shouldReceive('canRollbackVersion')->andReturn(true);
@@ -115,7 +115,7 @@ test('rollback_content_version', function () {
     expect(app(LicenseManager::class)->canRollbackVersion())->toBe(true);
 
     Livewire::test('inspirecms::content-version-history', getLivewireParams($content))
-        ->assertTableActionHidden('rollbackToVersion', $latestVersion)
+        ->assertTableActionDisabled('rollbackToVersion', $latestVersion)
         ->callTableAction('rollbackToVersion', $firstVersion)
         ->assertHasNoTableActionErrors();
 
