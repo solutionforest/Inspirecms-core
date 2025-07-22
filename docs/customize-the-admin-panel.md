@@ -704,24 +704,24 @@ You can add widgets to the admin dashboard to display important information, sta
 
 ### Creating a Custom Widget
 
-1. Generate a new widget class:
+1. Generate a new widget class to your panel provider:
 
 ```bash
-php artisan make:filament-widget StatsOverview
+php artisan make:filament-widget StatsOverview --panel=cms
 ```
 
-2. Register your widget:
+2. Then, you can optionally register your widget to dashboard page:
 
 You can register your custom widgets in two ways:
 
-**Option 1: Using configuration**
+**Option 1: Register on service provider**
 
-```php
+```php{title="app/Providers/AppServiceProvider.php"}
 <?php
 
 namespace App\Providers;
 
-use App\Filament\Widgets\StatsOverview;
+use App\Filament\Cms\Widgets\StatsOverview;
 use Illuminate\Support\ServiceProvider;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -729,36 +729,24 @@ class AppServiceProvider extends ServiceProvider
 {
     public function register()
     {
-        // Register your custom widget
+        // Register your custom widget to CMS Dashboard
         InspireCmsConfig::set('admin.extra_widgets.stats_overview', StatsOverview::class);
     }
 }
 ```
 
-**Option 2: Using a custom panel provider**
+**Option 2: Using configuration**
 
-```php
-<?php
-
-namespace App\Providers;
-
-use App\Filament\Widgets\StatsOverview;
-use Filament\Panel;
-use SolutionForest\InspireCms\CmsPanelProvider;
-
-class MyCmsPanelProvider extends CmsPanelProvider
-{
-    protected function configureCmsPanel(Panel $panel): Panel
-    {
-        $panel = parent::configureCmsPanel($panel);
-
-        return $panel
-            ->widgets([
-                StatsOverview::class,
-                // Add more widgets here
-            ]);
-    }
-}
+```php{title="config/inspirecms.php"}
+//...
+'admin' => [
+    // ...
+    'extra_widgets' => [
+        // Extra widgets to be added to the CMS Dashboard
+        \App\Filament\Cms\Widgets\Test::class,
+    ],
+    //..
+],
 ```
 
 ### Example Widget Class
