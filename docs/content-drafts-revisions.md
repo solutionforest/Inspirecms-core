@@ -99,8 +99,25 @@ InspireCMS automatically tracks revisions each time content is saved, creating a
 To see the history of changes to a content item:
 
 1. Open the content item in the editor
-2. Look for the **Content History** button in the top-right corner of the page
+2. Look for the **Versions** button in the top-right corner of the page
+   ![Version button on content page](https://inspirecms.net/storage/doc/jNgZ443yGdkOeWfm5XOBwS1OtSI0tsvyZT43gZmF.png)
 3. View the list of all revisions with timestamps and authors
+
+![Listing content versions](https://inspirecms.net/storage/doc/1DYGmHEgWg3rmFDThw4rqhWAOAP8eU1su53NJjUP.png)
+
+### Rolling Back to Previous Versions
+
+> [!note]
+> Rollback functionality is available in v1.1.0+
+
+If you have **Pro** tier license, you can restore content to selected version:
+
+1. Navigate to the revision history as described above
+2. Find the revision you want to restore
+3. Click the **Rollback** button next to that revision
+4. Confirm the rollback action
+
+![Allow rollback content version](https://inspirecms.net/storage/doc/f5vWvqt0oj8apa3qyotSblSVbS8tktRzBNipeOWr.png)
 
 ---
 
@@ -357,4 +374,3 @@ When conflicting edits occur:
     - Keep their version (overwrite)
     - Discard their changes
     - Save as a new draft
-
