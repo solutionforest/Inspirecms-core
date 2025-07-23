@@ -60,8 +60,7 @@ return [
     ],
 
     'content_history' => [
-        'label' => '內容歷史',
-        'permission_display_name' => '查看內容歷史',
+        'label' => '版本',
     ],
 
     'copy_to_clipboard' => [

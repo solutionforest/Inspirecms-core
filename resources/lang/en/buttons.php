@@ -60,8 +60,7 @@ return [
     ],
 
     'content_history' => [
-        'label' => 'Content History',
-        'permission_display_name' => 'View content history',
+        'label' => 'Versions',
     ],
 
     'copy_to_clipboard' => [

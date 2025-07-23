@@ -51,6 +51,7 @@ return [
     'user' => '用戶',
     'users' => '用戶',
     'uuid' => 'UUID',
+    'unknown_user' => '未知用戶',
     'version' => '版本',
 
     'page_status' => [

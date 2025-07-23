@@ -78,6 +78,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             'view_history',
             'set_as_default',
             'lock',
+            'rollback_version',
         ];
     }
 

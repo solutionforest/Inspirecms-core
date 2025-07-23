@@ -166,6 +166,17 @@ interface HasContentVersions
     public function preloadContentVersionData();
 
     /**
+     * Set a specific preload version data.
+     *
+     * This method allows you to set a specific key-value pair in the preload version data.
+     *
+     * @param  string  $key  The key for the preload version data.
+     * @param  mixed  $value  The value to be associated with the key.
+     * @return void
+     */
+    public function setPreloadVersionData($key, $value);
+
+    /**
      * Retrieve the data required to preload a version.
      *
      * This method is responsible for fetching and returning an array of data

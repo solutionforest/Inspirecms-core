@@ -122,6 +122,11 @@ class ContentPolicy extends BasePolicy
         return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
     }
 
+    public function rollbackVersion($user, $content = null, $version = null)
+    {
+        return static::authorizeModel($user, __FUNCTION__, $content?->getKey());
+    }
+
     protected static function guessTieredPermissionName($ability, $id)
     {
         if (PermissionManifest::isTieredPermissionGranted(class_basename(Content::class))) {

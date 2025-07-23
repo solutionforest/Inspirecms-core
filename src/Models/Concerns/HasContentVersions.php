@@ -200,7 +200,15 @@ trait HasContentVersions
     /** {@inheritDoc} */
     public function preloadContentVersionData()
     {
-        $this->preloadContentVersionData = $this->prepareContentVersionData();
+        foreach ($this->prepareContentVersionData() as $key => $value) {
+            $this->setPreloadVersionData($key, $value);
+        }
+    }
+
+    /** {@inheritDoc} */
+    public function setPreloadVersionData($key, $value)
+    {
+        $this->preloadContentVersionData[$key] = $value;
     }
 
     /** {@inheritDoc} */
