@@ -128,7 +128,7 @@ class ContentDto extends BaseTranslatableModelDto
         return $this->children = $result;
     }
 
-    public function getPaginatedChildren($perPage = 10, $pageName = 'page', $page = null, $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
+    public function getPaginatedChildren($page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = [])
     {
         $query = $this->getModel()->children();
 
