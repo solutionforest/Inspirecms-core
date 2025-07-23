@@ -2,6 +2,30 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.1.0 - 2025-07-23
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### 🚀 New features
+
+- Add "Rollback" action for content versioning (Pro tier only)
+- Enhacement on `getPaginatedChildren` method for ContentDto
+
+### 📘 Documentation updates
+
+- Update customize-the-admin-panel.md
+- Update fe-content.md
+
+### Other Changes
+
+- Update the layout of content versionings
+- Media library: performance tunning
+- Media Picker: add "limitDisplay" options
+- Add test cases
+- Add "zh_CN" translation
+- Update translations
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.0.4...1.1.0
+
 ## 1.0.4 - 2025-07-15
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
