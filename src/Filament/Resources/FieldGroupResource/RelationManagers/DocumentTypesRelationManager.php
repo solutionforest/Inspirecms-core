@@ -18,7 +18,8 @@ class DocumentTypesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->modelLabel(__('inspirecms::inspirecms.document_type'))
+            ->modelLabel(__('inspirecms::inspirecms.document_type.singular'))
+            ->pluralModelLabel(__('inspirecms::inspirecms.document_type.plural'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
@@ -43,7 +44,7 @@ class DocumentTypesRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('inspirecms::inspirecms.used_by_xxx', [
-            'name' => strtolower(__('inspirecms::inspirecms.document_type')),
+            'name' => strtolower(__('inspirecms::inspirecms.document_type.plural')),
         ]);
     }
 }

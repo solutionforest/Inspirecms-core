@@ -2,8 +2,8 @@
 
 return [
     'empty_state' => [
-        'heading' => '没有文件类型',
-        'description' => '创建一个文件类型以开始。',
+        'heading' => '没有' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => '创建一个' . lcfirst(__('inspirecms::inspirecms.document_type.singular')). '以开始。',
     ],
     'title' => [
         'label' => '标题',
@@ -34,36 +34,36 @@ return [
     ],
 
     'templates' => [
-        'label' => '模板',
-        'validation_attribute' => '模板',
-        'description' => '渲染此文件类型时使用的模板。',
-        'hint' => '创建一个模板来显示此文件类型。',
+        'label' => __('inspirecms::inspirecms.template.plural'),
+        'validation_attribute' => lcfirst(__('inspirecms::inspirecms.template.plural')),
+        'description' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], '渲染此:dt时使用的:t'),
+        'hint' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], '创建一个:t来显示此:dt'),
     ],
 
     'field_groups' => [
-        'label' => '字段',
-        'singular' => '字段',
-        'plural' => '字段',
+        'label' => __('inspirecms::inspirecms.field.plural'),
+        'singular' => __('inspirecms::inspirecms.field.singular'),
+        'plural' => __('inspirecms::inspirecms.field.plural'),
         'description' => '',
-        'hint' => '创建一个字段组以用于此文件类型。',
+        'hint' => str_replace([':dt', ':fg'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.field_group.singular'))], '创建一个:fg以用于此:dt'),
     ],
 
     'inherited' => [
         'label' => '继承自 :name',
-        'description' => '此文件类型继承的文件类型。',
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '此:dts继承的:dt'),
     ],
     'inheriting' => [
         'label' => '继承至 :name',
-        'description' => '继承此文件类型的文件类型。',
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '继承此:dt的:dts'),
     ],
 
     'allowed_document_types' => [
-        'label' => '允许的文件类型',
-        'description' => '作为子项允许的文件类型。',
+        'label' => '允许的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
+        'description' => str_replace([':dts'], [lcfirst(__('inspirecms::inspirecms.document_type.plural'))], '作为子项允许的:dts'),
     ],
     'allowing_document_types' => [
-        'label' => '允许的文件类型',
-        'description' => '允许此文件类型的文件类型。',
+        'label' => '允许的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '允许此:dt的:dts'),
     ],
 
     'categories' => [
@@ -77,7 +77,7 @@ return [
         ],
         'inheritance' => [
             'label' => '继承',
-            'description' => '可以继承的文件类型布局。',
+            'description' => '可以继承的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . '布局。',
         ],
     ],
 
@@ -94,7 +94,7 @@ return [
         ],
         'display' => [
             'heading' => '显示',
-            'description' => '设定在创建内容时如何显示此文件类型。',
+            'description' => '设定在创建内容时如何显示此' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
         ],
     ],
 ];

@@ -29,7 +29,7 @@ class DocumentTypeExporter extends BaseImportUsedDataExporter
                 ->compact()
                 ->schema([
                     CheckboxList::make('document_type')
-                        ->label(__('inspirecms::inspirecms.document_type'))
+                        ->label(__('inspirecms::inspirecms.document_type.plural'))
                         ->hint('Keep empty to export all records.')
                         ->gridDirection('row')
                         ->columns(3)

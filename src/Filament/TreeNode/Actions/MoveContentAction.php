@@ -25,11 +25,11 @@ class MoveContentAction extends Action
         parent::setUp();
 
         $this->label(fn () => __('inspirecms::buttons.move_to_under.label', [
-            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
+            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content.plural')])),
         ]));
 
         $this->modalHeading(fn () => __('inspirecms::buttons.move_to_under.heading', [
-            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content')])),
+            'name' => Str::lower($this->isMoveUnderRoot() ? __('inspirecms::inspirecms.root') : __('inspirecms::inspirecms.others_xxx', ['name' => __('inspirecms::inspirecms.content.plural')])),
         ]));
 
         $this->model(InspireCmsConfig::getContentModelClass());

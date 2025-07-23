@@ -47,7 +47,7 @@ trait HasInnerField
                     ->slideOver()
                     ->label(fn () => __('inspirecms::buttons.edit_config.label'))
                     ->modalHeading(fn (array $arguments, Repeater $component) => __('inspirecms::buttons.edit_config.heading', [
-                        'name' => $getFieldForRepeaterAction($arguments, $component) ?? Str::lower(__('inspirecms::inspirecms.field')),
+                        'name' => $getFieldForRepeaterAction($arguments, $component) ?? Str::lower(__('inspirecms::inspirecms.field.singular')),
                     ]))
                     ->modalIcon(fn (array $arguments, Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
                     ->disabled(fn (array $arguments, Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))

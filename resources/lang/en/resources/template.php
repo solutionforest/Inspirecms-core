@@ -2,8 +2,8 @@
 
 return [
     'is_default' => [
-        'label' => 'Is Default',
-        'validation_attribute' => 'is default',
+        'label' => __('inspirecms::inspirecms.is_default'),
+        'validation_attribute' => strtolower(__('inspirecms::inspirecms.default')),
     ],
     'slug' => [
         'label' => 'Slug',
@@ -18,13 +18,16 @@ return [
     'property_type_instructions' => [
         'label' => 'Property instructions',
         'group' => 'Group',
-        'field' => __('inspirecms::inspirecms.field'),
+        'field' => __('inspirecms::inspirecms.field.singular'),
     ],
     'page_component_instructions' => [
         'label' => 'Page component instructions',
     ],
     'theme' => [
-        'label' => 'Theme',
+        'label' => __('inspirecms::inspirecms.theme'),
+    ],
+    'source_theme' => [
+        'label' => 'Source Theme',
     ],
     'editor' => [
         'title' => 'Template Editor',

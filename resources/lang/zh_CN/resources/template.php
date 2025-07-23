@@ -2,12 +2,12 @@
 
 return [
     'is_default' => [
-        'label' => '是否默认',
-        'validation_attribute' => '是否默认',
+        'label' => __('inspirecms::inspirecms.default'),
+        'validation_attribute' => strtolower(__('inspirecms::inspirecms.default')),
     ],
     'slug' => [
-        'label' => '短网址',
-        'validation_attribute' => '短网址',
+        'label' => 'Slug',
+        'validation_attribute' => 'slug',
     ],
     'path' => [
         'label' => '标题',
@@ -18,13 +18,16 @@ return [
     'property_type_instructions' => [
         'label' => 'Property 说明',
         'group' => '群组',
-        'field' => __('inspirecms::inspirecms.field'),
+        'field' => __('inspirecms::inspirecms.field.singular'),
     ],
     'page_component_instructions' => [
         'label' => 'Page component 说明',
     ],
     'theme' => [
-        'label' => '主题',
+        'label' => __('inspirecms::inspirecms.theme'),
+    ],
+    'source_theme' => [
+        'label' => '源主题',
     ],
     'editor' => [
         'title' => '模板编辑器',

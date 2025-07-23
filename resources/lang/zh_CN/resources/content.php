@@ -50,7 +50,7 @@ return [
     ],
     'template' => [
         'label' => '模板',
-        'instructions' => '保持空白以使用文档类型的默认模板',
+        'instructions' => '保持空白以使用文档类型的预设模板',
     ],
     'document_type' => [
         'label' => '文档类型',
@@ -132,7 +132,7 @@ return [
             'placeholder' => '選擇重定向類型',
             'instructions' => '選擇重定向類型',
             '301' => '301 永久',
-            '302' => '302 臨時（默認）',
+            '302' => '302 臨時（預設）',
         ],
     ],
 
@@ -147,7 +147,7 @@ return [
             'validation_attribute' => '優先級',
             'placeholder' => '輸入優先級',
             'instructions' => '
-                <p><i>優先級應該是 0.0 到 1.0 之間的值。默認優先級是 0.5。</i></p>
+                <p><i>優先級應該是 0.0 到 1.0 之間的值。預設優先級是 0.5。</i></p>
                 <p><b>1.0 是最高優先級，0.0 是最低優先級。</b></p>
                 <p>頁面的優先級由搜索引擎用來確定頁面相對於網站上其他頁面的重要性。</p>
             ',
@@ -169,7 +169,7 @@ return [
         'language_id' => [
             'label' => '語言區域',
             'validation_attribute' => '語言區域',
-            'placeholder' => '默認語言區域',
+            'placeholder' => '預設語言區域',
         ],
         'uri' => [
             'label' => '路徑',

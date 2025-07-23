@@ -98,7 +98,7 @@ class ListTemplates extends BaseListRecords
                                     ->label(__('inspirecms::resources/template.slug.label'))
                                     ->badge(),
                                 TextEntry::make('documentTypes')
-                                    ->label(__('inspirecms::inspirecms.document_type'))
+                                    ->label(__('inspirecms::inspirecms.document_type.plural'))
                                     ->getStateUsing(fn (Template | Model $record) => $record->documentTypes)
                                     ->formatStateUsing(function ($state) {
                                         if (! $state instanceof Model) {
@@ -117,7 +117,7 @@ class ListTemplates extends BaseListRecords
                                     })
                                     ->listWithLineBreaks(),
                                 TextEntry::make('contents')
-                                    ->label(__('inspirecms::inspirecms.content'))
+                                    ->label(__('inspirecms::inspirecms.content.plural'))
                                     ->getStateUsing(fn (Template | Model $record) => $record->contents)
                                     ->formatStateUsing(function ($state) {
                                         if (! $state instanceof Model) {

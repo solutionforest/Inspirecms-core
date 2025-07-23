@@ -18,11 +18,11 @@ class Users extends Cluster implements ClusterSection
 
     public static function getNavigationLabel(): string
     {
-        return __('inspirecms::inspirecms.users');
+        return __('inspirecms::inspirecms.user.plural');
     }
 
     public static function getClusterBreadcrumb(): ?string
     {
-        return __('inspirecms::inspirecms.users');
+        return __('inspirecms::inspirecms.user.plural');
     }
 }

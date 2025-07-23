@@ -240,7 +240,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.document_type');
+        return __('inspirecms::inspirecms.document_type.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.document_type.plural');
     }
 
     public static function getEloquentQuery(): Builder
@@ -566,7 +571,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
             ->schema([
                 Forms\Components\Hidden::make('allowed_id')->dehydratedWhenHidden(),
                 Forms\Components\Placeholder::make('title')
-                    ->label(__('inspirecms::inspirecms.document_type'))
+                    ->label(__('inspirecms::inspirecms.document_type.singular'))
                     ->inlineLabel()
                     ->content(function ($get) {
                         $slug = $get('slug');

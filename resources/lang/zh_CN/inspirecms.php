@@ -1,44 +1,28 @@
 <?php
 
 return [
-    'children' => '子项目',
-    'content' => '内容',
     'created_at' => '创建于',
     'created_by' => '创建者',
     'current_xxx' => '当前 :name',
     'dashboard' => '仪表板',
-    'default' => '默认',
+    'default' => '预设',
     'deleted_at' => '删除于',
     'export' => '导出',
     'exported_content_template_directory' => '导出内容模板目录',
-    'document_type' => '文档类型',
-    'field' => '字段',
-    'field_group' => '自定义字段',
     'id' => 'ID',
     'import' => '导入',
-    'is_default' => '默认',
-    'language' => '语言',
+    'is_default' => '是否预设',
     'last_updated_at' => '最后更新于',
     'layout' => '布局',
     'media' => '媒体',
     'n/a' => '不适用',
-    'navigation' => '导航',
-    'order' => '顺序',
+    'order' => '次序',
     'others_xxx' => '其他:name',
     'page' => '页面',
     'publish_at_xxx' => '发布于 :time',
-    'role' => '角色',
     'root' => '根',
-    'search' => [
-        'label' => '搜索',
-        'placeholder' => '搜索...',
-        'message' => '搜索中...',
-        'no_results' => '未找到结果',
-    ],
     'settings' => '设置',
-    'sitemap' => '网站地图',
     'table' => '表格',
-    'template' => '模板',
     'theme' => '主题',
     'total_xxx_have_used' => '总共使用了 :name',
     'total_xxx_selected' => '总共选择了 :count',
@@ -48,10 +32,60 @@ return [
     'url' => 'URL',
     'used_by_xxx' => '被 :name 引用',
     'used_by' => '被引用',
-    'user' => '用户',
-    'users' => '用户',
     'uuid' => 'UUID',
     'version' => '版本',
+    
+    'search' => [
+        'label' => '搜索',
+        'placeholder' => '搜索...',
+        'message' => '搜索中...',
+        'no_results' => '未找到结果',
+    ],
+
+    'children' => [
+        'singular' => '子项目',
+        'plural' => '子项目',
+    ],
+    'content' => [
+        'singular' => '內容',
+        'plural' => '內容',
+    ],
+    'document_type' => [
+        'singular' => '文档类型',
+        'plural' => '文档类型',
+    ],
+    'field' => [
+        'singular' => '字段',
+        'plural' => '字段',
+    ],
+    'field_group' => [
+        'singular' => '自定义字段',
+        'plural' => '自定义字段',
+    ],
+    'language' => [
+        'singular' => '语言',
+        'plural' => '语言',
+    ],
+    'navigation' => [
+        'singular' => '导航',
+        'plural' => '导航',
+    ],
+    'role' => [
+        'singular' => '角色',
+        'plural' => '角色',
+    ],
+    'sitemap' => [
+        'singular' => '网站地图',
+        'plural' => '网站地图',
+    ],
+    'template' => [
+        'singular' => '模板',
+        'plural' => '模板',
+    ],
+    'user' => [
+        'singular' => '用户',
+        'plural' => '用户',
+    ],
 
     'page_status' => [
         'draft' => [

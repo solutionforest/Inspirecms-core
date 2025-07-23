@@ -237,25 +237,25 @@ return [
     ],
 
     'set_as_default' => [
-        'label' => '设为默认',
+        'label' => '设为预设',
         'messages' => [
             'success' => [
-                'title' => '设为默认',
-                'body' => '该项目已设为默认。',
+                'title' => '设为预设',
+                'body' => '该项目已设为预设。',
             ],
             'failure' => [
-                'title' => '设为默认失败',
-                'body' => '该项目无法设为默认。请检查日志以获取更多信息。',
+                'title' => '设为预设失败',
+                'body' => '该项目无法设为预设。请检查日志以获取更多信息。',
             ],
         ],
     ],
 
     'set_default_content_page' => [
-        'label' => '设为默认页面',
-        'permission_display_name' => '设置默认页面',
+        'label' => '设为预设页面',
+        'permission_display_name' => '设置预设页面',
         'messages' => [
             'success' => [
-                'title' => '默认页面已更新。',
+                'title' => '预设页面已更新。',
             ],
         ],
     ],

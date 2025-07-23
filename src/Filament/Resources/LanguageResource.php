@@ -98,7 +98,7 @@ class LanguageResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.language');
+        return __('inspirecms::inspirecms.language.singular');
     }
 
     // region Global search

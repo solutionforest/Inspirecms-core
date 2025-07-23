@@ -24,9 +24,9 @@ class TemplateResourceHelper
     /**
      * @return Forms\Components\Field|Forms\Components\Component
      */
-    public static function getThemeFormComponent()
+    public static function getThemeFormComponent($name = 'theme')
     {
-        return Forms\Components\Select::make('theme')
+        return Forms\Components\Select::make($name)
             ->label(__('inspirecms::resources/template.theme.label'))
             ->prefixIcon(FilamentIcon::resolve('inspirecms::theme'))
             ->options(static::getThemeSelectOptions());

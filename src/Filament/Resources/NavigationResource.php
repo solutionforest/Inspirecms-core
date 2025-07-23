@@ -153,12 +153,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.navigation');
+        return __('inspirecms::inspirecms.navigation.singular');
     }
 
     public static function getPluralModelLabel(): string
     {
-        return __('inspirecms::inspirecms.navigation');
+        return __('inspirecms::inspirecms.navigation.plural');
     }
 
     // region Global search

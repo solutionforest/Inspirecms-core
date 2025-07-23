@@ -91,7 +91,7 @@ class UserResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.user');
+        return __('inspirecms::inspirecms.user.singular');
     }
 
     public static function getEloquentQuery(): Builder

@@ -113,6 +113,6 @@ class InheritedDocumentTypesRelationManager extends RelationManager
 
     protected static function getModelLabel(): ?string
     {
-        return Str::lower(__('inspirecms::inspirecms.document_type'));
+        return Str::lower(__('inspirecms::inspirecms.document_type.singular'));
     }
 }

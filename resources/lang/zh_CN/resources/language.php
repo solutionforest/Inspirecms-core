@@ -2,8 +2,8 @@
 
 return [
     'is_default' => [
-        'label' => '默认',
-        'validation_attribute' => '默认',
+        'label' => __('inspirecms::inspirecms.default'),
+        'validation_attribute' => __('inspirecms::inspirecms.default'),
     ],
     'code' => [
         'label' => '代码',

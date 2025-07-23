@@ -48,7 +48,7 @@ return [
         ],
         'assign_role_failed' => [
             'title' => '分配用户角色失败',
-            'body' => '请确保您已经运行迁移并导入默认数据。',
+            'body' => '请确保您已经运行迁移并导入预设数据。',
         ],
         'license_limit_exceeded' => [
             'title' => '用户限制已达到',

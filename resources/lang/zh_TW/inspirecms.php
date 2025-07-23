@@ -1,44 +1,28 @@
 <?php
 
 return [
-    'children' => '子項目',
-    'content' => '內容',
     'created_at' => '創建於',
     'created_by' => '創建者',
     'current_xxx' => '當前 :name',
     'dashboard' => '儀表板',
-    'default' => '默認',
+    'default' => '預設',
     'deleted_at' => '刪除於',
     'export' => '匯出',
     'exported_content_template_directory' => '匯出內容模板目錄',
-    'document_type' => '文件類型',
-    'field' => '字段',
-    'field_group' => '自定義字段',
     'id' => 'ID',
     'import' => '匯入',
-    'is_default' => '默認',
-    'language' => '語言',
+    'is_default' => '是否預設',
     'last_updated_at' => '最後更新於',
     'layout' => '佈局',
     'media' => '媒體',
     'n/a' => '不適用',
-    'navigation' => '導航',
-    'order' => '順序',
+    'order' => '次序',
     'others_xxx' => '其他:name',
     'page' => '頁面',
     'publish_at_xxx' => '發布於 :time',
-    'role' => '角色',
     'root' => '根',
-    'search' => [
-        'label' => '搜索',
-        'placeholder' => '搜索...',
-        'message' => '搜索中...',
-        'no_results' => '未找到結果',
-    ],
     'settings' => '設置',
-    'sitemap' => '網站地圖',
     'table' => '表格',
-    'template' => '模板',
     'theme' => '主題',
     'total_xxx_have_used' => '總共使用了 :name',
     'total_xxx_selected' => '總共選擇了 :count',
@@ -48,11 +32,61 @@ return [
     'url' => 'URL',
     'used_by_xxx' => '被 :name 引用',
     'used_by' => '被引用',
-    'user' => '用戶',
-    'users' => '用戶',
     'uuid' => 'UUID',
     'unknown_user' => '未知用戶',
     'version' => '版本',
+
+    'search' => [
+        'label' => '搜索',
+        'placeholder' => '搜索...',
+        'message' => '搜索中...',
+        'no_results' => '未找到結果',
+    ],
+    
+    'children' => [
+        'singular' => '子項目',
+        'plural' => '子項目',
+    ],
+    'content' => [
+        'singular' => '內容',
+        'plural' => '內容',
+    ],
+    'document_type' => [
+        'singular' => '文檔類型',
+        'plural' => '文檔類型',
+    ],
+    'field' => [
+        'singular' => '字段',
+        'plural' => '字段',
+    ],
+    'field_group' => [
+        'singular' => '自定義字段',
+        'plural' => '自定義字段',
+    ],
+    'language' => [
+        'singular' => '語言',
+        'plural' => '語言',
+    ],
+    'navigation' => [
+        'singular' => '導航',
+        'plural' => '導航',
+    ],
+    'role' => [
+        'singular' => '角色',
+        'plural' => '角色',
+    ],
+    'sitemap' => [
+        'singular' => '網站地圖',
+        'plural' => '網站地圖',
+    ],
+    'template' => [
+        'singular' => '模板',
+        'plural' => '模板',
+    ],
+    'user' => [
+        'singular' => '用戶',
+        'plural' => '用戶',
+    ],
 
     'page_status' => [
         'draft' => [

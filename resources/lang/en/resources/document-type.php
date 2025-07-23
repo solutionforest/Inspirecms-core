@@ -2,8 +2,8 @@
 
 return [
     'empty_state' => [
-        'heading' => 'No document types',
-        'description' => 'Create a document type to get started.',
+        'heading' => 'No ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => 'Create a ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' to get started.',
     ],
     'title' => [
         'label' => 'Title',
@@ -34,36 +34,36 @@ return [
     ],
 
     'templates' => [
-        'label' => 'Templates',
-        'validation_attribute' => 'templates',
-        'description' => 'The template to use when rendering this document type.',
-        'hint' => 'Create a template to display this document type.',
+        'label' => __('inspirecms::inspirecms.template.plural'),
+        'validation_attribute' => lcfirst(__('inspirecms::inspirecms.template.plural')),
+        'description' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], 'The :t to use when rendering this :dt'),
+        'hint' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], 'Create a :t to display this :dt'),
     ],
 
     'field_groups' => [
-        'label' => 'Fields',
-        'singular' => 'Field',
-        'plural' => 'Fields',
+        'label' => __('inspirecms::inspirecms.field.plural'),
+        'singular' => __('inspirecms::inspirecms.field.singular'),
+        'plural' => __('inspirecms::inspirecms.field.plural'),
         'description' => '',
-        'hint' => 'Create a field group to use with this document type.',
+        'hint' => str_replace([':dt', ':fg'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.field_group.singular'))], 'Create a :fg to use with this :dt'),
     ],
 
     'inherited' => [
         'label' => 'Inherited from :name',
-        'description' => 'The document types that this document type inherits from.',
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that this :dt inherits from.'),
     ],
     'inheriting' => [
         'label' => 'Inheriting to :name',
-        'description' => 'The document types that inherit from this document type.',
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that inherit from this :dt'),
     ],
 
     'allowed_document_types' => [
-        'label' => 'Allowed document types',
-        'description' => 'The document types that are allowed as child items.',
+        'label' => 'Allowed ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => str_replace([':dts'], [lcfirst(__('inspirecms::inspirecms.document_type.plural'))], 'The :dts that are allowed as child items.'),
     ],
     'allowing_document_types' => [
-        'label' => 'Allowing document types',
-        'description' => 'The document types that allow this document type.',
+        'label' => 'Allowing ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that allow this :dt'),
     ],
 
     'categories' => [
@@ -77,7 +77,7 @@ return [
         ],
         'inheritance' => [
             'label' => 'Inheritance',
-            'description' => 'A document type layout that can be inherited.',
+            'description' => 'A ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' layout that can be inherited.',
         ],
     ],
 
@@ -94,7 +94,7 @@ return [
         ],
         'display' => [
             'heading' => 'Display',
-            'description' => 'Settings that determine how this document type is displayed when creating content.',
+            'description' => 'Settings that determine how this ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' is displayed when creating content.',
         ],
     ],
 ];

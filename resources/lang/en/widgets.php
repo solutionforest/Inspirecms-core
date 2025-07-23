@@ -16,14 +16,14 @@ return [
             'description' => 'This is the default page for the website.',
         ],
         'create_content' => [
-            'title' => 'Create ' . str(__('inspirecms::inspirecms.content'))->title()->toString(),
+            'title' => 'Create ' . __('inspirecms::inspirecms.content.singular'),
             'description' => 'Create a new content page.',
             'message' => 'Use this section to create new content for your content management system. This allows you to add fresh and relevant information to your site, keeping it up-to-date and engaging for your audience.',
         ],
         'create_document_type' => [
-            'title' => 'Create ' . str(__('inspirecms::inspirecms.document_type'))->title()->toString(),
-            'description' => 'Create a new ' . str(__('inspirecms::inspirecms.document_type'))->lower()->toString(),
-            'message' => 'Use this section to create new document types for your content management system. This allows you to categorize and organize your content, making it easier to manage and search for specific information.',
+            'title' => 'Create ' . __('inspirecms::inspirecms.document_type.singular'),
+            'description' => 'Create a new ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
+            'message' => 'Use this section to create new ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')) .' for your content management system. This allows you to categorize and organize your content, making it easier to manage and search for specific information.',
         ],
     ],
 

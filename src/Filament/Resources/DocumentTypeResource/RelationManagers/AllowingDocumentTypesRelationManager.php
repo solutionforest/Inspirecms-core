@@ -19,6 +19,8 @@ class AllowingDocumentTypesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('inspirecms::inspirecms.document_type.singular'))
+            ->pluralModelLabel(__('inspirecms::inspirecms.document_type.plural'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
@@ -45,10 +47,5 @@ class AllowingDocumentTypesRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('inspirecms::resources/document-type.allowing_document_types.label');
-    }
-
-    protected static function getModelLabel(): ?string
-    {
-        return __('inspirecms::inspirecms.document_type');
     }
 }

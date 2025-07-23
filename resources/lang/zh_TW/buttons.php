@@ -251,11 +251,11 @@ return [
     ],
 
     'set_default_content_page' => [
-        'label' => '設為默認頁面',
-        'permission_display_name' => '設置默認頁面',
+        'label' => '設為預設頁面',
+        'permission_display_name' => '設置預設頁面',
         'messages' => [
             'success' => [
-                'title' => '默認頁面已更新。',
+                'title' => '預設頁面已更新。',
             ],
         ],
     ],

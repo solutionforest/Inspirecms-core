@@ -228,7 +228,12 @@ class RoleResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.role');
+        return __('inspirecms::inspirecms.role.singular');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return __('inspirecms::inspirecms.role.plural');
     }
 
     public static function getEloquentQuery(): Builder

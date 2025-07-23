@@ -2,8 +2,8 @@
 
 return [
     'is_default' => [
-        'label' => 'Default',
-        'validation_attribute' => 'default',
+        'label' => __('inspirecms::inspirecms.default'),
+        'validation_attribute' => __('inspirecms::inspirecms.default'),
     ],
     'code' => [
         'label' => 'Code',

@@ -2,8 +2,8 @@
 
 return [
     'is_default' => [
-        'label' => '預設',
-        'validation_attribute' => '預設',
+        'label' => __('inspirecms::inspirecms.default'),
+        'validation_attribute' => __('inspirecms::inspirecms.default'),
     ],
     'code' => [
         'label' => '代碼',

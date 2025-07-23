@@ -12,18 +12,18 @@ return [
 
     'content_page_overview' => [
         'default_page' => [
-            'title' => '默认页面',
-            'description' => '这是网站的默认页面。',
+            'title' => '预设页面',
+            'description' => '这是网站的预设页面。',
         ],
         'create_content' => [
-            'title' => '创建 ' . str(__('inspirecms::inspirecms.content'))->title()->toString(),
+            'title' => '创建 ' . __('inspirecms::inspirecms.content.singular'),
             'description' => '创建一个新的内容页面。',
             'message' => '使用此部分来为您的内容管理系统创建新内容。这使您能够为您的网站添加新鲜且相关的信息，保持其最新且吸引观众。',
         ],
         'create_document_type' => [
-            'title' => '创建 ' . str(__('inspirecms::inspirecms.document_type'))->title()->toString(),
-            'description' => '创建一个新的 ' . str(__('inspirecms::inspirecms.document_type'))->lower()->toString(),
-            'message' => '使用此部分来为您的内容管理系统创建新的文档类型。这使您能够对内容进行分类和组织，使其更易于管理和搜索特定信息。',
+            'title' => '创建 ' . __('inspirecms::inspirecms.document_type.singular'),
+            'description' => '创建一个新的 ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
+            'message' => '使用此部分来为您的内容管理系统创建新的' . __('inspirecms::inspirecms.document_type.plural') . '。这使您能够对内容进行分类和组织，使其更易于管理和搜索特定信息。',
         ],
     ],
 

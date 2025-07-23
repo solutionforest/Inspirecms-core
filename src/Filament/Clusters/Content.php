@@ -18,11 +18,11 @@ class Content extends Cluster implements ClusterSection
 
     public static function getNavigationLabel(): string
     {
-        return __('inspirecms::inspirecms.content');
+        return __('inspirecms::inspirecms.content.plural');
     }
 
     public static function getClusterBreadcrumb(): ?string
     {
-        return __('inspirecms::inspirecms.content');
+        return __('inspirecms::inspirecms.content.plural');
     }
 }

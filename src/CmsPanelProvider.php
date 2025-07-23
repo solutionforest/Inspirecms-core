@@ -230,10 +230,10 @@ class CmsPanelProvider extends PanelProvider
         return $panel
             ->topNavigation($position == 'top')
             ->navigationGroups([
-                'content' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.content')),
+                'content' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.content.plural')),
                 'media' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.media')),
                 'settings' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.settings')),
-                'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.users')),
+                'users' => NavigationGroup::make(fn () => __('inspirecms::inspirecms.user.plural')),
             ])
             ->userMenuItems($userMenuItems)
             ->bootUsing(function () {

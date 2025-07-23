@@ -39,7 +39,7 @@ class ListContentRecords extends BaseContentListPage
     {
         parent::configureCreateAction($action);
 
-        $action->modelLabel(strtolower(__('inspirecms::inspirecms.content')));
+        $action->modelLabel(lcfirst(__('inspirecms::inspirecms.content.singular')));
 
         $action->url(function () {
             $resource = static::getResource();

@@ -89,7 +89,7 @@ class TemplatesRelationManager extends RelationManager
         return $table
             ->recordTitle(fn ($record) => $record->slug)
             ->recordAction('editAndPreview')
-            ->modelLabel(fn () => __('inspirecms::inspirecms.template'))
+            ->modelLabel(__('inspirecms::inspirecms.template.singular'))
             ->description(fn () => __('inspirecms::resources/document-type.templates.description'))
             ->columns([
                 Tables\Columns\TextColumn::make('slug')

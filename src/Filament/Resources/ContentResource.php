@@ -388,7 +388,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                 Tables\Filters\QueryBuilder::make()
                     ->constraints([
                         Tables\Filters\QueryBuilder\Constraints\TextConstraint::make('documentType')
-                            ->label(__('inspirecms::inspirecms.document_type'))
+                            ->label(__('inspirecms::inspirecms.document_type.singular'))
                             ->relationship(name: 'documentType', titleAttribute: 'title'),
                     ]),
             ])

@@ -20,7 +20,7 @@ class ContentRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn ($query) => $query->with('parent'))
-            ->modelLabel(__('inspirecms::inspirecms.content'))
+            ->modelLabel(__('inspirecms::inspirecms.content.singular'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label')),
@@ -47,7 +47,7 @@ class ContentRelationManager extends RelationManager
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
         return __('inspirecms::inspirecms.used_by_xxx', [
-            'name' => __('inspirecms::inspirecms.content'),
+            'name' => __('inspirecms::inspirecms.content.plural'),
         ]);
     }
 }

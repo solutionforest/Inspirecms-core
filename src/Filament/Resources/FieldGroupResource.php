@@ -105,7 +105,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('document_types_count')
                     ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
-                        'name' => strtolower(__('inspirecms::inspirecms.document_type')),
+                        'name' => lcfirst(__('inspirecms::inspirecms.document_type.plural')),
                     ]))
                     ->alignEnd()
                     ->width('5%'),
@@ -181,7 +181,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.field_group');
+        return __('inspirecms::inspirecms.field_group.singular');
     }
 
     public static function getRecordSubTitle(?Model $record): string | Htmlable | null

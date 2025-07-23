@@ -28,8 +28,8 @@ class BaseChildrenRelationManager extends RelationManager
         $resource = $this->getPageClass()::getResource();
 
         return $resource::table($table)
-            ->modelLabel(__('inspirecms::inspirecms.children'))
-            ->pluralModelLabel(fn () => __('inspirecms::inspirecms.children'))
+            ->modelLabel(lcfirst(__('inspirecms::inspirecms.children.singular')))
+            ->pluralModelLabel(lcfirst(__('inspirecms::inspirecms.children.plural')))
             ->emptyStateHeading(null)
             ->headerActions([
                 CreateAction::make(),
@@ -38,7 +38,7 @@ class BaseChildrenRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.children');
+        return __('inspirecms::inspirecms.children.plural');
     }
 
     protected function configureCreateAction(CreateAction $action): void

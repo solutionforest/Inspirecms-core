@@ -24,7 +24,8 @@ class UsersRelationManager extends RelationManager
     {
         return $table
             ->inverseRelationship('roles')
-            ->modelLabel(__('inspirecms::inspirecms.user'))
+            ->modelLabel(__('inspirecms::inspirecms.user.singular'))
+            ->pluralModelLabel(__('inspirecms::inspirecms.user.plural'))
             ->columns([
                 Tables\Columns\Layout\Grid::make(['default' => 4])
                     ->schema([
@@ -89,6 +90,6 @@ class UsersRelationManager extends RelationManager
 
     public static function getTitle(Model $ownerRecord, string $pageClass): string
     {
-        return __('inspirecms::inspirecms.user');
+        return __('inspirecms::inspirecms.user.plural');
     }
 }

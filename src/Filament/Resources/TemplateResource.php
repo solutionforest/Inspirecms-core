@@ -65,7 +65,7 @@ class TemplateResource extends Resource implements ClusterSectionResource
 
     public static function getModelLabel(): string
     {
-        return __('inspirecms::inspirecms.template');
+        return __('inspirecms::inspirecms.template.singular');
     }
 
     // region Global search

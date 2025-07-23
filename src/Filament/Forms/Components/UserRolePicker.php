@@ -39,7 +39,7 @@ class UserRolePicker extends Repeater
         $this->addAction(
             function (Action $action) use ($permission) {
 
-                $modelName = strtolower(__('inspirecms::inspirecms.role'));
+                $modelName = strtolower(__('inspirecms::inspirecms.role.singular'));
 
                 return $action
                     ->authorize($permission)

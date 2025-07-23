@@ -103,10 +103,8 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
                                 'theme' => $component->getState(),
                             ])
                             ->form([
-                                Forms\Components\Select::make('theme')
+                                TemplateResourceHelper::getThemeFormComponent()
                                     ->inlineLabel()
-                                    ->label(__('inspirecms::inspirecms.theme'))
-                                    ->options(TemplateResourceHelper::getThemeSelectOptions())
                                     ->required(),
                             ])
                             ->successNotificationTitle(__('inspirecms::buttons.change_theme.messages.success.title'))
@@ -147,6 +145,7 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
     private static function getThemeNameInputComponent(string $name = 'theme'): Forms\Components\Field | Forms\Components\Component
     {
         return Forms\Components\TextInput::make($name)
+            ->label(__('inspirecms::resources/template.theme.label'))
             ->inlineLabel()
             ->required()
             ->live(true, 500)
@@ -198,9 +197,10 @@ class ThemeInfo extends Widget implements GuardWidget, HasActions, HasForms, Has
             ->failureNotificationTitle(__('inspirecms::buttons.clone_theme.messages.failure.title'))
             ->form([
                 static::getThemeNameInputComponent('theme'),
-                Forms\Components\Select::make('source_theme')
+
+                TemplateResourceHelper::getThemeFormComponent('source_theme')
+                    ->label(__('inspirecms::resources/template.source_theme.label'))
                     ->inlineLabel()
-                    ->options(TemplateResourceHelper::getThemeSelectOptions())
                     ->required(),
             ])
             ->action(function (array $data, Action $action) {
