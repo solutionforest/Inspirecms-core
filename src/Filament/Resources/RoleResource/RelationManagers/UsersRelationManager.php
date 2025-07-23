@@ -24,6 +24,7 @@ class UsersRelationManager extends RelationManager
     {
         return $table
             ->inverseRelationship('roles')
+            ->modelLabel(__('inspirecms::inspirecms.user'))
             ->columns([
                 Tables\Columns\Layout\Grid::make(['default' => 4])
                     ->schema([

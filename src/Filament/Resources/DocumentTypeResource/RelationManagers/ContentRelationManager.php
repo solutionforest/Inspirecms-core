@@ -20,6 +20,7 @@ class ContentRelationManager extends RelationManager
     {
         return $table
             ->modifyQueryUsing(fn ($query) => $query->with('parent'))
+            ->modelLabel(__('inspirecms::inspirecms.content'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label')),

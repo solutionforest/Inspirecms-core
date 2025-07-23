@@ -18,6 +18,7 @@ class DocumentTypesRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
+            ->modelLabel(__('inspirecms::inspirecms.document_type'))
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
