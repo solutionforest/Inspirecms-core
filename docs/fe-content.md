@@ -9,32 +9,31 @@ brief: Learn how to work with content in your frontend templates.
 quick_links: []
 ---
 
-
 ## Content Helper
 
 The `inspirecms_content()` helper provides access to content items throughout your frontend templates:
 
 ```php
 // Get content by ID
-$content = inspirecms_content()->findByIds(ids: '550e8400-e29b-41d4-a716-446655440000', limit: 1)->first();
+$modelContent = inspirecms_content()->findByIds(ids: '550e8400-e29b-41d4-a716-446655440000', limit: 1)->first();
 
 // Get content by slug
-$content = inspirecms_content()->findByRealPath(path: 'about-us', limit: 1)->first();
+$modelContent = inspirecms_content()->findByRealPath(path: 'about-us', limit: 1)->first();
 
 // Get multiple content items
-$contents = inspirecms_content()->findByIds(['550e8400-e29b-41d4-a716-446655440000', '7f1b96c0-d4f0-11ed-afa1-0242ac120002']);
+$modelContents = inspirecms_content()->findByIds(['550e8400-e29b-41d4-a716-446655440000', '7f1b96c0-d4f0-11ed-afa1-0242ac120002']);
 
 // Get published content under 'home'
-$contents = inspirecms_content()->getUnderRealPath(path: 'home', isPublished: true);
+$modelContents = inspirecms_content()->getUnderRealPath(path: 'home', isPublished: true);
 
 // Get paginated published content under 'home'
-$contents = inspirecms_content()->getPaginatedUnderRealPath(path: 'home', isPublished: true, page: 1, perPage: 10);
+$modelContents = inspirecms_content()->getPaginatedUnderRealPath(path: 'home', isPublished: true, page: 1, perPage: 10);
 
 // Get content by document type
-$blogPosts = inspirecms_content()->getByDocumentType(documentType: 'blog_post', isPublished: true);
+$modelContents = inspirecms_content()->getByDocumentType(documentType: 'blog-post', isPublished: true);
 
 // Get paginated content by document type
-$blogPosts = inspirecms_content()->getPaginatedByDocumentType(documentType: 'blog_post', isPublished: true, page: 1, perPage: 10);
+$modelContents = inspirecms_content()->getPaginatedByDocumentType(documentType: 'blog-post', isPublished: true, page: 1, perPage: 10);
 ```
 
 > [!note]
@@ -42,24 +41,25 @@ $blogPosts = inspirecms_content()->getPaginatedByDocumentType(documentType: 'blo
 > These functions return Content model instances. To access content properties and use them in templates, convert the model to a DTO using the `toDto()` method:
 >
 > ```php
-> $contentDto = $content->toDto($locale ?? app()->getLocale());
+> $contentDto = $moedlContent->toDto($locale ?? app()->getLocale());
+>
 > $title = $contentDto->getTitle();
 > ```
 
 ---
 
-## Accessing Content Properties
+## Accessing ContentDTO Properties
 
 ### Basic Properties
 
 Access core content attributes:
 
 ```php
-$title = $content->getTitle();          // Get content title
-$slug = $content->slug;                 // Get content slug
-$url = $content->getUrl();              // Get content URL
-$locale = $content->getLocale();        // Get content locale
-$publishedAt = $content->publishAt;     // Publication date
+$title = $contentDto->getTitle();          // Get content title
+$slug = $contentDto->slug;                 // Get content slug
+$url = $contentDto->getUrl();              // Get content URL
+$locale = $contentDto->getLocale();        // Get content locale
+$publishedAt = $contentDto->publishAt;     // Publication date
 ```
 
 ### Custom Fields
@@ -67,25 +67,25 @@ $publishedAt = $content->publishAt;     // Publication date
 Use property directives in Blade templates to access custom fields:
 
 ```php
-<!-- Single property -->
+// Single property
 <h1>@property('hero', 'title')</h1>
 
-<!-- With custom variable name -->
+// With custom variable name
 @property('hero', 'images', 'custom_images')
 @foreach($custom_images ?? [] as $image)
     <img src="{{ $image->getUrl() }}">
 @endforeach
 
-<!-- Value is from $blogDTO, variable available as $blog_category -->
+// Value is from $blogDTO, variable available as $blog_category
 @property('blog', 'category', null, $blogDTO)
 
-<!-- Array properties -->
+// Array properties
 @propertyArray('gallery', 'images')
 @foreach($gallery_images ?? [] as $image)
     <img src="{{ $image->getUrl() }}" alt="{{ $image->alt_text }}">
 @endforeach
 
-<!-- Conditional display -->
+// Conditional display
 @propertyNotEmpty('hero', 'button_text')
     <a href="@property('hero', 'button_link')" class="btn">
         {{ $hero_button_text }}
@@ -97,21 +97,21 @@ You can also access properties programmatically:
 
 ```php
 // Check if property exists
-if ($content->hasProperty('hero', 'title')) {
+if ($contentDto->hasProperty('hero', 'title')) {
     // Get property value
-    $title = $content->getPropertyValue('hero', 'title');
+    $title = $contentDto->getPropertyValue('hero', 'title');
 
     // Get property value with fallback
-    $subtitle = $content->getPropertyValue('hero', 'subtitle') ?? 'Default subtitle';
+    $subtitle = $contentDto->getPropertyValue('hero', 'subtitle') ?? 'Default subtitle';
 
     // Get multilingual property with specific locale
-    $frenchTitle = $content->getPropertyValue('hero', 'title', 'fr');
+    $frenchTitle = $contentDto->getPropertyValue('hero', 'title', 'fr');
 }
 
 // Check if property group exists
 if ($content->hasPropertyGroup('hero')) {
     // Get entire property group
-    $heroGroup = $content->getPropertyGroup('hero');
+    $heroGroup = $contentDto->getPropertyGroup('hero');
 }
 ```
 
@@ -122,14 +122,17 @@ if ($content->hasPropertyGroup('hero')) {
 Access related content and structure:
 
 ```php
-// Get parent content
-$parent = $content->getParent();
+// Get parent contentDTO
+$parent = $contentDto->getParent();
 
-// Get all child content
-$children = $content->getChildren();
+// Get all child contentDTO
+$children = $contentDto->getChildren();
+
+// Get paginated child contentDTO (After v1.1.x)
+$paginator = $contentDto->getPaginatedChildren(page: 1, perPage: 15, pageName: 'page2', isWebPage: true, isPublished: true, sorting: ['__latest_version_publish_dt' => 'desc'])
 
 // Get ancestors in hierarchical order
-$ancestors = $content->getAncestors();
+$ancestors = $contentDto->getAncestors();
 ```
 
 ---
@@ -140,7 +143,7 @@ Filter and sort content collections:
 
 ```php
 // Get recent blog posts
-$recentPosts = inspirecms_content()->getUnderRealPath(
+$modelContents = inspirecms_content()->getUnderRealPath(
     path: 'blogs',
     isPublished: true,
     sorting: ['__latest_version_publish_dt' => 'desc'],
@@ -148,7 +151,7 @@ $recentPosts = inspirecms_content()->getUnderRealPath(
 );
 
 // Get paginated recent blog posts
-$recentPosts = inspirecms_content()->getPaginatedUnderRealPath(
+$modelContents = inspirecms_content()->getPaginatedUnderRealPath(
     path: 'blogs',
     page: 1,
     perPage: 10,
@@ -157,7 +160,7 @@ $recentPosts = inspirecms_content()->getPaginatedUnderRealPath(
 );
 
 // Filter by custom fields
-$featuredPosts = inspirecms_content()->getByDocumentType(
+$dtoContents = inspirecms_content()->getByDocumentType(
         documentType: 'blog_post',
         limit: 50,
     )
@@ -175,14 +178,11 @@ Access content in different languages:
 
 ```php
 // Get content in specific language
-$frenchContent = $contentModel->toDto('fr');
-
-// Check if content is available in a language
-$hasSpanish = $content->hasTranslation('es');
+$frenchContentDto = $modelContent->toDto('fr');
 
 // Loop through all available translations
 foreach (inspirecms()->getAllAvailableLanguages() as $locale => $langDto) {
-    $translatedTitle = $content->getTitle($locale);
+    $translatedTitle = $contentDto->getTitle($locale);
     // Do something with the translation
 }
 ```
@@ -195,15 +195,15 @@ Paginate content collections:
 
 ```php
 // In your controller
-$paginatedContent = inspirecms_content()->getPaginatedByDocumentType(documentType: 'blog_post', perPage: 10);
+$paginatedContentDto = inspirecms_content()->getPaginatedByDocumentType(documentType: 'post-page', perPage: 10)->toDto();
 
 // In your Blade template
-@foreach ($paginatedContent as $post)
+@foreach ($paginatedContentDto as $post)
     <h2>{{ $post->getTitle() }}</h2>
     <p>{{ $post->getPropertyValue('blog', 'excerpt') }}</p>
 @endforeach
 
-{{ $paginatedContent->links() }}
+{{ $paginatedContentDto->links() }}
 ```
 
 ---
