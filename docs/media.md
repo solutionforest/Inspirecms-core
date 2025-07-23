@@ -13,7 +13,7 @@ quick_links: []
 
 The media library is accessible from: **Admin Panel** > **Media**
 
-![Media](https://inspirecms.net/storage/doc/lBheX18YSaOIGZPMEBSTa8fEeConp2MNKIobugaB.png)
+![Media](https://inspirecms.net/storage/doc/Y9ZfClKYkYEGXHumfg4Uf0r6JTABT9XXm3ebkPEt.png)
 
 ### Browsing Media
 
@@ -37,7 +37,7 @@ Click on a file to view detailed information:
 
 ### Upload Methods
 
-![Media_upload](https://inspirecms.net/storage/doc/Wg1Qa8wxctzBrC5Lyai6qMouzDew3A9N3m73mAF6.png)
+![Media upload](https://inspirecms.net/storage/doc/nsBJYx3z2bn0D8E3TaMS2RJZ5bO7ehYafd1EqBMh.png)
 
 InspireCMS supports multiple upload methods:
 
