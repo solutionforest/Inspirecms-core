@@ -102,7 +102,7 @@ class ContentHelper
     }
 
     /**
-     * @param Paginator|AbstractPaginator $paginator
+     * @param  Paginator|AbstractPaginator  $paginator
      * @return Paginator
      */
     public static function initializePaginatorCollection($paginator)

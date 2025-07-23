@@ -95,7 +95,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildFindByIdsQuery($ids, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator) => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -103,7 +103,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildFindByRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator) => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -111,7 +111,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildGetUnderRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator) => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -128,7 +128,7 @@ class ContentService implements ContentServiceInterface
         $query = $this->applySortingAndLimit($query, $sorting, null);
 
         return $query->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator) => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */

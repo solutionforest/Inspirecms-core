@@ -157,7 +157,7 @@ class ContentDto extends BaseTranslatableModelDto
         $currLocale = $this->getLocale();
 
         return $query->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator))
+            ->tap(fn ($paginator) => ContentHelper::initializePaginatorCollection($paginator))
             ->toDto($currLocale);
     }
 
