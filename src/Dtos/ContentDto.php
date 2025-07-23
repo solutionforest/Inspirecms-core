@@ -157,22 +157,7 @@ class ContentDto extends BaseTranslatableModelDto
         $currLocale = $this->getLocale();
 
         return $query->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(function ($paginator) {
-                if ($paginator instanceof \Illuminate\Contracts\Pagination\Paginator) {
-
-                    $items = $paginator->getCollection();
-
-                    // for "toDto" method
-                    if ($items instanceof ContentCollection) {
-                        $items = $items->setPaginator($paginator);
-                    }
-
-                    $paginator->setCollection($items);
-
-                }
-
-                return $paginator;
-            })
+            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator))
             ->toDto($currLocale);
     }
 

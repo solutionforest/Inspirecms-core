@@ -4,8 +4,11 @@ namespace SolutionForest\InspireCms\Helpers;
 
 use Filament\Resources\Pages\CreateRecord;
 use Filament\Resources\Pages\EditRecord;
+use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\AbstractPaginator;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -96,6 +99,28 @@ class ContentHelper
             'templates',
             'ancestorsAndSelf.webSetting',
         ];
+    }
+
+    /**
+     * @param Paginator|AbstractPaginator $paginator
+     * @return Paginator
+     */
+    public static function initializePaginatorCollection($paginator)
+    {
+        if ($paginator instanceof Paginator) {
+
+            $items = $paginator->getCollection();
+
+            // for "toDto" method
+            if ($items instanceof ContentCollection) {
+                $items = $items->setPaginator($paginator);
+            }
+
+            $paginator->setCollection($items);
+
+        }
+
+        return $paginator;
     }
 
     /**

@@ -5,9 +5,9 @@ namespace SolutionForest\InspireCms\Services;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
-use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
+use SolutionForest\InspireCms\Helpers\ContentHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
@@ -95,7 +95,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildFindByIdsQuery($ids, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -103,7 +103,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildFindByRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -111,7 +111,7 @@ class ContentService implements ContentServiceInterface
     {
         return $this->buildGetUnderRealPathQuery($path, $isWebPage, $isPublished, $withRelations, $sorting, null)
             ->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -128,7 +128,7 @@ class ContentService implements ContentServiceInterface
         $query = $this->applySortingAndLimit($query, $sorting, null);
 
         return $query->paginate($perPage, ['*'], $pageName, $page)
-            ->tap(fn ($paginator) => $this->initializePaginatorCollection($paginator));
+            ->tap(fn ($paginator)  => ContentHelper::initializePaginatorCollection($paginator));
     }
 
     /** {@inheritDoc} */
@@ -338,23 +338,5 @@ class ContentService implements ContentServiceInterface
         $query = $this->applySortingAndLimit($query, $sorting, $limit);
 
         return $query;
-    }
-
-    private function initializePaginatorCollection($paginator)
-    {
-        if ($paginator instanceof \Illuminate\Contracts\Pagination\Paginator) {
-
-            $items = $paginator->getCollection();
-
-            // for "toDto" method
-            if ($items instanceof ContentCollection) {
-                $items = $items->setPaginator($paginator);
-            }
-
-            $paginator->setCollection($items);
-
-        }
-
-        return $paginator;
     }
 }
