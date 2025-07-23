@@ -35,7 +35,7 @@ return [
     'uuid' => 'UUID',
     'unknown_user' => 'Unknown User',
     'version' => 'Version',
-    
+
     'search' => [
         'label' => 'Search',
         'placeholder' => 'Search...',

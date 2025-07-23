@@ -23,7 +23,7 @@ return [
         'create_document_type' => [
             'title' => 'Create ' . __('inspirecms::inspirecms.document_type.singular'),
             'description' => 'Create a new ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
-            'message' => 'Use this section to create new ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')) .' for your content management system. This allows you to categorize and organize your content, making it easier to manage and search for specific information.',
+            'message' => 'Use this section to create new ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')) . ' for your content management system. This allows you to categorize and organize your content, making it easier to manage and search for specific information.',
         ],
     ],
 

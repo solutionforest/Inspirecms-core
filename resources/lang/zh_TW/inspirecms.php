@@ -42,7 +42,7 @@ return [
         'message' => '搜索中...',
         'no_results' => '未找到結果',
     ],
-    
+
     'children' => [
         'singular' => '子項目',
         'plural' => '子項目',

@@ -1,7 +1,7 @@
 <?php
 
 return [
-    
+
     'title' => [
         'label' => '标题',
         'validation_attribute' => '标题',

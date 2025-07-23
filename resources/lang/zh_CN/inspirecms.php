@@ -34,7 +34,7 @@ return [
     'used_by' => '被引用',
     'uuid' => 'UUID',
     'version' => '版本',
-    
+
     'search' => [
         'label' => '搜索',
         'placeholder' => '搜索...',

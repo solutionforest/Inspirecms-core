@@ -3,7 +3,7 @@
 return [
     'empty_state' => [
         'heading' => '没有' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-        'description' => '创建一个' . lcfirst(__('inspirecms::inspirecms.document_type.singular')). '以开始。',
+        'description' => '创建一个' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . '以开始。',
     ],
     'title' => [
         'label' => '标题',
