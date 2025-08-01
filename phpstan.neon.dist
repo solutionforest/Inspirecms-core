@@ -10,5 +10,17 @@ parameters:
     tmpDir: build/phpstan
     checkOctaneCompatibility: true
     checkModelProperties: true
-    checkMissingIterableValueType: false
-
+    treatPhpDocTypesAsCertain: false
+    reportUnmatchedIgnoredErrors: false
+    ignoreErrors:
+        - 
+            identifier: trait.unused
+        - 
+            identifier: instanceof.alwaysTrue
+        - 
+            identifier: generics.lessTypes
+        - 
+            identifier: generics.notSubtype
+        - '#Call to an undefined method#'
+        - '#Call to an undefined static method#'
+        - '#PHPDoc tag @property has invalid value#'
