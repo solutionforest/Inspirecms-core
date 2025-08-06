@@ -290,7 +290,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('title')
             ->label(__('inspirecms::resources/document-type.title.label'))
-            ->validationAttribute(__('inspirecms::resources/document-type.title.category'))
+            ->validationAttribute(__('inspirecms::resources/document-type.title.validation_attribute'))
             ->required()
             ->live(true, 5000)
             ->afterStateUpdated(function ($component, $state, Forms\Get $get, Forms\Set $set, $operation) {
@@ -308,7 +308,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     {
         return Forms\Components\TextInput::make('slug')
             ->label(__('inspirecms::resources/document-type.slug.label'))
-            ->validationAttribute(__('inspirecms::resources/document-type.slug.category'))
+            ->validationAttribute(__('inspirecms::resources/document-type.slug.validation_attribute'))
             ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true)
             ->autofocus()
             ->required()
