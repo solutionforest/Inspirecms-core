@@ -2,8 +2,8 @@
 
 return [
     'empty_state' => [
-        'heading' => '沒有' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-        'description' => '建立一個' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . '以開始。',
+        'heading' => '沒有' . strtolower(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => '建立一個' . strtolower(__('inspirecms::inspirecms.document_type.singular')) . '以開始。',
     ],
     'title' => [
         'label' => '標題',
@@ -35,9 +35,9 @@ return [
 
     'templates' => [
         'label' => __('inspirecms::inspirecms.template.plural'),
-        'validation_attribute' => lcfirst(__('inspirecms::inspirecms.template.plural')),
-        'description' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], '渲染此:dt時使用的:t'),
-        'hint' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], '建立一個:t來顯示此:dt'),
+        'validation_attribute' => strtolower(__('inspirecms::inspirecms.template.plural')),
+        'description' => str_replace([':dt', ':t'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.template.singular'))], '渲染此:dt時使用的:t'),
+        'hint' => str_replace([':dt', ':t'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.template.singular'))], '建立一個:t來顯示此:dt'),
     ],
 
     'field_groups' => [
@@ -45,25 +45,25 @@ return [
         'singular' => __('inspirecms::inspirecms.field.singular'),
         'plural' => __('inspirecms::inspirecms.field.plural'),
         'description' => '',
-        'hint' => str_replace([':dt', ':fg'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.field_group.singular'))], '建立一個:fg以用於此:dt'),
+        'hint' => str_replace([':dt', ':fg'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.field_group.singular'))], '建立一個:fg以用於此:dt'),
     ],
 
     'inherited' => [
         'label' => '繼承自 :name',
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '此:dts繼承的:dt'),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], '此:dts繼承的:dt'),
     ],
     'inheriting' => [
         'label' => '繼承至 :name',
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '繼承此:dt的:dts'),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], '繼承此:dt的:dts'),
     ],
 
     'allowed_document_types' => [
-        'label' => '允許的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
-        'description' => str_replace([':dts'], [lcfirst(__('inspirecms::inspirecms.document_type.plural'))], '作為子項允許的:dts'),
+        'label' => '允許的' . strtolower(__('inspirecms::inspirecms.document_type.singular')),
+        'description' => str_replace([':dts'], [strtolower(__('inspirecms::inspirecms.document_type.plural'))], '作為子項允許的:dts'),
     ],
     'allowing_document_types' => [
-        'label' => '允許的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], '允許此:dt的:dts'),
+        'label' => '允許的' . strtolower(__('inspirecms::inspirecms.document_type.singular')),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], '允許此:dt的:dts'),
     ],
 
     'categories' => [
@@ -77,7 +77,7 @@ return [
         ],
         'inheritance' => [
             'label' => '繼承',
-            'description' => '可以繼承的' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . '佈局。',
+            'description' => '可以繼承的' . strtolower(__('inspirecms::inspirecms.document_type.singular')) . '佈局。',
         ],
     ],
 
@@ -94,7 +94,7 @@ return [
         ],
         'display' => [
             'heading' => '顯示',
-            'description' => '設定在建立內容時如何顯示此' . lcfirst(__('inspirecms::inspirecms.document_type.singular')),
+            'description' => '設定在建立內容時如何顯示此' . strtolower(__('inspirecms::inspirecms.document_type.singular')),
         ],
     ],
 ];
