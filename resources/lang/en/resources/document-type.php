@@ -2,8 +2,8 @@
 
 return [
     'empty_state' => [
-        'heading' => 'No ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-        'description' => 'Create a ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' to get started.',
+        'heading' => 'No ' . strtolower(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => 'Create a ' . strtolower(__('inspirecms::inspirecms.document_type.singular')) . ' to get started.',
     ],
     'title' => [
         'label' => 'Title',
@@ -35,9 +35,9 @@ return [
 
     'templates' => [
         'label' => __('inspirecms::inspirecms.template.plural'),
-        'validation_attribute' => lcfirst(__('inspirecms::inspirecms.template.plural')),
-        'description' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], 'The :t to use when rendering this :dt'),
-        'hint' => str_replace([':dt', ':t'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.template.singular'))], 'Create a :t to display this :dt'),
+        'validation_attribute' => strtolower(__('inspirecms::inspirecms.template.plural')),
+        'description' => str_replace([':dt', ':t'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.template.singular'))], 'The :t to use when rendering this :dt'),
+        'hint' => str_replace([':dt', ':t'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.template.singular'))], 'Create a :t to display this :dt'),
     ],
 
     'field_groups' => [
@@ -45,25 +45,25 @@ return [
         'singular' => __('inspirecms::inspirecms.field.singular'),
         'plural' => __('inspirecms::inspirecms.field.plural'),
         'description' => '',
-        'hint' => str_replace([':dt', ':fg'], [lcfirst(__('inspirecms::inspirecms.document_type.singular')), lcfirst(__('inspirecms::inspirecms.field_group.singular'))], 'Create a :fg to use with this :dt'),
+        'hint' => str_replace([':dt', ':fg'], [strtolower(__('inspirecms::inspirecms.document_type.singular')), strtolower(__('inspirecms::inspirecms.field_group.singular'))], 'Create a :fg to use with this :dt'),
     ],
 
     'inherited' => [
         'label' => 'Inherited from :name',
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that this :dt inherits from.'),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that this :dt inherits from.'),
     ],
     'inheriting' => [
         'label' => 'Inheriting to :name',
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that inherit from this :dt'),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that inherit from this :dt'),
     ],
 
     'allowed_document_types' => [
-        'label' => 'Allowed ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-        'description' => str_replace([':dts'], [lcfirst(__('inspirecms::inspirecms.document_type.plural'))], 'The :dts that are allowed as child items.'),
+        'label' => 'Allowed ' . strtolower(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => str_replace([':dts'], [strtolower(__('inspirecms::inspirecms.document_type.plural'))], 'The :dts that are allowed as child items.'),
     ],
     'allowing_document_types' => [
-        'label' => 'Allowing ' . lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-        'description' => str_replace([':dts', ':dt'], [lcfirst(__('inspirecms::inspirecms.document_type.plural')), lcfirst(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that allow this :dt'),
+        'label' => 'Allowing ' . strtolower(__('inspirecms::inspirecms.document_type.plural')),
+        'description' => str_replace([':dts', ':dt'], [strtolower(__('inspirecms::inspirecms.document_type.plural')), strtolower(__('inspirecms::inspirecms.document_type.singular'))], 'The :dts that allow this :dt'),
     ],
 
     'categories' => [
@@ -77,7 +77,7 @@ return [
         ],
         'inheritance' => [
             'label' => 'Inheritance',
-            'description' => 'A ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' layout that can be inherited.',
+            'description' => 'A ' . strtolower(__('inspirecms::inspirecms.document_type.singular')) . ' layout that can be inherited.',
         ],
     ],
 
@@ -94,7 +94,7 @@ return [
         ],
         'display' => [
             'heading' => 'Display',
-            'description' => 'Settings that determine how this ' . lcfirst(__('inspirecms::inspirecms.document_type.singular')) . ' is displayed when creating content.',
+            'description' => 'Settings that determine how this ' . strtolower(__('inspirecms::inspirecms.document_type.singular')) . ' is displayed when creating content.',
         ],
     ],
 ];
