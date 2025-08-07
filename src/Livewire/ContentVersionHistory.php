@@ -158,7 +158,7 @@ class ContentVersionHistory extends RelationManager implements HasActions, HasFo
                         }
                         $action->success();
                     })
-                    ->after(fn () => $this->dispatch('refresh')),
+                    ->after(fn () => $this->dispatch('$refresh')),
                 TableAction::make('viewDifferences')
                     ->label(__('inspirecms::resources/content-version.buttons.view_differences.label'))
                     ->icon('heroicon-o-eye'),
