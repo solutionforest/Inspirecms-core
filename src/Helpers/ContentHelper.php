@@ -23,7 +23,7 @@ class ContentHelper
      * @param  string  $publishableState  The state of the publishable record.
      * @param  EditRecord|CreateRecord  $livewire  The Livewire component instance.
      * @param  array  $publishableData  The data related to the publishable record.
-     * @return void
+     * @return bool
      */
     public static function handlePublishableRecord($record, $publishableState, $livewire, array $publishableData)
     {
