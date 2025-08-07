@@ -94,12 +94,12 @@ trait CreateContentActionTrait
         return $this;
     }
 
-    public function getParentContentKey(): null | Closure | string | int
+    public function getParentContentKey(): null | string | int
     {
         return $this->evaluate($this->parentContentKey);
     }
 
-    public function getParentDocumentType(): null | Closure | string | int | Model
+    public function getParentDocumentType(): null | string | int | Model
     {
         return $this->evaluate($this->parentDocumentType);
     }
