@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
-use Filament\Tables\Actions\Action;
+use Filament\Actions\Action;
 use SolutionForest\InspireCms\Base\Filament\Actions\Concerns\CreateContentActionTrait;
 
 class CreateContentAction extends Action
