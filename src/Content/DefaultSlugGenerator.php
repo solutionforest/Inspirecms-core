@@ -138,7 +138,7 @@ class DefaultSlugGenerator implements SlugGeneratorInterface
 
     private static function fallbackGeneric($text, $separator)
     {
-        $result = preg_replace('/[^a-zA-Z0-9\s]/', '', $text);
+        $result = preg_replace('/[^a-zA-Z0-9\s\-]/', '', $text);
         $result = preg_replace('/\s+/', $separator, $result);
 
         return strtolower(trim($result, $separator));
