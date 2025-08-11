@@ -31,15 +31,18 @@ use SolutionForest\InspireCms\Filament\Resources\ContentResource\RelationManager
 use SolutionForest\InspireCms\Filament\Resources\Helpers\ContentResourceHelper;
 use SolutionForest\InspireCms\Filament\Tables\Columns\BladeIconColumn;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
+use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 
 class ContentsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('nestable_tree_order', 'asc')
             ->modifyQueryUsing(function ($query, $livewire) {
-                $query->with('publishedVersions');
+                $query
+                    ->with('publishedVersions')
+                    ->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
                 if ($livewire instanceof ChildrenRelationManager) {
                     $query->with('parent');
                 }
@@ -77,6 +80,11 @@ class ContentsTable
                     ->searchable(isIndividual: true)
                     ->fontFamily('mono')
                     ->limit(20)->tooltip(fn ($state) => $state),
+
+                TextColumn::make('nestable_tree_order')
+                    ->label(__('inspirecms::inspirecms.order'))
+                    ->sortable()
+                    ->toggleable(),
 
                 TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
