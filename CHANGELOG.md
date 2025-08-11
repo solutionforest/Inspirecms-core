@@ -2,6 +2,22 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## Release 1.1.2 - 2025-08-11
+
+### What's Changed in 1.1.2
+
+#### 🐛 Bug Fixes
+
+- fix: Update fallbackGeneric method to allow **hyphens** in transliteration
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-core:^1.1.2
+
+```
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.1...1.1.2
+
 ## 1.1.1 - 2025-08-06
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
