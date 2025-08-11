@@ -3,12 +3,16 @@
 namespace SolutionForest\InspireCms\Helpers;
 
 use Filament\Support\Enums\IconPosition;
+use Filament\Support\Enums\IconSize;
+use Filament\Tables\View\Components\Columns\IconColumnComponent\IconComponent;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\HtmlString;
 use Illuminate\Support\Str;
 use Illuminate\View\ComponentAttributeBag;
 use Stringable;
+
+use function Filament\Support\generate_icon_html;
 
 /**
  * @phpstan-type AttributeArray array<string,string>
@@ -18,34 +22,25 @@ class UIHelper
     /**
      * @param  AttributeArray  $attributes
      */
-    public static function generateIcon(?string $icon, ?string $color = null, int $width = 5, array $attributes = []): HtmlString
+    public static function generateIcon(?string $icon, ?string $color = null, null | IconSize | string $size = null, array $attributes = []): HtmlString
     {
         if (! filled($icon)) {
             return new HtmlString('');
         }
 
-        $bindings = ['icon'];
-        $props = [];
+        if (is_string($size)) {
+            $size = IconSize::tryFrom($size) ?? IconSize::Medium;
+        }
 
-        $data = [
-            ...compact($bindings),
-            ...$props,
-        ];
+        $html = generate_icon_html(
+            icon: $icon,
+            attributes: (new ComponentAttributeBag)
+                ->merge($attributes)
+                ->color(IconComponent::class, $color),
+            size: $size ?? IconSize::Large
+        )->toHtml();
 
-        $attributes = static::mergeAttributes($attributes, [
-            'class' => Arr::toCssClasses([
-                "w-{$width} h-{$width} ",
-                'text-custom-500 dark:text-custom-400' => $color !== 'gray' && filled($color),
-                'text-gray-400 dark:text-gray-500' => $color === 'gray',
-            ]),
-            'style' => Arr::toCssStyles([
-                \Filament\Support\get_color_css_variables($color, shades: [400, 500]) => $color != 'gray' && filled($color),
-            ]),
-        ]);
-
-        $template = static::buildComponentTemplate(componentName: 'filament::icon', bindings: $bindings, props: $props, attributes: $attributes);
-
-        return str(Blade::render($template, $data))->toHtmlString();
+        return str($html)->toHtmlString();
     }
 
     /**
@@ -56,7 +51,7 @@ class UIHelper
         return static::generateIcon(
             icon: $condition ? ($trueIcon ?? 'heroicon-m-check-circle') : ($falseIcon ?? 'heroicon-m-x-circle'),
             color: $condition ? $trueColor : $falseColor,
-            width: 5,
+            size: IconSize::Medium,
             attributes: $attributes,
         );
     }
@@ -91,12 +86,12 @@ class UIHelper
     /**
      * @param  array{text:?AttributeArray,icon:?AttributeArray}  $attributes
      */
-    public static function generateTextWithIcon(string $text, ?string $icon, ?string $iconColor = null, IconPosition | string $iconPosition = IconPosition::Before, int $iconWidth = 5, array $attributes = []): HtmlString
+    public static function generateTextWithIcon(string $text, ?string $icon, ?string $iconColor = null, IconPosition | string $iconPosition = IconPosition::Before, null | IconSize | string $iconSize = null, array $attributes = []): HtmlString
     {
         if (is_string($iconPosition)) {
             $iconPosition = IconPosition::tryFrom($iconPosition) ?? IconPosition::Before;
         }
-        $iconHtml = static::generateIcon(icon: $icon, color: $iconColor, width: $iconWidth, attributes: $attributes['icon'] ?? []);
+        $iconHtml = static::generateIcon(icon: $icon, color: $iconColor, size: $iconSize, attributes: $attributes['icon'] ?? []);
         $haveIcon = filled(strval($iconHtml));
 
         return str(static::wrapWithHtmlTag($text, 'span', $attributes['text'] ?? []))

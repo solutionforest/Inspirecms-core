@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Services;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Models\Contracts\Export;
+use Throwable;
 
 class ExportService implements ExportServiceInterface
 {
@@ -31,7 +32,7 @@ class ExportService implements ExportServiceInterface
                 $export->markAsCompleted($result->filename, $result->message);
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $export->markAsFailed($th);
 
         }

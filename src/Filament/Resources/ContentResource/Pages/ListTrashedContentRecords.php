@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\ContentResource\Pages;
 
-use Filament\Tables;
+use Filament\Actions\Action;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentListTrashPage;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
@@ -26,18 +26,9 @@ class ListTrashedContentRecords extends BaseContentListTrashPage
         return InspireCmsConfig::getFilamentResource('content', ContentResource::class);
     }
 
-    protected function configureTableBulkAction(Tables\Actions\BulkAction $action): void
+    public function getDefaultActionSuccessRedirectUrl(Action $action): ?string
     {
-        parent::configureTableBulkAction($action);
-
-        $action->successRedirectUrl($this->getUrl());
-    }
-
-    protected function configureTableAction(Tables\Actions\Action $action): void
-    {
-        parent::configureTableAction($action);
-
-        $action->successRedirectUrl($this->getUrl());
+        return $this->getUrl();
     }
 
     public function getBreadcrumb(): ?string

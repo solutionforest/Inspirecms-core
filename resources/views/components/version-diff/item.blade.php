@@ -1,13 +1,18 @@
 @props(['key', 'value'])
+@use('Illuminate\View\ComponentAttributeBag')
 
-
-<x-filament::grid default="3" md="5" {{ $attributes->merge(['class' => 'version-diff-item']) }}>
-    <x-filament::grid.column default="1" class="version-diff-item-title font-semibold">{{ $key }}</x-filament::grid.column>
-    <x-filament::grid.column default="2" md="4">
+<div {{ 
+    $attributes
+        ->grid(['default' => 3, 'md' => 5])
+        ->merge(['class' => 'version-diff-item']) 
+    }}
+>
+    <div {{ (new ComponentAttributeBag)->gridColumn(['default' => 1])->class(['version-diff-item-title font-semibold']) }}>{{ $key }}</div>
+    <div {{ (new ComponentAttributeBag)->gridColumn(['default' => 2, 'md' => 4]) }} >
         @if (is_array($value))
             <x-inspirecms::version-diff.items :items="$value"/>
         @else
             {!! $value !!}
         @endif
-    </x-filament::grid.column>
-</x-filament::grid>
+    </d>
+</div>

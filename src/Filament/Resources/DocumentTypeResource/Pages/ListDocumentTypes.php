@@ -2,8 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\Pages;
 
-use Filament\Actions;
-use Filament\Forms\Form;
+use Filament\Actions\CreateAction;
 use Filament\Resources\Components\Tab;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource;
@@ -14,18 +13,13 @@ class ListDocumentTypes extends BaseListRecords
     public function getActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 
     public static function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('document_type', DocumentTypeResource::class);
-    }
-
-    public function form(Form $form): Form
-    {
-        return static::getResource()::createForm($form);
     }
 
     // public function getTabs(): array

@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Filament\Forms\Components\CheckboxList;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Exports\ExportResult;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -62,7 +63,7 @@ class FieldGroupExporter extends BaseImportUsedDataExporter
     }
 
     /**
-     * @return array{0: \Illuminate\Pagination\LengthAwarePaginator, 1: int, 2: int}
+     * @return array{0: LengthAwarePaginator, 1: int, 2: int}
      */
     private function getFieldGroupRecords()
     {

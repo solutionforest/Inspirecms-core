@@ -2,10 +2,12 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 /**
- * @template TResult of \Illuminate\Database\Eloquent\Model|\SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset
+ * @template TResult of Model|MediaAsset
  */
 interface AssetServiceInterface
 {

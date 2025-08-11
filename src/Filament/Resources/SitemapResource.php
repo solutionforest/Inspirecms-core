@@ -2,17 +2,24 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\CheckboxColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Resources\SitemapResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\SitemapResource\Pages\ManageSitemap;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
 
@@ -22,7 +29,7 @@ class SitemapResource extends Resource implements ClusterSectionResource
 
     protected static ?int $navigationSort = -6;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document-text';
 
     protected static ?string $cluster = Settings::class;
 
@@ -36,10 +43,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
         ];
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 static::getEnableFormComponent(),
                 static::getUrlFormComponent(),
                 static::getPriorityFormComponent(),
@@ -53,35 +60,35 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->modifyQueryUsing(fn ($query) => $query->with('model', fn ($query) => $query->withTrashed()))
             ->defaultSort('updated_at', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('type')
+                TextColumn::make('type')
                     ->label(__('inspirecms::resources/sitemap.type.label'))
                     ->getStateUsing(fn (Model | Sitemap $record) => $record->getType()),
-                Tables\Columns\TextColumn::make('url')
+                TextColumn::make('url')
                     ->label(__('inspirecms::resources/sitemap.url.label'))
                     ->getStateUsing(fn (Model | Sitemap $record) => $record->getUrl()),
-                Tables\Columns\TextColumn::make('priority')
+                TextColumn::make('priority')
                     ->label(__('inspirecms::resources/sitemap.priority.label'))
                     ->sortable(),
-                Tables\Columns\TextColumn::make('change_frequency')
+                TextColumn::make('change_frequency')
                     ->label(__('inspirecms::resources/sitemap.change_frequency.label'))
                     ->formatStateUsing(fn ($state) => SitemapChangeFrequency::tryFrom($state)?->getLabel()),
-                Tables\Columns\CheckboxColumn::make('enable')
+                CheckboxColumn::make('enable')
                     ->label(__('inspirecms::resources/sitemap.enable.label'))
                     ->disabled(fn (Model | Sitemap $record) => ! static::canEdit($record)),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('inspirecms::inspirecms.last_updated_at'))
                     ->sortable(),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canEdit($record))->slideOver(),
-                Tables\Actions\DeleteAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canDelete($record)),
+            ->recordActions([
+                EditAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canEdit($record))->slideOver(),
+                DeleteAction::make()->iconButton()->visible(fn (Model | Sitemap $record) => static::canDelete($record)),
             ]);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ManageSitemap::route('/'),
+            'index' => ManageSitemap::route('/'),
         ];
     }
 
@@ -121,10 +128,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
     }
 
     // region Form field(s)/component(s)
-    /** @return Forms\Components\Field | Forms\Components\Component */
+    /** @return Field|Component */
     protected static function getUrlFormComponent()
     {
-        return Forms\Components\TextInput::make('url')
+        return TextInput::make('url')
             ->label(__('inspirecms::resources/sitemap.url.label'))
             ->validationAttribute(__('inspirecms::resources/sitemap.url.validation_attribute'))
             ->url()
@@ -132,10 +139,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->required();
     }
 
-    /** @return Forms\Components\Field | Forms\Components\Component */
+    /** @return Field|Component */
     protected static function getPriorityFormComponent()
     {
-        return Forms\Components\TextInput::make('priority')
+        return TextInput::make('priority')
             ->label(__('inspirecms::resources/sitemap.priority.label'))
             ->validationAttribute(__('inspirecms::resources/sitemap.priority.validation_attribute'))
             ->numeric()
@@ -148,10 +155,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->required();
     }
 
-    /** @return Forms\Components\Field | Forms\Components\Component */
+    /** @return Field|Component */
     protected static function getChangeFrequencyFormComponent()
     {
-        return Forms\Components\Select::make('change_frequency')
+        return Select::make('change_frequency')
             ->label(__('inspirecms::resources/sitemap.change_frequency.label'))
             ->validationAttribute(__('inspirecms::resources/sitemap.change_frequency.validation_attribute'))
             ->options(SitemapChangeFrequency::class)
@@ -160,10 +167,10 @@ class SitemapResource extends Resource implements ClusterSectionResource
             ->required();
     }
 
-    /** @return Forms\Components\Field | Forms\Components\Component */
+    /** @return Field|Component */
     protected static function getEnableFormComponent()
     {
-        return Forms\Components\Toggle::make('enable')
+        return Toggle::make('enable')
             ->label(__('inspirecms::resources/sitemap.enable.label'))
             ->validationAttribute(__('inspirecms::resources/sitemap.enable.validation_attribute'))
             ->default(true);

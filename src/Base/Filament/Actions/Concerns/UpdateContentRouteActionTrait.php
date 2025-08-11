@@ -3,12 +3,12 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;

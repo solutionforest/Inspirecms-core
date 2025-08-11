@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Models\Concerns;
 
+use Filament\Auth\Notifications\VerifyEmail;
 use Filament\AvatarProviders\Contracts\AvatarProvider;
 use Filament\Facades\Filament;
-use Filament\Notifications\Auth\VerifyEmail;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
@@ -51,7 +51,7 @@ trait CmsUserTrait
 
     public function getFilamentFallbackAvatarUrl(): ?string
     {
-        if (($providerClass = filament()->getCurrentPanel()?->getDefaultAvatarProvider())
+        if (($providerClass = filament()->getCurrentOrDefaultPanel()?->getDefaultAvatarProvider())
             && class_exists($providerClass)
             && is_a($providerClass, AvatarProvider::class, true)
         ) {

@@ -10,9 +10,9 @@ class Users extends Cluster implements ClusterSection
 {
     use ClusterSectionTrait;
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-check';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shield-check';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-s-shield-check';
+    protected static string | \BackedEnum | null $activeNavigationIcon = 'heroicon-s-shield-check';
 
     protected static ?int $navigationSort = -7;
 

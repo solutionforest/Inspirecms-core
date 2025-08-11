@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Services;
 
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Models\Contracts\Import;
+use SplFileInfo;
 
 interface ImportServiceInterface
 {
@@ -20,7 +21,7 @@ interface ImportServiceInterface
      *
      * This method creates a sample ZIP file for demonstration or testing purposes.
      *
-     * @return \SplFileInfo
+     * @return SplFileInfo
      */
     public function buildSampleZip();
 }

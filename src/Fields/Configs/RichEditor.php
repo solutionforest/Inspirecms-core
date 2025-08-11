@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\RichEditor as FormsRichEditor;
-use Filament\Forms\Components\Section;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;

@@ -2,12 +2,13 @@
 
 namespace SolutionForest\InspireCms\Http\Middleware;
 
+use Closure;
 use Filament\Facades\Filament;
 use Illuminate\Http\Request;
 
 class UserPreference
 {
-    public function handle(Request $request, \Closure $next)
+    public function handle(Request $request, Closure $next)
     {
         $guard = Filament::auth();
 

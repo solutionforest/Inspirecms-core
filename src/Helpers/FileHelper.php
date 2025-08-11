@@ -2,15 +2,22 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Exception;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
+use Throwable;
+use ZipArchive;
+
 class FileHelper
 {
     public static function buildZipFromFolder(string $pathToZip, string $zipFullResultPath)
     {
-        $zip = new \ZipArchive;
-        if ($zip->open($zipFullResultPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE)) {
+        $zip = new ZipArchive;
+        if ($zip->open($zipFullResultPath, ZipArchive::CREATE | ZipArchive::OVERWRITE)) {
 
-            /** @var \SplFileInfo[] $files */
-            $files = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($pathToZip));
+            /** @var SplFileInfo[] $files */
+            $files = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($pathToZip));
 
             foreach ($files as $name => $file) {
                 $filePath = $file->getPathName();
@@ -27,13 +34,13 @@ class FileHelper
 
             $zip->close();
         } else {
-            throw new \Exception('Cannot open zip file at ' . $zipFullResultPath);
+            throw new Exception('Cannot open zip file at ' . $zipFullResultPath);
         }
     }
 
     public static function unzipFile(string $zipFilePath, string $extractTo)
     {
-        $zip = new \ZipArchive;
+        $zip = new ZipArchive;
 
         try {
             if ($zip->open($zipFilePath) === true) {
@@ -55,9 +62,9 @@ class FileHelper
                 $zip->close();
 
             } else {
-                throw new \Exception('Cannot open zip file at ' . $zipFilePath);
+                throw new Exception('Cannot open zip file at ' . $zipFilePath);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             throw $th;
         }
     }
@@ -75,7 +82,7 @@ class FileHelper
     public static function copyDirectory(string $source, string $destination)
     {
         if (! is_dir($source)) {
-            throw new \Exception('Source directory does not exist: ' . $source);
+            throw new Exception('Source directory does not exist: ' . $source);
         }
 
         if (! is_dir($destination)) {

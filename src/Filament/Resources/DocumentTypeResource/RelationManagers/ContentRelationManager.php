@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
@@ -22,16 +22,16 @@ class ContentRelationManager extends RelationManager
             ->modifyQueryUsing(fn ($query) => $query->with('parent'))
             ->modelLabel(__('inspirecms::inspirecms.content.singular'))
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label')),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->label(__('inspirecms::resources/content.slug.label'))
                     ->badge(),
-                Tables\Columns\TextColumn::make('parent.title')
+                TextColumn::make('parent.title')
                     ->label(__('inspirecms::resources/content.parent.label')),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
-            ->actions([
+            ->recordActions([
                 OpenAction::make()
                     ->url(fn ($record) => $this->getRecordUrl($record)),
             ]);

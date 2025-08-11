@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FileHelper;
@@ -15,6 +18,8 @@ use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGro
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
+use SplFileInfo;
+use Throwable;
 
 class ImportService implements ImportServiceInterface
 {
@@ -41,7 +46,7 @@ class ImportService implements ImportServiceInterface
             [$extractorFs, $extractedFolderPath] = $this->zipFileReader->extractFromZip($fs->path($filePath));
 
             if (is_null($extractedFolderPath)) {
-                throw new \Exception('The provided file is not a ZIP file.');
+                throw new Exception('The provided file is not a ZIP file.');
             }
 
             $folderPaths = $extractorFs->directories($extractedFolderPath);
@@ -90,7 +95,7 @@ class ImportService implements ImportServiceInterface
                 empty($message) ? null : $message
             );
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             $message[] = [
                 'exMessage' => $th->getMessage(),
@@ -133,11 +138,11 @@ class ImportService implements ImportServiceInterface
         // Delete the folder
         $fs->deleteDirectory($path);
 
-        return new \SplFileInfo($zipFullPath);
+        return new SplFileInfo($zipFullPath);
     }
 
     /**
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance.
      * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType
      * @return array|null Error message for the file or null
@@ -187,7 +192,7 @@ class ImportService implements ImportServiceInterface
                 $jsonData = $fs->json($file);
 
                 if (is_null($jsonData)) {
-                    throw new \Exception('Invalid JSON data.');
+                    throw new Exception('Invalid JSON data.');
                 }
 
                 switch ($forType) {
@@ -230,7 +235,7 @@ class ImportService implements ImportServiceInterface
     /**
      * Duplicates view files from the specified folder path.
      *
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance.
      * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType  The type of view files to duplicate.
      * @return array|null Error message for the file or null
@@ -279,9 +284,9 @@ class ImportService implements ImportServiceInterface
     /**
      * Processes files in a specified folder and applies a callback function to each file.
      *
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance to use for file operations.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance to use for file operations.
      * @param  string  $folder  The path to the folder containing the files to process.
-     * @param  callable(\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter, string, string): void  $callback  The callback function to apply to each file.
+     * @param  callable((Filesystem|FilesystemAdapter), string, string):void  $callback  The callback function to apply to each file.
      * @param  bool  $includeSubFolders  Whether to include subfolders in the essing. Default is false.
      * @param  array  $neededExtensions  The file extension to filter files by. If empty, all files are processed.
      * @return array|null Error message for the file or null
@@ -311,7 +316,7 @@ class ImportService implements ImportServiceInterface
 
                 $callback($fs, $folder, $file);
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
 
                 $failed[$file] = [
                     'ex' => $th->getMessage(),

@@ -7,6 +7,7 @@ use SolutionForest\InspireCms\Facades\KeyValueCache;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use Throwable;
 
 class TemplateManager implements TemplateManagerInterface
 {
@@ -122,7 +123,7 @@ class TemplateManager implements TemplateManagerInterface
                 return true;
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
 
@@ -142,7 +143,7 @@ class TemplateManager implements TemplateManagerInterface
                 return true;
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
 

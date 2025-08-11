@@ -22,11 +22,12 @@
     'ring-1 ring-danger-600/50 dark:ring-danger-500/50 rounded-md p-2 shadow-md' => $childComponentHasErrors,
 ])>
     @if ($childComponentHasErrors)
-    <div class="flex justify-end">
-        <x-filament-forms::field-wrapper.error-message>
+        <p
+            data-validation-error
+            class="fi-fo-field-wrp-error-message"
+        >
             {{ trans('inspirecms::inspirecms.validation.translatable_child_field_has_error') }}
-        </x-filament-forms::field-wrapper.error-message>
-    </div>
+        </p>
     @endif
 
     @foreach ($components as $item)

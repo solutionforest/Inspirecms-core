@@ -5,49 +5,51 @@
     'image' => null,
 ])
 @php
-    use Filament\Support\Enums\MaxWidth;
+    use Filament\Support\Enums\Width;
+
+    $livewire ??= null;
+
+    $renderHookScopes = $livewire?->getRenderHookScopes();
+    $renderHookScopes = $livewire?->getRenderHookScopes();
+    $maxContentWidth ??= (filament()->getSimplePageMaxContentWidth() ?? Width::Large);
+
+    if (is_string($maxContentWidth)) {
+        $maxContentWidth = Width::tryFrom($maxContentWidth) ?? $maxContentWidth;
+    }
 @endphp
 
 <x-filament-panels::layout.base :livewire="$livewire">
 
     <div 
-        class="fi-simple-layout split-image-layout flex min-h-screen flex-col items-center bg-primary-200 dark:bg-primary-800/80" 
+        class="split-image-layout" 
         @style([
             "--panel-background-image: url($image)" => isset($image) && filled($image),
         ])
     >
-        <div class="absolute end-0 top-0 flex h-16 items-center gap-x-4 pe-4 md:pe-6 lg:pe-8">
-            <div class="bg-white rounded-lg dark:bg-gray-900">
-                <x-filament-panels::theme-switcher />
-            </div>
+
+        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIMPLE_LAYOUT_START, scopes: $renderHookScopes) }}
+
+        <div class="split-image-layout-header">
+            <x-filament-panels::theme-switcher />
         </div>
 
         <div
-            class="split-image-main-ctn flex w-full flex-grow items-center justify-center sm:justify-end sm:items-stretch"
+            class="split-image-main-ctn"
         >
             <main
                 @class([
-                    'split-image-main w-full bg-white px-6 py-12 shadow-lg ring-1 ring-gray-950/5 lg:bg-white/95 lg:dark:bg-gray-900/80 dark:bg-gray-900 dark:ring-white/10 sm:px-12',
-                    'flex flex-col items-center justify-center',
-                    match ($maxWidth ?? null) {
-                        MaxWidth::ExtraSmall, 'xs' => 'sm:max-w-xs',
-                        MaxWidth::Small, 'sm' => 'sm:max-w-sm',
-                        MaxWidth::Medium, 'md' => 'sm:max-w-md',
-                        MaxWidth::ExtraLarge, 'xl' => 'sm:max-w-xl',
-                        MaxWidth::TwoExtraLarge, '2xl' => 'sm:max-w-2xl',
-                        MaxWidth::ThreeExtraLarge, '3xl' => 'sm:max-w-3xl',
-                        MaxWidth::FourExtraLarge, '4xl' => 'sm:max-w-4xl',
-                        MaxWidth::FiveExtraLarge, '5xl' => 'sm:max-w-5xl',
-                        MaxWidth::SixExtraLarge, '6xl' => 'sm:max-w-6xl',
-                        MaxWidth::SevenExtraLarge, '7xl' => 'sm:max-w-7xl',
-                        default => 'sm:max-w-lg',
-                    },
+                    'fi-simple-main',
+                    'split-image-main',
+                    ($maxContentWidth instanceof Width) ? "fi-width-{$maxContentWidth->value}" : $maxContentWidth,
                 ])
             >
                 {{ $slot }}
             </main>
         </div>
 
-        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $livewire->getRenderHookScopes()) }}
+        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::FOOTER, scopes: $renderHookScopes) }}
+
+        {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::SIMPLE_LAYOUT_END, scopes: $renderHookScopes) }}
+        
     </div>
 </x-filament-panels::layout.base>

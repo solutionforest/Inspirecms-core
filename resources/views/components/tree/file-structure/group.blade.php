@@ -21,7 +21,7 @@
 
     @if (count($children) > 0)
         <div class="w-full overflow-hidden" role="group">
-            <div class="ms-1 ps-7 relative before:absolute before:top-0 before:start-3 before:w-0.5 before:-ms-px before:h-full before:bg-gray-800/20 before:dark:bg-gray-100/40" role="group">
+            <div class="ms-1 ps-7 relative before:absolute before:top-0 before:start-3 before:w-0.5 before:-ms-px before:h-full before:bg-gray-800/20 dark:before:bg-gray-100/40" role="group">
                 @foreach ($children as $index => $item)
                     @php
                         $childDepth = $depth + 1;

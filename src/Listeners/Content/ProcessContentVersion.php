@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Listeners\Content;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Events\Content\CreatedContentVersion;
@@ -22,7 +23,7 @@ class ProcessContentVersion
 
         try {
             $this->processContentVersion($model);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         } finally {
             $model->resetContentVersionState();

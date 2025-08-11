@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Actions;
 
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Support\Facades\FilamentIcon;
 
 class ResetAction extends Action

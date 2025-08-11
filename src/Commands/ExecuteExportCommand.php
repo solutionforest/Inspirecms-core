@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -40,7 +42,7 @@ class ExecuteExportCommand extends Command
                 } else {
                     $this->info("Job {$record->getKey()} done in this iteration.");
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("Job {$record->getKey()} failed: {$e->getMessage()}");
             }
         }
@@ -56,7 +58,7 @@ class ExecuteExportCommand extends Command
         $model = InspireCmsConfig::getExportModelClass();
 
         /**
-         * @var \Illuminate\Database\Eloquent\Builder<Export&Model>
+         * @var Builder<Export&Model>
          */
         $query = $model::query();
 

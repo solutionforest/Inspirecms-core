@@ -3,10 +3,10 @@
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns;
 
 use Filament\Facades\Filament;
-use Filament\Resources\Concerns\HasActiveLocaleSwitcher;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\HasActiveLocaleSwitcher;
 use Livewire\Attributes\Locked;
 
 /**

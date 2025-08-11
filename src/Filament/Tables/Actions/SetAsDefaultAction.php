@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Actions\Action;
 
 class SetAsDefaultAction extends Action
 {
@@ -15,6 +15,8 @@ class SetAsDefaultAction extends Action
 
     protected function setUp(): void
     {
+        parent::setUp();
+
         $this
             ->label(__('inspirecms::buttons.set_as_default.label'))
             ->color('primary')

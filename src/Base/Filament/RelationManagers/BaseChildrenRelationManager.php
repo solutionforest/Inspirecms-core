@@ -2,10 +2,10 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\RelationManagers;
 
-use Filament\Forms\Form;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -16,11 +16,11 @@ class BaseChildrenRelationManager extends RelationManager
 
     protected static ?string $inverseRelationship = 'parent';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $resource = $this->getPageClass()::getResource();
 
-        return $resource::form($form);
+        return $resource::form($schema);
     }
 
     public function table(Table $table): Table

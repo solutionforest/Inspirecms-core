@@ -2,11 +2,14 @@
 
 namespace SolutionForest\InspireCms\Filament\Widgets;
 
+use Carbon\Carbon;
+use DateTimeInterface;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
@@ -15,6 +18,7 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
+use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 
 class PageActivity extends BaseWidget
 {
@@ -32,10 +36,10 @@ class PageActivity extends BaseWidget
                 'publishedVersions',
             ]))
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/content.title.label'))
                     ->grow(),
-                Tables\Columns\TextColumn::make('displayStatus')
+                TextColumn::make('displayStatus')
                     ->label(__('inspirecms::resources/content.status.label'))
                     ->formatStateUsing(fn (?ContentStatusOption $state) => $state->getLabel())
                     ->color(fn (?ContentStatusOption $state) => $state->getColor())
@@ -44,17 +48,17 @@ class PageActivity extends BaseWidget
                     ->iconPosition(IconPosition::Before)
                     ->width('2%'),
 
-                Tables\Columns\TextColumn::make('published_at')
+                TextColumn::make('published_at')
                     ->label(__('inspirecms::resources/content.published_at.label'))
                     ->getStateUsing(function (Model $record) {
                         return $record->getPublishedVersions()?->sortByDesc('pivot.published_at')?->first()?->pivot->published_at;
                     })
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => ($state && $state instanceof \DateTimeInterface) ? $state->diffForHumans(now()) : null)
-                    ->tooltip(fn ($state) => ($state && $state instanceof \DateTimeInterface) ? $state->toDateTimeString() : null)
+                    ->formatStateUsing(fn (?Carbon $state) => ($state && $state instanceof DateTimeInterface) ? $state->diffForHumans(now()) : null)
+                    ->tooltip(fn ($state) => ($state && $state instanceof DateTimeInterface) ? $state->toDateTimeString() : null)
                     ->width('5%'),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/content.updated_at.label'))
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->tooltip(fn ($state) => $state?->toDateTimeString())
                     ->width('5%'),
             ]);
@@ -72,7 +76,7 @@ class PageActivity extends BaseWidget
         return InspireCmsConfig::getContentModelClass()::query()
             ->with(['publishedVersions'])
             ->withoutGlobalScopes([
-                \SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope::class,
+                NestableTreeDetailScope::class,
             ])
             ->withGlobalScope(ContentVersionDetailScope::class, new ContentVersionDetailScope)
             ->orderByDesc('__latest_version_dt')
@@ -88,7 +92,7 @@ class PageActivity extends BaseWidget
             ->paginated(false);
     }
 
-    protected function getTableHeading(): string | \Illuminate\Contracts\Support\Htmlable | null
+    protected function getTableHeading(): string | Htmlable | null
     {
         return UIHelper::generateTextWithIcon(
             text: __('inspirecms::widgets.page_activity.title'),

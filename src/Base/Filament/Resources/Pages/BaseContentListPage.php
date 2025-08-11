@@ -2,9 +2,13 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages;
 
-use Filament\Actions\Action;
-use Filament\Pages\SubNavigationPosition;
-use Filament\Resources\Pages\ListRecords\Tab;
+use Filament\Pages\Enums\SubNavigationPosition;
+use Filament\Schemas\Components\EmbeddedTable;
+use Filament\Schemas\Components\RenderHook;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Schemas\Components\View;
+use Filament\Schemas\Schema;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\ListContentRecords\Concerns\Translatable;
@@ -19,13 +23,33 @@ abstract class BaseContentListPage extends BaseListRecords
     // use ListRecords\Concerns\Translatable;
     use Translatable;
 
-    protected static string $view = 'inspirecms::filament.pages.list-content';
+    protected $listeners = [
+        'mountAction',
+    ];
 
     public function getActions(): array
     {
         return [
-            CreateContentAction::make(),
+            CreateContentAction::make()
+                ->modelLabel(lcfirst(__('inspirecms::inspirecms.content.singular')))
+                ->parentContentKey($this->getParentKey()),
         ];
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        $components[] = $this->getTabsContentComponent();
+        if ($this->isDisplayTable()) {
+            $components[] = RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_BEFORE);
+            $components[] = EmbeddedTable::make();
+            $components[] = RenderHook::make(PanelsRenderHook::RESOURCE_PAGES_LIST_RECORDS_TABLE_AFTER);
+        } else {
+            // Render actions' modal component
+            $components[] = View::make('filament-actions::components.modals');
+        }
+
+        return $schema
+            ->components($components);
     }
 
     public function getTabs(): array
@@ -61,22 +85,8 @@ abstract class BaseContentListPage extends BaseListRecords
         return false;
     }
 
-    public function getSubNavigationPosition(): SubNavigationPosition
+    public static function getSubNavigationPosition(): SubNavigationPosition
     {
         return SubNavigationPosition::Start;
-    }
-
-    protected function configureAction(Action $action): void
-    {
-        parent::configureAction($action);
-
-        switch (true) {
-            case $action instanceof CreateContentAction:
-                $action
-                    ->parentContentKey($this->getParentKey());
-
-                break;
-
-        }
     }
 }

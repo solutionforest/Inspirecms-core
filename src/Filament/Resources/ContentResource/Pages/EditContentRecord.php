@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\ContentResource\Pages;
 
-use Filament\Resources\Pages\ContentTabPosition;
+use Filament\Resources\Pages\Enums\ContentTabPosition;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentEditPage;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\InspireCmsConfig;

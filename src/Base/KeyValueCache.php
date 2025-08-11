@@ -2,11 +2,13 @@
 
 namespace SolutionForest\InspireCms\Base;
 
+use DateInterval;
 use Illuminate\Cache\CacheManager;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\KeyValue;
+use Throwable;
 
 class KeyValueCache
 {
@@ -15,7 +17,7 @@ class KeyValueCache
      */
     protected $cacheManager;
 
-    /** @var \DateInterval|int */
+    /** @var DateInterval|int */
     protected $cacheExpirationTime;
 
     protected $cacheStore = null;
@@ -25,10 +27,10 @@ class KeyValueCache
     /**
      * @param  CacheManager  $cacheManager
      */
-    public function __construct($cacheManager, \DateInterval | int | null $ttl = null)
+    public function __construct($cacheManager, DateInterval | int | null $ttl = null)
     {
         $this->cacheManager = $cacheManager;
-        $this->cacheExpirationTime = $ttl ?? InspireCmsConfig::get('cache.key_value.ttl') ?? \DateInterval::createFromDateString('24 hours');
+        $this->cacheExpirationTime = $ttl ?? InspireCmsConfig::get('cache.key_value.ttl') ?? DateInterval::createFromDateString('24 hours');
         $this->cacheStore = InspireCmsConfig::get('cache.key_value.store') ?? null;
         $this->keyPrefix = InspireCmsConfig::get('cache.key_value.prefix') ?? null;
     }
@@ -142,7 +144,7 @@ class KeyValueCache
 
             return false;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
     }

@@ -3,41 +3,46 @@
 namespace SolutionForest\InspireCms\Filament\Pages\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
+use Exception;
 use Filament\Actions\Action;
+use Filament\Auth\Http\Responses\Contracts\RegistrationResponse;
 use Filament\Facades\Filament;
-use Filament\Forms;
-use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
+use Filament\Forms\Components\Field;
 use Filament\Notifications\Notification;
-use Filament\Pages\Auth\Register as BasePage;
+use Filament\Schemas\Components\Component;
+use Filament\Support\Enums\Width;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rules\Password;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserEmailInput;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserNameInput;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserPasswordConfirmInput;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserPasswordInput;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
+use Throwable;
 
-class Register extends BasePage
+class Register extends \Filament\Auth\Pages\Register
 {
     use HaveBackgroundImage;
 
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.pages.auth.register';
+    protected string $view = 'inspirecms::filament.pages.auth.register';
 
     /**
      * @var view-string
      */
     protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
 
-    protected ?string $maxWidth = '4xl';
+    protected Width | string | null $maxContentWidth = '4xl';
 
     protected bool $isAlreadyInitialized = false;
 
@@ -48,10 +53,10 @@ class Register extends BasePage
             // Check database table exists
             $tableName = InspireCmsConfig::getUserTableName();
             if (! Schema::hasTable($tableName)) {
-                throw new \Exception("Table {$tableName} does not exist, please run migration.");
+                throw new Exception("Table {$tableName} does not exist, please run migration.");
             }
 
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
 
             throw $e;
         }
@@ -64,7 +69,7 @@ class Register extends BasePage
             if ($loginUrl) {
                 return redirect()->intended($loginUrl);
             } else {
-                throw new \Exception('Registration is not allowed, and no login URL is configured.');
+                throw new Exception('Registration is not allowed, and no login URL is configured.');
             }
         }
     }
@@ -169,71 +174,58 @@ class Register extends BasePage
                 $user->markEmailAsVerified();
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             $this->getAssignRoleFailedNotification()?->send();
 
-            throw new \Exception('Please ensure you have already run the migration and imported the default data.', previous: $th);
+            throw new Exception('Please ensure you have already run the migration and imported the default data.', previous: $th);
         }
     }
 
     // region Form field(s)/component(s)
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|\Filament\Schemas\Components\Component
      */
-    protected function getNameFormComponent(): Forms\Components\Component
+    protected function getNameFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('name')
+        return UserNameInput::make()
             ->label(__('inspirecms::pages/auth/register.form.name.label'))
             ->validationAttribute(__('inspirecms::pages/auth/register.form.email.name'))
             ->required()
-            ->maxLength(255)
             ->default('System');
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|\Filament\Schemas\Components\Component
      */
-    protected function getEmailFormComponent(): Forms\Components\Component
+    protected function getEmailFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('email')
+        return UserEmailInput::make()
             ->label(__('inspirecms::pages/auth/register.form.email.label'))
             ->validationAttribute(__('inspirecms::pages/auth/register.form.email.validation_attribute'))
-            ->email()
-            ->required()
-            ->maxLength(255)
             ->autofocus()
             ->unique($this->getUserModel());
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|\Filament\Schemas\Components\Component
      */
-    protected function getPasswordFormComponent(): Forms\Components\Component
+    protected function getPasswordFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('password')
+        return UserPasswordInput::make()
             ->label(__('inspirecms::pages/auth/register.form.password.label'))
             ->validationAttribute(__('inspirecms::pages/auth/register.form.password.validation_attribute'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->rule(Password::default())
-            ->dehydrateStateUsing(fn ($state) => Hash::make($state))
-            ->same('passwordConfirmation');
+            ->required();
     }
 
     /**
-     * @return Forms\Components\Field|Forms\Components\Component
+     * @return Field|\Filament\Schemas\Components\Component
      */
-    protected function getPasswordConfirmationFormComponent(): Forms\Components\Component
+    protected function getPasswordConfirmationFormComponent(): Component
     {
-        return Forms\Components\TextInput::make('passwordConfirmation')
+        return UserPasswordConfirmInput::make()
             ->label(__('inspirecms::pages/auth/register.form.password_confirmation.label'))
-            ->validationAttribute(__('inspirecms::pages/auth/register.form.email.validation_attribute'))
-            ->password()
-            ->revealable(filament()->arePasswordsRevealable())
-            ->required()
-            ->dehydrated(false);
+            ->validationAttribute(__('inspirecms::pages/auth/register.form.email.validation_attribute'));
     }
     // endregion Form field(s)/component(s)
 

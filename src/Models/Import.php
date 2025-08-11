@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
@@ -13,6 +15,7 @@ use SolutionForest\InspireCms\Models\Contracts\Import as ImportContract;
 use SolutionForest\InspireCms\Observers\ImportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
+use Throwable;
 
 class Import extends BaseModel implements ImportContract
 {
@@ -38,7 +41,7 @@ class Import extends BaseModel implements ImportContract
 
     public function markAsFailed($msg)
     {
-        if ($msg instanceof \Throwable) {
+        if ($msg instanceof Throwable) {
             $msg = [
                 'exMessage' => $msg->getMessage(),
                 'exTrace' => ThrowableHelper::getTraceAsString($msg, 5),
@@ -154,16 +157,16 @@ class Import extends BaseModel implements ImportContract
     /**
      * Get the storage disk used for the import job.
      *
-     * @return \Illuminate\Contracts\Filesystem\Filesystem The storage disk instance.
+     * @return Filesystem The storage disk instance.
      *
-     * @throws \Exception if the disk is not set for the import job.
+     * @throws Exception if the disk is not set for the import job.
      */
     protected function getStorageDisk()
     {
         $disk = $this->file_disk;
 
         if (empty($disk)) {
-            throw new \Exception('Disk is not set for the import job.');
+            throw new Exception('Disk is not set for the import job.');
         }
 
         return Storage::disk($disk);
@@ -181,7 +184,7 @@ class Import extends BaseModel implements ImportContract
     {
         try {
             $this->getStorageDisk()->delete($this->file_name);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
 

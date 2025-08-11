@@ -2,16 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Actions;
 
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\SelectAction as BaseAction;
 
-class SelectAction extends Action
-{
-    use \Filament\Actions\Concerns\HasSelect;
-
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->view('filament-actions::select-action');
-    }
-}
+/**
+ * @deprecated Use `Filament\Actions\SelectAction` instead.
+ */
+class SelectAction extends BaseAction {}

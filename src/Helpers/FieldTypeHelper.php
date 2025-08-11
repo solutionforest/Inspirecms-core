@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Closure;
+use Exception;
+use Filament\Forms\Components\Field;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
@@ -17,7 +20,7 @@ class FieldTypeHelper
      * @param  array  $config  Optional configuration array for the form field.
      * @return mixed The created form field.
      */
-    public static function performFormFieldFromConfig(string $typeName, \Closure $createFieldUsing, array $config = [])
+    public static function performFormFieldFromConfig(string $typeName, Closure $createFieldUsing, array $config = [])
     {
 
         $fiFormConfig = static::getFieldTypeConfig($typeName, $config);
@@ -28,12 +31,12 @@ class FieldTypeHelper
 
         $fiFormComponentFQCN = Arr::first(Arr::pluck($fiFormConfig->getFormComponents(), 'component'));
         if (! $fiFormComponentFQCN) {
-            throw new \Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
+            throw new Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
         }
 
         $fiFormComponent = $createFieldUsing($fiFormConfig, $fiFormComponentFQCN, $config);
         if (! $fiFormComponent) {
-            throw new \Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
+            throw new Exception("The field type config class '{$typeName}' does not have a FormComponent attribute.");
         }
 
         $fiFormConfig->applyConfig($fiFormComponent);
@@ -51,7 +54,7 @@ class FieldTypeHelper
      * @param  string|null  $helperText  The helper text for the field.
      * @param  bool  $required  Whether the field is required.
      * @param  string|null  $groupName  The name of the group the field belongs to.
-     * @return ?\Filament\Forms\Components\Field The built filament form field.
+     * @return ?Field The built filament form field.
      */
     public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
@@ -61,7 +64,7 @@ class FieldTypeHelper
             typeName: $fieldTypeName,
             config: $fieldTypeConfig,
             createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config) use ($name, $label, $helperText, $required, $groupName) {
-                if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+                if (is_subclass_of($fiFormComponentFQCN, Field::class)) {
 
                     $fiFormComponent = $fiFormComponentFQCN::make($name);
 
@@ -128,7 +131,7 @@ class FieldTypeHelper
     {
         try {
             return FilamentFieldGroup::getFieldTypeConfig($typeName, $config);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return null;
         }
     }

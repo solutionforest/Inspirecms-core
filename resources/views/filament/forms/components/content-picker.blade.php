@@ -42,7 +42,7 @@
                                     <li>{{ $moveDownAction(['item' => $key, 'disabled' => $loop->last]) }}</li>
                                 @endif
                             </ul>
-                            <div class="flex-1 ring-1 rounded-md px-2 py-3 shadow-sm ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                            <div class="flex-1 ring-1 rounded-md px-2 py-3 shadow-xs ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                                 {{ $label }}
                             </div>
                             <ul class="flex gap-x-1">
@@ -51,7 +51,7 @@
                                 @endif
                             </ul>
                         @else
-                            <div class="flex-1 ring-1 rounded-md px-2 py-3 shadow-sm ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
+                            <div class="flex-1 ring-1 rounded-md px-2 py-3 shadow-xs ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10">
                                 {{ $label }}
                             </div>
                         @endif

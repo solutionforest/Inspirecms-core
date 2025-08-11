@@ -2,7 +2,11 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
 /**
@@ -10,28 +14,28 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  *
  * @property string $slug
  * @property null | array<string,string> $content
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read \Illuminate\Database\Eloquent\Collection<Model & Templateable> $templateable
- * @property-read \Illuminate\Database\Eloquent\Collection<Model & DocumentType> $documentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model & Content> $contents
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
+ * @property-read Collection<Model&Templateable> $templateable
+ * @property-read Collection<Model&DocumentType> $documentTypes
+ * @property-read Collection<Model&Content> $contents
  */
 interface Template extends HasDtoModel
 {
     /**
      * Define a one-to-many relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function templateable();
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function documentTypes();
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function contents();
 

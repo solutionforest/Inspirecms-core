@@ -4,46 +4,51 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Base\Manifests\ContentStatusManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
+use SolutionForest\InspireCms\Base\TemplateManager;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
+use SolutionForest\InspireCms\InspireCms;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
+use SolutionForest\InspireCms\Models\Contracts\User;
+use SolutionForest\InspireCms\Services\AssetServiceInterface;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
 
 if (! function_exists('inspirecms')) {
     /**
-     * @return \SolutionForest\InspireCms\InspireCms
+     * @return InspireCms
      */
     function inspirecms()
     {
-        return app(\SolutionForest\InspireCms\InspireCms::class);
+        return app(InspireCms::class);
     }
 }
 
 if (! function_exists('inspirecms_templates')) {
     /**
-     * @return \SolutionForest\InspireCms\Base\TemplateManager
+     * @return TemplateManager
      */
     function inspirecms_templates()
     {
-        return app(\SolutionForest\InspireCms\Base\TemplateManager::class);
+        return app(TemplateManager::class);
     }
 }
 
 if (! function_exists('inspirecms_asset')) {
     /**
-     * @return \SolutionForest\InspireCms\Services\AssetServiceInterface
+     * @return AssetServiceInterface
      */
     function inspirecms_asset()
     {
-        return app(\SolutionForest\InspireCms\Services\AssetServiceInterface::class);
+        return app(AssetServiceInterface::class);
     }
 }
 
 if (! function_exists('inspirecms_content')) {
     /**
-     * @return \SolutionForest\InspireCms\Services\ContentServiceInterface
+     * @return ContentServiceInterface
      */
     function inspirecms_content()
     {
-        return app(\SolutionForest\InspireCms\Services\ContentServiceInterface::class);
+        return app(ContentServiceInterface::class);
     }
 }
 
@@ -90,7 +95,7 @@ if (! function_exists('is_inspirecms_user')) {
     function is_inspirecms_user($user): bool
     {
         return in_array(CmsUserTrait::class, class_uses($user)) ||
-            $user instanceof \SolutionForest\InspireCms\Models\Contracts\User;
+            $user instanceof User;
     }
 }
 
@@ -126,7 +131,7 @@ if (! function_exists('has_super_admin_role')) {
                     : $user->roles()->where('name', $roleName)->where('guard_name', $guardName)->exists();
 
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             // Handle the exception if needed
         }
 

@@ -2,12 +2,41 @@
 
 namespace SolutionForest\InspireCms;
 
+use Exception;
+use Filament\Clusters\Cluster;
+use Filament\Pages\Page;
+use Filament\Resources\Resource;
+use Illuminate\Database\Eloquent\Model;
+use SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig;
 use SolutionForest\InspireCms\Facades\ModelManifest;
+use SolutionForest\InspireCms\Models\Contracts\AllowedDocumentType;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\ContentLock;
+use SolutionForest\InspireCms\Models\Contracts\ContentPath;
+use SolutionForest\InspireCms\Models\Contracts\ContentPublishVersion;
+use SolutionForest\InspireCms\Models\Contracts\ContentRoute;
+use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
+use SolutionForest\InspireCms\Models\Contracts\ContentWebSetting;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
+use SolutionForest\InspireCms\Models\Contracts\DocumentTypeInheritance;
+use SolutionForest\InspireCms\Models\Contracts\Export;
+use SolutionForest\InspireCms\Models\Contracts\Field;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
+use SolutionForest\InspireCms\Models\Contracts\FieldGroupable;
+use SolutionForest\InspireCms\Models\Contracts\Import;
+use SolutionForest\InspireCms\Models\Contracts\KeyValue;
+use SolutionForest\InspireCms\Models\Contracts\Language;
+use SolutionForest\InspireCms\Models\Contracts\Navigation;
+use SolutionForest\InspireCms\Models\Contracts\Sitemap;
+use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Models\Contracts\Templateable;
+use SolutionForest\InspireCms\Models\Contracts\User;
+use SolutionForest\InspireCms\Models\Contracts\UserLoginActivity;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use Spatie\Permission\PermissionRegistrar;
 
 /**
- * @phpstan-type ModelClass class-string<\Illuminate\Database\Eloquent\Model>
+ * @phpstan-type ModelClass class-string<Model>
  */
 class InspireCmsConfig
 {
@@ -30,8 +59,8 @@ class InspireCmsConfig
      * Get a Filament resource by its key.
      *
      * @param  string  $key  The key of the resource to retrieve
-     * @param  null|class-string<\Filament\Resources\Resource>  $default  The default value to return if the resource is not found
-     * @return null|class-string<\Filament\Resources\Resource>
+     * @param  null|class-string<resource>  $default  The default value to return if the resource is not found
+     * @return null|class-string<resource>
      */
     public static function getFilamentResource($key, $default = null)
     {
@@ -39,12 +68,12 @@ class InspireCmsConfig
     }
 
     /**
-     * @return array<string,class-string<\Filament\Resources\Resource>>
+     * @return array<string, class-string<resource>>
      */
     public static function getFilamentResources()
     {
         return collect(static::get('admin.resources', []))
-            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Resources\Resource::class, true))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, Resource::class, true))
             ->toArray();
     }
 
@@ -52,8 +81,8 @@ class InspireCmsConfig
      * Get a Filament page configuration value by key
      *
      * @param  string  $key  The configuration key to retrieve
-     * @param  null|class-string<\Filament\Pages\Page>  $default  The default value to return if the key doesn't exist
-     * @return null|class-string<\Filament\Pages\Page> The configuration value or the default value if not found
+     * @param  null|class-string<Page>  $default  The default value to return if the key doesn't exist
+     * @return null|class-string<Page> The configuration value or the default value if not found
      */
     public static function getFilamentPage($key, $default = null)
     {
@@ -61,12 +90,12 @@ class InspireCmsConfig
     }
 
     /**
-     * @return array<string,class-string<\Filament\Pages\Page>>
+     * @return array<string, class-string<Page>>
      */
     public static function getFilamentPages()
     {
         return collect(static::get('admin.pages', []))
-            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Pages\Page::class, true))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, Page::class, true))
             ->toArray();
     }
 
@@ -76,7 +105,7 @@ class InspireCmsConfig
     public static function getFilamentClusters()
     {
         return collect(static::get('admin.clusters', []))
-            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, \Filament\Clusters\Cluster::class, true))
+            ->where(fn ($class) => is_string($class) && class_exists($class) && is_a($class, Cluster::class, true))
             ->toArray();
     }
 
@@ -90,7 +119,7 @@ class InspireCmsConfig
      */
     public static function getContentModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Content::class, Models\Content::class);
+        $class = ModelManifest::get(Content::class, Models\Content::class);
 
         return self::ensureClassExists($class, 'Content model');
     }
@@ -105,7 +134,7 @@ class InspireCmsConfig
      */
     public static function getContentPathModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentPath::class, Models\ContentPath::class);
+        $class = ModelManifest::get(ContentPath::class, Models\ContentPath::class);
 
         return self::ensureClassExists($class, 'ContentPath model');
     }
@@ -120,7 +149,7 @@ class InspireCmsConfig
      */
     public static function getContentLockModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentLock::class, Models\ContentLock::class);
+        $class = ModelManifest::get(ContentLock::class, Models\ContentLock::class);
 
         return self::ensureClassExists($class, 'ContentLock model');
     }
@@ -135,7 +164,7 @@ class InspireCmsConfig
      */
     public static function getContentRouteModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentRoute::class, Models\ContentRoute::class);
+        $class = ModelManifest::get(ContentRoute::class, Models\ContentRoute::class);
 
         return self::ensureClassExists($class, 'ContentRoute model');
     }
@@ -150,7 +179,7 @@ class InspireCmsConfig
      */
     public static function getFieldGroupableModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\FieldGroupable::class, Models\Polymorphic\FieldGroupable::class);
+        $class = ModelManifest::get(FieldGroupable::class, Models\Polymorphic\FieldGroupable::class);
 
         return self::ensureClassExists($class, 'FieldGroupable model');
     }
@@ -180,7 +209,7 @@ class InspireCmsConfig
      */
     public static function getContentVersionModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentVersion::class, Models\ContentVersion::class);
+        $class = ModelManifest::get(ContentVersion::class, Models\ContentVersion::class);
 
         return self::ensureClassExists($class, 'ContentVersion model');
     }
@@ -195,7 +224,7 @@ class InspireCmsConfig
      */
     public static function getContentPublishVersionModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentPublishVersion::class, Models\ContentPublishVersion::class);
+        $class = ModelManifest::get(ContentPublishVersion::class, Models\ContentPublishVersion::class);
 
         return self::ensureClassExists($class, 'ContentPublishVersion model');
     }
@@ -210,7 +239,7 @@ class InspireCmsConfig
      */
     public static function getContentWebSettingModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\ContentWebSetting::class, Models\ContentWebSetting::class);
+        $class = ModelManifest::get(ContentWebSetting::class, Models\ContentWebSetting::class);
 
         return self::ensureClassExists($class, 'ContentWebSetting model');
     }
@@ -225,7 +254,7 @@ class InspireCmsConfig
      */
     public static function getSitemapModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Sitemap::class, Models\Sitemap::class);
+        $class = ModelManifest::get(Sitemap::class, Models\Sitemap::class);
 
         return self::ensureClassExists($class, 'Sitemap model');
     }
@@ -240,7 +269,7 @@ class InspireCmsConfig
      */
     public static function getDocumentTypeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\DocumentType::class, Models\DocumentType::class);
+        $class = ModelManifest::get(DocumentType::class, Models\DocumentType::class);
 
         return self::ensureClassExists($class, 'DocumentType model');
     }
@@ -255,7 +284,7 @@ class InspireCmsConfig
      */
     public static function getDocumentTypeInheritanceModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\DocumentTypeInheritance::class, Models\Pivot\DocumentTypeInheritance::class);
+        $class = ModelManifest::get(DocumentTypeInheritance::class, Models\Pivot\DocumentTypeInheritance::class);
 
         return self::ensureClassExists($class, 'DocumentTypeInheritance model');
     }
@@ -270,7 +299,7 @@ class InspireCmsConfig
      */
     public static function getAllowedDocumentTypeModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\AllowedDocumentType::class, Models\Pivot\AllowedDocumentType::class);
+        $class = ModelManifest::get(AllowedDocumentType::class, Models\Pivot\AllowedDocumentType::class);
 
         return self::ensureClassExists($class, 'AllowedDocumentType model');
     }
@@ -285,13 +314,13 @@ class InspireCmsConfig
      */
     public static function getFieldGroupModelClass(): string
     {
-        $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldGroupModelClass();
+        $class = FieldGroupConfig::getFieldGroupModelClass();
 
         self::ensureClassExists($class, 'FieldGroup model');
 
         // Ensure the model implements the FieldGroup contract
-        if (! in_array(Models\Contracts\FieldGroup::class, class_implements($class))) {
-            throw new \Exception("The FieldGroup model '{$class}' must implement the FieldGroup contract.");
+        if (! in_array(FieldGroup::class, class_implements($class))) {
+            throw new Exception("The FieldGroup model '{$class}' must implement the FieldGroup contract.");
         }
 
         return $class;
@@ -307,13 +336,13 @@ class InspireCmsConfig
      */
     public static function getFieldModelClass(): string
     {
-        $class = \SolutionForest\FilamentFieldGroup\Supports\FieldGroupConfig::getFieldModelClass();
+        $class = FieldGroupConfig::getFieldModelClass();
 
         static::ensureClassExists($class, 'Field model');
 
         // Ensure the model implements the Field contract
-        if (! in_array(Models\Contracts\Field::class, class_implements($class))) {
-            throw new \Exception("The Field model '{$class}' must implement the Field contract.");
+        if (! in_array(Field::class, class_implements($class))) {
+            throw new Exception("The Field model '{$class}' must implement the Field contract.");
         }
 
         return $class;
@@ -329,7 +358,7 @@ class InspireCmsConfig
      */
     public static function getUserModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\User::class, Models\User::class);
+        $class = ModelManifest::get(User::class, Models\User::class);
 
         return self::ensureClassExists($class, 'User model');
     }
@@ -344,7 +373,7 @@ class InspireCmsConfig
      */
     public static function getUserLoginActivityModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\UserLoginActivity::class, Models\Users\UserLoginActivity::class);
+        $class = ModelManifest::get(UserLoginActivity::class, Models\Users\UserLoginActivity::class);
 
         return self::ensureClassExists($class, 'UserLoginActivity model');
     }
@@ -389,7 +418,7 @@ class InspireCmsConfig
      */
     public static function getLanguageModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Language::class, Models\Language::class);
+        $class = ModelManifest::get(Language::class, Models\Language::class);
 
         return self::ensureClassExists($class, 'Language model');
     }
@@ -404,7 +433,7 @@ class InspireCmsConfig
      */
     public static function getTemplateModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Template::class, Models\Template::class);
+        $class = ModelManifest::get(Template::class, Models\Template::class);
 
         return self::ensureClassExists($class, 'Template model');
     }
@@ -419,7 +448,7 @@ class InspireCmsConfig
      */
     public static function getTemplateableModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Templateable::class, Models\Polymorphic\Templateable::class);
+        $class = ModelManifest::get(Templateable::class, Models\Polymorphic\Templateable::class);
 
         return self::ensureClassExists($class, 'Templateable model');
     }
@@ -449,7 +478,7 @@ class InspireCmsConfig
      */
     public static function getKeyValueModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\KeyValue::class, Models\KeyValue::class);
+        $class = ModelManifest::get(KeyValue::class, Models\KeyValue::class);
 
         return self::ensureClassExists($class, 'KeyValue model');
     }
@@ -464,7 +493,7 @@ class InspireCmsConfig
      */
     public static function getNavigationModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Navigation::class, Models\Navigation::class);
+        $class = ModelManifest::get(Navigation::class, Models\Navigation::class);
 
         return self::ensureClassExists($class, 'Navigation model');
     }
@@ -479,7 +508,7 @@ class InspireCmsConfig
      */
     public static function getImportModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Import::class, Models\Import::class);
+        $class = ModelManifest::get(Import::class, Models\Import::class);
 
         return self::ensureClassExists($class, 'Import model');
     }
@@ -491,7 +520,7 @@ class InspireCmsConfig
 
     public static function getExportModelClass(): string
     {
-        $class = ModelManifest::get(Models\Contracts\Export::class, Models\Export::class);
+        $class = ModelManifest::get(Export::class, Models\Export::class);
 
         return self::ensureClassExists($class, 'Export model');
     }
@@ -503,12 +532,12 @@ class InspireCmsConfig
      * @param  string  $type  A description of the class type (e.g., 'model', 'service')
      * @return class-string The class name if it exists
      *
-     * @throws \Exception If the class does not exist
+     * @throws Exception If the class does not exist
      */
     protected static function ensureClassExists($class, string $type)
     {
         if (! class_exists($class)) {
-            throw new \Exception("The {$type} class '{$class}' does not exist. Please check your configuration.");
+            throw new Exception("The {$type} class '{$class}' does not exist. Please check your configuration.");
         }
 
         return $class;

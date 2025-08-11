@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Container\Container;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Pagination\Paginator;
+use InvalidArgumentException;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use Staudenmeir\LaravelAdjacencyList\Eloquent\Collection as BaseCollection;
 
@@ -50,7 +51,7 @@ class ContentCollection extends BaseCollection
      * @param  int|null  $page
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function paginate($perPage = null, $pageName = 'page', $page = null)
     {
@@ -109,7 +110,7 @@ class ContentCollection extends BaseCollection
      * @param  int  $perPage
      * @param  int  $currentPage
      * @param  array  $options
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     protected function paginator($items, $total, $perPage, $currentPage, $options)
     {
@@ -129,7 +130,7 @@ class ContentCollection extends BaseCollection
      * @param  int  $perPage
      * @param  int  $currentPage
      * @param  array  $options
-     * @return \Illuminate\Pagination\Paginator
+     * @return Paginator
      */
     protected function simplePaginator($items, $perPage, $currentPage, $options)
     {

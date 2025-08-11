@@ -3,8 +3,12 @@
 namespace SolutionForest\InspireCms\Filament\Pages;
 
 use Filament\Pages\Page;
+use Filament\Panel;
+use Filament\Support\Enums\Width;
 use Illuminate\Contracts\Support\Htmlable;
-use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget;
+use SolutionForest\InspireCms\Filament\Widgets\PageActivity;
+use SolutionForest\InspireCms\Filament\Widgets\UserActivity;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Dashboard extends Page
@@ -13,17 +17,17 @@ class Dashboard extends Page
 
     protected static ?int $navigationSort = -999;
 
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-home';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-s-home';
+    protected static string | \BackedEnum | null $activeNavigationIcon = 'heroicon-s-home';
 
-    protected ?string $maxContentWidth = 'screen-xl';
+    protected Width | string | null $maxContentWidth = 'screen-xl';
 
     protected static bool $shouldRegisterNavigation = true;
 
-    public static string $view = 'inspirecms::filament.pages.dashboard';
+    public string $view = 'inspirecms::filament.pages.dashboard';
 
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return static::$routePath;
     }
@@ -41,14 +45,14 @@ class Dashboard extends Page
     protected function getHeaderWidgets(): array
     {
         return [
-            Widgets\CmsInfoWidget::class,
-            Widgets\PageActivity::class,
-            Widgets\UserActivity::class,
+            CmsInfoWidget::class,
+            PageActivity::class,
+            UserActivity::class,
             ...InspireCmsConfig::get('admin.extra_widgets', []),
         ];
     }
 
-    public function getHeaderWidgetsColumns(): int | string | array
+    public function getHeaderWidgetsColumns(): int | array
     {
         return 1;
     }

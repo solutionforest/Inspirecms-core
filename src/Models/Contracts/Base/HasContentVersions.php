@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts\Base;
 
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -49,7 +51,7 @@ interface HasContentVersions
     /**
      * Summary of getPublishedVersions
      *
-     * @return Collection<\SolutionForest\InspireCms\Models\Contracts\ContentVersion&Model>
+     * @return Collection<ContentVersion&Model>
      */
     public function getPublishedVersions();
 
@@ -91,14 +93,14 @@ interface HasContentVersions
     /**
      * Get the publish time of the content.
      *
-     * @return \Carbon\Carbon|null The publish time of the content, or null if not set.
+     * @return Carbon|null The publish time of the content, or null if not set.
      */
     public function getPublishTime();
 
     /**
      * Get the latest published time (includes schedule publish).
      *
-     * @return \Carbon\Carbon|null The latest published time or null if not available.
+     * @return Carbon|null The latest published time or null if not available.
      */
     public function getLatestPublishedTime();
 
@@ -199,8 +201,8 @@ interface HasContentVersions
     /**
      * Scope a query to only include published content versions.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereIsPublished($query, bool $condition = true);
 }

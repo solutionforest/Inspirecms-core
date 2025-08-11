@@ -8,9 +8,9 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
-use Filament\Resources\Pages\ViewRecord\Concerns\Translatable as ViewRecordTranslatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use LaraZeus\SpatieTranslatable\Resources\Pages\ViewRecord\Concerns\Translatable;
 use Livewire\Attributes\Computed;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
@@ -32,9 +32,9 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
     use ContentFormTrait;
     use ContentPageTrait;
     use HasPreviewModal;
-    use ViewRecordTranslatable {
-        ContentFormTrait::updatedActiveLocale insteadof ViewRecordTranslatable;
-        ContentFormTrait::fillForm insteadof ViewRecordTranslatable;
+    use Translatable {
+        ContentFormTrait::updatedActiveLocale insteadof Translatable;
+        ContentFormTrait::fillForm insteadof Translatable;
     }
 
     protected function getHeaderActions(): array

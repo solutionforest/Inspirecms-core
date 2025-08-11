@@ -29,14 +29,9 @@ abstract class BaseContentCreatePage extends BaseCreateRecord implements Content
     }
     use WithPagination;
 
-    protected function getFormActions(): array
-    {
-        return [
-            $this->getPublishFormAction('create', $this->getModel()),
-            $this->getCreateFormAction(),
-            $this->getCancelFormAction(),
-        ];
-    }
+    protected $listeners = [
+        'mountAction',
+    ];
 
     protected function getCreateFormAction(): Action
     {

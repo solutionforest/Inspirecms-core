@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Observers;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
@@ -54,7 +55,7 @@ class LanguageObserver
     public function deleting($model)
     {
         if ($model->is_default) {
-            throw new \Exception('Cannot delete default language');
+            throw new Exception('Cannot delete default language');
         }
 
         event(new GenerateSitemap(get_class($model), $model?->getKey(), 'updated'));

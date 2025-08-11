@@ -1,5 +1,11 @@
 <x-filament-widgets::widget class="fi-wi-content-page-overview">
-    <x-filament::grid lg="3" class="gap-6">
+    <div 
+        {{ 
+            (new \Illuminate\View\ComponentAttributeBag) 
+                ->grid(['lg' => 3])
+                ->class(['gap-6'])
+        }}
+    >
         @php
             $defaultPage = $this->getDefaultPageRecord();
             $defaultPageIcon = $this->getContentStatusIcon($defaultPage);
@@ -8,13 +14,14 @@
         @endphp
         @if (filled($defaultPageUrl))
             <a href="{{ $defaultPageUrl }}">
-                <x-filament::section :icon="$defaultPageIcon" :icon-color="$defaultPageStatusColor" icon-size="lg">
-                    <x-slot name="heading">
-                        {{ __('inspirecms::widgets.content_page_overview.default_page.title') }}
-                    </x-slot>
-                    <x-slot name="description">
-                        {{ __('inspirecms::widgets.content_page_overview.default_page.description') }}
-                    </x-slot>
+                <x-filament::section 
+                    :icon="$defaultPageIcon" 
+                    :icon-color="$defaultPageStatusColor" 
+                    icon-size="lg"
+                    :heading="__('inspirecms::widgets.content_page_overview.default_page.title')"
+                    heading-tag="h3"
+                    :description="__('inspirecms::widgets.content_page_overview.default_page.description')"
+                >
                     <div>
                         <p class="text-md">
                             {{ $this->getContentTitle($defaultPage) ?? __('inspirecms::inspirecms.n/a') }}
@@ -32,13 +39,13 @@
             </a>
         @endif
         @if ($this->canCreateContent())
-            <x-filament::section class="cursor-pointer" wire:click="callAction('createContent')">
-                <x-slot name="heading">
-                    {{ __('inspirecms::widgets.content_page_overview.create_content.title') }}
-                </x-slot>
-                <x-slot name="description">
-                    {{ __('inspirecms::widgets.content_page_overview.create_content.description') }}
-                </x-slot>
+            <x-filament::section 
+                class="cursor-pointer" 
+                wire:click="callAction('createContent')"
+                :heading="__('inspirecms::widgets.content_page_overview.create_content.title')"
+                heading-tag="h3"
+                :description="__('inspirecms::widgets.content_page_overview.create_content.description')"
+            >
                 <p>
                     {{ __('inspirecms::widgets.content_page_overview.create_content.message') }}
                 </p>
@@ -49,18 +56,16 @@
         @endphp
         @if (filled($createDocumentUrl))
             <a href="{{ $createDocumentUrl }}">
-                <x-filament::section>
-                    <x-slot name="heading">
-                        {{ __('inspirecms::widgets.content_page_overview.create_document_type.title') }}
-                    </x-slot>
-                    <x-slot name="description">
-                        {{ __('inspirecms::widgets.content_page_overview.create_document_type.description') }}
-                    </x-slot>
-                        <p>
+                <x-filament::section
+                    :heading="__('inspirecms::widgets.content_page_overview.create_document_type.title')"
+                    heading-tag="h3"
+                    :description="__('inspirecms::widgets.content_page_overview.create_document_type.description')" 
+                >
+                    <p>
                     {{ __('inspirecms::widgets.content_page_overview.create_document_type.message') }}
                     </p>
                 </x-filament::section>
             </a>
         @endif
-    </x-filament::grid>
+    </div>
 </x-filament-widgets::widget>

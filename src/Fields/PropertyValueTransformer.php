@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Fields;
 
+use Exception;
+use InvalidArgumentException;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\DateTimePicker;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image;
@@ -25,7 +27,7 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
     {
         try {
             return $this->transform($propertyDataDto, $locale, $fallbackLocale);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
 
             logger()->warning('Failed to transform property data', [
                 'exception' => $e,
@@ -39,7 +41,7 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
     public function getConverter($fieldType, $key, $group)
     {
         if ($fieldType === null) {
-            throw new \InvalidArgumentException('No field type specified.');
+            throw new InvalidArgumentException('No field type specified.');
         }
 
         $converter = match (true) {
@@ -50,11 +52,11 @@ class PropertyValueTransformer implements PropertyValueTransformerInterface
         };
 
         if ($converter === null) {
-            throw new \InvalidArgumentException('No converter found for field type ' . get_class($fieldType));
+            throw new InvalidArgumentException('No converter found for field type ' . get_class($fieldType));
         }
 
         if (! is_subclass_of($converter, BaseConverter::class)) {
-            throw new \InvalidArgumentException('Converter for field type ' . get_class($fieldType) . ' must be an instance of ' . BaseConverter::class);
+            throw new InvalidArgumentException('Converter for field type ' . get_class($fieldType) . ' must be an instance of ' . BaseConverter::class);
         }
 
         return app($converter, [

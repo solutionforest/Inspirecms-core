@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -23,6 +24,7 @@ use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Template;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
+use Throwable;
 
 class ImportDataService implements ImportDataServiceInterface
 {
@@ -178,7 +180,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->runProcess($process);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $this->processErrors['__process__']['__error__'] = $th->getMessage();
         }
     }
@@ -205,7 +207,7 @@ class ImportDataService implements ImportDataServiceInterface
             foreach ($items as $item) {
                 try {
                     $item->validate();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $this->processErrors['__validation__'][$type][] = $th->getMessage();
                 }
             }
@@ -254,7 +256,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['templates'][$slug] = $template;
 
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->processErrors['templates'][$slug] = $e->getMessage();
             }
         }
@@ -281,7 +283,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['fieldGroups'][$name] = $fieldGroup;
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->processErrors['fieldGroups'][$name] = $th->getMessage();
             }
         }
@@ -350,7 +352,7 @@ class ImportDataService implements ImportDataServiceInterface
                 if (filled($item->defaultTemplate)) {
                     $defaultTemplate = $this->findTemplates($item->defaultTemplate)->first();
                     if (! $defaultTemplate) {
-                        throw new \Exception("Default template '{$item->defaultTemplate}' not found.");
+                        throw new Exception("Default template '{$item->defaultTemplate}' not found.");
                     }
                     $documentType->setAsDefaultTemplate($defaultTemplate->getKey());
                 }
@@ -372,7 +374,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['documentTypes'][$slug] = $documentType;
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->processErrors['documentTypes'][$slug] = $th->getMessage();
             }
         }
@@ -395,7 +397,7 @@ class ImportDataService implements ImportDataServiceInterface
                 $fieldGroup = $this->findFieldGroups($group)->first();
 
                 if (! $fieldGroup) {
-                    throw new \Exception("Field group {$group} does not exist.");
+                    throw new Exception("Field group {$group} does not exist.");
                 }
 
                 $field = $fieldGroup->fields()->where('name', $name)->first();
@@ -410,7 +412,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['fields'][$fieldKey] = $field;
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->processErrors['fields'][$fieldKey] = $th->getMessage();
             }
         }
@@ -456,7 +458,7 @@ class ImportDataService implements ImportDataServiceInterface
                 $documentType = $this->findDocumentTypes($item->documentType)->first();
 
                 if (! $documentType) {
-                    throw new \Exception("Document type '{$item->documentType}' not found.");
+                    throw new Exception("Document type '{$item->documentType}' not found.");
                 }
 
                 $contentData = $item->getDataForModel();
@@ -492,7 +494,7 @@ class ImportDataService implements ImportDataServiceInterface
                 if (filled($item->template)) {
                     $template = $this->findTemplates($item->template)->first();
                     if (! $template) {
-                        throw new \Exception("Template '{$item->template}' not found.");
+                        throw new Exception("Template '{$item->template}' not found.");
                     }
                     $content->templates()->sync([$template->getKey()]);
                     $content->setAsDefaultTemplate($template);
@@ -536,7 +538,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['content'][$contentKey] = $content;
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->processErrors['content'][$contentKey] = $th->getMessage();
             }
         }
@@ -564,7 +566,7 @@ class ImportDataService implements ImportDataServiceInterface
                     Arr::except($navigationData, ['id', 'children'])
                 );
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $errorMsg = 'Error while create/update navigation record: ' . json_encode($item->toArray());
                 if (filled($th->getMessage())) {
                     $errorMsg .= ' - ' . $th->getMessage();
@@ -587,7 +589,7 @@ class ImportDataService implements ImportDataServiceInterface
                     $navigationData = $this->mutateNavigationData($item);
                     $treeData[] = $navigationData;
 
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $errorMsg = 'Error while making navigation tree data: ' . json_encode($item->toArray());
                     if (filled($th->getMessage())) {
                         $errorMsg .= ' - ' . $th->getMessage();
@@ -604,7 +606,7 @@ class ImportDataService implements ImportDataServiceInterface
 
             try {
                 $model::scoped(['category' => $category])->rebuildTree($treeData, true);
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $errorMsg = 'Error while rebuilding tree for category: ' . $category;
                 if (filled($th->getMessage())) {
                     $errorMsg .= ' - ' . $th->getMessage();
@@ -643,7 +645,7 @@ class ImportDataService implements ImportDataServiceInterface
 
                 $this->finished['languages'][$code] = $language;
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 $this->processErrors['languages'][$code] = $th->getMessage();
             }
         }
@@ -658,13 +660,13 @@ class ImportDataService implements ImportDataServiceInterface
     protected function runProcess(string $process)
     {
         if (! $this->isWaitingFor($process)) {
-            throw new \Exception('Invalid process.');
+            throw new Exception('Invalid process.');
         }
 
         $method = (string) str($process)->studly()->prepend('processFor');
 
         if (! method_exists($this, $method)) {
-            throw new \Exception("Method '{$method}' not found.");
+            throw new Exception("Method '{$method}' not found.");
         }
 
         $this->guardAgainstProcess($process);
@@ -673,7 +675,7 @@ class ImportDataService implements ImportDataServiceInterface
 
             $this->{$method}();
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             $this->processErrors['__process__'][$process] = $th->getMessage();
 
@@ -729,7 +731,7 @@ class ImportDataService implements ImportDataServiceInterface
         $key = array_search($process, $all);
 
         if ($key === false) {
-            throw new \Exception('Invalid process.');
+            throw new Exception('Invalid process.');
         }
 
         $next = $all[$key + 1] ?? '__done__';
@@ -796,12 +798,12 @@ class ImportDataService implements ImportDataServiceInterface
      * @param  string  $process  The name of the process to guard against.
      * @return void
      *
-     * @throws \Exception If the process is invalid.
+     * @throws Exception If the process is invalid.
      */
     protected function guardAgainstProcess(string $process)
     {
         if (! in_array($process, static::PROCESS_ORDER)) {
-            throw new \Exception('Invalid process.');
+            throw new Exception('Invalid process.');
         }
     }
 
@@ -814,12 +816,12 @@ class ImportDataService implements ImportDataServiceInterface
      * @param  string  $table  The name of the table to check.
      * @return void
      *
-     * @throws \Exception If the table does not exist.
+     * @throws Exception If the table does not exist.
      */
     protected function guardAgaintsTableExist($table)
     {
         if (! ModelHelper::isTableExists($table)) {
-            throw new \Exception("Table {$table} does not exist.");
+            throw new Exception("Table {$table} does not exist.");
         }
     }
 
@@ -928,7 +930,7 @@ class ImportDataService implements ImportDataServiceInterface
             };
 
             if (! $model) {
-                throw new \Exception("Model for type '{$type}' not found.");
+                throw new Exception("Model for type '{$type}' not found.");
             }
 
             $this->guardAgaintsTableExist($model);

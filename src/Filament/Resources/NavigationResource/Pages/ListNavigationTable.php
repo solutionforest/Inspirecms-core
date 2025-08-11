@@ -2,8 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages;
 
-use Filament\Actions;
-use Filament\Resources\Pages\ListRecords\Concerns\Translatable;
+use Filament\Actions\CreateAction;
+use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
+use LaraZeus\SpatieTranslatable\Resources\Pages\ListRecords\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concerns\NavigationListPageTrait;
@@ -17,8 +18,8 @@ class ListNavigationTable extends BaseListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\LocaleSwitcher::make(),
-            Actions\CreateAction::make(),
+            LocaleSwitcher::make(),
+            CreateAction::make(),
         ];
     }
 

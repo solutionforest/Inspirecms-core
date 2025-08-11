@@ -19,6 +19,7 @@ use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
+use Throwable;
 
 class NavigationTree extends Component implements HasActions, HasForms
 {
@@ -107,7 +108,7 @@ class NavigationTree extends Component implements HasActions, HasForms
                 ->body('Navigation item deleted successfully.')
                 ->success()
                 ->send();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             Notification::make()
                 ->title('Delete Failed')
                 ->body('Navigation item not found.')

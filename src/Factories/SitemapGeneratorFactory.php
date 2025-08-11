@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
+use InvalidArgumentException;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Sitemap\SitemapGeneratorInterface;
 
@@ -19,7 +20,7 @@ class SitemapGeneratorFactory
     protected static function guardAgainstInvalidSitemapGenerator(string $class): void
     {
         if (! in_array(SitemapGeneratorInterface::class, class_implements($class))) {
-            throw new \InvalidArgumentException('Must implement ' . SitemapGeneratorInterface::class);
+            throw new InvalidArgumentException('Must implement ' . SitemapGeneratorInterface::class);
         }
     }
 }

@@ -13,7 +13,7 @@
         }
     }
     .card {
-        @apply flex items-start rounded-lg bg-white p-6 shadow-sm transition duration-300 md:row-span-3 lg:p-10 lg:pb-10 dark:bg-gray-900 dark:ring-white/10;
-        @apply focus:outline-none focus-visible:ring-primary-500 dark:focus-visible:ring-primary-500;
+        @apply flex items-start rounded-lg bg-white p-6 shadow-2xs transition duration-300 md:row-span-3 lg:p-10 lg:pb-10 dark:bg-gray-900 dark:ring-white/10;
+        @apply focus:outline-hidden focus-visible:ring-primary-500 dark:focus-visible:ring-primary-500;
     }
 }

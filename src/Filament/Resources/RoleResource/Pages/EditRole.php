@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\RoleResource\Pages;
 
-use Filament\Actions;
+use Filament\Actions\DeleteAction;
 use Filament\Support\Facades\FilamentIcon;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseEditRecord;
 use SolutionForest\InspireCms\Filament\Resources\RoleResource;
@@ -13,7 +13,7 @@ class EditRole extends BaseEditRecord
     public function getActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            DeleteAction::make(),
         ];
     }
 

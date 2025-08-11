@@ -10,9 +10,9 @@ class Content extends Cluster implements ClusterSection
 {
     use ClusterSectionTrait;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-document';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-s-document';
+    protected static string | \BackedEnum | null $activeNavigationIcon = 'heroicon-s-document';
 
     protected static ?int $navigationSort = -10;
 

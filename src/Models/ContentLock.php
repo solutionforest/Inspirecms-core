@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Models\Contracts\ContentLock as ContentLockContract;
@@ -59,11 +60,11 @@ class ContentLock extends BaseModel implements ContentLockContract
         $user ??= auth()->user();
 
         if (! $user) {
-            throw new \Exception('User not authenticated');
+            throw new Exception('User not authenticated');
         }
 
         if (! ($user instanceof AuthenticatableContract || $user instanceof Model)) {
-            throw new \Exception('User must implement AuthenticatableContract');
+            throw new Exception('User must implement AuthenticatableContract');
         }
 
         return $user;

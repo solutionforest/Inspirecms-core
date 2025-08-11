@@ -2,13 +2,15 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
-use Filament\Forms\Components\Component;
 use Filament\Resources\Pages\CreateRecord;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Pboivin\FilamentPeek\Pages\Concerns\HasBuilderPreview;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
 use SolutionForest\InspireCms\Factories\PreviewFactory;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Schemas\ContentPreviewBuilderEditorForm;
 
 trait ContentPreviewEditorTrait
 {
@@ -39,11 +41,14 @@ trait ContentPreviewEditorTrait
         );
     }
 
+    public static function renderPreviewModalView(string $view, array $data): string
+    {
+        return static::renderBuilderPreview($view, $data);
+    }
+
     public static function getBuilderEditorSchema(string $builderName): Component | array
     {
-        $resource = static::getResource();
-
-        return $resource::getPreviewBuilderEditorSchema($builderName);
+        return ContentPreviewBuilderEditorForm::configure(Schema::make())->getComponents();
     }
 
     public function mutateInitialBuilderEditorData(string $builderName, array $editorData): array

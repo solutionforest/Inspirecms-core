@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
+use Exception;
+use Filament\Navigation\NavigationItem;
+use Filament\Resources\Pages\Page;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSection;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -24,18 +27,18 @@ trait ClusterSectionResourceTrait
      *
      * @return class-string<ClusterSection>
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function getClusterSection(): string
     {
         $cluster = static::getCluster();
 
         if (blank($cluster)) {
-            throw new \Exception('The section cluster is not defined. Please ensure that the cluster configuration is set correctly.');
+            throw new Exception('The section cluster is not defined. Please ensure that the cluster configuration is set correctly.');
         }
 
         if (! in_array(ClusterSection::class, class_implements($cluster))) {
-            throw new \Exception('The cluster must implement the ClusterSection interface.');
+            throw new Exception('The cluster must implement the ClusterSection interface.');
         }
 
         return $cluster;
@@ -53,7 +56,7 @@ trait ClusterSectionResourceTrait
         ];
     }
 
-    public static function getRecordSubNavigation(\Filament\Resources\Pages\Page $page): array
+    public static function getRecordSubNavigation(Page $page): array
     {
         if (InspireCmsConfig::get('admin.enable_cluster_navigation') && filled($cluster = static::getCluster())) {
             $items = $page->generateNavigationItems($cluster::getClusteredComponents());
@@ -72,8 +75,8 @@ trait ClusterSectionResourceTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem
+     * @param  NavigationItem  $navigationItem
+     * @return NavigationItem
      */
     public static function configureResourceKeyOnNavigationItem($navigationItem)
     {

@@ -3,9 +3,11 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions\Action;
+use Filament\Resources\Resource;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
+use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
 use SolutionForest\InspireCms\Filament\TreeNode\Actions\CreateContentItemAction;
@@ -56,9 +58,9 @@ class ContentSidebar extends BaseContentTreeNode
     }
 
     // region Locale config
-    public function localeSwitcher(): \Filament\Actions\Action
+    public function localeSwitcher(): Action
     {
-        return \Filament\Actions\LocaleSwitcher::make();
+        return LocaleSwitcher::make();
     }
 
     public function getTranslatableLocales(): array
@@ -97,7 +99,7 @@ class ContentSidebar extends BaseContentTreeNode
 
                 $itemUrlParams = array_merge([
                     'record' => $record->getKey(),
-                    'activeRelationManager' => 0,
+                    // 'activeRelationManager' => 0,
                 ], $this->redirectUrlParameters, [
                     'locale' => $this->activeLocale,
                 ]);
@@ -209,7 +211,7 @@ class ContentSidebar extends BaseContentTreeNode
                 'documentTypeKey' => null,
                 'extraAttributes' => [
                     'title' => ['class' => ['font-bold']],
-                    'ctn' => ['class' => ['h-11 shadow']],
+                    'ctn' => ['class' => ['h-11 shadow-sm']],
                 ],
             ])
             ->all();
@@ -225,7 +227,7 @@ class ContentSidebar extends BaseContentTreeNode
     }
 
     /**
-     * @return class-string<\Filament\Resources\Resource>
+     * @return class-string<resource>
      */
     protected static function getResource()
     {
@@ -351,8 +353,6 @@ class ContentSidebar extends BaseContentTreeNode
             default:
                 break;
         }
-
-        $this->cacheAction($action);
 
     }
 

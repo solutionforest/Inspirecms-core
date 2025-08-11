@@ -15,7 +15,7 @@ class PostResource extends Resource implements ClusterSectionResource
 
     protected static ?string $model = Post::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static null | \BackedEnum | string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?string $cluster = Settings::class;
 

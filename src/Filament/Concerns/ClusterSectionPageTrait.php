@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
+use Exception;
 use Filament\Facades\Filament;
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
@@ -17,7 +18,7 @@ trait ClusterSectionPageTrait
         $cluster = static::getCluster();
 
         if (blank($cluster)) {
-            throw new \Exception('The section cluster is not defined. Please ensure that the cluster configuration is set correctly.');
+            throw new Exception('The section cluster is not defined. Please ensure that the cluster configuration is set correctly.');
         }
 
         return $cluster;

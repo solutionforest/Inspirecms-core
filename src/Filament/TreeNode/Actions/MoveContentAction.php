@@ -48,7 +48,7 @@ class MoveContentAction extends Action
             return false;
         });
 
-        $this->form(function (null | Model | Content $record, string $model) {
+        $this->schema(function (null | Model | Content $record, string $model) {
             if ($this->isMoveUnderRoot()) {
                 return null;
             }

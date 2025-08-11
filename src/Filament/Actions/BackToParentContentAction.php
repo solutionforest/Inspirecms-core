@@ -46,7 +46,7 @@ class BackToParentContentAction extends Action
 
             $parameters = [
                 'record' => $record->parent,
-                'activeRelationManager' => 0,
+                // 'activeRelationManager' => 0,
                 // Set the locale as query parameter as ContentPageTrait
                 'locale' => $translatableLocale,
             ];

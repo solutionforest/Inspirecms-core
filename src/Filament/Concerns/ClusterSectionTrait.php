@@ -3,6 +3,8 @@
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
 use Filament\Navigation\NavigationItem;
+use Filament\Pages\Page;
+use Filament\Resources\Resource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait ClusterSectionTrait
@@ -23,8 +25,8 @@ trait ClusterSectionTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem
+     * @param  NavigationItem  $navigationItem
+     * @return NavigationItem
      */
     public static function configureSectionKeyOnNavigationItem($navigationItem)
     {
@@ -33,8 +35,8 @@ trait ClusterSectionTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem
+     * @param  NavigationItem  $navigationItem
+     * @return NavigationItem
      */
     public static function configureResourceKeyOnNavigationItem($resourceFqcn, $navigationItem)
     {
@@ -43,8 +45,8 @@ trait ClusterSectionTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem
+     * @param  NavigationItem  $navigationItem
+     * @return NavigationItem
      */
     public static function configurePageKeyOnNavigationItem($pageFqcn, $navigationItem)
     {
@@ -79,9 +81,9 @@ trait ClusterSectionTrait
 
                 return collect($childComponents)
                     ->flatMap(function ($fqcn) {
-                        if (is_subclass_of($fqcn, \Filament\Resources\Resource::class)) {
+                        if (is_subclass_of($fqcn, Resource::class)) {
                             return array_map(fn ($item) => static::configureResourceKeyOnNavigationItem($fqcn, $item), $fqcn::getNavigationItems());
-                        } elseif (is_subclass_of($fqcn, \Filament\Pages\Page::class)) {
+                        } elseif (is_subclass_of($fqcn, Page::class)) {
                             return array_map(fn ($item) => static::configurePageKeyOnNavigationItem($fqcn, $item), $fqcn::getNavigationItems());
                         } else {
                             return null;

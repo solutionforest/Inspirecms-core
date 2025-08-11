@@ -3,9 +3,9 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\ComponentContainer;
-use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Field;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Schema;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
@@ -32,34 +32,37 @@ class Translate extends Component
     public static function make(array $schema = []): static
     {
         $static = app(static::class, ['schema' => $schema]);
+
         $static->configure();
 
         return $static;
     }
 
     /**
-     * @return array<ComponentContainer>
+     * @return array<Schema>
      */
-    public function getChildComponentContainers(bool $withHidden = false): array
+    public function getChildSchemas(bool $withHidden = false): array
     {
         $containers = [];
 
         $locales = $this->getLocales();
 
         foreach ($locales as $locale) {
-            $containers[$locale] = ComponentContainer::make($this->getLivewire())
+            $containers[$locale] = Schema::make($this->getLivewire())
                 ->parentComponent($this)
                 ->components(function ($livewire) use ($locale) {
 
                     $components = [];
 
-                    foreach ($this->getChildComponentsByLocale($locale) as $component) {
+                    foreach ($this->getChildComponentsByLocale($locale) as $key => $grpComponents) {
 
-                        $component = $this->prepareTranslateLocaleComponent($component, $locale);
+                        foreach ($grpComponents as $component) {
+                            $component = $this->prepareTranslateLocaleComponent($component, $locale);
 
-                        $component = $this->configureComponentForLivewire($component, $locale, $livewire);
+                            $component = $this->configureComponentForLivewire($component, $locale, $livewire);
 
-                        $components[] = $component;
+                            $components[] = $component;
+                        }
                     }
 
                     return $components;
@@ -158,7 +161,7 @@ class Translate extends Component
         // Is layout component
         else {
 
-            $childComponents = $localeComponent->getChildComponents();
+            $childComponents = $localeComponent->getDefaultChildComponents();
 
             if ($childComponents) {
                 $localeComponent->schema(

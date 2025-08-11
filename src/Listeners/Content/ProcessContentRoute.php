@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Listeners\Content;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use Throwable;
 
 class ProcessContentRoute
 {
@@ -47,7 +48,7 @@ class ProcessContentRoute
                     $result[] = $route;
                 }
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 // Skip
             }
         }

@@ -3,11 +3,11 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
-use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\Size;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -155,7 +155,7 @@ class ContentPicker extends Field
                     'records' => $recordIds,
                 ];
             })
-            ->form(function () {
+            ->schema(function () {
                 $selector = ContentTree::make('records')
                     ->hiddenLabel()
                     // todo: add translations
@@ -216,7 +216,7 @@ class ContentPicker extends Field
                 $component->callAfterStateUpdated();
             })
             ->iconButton()
-            ->size(ActionSize::Small)
+            ->size(Size::Small)
             ->disabled(fn (array $arguments) => $arguments['disabled'] === true)
             ->visible(fn (ContentPicker $component): bool => $component->isReorderable());
     }
@@ -237,7 +237,7 @@ class ContentPicker extends Field
                 $component->callAfterStateUpdated();
             })
             ->iconButton()
-            ->size(ActionSize::Small)
+            ->size(Size::Small)
             ->disabled(fn (array $arguments) => $arguments['disabled'] === true)
             ->visible(fn (ContentPicker $component): bool => $component->isReorderable());
     }
@@ -258,7 +258,7 @@ class ContentPicker extends Field
                 $component->callAfterStateUpdated();
             })
             ->iconButton()
-            ->size(ActionSize::Small)
+            ->size(Size::Small)
             ->visible(fn (ContentPicker $component): bool => $component->isDeletable());
     }
 }

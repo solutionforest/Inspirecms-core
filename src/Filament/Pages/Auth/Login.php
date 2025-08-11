@@ -4,33 +4,33 @@ namespace SolutionForest\InspireCms\Filament\Pages\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use Filament\Actions\Action;
+use Filament\Auth\Http\Responses\Contracts\LoginResponse;
 use Filament\Facades\Filament;
-use Filament\Forms\Components\Component;
-use Filament\Http\Responses\Auth\Contracts\LoginResponse;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Notifications\Notification;
-use Filament\Pages\Auth\Login as BasePage;
+use Filament\Schemas\Components\Component;
+use Filament\Support\Enums\Width;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Contracts\Support\Htmlable;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Exceptions\AccountLockedException;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 
-class Login extends BasePage
+class Login extends \Filament\Auth\Pages\Login
 {
     use HaveBackgroundImage;
 
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.pages.auth.login';
+    protected string $view = 'inspirecms::filament.pages.auth.login';
 
     /**
      * @var view-string
      */
     protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
 
-    protected ?string $maxWidth = '4xl';
+    protected Width | string | null $maxContentWidth = '4xl';
 
     public function authenticate(): ?LoginResponse
     {

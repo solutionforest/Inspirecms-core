@@ -2,8 +2,9 @@
 
 namespace SolutionForest\InspireCms\Fields\Mixins;
 
-use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Section;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Translatable;
 use SolutionForest\InspireCms\Fields\Converters\DefaultConverter;
@@ -14,7 +15,7 @@ use SolutionForest\InspireCms\Fields\Converters\DefaultConverter;
  * @method array getFieldAttributes()
  * @method array getTargetFieldAttributes($target)
  *
- * @mixin \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig
+ * @mixin FieldTypeBaseConfig
  *
  * @property null|bool $translatable
  */

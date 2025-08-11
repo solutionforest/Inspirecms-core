@@ -2,10 +2,11 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\ContentResource\RelationManagers;
 
-use Filament\Resources\RelationManagers\Concerns\Translatable;
-use Filament\Tables;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use LaraZeus\SpatieTranslatable\Resources\RelationManagers\Concerns\Translatable;
 use Livewire\Attributes\Reactive;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
@@ -68,7 +69,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         return $this->getOwnerRecord()->parent_id;
     }
 
-    protected function configureEditAction(Tables\Actions\EditAction $action): void
+    protected function configureEditAction(EditAction $action): void
     {
         parent::configureEditAction($action);
 
@@ -79,7 +80,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         );
     }
 
-    protected function configureViewAction(Tables\Actions\ViewAction $action): void
+    protected function configureViewAction(ViewAction $action): void
     {
         parent::configureViewAction($action);
 
@@ -93,7 +94,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
     protected function getRedirectUrlParameters(): array
     {
         return [
-            'activeRelationManager' => 0,
+            // 'activeRelationManager' => 0,
             'locale' => $this->activeLocale,
         ];
     }

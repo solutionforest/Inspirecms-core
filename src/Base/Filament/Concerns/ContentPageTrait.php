@@ -123,7 +123,7 @@ trait ContentPageTrait
     protected function getRedirectUrlParameters(): array
     {
         return [
-            'activeRelationManager' => 0,
+            // 'activeRelationManager' => 0,
             'locale' => $this->activeLocale,
         ];
     }

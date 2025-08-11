@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Exports;
 
+use Exception;
 use SolutionForest\InspireCms\Base\Enums\ExportStatus;
 
 class ExportResult
@@ -10,7 +11,7 @@ class ExportResult
         public ExportStatus $status,
         public ?string $filename,
         /**
-         * @var null | string | array | \Exception
+         * @var null|string|array|Exception
          */
         public $message = null,
     ) {}
@@ -25,7 +26,7 @@ class ExportResult
     }
 
     /**
-     * @param  null | string | array | \Exception  $message
+     * @param  null|string|array|Exception  $message
      * @return ExportResult
      */
     public static function failed($message)

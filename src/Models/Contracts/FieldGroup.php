@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup as BaseContract;
 
 /**
@@ -10,28 +14,28 @@ use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup as BaseContrac
  * @property string $name
  * @property bool $active
  * @property int $sort
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  */
 interface FieldGroup extends BaseContract
 {
     /**
      * Define a polymorphic many-to-many relationship.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany
+     * @return MorphToMany
      */
     public function documentTypes();
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function groupabled();
 
     /**
      * Scope a query to only include active records.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereActive($query, bool $condition = true);
 }

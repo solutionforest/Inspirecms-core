@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Licensing;
 
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 use SolutionForest\InspireCms\Events\Licensing\LicensesRefreshed;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Throwable;
 
 class LicenseManager
 {
@@ -91,7 +93,7 @@ class LicenseManager
                 }
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             logger()->warning('Failed to verify license online', ['exception' => $th]);
 
@@ -173,7 +175,7 @@ class LicenseManager
                     return data_get($data, 'license.meta.product_variant_slug', null);
                 }
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 //
             }
         }
@@ -223,7 +225,7 @@ class LicenseManager
                 'license' => $licenseData,
             ]);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             logger()->warning('Failed to read license file', ['exception' => $th]);
 
@@ -304,7 +306,7 @@ class LicenseManager
     }
 
     /**
-     * @return \Illuminate\Contracts\Cache\Repository
+     * @return Repository
      */
     private function cache()
     {

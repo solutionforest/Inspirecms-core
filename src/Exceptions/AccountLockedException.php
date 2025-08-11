@@ -2,11 +2,13 @@
 
 namespace SolutionForest\InspireCms\Exceptions;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
+use Throwable;
 
-class AccountLockedException extends \Exception
+class AccountLockedException extends Exception
 {
-    public function __construct($message = 'Account is locked.', $code = 0, ?\Throwable $previous = null)
+    public function __construct($message = 'Account is locked.', $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

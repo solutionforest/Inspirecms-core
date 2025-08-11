@@ -2,13 +2,14 @@
 
 namespace SolutionForest\InspireCms\Facades;
 
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
 
 /**
  * @method static string getSuperAdminRoleName()
  * @method static void setSuperAdminRoleName(string $name)
- * @method static \Illuminate\Support\Collection<string> permissions()
+ * @method static Collection<string> permissions()
  * @method static array getClusterSectionPermissions()
  * @method static array getResourcePermissions()
  * @method static array getWidgetPermissions()

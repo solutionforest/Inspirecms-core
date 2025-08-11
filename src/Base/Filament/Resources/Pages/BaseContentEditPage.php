@@ -8,11 +8,11 @@ use Filament\Actions\DeleteAction;
 use Filament\Actions\ForceDeleteAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
-use Filament\Resources\Pages\EditRecord\Concerns\Translatable as EditRecordTranslatable;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
+use LaraZeus\SpatieTranslatable\Resources\Pages\EditRecord\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentFormTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPageTrait;
 use SolutionForest\InspireCms\Base\Filament\Concerns\ContentPreviewEditorTrait;
@@ -35,9 +35,9 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
     use ContentFormTrait;
     use ContentPageTrait;
     use ContentPreviewEditorTrait;
-    use EditRecordTranslatable {
-        ContentFormTrait::updatedActiveLocale insteadof EditRecordTranslatable;
-        ContentFormTrait::fillForm insteadof EditRecordTranslatable;
+    use Translatable {
+        ContentFormTrait::updatedActiveLocale insteadof Translatable;
+        ContentFormTrait::fillForm insteadof Translatable;
     }
 
     public function booted(): void
@@ -89,47 +89,6 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         ];
     }
 
-    protected function getFormActions(): array
-    {
-        $record = $this->getRecord();
-
-        // Guard 2 for trashed record, If the record is trashed, don't show the form actions
-        if ($record->trashed()) {
-            return [];
-        }
-
-        // Guard 3 for locked record, If the record is locked by another user, don't show the form actions
-        if ($record->isLocked()) {
-            return [];
-        }
-
-        return [
-            ActionGroup::make([
-                $this->getPublishFormAction('edit', $this->getRecord()),
-                $this->getPublishFormAction('edit', $this->getRecord())
-                    ->name('publish_descendants_and_self')
-                    ->label(__('inspirecms::buttons.publish_descendants_and_self.label'))
-                    ->modalHeading(__('inspirecms::buttons.publish_descendants_and_self.heading'))
-                    ->successNotificationTitle(__('inspirecms::buttons.publish_descendants_and_self.messages.success.title'))
-                    ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
-                    ->keyBindings(null)
-                    ->color('gray')
-                    ->action(fn (array $data, $action) => $this->publish($data, $action, true)),
-            ])
-                ->label(__('inspirecms::buttons.publish.label'))
-                ->button(),
-
-            $this->getSaveFormAction(),
-
-            ActionGroup::make(inspirecms_content_statuses()->getFormActions())
-                ->label(__('inspirecms::buttons.more_actions.label'))
-                ->button()
-                ->color('gray'),
-
-            $this->getCancelFormAction(),
-        ];
-    }
-
     protected function getSaveFormAction(): Action
     {
         return parent::getSaveFormAction()
@@ -160,7 +119,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
     protected function handleRecordUpdate(Model $record, array $data): Model
     {
-        $translatableAttributes = $this->getTranslatableAttributes();
+        $translatableAttributes = $this->getTranslatableAttributesForContent();
 
         $record->fill(Arr::except($data, $translatableAttributes));
 

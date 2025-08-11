@@ -1,33 +1,31 @@
 @php
+    $fieldWrapperView = $getFieldWrapperView();
+    $extraAttributeBag = $getExtraAttributeBag();
+    $isDisabled = $isDisabled();
     $statePath = $getStatePath();
 @endphp
 <x-dynamic-component
-    :component="$getFieldWrapperView()"
+    :component="$fieldWrapperView"
     :field="$field"
-    :id="$getId()" 
-    :label="$getLabel()" 
-    :label-sr-only="$isLabelHidden()" 
-    :helper-text="$getHelperText()"    
-    :hint="$getHint()" 
-    :hint-icon="$getHintIcon()" 
-    :required="$isRequired()" 
-    :state-path="$getStatePath()"
+    :has-inline-label="$hasInlineLabel()"
 >
     <x-filament::input.wrapper
-      :disabled="$isDisabled"
-      :valid="! $errors->has($statePath)"
-      :attributes="
-          \Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())
-              ->class(['code-editor-textarea relative overflow-hidden'])
-      "
+        :disabled="$isDisabled"
+        :valid="! $errors->has($statePath)"
+        :attributes="
+            \Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())
+                ->class([
+                    'code-editor-textarea relative overflow-hidden',
+                ])
+        "
     >
         <div class="code-editor-textarea-wrapper-ctn overflow-auto"
             @theme-changed.window="(e) => toggleTheme(
                 e.detail === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : e.detail === 'dark'
             )" 
             x-data="codeEditorFormComponent({
-                state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $getStatePath() . '\')') }},
-                isReadOnly: @js($isDisabled()),
+                state: $wire.{{ $applyStateBindingModifiers('entangle(\'' . $statePath . '\')') }},
+                isReadOnly: @js($isDisabled),
                 isDarkMode: (Alpine.store('theme') || 'light') === 'system' ? window.matchMedia('(prefers-color-scheme: dark)').matches : (Alpine.store('theme') || 'light') === 'dark',
             })"
             x-load

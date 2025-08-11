@@ -2,10 +2,13 @@
 
 namespace SolutionForest\InspireCms\ImportData\Entities;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
+use ReflectionClass;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+use UnitEnum;
 
 /**
  * Class BaseEntity
@@ -33,7 +36,7 @@ abstract class BaseEntity extends BaseDto
     public static function fromArray(array $parameters)
     {
         // Preset default values for array properties
-        $reflection = new \ReflectionClass(static::class);
+        $reflection = new ReflectionClass(static::class);
 
         $propTypeMap = [];
 
@@ -98,7 +101,7 @@ abstract class BaseEntity extends BaseDto
 
                 case 'string':
                     // Is enum
-                    if (isset($parameters[$name]) && $parameters[$name] instanceof \UnitEnum) {
+                    if (isset($parameters[$name]) && $parameters[$name] instanceof UnitEnum) {
                         $parameters[$name] = $parameters[$name]->value;
                     }
                     // Not string
@@ -150,7 +153,7 @@ abstract class BaseEntity extends BaseDto
         $validator = validator($this->toArray(), $this->getValidationRules());
 
         if ($validator->fails()) {
-            throw new \Exception($validator->errors()->first());
+            throw new Exception($validator->errors()->first());
         }
 
         return true;

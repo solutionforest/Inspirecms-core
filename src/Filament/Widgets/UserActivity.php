@@ -3,18 +3,21 @@
 namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Carbon\Carbon;
+use Carbon\CarbonInterface;
 use Filament\Widgets\Widget;
+use Illuminate\Pagination\Paginator;
 use Livewire\WithPagination;
 use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\Filament\Widgets\Conceners\GuardWidgetTrait;
 use SolutionForest\InspireCms\Models\Contracts\UserLoginActivity;
+use Throwable;
 
 class UserActivity extends Widget implements GuardWidget
 {
     use GuardWidgetTrait;
     use WithPagination;
 
-    protected static string $view = 'inspirecms::filament.widgets.user-activity';
+    protected string $view = 'inspirecms::filament.widgets.user-activity';
 
     protected int | string | array $columnSpan = 'full';
 
@@ -74,18 +77,18 @@ class UserActivity extends Widget implements GuardWidget
 
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 
         // empty pagination
 
-        return \Illuminate\Pagination\Paginator::currentPageResolver(function ($pageName) {
+        return Paginator::currentPageResolver(function ($pageName) {
             return $this->getPage($pageName);
         });
     }
 
-    private function convertDt(?\Carbon\CarbonInterface $dateTime): ?\Carbon\CarbonInterface
+    private function convertDt(?CarbonInterface $dateTime): ?CarbonInterface
     {
         if (is_null($dateTime)) {
             return null;
@@ -102,7 +105,7 @@ class UserActivity extends Widget implements GuardWidget
         );
     }
 
-    private function convertDtToLocal(?\Carbon\CarbonInterface $dateTime): ?\Carbon\CarbonInterface
+    private function convertDtToLocal(?CarbonInterface $dateTime): ?CarbonInterface
     {
         return $this->convertDt($dateTime)?->setTimezone(config('app.timezone'));
     }

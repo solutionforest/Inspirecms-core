@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
+use InvalidArgumentException;
 use SolutionForest\InspireCms\Content\DefaultPreviewProvider;
 use SolutionForest\InspireCms\Content\PreviewProviderInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -20,7 +21,7 @@ class PreviewFactory
     protected static function guardAgainstInvalidPreviewGenerator(string $class): void
     {
         if (! in_array(PreviewProviderInterface::class, class_implements($class))) {
-            throw new \InvalidArgumentException('Must implement ' . PreviewProviderInterface::class);
+            throw new InvalidArgumentException('Must implement ' . PreviewProviderInterface::class);
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Factories;
 
+use InvalidArgumentException;
 use SolutionForest\InspireCms\Content\DefaultSlugGenerator;
 use SolutionForest\InspireCms\Content\SlugGeneratorInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -20,7 +21,7 @@ class ContentSlugFactory
     protected static function guardAgainstInvalidContentSlugGenerator(string $class): void
     {
         if (! in_array(SlugGeneratorInterface::class, class_implements($class))) {
-            throw new \InvalidArgumentException('Must implement ' . SlugGeneratorInterface::class);
+            throw new InvalidArgumentException('Must implement ' . SlugGeneratorInterface::class);
         }
     }
 }
