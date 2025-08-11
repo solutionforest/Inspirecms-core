@@ -45,6 +45,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ModelsContent;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker;
+use SolutionForest\InspireCms\Support\Models\Scopes\NestableTreeDetailScope;
 
 class ContentResource extends Resource implements ClusterSectionResource
 {
@@ -251,9 +252,11 @@ class ContentResource extends Resource implements ClusterSectionResource
     public static function table(Table $table): Table
     {
         return $table
-            ->defaultSort('created_at', 'desc')
+            ->defaultSort('nestable_tree_order', 'asc')
             ->modifyQueryUsing(function ($query, $livewire) {
-                $query->with('publishedVersions');
+                $query
+                    ->with('publishedVersions')
+                    ->withGlobalScope(NestableTreeDetailScope::class, new NestableTreeDetailScope);
                 if ($livewire instanceof ChildrenRelationManager) {
                     $query->with('parent');
                 }
@@ -294,6 +297,11 @@ class ContentResource extends Resource implements ClusterSectionResource
                     ->searchable(isIndividual: true)
                     ->fontFamily('mono')
                     ->limit(20)->tooltip(fn ($state) => $state),
+
+                Tables\Columns\TextColumn::make('nestable_tree_order')
+                    ->label(__('inspirecms::inspirecms.order'))
+                    ->sortable()
+                    ->toggleable(),
 
                 Tables\Columns\TextColumn::make('parent')
                     ->label(__('inspirecms::resources/content.parent.label'))
