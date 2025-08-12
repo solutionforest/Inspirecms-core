@@ -2,6 +2,12 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.1.3 - 2025-08-12
+
+### Sync version with support
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.2...1.1.3
+
 ## Release 1.1.2 - 2025-08-11
 
 ### What's Changed in 1.1.2
@@ -14,6 +20,7 @@ All notable changes to `inspirecms-core` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 ```
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.1...1.1.2
