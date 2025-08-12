@@ -53,3 +53,8 @@ compile({
     entryPoints: ['./resources/js/components/code-editor.js'],
     outfile: './resources/dist/components/code-editor.js',
 })
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/rich-editor-enhancement.js'],
+    outfile: './resources/dist/rich-editor-enhancement.js',
+})
