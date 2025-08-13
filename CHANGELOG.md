@@ -2,6 +2,30 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.2.0 - 2025-08-13
+
+### What's Changed in 1.2.0
+
+#### ✨ New Features
+
+- Add "MediaPicker" and "ContentPicker" trix field to MarkdownEditor and RichEditor
+
+#### 🐛 Bug Fixes
+
+- Fix: Content invalid publish state
+- Fix: Code Editor scripts
+
+#### 🔧 Other Changes
+
+- Add "order" field to be default sorting field to Content listing table
+- Update icon for "ContentPicker", "MediaPicker", and "IconPicker"
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-core:^1.2.0
+
+```
 ## 1.1.3 - 2025-08-12
 
 ### Sync version with support
@@ -20,6 +44,7 @@ All notable changes to `inspirecms-core` will be documented in this file.
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 ```
