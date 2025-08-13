@@ -51,6 +51,7 @@ class TemplatePropertyTypeInstructionsEntry
                                     if (is_string($icon) && filled($icon) && str_starts_with($icon, 'inspirecms::')) {
                                         return FilamentIcon::resolve($icon);
                                     }
+
                                     return $icon;
                                 })
                                 ->iconSize('md')
