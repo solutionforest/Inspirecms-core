@@ -13,7 +13,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConf
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\HasColumnsLayoutConfig;
 
-#[ConfigName('iconPicker', 'Icon Picker', 'Picker', 'heroicon-o-cog')]
+#[ConfigName('iconPicker', 'Icon Picker', 'Picker', 'inspirecms::icon_picker')]
 #[FormComponent(FormsIconPicker::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]

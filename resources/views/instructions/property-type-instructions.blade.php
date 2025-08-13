@@ -76,8 +76,6 @@
                             
                         <x-filament::section 
                             collapsible
-                            :icon="$icon"
-                            icon-size="md"
                             compact
                             x-tooltip="{
                                 content: 'Field type: {{ $fieldTypeName }}',
@@ -85,6 +83,17 @@
                                 theme: $store.theme,
                             }"  
                         >
+                            <x-slot name="icon">
+                                <x-filament::icon
+                                    :icon="$icon"
+                                    :alias="$icon"
+                                    @class([
+                                        'fi-section-header-icon self-start',
+                                        'text-gray-400 dark:text-gray-500',
+                                        'h-5 w-5 mt-0.5',
+                                    ])
+                                />
+                            </x-slot>
                             <x-slot name="heading">
                                 {{ $fieldKey }}
                             </x-slot>

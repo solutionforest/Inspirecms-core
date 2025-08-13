@@ -1,0 +1,4 @@
+.fi-fo-markdown-editor button.contentPicker::before, 
+.fi-fo-markdown-editor button.mediaPicker::before {
+    display: none;
+}
