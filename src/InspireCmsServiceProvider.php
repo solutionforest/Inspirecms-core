@@ -180,6 +180,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Js::make('rich-editor-enhance', __DIR__ . '/../resources/dist/rich-editor-enhancement.js'),
             Css::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.css')->loadedOnRequest(),
             AlpineComponent::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.js')->loadedOnRequest(),
+            AlpineComponent::make('markdown-editor', __DIR__ . '/../resources/dist/components/markdown-editor.js')->loadedOnRequest(),
             Css::make('filament-alert', __DIR__ . '/../resources/dist/components/alert.css')->loadedOnRequest(),
         ];
     }

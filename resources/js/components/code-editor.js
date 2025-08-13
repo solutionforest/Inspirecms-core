@@ -1,4 +1,4 @@
-import { basicSetup } from "codemirror";
+import { basicSetup } from "codemirror-v6";
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap } from "@codemirror/view";
 

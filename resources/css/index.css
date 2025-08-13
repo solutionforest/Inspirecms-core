@@ -12,6 +12,7 @@
 
 @import "./components/alert.css";
 @import "./components/code-editor.css";
+@import "./components/markdown-editor.css";
 
 @import "../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css";
 
