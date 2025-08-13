@@ -1,13 +1,10 @@
 <?php
 
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
-use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Tests\Models\Content;
 use SolutionForest\InspireCms\Tests\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\Models\Field;
 use SolutionForest\InspireCms\Tests\Models\FieldGroup;
-use SolutionForest\InspireCms\Tests\Models\KeyValue;
-use SolutionForest\InspireCms\Tests\Models\Language;
 use SolutionForest\InspireCms\Tests\Models\Template;
 use SolutionForest\InspireCms\Tests\TestCase;
 
@@ -16,20 +13,13 @@ pest()->group('feature');
 
 beforeEach(function () {
     // Add routes
-    \SolutionForest\InspireCms\Facades\InspireCms::routes();
+    $this->registerCmsRoutes();
 
     // Ensure the default language is set
-    $defaultLangCode = 'en';
-    Language::updateOrCreate(
-        ['code' => $defaultLangCode],
-        ['is_default' => true]
-    );
+    $this->ensureDefaultLanguage();
+
     // Ensure the theme is set up correctly
-    $this->theme = 'default'; // Set the theme to default
-    KeyValue::updateOrCreate(
-        ['key' => TemplateHelper::getCurrentThemeKey()],
-        ['value' => $this->theme]
-    );
+    $this->theme = $this->ensureDefaultTheme()->value;
 });
 
 it('renders_page_template_correctly', function () {

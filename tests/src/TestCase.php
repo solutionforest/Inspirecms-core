@@ -13,6 +13,7 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Route;
 use Khatabwedaa\BladeCssIcons\BladeCssIconsServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
@@ -21,10 +22,18 @@ use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
+use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\InspireCmsServiceProvider;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
+use SolutionForest\InspireCms\Tests\Models\Content;
+use SolutionForest\InspireCms\Tests\Models\DocumentType;
+use SolutionForest\InspireCms\Tests\Models\Field;
+use SolutionForest\InspireCms\Tests\Models\FieldGroup;
+use SolutionForest\InspireCms\Tests\Models\KeyValue;
+use SolutionForest\InspireCms\Tests\Models\Language;
+use SolutionForest\InspireCms\Tests\Models\Template;
 use SolutionForest\InspireCms\Tests\Models\User;
 
 abstract class TestCase extends Orchestra
@@ -220,5 +229,92 @@ abstract class TestCase extends Orchestra
         $user = User::first();
 
         return $this->actingAs($user, AuthHelper::guardName());
+    }
+
+    public function registerCmsRoutes()
+    {
+        inspirecms()->routes();
+
+        return $this;
+    }
+
+    public function ensureDefaultTheme()
+    {
+        return KeyValue::updateOrCreate(
+            ['key' => TemplateHelper::getCurrentThemeKey()],
+            ['value' => 'default']
+        );
+    }
+
+    public function ensureDefaultLanguage()
+    {
+        $defaultLangCode = 'en';
+
+        return Language::updateOrCreate(
+            ['code' => $defaultLangCode],
+            ['is_default' => true]
+        );
+    }
+
+    public function addCmsContentVersion($content, array $data = [], array $publishableData = [], ?string $publishState = 'publish')
+    {
+        if (! empty($data)) {
+            $content->propertyData = json_encode($data);
+        }
+        if ($publishState) {
+            $content->setPublishableState($publishState);
+        }
+        if (! empty($publishableData)) {
+            $content->setPublishableData($publishableData);
+        }
+        $content->save();
+        $content->refresh();
+
+        return $content;
+    }
+
+    public function createCmsContent(array $data = [], array $propData = [], array $publishableData = [], ?string $publishState = 'draft')
+    {
+        $facDocumentType = DocumentType::factory(['category' => 'web'])
+            ->hasAttached(
+                Template::factory([
+                    'content' => [
+                        $this->ensureDefaultTheme()->value => <<<'HTML'
+                            <div class="content">
+                                <p>Test</p>
+                            </div>
+                        HTML,
+                    ],
+                ]),
+                ['is_default' => true]
+            );
+
+        foreach ($propData as $key => $value) {
+            if (! is_array($value)) {
+                continue;
+            }
+            $facFieldGroup = FieldGroup::factory(['name' => $key]);
+            foreach (array_keys($value) as $fieldKey) {
+                $facFieldGroup = $facFieldGroup->has(Field::factory(['name' => $fieldKey, 'type' => 'text']));
+            }
+            $facDocumentType = $facDocumentType->has($facFieldGroup);
+        }
+
+        $facContent = Content::factory($data)->for($facDocumentType);
+        if (! empty($propData)) {
+            $facContent = $facContent->havePropertyData($propData);
+        }
+
+        $content = $facContent->make();
+        if ($publishState) {
+            $content->setPublishableState($publishState);
+        }
+        if (! empty($publishableData)) {
+            $content->setPublishableData($publishableData);
+        }
+        $content->save();
+        $content->refresh();
+
+        return $content;
     }
 }

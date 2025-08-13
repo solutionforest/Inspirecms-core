@@ -6,9 +6,21 @@ use SolutionForest\InspireCms\Tests\Models\Content;
 use SolutionForest\InspireCms\Tests\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\TestCase;
 
+use function PHPUnit\Framework\assertFalse;
+use function PHPUnit\Framework\assertNotNull;
+use function PHPUnit\Framework\assertNull;
+use function PHPUnit\Framework\assertSame;
+use function PHPUnit\Framework\assertTrue;
+
 uses(TestCase::class);
 uses(RefreshDatabase::class);
 pest()->group('unit', 'model');
+
+beforeEach(function () {
+    $this->registerCmsRoutes();
+    $this->ensureDefaultTheme();
+    $this->ensureDefaultLanguage();
+});
 
 it('creates content version and nestable tree after content creation', function () {
     // Act
@@ -115,4 +127,101 @@ it('deletes content versions and nestable tree if content is deleted', function 
     $this->assertDatabaseMissing('content', ['id' => $content->id]);
     $this->assertDatabaseMissing('content_versions', ['content_id' => $content->id]);
     $this->assertDatabaseMissing('nestable_trees', ['content_id' => $content->id]);
+});
+
+test('content is unpublished when latest version is not published', function () {
+    $publishableData = [
+        'published_at' => now()->subDays(2), // Just ensure the content is published initially
+    ];
+
+    $parent = $this->createCmsContent(data: [
+        'slug' => 'home',
+        'parent_id' => null,
+        'is_default' => true,
+    ], publishState: 'publish', publishableData: $publishableData);
+    $contentData = [
+        'slug' => 'test',
+        'parent_id' => $parent->getKey(),
+        'is_default' => false,
+    ];
+
+    $validateContent = function (Content $content, bool $validatePublished) use ($contentData) {
+        $contentService = app(\SolutionForest\InspireCms\Services\ContentServiceInterface::class);
+        $contentUri = "/{$contentData['slug']}";
+        $contentParentPath = 'home';
+        $contentRealPath = "{$contentParentPath}/{$contentData['slug']}";
+        $strDocumentTypeSlug = $content->documentType?->slug ?? 'default';
+
+        if ($validatePublished) {
+            assertTrue($content->isPublished(), 'Content should be published.');
+            assertNotNull($content->getPublishTime(), 'Content should have a publish time.');
+            assertSame(
+                1,
+                $contentService->findByIds(ids: $content->getKey(), isPublished: true)->count(),
+                'Content should be published and found by service.'
+            );
+            assertSame(
+                1,
+                $contentService->findByRoutePatternWithLangId(uri: $contentUri, isDefaultRoutePattern: true, isPublished: true)->count(),
+                'Content should be found by route pattern.'
+            );
+            assertSame(
+                1,
+                $contentService->findByRealPath(path: $contentRealPath, isPublished: true)->count(),
+                'Content should be found by real path.'
+            );
+            assertSame(
+                1,
+                $contentService->getUnderRealPath(path: $contentParentPath, isPublished: true)->count(),
+                'Content should be found under real path.'
+            );
+            assertSame(
+                1,
+                $contentService->getByDocumentType(documentType: $strDocumentTypeSlug, isPublished: true)->count(),
+                'Content should be found by document type.'
+            );
+            $this->get($content->getUrl())->assertOk();
+        } else {
+            assertFalse($content->isPublished(), 'Content should not be published.');
+            assertNull($content->getPublishTime(), 'Content should not have a publish time.');
+            assertSame(
+                0,
+                $contentService->findByIds(ids: $content->getKey(), isPublished: true)->count(),
+                'Content should not be published and not found by service.'
+            );
+            assertSame(
+                0,
+                $contentService->findByRoutePatternWithLangId(uri: $contentUri, isDefaultRoutePattern: true, isPublished: true)->count(),
+                'Content should not be found by route pattern.'
+            );
+            assertSame(
+                0,
+                $contentService->findByRealPath(path: $contentRealPath, isPublished: true)->count(),
+                'Content should not be found by real path.'
+            );
+            assertSame(
+                0,
+                $contentService->getUnderRealPath(path: $contentParentPath, isPublished: true)->count(),
+                'Content should not be found under real path.'
+            );
+            assertSame(
+                0,
+                $contentService->getByDocumentType(documentType: $strDocumentTypeSlug, isPublished: true)->count(),
+                'Content should not be found by document type.'
+            );
+            $this->get($content->getUrl())->assertNotFound();
+        }
+    };
+
+    $content = $this->createCmsContent(data: $contentData, publishState: 'publish', publishableData: $publishableData);
+    $validateContent($content, true);
+
+    $content = $this->addCmsContentVersion(content: $content, publishState: 'unpublish');
+    $validateContent($content, false);
+
+    $content = $this->addCmsContentVersion(content: $content, publishState: 'draft');
+    $validateContent($content, false);
+
+    $content = $this->addCmsContentVersion(content: $content, publishState: 'publish', publishableData: $publishableData);
+    $validateContent($content, true);
 });
