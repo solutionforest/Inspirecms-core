@@ -238,6 +238,12 @@ class Content extends BaseModel implements ContentContract
                     'publishedVersions',
                     fn ($q) => $q->whereIsPublished()
                 )
+                // Handle case that:
+                // The content have published, but the latest version is not published (Step 1: 'unpublish', Step 2: 'draft')
+                ->whereHas(
+                    'latestNonDraftContentVersion',
+                    fn ($q) => $q->whereIsPublished()
+                )
                 ->whereNot('status', $unpublishOption->getValue());
 
         } else {
@@ -247,6 +253,10 @@ class Content extends BaseModel implements ContentContract
                     fn ($q) => $q
                         ->orWhereDoesntHave(
                             'publishedVersions',
+                            fn ($q) => $q->whereIsPublished()
+                        )
+                        ->orWhereDoesntHave(
+                            'latestNonDraftContentVersion',
                             fn ($q) => $q->whereIsPublished()
                         )
                         ->orWhere('status', $unpublishOption->getValue())

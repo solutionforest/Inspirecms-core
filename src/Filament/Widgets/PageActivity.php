@@ -29,6 +29,7 @@ class PageActivity extends BaseWidget
             ->emptyStateIcon(FilamentIcon::resolve('inspirecms::info'))
             ->emptyStateHeading(__('inspirecms::widgets.page_activity.empty_state.heading'))
             ->modifyQueryUsing(fn ($query) => $query->with([
+                'latestNonDraftContentVersion', // To check the content is published or not
                 'publishedVersions',
             ]))
             ->columns([
@@ -47,8 +48,16 @@ class PageActivity extends BaseWidget
                 Tables\Columns\TextColumn::make('published_at')
                     ->label(__('inspirecms::resources/content.published_at.label'))
                     ->getStateUsing(function (Model $record) {
-                        return $record->getPublishedVersions()?->sortByDesc('pivot.published_at')?->first()?->pivot->published_at;
+                        if (($latestNonDraftContentVersion = $record->latestNonDraftContentVersion)) {
+                            // If the latest non-draft version exists, check if it is published
+                            if ($latestNonDraftContentVersion->publish_state === 'unpublish') {
+                                return null;
+                            }
+                        }
+
+                        return $record->getLatestPublishedTime();
                     })
+                    ->placeholder(__('inspirecms::inspirecms.n/a'))
                     ->formatStateUsing(fn (?\Carbon\Carbon $state) => ($state && $state instanceof \DateTimeInterface) ? $state->diffForHumans(now()) : null)
                     ->tooltip(fn ($state) => ($state && $state instanceof \DateTimeInterface) ? $state->toDateTimeString() : null)
                     ->width('5%'),

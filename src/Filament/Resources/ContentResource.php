@@ -441,6 +441,7 @@ class ContentResource extends Resource implements ClusterSectionResource
     public static function getEloquentQuery(): Builder
     {
         return parent::getEloquentQuery()->with([
+            'latestNonDraftContentVersion', // To check the content is published or not
             'publishedVersions', // To get published version, and determine is published
             'documentType.templates', // For template use
             'parent', // To get parent title

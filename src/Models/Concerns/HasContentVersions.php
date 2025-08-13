@@ -59,6 +59,16 @@ trait HasContentVersions
         return $this->hasOne(InspireCmsConfig::getContentVersionModelClass(), 'content_id')->latestOfMany();
     }
 
+    public function latestNonDraftContentVersion()
+    {
+        return $this->hasOne(InspireCmsConfig::getContentVersionModelClass(), 'content_id')
+            ->ofMany([
+                'id' => 'MAX',
+            ], function ($query) {
+                $query->whereNot('publish_state', 'draft');
+            });
+    }
+
     public function getPublishedVersions()
     {
         if (! $this->relationLoaded('publishedVersions')) {
@@ -86,6 +96,15 @@ trait HasContentVersions
     /** {@inheritDoc} */
     public function getPublishTime()
     {
+        // Handle case that:
+        // The content have published, but the latest version is not published (Step 1: 'unpublish', Step 2: 'draft')
+        if (($latestNonDraftContentVersion = $this->latestNonDraftContentVersion)) {
+            // If the latest non-draft version exists, check if it is published
+            if ($latestNonDraftContentVersion->publish_state === 'unpublish') {
+                return null;
+            }
+        }
+
         // If the publish date is in the future, it's not published
         return $this->getLatestPublishedContentVersion()?->pivot?->published_at;
     }
