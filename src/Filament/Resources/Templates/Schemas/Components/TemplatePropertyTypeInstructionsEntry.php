@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Icon;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Text;
 use Filament\Schemas\Schema;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
@@ -46,7 +47,12 @@ class TemplatePropertyTypeInstructionsEntry
 
                             return Section::make()
                                 ->collapsible()
-                                ->icon($icon)
+                                ->icon(function () use ($icon) {
+                                    if (is_string($icon) && filled($icon) && str_starts_with($icon, 'inspirecms::')) {
+                                        return FilamentIcon::resolve($icon);
+                                    }
+                                    return $icon;
+                                })
                                 ->iconSize('md')
                                 ->compact()
                                 ->heading($fieldKey)

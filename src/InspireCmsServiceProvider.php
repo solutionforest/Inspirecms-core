@@ -299,6 +299,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'templates' => 'css-template',
             'document_type' => 'css-collage',
 
+            'content_picker' => view('inspirecms::icons.content-picker'),
+            'media_picker' => view('inspirecms::icons.media-picker'),
+            'icon_picker' => view('inspirecms::icons.icon-picker'),
+
         ])->mapWithKeys(fn ($icon, $key) => ["{$iconPrefix}{$key}" => $icon])->all();
     }
 

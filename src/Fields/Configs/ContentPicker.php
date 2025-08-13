@@ -20,7 +20,7 @@ use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
-#[ConfigName('contentPicker', 'Content Picker', 'Picker', 'heroicon-o-squares-2x2')]
+#[ConfigName('contentPicker', 'Content Picker', 'Picker', 'inspirecms::content_picker')]
 #[FormComponent(ContentPickerComponent::class)]
 #[DbType('mysql', 'varchar')]
 #[DbType('sqlite', 'text')]
