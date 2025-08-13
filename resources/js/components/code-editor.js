@@ -30,7 +30,7 @@ export default function codeEditorFormComponent({
         themeConfig: undefined,
 
         init() {
-            this.themeConfig = new Compartment();
+            this.configureThemeConfig();
             this.configureEditor();
         },
         getTheme() {
@@ -45,7 +45,13 @@ export default function codeEditorFormComponent({
                 });
             }
         },
+        configureThemeConfig() {
+            if (this.themeConfig === undefined) {
+                this.themeConfig = new Compartment();
+            }
+        },
         configureEditor() {
+            this.configureThemeConfig();
 
             const themeExtension = this.themeConfig.of(this.getTheme());
 
