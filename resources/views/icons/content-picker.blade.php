@@ -12,7 +12,7 @@
   </g>
   <defs>
     <clipPath id="clip0_1_7">
-      <rect width="11" height="11" fill="white" transform="translate(13 14)"/>
+      <rect width="11" height="11" fill="currentColor" transform="translate(13 14)"/>
     </clipPath>
   </defs>
 </svg>
