@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\ContentResource\RelationManagers;
 
+use Filament\Actions\Action;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Tables\Table;
@@ -69,26 +70,21 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
         return $this->getOwnerRecord()->parent_id;
     }
 
-    protected function configureEditAction(EditAction $action): void
+    public function getDefaultActionUrl(Action $action): ?string
     {
-        parent::configureEditAction($action);
-
+        $base = parent::getDefaultActionUrl($action);
+        
         $resource = $this->getPageClass()::getResource();
 
-        $action->url(
-            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record, ...$this->getRedirectUrlParameters()], false)
-        );
-    }
+        if ($action instanceof EditAction) {
+            return FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $action->getRecord(), ...$this->getRedirectUrlParameters()], false);
+        }
 
-    protected function configureViewAction(ViewAction $action): void
-    {
-        parent::configureViewAction($action);
+        if ($action instanceof ViewAction) {
+            return FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $action->getRecord(), ...$this->getRedirectUrlParameters()], false);
+        }
 
-        $resource = $this->getPageClass()::getResource();
-
-        $action->url(
-            fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'view', ['record' => $record, ...$this->getRedirectUrlParameters()], false)
-        );
+        return $base;
     }
 
     protected function getRedirectUrlParameters(): array
