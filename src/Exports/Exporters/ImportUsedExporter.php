@@ -288,7 +288,6 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
 
                             $filename = "{$key}_{$index}.json";
 
-
                             $content = $this->prepareImportContentFromModel($modelNavigation);
 
                             $path = $dir . '/' . $filename;
