@@ -70,7 +70,7 @@ class BaseChildrenRelationManager extends RelationManager
         }
 
         if ($action instanceof EditAction) {
-            
+
             if ($this->isRedirectToDetailPage()) {
                 return FilamentResourceHelper::attemptToGetUrl($relatedResource, 'edit', ['record' => $action->getRecord()], false);
             } elseif ($relatedResource::hasPage('edit')) {

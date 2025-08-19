@@ -73,7 +73,7 @@ class ChildrenRelationManager extends BaseChildrenRelationManager implements Con
     public function getDefaultActionUrl(Action $action): ?string
     {
         $base = parent::getDefaultActionUrl($action);
-        
+
         $resource = $this->getPageClass()::getResource();
 
         if ($action instanceof EditAction) {
