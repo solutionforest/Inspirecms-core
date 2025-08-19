@@ -32,7 +32,7 @@
 
 /* Content History */
 .content-history .publish-time-badge {
-    @apply bg-custom-50 dark:bg-custom-400/10 ring-1 ring-custom-600 ring-custom-600/10;
+    @apply bg-color-50 dark:bg-color-400/10 ring-1 ring-color-600 ring-color-600/10;
     @apply rounded-md px-2 py-1;
     @apply text-xs font-medium;
     @apply flex items-center justify-center gap-1;

@@ -30,6 +30,9 @@ class ContentVersionsTable
             ->searchPlaceholder(__('inspirecms::resources/content-version.tables.search_placeholder'))
             ->emptyStateHeading(__('inspirecms::resources/content-version.empty_state.heading'))
             ->emptyStateDescription(__('inspirecms::resources/content-version.empty_state.description'))
+            ->extraAttributes([
+                'class' => 'content-history',
+            ])
             ->columns([
                 Split::make([
                     Stack::make([
@@ -95,13 +98,14 @@ class ContentVersionsTable
                     })
                     ->color('primary')
                     ->icon('heroicon-o-clock')
+                    ->iconColor('primary')
                     ->alignCenter()
+                    ->verticalAlignment('center')
                     ->tooltip(fn ($state) => $state?->format('Y-m-d H:i:s') ?? __('inspirecms::messages.no_published_yet'))
                     ->extraAttributes(fn ($state) => [
                         'class' => filled($state) ? 'publish-time-badge' : 'hidden',
                         'style' => get_color_css_variables('primary', shades: [50, 400, 600]),
                     ]),
-
             ])
             ->filters([
 
