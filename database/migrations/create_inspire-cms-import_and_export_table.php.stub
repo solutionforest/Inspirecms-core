@@ -8,7 +8,7 @@ return new class extends BaseMigration
 {
     public function up()
     {
-        $tableNames = $this->getTableNames();
+        $tableNames = $this->getCmsTableNames();
 
         Schema::create($tableNames['import'], function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -45,18 +45,10 @@ return new class extends BaseMigration
 
     public function down()
     {
-        $tableNames = $this->getTableNames();
+        $tableNames = $this->getCmsTableNames();
 
 
         Schema::dropIfExists($tableNames['export']);
         Schema::dropIfExists($tableNames['import']);
-    }
-
-    private function getTableNames()
-    {
-        return [
-            'import' => $this->prefix . 'imports',
-            'export' => $this->prefix . 'exports',
-        ];
     }
 };
