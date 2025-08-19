@@ -46,14 +46,23 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
 
         $errors = [];
 
-        foreach ($records->items() as $record) {
+        if ($currentExportingFolder === ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION) {
 
-            $this->processRecordForImportUsed(
+            $this->processNavigationRecordsForImportUsed(
+                $records->items(),
+                $fs,
+                (Arr::get($subFolders, ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION) ?? $folderName),
+                $errors,
+            );
+
+        } else {
+
+            collect($records->items())->each(fn ($record) => $this->processRecordForImportUsed(
                 $record,
                 $fs,
                 (Arr::get($subFolders, $currentExportingFolder) ?? $folderName),
                 $errors,
-            );
+            ));
         }
 
         $processingData = $this->record->getProcessingMessages();
@@ -113,7 +122,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
 
             $allRecord = $query->get();
 
-            $tree = $allRecord->toTree();
+            $tree = $allRecord->groupBy('category')->map(fn ($r) => $r->toTree());
             $totalTreeItems = count($tree);
 
             $perPage = $totalTreeItems;
@@ -262,5 +271,48 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
         }
 
         return null;
+    }
+
+    protected function processNavigationRecordsForImportUsed(
+        $records,
+        $fs,
+        ?string $dir,
+        array &$errors,
+    ) {
+        try {
+            foreach ($records as $key => $record) {
+                // Already grouped by category, $key = category
+                if (! $record instanceof Model) {
+                    foreach ($record as $index => $modelNavigation) {
+                        try {
+
+                            $filename = "{$key}_{$index}.json";
+
+
+                            $content = $this->prepareImportContentFromModel($modelNavigation);
+
+                            $path = $dir . '/' . $filename;
+                            $fs->put($path, $content);
+
+                        } catch (\Throwable $th) {
+                            $errors[] = [
+                                'record' => $record->getKey(),
+                                'model' => get_class($record),
+                                'message' => $th->getMessage(),
+                            ];
+                        }
+
+                    }
+                } else {
+                    $this->processRecordForImportUsed($record, $fs, $dir, $errors);
+                }
+            }
+        } catch (\Throwable $th) {
+            $errors[] = [
+                'record' => null,
+                'model' => Navigation::class,
+                'message' => $th->getMessage(),
+            ];
+        }
     }
 }
