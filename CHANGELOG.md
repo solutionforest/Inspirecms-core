@@ -2,6 +2,20 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.2.1 - 2025-08-19
+
+### What's Changed in 1.2.1
+
+#### 🐛 Bug Fixes
+
+- Have error while create CmsUser on MySQL
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-core:^1.2.1
+
+```
 ## 1.2.0 - 2025-08-13
 
 ### What's Changed in 1.2.0
@@ -25,6 +39,7 @@ All notable changes to `inspirecms-core` will be documented in this file.
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.0
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -44,6 +59,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
