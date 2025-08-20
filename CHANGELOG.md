@@ -2,6 +2,42 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.2.3 - 2025-08-20
+
+<!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+### Sync version with support
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.2.2...1.2.3
+
+## 1.2.2 - 2025-08-20
+
+### What's Changed in 1.2.2
+
+#### Sync version with support
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-core:^1.2.2
+
+
+```
+## 1.2.1 - 2025-08-19
+
+### What's Changed in 1.2.1
+
+#### 🐛 Bug Fixes
+
+- Have error while create CmsUser on MySQL
+
+### Installation
+
+```bash
+composer require solution-forest/inspirecms-core:^1.2.1
+
+
+
+```
 ## 1.2.0 - 2025-08-13
 
 ### What's Changed in 1.2.0
@@ -25,6 +61,9 @@ All notable changes to `inspirecms-core` will be documented in this file.
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.0
 
+
+
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -44,6 +83,9 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
+
+
 
 
 

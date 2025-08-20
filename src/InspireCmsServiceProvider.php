@@ -281,6 +281,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'create_custom_spatie_permission_table', // uuid enhac
             'update_sessions_table', // uuid enhance
             'update_inspirecms-cms-users_table',
+            'hotfix_inspirecms_users_table',
         ];
     }
 

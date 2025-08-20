@@ -8,7 +8,7 @@ return new class extends BaseMigration
 {
     public function up()
     {
-        $tableNames = $this->getTableNames();
+        $tableNames = $this->getCmsTableNames();
 
         Schema::create($tableNames['content'], function (Blueprint $table) {
             $table->uuid('id')->primary();
@@ -224,7 +224,7 @@ return new class extends BaseMigration
 
     public function down()
     {
-        $tableNames = $this->getTableNames();
+        $tableNames = $this->getCmsTableNames();
 
         Schema::dropIfExists($tableNames['key_value']);
 
@@ -250,30 +250,5 @@ return new class extends BaseMigration
         Schema::dropIfExists($tableNames['content_route']);
         Schema::dropIfExists($tableNames['content_path']);
         Schema::dropIfExists($tableNames['content']);
-    }
-
-    private function getTableNames()
-    {
-        return [
-            'field_groupable' => $this->prefix . 'field_groupables',
-            'content_version' => $this->prefix . 'content_versions',
-            'content_publish_version' => $this->prefix . 'content_publish_version',
-            'content_path' => $this->prefix . 'content_paths',
-            'content_route' => $this->prefix . 'content_routes',
-            'content' => $this->prefix . 'content',
-            'content_lock' => $this->prefix . 'content_locks',
-            'document_type' => $this->prefix . 'document_types',
-            'document_type_inheritance' => $this->prefix . 'document_type_inheritance',
-            'allowed_document_type' => $this->prefix . 'document_type_allowed_document_type',
-            'language' => $this->prefix . 'languages',
-            'user_login_activity' => $this->prefix . 'user_login_activities',
-            'user' => $this->prefix . 'users',
-            'template' => $this->prefix . 'templates',
-            'templatable' => $this->prefix . 'templateable',
-            'content_web_setting' => $this->prefix . 'content_web_settings',
-            'sitemap' => $this->prefix . 'sitemaps',
-            'navigation' => $this->prefix . 'navigation',
-            'key_value' => $this->prefix . 'key_values',
-        ];
     }
 };
