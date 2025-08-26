@@ -6,6 +6,7 @@ use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
 use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
 use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
 use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\MediaAsset as EntitiesMediaAsset;
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 
@@ -59,6 +60,14 @@ interface ImportDataServiceInterface
      * @return void
      */
     public function addLanguage(EntitiesLanguage $data);
+
+    /**
+     * Adds a media asset to the system.
+     *
+     * @param  EntitiesMediaAsset  $data  The media asset entity to be added.
+     * @return void
+     */
+    public function addMediaAsset(EntitiesMediaAsset $data);
 
     /**
      * Executes the import data service.

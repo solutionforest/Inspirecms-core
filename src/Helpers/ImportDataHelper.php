@@ -28,6 +28,7 @@ class ImportDataHelper
         self::FOLDER_IDENTIFIER_FIELDGROUP,
         self::FOLDER_IDENTIFIER_NAVIGATION,
         self::FOLDER_IDENTIFIER_LANGUAGE,
+        self::FOLDER_IDENTIFIER_MEDIAASSET,
         ...self::FOLDER_HAS_VIEWS,
     ];
 
@@ -45,6 +46,8 @@ class ImportDataHelper
     const FOLDER_IDENTIFIER_NAVIGATION = 'NavigationMenus';
 
     const FOLDER_IDENTIFIER_LANGUAGE = 'Languages';
+
+    const FOLDER_IDENTIFIER_MEDIAASSET = 'MediaAssets';
 
     const FOLDER_IDENTIFIER_TEMPLATE = 'Templates';
 
@@ -152,6 +155,7 @@ class ImportDataHelper
             self::FOLDER_IDENTIFIER_DOCUMENTTYPE => collect(range(1, 4))->map(fn ($i) => "document-type-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_CONTENT => collect(range(1, 1))->map(fn ($i) => "content-{$i}.json")->all(),
             self::FOLDER_IDENTIFIER_NAVIGATION => collect(range(1, 2))->map(fn ($i) => "navigation-{$i}.json")->all(),
+            self::FOLDER_IDENTIFIER_MEDIAASSET => collect(range(1, 3))->map(fn ($i) => "media-asset-{$i}.json")->all(),
         ];
         $data = [];
 
@@ -360,6 +364,39 @@ class ImportDataHelper
                                 isDefault: $locale == 'en',
                             ))
                             ->map(fn (EntitiesLanguage $language) => $language->toArray())
+                            ->all();
+
+                        break;
+
+                    case self::FOLDER_IDENTIFIER_MEDIAASSET:
+
+                        $sequence = collect([
+                            [
+                                'title' => 'Sample Image 1',
+                                'is_folder' => false,
+                                'caption' => 'A sample image for testing',
+                                'description' => 'This is a sample image used for testing media import/export',
+                                'parent_id' => null,
+                            ],
+                            [
+                                'title' => 'Sample Document',
+                                'is_folder' => false,
+                                'caption' => 'Sample PDF document',
+                                'description' => 'A sample PDF document for testing',
+                                'parent_id' => null,
+                            ],
+                            [
+                                'title' => 'Media Folder',
+                                'is_folder' => true,
+                                'caption' => null,
+                                'description' => 'A sample media folder',
+                                'parent_id' => null,
+                            ],
+                        ])
+                            ->map(fn (array $item) => array_merge($item, [
+                                'id' => Str::uuid()->toString(),
+                                'nestable_id' => rand(1000, 9999),
+                            ]))
                             ->all();
 
                         break;

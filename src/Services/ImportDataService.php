@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocume
 use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
 use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
 use SolutionForest\InspireCms\ImportData\Entities\Language as EntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\MediaAsset as EntitiesMediaAsset;
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -27,7 +28,7 @@ use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 class ImportDataService implements ImportDataServiceInterface
 {
     /**
-     * @var array{documentTypes: array<string,EntitiesDocumentType>, fieldGroups: array<string,EntitiesFieldGroup>, templates: array<string,EntitiesTemplate>, fields: array<string,EntitiesField>, content: array<string,EntitiesContent>, navigation: array<string,EntitiesNavigation>}
+     * @var array{documentTypes: array<string,EntitiesDocumentType>, fieldGroups: array<string,EntitiesFieldGroup>, templates: array<string,EntitiesTemplate>, fields: array<string,EntitiesField>, content: array<string,EntitiesContent>, navigation: array<string,EntitiesNavigation>, mediaAssets: array<string,EntitiesMediaAsset>}
      */
     protected array $pendingData = [];
 
@@ -62,6 +63,7 @@ class ImportDataService implements ImportDataServiceInterface
         'fields',
         'content',
         'navigation',
+        'mediaAssets',
     ];
 
     public function __construct(
@@ -160,6 +162,17 @@ class ImportDataService implements ImportDataServiceInterface
         }
 
         $this->pendingData['languages'][$code] = $data;
+    }
+
+    /** {@inheritDoc} */
+    public function addMediaAsset(EntitiesMediaAsset $data)
+    {
+        $key = $data->id ?? uniqid();
+        if (isset($this->pendingData['mediaAssets'][$key])) {
+            return;
+        }
+
+        $this->pendingData['mediaAssets'][$key] = $data;
     }
 
     /** {@inheritDoc} */
@@ -649,6 +662,116 @@ class ImportDataService implements ImportDataServiceInterface
         }
     }
 
+    protected function processForMediaAssets()
+    {
+        $model = InspireCmsConfig::getMediaAssetModelClass();
+
+        $this->guardAgaintsTableExist($model);
+
+        // Reorder media assets to ensure parent folders are created before children
+        $reorderMediaAssets = function ($collection) {
+            return $collection->sortBy(function ($item, $key) use ($collection) {
+                // First, prioritize folders (is_folder = true) to be processed first
+                if ($item->is_folder) {
+                    $priority = 0;
+                } else {
+                    $priority = 100;
+                }
+
+                // Use nestable tree _lft value for ordering if available
+                // _lft provides natural tree ordering where parents come before children
+                if ($item->__lft !== null) {
+                    return $priority + $item->__lft;
+                }
+
+                // Fallback: calculate depth if no tree data available
+                $depth = 0;
+                $currentParentId = $item->parent_id;
+                $processedIds = [];
+                $collectionArray = $collection->toArray();
+
+                // Walk up the parent chain to determine depth
+                while ($currentParentId && !in_array($currentParentId, $processedIds)) {
+                    $processedIds[] = $currentParentId;
+                    
+                    // Find parent in the collection
+                    $parent = collect($collectionArray)->first(function ($parentItem) use ($currentParentId) {
+                        return $parentItem->id === $currentParentId;
+                    });
+                    
+                    if ($parent) {
+                        $depth++;
+                        $currentParentId = $parent->parent_id;
+                        
+                        // Prevent infinite loops
+                        if ($depth > 50) break;
+                    } else {
+                        break;
+                    }
+                }
+
+                // Return combined priority: folders first, then by tree order or depth
+                return $priority + ($depth * 1000); // Use larger multiplier for fallback depth
+            });
+        };
+
+        $this->pendingData['mediaAssets'] = $reorderMediaAssets(collect($this->pendingData['mediaAssets'] ?? []))->toArray();
+
+        foreach ($this->pendingData['mediaAssets'] ?? [] as $key => $item) {
+
+            try {
+
+                $item->validate();
+
+                $mediaAssetData = $item->getDataForModel();
+
+                // Handle parent relationship - find parent in temp models if needed
+                if ($item->parent_id) {
+                    // Skip fetching parent model if the parent_id is root level parent id
+                    $rootLevelParentId = (new $model)->getRootLevelParentId();
+                    if ($item->parent_id === $rootLevelParentId) {
+                        $mediaAssetData['parent_id'] = $rootLevelParentId;
+                    } else {
+                        $parentMediaAsset = $this->findMediaAssets($item->parent_id)->first();
+                        if ($parentMediaAsset) {
+                            $mediaAssetData['parent_id'] = $parentMediaAsset->getKey();
+                        } else {
+                            // Try to find in database if not in temp models
+                            $existingParent = $model::find($item->parent_id);
+                            if ($existingParent) {
+                                $mediaAssetData['parent_id'] = $existingParent->getKey();
+                            } else {
+                                throw new \Exception("Parent media asset '{$item->parent_id}' not found for '{$item->title}'.");
+                            }
+                        }
+                    }
+                }
+
+                /**
+                 * @var null | MediaAsset & Model
+                 */
+                $mediaAsset = $model::find($item->id);
+
+                if (! $mediaAsset) {
+                    $mediaAsset = $model::create($mediaAssetData);
+                } else {
+                    $mediaAsset->update($mediaAssetData);
+                }
+
+                // Handle media file import
+                $item->handleMediaImport($mediaAsset);
+
+                // Store in temp models for later reference
+                $this->storeMediaAssetInTempModels($mediaAsset);
+
+                $this->finished['mediaAssets'][$key] = $mediaAsset;
+
+            } catch (\Throwable $th) {
+                $this->processErrors['mediaAssets'][$key] = $th->getMessage();
+            }
+        }
+    }
+
     /**
      * Executes the specified process.
      *
@@ -903,6 +1026,32 @@ class ImportDataService implements ImportDataServiceInterface
         return $this->findFromTempModels('languages', $locales);
     }
 
+    /**
+     * Find media assets by ID.
+     *
+     * @param  string[]|string  $ids  The IDs of the media assets to find.
+     * @return Collection<MediaAsset|Model>
+     */
+    protected function findMediaAssets(...$ids)
+    {
+        return $this->findFromTempModels('mediaAssets', $ids);
+    }
+
+    /**
+     * Store a media asset in temporary models for later reference.
+     *
+     * @param  Model  $mediaAsset  The media asset model to store.
+     * @return void
+     */
+    protected function storeMediaAssetInTempModels(Model $mediaAsset)
+    {
+        if (!isset($this->tempModels['mediaAssets'])) {
+            $this->tempModels['mediaAssets'] = collect();
+        }
+
+        $this->tempModels['mediaAssets']->put($mediaAsset->getKey(), $mediaAsset);
+    }
+
     protected function findFromTempModels(string $type, ...$keys)
     {
         $existing = $this->tempModels[$type] ?? collect();
@@ -912,6 +1061,7 @@ class ImportDataService implements ImportDataServiceInterface
         $key = match ($type) {
             'fieldGroups' => 'name',
             'languages' => 'code',
+            'mediaAssets' => 'id',
             default => 'slug',
         };
 
@@ -924,6 +1074,7 @@ class ImportDataService implements ImportDataServiceInterface
                 'templates' => InspireCmsConfig::getTemplateModelClass(),
                 'documentTypes' => InspireCmsConfig::getDocumentTypeModelClass(),
                 'languages' => InspireCmsConfig::getLanguageModelClass(),
+                'mediaAssets' => InspireCmsConfig::getMediaAssetModelClass(),
                 default => null,
             };
 

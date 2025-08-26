@@ -113,7 +113,7 @@ abstract class BaseExporter
         FileHelper::buildZipFromFolder($folderFullPath, $zipFullPath);
 
         if ($deleteFolder) {
-            $folderDisk->deleteDirectory($folderPath);
+            // $folderDisk->deleteDirectory($folderPath);
         }
 
         return $zipPath;

@@ -15,6 +15,7 @@ use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class ImportUsedExporter extends BaseImportUsedDataExporter
 {
@@ -168,6 +169,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE => 'template',
             ImportDataHelper::FOLDER_IDENTIFIER_CONTENT => 'content',
             ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION => 'navigation',
+            ImportDataHelper::FOLDER_IDENTIFIER_MEDIAASSET => 'media_asset',
             default => str($type)->snake()->toString(),
         };
 
@@ -209,6 +211,8 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
                 $label = $record->title;
             } elseif ($record instanceof Navigation) {
                 $label = "{$record->title} ({$record->type})";
+            } elseif ($record instanceof MediaAsset) {
+                $label = $record->title . ($record->is_folder ? ' (folder)' : '');
             }
 
             $results[$key] = $label ?? $key;
@@ -242,6 +246,8 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
                 $label = $record->slug;
             } elseif ($record instanceof Navigation) {
                 $label = "{$record->category}";
+            } elseif ($record instanceof MediaAsset) {
+                $label = $record->id . ($record->is_folder ? ' (folder)' : '');
             }
 
             $results[$key] = $label ?? $key;
@@ -263,11 +269,17 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
             ImportDataHelper::FOLDER_IDENTIFIER_CONTENT => InspireCmsConfig::getContentModelClass(),
             ImportDataHelper::FOLDER_IDENTIFIER_NAVIGATION => InspireCmsConfig::getNavigationModelClass(),
             ImportDataHelper::FOLDER_IDENTIFIER_LANGUAGE => InspireCmsConfig::getLanguageModelClass(),
+            ImportDataHelper::FOLDER_IDENTIFIER_MEDIAASSET => InspireCmsConfig::getMediaAssetModelClass()::with('media'),
             default => null,
         };
 
-        if ($model && is_a($model, Model::class, true)) {
-            return $model::query();
+        if ($model) {
+            if (is_a($model, Model::class, true)) {
+                return $model::query();
+            }
+            else if (is_a($model, \Illuminate\Database\Eloquent\Builder::class, true)) {
+                return $model;
+            }
         }
 
         return null;

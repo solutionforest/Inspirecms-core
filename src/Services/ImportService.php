@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\ImportData\Entities\Content as EntitiesContent;
 use SolutionForest\InspireCms\ImportData\Entities\DocumentType as EntitiesDocumentType;
 use SolutionForest\InspireCms\ImportData\Entities\Field as EntitiesField;
 use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as EntitiesFieldGroup;
+use SolutionForest\InspireCms\ImportData\Entities\MediaAsset as EntitiesMediaAsset;
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as EntitiesNavigation;
 use SolutionForest\InspireCms\ImportData\Entities\Template as EntitiesTemplate;
 use SolutionForest\InspireCms\ImportData\ZipFileReader;
@@ -218,6 +219,15 @@ class ImportService implements ImportServiceInterface
                         $data = EntitiesNavigation::fromArray($jsonData);
                         $this->importDataService->addNavigation(
                             data: $data,
+                        );
+
+                        break;
+                    case ImportDataHelper::FOLDER_IDENTIFIER_MEDIAASSET:
+                        $data = EntitiesMediaAsset::fromArray($jsonData);
+                        
+                        $this->importDataService->addMediaAsset(
+                            // Map exported file paths for media import
+                            data: $data->mapExportedFilePathsForMediaAsset($fs, $folderPath),
                         );
 
                         break;

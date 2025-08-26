@@ -3,13 +3,16 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities\Content as ImportEntitiesContent;
 use SolutionForest\InspireCms\ImportData\Entities\DocumentType as ImportEntitiesDocumentType;
 use SolutionForest\InspireCms\ImportData\Entities\FieldGroup as ImportEntitiesFieldGroup;
 use SolutionForest\InspireCms\ImportData\Entities\Language as ImportEntitiesLanguage;
+use SolutionForest\InspireCms\ImportData\Entities\MediaAsset as ImportEntitiesMediaAsset;
 use SolutionForest\InspireCms\ImportData\Entities\Navigation as ImportEntitiesNavigation;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType;
@@ -17,6 +20,7 @@ use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 abstract class BaseImportUsedDataExporter extends BaseExporter
 {
@@ -36,6 +40,9 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
             case $record instanceof FieldGroup:
                 return Str::replace('_', '-', $record->name) . '.json';
+
+            case $record instanceof MediaAsset:
+                return $record->id . '.json';
 
             case $record instanceof Template:
                 if (is_array($record->content)) {
@@ -71,13 +78,6 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
                 return json_encode($array, JSON_PRETTY_PRINT);
 
-                // case $record instanceof Template:
-                //     $themeContent = $record->content;
-                //     if (! is_array($themeContent)) {
-                //         $themeContent = [inspirecms_templates()->getCurrentTheme() => $themeContent];
-                //     }
-                //     return $themeContent;
-
             case $record instanceof Content:
                 $array = ImportEntitiesContent::fromRecord($record)->toArray();
 
@@ -93,6 +93,11 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                 $array = ImportEntitiesLanguage::fromRecord($record)->toArray();
 
                 return json_encode($array, JSON_PRETTY_PRINT);
+
+            case $record instanceof MediaAsset:
+                $array = ImportEntitiesMediaAsset::fromRecord($record)->toArray();
+
+                return json_encode($array, JSON_PRETTY_PRINT);
         }
 
         return '{}';
@@ -104,7 +109,7 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
             $filename = $this->generateImportFileName($record);
 
-            if ($record instanceof Template && is_array($filename)) {
+            if ($record instanceof Template && is_array(value: $filename)) {
 
                 foreach ($filename as $theme => $templateFilePath) {
 
@@ -113,6 +118,52 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
                     $path = $dir . '/' . trim($templateFilePath, '/');
 
                     $fs->put($path, $templateContent);
+                }
+
+            } elseif ($record instanceof MediaAsset) {
+
+                // Export the JSON metadata file
+                $content = $this->prepareImportContentFromModel($record);
+                $path = $dir . '/' . trim($filename, '/');
+                $fs->put($path, $content);
+
+                // Handle media files
+                try {
+                    $dto = ImportEntitiesMediaAsset::fromArray(json_decode($content, true));
+                    foreach ($dto->media_files as $item) {
+
+                        $paths = $item['__exported_file_path'];
+
+                        if (!is_array($paths) || empty($paths)) {
+                            continue;
+                        }
+
+                        foreach ($paths as $key => $value) {
+                            try {
+
+                                $tmpMediaFilePath = collect([$dir, $value])->map(fn ($path) => trim($path, '/'))->implode('/');
+
+                                // Ensure the directory exists
+                                if (! $fs->exists(dirname($tmpMediaFilePath))) {
+
+                                    $fs->makeDirectory(dirname($tmpMediaFilePath), 0777, true);
+                                }
+
+                                $mediaFileContent = ($key == '__real__' ? Storage::disk($record->disk) : Storage::disk($record->conversions_disk))->get($value);
+
+                                $fs->put($tmpMediaFilePath, $mediaFileContent);
+
+                            } catch (\Throwable $th) {
+                                // Skip error, handle next file
+                            }
+                        }
+                    }
+                } catch (\Throwable $th) {
+                    $errors[] = [
+                        'record' => $record->getKey(),
+                        'model' => get_class($record),
+                        'message' => $th->getMessage(),
+                    ];
                 }
 
             } elseif (! is_string($filename)) {
@@ -173,6 +224,12 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
             case ImportDataHelper::FOLDER_IDENTIFIER_TEMPLATE:
                 return $query;
+
+            case ImportDataHelper::FOLDER_IDENTIFIER_MEDIAASSET:
+                return $query->with([
+                    // 'parent',
+                    'nestableTree',
+                ]);
         }
 
         return $query;
