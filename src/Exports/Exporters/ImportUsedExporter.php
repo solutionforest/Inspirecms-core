@@ -276,8 +276,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
         if ($model) {
             if (is_a($model, Model::class, true)) {
                 return $model::query();
-            }
-            else if (is_a($model, \Illuminate\Database\Eloquent\Builder::class, true)) {
+            } elseif (is_a($model, \Illuminate\Database\Eloquent\Builder::class, true)) {
                 return $model;
             }
         }

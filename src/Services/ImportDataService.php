@@ -691,20 +691,22 @@ class ImportDataService implements ImportDataServiceInterface
                 $collectionArray = $collection->toArray();
 
                 // Walk up the parent chain to determine depth
-                while ($currentParentId && !in_array($currentParentId, $processedIds)) {
+                while ($currentParentId && ! in_array($currentParentId, $processedIds)) {
                     $processedIds[] = $currentParentId;
-                    
+
                     // Find parent in the collection
                     $parent = collect($collectionArray)->first(function ($parentItem) use ($currentParentId) {
                         return $parentItem->id === $currentParentId;
                     });
-                    
+
                     if ($parent) {
                         $depth++;
                         $currentParentId = $parent->parent_id;
-                        
+
                         // Prevent infinite loops
-                        if ($depth > 50) break;
+                        if ($depth > 50) {
+                            break;
+                        }
                     } else {
                         break;
                     }
@@ -1045,7 +1047,7 @@ class ImportDataService implements ImportDataServiceInterface
      */
     protected function storeMediaAssetInTempModels(Model $mediaAsset)
     {
-        if (!isset($this->tempModels['mediaAssets'])) {
+        if (! isset($this->tempModels['mediaAssets'])) {
             $this->tempModels['mediaAssets'] = collect();
         }
 

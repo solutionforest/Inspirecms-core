@@ -224,7 +224,7 @@ class ImportService implements ImportServiceInterface
                         break;
                     case ImportDataHelper::FOLDER_IDENTIFIER_MEDIAASSET:
                         $data = EntitiesMediaAsset::fromArray($jsonData);
-                        
+
                         $this->importDataService->addMediaAsset(
                             // Map exported file paths for media import
                             data: $data->mapExportedFilePathsForMediaAsset($fs, $folderPath),

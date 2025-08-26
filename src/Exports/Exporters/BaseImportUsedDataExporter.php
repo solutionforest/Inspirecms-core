@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Exports\Exporters;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities\Content as ImportEntitiesContent;
@@ -134,7 +133,7 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
                         $paths = $item['__exported_file_path'];
 
-                        if (!is_array($paths) || empty($paths)) {
+                        if (! is_array($paths) || empty($paths)) {
                             continue;
                         }
 

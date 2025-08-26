@@ -31,7 +31,7 @@ class MediaAsset extends BaseEntity
     public function __construct(
         public string $id,
         public string $title,
-        public string|int|null $nestable_id,
+        public string | int | null $nestable_id,
         public ?string $parent_id = null,
         public bool $is_folder = false,
         public ?string $caption = null,
@@ -51,7 +51,7 @@ class MediaAsset extends BaseEntity
     public static function fromRecord($record): static
     {
         $mediaFiles = [];
-        
+
         // Get all media files associated with this asset if it's a MediaAsset instance
         if ($record instanceof MediaAssetContract && method_exists($record, 'getMedia')) {
             $mediaCollection = $record->getMedia();
@@ -103,7 +103,8 @@ class MediaAsset extends BaseEntity
 
     /**
      * Encode media file and its responsive images for export
-     * @param Media $media
+     *
+     * @param  Media  $media
      */
     protected static function encodeMediaForExport($media): array
     {
@@ -111,7 +112,7 @@ class MediaAsset extends BaseEntity
         $exportedFilePaths['__real__'] = "files/{$media->getKey()}/{$media->file_name}";
 
         // Try to map conversion files
-        if (!empty($media->generated_conversions) && is_array($media->generated_conversions)) {
+        if (! empty($media->generated_conversions) && is_array($media->generated_conversions)) {
             foreach ($media->generated_conversions as $conversion => $generated) {
                 if ($generated) {
                     $conversionFileName = pathinfo($media->file_name, PATHINFO_FILENAME) . '-' . $conversion . '.' . pathinfo($media->file_name, PATHINFO_EXTENSION);
@@ -124,7 +125,7 @@ class MediaAsset extends BaseEntity
         $encodedFiles['__real__'] = static::encodeFile($media);
 
         // Encode responsive images (try to map file path first, fallback to encode)
-        if (!empty($media->generated_conversions) && is_array($media->generated_conversions)) {
+        if (! empty($media->generated_conversions) && is_array($media->generated_conversions)) {
             foreach ($media->generated_conversions as $conversion => $generated) {
                 if ($generated) {
                     $encodedFiles[$conversion] = static::encodeConversionFile($media, $conversion);
@@ -148,7 +149,7 @@ class MediaAsset extends BaseEntity
             'order_column' => $media->order_column,
             // Prefer file path, fallback to file_content
             '__exported_file_path' => $exportedFilePaths,
-            '__encoded_files' => $encodedFiles
+            '__encoded_files' => $encodedFiles,
         ];
     }
 
@@ -160,8 +161,8 @@ class MediaAsset extends BaseEntity
         // Check if it's a relative path to an image file
         $imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'svg', 'bmp'];
         $extension = strtolower(pathinfo($path, PATHINFO_EXTENSION));
-        
-        return in_array($extension, $imageExtensions) && !Str::startsWith($path, 'http');
+
+        return in_array($extension, $imageExtensions) && ! Str::startsWith($path, 'http');
     }
 
     /**
@@ -169,7 +170,7 @@ class MediaAsset extends BaseEntity
      */
     protected static function encodeFile($media)
     {
-        if (!$media instanceof Media) {
+        if (! $media instanceof Media) {
             return null;
         }
 
@@ -181,22 +182,25 @@ class MediaAsset extends BaseEntity
      */
     protected static function encodeConversionFile($media, $conversion): ?string
     {
-        if (!$media instanceof Media) {
+        if (! $media instanceof Media) {
             return null;
         }
+
         return static::encodeFileFromPath($media->conversions_disk, $media->getPathRelativeToRoot($conversion));
     }
 
     /**
      * Encode a file from a specific disk and path
-     * @param string $disk
-     * @param string $path
+     *
+     * @param  string  $disk
+     * @param  string  $path
      * @return string|null
      */
     private static function encodeFileFromPath($disk, $path)
     {
         try {
             $file = Storage::disk($disk)->get($path);
+
             return base64_encode($file);
         } catch (\Throwable $e) {
             return null;
@@ -239,12 +243,11 @@ class MediaAsset extends BaseEntity
         ];
     }
 
-
     /**
      * Map exported file paths for media assets from the extracted ZIP folder.
      *
-     * @param \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter $fs The filesystem instance
-     * @param string $folderPath The folder path containing the media asset JSON files
+     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance
+     * @param  string  $folderPath  The folder path containing the media asset JSON files
      */
     public function mapExportedFilePathsForMediaAsset($fs, string $folderPath)
     {
@@ -253,7 +256,7 @@ class MediaAsset extends BaseEntity
         }
 
         foreach ($this->media_files as &$mediaFile) {
-            if (!empty($mediaFile['__exported_file_path']) && is_array($mediaFile['__exported_file_path'])) {
+            if (! empty($mediaFile['__exported_file_path']) && is_array($mediaFile['__exported_file_path'])) {
                 foreach ($mediaFile['__exported_file_path'] as $conversionKey => $relativePath) {
                     // Build the full path within the extracted ZIP
                     $fullPath = $folderPath . '/' . ltrim($relativePath, '/');
@@ -262,7 +265,7 @@ class MediaAsset extends BaseEntity
                     if ($fs->exists($fullPath)) {
                         // Convert to absolute path on the filesystem
                         $absolutePath = $fs->path($fullPath);
-                        
+
                         // Update the path to point to the actual extracted file
                         $mediaFile['__exported_file_path'][$conversionKey] = $absolutePath;
                     } else {
@@ -270,7 +273,7 @@ class MediaAsset extends BaseEntity
                         unset($mediaFile['__exported_file_path'][$conversionKey]);
                     }
                 }
-                
+
                 // If no valid paths remain, remove the __exported_file_path entirely
                 if (empty($mediaFile['__exported_file_path'])) {
                     unset($mediaFile['__exported_file_path']);
@@ -284,7 +287,7 @@ class MediaAsset extends BaseEntity
     /**
      * Handle media import for a media asset.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model The media asset model
+     * @param  \Illuminate\Database\Eloquent\Model  $model  The media asset model
      * @return void
      */
     public function handleMediaImport($model)
@@ -298,7 +301,7 @@ class MediaAsset extends BaseEntity
         $model->clearMediaCollection();
 
         // Create or update media (spatie) from $this->media_files (is array)
-        if (!empty($this->media_files)) {
+        if (! empty($this->media_files)) {
             foreach ($this->media_files as $mediaFileData) {
                 $this->processMediaFile($model, $mediaFileData);
             }
@@ -308,9 +311,8 @@ class MediaAsset extends BaseEntity
     /**
      * Process a single media file for import.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model The media asset model
-     * @param array $mediaFileData The media file data
-     * @return void
+     * @param  \Illuminate\Database\Eloquent\Model  $model  The media asset model
+     * @param  array  $mediaFileData  The media file data
      */
     protected function processMediaFile($model, array $mediaFileData): void
     {
@@ -324,15 +326,16 @@ class MediaAsset extends BaseEntity
         }
 
         // 2.1. Try zipped file from "__exported_file_path" first
-        if (!empty($mediaFileData['__exported_file_path']) && is_array($mediaFileData['__exported_file_path'])) {
+        if (! empty($mediaFileData['__exported_file_path']) && is_array($mediaFileData['__exported_file_path'])) {
 
-            if (isset($mediaFileData['__exported_file_path']['__real__']) && !empty($mediaFileData['__exported_file_path']['__real__']) && file_exists($mediaFileData['__exported_file_path']['__real__'])) {
+            if (isset($mediaFileData['__exported_file_path']['__real__']) && ! empty($mediaFileData['__exported_file_path']['__real__']) && file_exists($mediaFileData['__exported_file_path']['__real__'])) {
                 try {
                     $model
                         ->addMediaFromPath($mediaFileData['__exported_file_path']['__real__'])
                         ->setName($name)
                         ->setFileName($fileName)
                         ->toMediaCollection($collectionName);
+
                     return; // break the loop if successful
                 } catch (\Exception $e) {
                     // If file path fails, continue to try encoded files
@@ -341,24 +344,25 @@ class MediaAsset extends BaseEntity
         }
 
         // 2.2. If not, try using "__encoded_files"
-        if (!empty($mediaFileData['__encoded_files'])) {
+        if (! empty($mediaFileData['__encoded_files'])) {
             foreach ($mediaFileData['__encoded_files'] as $conversionKey => $encodedFile) {
-                if ($conversionKey === '__real__' && !empty($encodedFile)) {
+                if ($conversionKey === '__real__' && ! empty($encodedFile)) {
                     try {
                         // Decode base64 content
                         $decodedContent = base64_decode($encodedFile);
-                        
+
                         if ($decodedContent !== false) {
                             $model
                                 ->addMediaFromBase64(
                                     $encodedFile,
                                     [
                                         'mime_type' => $mimeType,
-                                        'name' => $name
+                                        'name' => $name,
                                     ]
                                 )
                                 ->usingFileName($fileName)
                                 ->toMediaCollection($collectionName);
+
                             return;
                         }
                     } catch (\Exception $e) {
@@ -370,7 +374,7 @@ class MediaAsset extends BaseEntity
                 //     try {
                 //         // Decode base64 content
                 //         $decodedContent = base64_decode($encodedFile);
-                        
+
                 //         if ($decodedContent !== false) {
                 //             $model
                 //                 ->addMediaFromBase64(
