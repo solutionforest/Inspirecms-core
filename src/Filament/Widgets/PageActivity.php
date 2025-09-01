@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Widgets;
 
 use Carbon\Carbon;
-use DateTimeInterface;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Columns\TextColumn;
