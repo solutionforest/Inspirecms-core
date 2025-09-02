@@ -26,7 +26,7 @@ trait CanAuthorizeResource
 
                 $user = Filament::auth()->user();
 
-                return $user->can($permissionName) && static::canViewAny();
+                return $user?->can($permissionName) && static::canViewAny();
 
             }
         }
