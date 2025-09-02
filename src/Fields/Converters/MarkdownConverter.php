@@ -64,6 +64,28 @@ class MarkdownConverter extends BaseConverter
         return $this;
     }
 
+    public function getConfigs(): array
+    {
+        return $this->mdConfigs;
+    }
+
+    public function getExtensions(): array
+    {
+        $extensions = $this->mdExtensions;
+
+        $defaultExtensions = [
+            app(\League\CommonMark\Extension\Attributes\AttributesExtension::class),
+        ];
+
+        foreach ($defaultExtensions as $extension) {
+            if (! in_array($extension, $extensions, true)) {
+                $extensions[] = $extension;
+            }
+        }
+
+        return $extensions;
+    }
+
     private function convertMarkdown($value)
     {
         try {
@@ -71,7 +93,7 @@ class MarkdownConverter extends BaseConverter
                 return $value;
             }
 
-            $value = str($value)->markdown($this->mdConfigs, $this->mdExtensions)->toHtmlString();
+            $value = str($value)->markdown($this->getConfigs(), $this->getExtensions())->toHtmlString();
 
             return $value;
 

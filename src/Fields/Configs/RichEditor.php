@@ -13,6 +13,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\EditorBasicTrait;
 use SolutionForest\InspireCms\Fields\Converters\RichEditorConverter;
+use SolutionForest\InspireCms\Filament\Forms\Components\RichEditor as FormsRichEditor;
 
 #[ConfigName('richEditor', 'Rich Editor', 'Rich', 'heroicon-o-document-text')]
 #[FormComponent(FormsRichEditor::class)]
@@ -38,6 +39,8 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         'strike',
         'underline',
         'undo',
+        'contentPicker',
+        'mediaPicker',
     ];
 
     public function getFormSchema(): array

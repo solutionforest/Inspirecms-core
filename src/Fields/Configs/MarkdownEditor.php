@@ -13,6 +13,7 @@ use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Fields\Configs\Attributes\Converter;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\EditorBasicTrait;
 use SolutionForest\InspireCms\Fields\Converters\MarkdownConverter;
+use SolutionForest\InspireCms\Filament\Forms\Components\MarkdownEditor as FormsMarkdownEditor;
 
 #[ConfigName('markdownEditor', 'Markdown Editor', 'Rich', 'heroicon-o-document-text')]
 #[FormComponent(FormsMarkdownEditor::class)]
@@ -37,6 +38,8 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         'strike',
         'table',
         'undo',
+        'contentPicker',
+        'mediaPicker',
     ];
 
     public function getFormSchema(): array

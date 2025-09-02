@@ -31,14 +31,24 @@
         "tailwindcss": "^4.1.11"
     },
     "dependencies": {
-        "@codemirror/commands": "^6.3.3",
-        "@codemirror/lang-css": "^6.2.1",
-        "@codemirror/lang-html": "^6.4.8",
-        "@codemirror/lang-javascript": "^6.2.2",
+        "@codemirror/commands": "^6.8.1",
+        "@codemirror/lang-cpp": "^6.0.3",
+        "@codemirror/lang-css": "^6.3.1",
+        "@codemirror/lang-go": "^6.0.1",
+        "@codemirror/lang-html": "^6.4.9",
+        "@codemirror/lang-java": "^6.0.2",
+        "@codemirror/lang-javascript": "^6.2.3",
         "@codemirror/lang-json": "^6.0.1",
+        "@codemirror/lang-markdown": "^6.3.3",
         "@codemirror/lang-php": "^6.0.1",
-        "@codemirror/view": "^6.26.0",
+        "@codemirror/lang-python": "^6.2.1",
+        "@codemirror/lang-xml": "^6.1.0",
+        "@codemirror/lang-yaml": "^6.1.2",
+        "@codemirror/state": "^6.5.2",
+        "@codemirror/theme-one-dark": "^6.1.2",
+        "@codemirror/view": "^6.36.6",
         "@fsegurai/codemirror-theme-bundle": "^6.2.0-beta",
-        "codemirror": "^6.0.1"
+        "codemirror": "^5.65.8",
+        "codemirror-v6": "npm:codemirror@^6.0.1"
     }
 }
