@@ -3,17 +3,38 @@
 namespace SolutionForest\InspireCms\Filament\Pages\Auth;
 
 use Filament\Actions\Action;
-use Filament\Forms\Form;
-use Filament\Pages\Auth\EditProfile as BasePage;
+use Filament\Panel;
+use Filament\Schemas\Schema;
+use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Js;
-use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\ProfilePageTrait;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\UserEditForm;
 
-/**
- * @property Form $form
- */
-class EditProfile extends BasePage
+class EditProfile extends \Filament\Auth\Pages\EditProfile
 {
-    use ProfilePageTrait;
+    public function form(Schema $schema): Schema
+    {
+        return UserEditForm::configure($schema);
+    }
+
+    public function getFormActionsAlignment(): string | Alignment
+    {
+        return Alignment::End;
+    }
+
+    public static function isSimple(): bool
+    {
+        return false;
+    }
+
+    public function hasLogo(): bool
+    {
+        return false;
+    }
+
+    public static function isTenantSubscriptionRequired(Panel $panel): bool
+    {
+        return false;
+    }
 
     public static function getLabel(): string
     {

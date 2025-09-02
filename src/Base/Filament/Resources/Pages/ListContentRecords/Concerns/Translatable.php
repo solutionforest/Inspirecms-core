@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\Resources\Pages\ListContentRecords\Concerns;
 
-use Filament\Resources\Concerns\HasActiveLocaleSwitcher;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\HasActiveLocaleSwitcher;
 
 trait Translatable
 {

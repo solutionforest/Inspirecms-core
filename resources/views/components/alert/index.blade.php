@@ -13,16 +13,17 @@
     }
 @endphp
 <div {{ 
-    $attributes->class([
-        'alert-dialog px-4 overflow-x-auto bg-custom-50 dark:bg-custom-900',
-        "alert-dialog-{$size}" => in_array($size, ['sm', 'md', 'lg']),
-        'py-2' => $size == 'sm',
-        'py-3' => $size == 'md',
-        'py-4' => $size == 'lg',
-    ])->style(\Filament\Support\get_color_css_variables(
-        $color,
-        shades: [50, 200, 400, 700, 900],
-    ))
+    $attributes
+        ->class([
+            'alert-dialog px-4 overflow-x-auto bg-custom-50 dark:bg-custom-900',
+            "alert-dialog-{$size}" => in_array($size, ['sm', 'md', 'lg']),
+            'py-2' => $size == 'sm',
+            'py-3' => $size == 'md',
+            'py-4' => $size == 'lg',
+        ])->style(\Filament\Support\get_color_css_variables(
+            $color,
+            shades: [50, 200, 400, 700, 900],
+        ))
 }}
     x-data="{ ready: @js($assetReady) }"
     x-load-css="[

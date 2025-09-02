@@ -2,9 +2,15 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Filesystem\FilesystemAdapter;
 use SolutionForest\InspireCms\Base\Enums\ExportStatus;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
+use Throwable;
 
 /**
  * @property string $id
@@ -12,19 +18,19 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property ?string $file_name
  * @property string $exporter
  * @property ?array $payload
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $finished_at
- * @property ?\Carbon\CarbonInterface $failed_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $finished_at
+ * @property ?CarbonInterface $failed_at
  * @property-read ?ExportStatus $display_status
  * @property-read ?ExportStatus $display_exporter
- * @property-read ?\Carbon\CarbonInterface $clear_at
+ * @property-read ?CarbonInterface $clear_at
  */
 interface Export extends CanPrunable, HasAuthor
 {
     /**
-     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     * @return Filesystem|FilesystemAdapter
      *
-     * @throws \Exception if the disk is not set for the import job.
+     * @throws Exception if the disk is not set for the import job.
      */
     public function getDisk();
 
@@ -36,7 +42,7 @@ interface Export extends CanPrunable, HasAuthor
      * should handle any necessary cleanup or state changes to reflect the
      * failure of the export process.
      *
-     * @param  string|\Throwable|array  $msg  The failure message to be recorded.
+     * @param  string|Throwable|array  $msg  The failure message to be recorded.
      * @return void
      */
     public function markAsFailed($msg);
@@ -77,32 +83,32 @@ interface Export extends CanPrunable, HasAuthor
     /**
      * Scope a query to only include pending items.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWherePending($query, bool $condition = true);
 
     /**
      * Scope a query to only include completed items.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereCompleted($query);
 
     /**
      * Scope a query to only include records where the export has failed.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereFailed($query);
 
     /**
      * Scope a query to only include records that can be cleared.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereCanClear($query);
 }

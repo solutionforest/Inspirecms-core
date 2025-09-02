@@ -1,1 +1,2 @@
-.cm-scroller{min-height:inherit!important;height:70vh}.cm-gutter{overflow:visible!important}.cm-editor{min-height:inherit!important;position:relative;overflow:auto!important;height:inherit}.code-editor-textarea{width:auto}
+/*! tailwindcss v4.1.11 | MIT License | https://tailwindcss.com */
+.cm-scroller{height:70vh;min-height:inherit!important}.cm-gutter{overflow:visible!important}.cm-editor{height:inherit;position:relative;min-height:inherit!important;overflow:auto!important}.code-editor-textarea{width:auto}

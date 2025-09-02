@@ -3,8 +3,10 @@
 namespace SolutionForest\InspireCms\Base\Filament\Actions\Concerns;
 
 use Closure;
+use Filament\Forms\Components\TableSelect;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Tables\DocumentTypesAssociationTable;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 trait CreateContentActionTrait
@@ -16,8 +18,6 @@ trait CreateContentActionTrait
     protected ?Closure $documentTypeTitleUsing = null;
 
     protected ?Closure $nodeTitleUsing = null;
-
-    protected $page = 1;
 
     public static function getDefaultName(): ?string
     {
@@ -56,21 +56,34 @@ trait CreateContentActionTrait
             return __('inspirecms::buttons.create_content.heading', ['title' => $title]);
         });
 
-        $this->modalContent(function ($livewire) {
-            $parentDocumentType = $this->getParentDocumentType();
-            $parentDocumentTypeId = $parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType;
+        $this
+            ->fillForm(fn () => [])
+            ->schema([
+                TableSelect::make('selection')
+                    ->hiddenLabel()
+                    ->tableConfiguration(DocumentTypesAssociationTable::class)
+                    ->tableArguments(function ($livewire) {
+                        $parentDocumentType = $this->getParentDocumentType();
+                        $parentDocumentTypeId = $parentDocumentType instanceof Model ? $parentDocumentType->getKey() : $parentDocumentType;
 
-            $translatableLocale = isset($livewire->activeLocale) ? $livewire->activeLocale : null;
+                        $translatableLocale = isset($livewire->activeLocale) ? $livewire->activeLocale : null;
 
-            return view('inspirecms::filament.actions.create-content', [
-                'parentDocumentTypeId' => $parentDocumentTypeId,
-                'translatableLocale' => $translatableLocale,
-                'parentContentId' => $this->getParentContentKey(),
-            ]);
-        });
+                        return [
+                            'parentDocumentTypeId' => $parentDocumentTypeId,
+                            'translatableLocale' => $translatableLocale,
+                            'parentContentId' => $this->getParentContentKey(),
+                        ];
+                    }),
+            ])
+            ->action(function (array $data, $livewire) {
+                $url = \SolutionForest\InspireCms\Filament\Resources\Contents\Actions\CreateContentAction::generateCreateContentUrl(
+                    documentType: $data['selection'],
+                    parentContent: $this->getParentContentKey(),
+                    translatableLocale: isset($livewire->activeLocale) ? $livewire->activeLocale : null
+                );
 
-        $this->modalSubmitAction(false);
-        $this->modalCancelAction(false);
+                return redirect()->to($url);
+            });
     }
 
     public function parentContentKey(Closure | string | int | null $parentContentKey): static

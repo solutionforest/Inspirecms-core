@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Observers;
 
+use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
@@ -38,7 +39,7 @@ class DocumentTypeObserver
 
         // Guard: If there is any content, then prevent deleting.
         if ($hasContent) {
-            throw new \Exception('Cannot delete this document type because it has content.');
+            throw new Exception('Cannot delete this document type because it has content.');
         }
     }
 }

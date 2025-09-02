@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseDto;
+use Throwable;
 
 class ContentPickerConverter extends BaseConverter
 {
@@ -32,7 +33,7 @@ class ContentPickerConverter extends BaseConverter
                     } elseif ($item instanceof BaseDto) {
                         return $item;
                     }
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     //
                 }
 

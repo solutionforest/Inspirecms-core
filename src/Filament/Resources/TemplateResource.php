@@ -3,14 +3,17 @@
 namespace SolutionForest\InspireCms\Filament\Resources;
 
 use Filament\Resources\Resource;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Resources\TemplateResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\TemplateResource\Pages\ListTemplates;
+use SolutionForest\InspireCms\Filament\Resources\Templates\Schemas\TemplateSimpleEditorForm;
+use SolutionForest\InspireCms\Filament\Resources\Templates\Tables\TemplatesTable;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class TemplateResource extends Resource implements ClusterSectionResource
@@ -40,21 +43,22 @@ class TemplateResource extends Resource implements ClusterSectionResource
         return FilamentIcon::resolve('inspirecms::templates');
     }
 
+    public static function form(Schema $schema): Schema
+    {
+        return TemplateSimpleEditorForm::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
-        return $table
-            ->heading(static::getNavigationLabel())
-            ->columns([
-                Tables\Columns\TextColumn::make('slug')
-                    ->label(__('inspirecms::resources/template.slug.label'))
-                    ->weight('bold'),
-            ]);
+        return TemplatesTable::configure($table)
+            ->modifyQueryUsing(fn ($query) => $query->with(['documentTypes', 'contents' => fn ($query) => $query->withoutGlobalScopes([SoftDeletingScope::class])]))
+            ->heading(static::getNavigationLabel());
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTemplates::route('/'),
+            'index' => ListTemplates::route('/'),
         ];
     }
 

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasName;
@@ -9,6 +10,7 @@ use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use SolutionForest\InspireCms\Base\Enums\UserActivity;
 
 /**
@@ -18,21 +20,21 @@ use SolutionForest\InspireCms\Base\Enums\UserActivity;
  * @property string $preferred_language
  * @property ?string $avatar
  * @property int $failed_login_attempt
- * @property ?\Carbon\CarbonInterface $last_lockouted_at
- * @property ?\Carbon\CarbonInterface $last_password_change_date
- * @property ?\Carbon\CarbonInterface $last_logged_in_at
- * @property ?\Carbon\CarbonInterface $email_confirmed_at
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $last_lockouted_at
+ * @property ?CarbonInterface $last_password_change_date
+ * @property ?CarbonInterface $last_logged_in_at
+ * @property ?CarbonInterface $email_confirmed_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  * @property-read bool $is_locked
- * @property-read ?\Carbon\CarbonInterface $locked_until
+ * @property-read ?CarbonInterface $locked_until
  */
 interface User extends AuthenticatableContract, AuthorizableContract, CanResetPasswordContract, FilamentUser, HasAvatar, HasName, MustVerifyEmail
 {
     /**
      * Get the user's activity.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function userActivities();
 

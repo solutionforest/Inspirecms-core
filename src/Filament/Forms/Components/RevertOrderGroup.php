@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
-use Filament\Forms\Components\Component;
+use Filament\Schemas\Components\Component;
 
 class RevertOrderGroup extends Component
 {
@@ -15,7 +15,7 @@ class RevertOrderGroup extends Component
     protected string $view = 'inspirecms::filament.forms.components.revert-order-group';
 
     /**
-     * @param  array<Component> | Closure  $schema
+     * @param  array<Component>|Closure  $schema
      */
     final public function __construct(array | Closure $schema = [])
     {
@@ -23,7 +23,7 @@ class RevertOrderGroup extends Component
     }
 
     /**
-     * @param  array<Component> | Closure  $schema
+     * @param  array<Component>|Closure  $schema
      */
     public static function make(array | Closure $schema = []): static
     {

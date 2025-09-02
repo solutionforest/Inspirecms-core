@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource;
@@ -21,14 +21,14 @@ class DocumentTypesRelationManager extends RelationManager
             ->modelLabel(__('inspirecms::inspirecms.document_type.singular'))
             ->pluralModelLabel(__('inspirecms::inspirecms.document_type.plural'))
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
-            ->actions([
+            ->recordActions([
                 OpenAction::make()
                     ->url(fn ($record) => $this->getRecordUrl($record)),
             ]);

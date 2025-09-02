@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
+use Filament\Actions\Action;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables\Actions\Action;
 
 class OpenAction extends Action
 {

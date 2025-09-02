@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Models\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @property int $id
@@ -13,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
 interface ContentPath
 {
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function content();
 }

@@ -2,16 +2,24 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Concerns\CanLockContent;
+use SolutionForest\InspireCms\Models\Concerns\HasContentVersions;
+use SolutionForest\InspireCms\Models\Concerns\HasContentWebSetting;
+use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
+use SolutionForest\InspireCms\Models\Concerns\HasTranslations;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Observers\ContentObserver;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
@@ -21,19 +29,19 @@ use SolutionForest\InspireCms\Support\Models\Concerns\HasRecursiveRelationships;
 class Content extends BaseModel implements ContentContract
 {
     use BelongsToNestableTree;
-    use Concerns\CanLockContent;
-    use Concerns\HasContentVersions {
+    use CanLockContent;
+    use HasAuthor;
+    use HasContentVersions {
         prepareContentVersionData as protected traitPrepareContentVersionData;
     }
-    use Concerns\HasContentWebSetting;
-    use Concerns\HasTemplates;
-    use Concerns\HasTranslations {
+    use HasContentWebSetting;
+    use HasRecursiveRelationships;
+    use HasTemplates;
+    use HasTranslations {
         setTranslation as protected traitSetTranslation;
         getTranslation as protected traitGetTranslation;
         getTranslations as protected traitGetTranslations;
     }
-    use HasAuthor;
-    use HasRecursiveRelationships;
     use HasUuids;
     use SoftDeletes;
 
@@ -63,7 +71,7 @@ class Content extends BaseModel implements ContentContract
 
     public function newCollection(array $models = [])
     {
-        return new \SolutionForest\InspireCms\Collection\ContentCollection($models);
+        return new ContentCollection($models);
     }
 
     public function path()
@@ -119,7 +127,7 @@ class Content extends BaseModel implements ContentContract
 
         $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
-            throw new \Exception('At least one "unpublish" option is required in the manifest.');
+            throw new Exception('At least one "unpublish" option is required in the manifest.');
         }
 
         if ($status == $unpublishOption->getValue()) {
@@ -147,7 +155,7 @@ class Content extends BaseModel implements ContentContract
     }
 
     /**
-     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     * @return BaseTranslatableModelDto|ContentDto
      */
     public function toDto(...$args)
     {
@@ -166,7 +174,7 @@ class Content extends BaseModel implements ContentContract
     }
 
     /**
-     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     * @return BaseTranslatableModelDto|ContentDto
      */
     public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null)
     {
@@ -228,7 +236,7 @@ class Content extends BaseModel implements ContentContract
     {
         $unpublishOption = ContentStatusManifest::getOption('unpublish');
         if (is_null($unpublishOption)) {
-            throw new \Exception('At least one "unpublish" option is required in the manifest.');
+            throw new Exception('At least one "unpublish" option is required in the manifest.');
         }
 
         if ($condition) {

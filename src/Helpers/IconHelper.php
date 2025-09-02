@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Illuminate\Contracts\Support\Htmlable;
+
 class IconHelper
 {
     public static function isCmsCustomIcon($icon): bool
@@ -24,6 +26,6 @@ class IconHelper
             return str_contains($icon, '<') && str_contains($icon, '>');
         }
 
-        return $icon instanceof \Illuminate\Contracts\Support\Htmlable;
+        return $icon instanceof Htmlable;
     }
 }

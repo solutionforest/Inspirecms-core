@@ -19,35 +19,23 @@
             :collapsible="$isInvalid"
             :collapsed="$isInvalid"
             :icon="$isInvalid ? $icon : null"
+            :heading="$isInvalid ? $title : null"
             icon-size="md"
             icon-color="danger"
             class="flex-1"
-            :header-actions="$actions"
         >
             @if ($isInvalid)
-                <x-slot name="heading">
-                    {{ $title }}
+                <x-slot name="afterHeader">
+                    <div class="fi-header-actions-ctn">
+                        <div class="fi-header-actions-ctn">
+                            @foreach ($actions ?? [] as $action)
+                                {{ $action }}
+                            @endforeach
+                        </div>
+                        <span class="text-gray-400 dark:text-white">{{ $invalidCount }}</span>
+                    </div>
                 </x-slot>
-
-                <x-slot name="headerEnd">
-                    <span class="text-gray-400 dark:text-white">{{ $invalidCount }}</span>
-                </x-slot>
-            @else
-                <div class="flex items-center gap-3">
-                    <x-filament::icon 
-                        :icon="$icon" 
-                        class="w-5 h-5 text-custom-500 dark:text-custom-400" 
-                        @style( \Filament\Support\get_color_css_variables(
-                            'success',
-                            shades: [400, 500],
-                        )) 
-                    />
-                    <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
-                        {{ $title }}
-                    </h3>
-                </div>
             @endif
-                
                 
             @if ($isInvalid && count($item['data'] ?? []) > 0 && isset($item['data']['invalidMessage']))
                 <ul class="list-inside mx-2">
@@ -69,6 +57,20 @@
                         </li>
                     @endforeach
                 </ul>
+            @elseif (!$isInvalid)
+                <div class="flex items-center gap-3">
+                    <x-filament::icon 
+                        :icon="$icon" 
+                        class="w-5 h-5 text-custom-500 dark:text-custom-400" 
+                        @style( \Filament\Support\get_color_css_variables(
+                            'success',
+                            shades: [400, 500],
+                        )) 
+                    />
+                    <h3 class="text-base font-semibold leading-6 text-gray-950 dark:text-white">
+                        {{ $title }}
+                    </h3>
+                </div>
             @endif
 
         </x-filament::section>

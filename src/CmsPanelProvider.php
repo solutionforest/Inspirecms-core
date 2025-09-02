@@ -6,9 +6,9 @@ use Filament\Actions\Action;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
 use Filament\Actions\ForceDeleteAction;
+use Filament\Actions\ReplicateAction;
 use Filament\Actions\RestoreAction;
 use Filament\Actions\ViewAction;
-use Filament\Forms\Components\Actions\Action as FormComponentsAction;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Navigation\MenuItem;
@@ -18,8 +18,6 @@ use Filament\PanelProvider;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
-use Filament\Tables\Actions\Action as TablesAction;
-use Filament\Tables\Actions\ReplicateAction as TablesReplicateAction;
 use Filament\View\PanelsRenderHook;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Cookie\Middleware\EncryptCookies;
@@ -28,14 +26,24 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use LaraZeus\SpatieTranslatable\SpatieTranslatablePlugin;
 use Livewire\Livewire;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupPlugin;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
-use SolutionForest\InspireCms\Filament\Pages;
-use SolutionForest\InspireCms\Filament\Widgets;
+use SolutionForest\InspireCms\Filament\Pages\Auth\EditProfile;
+use SolutionForest\InspireCms\Filament\Pages\Auth\Login;
+use SolutionForest\InspireCms\Filament\Pages\Auth\Register;
+use SolutionForest\InspireCms\Filament\Pages\Dashboard;
+use SolutionForest\InspireCms\Filament\Widgets\AlertOverview;
+use SolutionForest\InspireCms\Filament\Widgets\CmsInfoWidget;
+use SolutionForest\InspireCms\Filament\Widgets\CmsVersionInfo;
+use SolutionForest\InspireCms\Filament\Widgets\PageActivity;
+use SolutionForest\InspireCms\Filament\Widgets\TemplateInfo;
+use SolutionForest\InspireCms\Filament\Widgets\ThemeInfo;
+use SolutionForest\InspireCms\Filament\Widgets\UserActivity;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
@@ -65,11 +73,11 @@ class CmsPanelProvider extends PanelProvider
             ->brandLogo(InspireCmsConfig::get('admin.brand.logo', fn () => view('inspirecms::logo')))
             ->favicon(InspireCmsConfig::get('admin.brand.favicon', fn () => asset('images/favicon.png')))
             ->authGuard(AuthHelper::guardName())
-            ->login(Pages\Auth\Login::class)
-            ->registration(Pages\Auth\Register::class)
+            ->login(Login::class)
+            ->registration(Register::class)
             ->emailVerification()->emailVerificationRoutePrefix('inspirecms/verification')->emailVerificationRouteSlug('verify-user')
-            ->profile(Pages\Auth\EditProfile::class)
-            ->homeUrl(fn () => UrlHelper::attemptToGetUrlFromPanel(InspireCmsConfig::getFilamentPage('dashboard', Pages\Dashboard::class)))
+            ->profile(EditProfile::class)
+            ->homeUrl(fn () => UrlHelper::attemptToGetUrlFromPanel(InspireCmsConfig::getFilamentPage('dashboard', Dashboard::class)))
             ->theme('inspirecms')
             ->font(ThemeConfig::fontFamily())
             ->colors(ThemeConfig::colors())
@@ -124,13 +132,13 @@ class CmsPanelProvider extends PanelProvider
     {
         return $panel
             ->widgets([
-                Widgets\CmsInfoWidget::class,
-                Widgets\CmsVersionInfo::class,
-                Widgets\PageActivity::class,
-                Widgets\UserActivity::class,
-                Widgets\AlertOverview::class,
-                Widgets\ThemeInfo::class,
-                Widgets\TemplateInfo::class,
+                CmsInfoWidget::class,
+                CmsVersionInfo::class,
+                PageActivity::class,
+                UserActivity::class,
+                AlertOverview::class,
+                ThemeInfo::class,
+                TemplateInfo::class,
                 ...InspireCmsConfig::get('admin.extra_widgets', []),
             ])
             ->discoverWidgets(in: app_path('Filament/Cms/Widgets'), for: 'App\\Filament\\Cms\\Widgets');
@@ -186,7 +194,7 @@ class CmsPanelProvider extends PanelProvider
             ->overrideResources([])
             ->fieldTypeConfigs(InspireCmsConfig::get('custom_fields.extra_config'), false);
 
-        $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
+        $translatablePlugin = SpatieTranslatablePlugin::make();
         $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {
 
             $lang = data_get(inspirecms()->getAllAvailableLanguages(), $locale);
@@ -305,10 +313,10 @@ class CmsPanelProvider extends PanelProvider
             Action::configureUsing(function (Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
-            TablesAction::configureUsing(function (TablesAction $action) {
+            Action::configureUsing(function (Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
-            FormComponentsAction::configureUsing(function (FormComponentsAction $action) {
+            Action::configureUsing(function (Action $action) {
                 $action->modalFooterActionsAlignment(Alignment::End);
             });
 
@@ -351,7 +359,7 @@ class CmsPanelProvider extends PanelProvider
                         : null;
                 });
             });
-            TablesReplicateAction::configureUsing(function (TablesReplicateAction $action) {
+            ReplicateAction::configureUsing(function (ReplicateAction $action) {
                 $action
                     ->color('gray')
                     ->modalIcon(FilamentIcon::resolve('inspirecms::clone'));

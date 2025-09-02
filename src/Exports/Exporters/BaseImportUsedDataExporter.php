@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -17,6 +18,7 @@ use SolutionForest\InspireCms\Models\Contracts\FieldGroup;
 use SolutionForest\InspireCms\Models\Contracts\Language;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 use SolutionForest\InspireCms\Models\Contracts\Template;
+use Throwable;
 
 abstract class BaseImportUsedDataExporter extends BaseExporter
 {
@@ -130,7 +132,7 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
 
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             $errors[] = [
                 'record' => $record->getKey(),
                 'model' => get_class($record),
@@ -140,9 +142,9 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  string  $type
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function buildExportingQueryForImportUsed($query, $type)
     {

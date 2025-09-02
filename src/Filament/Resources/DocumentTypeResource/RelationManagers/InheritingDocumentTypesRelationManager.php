@@ -3,7 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\RelationManagers;
 
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource;
@@ -29,16 +29,16 @@ class InheritingDocumentTypesRelationManager extends RelationManager
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->openRecordUrlInNewTab()
             ->description(fn () => __('inspirecms::resources/document-type.inheriting.description'))
-            ->actions([
+            ->recordActions([
                 OpenAction::make()
                     ->url(fn ($record) => $this->getRecordUrl($record)),
             ]);

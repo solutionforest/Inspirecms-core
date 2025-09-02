@@ -28,23 +28,19 @@ class ContentHistoryAction extends Action
 
         $this->slideOver();
 
-        $this->modalContent(function ($livewire, Model | Content $record, ContentHistoryAction $action, array $arguments) {
-
-            return view('inspirecms::filament.actions.content-history', [
-                'record' => $record,
-                'pageClass' => get_class($livewire),
-            ]);
-        });
+        $this
+            ->modalContent(function ($livewire, Model | Content $record, ContentHistoryAction $action, array $arguments) {
+                return view('inspirecms::filament.actions.content-history', [
+                    'record' => $record,
+                ]);
+            })
+            ->modalSubmitAction(false)
+            ->modalCancelAction(false);
 
         $this->icon('heroicon-o-clock');
-
-        $this->modalSubmitAction(false);
-        $this->modalCancelAction(false);
 
         $this->modalWidth('6xl');
 
         $this->color('gray');
-
-        $this->disabledForm();
     }
 }

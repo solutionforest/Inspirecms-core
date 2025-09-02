@@ -3,9 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources;
 
 use Filament\Resources\Resource;
-use Filament\Support\Enums\FontWeight;
-use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
@@ -13,11 +11,16 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Clusters\Users;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages\CreateUser;
+use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages\EditUser;
+use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages\ListUsers;
+use SolutionForest\InspireCms\Filament\Resources\UserResource\Pages\ViewUser;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\UserEditForm;
+use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\UserForm;
+use SolutionForest\InspireCms\Filament\Resources\Users\Tables\UsersTable;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
-use SolutionForest\InspireCms\Models\Contracts\User;
 
 class UserResource extends Resource implements ClusterSectionResource
 {
@@ -25,7 +28,7 @@ class UserResource extends Resource implements ClusterSectionResource
         ClusterSectionResourceTrait::getPermissionPrefixes as protected traitGetPermissionPrefixes;
     }
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $recordTitleAttribute = 'name';
 
@@ -36,51 +39,27 @@ class UserResource extends Resource implements ClusterSectionResource
         return array_unique(array_merge(static::traitGetPermissionPrefixes(), ['adjust_roles']));
     }
 
+    public static function form(Schema $schema): Schema
+    {
+        if ($schema->getOperation() != 'create') {
+            return UserEditForm::configure($schema);
+        }
+
+        return UserForm::configure($schema);
+    }
+
     public static function table(Table $table): Table
     {
-        return $table
-            ->defaultSort('name')
-            ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
-                    ->label(' ')
-                    ->circular()
-                    ->getStateUsing(fn (User $record) => $record->getFilamentAvatarUrl() ?? filament()->getUserAvatarUrl($record)),
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::resources/user.name.label'))
-                    ->weight(FontWeight::Bold)
-                    ->sortable()->width('1%'),
-                Tables\Columns\TextColumn::make('email')
-                    ->label(__('inspirecms::resources/user.email.label'))
-                    ->copyable()->icon(FilamentIcon::resolve('inspirecms::email')),
-                Tables\Columns\TextColumn::make('roles.name')
-                    ->label(__('inspirecms::resources/user.roles.label')),
-                Tables\Columns\TextColumn::make('last_logged_in_at')
-                    ->label(__('inspirecms::resources/user.last_logged_in_at.label')),
-                Tables\Columns\IconColumn::make('is_account_verified')
-                    ->label(__('inspirecms::resources/user.is_account_verified.label'))
-                    ->getStateUsing(fn (User $record) => $record->hasVerifiedEmail())->boolean()
-                    ->tooltip(fn (User $record) => $record->email_confirmed_at)
-                    ->alignCenter(),
-                Tables\Columns\IconColumn::make('is_locked')
-                    ->label(__('inspirecms::resources/user.is_locked.label'))
-                    ->boolean(false)
-                    ->icon(fn ($state) => $state ? FilamentIcon::resolve('inspirecms::locked') : null)
-                    ->tooltip(fn (User $record) => $record->last_lockouted_at?->diffForHumans())
-                    ->alignCenter(),
-            ])
-            ->actions([
-                Tables\Actions\ViewAction::make()->iconButton(),
-                Tables\Actions\EditAction::make()->iconButton(),
-            ]);
+        return UsersTable::configure($table);
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListUsers::route('/'),
-            'create' => Pages\CreateUser::route('/create'),
-            'edit' => Pages\EditUser::route('/{record}/edit'),
-            'view' => Pages\ViewUser::route('{record}'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
+            'view' => ViewUser::route('{record}'),
         ];
     }
 

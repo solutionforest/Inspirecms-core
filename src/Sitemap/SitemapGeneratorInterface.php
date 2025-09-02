@@ -2,9 +2,11 @@
 
 namespace SolutionForest\InspireCms\Sitemap;
 
+use Exception;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
+use Throwable;
 
 interface SitemapGeneratorInterface
 {
@@ -23,16 +25,16 @@ interface SitemapGeneratorInterface
      *
      * @return string The file path of the sitemap.
      *
-     * @throws \Exception If the sitemap file path is not set in the config file.
+     * @throws Exception If the sitemap file path is not set in the config file.
      */
     public function getFilePath();
 
     /**
      * Sends a notification when a process fails.
      *
-     * @param  \Throwable  $exception  The exception that caused the failure.
+     * @param  Throwable  $exception  The exception that caused the failure.
      * @param  Model|Authenticatable|Collection|array  $notifiables
      * @return void
      */
-    public function sendFailedNotification(\Throwable $exception, $notifiables = []);
+    public function sendFailedNotification(Throwable $exception, $notifiables = []);
 }

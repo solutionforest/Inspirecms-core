@@ -2,8 +2,11 @@
 
 namespace SolutionForest\InspireCms\Facades;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Base\TemplateManagerInterface;
+use SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
 /**
  * @method static string|null getCurrentTheme()
@@ -16,8 +19,8 @@ use SolutionForest\InspireCms\Base\TemplateManagerInterface;
  * @method static string getComponentWithTheme(string $component, ?string $theme = null)
  * @method static string getComponentPathWithTheme(?string $componentName = null, ?string $theme = null)
  * @method static bool cloneTheme(string $sourceTheme, string $newTheme)
- * @method static void assignDefaultTemplateIfNotSet(\SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates & \Illuminate\Database\Eloquent\Model $templateable, $template)
- * @method static void exportTemplate(\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template $template, ?string $theme = null)
+ * @method static void assignDefaultTemplateIfNotSet(HasTemplates&Model $templateable, $template)
+ * @method static void exportTemplate(Model&Template $template, ?string $theme = null)
  *
  * @see \SolutionForest\InspireCms\Base\TemplateManager
  */

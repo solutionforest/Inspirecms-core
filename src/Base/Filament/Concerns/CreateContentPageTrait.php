@@ -12,22 +12,22 @@ trait CreateContentPageTrait
     #[Url]
     public $parent = '';
 
-    #[Locked]
-    public ?Model $parentRecord = null;
+    // #[Locked]
+    // public ?Model $parentRecord = null;
 
     public function mountCreateContentPageTrait()
     {
         if ($this->parent) {
-            $this->parentRecord = $this->resolveParentRecord($this->parent);
+            $this->parentRecord = $this->resolveParentContentRecord($this->parent);
         }
     }
 
-    public function getParentRecord(): ?Model
-    {
-        return $this->parentRecord;
-    }
+    // public function getParentRecord(): ?Model
+    // {
+    //     return $this->parentRecord;
+    // }
 
-    protected function resolveParentRecord(int | string $key): ?Model
+    protected function resolveParentContentRecord(int | string $key): ?Model
     {
         $record = static::getResource()::resolveRecordRouteBinding($key);
 

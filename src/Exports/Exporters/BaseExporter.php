@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Exports\ExportResult;
@@ -44,7 +45,7 @@ abstract class BaseExporter
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Filesystem
+     * @return Filesystem
      */
     protected function getTempDisk()
     {

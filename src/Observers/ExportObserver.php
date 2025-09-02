@@ -2,11 +2,13 @@
 
 namespace SolutionForest\InspireCms\Observers;
 
-use Filament\Notifications\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Events\Export\Completed;
 use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Models\Contracts\Export;
+use Throwable;
 
 class ExportObserver
 {
@@ -38,7 +40,7 @@ class ExportObserver
      */
     protected function dispatchComplete($model)
     {
-        event(new \SolutionForest\InspireCms\Events\Export\Completed($model->withoutRelations()));
+        event(new Completed($model->withoutRelations()));
 
         try {
             // Notify the user that the import job has completed
@@ -46,7 +48,7 @@ class ExportObserver
                 $notification = $this->getCompletedNotification($model);
                 $notification->sendToDatabase($author, true);
             }
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             // Do nothing
         }
     }

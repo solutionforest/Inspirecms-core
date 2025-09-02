@@ -2,22 +2,23 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Support\Facades\FilamentIcon;
-use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroupResource as BaseResource;
-use SolutionForest\FilamentFieldGroup\Models\Contracts\FieldGroup;
+use SolutionForest\FilamentFieldGroup\Filament\Resources\FieldGroups\FieldGroupResource as BaseResource;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
-use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages;
-use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\RelationManagers;
-use SolutionForest\InspireCms\Filament\Resources\Helpers\FieldGroupResourceHelper;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages\CreateFieldGroup;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages\EditFieldGroup;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages\ListFieldGroup;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\Pages\ViewFieldGroup;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroupResource\RelationManagers\DocumentTypesRelationManager;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroups\Schemas\FieldGroupForm;
+use SolutionForest\InspireCms\Filament\Resources\FieldGroups\Tables\FieldGroupsTable;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class FieldGroupResource extends BaseResource implements ClusterSectionResource
@@ -51,117 +52,34 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
         return FilamentIcon::resolve('inspirecms::fields');
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->columns(1)
-            ->schema([
-                Forms\Components\Wizard::make([
-
-                    Forms\Components\Wizard\Step::make('fields')
-                        ->label(__('inspirecms::resources/field-group.steps.fields.label'))
-                        ->schema([
-                            FieldGroupResourceHelper::getFieldsRepeater()->hiddenLabel(),
-                        ]),
-                    Forms\Components\Wizard\Step::make('settings')
-                        ->label(__('inspirecms::resources/field-group.steps.settings.label'))
-                        ->schema([
-                            FieldGroupResourceHelper::getNameFormComponent(),
-                            FieldGroupResourceHelper::getTitleFormComponent(),
-                            FieldGroupResourceHelper::getActiveFormComponent()->hidden()->dehydratedWhenHidden()->dehydrateStateUsing(fn () => true),
-                        ]),
-                ])->skippable(),
-            ]);
-    }
-
-    public static function replicateForm(Form $form): Form
-    {
-        return $form->schema([
-            FieldGroupResourceHelper::getNameFormComponent(),
-            FieldGroupResourceHelper::getTitleFormComponent(),
-            FieldGroupResourceHelper::getActiveFormComponent(),
-        ]);
+        return FieldGroupForm::configure($schema);
     }
 
     public static function table(Table $table): Table
     {
-        return parent::table($table)
-            ->reorderable(false)
-            ->modifyQueryUsing(fn ($query) => $query->withCount(['fields', 'documentTypes']))
-            ->emptyStateHeading(__('inspirecms::resources/field-group.empty_state.heading'))
-            ->emptyStateDescription(__('inspirecms::resources/field-group.empty_state.description'))
-            ->emptyStateActions([])
-            ->defaultSort('created_at', 'desc')
-            ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->label(__('inspirecms::resources/field-group.name.label'))
-                    ->sortable()->width('1%')
-                    ->badge(),
-                Tables\Columns\TextColumn::make('title')
-                    ->label(__('inspirecms::resources/field-group.title.label')),
-                Tables\Columns\TextColumn::make('fields_count')
-                    ->label(__('inspirecms::resources/field-group.fields.label'))
-                    ->alignEnd()
-                    ->width('5%'),
-                Tables\Columns\TextColumn::make('document_types_count')
-                    ->label(__('inspirecms::inspirecms.total_xxx_have_used', [
-                        'name' => lcfirst(__('inspirecms::inspirecms.document_type.plural')),
-                    ]))
-                    ->alignEnd()
-                    ->width('5%'),
-
-                // timestamps
-                Tables\Columns\TextColumn::make('created_at')
-                    ->label(__('inspirecms::inspirecms.created_at'))
-                    ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
-                    ->width('5%'),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->label(__('inspirecms::inspirecms.last_updated_at'))
-                    ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
-                    ->width('5%'),
-            ])
-            // Sync action formats
-            ->actions([
-                Tables\Actions\EditAction::make()->iconButton(),
-                Tables\Actions\ReplicateAction::make()->iconButton()
-                    ->form(fn (Form $form) => static::replicateForm($form))
-                    ->excludeAttributes(['fields_count', 'document_types_count'])
-                    ->after(function (Model | FieldGroup $replica, Model | FieldGroup $record) {
-
-                        $fields = $record->fields()->get()->map(fn (Model $field) => $field->replicate([
-                            'group_id',
-                        ])->toArray())->all();
-
-                        $replica->fields()->createMany($fields);
-                    }),
-            ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ])->iconButton(),
-            ])
+        return FieldGroupsTable::configure($table)
             // Avoid delete
             ->checkIfRecordIsSelectableUsing(
-                fn (Model | FieldGroup $record): bool => static::canDelete($record),
+                fn (Model $record): bool => static::canDelete($record),
             );
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFieldGroup::route('/'),
-            'create' => Pages\CreateFieldGroup::route('/create'),
-            'edit' => Pages\EditFieldGroup::route('/{record}/edit'),
-            'view' => Pages\ViewFieldGroup::route('/{record}'),
+            'index' => ListFieldGroup::route('/'),
+            'create' => CreateFieldGroup::route('/create'),
+            'edit' => EditFieldGroup::route('/{record}/edit'),
+            'view' => ViewFieldGroup::route('/{record}'),
         ];
     }
 
     public static function getRelations(): array
     {
         return [
-            'document_type' => RelationManagers\DocumentTypesRelationManager::class,
+            'document_type' => DocumentTypesRelationManager::class,
         ];
     }
 
@@ -195,7 +113,7 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
             return false;
         }
 
-        // Load docuemnt types if haven't loaded
+        // Load document types if haven't loaded
         if (! $record->relationLoaded('documentTypes')) {
             $record->loadMissing('documentTypes');
         }

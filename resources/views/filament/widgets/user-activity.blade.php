@@ -1,9 +1,8 @@
 <x-filament::widget class="filament-widgets-user-activity-widget">
-    <x-filament::section>
-        <x-slot name="heading">
-            {{ __('inspirecms::widgets.user_activity.title') }}
-        </x-slot>
-        
+    <x-filament::section
+        :heading="__('inspirecms::widgets.user_activity.title')"
+        heading-tag="h3"
+    >
         @if($activities && $activities->count())
             <div class="space-y-4">
                 @foreach($activities as $activity)

@@ -13,7 +13,7 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 
 class ContentPageOverview extends Widget
 {
-    protected static string $view = 'inspirecms::filament.widgets.content-page-overview';
+    protected string $view = 'inspirecms::filament.widgets.content-page-overview';
 
     protected int | string | array $columnSpan = 'full';
 

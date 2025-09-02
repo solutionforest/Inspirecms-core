@@ -1,23 +1,15 @@
 @use('SolutionForest\InspireCms\InspireCmsConfig')
-<x-inspirecms::page.split-image-form class="w-full px-6 py-8 md:px-24 lg:px-44 lg:py-12">
+
+<x-filament-panels::page.simple>
     @if ((filament()->hasRegistration() && InspireCmsConfig::get('admin.allow_registration', false)) || inspirecms()->needInstall())
         <x-slot name="subheading">
-            {{ __('filament-panels::pages/auth/login.actions.register.before') }}
-
-            {{ $this->registerAction }}
+            {{ $this->getSubHeading() }}
         </x-slot>
     @endif
 
     {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_BEFORE, scopes: $this->getRenderHookScopes()) }}
 
-    <x-filament-panels::form id="form" wire:submit="authenticate">
-        {{ $this->form }}
-
-        <x-filament-panels::form.actions
-            :actions="$this->getCachedFormActions()"
-            :full-width="$this->hasFullWidthFormActions()"
-        />
-    </x-filament-panels::form>
+    {{ $this->content }}
 
     {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::AUTH_LOGIN_FORM_AFTER, scopes: $this->getRenderHookScopes()) }}
-</x-inspirecms::page.split-image-form>
+</x-filament-panels::page.simple>

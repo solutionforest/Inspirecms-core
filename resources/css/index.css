@@ -1,30 +1,27 @@
+/* @import 'tailwindcss'; */
+/* @import "../../vendor/filament/filament/resources/css/base.css"; */
+@import '../../vendor/filament/filament/resources/css/theme.css';
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import 'tailwindcss/variants';
+@import './widgets.css';
+@import './forms.css';
+@import './tree.css';
+@import './layout.css';
 
-@import "../../vendor/filament/filament/resources/css/base.css";
+@import './components/alert.css';
+@import './components/code-editor.css';
 
-@import "./widgets.css";
-@import "./forms.css";
-@import "./tree.css";
+@import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
 
-@import "./components/alert.css";
-@import "./components/code-editor.css";
-@import "./components/markdown-editor.css";
-
-@import "../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css";
-
-/* Login */
-.split-image-layout {
-    @apply bg-center bg-no-repeat bg-cover bg-[image:var(--panel-background-image)] bg-blend-multiply;
-}
+@source "../../src/Filament/**/*.php";
+@source "../views/**/*.blade.php";
+@source "../../vendor/filament/**/*.blade.php";
+@source "../../vendor/solution-forest/inspirecms-support/resources/views/**/*.blade.php";
+@source "../../vendor/pboivin/filament-peek/resources/views/**/*.blade.php";
 
 /* Media Library */
 .fi-body:has(.top-alert) {
     .fi-page :not(.media-library-browser-modal) .media-library__header {
-        @apply top-24 !important;
+        @apply top-24!;
     }
 }
 
@@ -35,7 +32,7 @@
 
 /* Content History */
 .content-history .publish-time-badge {
-    @apply bg-custom-50 dark:bg-custom-400/10 ring-1 ring-custom-600 ring-custom-600/10;
+    @apply bg-color-50 dark:bg-color-400/10 ring-1 ring-color-600 ring-color-600/10;
     @apply rounded-md px-2 py-1;
     @apply text-xs font-medium;
     @apply flex items-center justify-center gap-1;
@@ -55,11 +52,11 @@
     @apply sticky top-0 z-20;
 
     ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
-        @apply top-10 !important;
+        @apply top-10!;
     }
 
     ~ .fi-layout .content-sidebar .icon-btn, ~ .fi-layout .content-sidebar .content-sidebar_desktop {
-        @apply top-[6.5rem] !important;
+        @apply top-26!;
     }
 }
 

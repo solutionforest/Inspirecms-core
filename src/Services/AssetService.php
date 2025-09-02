@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -22,7 +23,7 @@ class AssetService implements AssetServiceInterface
 
     // region Helpers
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function getQuery()
     {

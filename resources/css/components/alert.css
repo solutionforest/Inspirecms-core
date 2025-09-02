@@ -1,10 +1,11 @@
-.alert-dialog {
-    @apply px-4 overflow-x-auto;
+@reference 'tailwindcss' source(base);
 
-    background-color: rgb(var(--c-50));
-    &:is(.dark *) {
-        background-color: rgb(var(--c-900));
-    }
+@import "../../../vendor/solution-forest/inspirecms-support/resources/css/filament-base-theme.css";
+
+@source "../../views/components/alert/*.blade.php";
+
+.alert-dialog {
+    @apply px-4 overflow-x-auto bg-(--color-50) dark:bg-(--color-900);
 
     .alert-dialog-body {
         @apply flex items-center gap-x-1;
@@ -13,32 +14,22 @@
             @apply flex-shrink-0;
 
             svg {
-                @apply w-6 h-6;
-                color: rgb(var(--c-400));
-                
-                &:is(.dark *) {
-                    color: rgb(var(--c-200));
-                }
+                @apply w-6 h-6 text-(--color-400) dark:text-(--color-200);
             }
         }
 
         .alert-dialog-content {
-            @apply text-sm inline-block whitespace-nowrap;
-
-            color: rgb(var(--c-700));
-            &:is(.dark *) {
-                color: rgb(var(--c-400));
-            }
+            @apply text-sm inline-block whitespace-nowrap text-(--color-700) dark:text-(--color-400);
         }
     }
-}
 
-.alert-dialog-sm {
-    @apply py-2;
-}
-.alert-dialog-md {
-    @apply py-3;
-}
-.alert-dialog-lg {
-    @apply py-4;
+    &.alert-dialog-sm {
+        @apply py-2;
+    }
+    &.alert-dialog-md {
+        @apply py-3;
+    }
+    &.alert-dialog-lg {
+        @apply py-4;
+    }
 }

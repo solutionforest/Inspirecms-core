@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Helpers;
 
 use SolutionForest\InspireCms\Base\Enums\CacheKeys;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Throwable;
 
 class TemplateHelper
 {
@@ -125,7 +126,13 @@ class TemplateHelper
         @php
             \$locale ??= \$content->getLocale();
         @endphp
-        <x-cms-template type="{$componentName}" :content="\$content" :locale="\$locale" :isPeekPreviewModal="\$isPeekPreviewModal">
+
+        <x-cms-template 
+            type="{$componentName}" 
+            :content="\$content" 
+            :locale="\$locale" 
+            :isPeekPreviewModal="\$isPeekPreviewModal"
+        >
             Your content here
         </x-cms-template>
         HTML;
@@ -191,7 +198,7 @@ class TemplateHelper
             $dtoVar ??= '$content';
 
             return [$group, $property, $dtoVar, static::normalizeVarNameFromBladeExpression($propertyVarName)];
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 

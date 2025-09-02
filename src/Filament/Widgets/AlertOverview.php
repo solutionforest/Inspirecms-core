@@ -8,7 +8,7 @@ use SolutionForest\InspireCms\View\Components\Alert;
 
 class AlertOverview extends Widget
 {
-    protected static string $view = 'inspirecms::filament.widgets.alert-overview';
+    protected string $view = 'inspirecms::filament.widgets.alert-overview';
 
     protected int | string | array $columnSpan = 'full';
 

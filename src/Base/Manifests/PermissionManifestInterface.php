@@ -11,7 +11,7 @@ interface PermissionManifestInterface
     public function setSuperAdminRoleName(string $name): void;
 
     /**
-     * @return \Illuminate\Support\Collection<string>
+     * @return Collection<string>
      */
     public function permissions(): Collection;
 

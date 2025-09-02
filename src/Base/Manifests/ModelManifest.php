@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Str;
+use InvalidArgumentException;
+use ReflectionClass;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 class ModelManifest implements ModelManifestInterface
@@ -110,7 +112,7 @@ class ModelManifest implements ModelManifestInterface
      */
     protected function guessContractClass(string $modelClass, $configKey): string
     {
-        $class = new \ReflectionClass($modelClass);
+        $class = new ReflectionClass($modelClass);
 
         $shortName = $class->getShortName();
         $namespace = str($class->getNamespaceName());
@@ -205,12 +207,12 @@ class ModelManifest implements ModelManifestInterface
      *
      * @param  string  $class  The class to validate.
      *
-     * @throws \InvalidArgumentException If the class is not a subclass of Model.
+     * @throws InvalidArgumentException If the class is not a subclass of Model.
      */
     private function validateClassIsEloquentModel(string $class): void
     {
         if (! is_a($class, Model::class, true)) {
-            throw new \InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
+            throw new InvalidArgumentException(sprintf('Given [%s] is not a subclass of [%s].', $class, Model::class));
         }
     }
     // endregion Helper methods

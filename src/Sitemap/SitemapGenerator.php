@@ -2,10 +2,13 @@
 
 namespace SolutionForest\InspireCms\Sitemap;
 
+use Exception;
 use Filament\Notifications\Notification;
+use SimpleXMLElement;
 use SolutionForest\InspireCms\Events\Content\SitemapGenerated;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap;
+use Throwable;
 
 class SitemapGenerator implements SitemapGeneratorInterface
 {
@@ -25,13 +28,13 @@ class SitemapGenerator implements SitemapGeneratorInterface
         $path = InspireCmsConfig::get('sitemap.file_path');
 
         if (! $path) {
-            throw new \Exception('Sitemap file path is not set in the config file.');
+            throw new Exception('Sitemap file path is not set in the config file.');
         }
 
         return $path;
     }
 
-    public function sendFailedNotification(\Throwable $exception, $notifiables = [])
+    public function sendFailedNotification(Throwable $exception, $notifiables = [])
     {
         Notification::make()
             ->title(__('inspirecms::messages.sitemap_generation_failure'))
@@ -44,7 +47,7 @@ class SitemapGenerator implements SitemapGeneratorInterface
     {
         $sitemapData = $this->getAllAvailableSitemapData();
 
-        $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
+        $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset/>');
 
         foreach ($sitemapData as $arr) {
             if ((! isset($arr['urls']) || empty($arr['urls'])) || ! isset($arr['lastmod']) || ! isset($arr['changefreq']) || ! isset($arr['priority'])) {

@@ -11,16 +11,16 @@ class Media extends Cluster implements ClusterSection, MediaLibraryPage
 {
     use ClusterSectionTrait;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-photo';
 
-    protected static ?string $activeNavigationIcon = 'heroicon-s-photo';
+    protected static string | \BackedEnum | null $activeNavigationIcon = 'heroicon-s-photo';
 
     protected static ?int $navigationSort = -9;
 
     /**
      * @var view-string
      */
-    protected static string $view = 'inspirecms::filament.pages.media-library';
+    protected string $view = 'inspirecms::filament.pages.media-library';
 
     public function mount(): void
     {

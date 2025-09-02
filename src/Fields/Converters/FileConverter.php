@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Fields\Converters;
 
 use SolutionForest\InspireCms\Fields\Dtos\FileDto;
+use Throwable;
 
 class FileConverter extends BaseConverter
 {
@@ -36,7 +37,7 @@ class FileConverter extends BaseConverter
 
             return $convertedValues;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             // fallback as empty array
         }
 

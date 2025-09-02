@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -22,7 +25,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
     }
 
     /**
-     * @return \Filament\Forms\Components\Component
+     * @return Component
      */
     public function toFilamentComponent()
     {
@@ -47,7 +50,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
             $schema[] = $fiFormComponent;
         }
 
-        return \Filament\Forms\Components\Section::make($this->title)
+        return Section::make($this->title)
             ->collapsible()
             ->schema($schema);
     }
@@ -66,7 +69,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
         static::deleting(function (self $group) {
             // Check if the group is associated with any document types
             if ($group->documentTypes()->exists()) {
-                throw new \Exception('Cannot delete this field group because it is in use.');
+                throw new Exception('Cannot delete this field group because it is in use.');
             }
         });
     }

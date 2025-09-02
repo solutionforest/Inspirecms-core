@@ -2,11 +2,14 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Model;
+
 /**
  * @property string $key
  * @property ?string $value
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  */
 interface KeyValue
 {
@@ -14,7 +17,7 @@ interface KeyValue
      * Find the value associated with the given key.
      *
      * @param  string  $key  The key to search for.
-     * @return null | \Illuminate\Database\Eloquent\Model | KeyValue
+     * @return null|Model|KeyValue
      */
     public static function findKeyValue($key);
 
@@ -23,7 +26,7 @@ interface KeyValue
      *
      * @param  string  $key  The key to set.
      * @param  mixed  $value  The value to associate with the key.
-     * @return null | \Illuminate\Database\Eloquent\Model | KeyValue
+     * @return null|Model|KeyValue
      */
     public static function setKeyValue($key, $value);
 }

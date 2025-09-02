@@ -2,13 +2,8 @@
 
 namespace SolutionForest\InspireCms\Filament\Pages;
 
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Infolists\Concerns\InteractsWithInfolists;
-use Filament\Infolists\Contracts\HasInfolists;
 use Filament\Pages\Page;
+use Filament\Resources\Resource;
 use Illuminate\Contracts\Support\Htmlable;
 use Livewire\Attributes\Url;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -16,20 +11,18 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionPageTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionPage;
 use SolutionForest\InspireCms\Filament\Resources\ExportResource;
 use SolutionForest\InspireCms\Filament\Resources\ImportResource;
+use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Livewire\ListImportNExport;
 
-class Export extends Page implements ClusterSectionPage, HasActions, HasForms, HasInfolists
+class Export extends Page implements ClusterSectionPage
 {
     use ClusterSectionPageTrait {
         ClusterSectionPageTrait::canAccess as traitCanAccess;
     }
-    use InteractsWithActions;
-    use InteractsWithForms;
-    use InteractsWithInfolists;
 
-    public static string $view = 'inspirecms::filament.pages.export';
+    public string $view = 'inspirecms::filament.pages.export';
 
-    protected static ?string $navigationIcon = 'heroicon-o-archive-box';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-archive-box';
 
     protected static ?string $cluster = Settings::class;
 
@@ -78,17 +71,23 @@ class Export extends Page implements ClusterSectionPage, HasActions, HasForms, H
             ];
         }
 
-        return collect($components)->unique('data.type')->values()->all();
+        return $components;
     }
 
+    /**
+     * @return class-string<resource>
+     */
     protected static function getImportResource(): string
     {
-        return ImportResource::class;
+        return InspireCmsConfig::getFilamentResource('import', ImportResource::class);
     }
 
+    /**
+     * @return class-string<resource>
+     */
     protected static function getExportResource(): string
     {
-        return ExportResource::class;
+        return InspireCmsConfig::getFilamentResource('export', ExportResource::class);
     }
 
     public function getTitle(): string | Htmlable

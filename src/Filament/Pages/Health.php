@@ -25,6 +25,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Contracts\NestableTree;
+use Throwable;
 
 // todo: need redo the layout
 class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, HasForms
@@ -33,9 +34,9 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
     use InteractsWithActions;
     use InteractsWithForms;
 
-    public static string $view = 'inspirecms::filament.pages.health';
+    public string $view = 'inspirecms::filament.pages.health';
 
-    protected static ?string $navigationIcon = 'heroicon-o-shield-exclamation';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-shield-exclamation';
 
     protected static ?string $cluster = Settings::class;
 
@@ -232,7 +233,7 @@ class Health extends Page implements ClusterSectionPage, GuardPage, HasActions, 
             $generator = SitemapGeneratorFactory::create();
 
             $generator->generateSitemapFile();
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             Notification::make()
                 ->danger()

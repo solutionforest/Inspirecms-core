@@ -7,6 +7,7 @@ use Filament\Resources\Pages\EditRecord;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\AbstractPaginator;
+use RuntimeException;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
@@ -28,7 +29,7 @@ class ContentHelper
     public static function handlePublishableRecord($record, $publishableState, $livewire, array $publishableData)
     {
         if (! $livewire instanceof ContentForm) {
-            throw new \RuntimeException('The Livewire component must implement ContentForm.');
+            throw new RuntimeException('The Livewire component must implement ContentForm.');
         }
 
         if ($livewire instanceof EditRecord) {

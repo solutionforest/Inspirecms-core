@@ -90,5 +90,4 @@
     </div>
 
     <x-filament-actions::modals />
-    <x-inspirecms-support::tree-node.actions.modals />
 </div>

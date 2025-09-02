@@ -2,7 +2,11 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use DateTime;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
 
@@ -14,8 +18,8 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property string $change_frequency
  * @property int $priority
  * @property bool $enable
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  * @property-read null | Model $model
  */
 interface Sitemap extends ActivableEntity, HasLocaleUrl
@@ -23,7 +27,7 @@ interface Sitemap extends ActivableEntity, HasLocaleUrl
     /**
      * Get the model that this sitemap belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return MorphTo
      */
     public function model();
 
@@ -37,7 +41,7 @@ interface Sitemap extends ActivableEntity, HasLocaleUrl
     /**
      * Get the last modified date of the sitemap.
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getLastModified();
 
@@ -65,8 +69,8 @@ interface Sitemap extends ActivableEntity, HasLocaleUrl
     /**
      * Scope a query to only include enabled items.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereEnabled($query, bool $condition = true);
 }

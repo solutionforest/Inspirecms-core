@@ -11,7 +11,7 @@ class CmsInfoWidget extends Widget implements GuardWidget
 {
     use GuardWidgetTrait;
 
-    protected static string $view = 'inspirecms::filament.widgets.cms-info';
+    protected string $view = 'inspirecms::filament.widgets.cms-info';
 
     protected int | string | array $columnSpan = 'full';
 

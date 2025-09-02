@@ -4,7 +4,7 @@ namespace SolutionForest\InspireCms\Base\Filament\Pages\Concerns;
 
 use Filament\Navigation\NavigationGroup;
 use Filament\Navigation\NavigationItem;
-use Filament\Pages\SubNavigationPosition;
+use Filament\Pages\Enums\SubNavigationPosition;
 
 trait HasExtraSubNavigation
 {

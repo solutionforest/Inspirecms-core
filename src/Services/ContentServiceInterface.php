@@ -2,12 +2,16 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\Collection\ContentCollection;
+use SolutionForest\InspireCms\Models\Contracts\Content;
+use SolutionForest\InspireCms\Models\Contracts\Template;
 
 /**
- * @template TResult of \Illuminate\Database\Eloquent\Model | \SolutionForest\InspireCms\Models\Contracts\Content
- * @template TTemplate of \Illuminate\Database\Eloquent\Model | \SolutionForest\InspireCms\Models\Contracts\Template
+ * @template TResult of Model|Content
+ * @template TTemplate of Model|Template
  */
 interface ContentServiceInterface
 {
@@ -88,7 +92,7 @@ interface ContentServiceInterface
      * @param  bool|null  $isPublished  Filter by published status (true/false/null for all)
      * @param  array  $withRelations  Relations to eager load
      * @param  array<string,string>  $sorting  Sorting options (e.g. [field => direction])
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<TResult>
+     * @return LengthAwarePaginator<TResult>
      */
     public function getPaginatedByIds($ids, $page = 1, $perPage = 10, $pageName = 'page', $isWebPage = null, $isPublished = null, $withRelations = [], $sorting = []);
 
@@ -142,7 +146,7 @@ interface ContentServiceInterface
      * Get the default template for the given content.
      *
      * @param  TResult  $content  The content for which to get the default template.
-     * @return null | (\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template) The default template for the given content.
+     * @return null|Model&Template The default template for the given content.
      */
     public function getDefaultTemplateFor($content);
 

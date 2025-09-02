@@ -2,17 +2,20 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory as DocumentTypeCategoryEnum;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as DocumentTypeCategoryInterface;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
 use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
+use Throwable;
 
 class DocumentType extends BaseModel implements DocumentTypeContract
 {
-    use Concerns\HasTemplates;
+    use HasTemplates;
 
     protected $guarded = ['id'];
 
@@ -156,7 +159,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
             return true;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
     }
@@ -200,7 +203,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
             return true;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
 
             return false;
         }
@@ -222,7 +225,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
 
             return true;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
     }
@@ -238,7 +241,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         return Attribute::make(
             get: function () {
                 $category = $this->category;
-                if (filled($category)) {
+                if (filled($category) && ! $category instanceof DocumentTypeCategoryInterface) {
                     return static::getCategoryEnumClass()::tryFrom($category);
                 }
 
@@ -263,7 +266,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
         $class = DocumentTypeCategoryEnum::class;
 
         if (! in_array(DocumentTypeCategoryInterface::class, class_implements($class))) {
-            throw new \Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory");
+            throw new Exception("The class {$class} must implement the interface \SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory");
         }
 
         return $class;

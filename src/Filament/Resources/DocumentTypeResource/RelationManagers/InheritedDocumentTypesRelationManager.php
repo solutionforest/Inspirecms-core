@@ -2,9 +2,10 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\RelationManagers;
 
+use Filament\Actions\AttachAction;
+use Filament\Actions\DetachAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables;
-use Filament\Tables\Actions\AttachAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
@@ -41,21 +42,21 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             ->recordTitleAttribute('title')
             ->description(fn () => __('inspirecms::resources/document-type.inherited.description'))
             ->columns([
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/document-type.title.label')),
-                Tables\Columns\TextColumn::make('slug')
+                TextColumn::make('slug')
                     ->label(__('inspirecms::resources/document-type.slug.label'))
                     ->badge(),
             ])
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->openRecordUrlInNewTab()
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectOptionsQuery(fn ($query) => $query->canBeInherited()),
             ])
-            ->actions([
-                Tables\Actions\DetachAction::make()
+            ->recordActions([
+                DetachAction::make()
                     ->iconButton(),
             ]);
     }
@@ -88,7 +89,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             });
     }
 
-    protected function configureDetachAction(Tables\Actions\DetachAction $action): void
+    protected function configureDetachAction(DetachAction $action): void
     {
         parent::configureDetachAction($action);
 

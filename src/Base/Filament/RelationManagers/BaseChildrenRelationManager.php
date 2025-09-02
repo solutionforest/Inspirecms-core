@@ -2,10 +2,12 @@
 
 namespace SolutionForest\InspireCms\Base\Filament\RelationManagers;
 
-use Filament\Forms\Form;
+use Filament\Actions\Action;
+use Filament\Actions\CreateAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Actions\CreateAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
@@ -16,11 +18,11 @@ class BaseChildrenRelationManager extends RelationManager
 
     protected static ?string $inverseRelationship = 'parent';
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $resource = $this->getPageClass()::getResource();
 
-        return $resource::form($form);
+        return $resource::form($schema);
     }
 
     public function table(Table $table): Table
@@ -32,7 +34,9 @@ class BaseChildrenRelationManager extends RelationManager
             ->pluralModelLabel(lcfirst(__('inspirecms::inspirecms.children.plural')))
             ->emptyStateHeading(null)
             ->headerActions([
-                CreateAction::make(),
+                CreateAction::make()
+                    ->slideOver()
+                    ->modalWidth('7xl'),
             ]);
     }
 
@@ -41,44 +45,55 @@ class BaseChildrenRelationManager extends RelationManager
         return __('inspirecms::inspirecms.children.plural');
     }
 
-    protected function configureCreateAction(CreateAction $action): void
+    public function getDefaultActionUrl(Action $action): ?string
     {
-        parent::configureCreateAction($action);
+        $relatedResource = static::getRelatedResource() ?? $this->getPageClass()::getResource();
 
-        if ($this->isRedirectToCreatePage()) {
+        if (! $relatedResource) {
+            return null;
+        }
 
-            $resource = $this->getPageClass()::getResource();
+        if (
+            ($action instanceof CreateAction)
+        ) {
 
-            $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
+            if ($this->isRedirectToCreatePage()) {
 
-            $url = FilamentResourceHelper::attemptToGetUrl($resource, ['create'], $parameters, false);
+                $parameters = ['parent' => $this->getOwnerRecord()->getKey()];
 
-            if ($url) {
-                $action->url($url);
+                return FilamentResourceHelper::attemptToGetUrl($relatedResource, ['create'], $parameters, false);
+            }
+
+            if ($relatedResource::hasPage('create')) {
+                return $relatedResource::getUrl('create', shouldGuessMissingParameters: true);
+            }
+        }
+
+        if ($action instanceof EditAction) {
+
+            if ($this->isRedirectToDetailPage()) {
+                return FilamentResourceHelper::attemptToGetUrl($relatedResource, 'edit', ['record' => $action->getRecord()], false);
+            } elseif ($relatedResource::hasPage('edit')) {
+                return $relatedResource::getUrl('edit', ['record' => $action->getRecord()], shouldGuessMissingParameters: true);
             }
 
         }
 
-        $action
-            ->slideOver()
-            ->modalWidth('7xl');
-    }
+        // if (
+        //     ($action instanceof EditAction) &&
+        //     ($relatedResource::hasPage('edit'))
+        // ) {
+        //     return $relatedResource::getUrl('edit', ['record' => $action->getRecord()], shouldGuessMissingParameters: true);
+        // }
 
-    protected function configureEditAction(EditAction $action): void
-    {
-        parent::configureEditAction($action);
-
-        if ($this->isRedirectToDetailPage()) {
-            $resource = $this->getPageClass()::getResource();
-
-            $action->url(
-                fn ($record) => FilamentResourceHelper::attemptToGetUrl($resource, 'edit', ['record' => $record], false)
-            );
+        if (
+            ($action instanceof ViewAction) &&
+            ($relatedResource::hasPage('view'))
+        ) {
+            return $relatedResource::getUrl('view', ['record' => $action->getRecord()], shouldGuessMissingParameters: true);
         }
 
-        $action
-            ->slideOver()
-            ->modalWidth('7xl');
+        return null;
     }
 
     protected function isRedirectToDetailPage(): bool

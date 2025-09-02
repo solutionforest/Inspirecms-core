@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Exception;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ExportStatus;
 use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
@@ -14,6 +17,7 @@ use SolutionForest\InspireCms\Models\Contracts\Export as ExportContract;
 use SolutionForest\InspireCms\Observers\ExportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
+use Throwable;
 
 class Export extends BaseModel implements ExportContract
 {
@@ -33,7 +37,7 @@ class Export extends BaseModel implements ExportContract
 
     public function markAsFailed($msg)
     {
-        if ($msg instanceof \Throwable) {
+        if ($msg instanceof Throwable) {
             $msg = [
                 'exMessage' => $msg->getMessage(),
                 'exTrace' => ThrowableHelper::getTraceAsString($msg, 5),
@@ -86,16 +90,16 @@ class Export extends BaseModel implements ExportContract
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     * @return Filesystem|FilesystemAdapter
      *
-     * @throws \Exception if the disk is not set for the import job.
+     * @throws Exception if the disk is not set for the import job.
      */
     public function getDisk()
     {
         $disk = $this->file_disk;
 
         if (empty($disk)) {
-            throw new \Exception('Disk is not set for the import job.');
+            throw new Exception('Disk is not set for the import job.');
         }
 
         return Storage::disk($disk);
@@ -223,7 +227,7 @@ class Export extends BaseModel implements ExportContract
     {
         try {
             $this->getDisk()->delete($this->file_name);
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             return false;
         }
 

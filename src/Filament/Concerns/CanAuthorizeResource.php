@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Concerns;
 
 use Filament\Facades\Filament;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -33,7 +34,7 @@ trait CanAuthorizeResource
         return parent::canAccess();
     }
 
-    public static function can(string $action, ?Model $record = null): bool
+    public static function getAuthorizationResponse(string $action, ?Model $record = null): Response
     {
         if (! static::skipAccessRightPermissionChecking()) {
 
@@ -43,11 +44,11 @@ trait CanAuthorizeResource
 
             $result = PermissionManifest::authorizeModel($action, $model, false, $id);
 
-            if ($result !== null) {
-                return $result;
+            if ($result !== null && $result === false) {
+                return Response::deny();
             }
         }
 
-        return parent::can($action, $record);
+        return parent::getAuthorizationResponse($action, $record);
     }
 }

@@ -4,10 +4,14 @@ namespace SolutionForest\InspireCms\Base\Filament\Concerns;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Facades\Filament;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
-use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
+use Filament\Resources\Pages\CreateRecord;
+use Filament\Resources\Pages\EditRecord;
+use Filament\Resources\Pages\Page;
+use Filament\Schemas\Components\RenderHook;
+use Filament\Schemas\Schema;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +19,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable as CmsCreateContentRecordsTranslatable;
-use SolutionForest\InspireCms\Filament\Resources\ContentResource;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Schemas\PublishContentForm;
 use SolutionForest\InspireCms\Helpers\DiffHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -27,6 +31,120 @@ trait ContentFormTrait
 {
     protected ?string $publishOperation = null;
 
+    public function bootedContentFormTrait(): void
+    {
+        $mainActions = [
+            $this->publishAction(),
+        ];
+        if (! $this instanceof CreateRecord) {
+            $mainActions[] = $this->publishDescendantsAndSelfAction();
+        }
+        $extraActions = inspirecms_content_statuses()->getFormActions();
+
+        $actions = collect([
+            ...$mainActions,
+            ...$extraActions,
+        ])
+            ->each(fn (Action $action) => $this->cacheAction($action))
+            ->all();
+
+        FilamentView::registerRenderHook(
+            'inspirecms_content_form_main_actions',
+            function () use ($mainActions) {
+
+                $filteredActions = collect($mainActions)
+                    ->filter(fn (Action $action) => ! $action->isHidden())
+                    ->all();
+
+                if (empty($filteredActions)) {
+                    return;
+                }
+
+                if (count($filteredActions) === 1) {
+                    return collect($filteredActions)->map(fn (Action $action) => $action->toHtml())->implode('');
+                }
+
+                return ActionGroup::make([])
+                    ->label(__('inspirecms::buttons.publish.label'))
+                    ->button()
+                    ->color('primary')
+                    ->dropdownPlacement('top-end')
+                    ->actions(
+                        collect($filteredActions)
+                            ->map(fn (Action $action) => $action->grouped())
+                            ->all()
+                    )
+                    ->toHtml();
+            },
+            [static::class],
+        );
+
+        FilamentView::registerRenderHook(
+            'inspirecms_content_form_extra_actions',
+            function () use ($extraActions) {
+
+                $filteredActions = collect($extraActions)
+                    ->filter(fn (Action $action) => ! $action->isHidden())
+                    ->all();
+
+                if (empty($filteredActions)) {
+                    return;
+                }
+
+                return ActionGroup::make([])
+                    ->label(__('inspirecms::buttons.more_actions.label'))
+                    ->button()
+                    ->color('gray')
+                    ->dropdownPlacement('top-end')
+                    ->actions(
+                        collect($filteredActions)
+                            ->map(fn (Action $action) => $action->grouped())
+                            ->all()
+                    )
+                    ->toHtml();
+            },
+            [static::class],
+        );
+    }
+
+    protected function getFormActions(): array
+    {
+        if ($this instanceof CreateRecord) {
+
+            return [
+                RenderHook::make('inspirecms_content_form_main_actions'),
+                $this->getCreateFormAction(),
+                $this->getCancelFormAction(),
+            ];
+
+        } elseif ($this instanceof EditRecord) {
+
+            $record = $this->getRecord();
+
+            // Guard 2 for trashed record, If the record is trashed, don't show the form actions
+            if ($record->trashed()) {
+                return [];
+            }
+
+            // Guard 3 for locked record, If the record is locked by another user, don't show the form actions
+            if ($record->isLocked()) {
+                return [];
+            }
+
+            return [
+                RenderHook::make('inspirecms_content_form_main_actions'),
+
+                $this->getSaveFormAction(),
+
+                RenderHook::make('inspirecms_content_form_extra_actions'),
+
+                $this->getCancelFormAction(),
+            ];
+        } else {
+            return parent::getFormActions() ?? [];
+        }
+    }
+
     public function updatedActiveLocale(string $newActiveLocale): void
     {
         if (blank($this->oldActiveLocale)) {
@@ -35,7 +153,7 @@ trait ContentFormTrait
 
         $this->resetValidation();
 
-        $translatableAttributes = $this->getTranslatableAttributes();
+        $translatableAttributes = $this->getTranslatableAttributesForContent();
 
         $this->otherLocaleData[$this->oldActiveLocale] = Arr::only($this->data, $translatableAttributes);
 
@@ -80,7 +198,7 @@ trait ContentFormTrait
      * @param  bool  $exceptPropertyData  Whether to exclude property data from the attributes.
      * @return array The list of translatable attributes.
      */
-    protected function getTranslatableAttributes(bool $exceptPropertyData = true): array
+    protected function getTranslatableAttributesForContent(bool $exceptPropertyData = true): array
     {
         $translatableAttributes = static::getResource()::getTranslatableAttributes();
 
@@ -188,7 +306,7 @@ trait ContentFormTrait
 
             $isLivewireHandleTranslatable = collect(class_uses_recursive($this))
                 ->where(fn ($traitClass) => in_array($traitClass, [
-                    Translatable::class,
+                    \LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable::class,
                     CmsCreateContentRecordsTranslatable::class,
                 ]))
                 ->isNotEmpty();
@@ -207,7 +325,7 @@ trait ContentFormTrait
 
             $record->setPublishableState($publishableAction);
 
-            if ($this instanceof \Filament\Resources\Pages\Page) {
+            if ($this instanceof Page) {
                 if (
                     static::getResource()::isScopedToTenant() &&
                     ($tenant = Filament::getTenant())
@@ -299,68 +417,6 @@ trait ContentFormTrait
     }
 
     // region Help functions
-    protected function getPublishFormAction(string $operation, string $model): Action
-    {
-        if (is_null($operation) || $operation === 'create') {
-            $this->publishOperation = 'create';
-        } else {
-            $this->publishOperation = 'edit';
-        }
-
-        return Action::make('publish')
-            ->label(__('inspirecms::buttons.publish.label'))
-            ->modalHeading(__('inspirecms::buttons.publish.heading'))
-            ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
-            ->successNotificationTitle(__('inspirecms::buttons.publish.messages.success.title'))
-            ->keyBindings(['mod+p'])
-            ->color('primary')
-            ->form(function (Form $form) {
-                $resource = InspireCmsConfig::getFilamentResource('content', ContentResource::class);
-                if (! method_exists($resource, 'getPublishedAtFormComponent')) {
-                    throw new \RuntimeException('The resource must have a getPublishedAtFormComponent method.');
-                }
-
-                return $form
-                    ->schema([
-                        $resource::getPublishedAtFormComponent(),
-                    ])
-                    ->operation('publish');
-            })
-            ->beforeFormValidated(function (Action $action) {
-                try {
-
-                    $this->validatePublishableData();
-
-                } catch (Throwable $e) {
-                    Notification::make()
-                        ->title(__('inspirecms::notification.form_check_error.title'))
-                        ->danger()
-                        ->send();
-
-                    throw $e;
-                }
-            })
-            ->action(fn ($data, $action) => $this->publish($data, $action))
-            ->model($model)
-            ->authorize('publish')
-            // Cannot publish if the parent is not published
-            ->disabled(function (?Model $record, $livewire) {
-                // Create page
-                if ($livewire instanceof BaseContentCreatePage) {
-
-                    $parent = $livewire->getParentRecord();
-
-                    return static::isReadyForPublication($parent);
-                }
-
-                // Edit page
-                if ($record === null || ($record && ! $record->exists) || ! $record instanceof Content || $record->isRootLevel()) {
-                    return false;
-                }
-
-                return static::isReadyForPublication($record->parent);
-            });
-    }
 
     protected static function isReadyForPublication(?Model $parent): bool
     {
@@ -378,7 +434,7 @@ trait ContentFormTrait
 
     protected function isCreatingPublishableData(): bool
     {
-        return $this->publishOperation !== 'edit';
+        return ! $this instanceof EditRecord;
     }
 
     protected function propertyDataIsDirtyPreCheck($from, $to)
@@ -436,4 +492,67 @@ trait ContentFormTrait
         return true;
     }
     // endregion Help functions
+
+    // region Actions
+
+    protected function publishAction()
+    {
+        return Action::make('publish')
+            ->label(__('inspirecms::buttons.publish.label'))
+            ->modalHeading(__('inspirecms::buttons.publish.heading'))
+            ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
+            ->successNotificationTitle(__('inspirecms::buttons.publish.messages.success.title'))
+            ->keyBindings(['mod+p'])
+            ->color('primary')
+            ->button()
+            ->schema(fn (Schema $schema) => PublishContentForm::configure($schema))
+            ->beforeFormValidated(function () {
+                try {
+
+                    $this->validatePublishableData();
+
+                } catch (Throwable $e) {
+                    Notification::make()
+                        ->title(__('inspirecms::notification.form_check_error.title'))
+                        ->danger()
+                        ->send();
+
+                    throw $e;
+                }
+            })
+            ->action(fn ($data, $action) => $this->publish($data, $action))
+            ->model(InspireCmsConfig::getContentModelClass())
+            ->authorize('publish')
+            // Cannot publish if the parent is not published
+            ->disabled(function (?Model $record, $livewire) {
+                // Create page
+                if ($livewire instanceof BaseContentCreatePage) {
+
+                    $parent = $livewire->getParentRecord();
+
+                    return static::isReadyForPublication($parent);
+                }
+
+                // Edit page
+                if ($record === null || ($record && ! $record->exists) || ! $record instanceof Content || $record->isRootLevel()) {
+                    return false;
+                }
+
+                return static::isReadyForPublication($record->parent);
+            });
+    }
+
+    protected function publishDescendantsAndSelfAction()
+    {
+        return $this->publishAction()
+            ->name('publishDescendantsAndSelf')
+            ->label(__('inspirecms::buttons.publish_descendants_and_self.label'))
+            ->modalHeading(__('inspirecms::buttons.publish_descendants_and_self.heading'))
+            ->successNotificationTitle(__('inspirecms::buttons.publish_descendants_and_self.messages.success.title'))
+            ->modalSubmitActionLabel(__('inspirecms::buttons.publish.label'))
+            ->keyBindings(null)
+            ->color('gray')
+            ->action(fn (array $data, $action) => $this->publish($data, $action, true));
+    }
+    // endregion Actions
 }

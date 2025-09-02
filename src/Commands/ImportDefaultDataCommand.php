@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Input\InputArgument;
+use Throwable;
 
 #[AsCommand(name: 'inspirecms:import-default-data')]
 class ImportDefaultDataCommand extends Command
@@ -75,7 +76,7 @@ class ImportDefaultDataCommand extends Command
             $this->components->task($description, function () use ($method, &$skipAfter, &$processErrors) {
                 try {
                     $this->$method();
-                } catch (\Throwable $th) {
+                } catch (Throwable $th) {
                     $this->components->error($th->getMessage());
                     $processErrors[] = $th->getMessage();
                     $skipAfter = true;

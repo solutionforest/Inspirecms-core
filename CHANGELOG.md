@@ -87,30 +87,31 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 
 
-
-
 ```
+
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.1...1.1.2
 
 ## 1.1.1 - 2025-08-06
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+
 ### What's Changed
 
 #### Other Changes
 
-* Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/solutionforest/Inspirecms-core/pull/6
-* Fix typo by @cklei-carly in https://github.com/solutionforest/Inspirecms-core/pull/7
+- Bump aglipanci/laravel-pint-action from 2.5 to 2.6 by @dependabot[bot] in https://github.com/solutionforest/Inspirecms-core/pull/6
+- Fix typo by @cklei-carly in https://github.com/solutionforest/Inspirecms-core/pull/7
 
 ### New Contributors
 
-* @cklei-carly made their first contribution in https://github.com/solutionforest/Inspirecms-core/pull/7
+- @cklei-carly made their first contribution in https://github.com/solutionforest/Inspirecms-core/pull/7
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.0...1.1.1
 
 ## 1.1.0 - 2025-07-23
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+
 ### 🚀 New features
 
 - Add "Rollback" action for content versioning (Pro tier only)
@@ -135,6 +136,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.4 - 2025-07-15
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+
 ### 🐛 Bug fixes
 
 - Fix: get root while call `getParent` for ContentDto
@@ -145,6 +147,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.3 - 2025-07-11
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+
 ### 🐛 Bug fixes
 
 - Fix typo
@@ -158,6 +161,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.2 - 2025-07-10
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
+
 - Add test case for template render
 - fix content sidebar: ensure a after "notification & before "trix" & "filament button"
 
@@ -244,7 +248,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 ### What's Changed
 
-* build(deps): bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/5
+- build(deps): bump stefanzweifel/git-auto-commit-action from 5 to 6 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/5
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.79...0.0.80
 
@@ -368,7 +372,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 ### What's Changed
 
-* Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/4
+- Bump dependabot/fetch-metadata from 2.3.0 to 2.4.0 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/4
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.51...0.0.52
 
@@ -492,7 +496,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 ### What's Changed
 
-* Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/3
+- Bump aglipanci/laravel-pint-action from 2.4 to 2.5 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/3
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.23...0.0.24
 
@@ -500,7 +504,7 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 ### What's Changed
 
-* Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/2
+- Bump dependabot/fetch-metadata from 2.2.0 to 2.3.0 by @dependabot in https://github.com/solutionforest/Inspirecms-core/pull/2
 
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/0.0.22...0.0.23
 

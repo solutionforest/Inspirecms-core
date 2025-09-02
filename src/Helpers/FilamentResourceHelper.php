@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Helpers;
 
 use Illuminate\Support\Arr;
+use Throwable;
 
 class FilamentResourceHelper
 {
@@ -35,7 +36,7 @@ class FilamentResourceHelper
                 return $resource::getUrl($page, $parameters);
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 

@@ -2,15 +2,29 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Concerns\Translatable;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Forms\Components\Field;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\ToggleButtons;
 use Filament\Resources\Resource;
-use Filament\Tables;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
+use Filament\Tables\Columns\ColumnGroup;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Grouping\Group;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use InvalidArgumentException;
+use LaraZeus\SpatieTranslatable\Resources\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Enums\NavigationType;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
@@ -18,7 +32,11 @@ use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentPicker;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter as ContentPickerFilters;
-use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\CreateNavigation;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\EditNavigation;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\ListNavigationTable;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\ListNavigationTree;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\ViewNavigation;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Navigation;
 
@@ -29,7 +47,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
 
     protected static ?int $navigationSort = -7;
 
-    protected static ?string $navigationIcon = 'heroicon-o-bars-4';
+    protected static string | \BackedEnum | null $navigationIcon = 'heroicon-o-bars-4';
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -42,19 +60,19 @@ class NavigationResource extends Resource implements ClusterSectionResource
         return array_keys(InspireCms::getAllAvailableLanguages());
     }
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->columns(1)
-            ->schema([
-                Forms\Components\Section::make()
+            ->components([
+                Section::make()
                     ->columns(2)
                     ->schema([
                         static::getCategoryFormComponent(),
                         static::getParentFormComponent(),
                         static::getIsActiveFormComponent()->inlineLabel(),
                     ]),
-                Forms\Components\Section::make()
+                Section::make()
                     ->columns(2)
                     ->schema([
                         static::getTitleFormComponent()->columnSpanFull(),
@@ -70,9 +88,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return $table
             ->groups([
-                Tables\Grouping\Group::make('category')
+                Group::make('category')
                     ->label(__('inspirecms::resources/navigation.category.label')),
-                Tables\Grouping\Group::make('type')
+                Group::make('type')
                     ->label(__('inspirecms::resources/navigation.type.label'))
                     ->getTitleFromRecordUsing(fn (Model | Navigation $record) => $record->display_type?->getLabel()),
             ])
@@ -80,37 +98,37 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ->defaultSort('created_at', 'desc')
             ->columns([
 
-                Tables\Columns\TextColumn::make('id')
+                TextColumn::make('id')
                     ->label(__('inspirecms::inspirecms.id')),
 
-                Tables\Columns\TextColumn::make('category')
+                TextColumn::make('category')
                     ->label(__('inspirecms::resources/navigation.category.label'))
                     ->badge()
                     ->width('5%'),
 
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label(__('inspirecms::resources/navigation.title.label')),
 
-                Tables\Columns\ColumnGroup::make(__('inspirecms::inspirecms.url'), [
-                    Tables\Columns\TextColumn::make('display_type')
+                ColumnGroup::make(__('inspirecms::inspirecms.url'), [
+                    TextColumn::make('display_type')
                         ->label(__('inspirecms::resources/navigation.type.label'))
                         ->badge()
                         ->width('5%'),
-                    Tables\Columns\TextColumn::make('url')
+                    TextColumn::make('url')
                         ->label(fn () => '')
                         ->getStateUsing(fn (Model | Navigation $record, $livewire) => $record->getUrl($livewire->getActiveActionsLocale() ?? app()->getLocale())),
                 ])->alignCenter(),
 
-                Tables\Columns\TextColumn::make('target')
+                TextColumn::make('target')
                     ->label(__('inspirecms::resources/navigation.target.label')),
             ])
-            ->actions([
-                Tables\Actions\EditAction::make()->iconButton()->slideOver(),
-                Tables\Actions\ViewAction::make()->iconButton()->slideOver(),
+            ->recordActions([
+                EditAction::make()->iconButton()->slideOver(),
+                ViewAction::make()->iconButton()->slideOver(),
             ])
-            ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ])->iconButton(),
             ]);
     }
@@ -118,11 +136,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListNavigationTree::route('/tree'),
-            'table' => Pages\ListNavigationTable::route('/table'),
-            'create' => Pages\CreateNavigation::route('/create'),
-            'edit' => Pages\EditNavigation::route('/{record}/edit'),
-            'view' => Pages\ViewNavigation::route('/{record}'),
+            'index' => ListNavigationTree::route('/tree'),
+            'table' => ListNavigationTable::route('/table'),
+            'create' => CreateNavigation::route('/create'),
+            'edit' => EditNavigation::route('/{record}/edit'),
+            'view' => ViewNavigation::route('/{record}'),
         ];
     }
 
@@ -145,7 +163,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
     protected static function guardAgainstInvalidModel(string $model): string
     {
         if (! in_array(Navigation::class, class_implements($model))) {
-            throw new \InvalidArgumentException('The model must implement the ' . Navigation::class . ' interface.');
+            throw new InvalidArgumentException('The model must implement the ' . Navigation::class . ' interface.');
         }
 
         return $model;
@@ -166,11 +184,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     {
         return false;
     }
-    // endregion Global search
 
+    // endregion Global search
     // region Form field(s)/component(s)
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getContentFormComponent()
     {
@@ -211,11 +229,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getUrlFormComponent()
     {
-        return Forms\Components\TextInput::make('url')
+        return TextInput::make('url')
             ->label(__('inspirecms::resources/navigation.url.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.url.validation_attribute'))
             ->visible(function ($get) {
@@ -225,13 +243,13 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getTypeFormComponent()
     {
         $enumClass = static::getModel()::getNavigationTypeEnumClass();
 
-        return Forms\Components\ToggleButtons::make('type')
+        return ToggleButtons::make('type')
             ->label(__('inspirecms::resources/navigation.type.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.type.validation_attribute'))
             ->columnSpanFull()
@@ -249,11 +267,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getCategoryFormComponent()
     {
-        return Forms\Components\TextInput::make('category')
+        return TextInput::make('category')
             ->label(__('inspirecms::resources/navigation.category.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
             ->required()
@@ -263,12 +281,12 @@ class NavigationResource extends Resource implements ClusterSectionResource
             ])
             ->default('main')
             ->suffixActions([
-                Forms\Components\Actions\Action::make('fillFromExist')
+                Action::make('fillFromExist')
                     ->icon('heroicon-o-pencil')
                     ->fillForm(fn ($state) => [
                         'category' => $state,
                     ])
-                    ->form(function () {
+                    ->schema(function () {
                         $getCategoryOptions = function ($search = null, $limit = 50) {
                             $query = static::getEloquentQuery()
                                 ->select('category')
@@ -282,7 +300,7 @@ class NavigationResource extends Resource implements ClusterSectionResource
                         };
 
                         return [
-                            Forms\Components\Select::make('category')
+                            Select::make('category')
                                 ->label(__('inspirecms::resources/navigation.category.label'))
                                 ->validationAttribute(__('inspirecms::resources/navigation.category.validation_attribute'))
                                 ->options(fn () => $getCategoryOptions())
@@ -305,11 +323,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getParentFormComponent()
     {
-        return Forms\Components\Select::make('parent_id')
+        return Select::make('parent_id')
             ->label(__('inspirecms::resources/navigation.parent_id.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.parent_id.validation_attribute'))
             ->options(function ($record, $get) {
@@ -363,11 +381,11 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getTargetFormComponent()
     {
-        return Forms\Components\TextInput::make('target')
+        return TextInput::make('target')
             ->label(__('inspirecms::resources/navigation.target.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.target.validation_attribute'))
             ->datalist([
@@ -377,22 +395,22 @@ class NavigationResource extends Resource implements ClusterSectionResource
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getTitleFormComponent()
     {
-        return Forms\Components\TextInput::make('title')
+        return TextInput::make('title')
             ->label(__('inspirecms::resources/navigation.title.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.title.validation_attribute'))
             ->required();
     }
 
     /**
-     * @return Forms\Components\Field | Forms\Components\Component
+     * @return Field|Component
      */
     protected static function getIsActiveFormComponent()
     {
-        return Forms\Components\Toggle::make('is_active')
+        return Toggle::make('is_active')
             ->label(__('inspirecms::resources/navigation.is_active.label'))
             ->validationAttribute(__('inspirecms::resources/navigation.is_active.validation_attribute'))
             ->default(true)

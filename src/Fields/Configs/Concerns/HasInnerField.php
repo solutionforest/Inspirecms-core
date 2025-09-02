@@ -2,7 +2,7 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
-use Filament\Forms\Components\Actions\Action;
+use Filament\Actions\Action;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Select;
@@ -51,7 +51,7 @@ trait HasInnerField
                     ]))
                     ->modalIcon(fn (array $arguments, Repeater $component) => $getFieldIconForRepeaterAction($arguments, $component))
                     ->disabled(fn (array $arguments, Repeater $component) => empty($getFieldForRepeaterAction($arguments, $component)))
-                    ->form(function (array $arguments, Repeater $component) use ($getFieldForRepeaterAction) {
+                    ->schema(function (array $arguments, Repeater $component) use ($getFieldForRepeaterAction) {
 
                         $innerFieldTypeName = $getFieldForRepeaterAction($arguments, $component);
 
@@ -82,7 +82,7 @@ trait HasInnerField
 
                         $itemState['fieldConfig'] = $data;
 
-                        $component->getChildComponentContainer($itemKey)->fill($itemState);
+                        $component->getChildSchema($itemKey)->fill($itemState);
 
                         $component->collapsed(false, shouldMakeComponentCollapsible: false);
 

@@ -2,16 +2,16 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms\Components\Component;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Guava\FilamentIconPicker\Forms\IconPicker as FormsIconPicker;
+use Filament\Schemas\Components\Component;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
 use SolutionForest\InspireCms\Fields\Configs\Concerns\HasColumnsLayoutConfig;
+use SolutionForest\InspireCms\Filament\Forms\Components\IconPicker as FormsIconPicker;
 
 #[ConfigName('iconPicker', 'Icon Picker', 'Picker', 'inspirecms::icon_picker')]
 #[FormComponent(FormsIconPicker::class)]

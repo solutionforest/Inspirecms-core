@@ -2,10 +2,13 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Exception;
+use Filament\Pages\Page;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Throwable;
 
 /**
- * @phpstan-type FiPageClass class-string<\Filament\Pages\Page>|\Filament\Pages\Page
+ * @phpstan-type FiPageClass class-string<Page>|Page
  */
 class UrlHelper
 {
@@ -25,7 +28,7 @@ class UrlHelper
             return static::getShortenerBase62($uniqueId);
         }
 
-        throw new \Exception('Invalid encoding type');
+        throw new Exception('Invalid encoding type');
     }
 
     /**
@@ -41,7 +44,7 @@ class UrlHelper
 
             return $panel?->route($routeName, $parameters);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 
@@ -59,7 +62,7 @@ class UrlHelper
 
             return route($routeName, $parameters);
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 
@@ -77,11 +80,11 @@ class UrlHelper
 
             $panelId = InspireCmsConfig::getPanelId();
 
-            if (is_a($target, \Filament\Pages\Page::class, true)) {
+            if (is_a($target, Page::class, true)) {
                 return $target::getUrl(parameters: $parameters, panel: $panelId);
             }
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             //
         }
 

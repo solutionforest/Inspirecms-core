@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Facades\InspireCms;
+use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap as SitemapContract;
 use SolutionForest\InspireCms\Observers\SitemapObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -28,7 +29,7 @@ class Sitemap extends BaseModel implements SitemapContract
 
     public function getUrl($locale = null)
     {
-        if ($this->model && $this->model instanceof Contracts\Content) {
+        if ($this->model && $this->model instanceof Content) {
             return $this->model->getUrl($locale) ?? '';
         }
 
@@ -56,7 +57,7 @@ class Sitemap extends BaseModel implements SitemapContract
             return false;
         }
 
-        if ($this->model && $this->model instanceof Contracts\Content) {
+        if ($this->model && $this->model instanceof Content) {
             return $this->model->isAllowIndex();
         }
 

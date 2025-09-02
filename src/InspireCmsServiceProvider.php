@@ -2,7 +2,10 @@
 
 namespace SolutionForest\InspireCms;
 
-use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
+use Closure;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
 use Filament\Support\Assets\Css;
@@ -11,6 +14,7 @@ use Filament\Support\Assets\Theme;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Arr;
@@ -18,10 +22,33 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
+use SolutionForest\InspireCms\Commands\CacheStatsCommand;
+use SolutionForest\InspireCms\Commands\ClearCacheCommand;
+use SolutionForest\InspireCms\Commands\DataCleanupCommand;
+use SolutionForest\InspireCms\Commands\ExecuteExportCommand;
+use SolutionForest\InspireCms\Commands\ExecuteImportCommand;
+use SolutionForest\InspireCms\Commands\GenerateSitemapCommand;
+use SolutionForest\InspireCms\Commands\ImportDefaultDataCommand;
+use SolutionForest\InspireCms\Commands\InstallCommand;
+use SolutionForest\InspireCms\Commands\InstallRequirePacakgesCommand;
+use SolutionForest\InspireCms\Commands\PublishPanelCommand;
+use SolutionForest\InspireCms\Commands\RepairPermissionsCommand;
+use SolutionForest\InspireCms\Commands\RoutesCommand;
+use SolutionForest\InspireCms\Commands\UpdateCommand;
+use SolutionForest\InspireCms\Events\Content\CreatingContentVersion;
+use SolutionForest\InspireCms\Events\Content\DispatchContentVersion;
+use SolutionForest\InspireCms\Events\Content\GenerateSitemap;
+use SolutionForest\InspireCms\Events\Content\UpsertRoute;
+use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Factories\PreviewFactory;
+use SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
@@ -29,11 +56,40 @@ use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
+use SolutionForest\InspireCms\Listeners\Content\GenerateContentSitemap;
+use SolutionForest\InspireCms\Listeners\Content\ProcessContentRoute;
+use SolutionForest\InspireCms\Listeners\Content\ProcessContentVersion;
+use SolutionForest\InspireCms\Listeners\Content\UnpubilshChildren;
+use SolutionForest\InspireCms\Listeners\UserAuthActivityListener;
+use SolutionForest\InspireCms\Livewire\ContentSidebar;
+use SolutionForest\InspireCms\Livewire\ContentTreeNode;
+use SolutionForest\InspireCms\Livewire\ContentVersionHistory;
+use SolutionForest\InspireCms\Livewire\TableReleatedLivewireComponent;
+use SolutionForest\InspireCms\Models\Contracts\User;
+use SolutionForest\InspireCms\Models\Field;
+use SolutionForest\InspireCms\Models\FieldGroup;
+use SolutionForest\InspireCms\Resolvers\PublishedContentResolverInterface;
+use SolutionForest\InspireCms\Services\AssetService;
+use SolutionForest\InspireCms\Services\AssetServiceInterface;
+use SolutionForest\InspireCms\Services\ContentService;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
+use SolutionForest\InspireCms\Services\ExportService;
+use SolutionForest\InspireCms\Services\ExportServiceInterface;
+use SolutionForest\InspireCms\Services\ImportDataService;
+use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
+use SolutionForest\InspireCms\Services\ImportService;
+use SolutionForest\InspireCms\Services\ImportServiceInterface;
+use SolutionForest\InspireCms\Support\Facades\MediaLibraryRegistry;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
+use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
+use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
+use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
+use Throwable;
 
 class InspireCmsServiceProvider extends PackageServiceProvider
 {
@@ -77,7 +133,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     public function registeringPackage(): void
     {
         // Register support package first
-        $this->app->register(Support\InspireCmsSupportServiceProvider::class);
+        $this->app->register(InspireCmsSupportServiceProvider::class);
     }
 
     public function packageRegistered(): void
@@ -93,17 +149,17 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(LicenseManager::class, fn () => new LicenseManager);
 
-        $this->app->singleton(Services\AssetServiceInterface::class, fn () => $this->app->make(Services\AssetService::class));
-        $this->app->singleton(Services\ContentServiceInterface::class, fn () => $this->app->make(Services\ContentService::class));
-        $this->app->singleton(Services\ImportDataServiceInterface::class, fn () => $this->app->make(Services\ImportDataService::class));
-        $this->app->singleton(Services\ImportServiceInterface::class, fn () => $this->app->make(Services\ImportService::class));
-        $this->app->singleton(Services\ExportServiceInterface::class, fn () => $this->app->make(Services\ExportService::class));
+        $this->app->singleton(AssetServiceInterface::class, fn () => $this->app->make(AssetService::class));
+        $this->app->singleton(ContentServiceInterface::class, fn () => $this->app->make(ContentService::class));
+        $this->app->singleton(ImportDataServiceInterface::class, fn () => $this->app->make(ImportDataService::class));
+        $this->app->singleton(ImportServiceInterface::class, fn () => $this->app->make(ImportService::class));
+        $this->app->singleton(ExportServiceInterface::class, fn () => $this->app->make(ExportService::class));
 
         $this->app->singleton(PropertyValueTransformerInterface::class, PropertyValueTransformer::class);
 
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition);
+        FieldTypeBaseConfig::mixin(new FieldTypeDefinition);
 
-        $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
+        $this->app->bind(\Filament\Auth\Http\Responses\Contracts\RegistrationResponse::class, RegistrationResponse::class);
 
         $this->registerModels();
 
@@ -117,8 +173,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
-        Facades\ModelManifest::registerMorphMap();
-        Facades\ModelManifest::registerPolices();
+        ModelManifest::registerMorphMap();
+        ModelManifest::registerPolices();
 
         $this->registerComponentAndDirectives();
 
@@ -131,10 +187,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->configureFilamentForm();
 
-        \Livewire\Livewire::component('inspirecms::content-version-history', \SolutionForest\InspireCms\Livewire\ContentVersionHistory::class);
-        \Livewire\Livewire::component('inspirecms::content-sidebar', \SolutionForest\InspireCms\Livewire\ContentSidebar::class);
-        \Livewire\Livewire::component('inspirecms::content-tree-node', \SolutionForest\InspireCms\Livewire\ContentTreeNode::class);
-        \Livewire\Livewire::component('inspirecms::document-type-paginator', \SolutionForest\InspireCms\Livewire\DocumentTypePaginator::class);
+        Livewire::component(TableReleatedLivewireComponent::class);
+        Livewire::component('inspirecms::content-version-history', ContentVersionHistory::class);
+        Livewire::component('inspirecms::content-sidebar', ContentSidebar::class);
+        Livewire::component('inspirecms::content-tree-node', ContentTreeNode::class);
 
         // Asset Registration
         FilamentAsset::register(
@@ -147,7 +203,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        \Livewire\Livewire::addPersistentMiddleware([
+        Livewire::addPersistentMiddleware([
             CmsAuthenticate::class,
         ]);
 
@@ -191,20 +247,20 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     protected function getCommands(): array
     {
         return [
-            Commands\InstallCommand::class,
+            InstallCommand::class,
             Commands\AboutCommand::class,
-            Commands\CacheStatsCommand::class,
-            Commands\GenerateSitemapCommand::class,
-            Commands\UpdateCommand::class,
-            Commands\PublishPanelCommand::class,
-            Commands\InstallRequirePacakgesCommand::class,
-            Commands\ImportDefaultDataCommand::class,
-            Commands\ExecuteImportCommand::class,
-            Commands\ExecuteExportCommand::class,
-            Commands\DataCleanupCommand::class,
-            Commands\RepairPermissionsCommand::class,
-            Commands\RoutesCommand::class,
-            Commands\ClearCacheCommand::class,
+            CacheStatsCommand::class,
+            GenerateSitemapCommand::class,
+            UpdateCommand::class,
+            PublishPanelCommand::class,
+            InstallRequirePacakgesCommand::class,
+            ImportDefaultDataCommand::class,
+            ExecuteImportCommand::class,
+            ExecuteExportCommand::class,
+            DataCleanupCommand::class,
+            RepairPermissionsCommand::class,
+            RoutesCommand::class,
+            ClearCacheCommand::class,
         ];
     }
 
@@ -287,14 +343,14 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerModels(): void
     {
-        Facades\ModelManifest::register();
+        ModelManifest::register();
 
         $supportModels = $this->getConfigSupoortModels();
-        Facades\ModelManifest::replace(
+        ModelManifest::replace(
             SupportModels\Contracts\MediaAsset::class,
             $supportModels['media_asset']
         );
-        Facades\ModelManifest::replace(
+        ModelManifest::replace(
             SupportModels\Contracts\NestableTree::class,
             $supportModels['nestable_tree']
         );
@@ -306,19 +362,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             // override field group models
             FilamentFieldGroup::setFieldGroupModelClass(
-                \SolutionForest\InspireCms\Models\FieldGroup::class
+                FieldGroup::class
             );
             FilamentFieldGroup::setFieldModelClass(
-                \SolutionForest\InspireCms\Models\Field::class
+                Field::class
             );
 
             // customizing the config form schema
             FilamentFieldGroup::configureFieldTypeConfigFormUsing(
-                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File::class,
+                File::class,
                 fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
             FilamentFieldGroup::configureFieldTypeConfigFormUsing(
-                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image::class,
+                Image::class,
                 fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
         }
@@ -342,8 +398,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             $providerConfig = Arr::only(InspireCmsConfig::get('auth.provider', [
                 'driver' => 'eloquent',
-                'model' => Facades\ModelManifest::get(
-                    \SolutionForest\InspireCms\Models\Contracts\User::class,
+                'model' => ModelManifest::get(
+                    User::class,
                     \SolutionForest\InspireCms\Models\User::class,
                 ),
             ]), ['driver', 'model']);
@@ -380,36 +436,36 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // region User Auth Activity
         Event::listen(
             AuthEvents\Login::class,
-            [Listeners\UserAuthActivityListener::class, 'login']
+            [UserAuthActivityListener::class, 'login']
         );
         Event::listen(
             AuthEvents\Logout::class,
-            [Listeners\UserAuthActivityListener::class, 'logout']
+            [UserAuthActivityListener::class, 'logout']
         );
         Event::listen(
             AuthEvents\Failed::class,
-            [Listeners\UserAuthActivityListener::class, 'loginFailed']
+            [UserAuthActivityListener::class, 'loginFailed']
         );
         Event::listen(
             AuthEvents\PasswordReset::class,
-            [Listeners\UserAuthActivityListener::class, 'passwordReset']
+            [UserAuthActivityListener::class, 'passwordReset']
         );
         // endregion User Auth Activity
 
         // region Content
         Event::listen(
-            Events\Content\UpsertRoute::class,
-            [Listeners\Content\ProcessContentRoute::class, 'upsert']
+            UpsertRoute::class,
+            [ProcessContentRoute::class, 'upsert']
         );
-        Event::listen(Events\Content\CreatingContentVersion::class, Listeners\Content\UnpubilshChildren::class);
-        Event::listen(Events\Content\DispatchContentVersion::class, Listeners\Content\ProcessContentVersion::class);
-        Event::listen(Events\Content\GenerateSitemap::class, Listeners\Content\GenerateContentSitemap::class);
+        Event::listen(CreatingContentVersion::class, UnpubilshChildren::class);
+        Event::listen(DispatchContentVersion::class, ProcessContentVersion::class);
+        Event::listen(GenerateSitemap::class, GenerateContentSitemap::class);
         // endregion Content
     }
 
     protected function configureFilamentForm(): void
     {
-        \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int | \Closure $length) {
+        \Filament\Forms\Components\Field::macro('limitLengthWithHint', function (int | Closure $length) {
             if ($this->isLive == null) {
                 $this->lazy();
             }
@@ -434,23 +490,23 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         // Model
 
-        Support\Facades\ModelRegistry::replace(
+        ModelRegistry::replace(
             SupportModels\Contracts\MediaAsset::class,
-            Facades\ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
+            ModelManifest::get(SupportModels\Contracts\MediaAsset::class)
         );
-        Support\Facades\ModelRegistry::replace(
+        ModelRegistry::replace(
             SupportModels\Contracts\NestableTree::class,
-            Facades\ModelManifest::get(SupportModels\Contracts\NestableTree::class)
+            ModelManifest::get(SupportModels\Contracts\NestableTree::class)
         );
-        Support\Facades\ModelRegistry::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
+        ModelRegistry::setTablePrefix(InspireCmsConfig::get('models.table_name_prefix'));
 
         // Media Library
 
-        Support\Facades\MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media.media_library.disk', 'public'));
-        Support\Facades\MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media.media_library.thumbnail.width', 300), InspireCmsConfig::get('media.media_library.thumbnail.height', 300));
-        Support\Facades\MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media.media_library.should_map_video_properties_with_ffmpeg', false)));
-        Support\Facades\MediaLibraryRegistry::setLimitedMimeTypes(InspireCmsConfig::get('media.media_library.allowed_mime_types', []));
-        Support\Facades\MediaLibraryRegistry::setMaxSize(InspireCmsConfig::get('media.media_library.max_file_size', null));
+        MediaLibraryRegistry::setDisk(InspireCmsConfig::get('media.media_library.disk', 'public'));
+        MediaLibraryRegistry::setThumbnailCrop(InspireCmsConfig::get('media.media_library.thumbnail.width', 300), InspireCmsConfig::get('media.media_library.thumbnail.height', 300));
+        MediaLibraryRegistry::setShouldMapVideoPropertiesWithFfmpeg(boolval(InspireCmsConfig::get('media.media_library.should_map_video_properties_with_ffmpeg', false)));
+        MediaLibraryRegistry::setLimitedMimeTypes(InspireCmsConfig::get('media.media_library.allowed_mime_types', []));
+        MediaLibraryRegistry::setMaxSize(InspireCmsConfig::get('media.media_library.max_file_size', null));
 
         $mediaResponsive = InspireCmsConfig::get('media.media_library.responsive_images', []);
         if (is_array($mediaResponsive) && count($mediaResponsive) > 0) {
@@ -464,7 +520,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 if (! isset($options['width']) || ! is_int($options['width'])) {
                     continue;
                 }
-                Support\Facades\MediaLibraryRegistry::registerConversionUsing(
+                MediaLibraryRegistry::registerConversionUsing(
                     fn ($model, $media) => $model
                         ->addMediaConversion($name)
                         ->width($options['width'])
@@ -481,8 +537,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 continue;
             }
             $interface = match ($name) {
-                'user' => Support\Resolvers\UserResolverInterface::class,
-                'published_content' => Resolvers\PublishedContentResolverInterface::class,
+                'user' => UserResolverInterface::class,
+                'published_content' => PublishedContentResolverInterface::class,
                 default => null,
             };
             if (is_null($interface)) {
@@ -492,9 +548,9 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 }
                 $interface = $guessName;
             }
-            Support\Facades\ResolverRegistry::set($interface, $resolver);
+            ResolverRegistry::set($interface, $resolver);
         }
-        Support\Facades\ResolverRegistry::register($this->app);
+        ResolverRegistry::register($this->app);
 
     }
 
@@ -508,7 +564,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerScheduleCommands(): void
     {
-        $schedule = $this->app[\Illuminate\Console\Scheduling\Schedule::class];
+        $schedule = $this->app[Schedule::class];
 
         $tasks = InspireCmsConfig::get('scheduled_tasks', []);
 
@@ -538,7 +594,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
                 $schedule->command($command, $arguments)->{$func}();
 
-            } catch (\Throwable $th) {
+            } catch (Throwable $th) {
                 //
             }
 
@@ -659,7 +715,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return array_map(function ($component) {
 
-            if ($component instanceof \Filament\Forms\Components\Toggle
+            if ($component instanceof Toggle
                 && $component->getName() === 'multiple'
             ) {
                 // Force the multiple toggle to be always on
@@ -670,10 +726,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->afterStateHydrated(function ($component) {
                         $component->state(true);
                     });
-            } elseif ($component instanceof \Filament\Forms\Components\Tabs
-                || $component instanceof \Filament\Forms\Components\Tabs\Tab
+            } elseif ($component instanceof Tabs
+                || $component instanceof Tab
             ) {
-                $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getChildComponents()));
+                $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getDefaultChildComponents()));
             }
 
             return $component;

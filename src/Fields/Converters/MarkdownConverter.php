@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Fields\Converters;
 
 use Illuminate\Support\Arr;
+use Throwable;
 
 class MarkdownConverter extends BaseConverter
 {
@@ -96,7 +97,7 @@ class MarkdownConverter extends BaseConverter
 
             return $value;
 
-        } catch (\Throwable $th) {
+        } catch (Throwable $th) {
             error_log('Markdown conversion failed: ' . $th->getMessage());
 
             return $value;

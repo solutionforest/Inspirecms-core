@@ -4,10 +4,12 @@ namespace SolutionForest\InspireCms\Models;
 
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Kalnoy\Nestedset\NodeTrait;
+use RuntimeException;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Enums\NavigationType as NavigationTypeEnum;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Models\Concerns\HasTranslations;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
 use SolutionForest\InspireCms\Observers\NavigationObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
@@ -15,7 +17,7 @@ use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
 class Navigation extends BaseModel implements NavigationContract
 {
-    use Concerns\HasTranslations;
+    use HasTranslations;
     use NodeTrait;
 
     protected $guarded = [];
@@ -134,7 +136,7 @@ class Navigation extends BaseModel implements NavigationContract
         $class = NavigationTypeEnum::class;
 
         if (! in_array(NavigationTypeEnumInterface::class, class_implements($class))) {
-            throw new \RuntimeException("{$class} must implement " . NavigationTypeEnumInterface::class);
+            throw new RuntimeException("{$class} must implement " . NavigationTypeEnumInterface::class);
         }
 
         return $class;

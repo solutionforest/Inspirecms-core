@@ -39,7 +39,7 @@ enum DocumentTypeCategory: string implements InterfacesDocumentTypeCategory
     {
         return match ($this) {
             self::Web => 'success',
-            self::Data => 'gray',
+            self::Data => 'warning',
             // self::Inheritance => 'info',
             default => null,
         };
