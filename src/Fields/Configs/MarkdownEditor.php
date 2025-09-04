@@ -2,8 +2,10 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
+use Filament\Actions\Action;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
+use Filament\Support\Icons\Heroicon;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\FormComponent;
@@ -28,7 +30,15 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         return [
             Section::make()
                 ->schema([
-                    static::getEditorBasicTraitComponent('toolbarButtons'),
+                    static::getEditorBasicTraitComponent('toolbarButtons')
+                        ->hintAction(
+                            Action::make('doc')
+                                ->label('Available buttons')
+                                ->url('https://filamentphp.com/docs/4.x/forms/markdown-editor#customizing-the-toolbar-buttons')
+                                ->icon(Heroicon::OutlinedBookOpen)
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        ),
                 ]),
             Section::make('File Attachments')
                 ->schema([

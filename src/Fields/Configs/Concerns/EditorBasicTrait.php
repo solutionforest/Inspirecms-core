@@ -2,8 +2,10 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 
 trait EditorBasicTrait
@@ -23,10 +25,29 @@ trait EditorBasicTrait
 
         return match ($name) {
 
-            'toolbarButtons' => CheckboxList::make('toolbarButtons')
-                ->options(static::getAllAvailableToolbarButtonsOptions())
-                ->bulkToggleable()
-                ->columns(3),
+            'toolbarButtons' => TagsInput::make('toolbarButtons')
+                ->suggestions(static::getAllAvailableToolbarButtons())
+                ->reorderable()
+                ->suffixAction(Action::make('appendButton')
+                    ->icon('heroicon-o-plus')
+                    ->fillForm(['buttons' => []])
+                    ->schema([
+                        CheckboxList::make('buttons')
+                            ->options(static::getAllAvailableToolbarButtonsOptions())
+                            ->columns(3)
+                            ->bulkToggleable()
+                            ->hiddenLabel(),
+                    ])
+                    ->action(function ($state, $data, $set) {
+                        $original = $state ?? [];
+                        // append new buttons to original state
+                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                        $state = array_merge($original, $new);
+                        $set('toolbarButtons', $state);
+                    })
+                    ->color('success')
+                    ->size('sm')
+                ),
 
             'fileAttachmentsDisk' => Select::make('fileAttachmentsDisk')->label('Disk')
                 ->default($defaultDisk)
@@ -45,7 +66,7 @@ trait EditorBasicTrait
     public static function getAllAvailableToolbarButtons(): array
     {
         if (isset(static::$availableToolbarButtons) && is_array(static::$availableToolbarButtons) && ! empty(static::$availableToolbarButtons)) {
-            return static::formatAsSelectableArray(collect(static::$availableToolbarButtons)->values()->all());
+            return static::formatAsSelectableArray(collect(static::$availableToolbarButtons)->flatten()->values()->all());
         }
 
         return [];

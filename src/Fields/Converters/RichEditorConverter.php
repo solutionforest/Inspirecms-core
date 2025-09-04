@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Fields\Converters;
 
+use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Fields\Configs\RichEditor as RichEditorFieldConfig;
 
 class RichEditorConverter extends BaseConverter
 {
@@ -18,21 +20,26 @@ class RichEditorConverter extends BaseConverter
             $value = Arr::first($value);
         }
 
-        if (is_array($value)) {
-            return Arr::map($value, function ($item) {
-                return $this->convertHtml($item);
-            });
-        }
-
         return $this->convertHtml($value);
     }
 
     private function convertHtml($value)
     {
-        if (! is_string($value)) {
-            return $value;
+        $disk = $visibility = null;
+        $plugins = [];
+        
+        if (($fieldTypeConfig = $this->getFieldTypeConfig()) instanceof RichEditorFieldConfig) {
+            $disk = $fieldTypeConfig->fileAttachmentsDisk;
+            $visibility = $fieldTypeConfig->fileAttachmentsVisibility;
+            $plugins = $fieldTypeConfig->plugins ?? [];
         }
 
-        return str($value)->toHtmlString();
+        $rawHtml = RichContentRenderer::make($value)
+            ->fileAttachmentsDisk($disk)
+            ->fileAttachmentsVisibility($visibility)
+            ->plugins($plugins)
+            ->toHtml();
+
+        return str($rawHtml)->toHtmlString();
     }
 }
