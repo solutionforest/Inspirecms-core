@@ -4,13 +4,21 @@ namespace SolutionForest\InspireCms\Fields\Configs\Concerns;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\ToggleButtons;
+use Filament\Support\Icons\Heroicon;
 
 trait EditorBasicTrait
 {
+    public string $toolbarButtonType = 'buttons'; // or 'buttonGroups'
+
     public array $toolbarButtons = [];
+
+    public array $toolbarButtonGroups = [];
 
     public ?string $fileAttachmentsDisk = null;
 
@@ -25,11 +33,23 @@ trait EditorBasicTrait
 
         return match ($name) {
 
+            'toolbarButtonType' => ToggleButtons::make('toolbarButtonType')
+                ->label('Toolbar Button Type')
+                ->options(static::getAvailableToolbarTypes())
+                ->grouped()
+                ->live()
+                ->default('buttons')
+                ->afterStateHydrated(function ($state, ToggleButtons $component) {
+                    $component->state($state ?? 'buttons');
+                })
+                ->required(),
+
             'toolbarButtons' => TagsInput::make('toolbarButtons')
+                ->placeholder('Add Toolbar Button (Enter to add)')
                 ->suggestions(static::getAllAvailableToolbarButtons())
                 ->reorderable()
                 ->suffixAction(Action::make('appendButton')
-                    ->icon('heroicon-o-plus')
+                    ->icon(Heroicon::Plus)
                     ->fillForm(['buttons' => []])
                     ->schema([
                         CheckboxList::make('buttons')
@@ -45,9 +65,47 @@ trait EditorBasicTrait
                         $state = array_merge($original, $new);
                         $set('toolbarButtons', $state);
                     })
-                    ->color('success')
                     ->size('sm')
                 ),
+
+            'toolbarButtonGroups' => Repeater::make('toolbarButtonGroups')
+                ->table([
+                    TableColumn::make('Buttons'),
+                ])
+                ->schema([
+                    TagsInput::make('buttons')
+                        ->suggestions(static::getAllAvailableToolbarButtons())
+                        ->reorderable()
+                        ->placeholder('Add Toolbar Button (Enter to add)')
+                ])
+                ->addActionLabel('Add Group')
+                ->collapsible()
+                ->cloneable()
+                ->extraItemActions([
+                    Action::make('appendButton')
+                    ->icon(Heroicon::Plus)
+                    ->fillForm(['buttons' => []])
+                    ->schema([
+                        CheckboxList::make('buttons')
+                            ->options(static::getAllAvailableToolbarButtonsOptions())
+                            ->columns(3)
+                            ->bulkToggleable()
+                            ->hiddenLabel(),
+                    ])
+                    ->action(function ($data, array $arguments, Repeater $component) {
+                        $state = $component->getState() ?? [];
+                        $itemKey = $arguments['item'] ?? null;
+                        if (empty($itemKey) || ! isset($state[$itemKey])) {
+                            return;
+                        }
+                        $original = $state[$itemKey]['buttons'] ?? [];
+                        // append new buttons to original state
+                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                        $state[$itemKey]['buttons'] = array_merge($original, $new);
+                        $component->state($state);
+                    })
+                    ->size('sm')
+                ]),
 
             'fileAttachmentsDisk' => Select::make('fileAttachmentsDisk')->label('Disk')
                 ->default($defaultDisk)
@@ -96,5 +154,16 @@ trait EditorBasicTrait
             }
         }
         return $result;
+    }
+
+    protected static function getAvailableToolbarTypes(): array
+    {
+        if (isset(static::$availableToolbarButtonTypes) && is_array(static::$availableToolbarButtonTypes) && ! empty(static::$availableToolbarButtonTypes)) {
+            return static::$availableToolbarButtonTypes;
+        }
+        return [
+            'buttons' => 'Buttons',
+            'buttonGroups' => 'Button Groups',
+        ];
     }
 }

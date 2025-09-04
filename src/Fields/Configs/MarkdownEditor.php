@@ -25,20 +25,36 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     use EditorBasicTrait;
 
+    private static string $toolbarBtnDocUrl = 'https://filamentphp.com/docs/4.x/forms/markdown-editor#customizing-the-toolbar-buttons';
+
     public function getFormSchema(): array
     {
         return [
             Section::make()
                 ->schema([
+                    static::getEditorBasicTraitComponent('toolbarButtonType'),
+
                     static::getEditorBasicTraitComponent('toolbarButtons')
                         ->hintAction(
                             Action::make('doc')
                                 ->label('Available buttons')
-                                ->url('https://filamentphp.com/docs/4.x/forms/markdown-editor#customizing-the-toolbar-buttons')
+                                ->url(self::$toolbarBtnDocUrl)
                                 ->icon(Heroicon::OutlinedBookOpen)
                                 ->color('primary')
                                 ->openUrlInNewTab(),
-                        ),
+                        )
+                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttons'),
+
+                    static::getEditorBasicTraitComponent('toolbarButtonGroups')
+                        ->hintAction(
+                            Action::make('doc')
+                                ->label('Available buttons')
+                                ->url(self::$toolbarBtnDocUrl)
+                                ->icon(Heroicon::OutlinedBookOpen)
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        )
+                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttonGroups'),
                 ]),
             Section::make('File Attachments')
                 ->schema([
@@ -52,7 +68,24 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     public function applyConfig(Component $component): void
     {
         if ($component instanceof FormsMarkdownEditor) {
-            $component->toolbarButtons($this->toolbarButtons);
+            
+            switch ($this->toolbarButtonType) {
+                case 'buttons':
+                    $component->toolbarButtons($this->toolbarButtons);
+                    break;
+                case 'buttonGroups':
+                    $component->toolbarButtons(
+                        collect($this->toolbarButtonGroups)
+                            ->pluck('buttons')
+                            ->all()
+                    );
+                    break;
+                default:
+                    // default to buttons
+                    $component->toolbarButtons($this->toolbarButtons);
+                    break;
+            }
+
             if (filled($this->fileAttachmentsDisk)) {
                 $component->fileAttachmentsDisk($this->fileAttachmentsDisk);
             }

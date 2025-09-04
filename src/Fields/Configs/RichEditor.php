@@ -3,7 +3,10 @@
 namespace SolutionForest\InspireCms\Fields\Configs;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Repeater\TableColumn;
+use Filament\Forms\Components\TagsInput;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
@@ -44,20 +47,65 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 
     public array $plugins = [];
 
+    private static string $toolbarBtnDocUrl = 'https://filamentphp.com/docs/4.x/forms/rich-editor#customizing-the-toolbar-buttons';
+
+    public array $floatingToolbars = [];
+
     public function getFormSchema(): array
     {
         return [
             Section::make()
                 ->schema([
+
+                    static::getEditorBasicTraitComponent('toolbarButtonType'),
+
                     static::getEditorBasicTraitComponent('toolbarButtons')
                         ->hintAction(
                             Action::make('doc')
                                 ->label('Available buttons')
-                                ->url('https://filamentphp.com/docs/4.x/forms/rich-editor#customizing-the-toolbar-buttons')
+                                ->url(self::$toolbarBtnDocUrl)
                                 ->icon(Heroicon::OutlinedBookOpen)
                                 ->color('primary')
                                 ->openUrlInNewTab(),
-                        ),
+                        )
+                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttons'),
+
+                    static::getEditorBasicTraitComponent('toolbarButtonGroups')
+                        ->hintAction(
+                            Action::make('doc')
+                                ->label('Available buttons')
+                                ->url(self::$toolbarBtnDocUrl)
+                                ->icon(Heroicon::OutlinedBookOpen)
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        )
+                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttonGroups'),
+
+                    Repeater::make('floatingToolbars')
+                        ->columns(3)
+                        ->hintAction(
+                            Action::make('doc')
+                                ->label('Available buttons')
+                                ->url('https://filamentphp.com/docs/4.x/forms/rich-editor#customizing-floating-toolbars')
+                                ->icon(Heroicon::OutlinedBookOpen)
+                                ->color('primary')
+                                ->openUrlInNewTab(),
+                        )
+                        ->table([
+                            TableColumn::make('Label'),
+                            TableColumn::make('Buttons'),
+                        ])
+                        ->schema([
+                            TextInput::make('label')
+                                ->columnSpan(1),
+                            TagsInput::make('buttons')
+                                ->columnSpan(2)
+                                ->suggestions(static::getAllAvailableToolbarButtons())
+                                ->reorderable()
+                                ->placeholder('Add Toolbar Button (Enter to add)'),
+                        ])
+                        ->addActionLabel('Add Group')
+                        ->cloneable(),
 
                     Repeater::make('plugins')
                         ->label('Plugins')
@@ -68,6 +116,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                         )
                         ->columnSpanFull()
                         ->minItems(0)
+                        ->defaultItems(0)
                         ->hint('Add plugins to enable corresponding toolbar buttons')
                         ->hintAction(
                             Action::make('doc')
@@ -106,7 +155,25 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     public function applyConfig(Component $component): void
     {
         if ($component instanceof FormsRichEditor) {
-            $component->toolbarButtons($this->toolbarButtons);
+            switch ($this->toolbarButtonType) {
+                case 'buttons':
+                    $component->toolbarButtons($this->toolbarButtons);
+                    break;
+                case 'buttonGroups':
+                    $component->toolbarButtons(
+                        collect($this->toolbarButtonGroups)
+                            ->pluck('buttons')
+                            ->all()
+                    );
+                    break;
+                default:
+                    // default to buttons
+                    $component->toolbarButtons($this->toolbarButtons);
+            }
+            if (filled($this->floatingToolbars)) {
+                $component->floatingToolbars(collect($this->floatingToolbars)->pluck('buttons', 'label')->all());
+            }
+
             if (filled($this->fileAttachmentsDisk)) {
                 $component->fileAttachmentsDisk($this->fileAttachmentsDisk);
             }
