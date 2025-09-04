@@ -13,7 +13,7 @@ export default function markdownEditorEnhancedFormComponent({
     translations,
     toolbarButtons,
     uploadFileAttachmentUsing,
-    getExtraToolbarButtonsUsing,
+    getExtraToolbarButtonUsing,
 }) {
     let base = markdownEditorFormComponent({
         canAttachFiles,
@@ -32,16 +32,12 @@ export default function markdownEditorEnhancedFormComponent({
 
     let data = {
         ...base,
-        getToolbar: () => {
-            
-            let toolbar = base.getToolbar();
 
-            const extraButtons = getExtraToolbarButtonsUsing ? getExtraToolbarButtonsUsing(toolbarButtons) : [];
+        getToolbarButton: (name) => {
 
-            // Add before "undo" button
-            toolbar.splice(toolbar.findIndex(button => button.name === 'undo'), 0, ...extraButtons);
+            const extraBtn =  getExtraToolbarButtonUsing ? getExtraToolbarButtonUsing(name) : null;
 
-            return toolbar;
+            return extraBtn ?? base.getToolbarButton(name);
         }
     };
 

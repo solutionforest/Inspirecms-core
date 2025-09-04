@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Filament\Forms\Components\MarkdownEditor as FormsMarkdownEditor;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
@@ -23,24 +22,6 @@ use SolutionForest\InspireCms\Filament\Forms\Components\MarkdownEditor as FormsM
 class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
 {
     use EditorBasicTrait;
-
-    protected static array $availableToolbarButtons = [
-        'attachFiles',
-        'blockquote',
-        'bold',
-        'bulletList',
-        'codeBlock',
-        'heading',
-        'italic',
-        'link',
-        'orderedList',
-        'redo',
-        'strike',
-        'table',
-        'undo',
-        'contentPicker',
-        'mediaPicker',
-    ];
 
     public function getFormSchema(): array
     {
@@ -72,5 +53,19 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                 $component->fileAttachmentsVisibility($this->fileAttachmentsVisibility);
             }
         }
+    }
+
+    public static function getAllAvailableToolbarButtons(): array
+    {
+        try {
+            $field = FormsMarkdownEditor::make('tmp');
+            $btns = $field->getDefaultToolbarButtons();
+            if (is_array($btns)) {
+                return static::formatAsSelectableArray(collect($btns)->flatten()->unique()->values()->toArray());
+            }
+        } catch (\Exception $e) {
+            //
+        }
+        return [];
     }
 }

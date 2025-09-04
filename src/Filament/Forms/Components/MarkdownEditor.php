@@ -2,9 +2,8 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
-use Closure;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\MarkdownEditor as BaseMarkdownEditor;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -22,60 +21,38 @@ class MarkdownEditor extends BaseMarkdownEditor
     protected string $view = 'inspirecms::filament.forms.components.markdown-editor';
 
     /**
-     * @var array<string>
+     * @return array<string | array<string>>
      */
-    protected array | Closure $toolbarButtons = [
-        'attachFiles',
-        'blockquote',
-        'bold',
-        'bulletList',
-        'codeBlock',
-        'heading',
-        'italic',
-        'link',
-        'orderedList',
-        'redo',
-        'strike',
-        'table',
-        'undo',
-        // extra
-        'contentPicker',
-        'mediaPicker',
-    ];
-
-    protected function setUp(): void
+    public function getDefaultToolbarButtons(): array
     {
-        parent::setUp();
+        return [
+            ['bold', 'italic', 'strike', 'link'],
+            ['heading'],
+            ['blockquote', 'codeBlock', 'bulletList', 'orderedList'],
+            ['table', 'attachFiles'],
+            ['contentPicker', 'mediaPicker'],
+            ['undo', 'redo'],
+        ];
+    }
 
-        $this->registerActions([
-            Action::make('selectContent')
-                ->slideOver()
-                ->fillForm(['selection' => []])
-                ->form([
-                    ContentTree::make('selection')->hiddenLabel(),
-                ])
-                ->action(function (array $data, self $component) {
-                    $component->getLivewire()->dispatch(
-                        'content-picker-trix-appead',
-                        statePath: $component->getStatePath(),
-                        data: $component->formatContentPickerState($data['selection']),
-                    );
-                }),
-        ]);
+    #[ExposedLivewireMethod]
+    public function appendFromMediaLibrary($ids)
+    {
+        if (! empty($ids)) {
+            return $this->formatMediaPickerState($ids);
+        }
 
-        $this->registerListeners([
-            'mediaPicker::select' => [
-                function (self $component, string $statePath, $ids = null, $callback = null) {
-                    if ($statePath === $component->getStatePath() && ! empty($ids)) {
-                        $component->getLivewire()->dispatch(
-                            'media-picker-trix-appead',
-                            statePath: $statePath,
-                            data: $component->formatMediaPickerState($ids),
-                        );
-                    }
-                },
-            ],
-        ]);
+        return '';
+    }
+
+    #[ExposedLivewireMethod]
+    public function appendFromContentPicker($ids)
+    {
+        if (! empty($ids)) {
+            return $this->formatContentPickerState($ids);
+        }
+
+        return '';
     }
 
     public function formatMediaPickerState($state)

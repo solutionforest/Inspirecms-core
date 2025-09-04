@@ -1,9 +1,16 @@
 <div class="flex flex-col space-y-2"
-    x-modelable="selected" x-model="{{ $modelable }}"
+    @if (isset($modelable) && filled($modelable))
+        x-modelable="selected" x-model="{{ $modelable }}"
+    @endif
     x-data="TreeNode({
         selected: $wire.entangle('selectedModelItemKeys').live,
         expanded: $wire.entangle('expandedModelItemKeys').live,
     })"
+    x-on:content-tree-node:reset-selected.window="
+        if ($event?.detail?.key === @js($this->customId)) {
+            selected = [];
+        }
+    "
 >
     @if (! $isDisabled)
         

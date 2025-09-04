@@ -22,13 +22,15 @@ class ContentTreeNode extends BaseContentTreeNode
 
     public ?string $modelable = null;
 
+    public ?string $customId = null;
+
     public array $limits = [];
 
     public bool $isDisabled = true;
 
     public int | string $perPage = 10;
 
-    public FilterCollection $filter;
+    public ?FilterCollection $filter = null;
 
     public function isFilteringBySearch(): bool
     {

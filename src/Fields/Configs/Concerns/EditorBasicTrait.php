@@ -22,8 +22,9 @@ trait EditorBasicTrait
         $disks = config('filesystems.disks', []);
 
         return match ($name) {
+
             'toolbarButtons' => CheckboxList::make('toolbarButtons')
-                ->options(static::getAllAvailableToolbarButtons())
+                ->options(static::getAllAvailableToolbarButtonsOptions())
                 ->bulkToggleable()
                 ->columns(3),
 
@@ -44,12 +45,35 @@ trait EditorBasicTrait
     public static function getAllAvailableToolbarButtons(): array
     {
         if (isset(static::$availableToolbarButtons) && is_array(static::$availableToolbarButtons) && ! empty(static::$availableToolbarButtons)) {
-            return collect(static::$availableToolbarButtons)
-                ->values()
-                ->mapWithKeys(fn ($button) => [$button => $button])
-                ->all();
+            return static::formatAsSelectableArray(collect(static::$availableToolbarButtons)->values()->all());
         }
 
         return [];
+    }
+
+    protected static function getAllAvailableToolbarButtonsOptions(): array
+    {
+        $result = [];
+        foreach (static::getAllAvailableToolbarButtons() as $key => $value) {
+            if (is_array($value)) {
+                $result = array_merge($result, static::formatAsSelectableArray($value));
+            } else {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
+    }
+
+    protected static function formatAsSelectableArray(array $items): array
+    {
+        $result = [];
+        foreach ($items as $item) {
+            if (is_array($item)) {
+                $result[] = static::formatAsSelectableArray($item);
+            } else {
+                $result[$item] = $item;
+            }
+        }
+        return $result;
     }
 }
