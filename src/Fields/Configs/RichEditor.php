@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Fields\Configs;
 
 use Filament\Actions\Action;
+use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
@@ -92,17 +93,41 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->openUrlInNewTab(),
                         )
                         ->table([
-                            TableColumn::make('Label'),
+                            TableColumn::make('Node'),
                             TableColumn::make('Buttons'),
                         ])
                         ->schema([
-                            TextInput::make('label')
-                                ->columnSpan(1),
+                            TextInput::make('node')
+                                ->columnSpan(1)
+                                ->required()
+                                ->placeholder('e.g. paragraph, heading, table ...')
+                                ->datalist([
+                                    'paragraph', 'heading', 'table', 'image', 'link', 'list', 'blockquote', 'codeBlock',
+                                ]),
                             TagsInput::make('buttons')
                                 ->columnSpan(2)
                                 ->suggestions(static::getAllAvailableToolbarButtons())
                                 ->reorderable()
-                                ->placeholder('Add Toolbar Button (Enter to add)'),
+                                ->placeholder('Add Toolbar Button (Enter to add)')
+                                ->suffixAction(Action::make('appendButton')
+                                    ->icon(Heroicon::Plus)
+                                    ->fillForm(['buttons' => []])
+                                    ->schema([
+                                        CheckboxList::make('buttons')
+                                            ->options(static::getAllAvailableToolbarButtonsOptions())
+                                            ->columns(3)
+                                            ->bulkToggleable()
+                                            ->hiddenLabel(),
+                                    ])
+                                    ->action(function ($state, $data, TagsInput $component) {
+                                        $original = $state ?? [];
+                                        // append new buttons to original state
+                                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                                        $state = array_merge($original, $new);
+                                        $component->state($state);
+                                    })
+                                    ->size('sm')
+                                ),
                         ])
                         ->addActionLabel('Add Group')
                         ->cloneable(),
@@ -171,7 +196,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                     $component->toolbarButtons($this->toolbarButtons);
             }
             if (filled($this->floatingToolbars)) {
-                $component->floatingToolbars(collect($this->floatingToolbars)->pluck('buttons', 'label')->all());
+                $component->floatingToolbars(collect($this->floatingToolbars)->pluck('buttons', 'element')->all());
             }
 
             if (filled($this->fileAttachmentsDisk)) {
