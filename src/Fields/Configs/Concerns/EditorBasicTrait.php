@@ -69,7 +69,7 @@ trait EditorBasicTrait
                 )
                 ->suffixAction(Action::make('clearAll')
                     ->label('Clear All')
-                    ->icon(Heroicon::Trash)
+                    ->icon(Heroicon::XMark)
                     ->color('danger')
                     ->action(function ($state, $set) {
                         $set('toolbarButtons', []);
