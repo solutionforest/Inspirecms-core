@@ -66,6 +66,15 @@ trait EditorBasicTrait
                         $set('toolbarButtons', $state);
                     })
                     ->size('sm')
+                )
+                ->suffixAction(Action::make('clearAll')
+                    ->label('Clear All')
+                    ->icon(Heroicon::Trash)
+                    ->color('danger')
+                    ->action(function ($state, $set) {
+                        $set('toolbarButtons', []);
+                    })
+                    ->size('sm')
                 ),
 
             'toolbarButtonGroups' => Repeater::make('toolbarButtonGroups')
