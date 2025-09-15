@@ -60,7 +60,7 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                 ->schema([
                     static::getEditorBasicTraitComponent('fileAttachmentsDisk'),
                     static::getEditorBasicTraitComponent('fileAttachmentsDirectory'),
-                    static::getEditorBasicTraitComponent('fileAttachmentsVisibility'),
+                    // static::getEditorBasicTraitComponent('fileAttachmentsVisibility'),
                 ]),
         ];
     }
@@ -92,9 +92,11 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
             if (filled($this->fileAttachmentsDirectory)) {
                 $component->fileAttachmentsDirectory($this->fileAttachmentsDirectory);
             }
-            if (filled($this->fileAttachmentsVisibility)) {
-                $component->fileAttachmentsVisibility($this->fileAttachmentsVisibility);
-            }
+            // Commented out since:
+            //  The visibility of file attachments for markdown content is always `public`, since generating temporary file upload URLs is not supported in static content. 
+            // if (filled($this->fileAttachmentsVisibility)) {
+            //     $component->fileAttachmentsVisibility($this->fileAttachmentsVisibility);
+            // }
         }
     }
 
