@@ -35,6 +35,12 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         
         'bold', 'italic', 'underline', 'strike', 'subscript', 'superscript',
         
+        'attachFiles', 'link',
+
+        'blockquote', 'codeBlock',
+
+        'bulletList', 'orderedList',
+
         'h1', 'h2', 'h3',
     
         'tableAddColumnBefore', 'tableAddColumnAfter', 'tableDeleteColumn',
@@ -44,6 +50,8 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         'tableDelete',
 
         'contentPicker', 'mediaPicker',
+        
+        'redo', 'undo',
     ];
 
     public array $plugins = [];
