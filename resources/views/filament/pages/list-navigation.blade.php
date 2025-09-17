@@ -1,4 +1,4 @@
-<x-inspirecms::page.extra-sub-navigation>
+<x-filament-panels::page>
     @switch($navigationPageType)
         @case('tree')
             @foreach ($this->getAllCategories() as $cat)
@@ -23,4 +23,4 @@
         @break
 
     @endswitch
-</x-inspirecms::page.extra-sub-navigation>
+</x-filament-panels::page>

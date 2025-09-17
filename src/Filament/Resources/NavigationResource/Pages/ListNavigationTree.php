@@ -3,12 +3,15 @@
 namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages;
 
 use Filament\Actions\CreateAction;
+use Filament\Schemas\Schema;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\ListRecords\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use Filament\Schemas\Components\Livewire;
+use Filament\Schemas\Components\Section;
 
 class ListNavigationTree extends BaseListRecords
 {
@@ -37,6 +40,29 @@ class ListNavigationTree extends BaseListRecords
     public function updatingActiveLocale($value)
     {
         $this->dispatch('refreshAllTree');
+    }
+
+    public function content(Schema $schema): Schema
+    {
+        return $schema
+            ->components(fn () => collect($this->getAllCategories())
+                ->map(function ($category) {
+
+                    $livewireData = [
+                        'category' => $category,
+                        ...$this->getNavigationTreeData($category) 
+                    ];
+
+                    $livewireId = "navigation-tree-{$category}";
+
+                    return Section::make(ucfirst($category))
+                        ->schema([
+                            Livewire::make('inspirecms::navigation-tree', $livewireData)
+                                ->id($livewireId)
+                        ]);
+                })
+                ->all()
+            );
     }
 
     public function getNavigationTreeData($category): array

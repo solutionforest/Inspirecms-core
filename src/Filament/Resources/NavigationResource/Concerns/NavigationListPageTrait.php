@@ -2,25 +2,63 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concerns;
 
+use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Resources\Pages\PageRegistration;
-use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HasExtraSubNavigation;
-use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\ListNavigationTable;
-use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages\ListNavigationTree;
+use Filament\Support\Enums\IconPosition;
+use Filament\Support\Facades\FilamentView;
+use Filament\Support\Icons\Heroicon;
+use Filament\View\PanelsRenderHook;
 
 trait NavigationListPageTrait
 {
-    use HasExtraSubNavigation;
-
-    protected function getExtraSubNavigationComponents(): array
+    public function bootNavigationListPageTrait()
     {
-        $resource = static::getResource();
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::PAGE_HEADER_WIDGETS_BEFORE,
+            function () {
 
-        return collect($resource::getPages())
-            ->only(['index', 'table'])
-            ->whereInstanceOf(PageRegistration::class)
-            ->map(fn (PageRegistration $v) => $v->getPage())
-            ->values()
-            ->all();
+                $resource = static::getResource();
+                
+                $pageFqcn = collect($resource::getPages())
+                    ->only(['index', 'table'])
+                    ->whereInstanceOf(PageRegistration::class)
+                    ->map(fn (PageRegistration $v) => $v->getPage())
+                    ->all();
+
+                $pageActions = collect($pageFqcn)
+                    ->where(fn ($fqcn) => is_a($fqcn, \Filament\Resources\Pages\Page::class, true))
+                    ->map(function (string $fqcn, $type) use ($resource) {
+
+                        /** @var class-string<\Filament\Resources\Pages\Page> $fqcn */
+
+                        return Action::make("{$type}-page")
+                            ->label($fqcn::getNavigationLabel())
+                            //->url($fqcn::getUrl())
+                            ->url($resource::getUrl($type))
+                            ->color('gray')
+                            ->icon(match ($type) {
+                                'index' => Heroicon::OutlinedQueueList,
+                                'table' => Heroicon::OutlinedTableCells,
+                                default => null,
+                            })
+                            ->outlined($this instanceof $fqcn ? false : true);
+                    })
+                    ->values()
+                    ->map(function (Action $action, $index) {
+                        return $action
+                            ->iconPosition($index === 0 ? IconPosition::Before : IconPosition::After);
+                    })
+                    ->all();
+
+                $btnGrp = ActionGroup::make($pageActions)
+                    ->buttonGroup()
+                    ->size('xl');
+
+                return $btnGrp->toHtmlString();
+            },
+            [static::class],
+        );
     }
 
     public static function getNavigationLabel(): string
@@ -37,21 +75,5 @@ trait NavigationListPageTrait
             ->kebab()
             ->afterLast('-')
             ->title();
-    }
-
-    public function getView(): string
-    {
-        return 'inspirecms::filament.pages.list-navigation';
-    }
-
-    protected function getViewData(): array
-    {
-        return [
-            'navigationPageType' => match (true) {
-                $this instanceof ListNavigationTree => 'tree',
-                $this instanceof ListNavigationTable => 'table',
-                default => 'index',
-            },
-        ];
     }
 }
