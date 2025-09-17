@@ -7,12 +7,33 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Support\Facades\Blade;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 
 trait ContentPageTrait
 {
+    public function bootContentPageTrait()
+    {
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::CONTENT_BEFORE,
+            function () {
+
+                $livewireData = $this->getLivewireData();
+
+                return Blade::render(<<<Blade
+                    <livewire:inspirecms::content-sidebar :data="\$livewireData" />
+                Blade, [
+                    'livewireData' => $livewireData,
+                ]);
+            },
+            [static::class],
+        );
+    }
+    
     public function initializeContentPageTrait()
     {
         $this->listeners = array_merge($this->listeners, [
@@ -128,12 +149,7 @@ trait ContentPageTrait
         ];
     }
 
-    public function getLayout(): string
-    {
-        return 'inspirecms::components.layout.content-page';
-    }
-
-    protected function getLayoutData(): array
+    protected function getLivewireData(): array
     {
         $selectedModelItemKey = null;
         $expandedModelItemKeys = [];
@@ -158,5 +174,12 @@ trait ContentPageTrait
                 default => 'index',
             },
         ];
+    }
+
+    public function getExtraBodyAttributes(): array
+    {
+        return array_merge(parent::getExtraBodyAttributes(), [
+            'class' => 'inspirecms-content-page',
+        ]);
     }
 }

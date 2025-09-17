@@ -1,3 +1,7 @@
+.inspirecms-content-page .fi-main {
+    @apply lg:pl-80;
+}
+
 .split-image-layout {
     @apply flex min-h-screen flex-col items-center bg-primary-200 dark:bg-primary-800/80;
     @apply bg-center bg-no-repeat bg-cover bg-(image:--panel-background-image) bg-blend-multiply;
