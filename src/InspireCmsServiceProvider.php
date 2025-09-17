@@ -13,6 +13,8 @@ use Filament\Support\Assets\Js;
 use Filament\Support\Assets\Theme;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Support\Facades\FilamentView;
+use Filament\View\PanelsRenderHook;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
@@ -218,6 +220,13 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         // Testing
         Testable::mixin(new TestsInspireCms);
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            function (array $scopes) {
+                return view('inspirecms::filament.forms.components.content-picker.modal');
+            },
+        );
     }
 
     protected function getAssetPackageName(): ?string

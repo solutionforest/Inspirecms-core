@@ -4,28 +4,27 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
 use Filament\Actions\Action;
-use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Filament\Support\Enums\Size;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\WithContentTreeNode;
+use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\InteractsWithContentTreeModal;
 
 use function Filament\Forms\array_move_after;
 use function Filament\Forms\array_move_before;
 
 class ContentPicker extends Field
 {
-    use CanLimitItemsLength;
     use HasPlaceholder;
-    use WithContentTreeNode;
+    use InteractsWithContentTreeModal;
 
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms::filament.forms.components.content-picker';
+    protected string $view = 'inspirecms::filament.forms.components.content-picker.index';
 
     protected ?Closure $recordTitleUsing = null;
 
@@ -50,12 +49,23 @@ class ContentPicker extends Field
         });
 
         $this->registerActions([
-            $this->getSelectAction(),
-            $this->getClearAction(),
             $this->getMoveUpAction(),
             $this->getMoveDownAction(),
             $this->getDeleteAction(),
         ]);
+    }
+
+    #[ExposedLivewireMethod]
+    public function clearSelected()
+    {
+        $this->rawState([]);
+    }
+
+    #[ExposedLivewireMethod]
+    public function updateSelected($ids)
+    {
+        ray($ids);
+        $this->rawState($ids);
     }
 
     public function recordTitleUsing(Closure $callback): static
@@ -139,64 +149,6 @@ class ContentPicker extends Field
     public function isDeletable(): bool
     {
         return boolval($this->evaluate($this->isDeletable));
-    }
-
-    public function getSelectAction(): Action
-    {
-        return Action::make('select')
-            ->label(__('inspirecms::buttons.select.label'))
-            ->modalSubmitActionLabel(__('inspirecms::buttons.choose.label'))
-            ->modalWidth('5xl')
-            ->slideOver()
-            ->fillForm(function (ContentPicker $component) {
-                $recordIds = $component->getState();
-
-                return [
-                    'records' => $recordIds,
-                ];
-            })
-            ->schema(function () {
-                $selector = ContentTree::make('records')
-                    ->hiddenLabel()
-                    // todo: add translations
-                    ->validationAttribute('records')
-                    ->filter($this->getFilter()->toArray())
-                    ->filteringByPermission($this->isFilteringByPermission());
-
-                if ($this->minItems != null) {
-                    $selector->minItems($this->minItems);
-                }
-
-                if ($this->maxItems != null) {
-                    $selector->maxItems($this->maxItems);
-                }
-
-                if ($this->startNode != null) {
-                    $selector->startNode($this->startNode);
-                }
-
-                if ($this->modifySelectActionSelectorUsing) {
-                    $selector = $this->evaluate($this->modifySelectActionSelectorUsing, [
-                        'selector' => $selector,
-                    ]) ?? $selector;
-                }
-
-                return [$selector];
-            })
-            ->action(function (array $data, ContentPicker $component) {
-                $recordKeys = array_filter($data['records'] ?? []);
-                $component->state($recordKeys);
-            });
-    }
-
-    public function getClearAction(): Action
-    {
-        return Action::make('clear')
-            ->label(__('inspirecms::buttons.clear.label'))
-            ->color('gray')
-            ->action(function () {
-                $this->state([]);
-            });
     }
 
     public function getMoveUpAction(): Action
