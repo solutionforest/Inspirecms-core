@@ -16,6 +16,7 @@ use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\WithBackgroundImageLayout;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserEmailInput;
 use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserNameInput;
@@ -27,27 +28,18 @@ use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
 use Throwable;
+use Illuminate\Support\HtmlString;
 
 class Register extends \Filament\Auth\Pages\Register
 {
-    use HaveBackgroundImage;
+    use WithBackgroundImageLayout;
 
-    /**
-     * @var view-string
-     */
-    protected string $view = 'inspirecms::filament.pages.auth.register';
-
-    /**
-     * @var view-string
-     */
-    protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
-
-    protected Width | string | null $maxContentWidth = '4xl';
+    protected Width | string | null $maxContentWidth = 'screen-md';
 
     protected bool $isAlreadyInitialized = false;
 
     public function boot()
-    {
+{
         try {
 
             // Check database table exists
@@ -282,6 +274,15 @@ class Register extends \Filament\Auth\Pages\Register
     public function getHeading(): string | Htmlable
     {
         return $this->isAlreadyInitialized ? __('inspirecms::pages/auth/register.heading.installed') : __('inspirecms::pages/auth/register.heading.not_installed');
+    }
+
+    public function getSubheading(): string | Htmlable | null
+    {
+        if (! $this->showLoginButton()) {
+            return null;
+        }
+
+        return parent::getSubheading();
     }
 
     public function showLoginButton(): bool

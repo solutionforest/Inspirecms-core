@@ -12,25 +12,16 @@ use Filament\Schemas\Components\Component;
 use Filament\Support\Enums\Width;
 use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Contracts\Support\Htmlable;
-use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
+use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\WithBackgroundImageLayout;
 use SolutionForest\InspireCms\Exceptions\AccountLockedException;
 use SolutionForest\InspireCms\Helpers\UIHelper;
+use SolutionForest\InspireCms\InspireCmsConfig;
 
 class Login extends \Filament\Auth\Pages\Login
 {
-    use HaveBackgroundImage;
+    use WithBackgroundImageLayout;
 
-    /**
-     * @var view-string
-     */
-    protected string $view = 'inspirecms::filament.pages.auth.login';
-
-    /**
-     * @var view-string
-     */
-    protected static string $layout = 'inspirecms::components.layout.split-image-login-page';
-
-    protected Width | string | null $maxContentWidth = '4xl';
+    protected Width | string | null $maxContentWidth = 'screen-md';
 
     public function authenticate(): ?LoginResponse
     {
@@ -127,7 +118,13 @@ class Login extends \Filament\Auth\Pages\Login
         $base = parent::getSubheading();
 
         return str(__('inspirecms::pages/auth/login.subheading'))
-            ->when($base, fn ($string) => $string->finish('<br/>' . $base))
+            ->when(
+                (
+                    ($base || filled($this->userUndertakingMultiFactorAuthentication))
+                    && ((filament()->hasRegistration() && InspireCmsConfig::get('admin.allow_registration', false)) || inspirecms()->needInstall())
+                ), 
+                fn ($string) => $string->finish('<br/>' . $base)
+            )
             ->toHtmlString();
     }
 
