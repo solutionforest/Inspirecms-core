@@ -39,7 +39,7 @@ class ContentHistoryAction extends Action
 
         $this->icon('heroicon-o-clock');
 
-        $this->modalWidth('6xl');
+        $this->modalWidth('full');
 
         $this->color('gray');
     }

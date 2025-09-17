@@ -362,7 +362,7 @@ class ContentVersionHistory extends TableReleatedLivewireComponent
             // Disable footer actions
             ->modalSubmitAction(false)->modalCancelAction(false)
             ->slideOver()
-            ->modalWidth(Width::ScreenTwoExtraLarge)
+            ->modalWidth(Width::Full)
             ->modalHeading(fn (Action $action) => str(__('inspirecms::resources/content-version.buttons.view_differences.heading'))->when($action->getRecordTitle(), fn ($str, $value) => $str->finish(' - ' . $value)))
             ->modalDescription(fn ($record) => __('inspirecms::resources/content-version.buttons.view_differences.description', [
                 'author' => $record->author?->name ?? __('inspirecms::inspirecms.unknown_user'),
