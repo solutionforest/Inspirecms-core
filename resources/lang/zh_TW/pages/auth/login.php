@@ -3,7 +3,10 @@
 return [
 
     'title' => '登入',
-    'heading' => '登入帳號',
+
+    'heading' => '歡迎回來！',
+
+    'subheading' => '登入您的帳號',
 
     'buttons' => [
         'register' => [

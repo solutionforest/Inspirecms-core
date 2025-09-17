@@ -3,7 +3,10 @@
 return [
 
     'title' => '登录',
-    'heading' => '登录账号',
+
+    'heading' => '欢迎回来！',
+
+    'subheading' => '登录您的账户',
 
     'buttons' => [
         'register' => [

@@ -122,6 +122,15 @@ class Login extends \Filament\Auth\Pages\Login
         return __('inspirecms::pages/auth/login.heading');
     }
 
+    public function getSubheading(): string|Htmlable|null
+    {
+        $base = parent::getSubheading();
+
+        return str(__('inspirecms::pages/auth/login.subheading'))
+            ->when($base, fn ($string) => $string->finish('<br/>' . $base))
+            ->toHtmlString();
+    }
+
     protected function getAuthenticateFormAction(): Action
     {
         return parent::getAuthenticateFormAction()

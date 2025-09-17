@@ -4,7 +4,9 @@ return [
 
     'title' => 'Login',
 
-    'heading' => 'Sign in',
+    'heading' => 'Welcome back!',
+
+    'subheading' => 'Sign in to your account',
 
     'buttons' => [
         'register' => [
