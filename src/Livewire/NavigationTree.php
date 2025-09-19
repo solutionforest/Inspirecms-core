@@ -2,164 +2,73 @@
 
 namespace SolutionForest\InspireCms\Livewire;
 
+use Closure;
 use Filament\Actions\Action;
-use Filament\Actions\Concerns\InteractsWithActions;
-use Filament\Actions\Contracts\HasActions;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
 use Filament\Notifications\Notification;
-use Filament\Support\Enums\Alignment;
+use Filament\Support\Icons\Heroicon;
+use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Reactive;
-use Livewire\Component;
-use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
+use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Models\Contracts\Navigation;
-use Throwable;
 
-class NavigationTree extends Component implements HasActions, HasForms
+class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent
 {
-    use InteractsWithActions;
-    use InteractsWithForms;
+    protected static bool $haveToolbarActions = true;
+    protected static bool $searchable = true;
+    protected static bool $allowDragDrop = true;
 
     public string $category;
 
-    public int $maxDepth = -1;
-
-    public int $maxVisibleDepth = 20;
-
     #[Reactive]
     public ?string $activeLocale = null;
-
-    public array $nodes = [];
 
     protected $listeners = [
         'refreshAllTree' => '$refresh',
     ];
 
-    public function mount($category, $activeLocale = null)
-    {
-        $this->category = $category;
-        $this->activeLocale = $activeLocale ?? collect(InspireCms::getAllAvailableLanguages())->keys()->first() ?? app()->getLocale();
-        $this->refreshNodes();
-    }
-
-    #[On('refreshAllTree')]
-    public function refreshNodes()
-    {
-        $records = $this->getTreeQuery()->get()->toTree();
-        $this->nodes = $this->mutateBeforeFill($records);
-    }
-
-    public function resetTree()
-    {
-        $this->refreshNodes();
-    }
-
-    public function editTreeNode($id)
-    {
-        $url = FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'edit', [
-            'record' => $id,
-            'category' => $this->category,
-            'activeLocale' => $this->activeLocale,
-        ], false);
-
-        if (blank($url)) {
-            Notification::make()
-                ->title('Edit Failed')
-                ->body('Unable to edit this navigation item')
-                ->danger()
-                ->send();
-        }
-
-        return redirect()->to($url);
-    }
-
-    public function viewTreeNode($id)
-    {
-        $url = FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'view', [
-            'record' => $id,
-            'category' => $this->category,
-            'activeLocale' => $this->activeLocale,
-        ], false);
-
-        if (blank($url)) {
-            Notification::make()
-                ->title('View Failed')
-                ->body('Unable to view this navigation item')
-                ->danger()
-                ->send();
-        }
-
-        return redirect()->to($url);
-    }
-
-    public function deleteTreeNode($id)
-    {
-        try {
-            $record = $this->getModel()::findOrFail($id);
-            $record->delete();
-            Notification::make()
-                ->title('Deleted')
-                ->body('Navigation item deleted successfully.')
-                ->success()
-                ->send();
-        } catch (Throwable $th) {
-            Notification::make()
-                ->title('Delete Failed')
-                ->body('Navigation item not found.')
-                ->danger()
-                ->send();
-        } finally {
-            $this->dispatch('refreshAllTree');
-        }
-    }
-
-    protected function getTreeNodeActions(): array
+    protected function getNodeItemActions(): array
     {
         return [
-            Action::make('view')
-                ->icon('heroicon-m-eye')
+            EditAction::make()
                 ->iconButton()
-                ->color('gray')
-                ->label('View')
-                ->size('xs')
-                ->visible(fn () => $this->authorizeAction('view')),
-            Action::make('edit')
-                ->icon('heroicon-m-pencil')
+                ->icon(fn (EditAction $action) => $action->getGroupedIcon() ?? Heroicon::Pencil),
+            ViewAction::make()
                 ->iconButton()
-                ->color('primary')
-                ->label('Edit')
-                ->size('xs')
-                ->visible(fn () => $this->authorizeAction('update')),
-            Action::make('delete')
-                ->icon('heroicon-m-trash')
+                ->icon(fn (ViewAction $action) => $action->getGroupedIcon() ?? Heroicon::Eye),
+            DeleteAction::make()
                 ->iconButton()
-                ->color('danger')
-                ->label('Delete')
-                ->size('xs')
-                ->model($this->getModel())
-                ->requiresConfirmation()
-                ->modalHeading('Delete Navigation Item')
-                ->modalDescription('Are you sure you want to delete this navigation item?')
-                ->modalAlignment(Alignment::Center),
+                ->icon(fn (DeleteAction $action) => $action->getGroupedIcon() ?? Heroicon::Trash)
+                ->hidden(function ($arguments) {
+
+                    $isAllowed = PermissionManifest::authorizeModel(
+                        ability: 'delete',
+                        model: $this->getModel(),
+                    );
+
+                    if (is_bool($isAllowed)) {
+                        return $isAllowed !== true;
+                    }
+
+                    return false;
+                })
+                ->after(function () {
+                    $this->refreshNodes();
+                }),
         ];
     }
 
-    public function getAvailableActions(): array
+    public function saveOrder()
     {
-        return collect($this->getTreeNodeActions())
-            ->where(fn (Action $action) => $action->isVisible())
-            ->all();
-    }
+        $data = collect($this->nodes)->map(fn ($node) => $this->transformNodeIntoRecord($node))->toArray();
 
-    public function save()
-    {
-        $data = $this->mutateBeforeSave($this->nodes);
         $this->getTreeQuery()->rebuildTree($data);
 
         Notification::make()
@@ -167,7 +76,139 @@ class NavigationTree extends Component implements HasActions, HasForms
             ->body('The navigation tree has been updated successfully.')
             ->success()
             ->send();
+            
         $this->refreshNodes();
+    }
+
+    public function refreshNodes()
+    {
+        // Implement the logic to refresh the nodes, e.g., fetch from database
+        // $this->nodes = ...;
+        $records = $this->getTreeQuery()->get()->toTree();
+
+        $this->nodes = collect($records)->map(fn ($record) => $this->transformRecordIntoNode($record))->toArray();
+    }
+
+    //region Action Configurations
+
+    public function getDefaultActionSchemaResolver(Action $action): ?Closure
+    {
+        return match (true) {
+            $action instanceof EditAction,
+            $action instanceof CreateAction,
+            $action instanceof ViewAction => fn ($schema) => $this->getResource()::form($schema),
+            default => null,
+        };
+    }
+
+    public function getDefaultActionAuthorizationResponse(Action $action): ?Response
+    {
+        return match (true) {
+            $action instanceof CreateAction => $this->getResource()::getCreateAuthorizationResponse(),
+            $action instanceof DeleteAction => $this->getResource()::getDeleteAuthorizationResponse($action->getRecord()),
+            $action instanceof EditAction => $this->getResource()::getEditAuthorizationResponse($action->getRecord()),
+            $action instanceof ViewAction => $this->getResource()::getViewAuthorizationResponse($action->getRecord()),
+            default => null,
+        };
+    }
+
+    /**
+     * @return ?class-string<Model>
+     */
+    public function getDefaultActionModel(Action $action): ?string
+    {
+        return $this->getModel();
+    }
+
+    public function getDefaultActionModelLabel(Action $action): ?string
+    {
+        return  $this->getResource()::getModelLabel();
+    }
+
+    public function getDefaultActionUrl(Action $action): ?string
+    {
+        $resourcePageParams = [
+            'category' => $this->category,
+            'activeLocale' => $this->activeLocale,
+        ];
+
+        if (
+            ($action instanceof CreateAction) &&
+            ($this->getResource()::hasPage('create'))
+        ) {
+            return FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'create', $resourcePageParams, false);
+        }
+
+        if (
+            ($action instanceof EditAction) &&
+            ($this->getResource()::hasPage('edit')) 
+        ) {
+            $resourcePageParams['record'] = $action->getRecord();
+            return FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'edit', $resourcePageParams, false);
+        }
+
+        if (
+            ($action instanceof ViewAction) &&
+            ($this->getResource()::hasPage('view'))
+        ) {
+            $resourcePageParams['record'] = $action->getRecord();
+            return FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'view', $resourcePageParams, false);
+        }
+
+        return null;
+    }
+
+    protected function resolveRecursiveTreeNodeAction(array $action, array $parentActions): ?Action
+    {
+        $resolvedAction = parent::resolveRecursiveTreeNodeAction($action, $parentActions);
+
+        if ($resolvedAction) {
+            
+            $resolvedAction->model($this->getModel());
+
+            $record = ($action['context']['recordKey'] ?? null) ? $this->getTreeQuery()->find($action['context']['recordKey']) : null;
+
+            $resolvedAction->getRootGroup()?->record($record) ?? $resolvedAction->record($record);
+
+            if (($url = $this->getDefaultActionUrl($resolvedAction)) && 
+                filled($url)
+            ) {
+                
+                redirect($url);
+
+                // Avoid modal opening before redirect
+                return null;
+            }
+        }
+
+        return $resolvedAction;
+    }
+
+    //endregion Action Configurations
+
+    /**
+     * @param Model $record
+     * @return array
+     */
+    protected function transformRecordIntoNode($record)
+    {
+        return [
+            'id' => $record->getKey(),
+            'name' => str($record->hasTranslation('title', $this->activeLocale) ? $record->getTranslation('title', $this->activeLocale) : $record->title)
+                ->when(! $record->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
+                    ->toString(),
+            'description' => ($url = $record->getUrl($this->activeLocale)) && filled($url) ? $url : null,
+            'children' => collect($record->children)->map(fn ($child) => $this->transformRecordIntoNode($child))->toArray(),
+        ];
+    }
+
+    protected function transformNodeIntoRecord(array $node)
+    {
+        return [
+            'id' => $node['id'] ?? throw new \Exception('ID is missing in node'),
+            'title' => $node['name'] ?? $node['id'] ?? throw new \Exception('Name is missing in node'),
+            'children' => collect($node['children'] ?? [])->map(fn ($child) => $this->transformNodeIntoRecord($child))->toArray(),
+        ];
     }
 
     protected function getTreeQuery(): Builder
@@ -181,58 +222,16 @@ class NavigationTree extends Component implements HasActions, HasForms
             ->defaultOrder();
     }
 
-    protected function mutateBeforeFill($models): array
-    {
-        return collect($models)
-            ->map(fn (Navigation | Model $model) => [
-                'id' => $model->id,
-                'name' => str($model->hasTranslation('title', $this->activeLocale) ? $model->getTranslation('title', $this->activeLocale) : $model->title)
-                    ->when(! $model->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
-                    ->toString(),
-                'description' => ($url = $model->getUrl($this->activeLocale)) && filled($url) ? $url : null,
-                'children' => $this->mutateBeforeFill($model->children),
-            ])
-            ->toArray();
-    }
-
-    protected function mutateBeforeSave($nodes): array
-    {
-        return collect($nodes)->map(fn ($item) => [
-            'id' => $item['id'],
-            'title' => $item['name'],
-            'children' => $this->mutateBeforeSave($item['children'] ?? []),
-        ])->toArray();
-    }
-
-    protected function authorizeAction(string $action): bool
-    {
-        $result = PermissionManifest::authorizeModel($action, $this->getModel(), true);
-
-        if ($result !== null) {
-            return $result;
-        }
-
-        return false;
-    }
-
     protected function getModel(): string
     {
         return InspireCmsConfig::getNavigationModelClass();
     }
 
     /**
-     * @return class-string<resource>
+     * @return class-string<\Filament\Resources\Resource>
      */
     protected function getResource(): string
     {
-        return InspireCmsConfig::getFilamentResource('navigation');
-    }
-
-    public function render()
-    {
-        return view('inspirecms::livewire.navigation-tree', [
-            'maxDepth' => $this->maxDepth,
-            'maxVisibleDepth' => $this->maxVisibleDepth,
-        ]);
+        return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
     }
 }
