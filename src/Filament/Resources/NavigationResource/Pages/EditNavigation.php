@@ -13,6 +13,10 @@ class EditNavigation extends BaseEditRecord
 {
     use Translatable;
 
+    protected $queryString = [
+        'activeLocale',
+    ];
+
     public function getActions(): array
     {
         return [

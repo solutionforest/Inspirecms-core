@@ -15,6 +15,10 @@ class ListNavigationTable extends BaseListRecords
     use NavigationListPageTrait;
     use Translatable;
 
+    protected $queryString = [
+        'activeLocale',
+    ];
+
     protected function getHeaderActions(): array
     {
         return [

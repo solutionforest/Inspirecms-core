@@ -18,6 +18,12 @@ class ListNavigationTree extends BaseListRecords
     use NavigationListPageTrait;
     use Translatable;
 
+    protected string $view = 'inspirecms::filament.resources.navigation.pages.tree';
+
+    protected $queryString = [
+        'activeLocale',
+    ];
+
     public function getActions(): array
     {
         return [
@@ -40,29 +46,6 @@ class ListNavigationTree extends BaseListRecords
     public function updatingActiveLocale($value)
     {
         $this->dispatch('refreshAllTree');
-    }
-
-    public function content(Schema $schema): Schema
-    {
-        return $schema
-            ->components(fn () => collect($this->getAllCategories())
-                ->map(function ($category) {
-
-                    $livewireData = [
-                        'category' => $category,
-                        ...$this->getNavigationTreeData($category) 
-                    ];
-
-                    $livewireId = "navigation-tree-{$category}";
-
-                    return Section::make(ucfirst($category))
-                        ->schema([
-                            Livewire::make('inspirecms::navigation-tree', $livewireData)
-                                ->id($livewireId)
-                        ]);
-                })
-                ->all()
-            );
     }
 
     public function getNavigationTreeData($category): array

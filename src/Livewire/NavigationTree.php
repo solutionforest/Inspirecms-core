@@ -31,7 +31,7 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
     public ?string $activeLocale = null;
 
     protected $listeners = [
-        'refreshAllTree' => '$refresh',
+        'refreshAllTree' => 'refreshNodes',
     ];
 
     protected function getNodeItemActions(): array
