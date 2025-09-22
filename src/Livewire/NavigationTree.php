@@ -20,6 +20,7 @@ use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Helpers\TreeNodeActionHelper;
 use SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent;
 
 class NavigationTree extends SortableTreeComponent
@@ -109,7 +110,7 @@ class NavigationTree extends SortableTreeComponent
      */
     public function getDefaultActionModel(Action $action): ?string
     {
-        return static::getModel();
+        return $this->getModel();
     }
 
     public function getDefaultActionModelLabel(Action $action): ?string
@@ -156,7 +157,7 @@ class NavigationTree extends SortableTreeComponent
 
         if ($resolvedAction) {
             
-            $resolvedAction->model(static::getModel());
+            $resolvedAction->model($this->getModel());
 
             $record = ($action['context']['recordKey'] ?? null) ? $this->getTreeQuery()->find($action['context']['recordKey']) : null;
 
@@ -192,7 +193,7 @@ class NavigationTree extends SortableTreeComponent
                     return [$action->record($record)];
                 } elseif ($action instanceof ActionGroup) {
                     return collect($action->getFlatActions())
-                        ->map(fn ($action) => $action->record($record))
+                        ->map(fn (Action $subAction) => $subAction->record($record))
                         ->all();
                 }
                 return [];
@@ -200,6 +201,7 @@ class NavigationTree extends SortableTreeComponent
             ->whereInstanceOf(Action::class)
             ->where(fn (Action $action) => $action->isVisible())
             ->map(fn (Action $action) => $action->getName())
+            ->values()
             ->all();
 
         return [
@@ -231,7 +233,7 @@ class NavigationTree extends SortableTreeComponent
         $actions = $this->getNodeItemActions();
 
         if ($node) {
-            $actions = static::retrieveNodeActions($node, $actions);
+            $actions = TreeNodeActionHelper::getNodeActions(node: $node, livewireActions: $actions, model: $this->getModel());
         }
 
         return collect($actions)
@@ -241,7 +243,7 @@ class NavigationTree extends SortableTreeComponent
 
     protected function getTreeQuery(): Builder
     {
-        return static::getModel()::scoped(['category' => $this->category])
+        return $this->getModel()::scoped(['category' => $this->category])
             ->withDepth()
             ->with([
                 'content' => fn ($q) => $q->withTrashed(),
@@ -250,7 +252,7 @@ class NavigationTree extends SortableTreeComponent
             ->defaultOrder();
     }
 
-    protected static function getModel(): string
+    protected function getModel(): string
     {
         return InspireCmsConfig::getNavigationModelClass();
     }
@@ -297,64 +299,5 @@ class NavigationTree extends SortableTreeComponent
         }
 
         return null;
-    }
-
-    /**
-     * @param array $node
-     * @param array<Action|ActionGroup> $livewireActions
-     * @return array<Action|ActionGroup>
-     */
-    protected static function retrieveNodeActions(array $node, array $livewireActions, bool $applyRecord = true): array
-    {
-        $actionNames = $node['__visibleActions'] ?? [];
-
-        if (empty($actionNames)) {
-            return [];
-        }
-
-        $nodeId = $node['id'] ?? null;
-        if (! $nodeId && $applyRecord) {
-            throw new \Exception('Node ID is missing');
-        }
-
-        /**
-         * @var array<int,Action|ActionGroup>
-         */
-        $filteredActions = [];
-
-        foreach ($livewireActions as $action) {
-            if ($action instanceof Action) {
-                if (in_array($action->getName(), $actionNames)) {
-
-                    if ($applyRecord) {
-                        $action = $action
-                            ->arguments(['nodeId' => $nodeId])
-                            ->record($nodeId)
-                            ->model(static::getModel())
-                            ->resolveRecordUsing(function ($arguments, $key, $model) {
-                                if ($key instanceof Model) {
-                                    return $key;
-                                }
-                                $recordKey = $arguments['nodeId'] ?? $key ?? null;
-                                if (is_null($recordKey) || empty($recordKey)) {
-                                    return null;
-                                }
-                                return ($model ?? static::getModel())::find($recordKey);
-                            });
-                    }
-
-                    $filteredActions[] = $action;
-                }
-            } elseif ($action instanceof ActionGroup) {
-
-                // Check if any actions in the group are visible for this node
-                $groupActions = static::retrieveNodeActions($node, $action->getActions(), $applyRecord);
-                if (!empty($groupActions)) {
-                    $filteredActions[] = $action->actions($groupActions);
-                }
-            }
-        }
-
-        return $filteredActions;
     }
 }
