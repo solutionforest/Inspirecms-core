@@ -27,7 +27,7 @@ class SetDefaultContentPageAction extends Action
         $this->model(InspireCmsConfig::getContentModelClass());
 
         $this->hidden(function (array $arguments, ?Model $record) {
-            
+
             if ($record) {
                 return ! $record->isWebPage() || ($record->is_default == true) || $record->isLocked() || count($record->ancestorsAndSelf ?? []) > 1;
             }

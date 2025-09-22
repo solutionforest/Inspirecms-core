@@ -16,7 +16,7 @@ class MediaPickerRichPlugin implements RichContentPlugin
     {
         return app(static::class);
     }
-    
+
     /**
      * @return array<Extension>
      */
@@ -63,10 +63,10 @@ class MediaPickerRichPlugin implements RichContentPlugin
                     if (! in_array(InteractsWithMediaLibraryModal::class, class_uses($richEditorComponent))) {
                         throw new \RuntimeException('RichEditor component must use the InteractsWithMediaLibraryModal trait to use the Media Picker plugin.');
                     }
-                    
+
                     $mediaPickerModalId = $richEditorComponent->getMediaLibraryModalId();
                     $mediaPickerConfig = Js::from($richEditorComponent->getMediaLibraryModalConfig());
-                    
+
                     return <<<JS
                         \$dispatch('media-picker-setup', { 
                             selected: [],
@@ -93,7 +93,7 @@ class MediaPickerRichPlugin implements RichContentPlugin
         return [
             Action::make('testMediaPicker')
                 ->schema([
-                    \SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker::make('code')
+                    \SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaPicker::make('code'),
                 ])
                 ->action(function ($data) {
                     // dd($data);

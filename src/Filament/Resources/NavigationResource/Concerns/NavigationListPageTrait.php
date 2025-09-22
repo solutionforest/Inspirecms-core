@@ -19,7 +19,7 @@ trait NavigationListPageTrait
             function () {
 
                 $resource = static::getResource();
-                
+
                 $pageFqcn = collect($resource::getPages())
                     ->only(['index', 'table'])
                     ->whereInstanceOf(PageRegistration::class)
@@ -34,7 +34,7 @@ trait NavigationListPageTrait
 
                         return Action::make("{$type}-page")
                             ->label($fqcn::getNavigationLabel())
-                            //->url($fqcn::getUrl())
+                            // ->url($fqcn::getUrl())
                             ->url($resource::getUrl($type))
                             ->color('gray')
                             ->icon(match ($type) {

@@ -35,9 +35,9 @@ class ArrayChunkStateCast implements StateCast
                 if (is_array($chunk)) {
                     return array_merge($carry, $chunk);
                 }
-                
+
                 $carry[] = $chunk;
-                
+
                 return $carry;
             },
             initial: [],

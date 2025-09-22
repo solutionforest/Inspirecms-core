@@ -59,7 +59,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
         $records = $this->fetchChildNodes($this->startNodeId);
 
         $records->each(fn ($record) => $this->cacheRecordAppend($record));
-        
+
         $nodes = $records
             ->map(fn ($record) => $this->transformRecordIntoNode($record))
             ->toArray();
@@ -82,7 +82,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
     }
 
     /**
-     * @param Model $record
+     * @param  Model  $record
      * @return array
      */
     protected function transformRecordIntoNode($record)
@@ -100,9 +100,9 @@ class BaseContentTreeNode extends ServerSideTreeComponent
 
         $resourcePage = null;
         $url = null;
-        
+
         // authorize user to view/edit the record
-        if (($resource = $this->getFilamentResource()) && 
+        if (($resource = $this->getFilamentResource()) &&
             ($resourcePage = FilamentResourceHelper::retrieveFirstAccessiblePage($resource, ['edit', 'view'], ['record' => $record])) &&
             (is_array($resourcePage) || is_string($resourcePage))
         ) {
@@ -146,6 +146,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                         ->map(fn (Action $subAction) => $subAction->record($record))
                         ->all();
                 }
+
                 return [];
             })
             ->whereInstanceOf(Action::class)
@@ -155,12 +156,11 @@ class BaseContentTreeNode extends ServerSideTreeComponent
             ->values()
             ->all();
 
-
         $node['__visibleActions'] = $visibleActions;
 
         return $node;
     }
-    
+
     protected function resolveTreeNodeAction(array $action, array $parentActions): ?Action
     {
         $resolvedAction = $this->resolveBaseAction($action, $parentActions);
@@ -180,7 +180,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
     public function getNodeItemActionsHtml($id)
     {
         $node = $this->getNodeById($id);
-        
+
         $actions = $this->getNodeItemActions();
 
         if ($node) {
@@ -188,16 +188,16 @@ class BaseContentTreeNode extends ServerSideTreeComponent
             $actions = TreeNodeActionHelper::getNodeActions(
                 node: collect($node)
                     ->except(['__fi_resource_page', 'url'])
-                    ->all(), 
-                livewireActions: $actions, 
+                    ->all(),
+                livewireActions: $actions,
                 model: $this->getModel(),
                 resolveRecordUsing: function ($arguments, $key) {
                     if ($key instanceof Model) {
                         return $key;
                     }
-                    
+
                     $recordKey = $arguments['nodeId'] ?? $key ?? null;
-                    
+
                     if (is_null($recordKey) || empty($recordKey)) {
                         return null;
                     }
@@ -208,7 +208,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
         }
 
         return collect($actions)
-            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->map(fn (Action | ActionGroup $action) => $action->toHtml())
             ->all();
     }
 
@@ -216,6 +216,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
     {
         $currentLocale = $this->activeLocale;
         $currentLocaleTitle = $node['translatable']['title'][$currentLocale] ?? null;
+
         return [
             'title' => $currentLocaleTitle ?? $node['title'] ?? 'Untitled',
             'description' => null,
@@ -236,6 +237,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                 false
             );
         }
+
         return $node['url'] ?? null;
     }
 
@@ -307,7 +309,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
     }
 
     /**
-     * @param mixed $parentId
+     * @param  mixed  $parentId
      * @return Collection<int, Model|Content>
      */
     protected function fetchChildNodes($parentId = null)
@@ -318,6 +320,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
         } else {
             $query->whereIsRoot();
         }
+
         return $query->get();
     }
 
@@ -349,7 +352,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
 
                 $query->where(function (Builder $q) use ($ids, $modelKey) {
                     $q->whereIn($modelKey, $ids)
-                      ->orWhereIn('parent_id', $ids);
+                        ->orWhereIn('parent_id', $ids);
                 });
             }
         }
@@ -376,7 +379,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                 return $indexUrl;
             }
         }
-        
+
         // Fallback to root
         return '/';
     }

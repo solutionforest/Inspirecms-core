@@ -25,7 +25,9 @@ use SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent;
 class NavigationTree extends SortableTreeComponent
 {
     protected static bool $showToolbarActions = true;
+
     protected static bool $searchable = true;
+
     protected static bool $allowDragDrop = true;
 
     public string $category;
@@ -43,7 +45,7 @@ class NavigationTree extends SortableTreeComponent
             EditAction::make()
                 ->iconButton()
                 ->icon(fn (EditAction $action) => $action->getGroupedIcon() ?? Heroicon::Pencil),
-                
+
             ViewAction::make()
                 ->iconButton()
                 ->icon(fn (ViewAction $action) => $action->getGroupedIcon() ?? Heroicon::Eye),
@@ -68,7 +70,7 @@ class NavigationTree extends SortableTreeComponent
             ->body('The navigation tree has been updated successfully.')
             ->success()
             ->send();
-            
+
         $this->refreshNodes();
     }
 
@@ -81,7 +83,7 @@ class NavigationTree extends SortableTreeComponent
         $this->nodes = collect($records)->map(fn ($record) => $this->transformRecordIntoNode($record))->toArray();
     }
 
-    //region Action Configurations
+    // region Action Configurations
 
     public function getDefaultActionSchemaResolver(Action $action): ?Closure
     {
@@ -114,7 +116,7 @@ class NavigationTree extends SortableTreeComponent
 
     public function getDefaultActionModelLabel(Action $action): ?string
     {
-        return  $this->getResource()::getModelLabel();
+        return $this->getResource()::getModelLabel();
     }
 
     public function getDefaultActionUrl(Action $action): ?string
@@ -133,9 +135,10 @@ class NavigationTree extends SortableTreeComponent
 
         if (
             ($action instanceof EditAction) &&
-            ($this->getResource()::hasPage('edit')) 
+            ($this->getResource()::hasPage('edit'))
         ) {
             $resourcePageParams['record'] = $action->getRecord();
+
             return FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'edit', $resourcePageParams, false);
         }
 
@@ -144,6 +147,7 @@ class NavigationTree extends SortableTreeComponent
             ($this->getResource()::hasPage('view'))
         ) {
             $resourcePageParams['record'] = $action->getRecord();
+
             return FilamentResourceHelper::attemptToGetUrl($this->getResource(), 'view', $resourcePageParams, false);
         }
 
@@ -155,17 +159,17 @@ class NavigationTree extends SortableTreeComponent
         $resolvedAction = parent::resolveRecursiveTreeNodeAction($action, $parentActions);
 
         if ($resolvedAction) {
-            
+
             $resolvedAction->model($this->getModel());
 
             $record = ($action['context']['recordKey'] ?? null) ? $this->getTreeQuery()->find($action['context']['recordKey']) : null;
 
             $resolvedAction->getRootGroup()?->record($record) ?? $resolvedAction->record($record);
 
-            if (($url = $this->getDefaultActionUrl($resolvedAction)) && 
+            if (($url = $this->getDefaultActionUrl($resolvedAction)) &&
                 filled($url)
             ) {
-                
+
                 redirect($url);
 
                 // Avoid modal opening before redirect
@@ -176,21 +180,21 @@ class NavigationTree extends SortableTreeComponent
         return $resolvedAction;
     }
 
-    //endregion Action Configurations
+    // endregion Action Configurations
 
     /**
-     * @param Model $record
+     * @param  Model  $record
      * @return array
      */
     protected function transformRecordIntoNode($record)
     {
         $actions = static::$showNodeActions ? $this->getNodeItemActions() : [];
 
-        $node =  [
+        $node = [
             'id' => $record->getKey(),
             'name' => str($record->hasTranslation('title', $this->activeLocale) ? $record->getTranslation('title', $this->activeLocale) : $record->title)
                 ->when(! $record->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
-                    ->toString(),
+                ->toString(),
             'description' => ($url = $record->getUrl($this->activeLocale)) && filled($url) ? $url : null,
             'children' => collect($record->children)->map(fn ($child) => $this->transformRecordIntoNode($child))->toArray(),
         ];
@@ -204,6 +208,7 @@ class NavigationTree extends SortableTreeComponent
                         ->map(fn (Action $subAction) => $subAction->record($record))
                         ->all();
                 }
+
                 return [];
             })
             ->whereInstanceOf(Action::class)
@@ -236,8 +241,8 @@ class NavigationTree extends SortableTreeComponent
 
         if ($node) {
             $actions = TreeNodeActionHelper::getNodeActions(
-                node: $node, 
-                livewireActions: $actions, 
+                node: $node,
+                livewireActions: $actions,
                 model: $this->getModel(),
                 resolveRecordUsing: function ($arguments, $key) {
                     if ($key instanceof Model) {
@@ -247,13 +252,14 @@ class NavigationTree extends SortableTreeComponent
                     if (is_null($recordKey) || empty($recordKey)) {
                         return null;
                     }
+
                     return $this->getTreeQuery()->find($recordKey);
                 },
             );
         }
 
         return collect($actions)
-            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->map(fn (Action | ActionGroup $action) => $action->toHtml())
             ->all();
     }
 
@@ -288,7 +294,7 @@ class NavigationTree extends SortableTreeComponent
                 return $node;
             }
 
-            if (!empty($node['children'])) {
+            if (! empty($node['children'])) {
                 $childNode = $this->getNodeByIdRecursive($node['children'], $id);
                 if ($childNode) {
                     return $childNode;
@@ -306,7 +312,7 @@ class NavigationTree extends SortableTreeComponent
                 return $node;
             }
 
-            if (!empty($node['children'])) {
+            if (! empty($node['children'])) {
                 $childNode = $this->getNodeByIdRecursive($node['children'], $id);
                 if ($childNode) {
                     return $childNode;

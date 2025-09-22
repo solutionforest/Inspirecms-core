@@ -167,9 +167,10 @@ class MarkdownEditor extends BaseMarkdownEditor
                     scopeMethod: 'whereIsWebPage',
                 ))->toLivewire(),
                 null,
-                null
-            ]
+                null,
+            ],
         ]);
+
         return $config;
     }
 }

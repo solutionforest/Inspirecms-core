@@ -14,7 +14,7 @@ class ContentPickerRichPlugin implements RichContentPlugin
     {
         return app(static::class);
     }
-    
+
     /**
      * @return array<Extension>
      */
@@ -46,7 +46,7 @@ class ContentPickerRichPlugin implements RichContentPlugin
                 ->label('Content Picker')
                 ->iconAlias('inspirecms::content_picker')
                 ->jsHandler(function (RichEditorTool $tool) {
-                    
+
                     $richEditorComponent = $tool->getEditor();
 
                     if (! $richEditorComponent) {
@@ -54,7 +54,7 @@ class ContentPickerRichPlugin implements RichContentPlugin
                     }
 
                     $key = $richEditorComponent->getKey();
-                    $contentPickerModalId = "content-tree-picker-modal";
+                    $contentPickerModalId = 'content-tree-picker-modal';
 
                     return <<<JS
                         \$dispatch('x-content-picker-modal-setup', { 

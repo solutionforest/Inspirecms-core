@@ -21,6 +21,7 @@ class MediaPickerLink extends Mark
         'document' => ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx', 'txt', 'rtf'],
         'archive' => ['zip', 'rar', '7z', 'tar', 'gz', 'bz2'],
     ];
+
     public static $priority = 101;
 
     public function addOptions()
@@ -48,13 +49,12 @@ class MediaPickerLink extends Mark
         ];
     }
 
-
     /**
      * Detect media type from URL
      */
     public function detectMediaType($url)
     {
-        if (!$url) {
+        if (! $url) {
             return 'generic';
         }
 
@@ -75,7 +75,7 @@ class MediaPickerLink extends Mark
     public function generateMediaClasses($url, $existingClass = '')
     {
         $classes = ['media-picker-link'];
-        
+
         if ($existingClass) {
             $classes[] = $existingClass;
         }
@@ -94,7 +94,7 @@ class MediaPickerLink extends Mark
     public function createMediaLinkNode($url, $text = null, $options = [])
     {
         $mediaType = $this->detectMediaType($url);
-        
+
         return [
             'type' => 'text',
             'text' => $text ?: ($options['title'] ?? 'Media Link'),
@@ -119,7 +119,7 @@ class MediaPickerLink extends Mark
     public function createMediaLinkList(array $mediaItems)
     {
         $nodes = [];
-        
+
         foreach ($mediaItems as $index => $item) {
             // Add line break between items (except for the first one)
             if ($index > 0) {
@@ -127,7 +127,7 @@ class MediaPickerLink extends Mark
                     'type' => 'hardBreak',
                 ];
             }
-            
+
             $url = $item['url'] ?? $item['src'] ?? $item['href'] ?? '';
             $text = $item['title'] ?? $item['name'] ?? $item['alt'] ?? 'Media Link';
             $options = [
@@ -135,12 +135,12 @@ class MediaPickerLink extends Mark
                 'target' => $item['target'] ?? '_blank',
                 'class' => $item['class'] ?? '',
             ];
-            
+
             if ($url) {
                 $nodes[] = $this->createMediaLinkNode($url, $text, $options);
             }
         }
-        
+
         return $nodes;
     }
 
@@ -150,8 +150,8 @@ class MediaPickerLink extends Mark
     public function createMediaPickerContent(array $mediaItems, $wrapInParagraph = true)
     {
         $content = $this->createMediaLinkList($mediaItems);
-        
-        if ($wrapInParagraph && !empty($content)) {
+
+        if ($wrapInParagraph && ! empty($content)) {
             return [
                 [
                     'type' => 'paragraph',
@@ -159,7 +159,7 @@ class MediaPickerLink extends Mark
                 ],
             ];
         }
-        
+
         return $content;
     }
 }

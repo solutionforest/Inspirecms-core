@@ -113,7 +113,7 @@ class Login extends \Filament\Auth\Pages\Login
         return __('inspirecms::pages/auth/login.heading');
     }
 
-    public function getSubheading(): string|Htmlable|null
+    public function getSubheading(): string | Htmlable | null
     {
         $base = parent::getSubheading();
 
@@ -122,7 +122,7 @@ class Login extends \Filament\Auth\Pages\Login
                 (
                     ($base || filled($this->userUndertakingMultiFactorAuthentication))
                     && ((filament()->hasRegistration() && InspireCmsConfig::get('admin.allow_registration', false)) || inspirecms()->needInstall())
-                ), 
+                ),
                 fn ($string) => $string->finish('<br/>' . $base)
             )
             ->toHtmlString();

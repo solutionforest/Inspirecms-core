@@ -2,9 +2,9 @@
 
 namespace SolutionForest\InspireCms\Examples;
 
-use SolutionForest\InspireCms\Services\TipTapContentService;
-use SolutionForest\InspireCms\MediaPickerLink\MediaPickerLink;
 use SolutionForest\InspireCms\ContentPickerLink\ContentPickerLink;
+use SolutionForest\InspireCms\MediaPickerLink\MediaPickerLink;
+use SolutionForest\InspireCms\Services\TipTapContentService;
 
 /**
  * Usage examples for TipTap Media Picker and Content Picker PHP Extensions
@@ -39,7 +39,7 @@ class TipTapUsageExamples
 
         // Using the service class (recommended)
         $tipTapContent = TipTapContentService::createMediaPickerContent($mediaItems);
-        
+
         // Or using the MediaPickerLink class directly
         $mediaPickerLink = MediaPickerLink::make();
         $alternativeContent = $mediaPickerLink->createMediaPickerContent($mediaItems);
@@ -76,7 +76,7 @@ class TipTapUsageExamples
 
         // Using the service class (recommended)
         $tipTapContent = TipTapContentService::createContentPickerContent($contentItems);
-        
+
         // Or using the ContentPickerLink class directly
         $contentPickerLink = ContentPickerLink::make();
         $alternativeContent = $contentPickerLink->createContentPickerContent($contentItems);

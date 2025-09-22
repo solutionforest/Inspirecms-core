@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Fields\Configs;
 
 use Filament\Actions\Action;
 use Filament\Forms\Components\CheckboxList;
-use Filament\Forms\Components\KeyValue;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
 use Filament\Forms\Components\TagsInput;
@@ -32,9 +31,9 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     use EditorBasicTrait;
 
     protected static array $availableToolbarButtons = [
-        
+
         'bold', 'italic', 'underline', 'strike', 'subscript', 'superscript',
-        
+
         'attachFiles', 'link',
 
         'blockquote', 'codeBlock',
@@ -42,7 +41,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         'bulletList', 'orderedList',
 
         'h1', 'h2', 'h3',
-    
+
         'tableAddColumnBefore', 'tableAddColumnAfter', 'tableDeleteColumn',
         'tableAddRowBefore', 'tableAddRowAfter', 'tableDeleteRow',
         'tableMergeCells', 'tableSplitCell',
@@ -50,7 +49,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         'tableDelete',
 
         'contentPicker', 'mediaPicker',
-        
+
         'redo', 'undo',
     ];
 
@@ -117,24 +116,25 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->suggestions(static::getAllAvailableToolbarButtons())
                                 ->reorderable()
                                 ->placeholder('Add Toolbar Button (Enter to add)')
-                                ->suffixAction(Action::make('appendButton')
-                                    ->icon(Heroicon::Plus)
-                                    ->fillForm(['buttons' => []])
-                                    ->schema([
-                                        CheckboxList::make('buttons')
-                                            ->options(static::getAllAvailableToolbarButtonsOptions())
-                                            ->columns(3)
-                                            ->bulkToggleable()
-                                            ->hiddenLabel(),
-                                    ])
-                                    ->action(function ($state, $data, TagsInput $component) {
-                                        $original = $state ?? [];
-                                        // append new buttons to original state
-                                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
-                                        $state = array_merge($original, $new);
-                                        $component->state($state);
-                                    })
-                                    ->size('sm')
+                                ->suffixAction(
+                                    Action::make('appendButton')
+                                        ->icon(Heroicon::Plus)
+                                        ->fillForm(['buttons' => []])
+                                        ->schema([
+                                            CheckboxList::make('buttons')
+                                                ->options(static::getAllAvailableToolbarButtonsOptions())
+                                                ->columns(3)
+                                                ->bulkToggleable()
+                                                ->hiddenLabel(),
+                                        ])
+                                        ->action(function ($state, $data, TagsInput $component) {
+                                            $original = $state ?? [];
+                                            // append new buttons to original state
+                                            $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                                            $state = array_merge($original, $new);
+                                            $component->state($state);
+                                        })
+                                        ->size('sm')
                                 ),
                         ])
                         ->addActionLabel('Add Group')
@@ -191,6 +191,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
             switch ($this->toolbarButtonType) {
                 case 'buttons':
                     $component->toolbarButtons($this->toolbarButtons);
+
                     break;
                 case 'buttonGroups':
                     $component->toolbarButtons(
@@ -198,6 +199,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                             ->pluck('buttons')
                             ->all()
                     );
+
                     break;
                 default:
                     // default to buttons

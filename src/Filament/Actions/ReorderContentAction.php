@@ -27,7 +27,7 @@ class ReorderContentAction extends Action
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         $this->label(__('inspirecms::buttons.reorder_children.label'));
 
         $this->successNotificationTitle(__('inspirecms::buttons.reorder_children.messages.success.title'));
@@ -73,7 +73,7 @@ class ReorderContentAction extends Action
         ]);
 
         $this->fillForm(function (self $action) use ($contentModel) {
-            
+
             $query = $contentModel::query()
                 ->with(['documentType']);
 
@@ -114,8 +114,7 @@ class ReorderContentAction extends Action
                             }
 
                             return data_get($item, 'document_type.icon');
-                        })
-                        ,
+                        }),
                     TextInput::make('slug')
                         ->readOnly(),
                 ]),

@@ -20,12 +20,12 @@ use function Filament\Forms\array_move_before;
 
 class ContentPicker extends Field
 {
-    use HasPlaceholder;
     use CanLimitItemsLength;
-    use WithContentTreeNode;
+    use HasPlaceholder;
     use InteractsWithContentTreeModal {
         getContentTreeModalConfig as protected traitGetContentTreeModalConfig;
     }
+    use WithContentTreeNode;
 
     /**
      * @var view-string
@@ -70,7 +70,7 @@ class ContentPicker extends Field
     #[ExposedLivewireMethod]
     public function updateSelected($ids)
     {
-        if (!is_array($ids)) {
+        if (! is_array($ids)) {
             $ids = is_null($ids) || empty($ids) ? [] : [$ids];
         }
         // Filter out any null or empty values
@@ -233,14 +233,14 @@ class ContentPicker extends Field
     public function getContentTreeModalConfig(): array
     {
         $config = $this->traitGetContentTreeModalConfig();
-        
+
         $config['filter'] = $this->getFilter()->toLivewire();
         $config['filteringByPermission'] = $this->isFilteringByPermission();
         $config['startNode'] = $this->getStartNode();
-        
+
         $config['limits']['min'] = $this->getMinItems();
         $config['limits']['max'] = $this->getMaxItems();
-        
+
         return $config;
     }
 }

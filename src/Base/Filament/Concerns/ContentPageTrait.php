@@ -24,8 +24,8 @@ trait ContentPageTrait
 
                 $livewireData = $this->getLivewireData();
 
-                return Blade::render(<<<Blade
-                    <livewire:inspirecms::content-sidebar :data="\$livewireData" />
+                return Blade::render(<<<'Blade'
+                    <livewire:inspirecms::content-sidebar :data="$livewireData" />
                 Blade, [
                     'livewireData' => $livewireData,
                 ]);
@@ -33,7 +33,7 @@ trait ContentPageTrait
             [static::class],
         );
     }
-    
+
     public function initializeContentPageTrait()
     {
         $this->listeners = array_merge($this->listeners, [
