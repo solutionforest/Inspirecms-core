@@ -48,33 +48,35 @@ trait EditorBasicTrait
                 ->placeholder('Add Toolbar Button (Enter to add)')
                 ->suggestions(static::getAllAvailableToolbarButtons())
                 ->reorderable()
-                ->suffixAction(Action::make('appendButton')
-                    ->icon(Heroicon::Plus)
-                    ->fillForm(['buttons' => []])
-                    ->schema([
-                        CheckboxList::make('buttons')
-                            ->options(static::getAllAvailableToolbarButtonsOptions())
-                            ->columns(3)
-                            ->bulkToggleable()
-                            ->hiddenLabel(),
-                    ])
-                    ->action(function ($state, $data, $set) {
-                        $original = $state ?? [];
-                        // append new buttons to original state
-                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
-                        $state = array_merge($original, $new);
-                        $set('toolbarButtons', $state);
-                    })
-                    ->size('sm')
+                ->suffixAction(
+                    Action::make('appendButton')
+                        ->icon(Heroicon::Plus)
+                        ->fillForm(['buttons' => []])
+                        ->schema([
+                            CheckboxList::make('buttons')
+                                ->options(static::getAllAvailableToolbarButtonsOptions())
+                                ->columns(3)
+                                ->bulkToggleable()
+                                ->hiddenLabel(),
+                        ])
+                        ->action(function ($state, $data, $set) {
+                            $original = $state ?? [];
+                            // append new buttons to original state
+                            $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                            $state = array_merge($original, $new);
+                            $set('toolbarButtons', $state);
+                        })
+                        ->size('sm')
                 )
-                ->suffixAction(Action::make('clearAll')
-                    ->label('Clear All')
-                    ->icon(Heroicon::XMark)
-                    ->color('danger')
-                    ->action(function ($state, $set) {
-                        $set('toolbarButtons', []);
-                    })
-                    ->size('sm')
+                ->suffixAction(
+                    Action::make('clearAll')
+                        ->label('Clear All')
+                        ->icon(Heroicon::XMark)
+                        ->color('danger')
+                        ->action(function ($state, $set) {
+                            $set('toolbarButtons', []);
+                        })
+                        ->size('sm')
                 ),
 
             'toolbarButtonGroups' => Repeater::make('toolbarButtonGroups')
@@ -85,35 +87,35 @@ trait EditorBasicTrait
                     TagsInput::make('buttons')
                         ->suggestions(static::getAllAvailableToolbarButtons())
                         ->reorderable()
-                        ->placeholder('Add Toolbar Button (Enter to add)')
+                        ->placeholder('Add Toolbar Button (Enter to add)'),
                 ])
                 ->addActionLabel('Add Group')
                 ->collapsible()
                 ->cloneable()
                 ->extraItemActions([
                     Action::make('appendButton')
-                    ->icon(Heroicon::Plus)
-                    ->fillForm(['buttons' => []])
-                    ->schema([
-                        CheckboxList::make('buttons')
-                            ->options(static::getAllAvailableToolbarButtonsOptions())
-                            ->columns(3)
-                            ->bulkToggleable()
-                            ->hiddenLabel(),
-                    ])
-                    ->action(function ($data, array $arguments, Repeater $component) {
-                        $state = $component->getState() ?? [];
-                        $itemKey = $arguments['item'] ?? null;
-                        if (empty($itemKey) || ! isset($state[$itemKey])) {
-                            return;
-                        }
-                        $original = $state[$itemKey]['buttons'] ?? [];
-                        // append new buttons to original state
-                        $new = array_values(array_diff($data['buttons'] ?? [], $original));
-                        $state[$itemKey]['buttons'] = array_merge($original, $new);
-                        $component->state($state);
-                    })
-                    ->size('sm')
+                        ->icon(Heroicon::Plus)
+                        ->fillForm(['buttons' => []])
+                        ->schema([
+                            CheckboxList::make('buttons')
+                                ->options(static::getAllAvailableToolbarButtonsOptions())
+                                ->columns(3)
+                                ->bulkToggleable()
+                                ->hiddenLabel(),
+                        ])
+                        ->action(function ($data, array $arguments, Repeater $component) {
+                            $state = $component->getState() ?? [];
+                            $itemKey = $arguments['item'] ?? null;
+                            if (empty($itemKey) || ! isset($state[$itemKey])) {
+                                return;
+                            }
+                            $original = $state[$itemKey]['buttons'] ?? [];
+                            // append new buttons to original state
+                            $new = array_values(array_diff($data['buttons'] ?? [], $original));
+                            $state[$itemKey]['buttons'] = array_merge($original, $new);
+                            $component->state($state);
+                        })
+                        ->size('sm'),
                 ]),
 
             'fileAttachmentsDisk' => Select::make('fileAttachmentsDisk')->label('Disk')
@@ -149,6 +151,7 @@ trait EditorBasicTrait
                 $result[$key] = $value;
             }
         }
+
         return $result;
     }
 
@@ -162,6 +165,7 @@ trait EditorBasicTrait
                 $result[$item] = $item;
             }
         }
+
         return $result;
     }
 
@@ -170,6 +174,7 @@ trait EditorBasicTrait
         if (isset(static::$availableToolbarButtonTypes) && is_array(static::$availableToolbarButtonTypes) && ! empty(static::$availableToolbarButtonTypes)) {
             return static::$availableToolbarButtonTypes;
         }
+
         return [
             'buttons' => 'Buttons',
             'buttonGroups' => 'Button Groups',

@@ -15,7 +15,6 @@ use Illuminate\Auth\Events as AuthEvents;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
-use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\HaveBackgroundImage;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\WithBackgroundImageLayout;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Resources\Users\Schemas\Components\UserEmailInput;
@@ -28,7 +27,6 @@ use SolutionForest\InspireCms\Licensing\LicenseManager;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use Spatie\Permission\Traits\HasRoles;
 use Throwable;
-use Illuminate\Support\HtmlString;
 
 class Register extends \Filament\Auth\Pages\Register
 {
@@ -39,7 +37,7 @@ class Register extends \Filament\Auth\Pages\Register
     protected bool $isAlreadyInitialized = false;
 
     public function boot()
-{
+    {
         try {
 
             // Check database table exists

@@ -27,7 +27,7 @@ class RichEditorConverter extends BaseConverter
     {
         $disk = $visibility = null;
         $plugins = [];
-        
+
         if (($fieldTypeConfig = $this->getFieldTypeConfig()) instanceof RichEditorFieldConfig) {
             $disk = $fieldTypeConfig->fileAttachmentsDisk;
             $visibility = $fieldTypeConfig->fileAttachmentsVisibility;

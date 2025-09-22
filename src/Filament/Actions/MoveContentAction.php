@@ -83,7 +83,7 @@ class MoveContentAction extends Action
         $this->successNotificationTitle('Moved');
 
         $this->action(function (null | Model | Content $record, ?array $data, Action $action) {
-            
+
             if (! $record || ! $record instanceof Content) {
                 return;
             }

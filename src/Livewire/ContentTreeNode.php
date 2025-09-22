@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\Modelable;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Renderless;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
@@ -12,6 +11,7 @@ use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollec
 class ContentTreeNode extends BaseContentTreeNode
 {
     protected static bool $showNavigationHeader = false;
+
     protected static bool $enableSelection = true;
 
     public ?string $search = null;
@@ -28,7 +28,6 @@ class ContentTreeNode extends BaseContentTreeNode
     // public array $modalConfig = [];
 
     public array $modelableConfig = [];
-
 
     // #[On('content-tree-node:modal-setup')]
     // #[Renderless] // prevent re-rendering on event
@@ -83,9 +82,9 @@ class ContentTreeNode extends BaseContentTreeNode
         if (filled($this->modelableConfig) && is_array($this->modelableConfig)) {
             $key = array_key_first($this->modelableConfig);
             $value = Arr::first($this->modelableConfig);
-            if (is_string($key) && !empty($key) && is_string($value) && !empty($value)) {
+            if (is_string($key) && ! empty($key) && is_string($value) && ! empty($value)) {
                 $attributes['x-modelable'] = $key;
-                $attributes['x-model'] = "state";
+                $attributes['x-model'] = 'state';
             }
         }
 

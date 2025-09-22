@@ -68,10 +68,11 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     public function applyConfig(Component $component): void
     {
         if ($component instanceof FormsMarkdownEditor) {
-            
+
             switch ($this->toolbarButtonType) {
                 case 'buttons':
                     $component->toolbarButtons($this->toolbarButtons);
+
                     break;
                 case 'buttonGroups':
                     $component->toolbarButtons(
@@ -79,10 +80,12 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                             ->pluck('buttons')
                             ->all()
                     );
+
                     break;
                 default:
                     // default to buttons
                     $component->toolbarButtons($this->toolbarButtons);
+
                     break;
             }
 
@@ -93,7 +96,7 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                 $component->fileAttachmentsDirectory($this->fileAttachmentsDirectory);
             }
             // Commented out since:
-            //  The visibility of file attachments for markdown content is always `public`, since generating temporary file upload URLs is not supported in static content. 
+            //  The visibility of file attachments for markdown content is always `public`, since generating temporary file upload URLs is not supported in static content.
             // if (filled($this->fileAttachmentsVisibility)) {
             //     $component->fileAttachmentsVisibility($this->fileAttachmentsVisibility);
             // }
@@ -111,6 +114,7 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
         } catch (\Exception $e) {
             //
         }
+
         return [];
     }
 }

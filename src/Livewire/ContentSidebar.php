@@ -4,7 +4,6 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
-use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\SelectAction;
 use Filament\Support\Enums\IconPosition;
@@ -50,9 +49,9 @@ class ContentSidebar extends BaseContentTreeNode
     protected function getNavigationHeaderActions(): array
     {
         return [
-            
+
             ActionGroup::make([
-                
+
                 CreateContentAction::make()
                     ->color('primary'),
 
@@ -109,11 +108,11 @@ class ContentSidebar extends BaseContentTreeNode
                         ->after(fn () => $this->refreshTree()),
 
                 ])->dropdown(false),
-                
+
             ])->dropdownPlacement('right-top'),
         ];
     }
-    
+
     // public function getNodeItemActionsByNodes(array $nodes): array
     // {
     //     if (!$this->showNodeActions) {
@@ -179,7 +178,7 @@ class ContentSidebar extends BaseContentTreeNode
 
     //         foreach ($nodes as $node) {
     //             $nodeId = $node['id'];
-                
+
     //             // Get or fetch record for this node
     //             $record = $this->nodeRecordsCache[$nodeId] ?? null;
 
@@ -225,7 +224,7 @@ class ContentSidebar extends BaseContentTreeNode
         return parent::getElquentQuery()
             ->with([
                 'documentType', // icon and pre-check for UpdateContentRouteAction
-                
+
                 'nestableTree', // use for sorting action
                 'locked', // pre-check for Record action, UpdateContentRouteAction
             ])

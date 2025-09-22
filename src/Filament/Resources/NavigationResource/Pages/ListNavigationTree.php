@@ -3,15 +3,12 @@
 namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Pages;
 
 use Filament\Actions\CreateAction;
-use Filament\Schemas\Schema;
 use LaraZeus\SpatieTranslatable\Actions\LocaleSwitcher;
 use LaraZeus\SpatieTranslatable\Resources\Pages\ListRecords\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseListRecords;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concerns\NavigationListPageTrait;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use Filament\Schemas\Components\Livewire;
-use Filament\Schemas\Components\Section;
 
 class ListNavigationTree extends BaseListRecords
 {
