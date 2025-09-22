@@ -1,6 +1,5 @@
 @php
     use Filament\Support\Facades\FilamentIcon;
-    use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
 
     $id = $getId();
     $fieldWrapperView = $getFieldWrapperView();
@@ -20,11 +19,11 @@
     })
     ->all();
 
-    $contentPickerModalId = "{$key}-content-picker";
-    $mediaLibraryModalId = $getMediaLibraryModalId();
+    $contentTreeModalId = $getContentTreeModalId();
+    $contentTreeModalConfig = $getContentTreeModalConfig();
 
-    $contentTreeNodeIdentifier = "{$key}-content-tree-node";
-
+    $mediaPickerModalId = $getMediaLibraryModalId();
+    $mediaPickerModalConfig = $getMediaLibraryModalConfig([]);
 @endphp
 
 <x-dynamic-component :component="$fieldWrapperView" :field="$field">
@@ -81,7 +80,13 @@
                                         title: 'Content Picker',
                                         icon: @js($trixFieldIconMapper['contentPicker']),
                                         action: (action) => {
-                                            $dispatch('open-modal', { id: @js($contentPickerModalId) })
+                                            $dispatch('x-content-picker-modal-setup', { 
+                                                selected: [],
+                                                key: @js($key),
+                                                config: @js($contentTreeModalConfig),
+                                                modalId: @js($contentTreeModalId),
+                                                openModal: true,
+                                            });
                                         },
                                     };
                                 }
@@ -92,8 +97,13 @@
                                         title: 'Media Picker',
                                         icon: @js($trixFieldIconMapper['mediaPicker']),
                                         action: (action) => {
-                                            $dispatch('open-modal', { id: @js($mediaLibraryModalId), key: @js($key), statePath: @js($statePath) })
-                                            $dispatch('media-picker-setup', { key: @js($key), statePath: @js($statePath), config: @js($getMediaLibraryModalConfig([])) });
+                                            $dispatch('x-media-picker-modal-setup', { 
+                                                selected: [],
+                                                key: @js($key),
+                                                config: @js($mediaPickerModalConfig),
+                                                modalId: @js($mediaPickerModalId),
+                                                openModal: true,
+                                            });
                                         },
                                     };
                                 }
@@ -111,12 +121,12 @@
                             return;
                         }
 
-                        if ($event.detail.id === @js($mediaLibraryModalId) && ($event.detail?.save ?? false)) {
+                        if ($event.detail.id === @js($mediaPickerModalId)) {
                             $wire
                                 .callSchemaComponentMethod(
                                     @js($key),
                                     'appendFromMediaLibrary',
-                                    { ids: $event.detail?.data?.selected || [] },
+                                    { ids: $event.detail?.data || [] },
                                 )
                                 .then((urls) => {
                                     if (urls && urls.length > 0) {
@@ -142,6 +152,7 @@
                         if (!editor) {
                             return;
                         }
+
                         $wire
                             .callSchemaComponentMethod(
                                 @js($key),
@@ -168,56 +179,6 @@
                 <textarea x-ref="editor" x-cloak></textarea>
             </div>
         </x-filament::input.wrapper>
-
-        @if ($hasToolbarButton('contentPicker'))
-            <x-filament::modal 
-                id="{{ $contentPickerModalId }}"
-                slide-over
-                sticky-header
-                sticky-footer
-                footer-actions-alignment="end"
-                display-classes="block"
-                x-init="() => {
-                    this.selectedContent = [];
-                }"
-                x-on:x-modal-opened.window="
-                    if ($event?.detail?.id === '{{ $contentPickerModalId }}') {
-                        this.selectedContent = [];
-                        $dispatch('content-tree-node:reset-selected', { key: '{{ $contentTreeNodeIdentifier }}' });
-                    }
-                "
-            >
-                <div>
-                    <livewire:inspirecms::content-tree-node 
-                        lazy
-                        :modelable="'selectedContent'"
-                        :isDisabled="false"
-                        :filterByPermission="false"
-                        :customId="$contentTreeNodeIdentifier"
-                    />
-                </div>
-
-                <x-slot name="footerActions">
-                    <x-filament::button type="button" x-on:click="() => {
-                        $dispatch(
-                            'update-content-picker-selection',
-                            { 
-                                id: '{{ $contentPickerModalId }}', 
-                                key: '{{ $key }}', 
-                                data: this.selectedContent || [] 
-                            }
-                        );
-                        close();
-                    }">
-                        {{ __('filament-actions::modal.actions.submit.label') }}
-                    </x-filament::button>
-                    <x-filament::button color="gray" x-on:click="close()">
-                        {{ __('filament-actions::modal.actions.cancel.label') }}
-                    </x-filament::button>
-                </x-slot>
-                
-            </x-filament::modal>
-        @endif
 
     @endif
 </x-dynamic-component>

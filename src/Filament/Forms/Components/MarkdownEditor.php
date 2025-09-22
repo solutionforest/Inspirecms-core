@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 use Filament\Forms\Components\MarkdownEditor as BaseMarkdownEditor;
 use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\InteractsWithContentTreeModal;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\InteractsWithMediaLibraryModal;
@@ -13,6 +14,7 @@ use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MarkdownEditor extends BaseMarkdownEditor
 {
+    use InteractsWithContentTreeModal;
     use InteractsWithMediaLibraryModal;
 
     /**
@@ -153,5 +155,21 @@ class MarkdownEditor extends BaseMarkdownEditor
             htmlspecialchars($content->getKey()),
             htmlspecialchars($content->slug),
         );
+    }
+
+    public function getContentTreeModalConfig(): array
+    {
+        $config = [];
+        $config['filter'] ??= [];
+        $config['filter'][] = \SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection::make([
+            [
+                (new \SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BuilderFilter(
+                    scopeMethod: 'whereIsWebPage',
+                ))->toLivewire(),
+                null,
+                null
+            ]
+        ]);
+        return $config;
     }
 }
