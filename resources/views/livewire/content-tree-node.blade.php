@@ -1,16 +1,9 @@
 <div class="flex flex-col space-y-2"
-    @if (isset($modelable) && filled($modelable))
-        x-modelable="selected" x-model="{{ $modelable }}"
-    @endif
     x-data="TreeNode({
-        selected: $wire.entangle('selectedModelItemKeys').live,
-        expanded: $wire.entangle('expandedModelItemKeys').live,
+        selected: $wire.entangle('selectedNodes').live,
+        expanded: $wire.entangle('expandedNodes').live,
     })"
-    x-on:content-tree-node:reset-selected.window="
-        if ($event?.detail?.key === @js($this->customId)) {
-            selected = [];
-        }
-    "
+    {{ $this->getExtraAlpineAttributeBag() }}
 >
     @if (! $isDisabled)
         
@@ -27,8 +20,8 @@
         </div>
     @endif
 
-    @if (count($items) > 0)
-        @if ($this->isFilteringBySearch())
+    @if (count($nodes) > 0)
+        {{-- @if ($this->isFilteringBySearch())
             <x-inspirecms-support::tree-node.model-explorer.groups
                 :items="$items" 
                 :model-explorer="$this->getModelExplorer()"
@@ -48,7 +41,22 @@
                 :model-explorer="$this->getModelExplorer()"
                 :is-disabled="$isDisabled"
             />
-        @endif
+        @endif --}}
+        
+        <x-inspirecms-support::tree-node.service-side-tree
+            :nodes="$nodes"
+            :livewire="$this"
+            :hasNodeActions="$showNodeActions"
+            :toolbarActions="$toolbarActions"
+            :navigationHeaderActions="$navigationHeaderActions"
+            :showNavigationHeader="$showNavigationHeader"
+            :enableSelection="$enableSelection"
+            :multipleSelection="$multipleSelection"
+            :enableNodeUrls="$enableNodeUrls"
+            :maxSelections="$maxSelections"
+            :homeButtonText="$homeButtonText"
+            :indexUrl="$indexUrl"
+        />
     @else
         <p class="text-gray-500 dark:text-gray-400">
             {{ __('inspirecms::inspirecms.search.no_results') }}

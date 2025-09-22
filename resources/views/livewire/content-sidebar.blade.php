@@ -1,9 +1,12 @@
 @php
-    $items = $this->getGroupedNodeItems();
-    $translatable ??= false;
-    $translatableLocale ??= null;
+    // $items = $this->getGroupedNodeItems();
+    // $translatable ??= false;
+    // $translatableLocale ??= null;
     $isExpandedSidebar ??= false;
     $sidebarExpanded = true;
+
+    $toolbarActions ??= [];
+    $navigationHeaderActions ??= [];
 @endphp
 
 <div x-data="{
@@ -35,7 +38,7 @@
                 </div>
                 <!-- Sidebar component, swap this element with another sidebar if you like -->
                 <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white py-2 dark:bg-gray-900" @click.outside="sidebarExpanded = false">
-                    <div class="px-1 pb-2">
+                    {{-- <div class="px-1 pb-2">
                         {{ $this->localeSwitcher }}
                     </div>
                     
@@ -47,14 +50,29 @@
                         :translatable="$translatable"
                         :translatable-locale="$translatableLocale"
                         :spa-mode="$isSpaMode ?? false"
+                    /> --}}
+                    <x-inspirecms-support::tree-node.service-side-tree
+                        :nodes="$nodes"
+                        :livewire="$this"
+                        :hasNodeActions="$showNodeActions"
+                        :toolbarActions="$toolbarActions"
+                        :navigationHeaderActions="$navigationHeaderActions"
+                        :showNavigationHeader="$showNavigationHeader"
+                        :enableSelection="$enableSelection"
+                        :multipleSelection="$multipleSelection"
+                        :enableNodeUrls="$enableNodeUrls"
+                        :maxSelections="$maxSelections"
+                        :homeButtonText="$homeButtonText"
+                        :indexUrl="$indexUrl"
                     />
+
                 </div>
             </div>
         </div>
     </div>
     <div class="hidden lg:fixed lg:top-16 lg:bottom-0 lg:flex lg:w-72 lg:flex-col content-sidebar_desktop">
         <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white py-2 dark:bg-gray-900 dark:border-gray-700">
-            <div class="px-1 pb-2">
+            {{-- <div class="px-1 pb-2">
                 {{ $this->localeSwitcher }}
             </div>
             
@@ -67,7 +85,22 @@
                 :translatable="$translatable"
                 :translatable-locale="$translatableLocale"
                 :spa-mode="$isSpaMode ?? false"
+            /> --}}
+            <x-inspirecms-support::tree-node.service-side-tree
+                :nodes="$nodes"
+                :livewire="$this"
+                :hasNodeActions="$showNodeActions"
+                :toolbarActions="$toolbarActions"
+                :navigationHeaderActions="$navigationHeaderActions"
+                :showNavigationHeader="$showNavigationHeader"
+                :enableSelection="$enableSelection"
+                :multipleSelection="$multipleSelection"
+                :enableNodeUrls="$enableNodeUrls"
+                :maxSelections="$maxSelections"
+                :homeButtonText="$homeButtonText"
+                :indexUrl="$indexUrl"
             />
+
         </div>
     </div>
 
@@ -88,6 +121,7 @@
             <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M21.97 15V9C21.97 4 19.97 2 14.97 2H8.96997C3.96997 2 1.96997 4 1.96997 9V15C1.96997 20 3.96997 22 8.96997 22H14.97C19.97 22 21.97 20 21.97 15Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M14.97 2V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> <path d="M7.96997 9.43994L10.53 11.9999L7.96997 14.5599" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
         </button>
     </div>
-
+    
     <x-filament-actions::modals />
+    
 </div>

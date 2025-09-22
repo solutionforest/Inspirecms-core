@@ -20,9 +20,9 @@ use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\Filament\Actions\BackToParentContentAction;
 use SolutionForest\InspireCms\Filament\Actions\ContentHistoryAction;
 use SolutionForest\InspireCms\Filament\Actions\LockContentAction;
-use SolutionForest\InspireCms\Filament\Actions\ReorderContentAction;
 use SolutionForest\InspireCms\Filament\Actions\UnlockContentAction;
-use SolutionForest\InspireCms\Filament\Actions\UpdateRouteAction;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Actions\UpdateContentRouteAction;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Actions\AdjustChildOrderAction;
 use SolutionForest\InspireCms\Helpers\FilamentActionHelper;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -79,9 +79,17 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
                     ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 
                 ActionGroup::make([
-                    UpdateRouteAction::make(),
+                    UpdateContentRouteAction::make(),
                     ContentHistoryAction::make(),
-                    ReorderContentAction::make(),
+                    AdjustChildOrderAction::make()
+                        ->nodeParentId(fn (Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
+                        ->hidden(
+                            fn (?Model $record) => ! $record instanceof Content ||
+                            $record->trashed()
+                        )
+                        ->successRedirectUrl(function ($record) {
+                            return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
+                        }),
                 ])
                     ->dropdown(false)
                     ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
@@ -190,24 +198,5 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         $record->save();
 
         return $record;
-    }
-
-    protected function configureAction(Action $action): void
-    {
-        parent::configureAction($action);
-
-        switch (true) {
-            case $action instanceof ReorderContentAction:
-                $action
-                    ->nodeParentId(fn (Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
-                    ->hidden(
-                        fn (?Model $record) => ! $record instanceof Content ||
-                        $record->trashed()
-                    )->successRedirectUrl(function ($record) {
-                        return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
-                    });
-
-                break;
-        }
     }
 }

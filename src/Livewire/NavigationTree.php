@@ -16,7 +16,6 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Reactive;
 use Livewire\Attributes\Renderless;
-use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -187,6 +186,15 @@ class NavigationTree extends SortableTreeComponent
     {
         $actions = static::$showNodeActions ? $this->getNodeItemActions() : [];
 
+        $node =  [
+            'id' => $record->getKey(),
+            'name' => str($record->hasTranslation('title', $this->activeLocale) ? $record->getTranslation('title', $this->activeLocale) : $record->title)
+                ->when(! $record->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
+                    ->toString(),
+            'description' => ($url = $record->getUrl($this->activeLocale)) && filled($url) ? $url : null,
+            'children' => collect($record->children)->map(fn ($child) => $this->transformRecordIntoNode($child))->toArray(),
+        ];
+
         $visibleActions = collect($actions)
             ->flatMap(function ($action) use ($record) {
                 if ($action instanceof Action) {
@@ -199,21 +207,15 @@ class NavigationTree extends SortableTreeComponent
                 return [];
             })
             ->whereInstanceOf(Action::class)
+            ->map(fn (Action $action) => $action->arguments(['node' => $node]))
             ->where(fn (Action $action) => $action->isVisible())
             ->map(fn (Action $action) => $action->getName())
             ->values()
             ->all();
 
-        return [
-            'id' => $record->getKey(),
-            'name' => str($record->hasTranslation('title', $this->activeLocale) ? $record->getTranslation('title', $this->activeLocale) : $record->title)
-                ->when(! $record->isVisibility(), fn ($str) => str($str)->append(' (Hidden)'))
-                    ->toString(),
-            'description' => ($url = $record->getUrl($this->activeLocale)) && filled($url) ? $url : null,
-            'children' => collect($record->children)->map(fn ($child) => $this->transformRecordIntoNode($child))->toArray(),
+        $node['__visibleActions'] = $visibleActions;
 
-            '__visibleActions' => $visibleActions,
-        ];
+        return $node;
     }
 
     protected function transformNodeIntoRecord(array $node)
@@ -233,7 +235,21 @@ class NavigationTree extends SortableTreeComponent
         $actions = $this->getNodeItemActions();
 
         if ($node) {
-            $actions = TreeNodeActionHelper::getNodeActions(node: $node, livewireActions: $actions, model: $this->getModel());
+            $actions = TreeNodeActionHelper::getNodeActions(
+                node: $node, 
+                livewireActions: $actions, 
+                model: $this->getModel(),
+                resolveRecordUsing: function ($arguments, $key) {
+                    if ($key instanceof Model) {
+                        return $key;
+                    }
+                    $recordKey = $arguments['nodeId'] ?? $key ?? null;
+                    if (is_null($recordKey) || empty($recordKey)) {
+                        return null;
+                    }
+                    return $this->getTreeQuery()->find($recordKey);
+                },
+            );
         }
 
         return collect($actions)

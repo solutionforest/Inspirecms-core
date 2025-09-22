@@ -1,13 +1,13 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
+namespace SolutionForest\InspireCms\Filament\Actions;
 
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
 
 class MoveContentAction extends Action
 {
@@ -37,6 +37,7 @@ class MoveContentAction extends Action
         $this->authorize('update');
 
         $this->hidden(function (?Model $record): bool {
+
             if (! $record || ! $record instanceof Content) {
                 return true;
             }
@@ -82,6 +83,7 @@ class MoveContentAction extends Action
         $this->successNotificationTitle('Moved');
 
         $this->action(function (null | Model | Content $record, ?array $data, Action $action) {
+            
             if (! $record || ! $record instanceof Content) {
                 return;
             }

@@ -1,27 +1,27 @@
 @php
-    $statePath = $getStatePath();
+    $startNode = $getStartNode();
+    if ($startNode && $startNode instanceof \Illuminate\Database\Eloquent\Model) {
+        $startNode = $startNode->getKey();
+    }
+
+    $limit = $getLimits();
+    $maxSelections = $limit['max'] ?? null;
+    $multipleSelection = $maxSelections > 1;
 @endphp
 <x-dynamic-component
     :component="$getFieldWrapperView()"
     :field="$field"
-    x-data="{ 
-        state: $wire.$entangle('{{ $statePath }}'), 
-        selected: [],
-        expanded: [],
-        isExpanded(key) {
-            return false;
-        },
-        isSelected(key) {
-            return false;
-        },
-    }"
 >
-    @livewire('inspirecms::content-tree-node', [
-        'modelable' => 'state',
-        'startNode' => $getStartNode(),
-        'filter' => $getFilter(),
-        'limits' => $getLimits(),
-        'isDisabled' => $isDisabled(),
-        'filterByPermission' => $isFilteringByPermission(),
-    ])
+    <div x-data="{ state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$getStatePath()}')") }} }">
+        <livewire:inspirecms::content-tree-node
+            lazy
+            :startNodeId="$startNode"
+            :filter="$getFilter()"
+            :multipleSelection="$multipleSelection"
+            :maxSelections="$maxSelections"
+            :isDisabled="$isDisabled()"
+            :filterByPermission="$isFilteringByPermission()"
+            :modelableConfig="['selected'=>'state']"
+        />
+    </div>
 </x-dynamic-component>

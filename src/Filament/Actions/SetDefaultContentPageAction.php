@@ -1,11 +1,11 @@
 <?php
 
-namespace SolutionForest\InspireCms\Filament\TreeNode\Actions;
+namespace SolutionForest\InspireCms\Filament\Actions;
 
+use Filament\Actions\Action;
 use Filament\Support\Facades\FilamentIcon;
+use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\Support\TreeNode\Actions\Action;
-use SolutionForest\InspireCms\Support\TreeNode\Contracts\HasModelExplorer;
 
 class SetDefaultContentPageAction extends Action
 {
@@ -26,20 +26,21 @@ class SetDefaultContentPageAction extends Action
 
         $this->model(InspireCmsConfig::getContentModelClass());
 
-        $this->hidden(function ($itemKey, HasModelExplorer $livewire) {
+        $this->hidden(function (array $arguments, ?Model $record) {
+            
+            if ($record) {
+                return ! $record->isWebPage() || ($record->is_default == true) || $record->isLocked() || count($record->ancestorsAndSelf ?? []) > 1;
+            }
 
-            $item = filled($itemKey) ? $livewire->getCacheModelItemNode($itemKey) : [];
-
-            if (! is_array($item)) {
+            if (! isset($arguments['node']) && ! is_array($arguments['node'] ?? null)) {
                 return true;
             }
 
-            if (($item['documentTypeCat'] ?? null) != 'web') {
+            if (($arguments['node']['__content_document_type_cat'] ?? null) != 'web') {
                 return true;
             }
 
-            return ($item['depth'] ?? 1) != 0;
-
+            return ($arguments['node']['depth'] ?? 1) != 0;
         });
 
         $this->successNotificationTitle(__('inspirecms::buttons.set_default_content_page.messages.success.title'));

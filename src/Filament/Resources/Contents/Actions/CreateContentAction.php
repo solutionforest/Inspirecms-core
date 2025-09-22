@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources\Contents\Actions;
 
+use Filament\Actions\Action;
 use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Filament\Actions\CreateContentAction as ActionsCreateContentAction;
 use SolutionForest\InspireCms\Filament\Resources\ContentResource;
@@ -10,7 +11,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 
 class CreateContentAction
 {
-    public static function make(): ActionsCreateContentAction
+    public static function make(): Action
     {
         return ActionsCreateContentAction::make();
     }

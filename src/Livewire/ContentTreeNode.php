@@ -2,228 +2,131 @@
 
 namespace SolutionForest\InspireCms\Livewire;
 
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Collection;
-use Livewire\WithPagination;
+use Livewire\Attributes\Locked;
+use Livewire\Attributes\Modelable;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Renderless;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
-use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\TreeNode\ModelExplorer;
 
 class ContentTreeNode extends BaseContentTreeNode
 {
-    use WithPagination;
-
-    public ?string $startNode = null;
+    protected static bool $showNavigationHeader = false;
+    protected static bool $enableSelection = true;
 
     public ?string $search = null;
-
-    public ?string $modelable = null;
-
-    public ?string $customId = null;
 
     public array $limits = [];
 
     public bool $isDisabled = true;
 
-    public int | string $perPage = 10;
-
     public ?FilterCollection $filter = null;
+
+    #[Locked]
+    public $isModalPicker = true;
+
+    // public array $modalConfig = [];
+
+    public array $modelableConfig = [];
+
+
+    // #[On('content-tree-node:modal-setup')]
+    // #[Renderless] // prevent re-rendering on event
+    // public function setUpModalConfig($key = null, $selected = [], $config = []): void
+    // {
+    //     if (!$this->isContentPickerModal()) {
+    //         return;
+    //     }
+    //     $this->modalConfig = $config;
+    //     if (!empty($config)) {
+    //         foreach ($config as $k => $v) {
+    //             switch ($k) {
+    //                 case 'startNode':
+    //                     $this->startNode = $v;
+    //                     break;
+    //                 case 'limits':
+    //                     $this->limits = is_array($v) ? $v : [];
+    //                     break;
+    //                 case 'filter':
+    //                     if ($v instanceof FilterCollection) {
+    //                         $this->filter = $v;
+    //                     } elseif (is_array($v)) {
+    //                         $this->filter = FilterCollection::fromLivewire($v);
+    //                     } else {
+    //                         $this->filter = null;
+    //                     }
+    //                     break;
+    //                 case 'filterByPermission':
+    //                     if (is_string($v) && ! empty($v)) {
+    //                         $this->filter = new FilterCollection([
+    //                             ['id', 'in', auth()->user()->getAllPermissions()->pluck('id')->all()],
+    //                         ]);
+    //                     } else {
+    //                         $this->filter = null;
+    //                     }
+    //                     break;
+    //             }
+    //         }
+
+    //     }
+    // }
+
+    public function isContentPickerModal(): bool
+    {
+        return $this->isModalPicker;
+    }
+
+    protected function getExtraAlpineAttributes(): array
+    {
+        $attributes = [];
+
+        if (filled($this->modelableConfig) && is_array($this->modelableConfig)) {
+            $key = array_key_first($this->modelableConfig);
+            $value = Arr::first($this->modelableConfig);
+            if (is_string($key) && !empty($key) && is_string($value) && !empty($value)) {
+                $attributes['x-modelable'] = $key;
+                $attributes['x-model'] = "state";
+            }
+        }
+
+        return $attributes;
+    }
+
+    public function getExtraAlpineAttributeBag()
+    {
+        return new \Illuminate\View\ComponentAttributeBag($this->getExtraAlpineAttributes());
+    }
 
     public function isFilteringBySearch(): bool
     {
         return filled($this->search);
     }
 
-    public function render()
-    {
-        return view('inspirecms::livewire.content-tree-node', [
-            'items' => $this->isFilteringBySearch() ? $this->getSearchRecords() : $this->getGroupedNodeItems(),
-            'pageOptions' => [5, 10, 20, 50, 100, 'all'],
-        ]);
-    }
-
     public function updatedSearch()
     {
-        $this->resetPage();
+        $this->refreshTree();
     }
 
-    public function modelExplorer(ModelExplorer $modelExplorer): ModelExplorer
+    protected function getElquentQuery(): \Illuminate\Database\Eloquent\Builder
     {
-        return parent::modelExplorer($modelExplorer)
-            ->minSelectItem($this->limits['min'] ?? null)
-            ->maxSelectItem($this->limits['max'] ?? null)
-            ->modifyQueryUsing(fn (Builder $query) => $this->modifyModelExplorerQuery($query))
-            ->determineItemIsDisabledUsing(function (Model | Content $record) {
-                if ($this->isDisabled) {
-                    return true;
-                }
+        $query = parent::getElquentQuery();
 
-                if ($this->filter?->isNotEmpty() && ! $this->filter->applyRecordFilter($record)) {
-                    return true;
-                }
+        // if ($this->isFilteringBySearch()) {
+        //     $query->where(function ($q) {
+        //         $q->where('title', 'like', '%'.$this->search.'%')
+        //             ->orWhere('slug', 'like', '%'.$this->search.'%');
+        //     });
+        // }
 
-                return false;
-            })
-            ->determineItemHasChildrenUsing(function (Model | Content $record) {
-                if ($this->isFilteringBySearch()) {
-                    return false;
-                }
-                if (isset($record->children_count)) {
-                    return $record->children_count > 0;
-                }
+        if ($this->filter instanceof FilterCollection) {
+            $this->filter->applyOnQuery($query);
+        }
 
-                return $record->ancestorsAndSelf->last()?->children_count > 0;
-            })
-            ->determineItemDescriptionUsing(fn (Model | Content $record) => $record->slug);
+        return $query;
     }
 
-    protected function getSearchRecords()
+    public function render()
     {
-        if (! $this->isFilteringBySearch()) {
-            return new LengthAwarePaginator([], 0, $this->perPage);
-        }
-
-        $modelExplorer = $this->getModelExplorer();
-
-        $baseQuery = $modelExplorer->getModelExplorerQuery()
-            ->where('slug', 'like', "%{$this->search}%");
-
-        if ($this->filter?->isNotEmpty()) {
-            $this->filter->applyOnQuery($baseQuery);
-        }
-
-        $records = $baseQuery->paginate(perPage: $this->perPage, page: $this->getPage());
-
-        $records->tap(function ($paginator) use ($modelExplorer) {
-            $items = $modelExplorer->parseAsItems($paginator->getCollection(), $this->getModelExplorerRootLevelId());
-            $paginator->setCollection($items);
-
-            return $paginator;
-        });
-
-        return $records;
-    }
-
-    protected function getModelExplorerItemsFrom(string | int $parentKey): array
-    {
-        if (isset($this->cachedModelExplorerItems[$parentKey])) {
-            return $this->cachedModelExplorerItems[$parentKey];
-        }
-
-        $modelExplorer = $this->getModelExplorer();
-
-        // filter records
-        if ($this->filter?->isNotEmpty()) {
-
-            $constraint = function ($query) {
-
-                if (filled($this->startNode)) {
-                    $query->whereParent($this->startNode);
-                }
-
-                $this->filter->applyOnQuery($query);
-
-                return $query;
-            };
-
-            $tree = $this->modifyModelExplorerQuery($modelExplorer->getModel()::treeOf($constraint))->get();
-
-            $groupedByParentKey = collect($tree)
-                ->flatMap(fn ($r) => $r->ancestorsAndSelf)
-                ->groupBy(fn ($r) => $r->parent_id)
-                ->when(filled($this->startNode), fn (Collection $collection) => $collection->only($this->startNode))
-                ->map(function ($records) {
-                    return collect($records)
-                        ->sortBy(fn ($record) => $record->nestableTree?->_lft)
-                        ->values();
-                });
-
-            foreach ($groupedByParentKey as $itemParentKey => $records) {
-
-                $nodeItems = $this->mutuateModelExplorerNodes($records, $itemParentKey);
-
-                $this->cacheModelItemNode($itemParentKey, $nodeItems);
-
-                if ($parentKey == $itemParentKey) {
-                    $items = $nodeItems;
-                }
-            }
-
-            if (! isset($items)) {
-                $items = [];
-            }
-
-        } else {
-
-            $records = $modelExplorer->getRecordsFrom($parentKey);
-
-            $items = $this->mutuateModelExplorerNodes($records, $parentKey);
-        }
-
-        if ($parentKey === $modelExplorer->getRootLevelKey()) {
-            $items = $modelExplorer->mutuateRootNodeItems($items);
-        }
-
-        return $items;
-    }
-
-    protected function getModelExplorerRootLevelId(): int | string
-    {
-        if (filled($this->startNode)) {
-            return $this->startNode;
-        }
-
-        return parent::getModelExplorerRootLevelId();
-    }
-
-    protected function mutateCachedModelExplorerItemsBeforeGroup(array $items): array
-    {
-        $result = [];
-
-        foreach ($items as $parentKey => $list) {
-            foreach ($list as $item) {
-                $itemParentKey = $item['parentKey'];
-                $itemKey = $item['key'];
-
-                $targetParentKey = $itemParentKey == $parentKey ? $parentKey : $itemParentKey;
-
-                if (in_array($itemKey, Arr::pluck($result[$targetParentKey] ?? [], 'key'))) {
-                    continue;
-                }
-
-                $result[$targetParentKey][] = $item;
-            }
-        }
-
-        return $result;
-    }
-
-    private function modifyModelExplorerQuery(Builder $query)
-    {
-        return $query
-            ->with([
-                'ancestorsAndSelf' => fn ($q) => $q
-                    ->withCount('children')
-                    ->with([
-                        'nestableTree',
-                    ])
-                    ->breadthFirst(),
-            ]);
-    }
-
-    protected function expandParentModelItemIfSelected(array $keys)
-    {
-        if ($this->isFilteringBySearch()) {
-            return;
-        }
-
-        if (filled($this->startNode)) {
-            return;
-        }
-
-        return parent::expandParentModelItemIfSelected($keys);
+        return view('inspirecms::livewire.content-tree-node', $this->viewData());
     }
 }
