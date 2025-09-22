@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Actions\ActionGroup;
 use Filament\Actions\CreateAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
@@ -14,14 +15,16 @@ use Illuminate\Auth\Access\Response;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Livewire\Attributes\Reactive;
+use Livewire\Attributes\Renderless;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent;
 
-class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent
+class NavigationTree extends SortableTreeComponent
 {
-    protected static bool $haveToolbarActions = true;
+    protected static bool $showToolbarActions = true;
     protected static bool $searchable = true;
     protected static bool $allowDragDrop = true;
 
@@ -40,25 +43,14 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
             EditAction::make()
                 ->iconButton()
                 ->icon(fn (EditAction $action) => $action->getGroupedIcon() ?? Heroicon::Pencil),
+                
             ViewAction::make()
                 ->iconButton()
                 ->icon(fn (ViewAction $action) => $action->getGroupedIcon() ?? Heroicon::Eye),
+
             DeleteAction::make()
                 ->iconButton()
                 ->icon(fn (DeleteAction $action) => $action->getGroupedIcon() ?? Heroicon::Trash)
-                ->hidden(function ($arguments) {
-
-                    $isAllowed = PermissionManifest::authorizeModel(
-                        ability: 'delete',
-                        model: $this->getModel(),
-                    );
-
-                    if (is_bool($isAllowed)) {
-                        return $isAllowed !== true;
-                    }
-
-                    return false;
-                })
                 ->after(function () {
                     $this->refreshNodes();
                 }),
@@ -117,7 +109,7 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
      */
     public function getDefaultActionModel(Action $action): ?string
     {
-        return $this->getModel();
+        return static::getModel();
     }
 
     public function getDefaultActionModelLabel(Action $action): ?string
@@ -164,7 +156,7 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
 
         if ($resolvedAction) {
             
-            $resolvedAction->model($this->getModel());
+            $resolvedAction->model(static::getModel());
 
             $record = ($action['context']['recordKey'] ?? null) ? $this->getTreeQuery()->find($action['context']['recordKey']) : null;
 
@@ -192,6 +184,24 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
      */
     protected function transformRecordIntoNode($record)
     {
+        $actions = static::$showNodeActions ? $this->getNodeItemActions() : [];
+
+        $visibleActions = collect($actions)
+            ->flatMap(function ($action) use ($record) {
+                if ($action instanceof Action) {
+                    return [$action->record($record)];
+                } elseif ($action instanceof ActionGroup) {
+                    return collect($action->getFlatActions())
+                        ->map(fn ($action) => $action->record($record))
+                        ->all();
+                }
+                return [];
+            })
+            ->whereInstanceOf(Action::class)
+            ->where(fn (Action $action) => $action->isVisible())
+            ->map(fn (Action $action) => $action->getName())
+            ->all();
+
         return [
             'id' => $record->getKey(),
             'name' => str($record->hasTranslation('title', $this->activeLocale) ? $record->getTranslation('title', $this->activeLocale) : $record->title)
@@ -199,6 +209,8 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
                     ->toString(),
             'description' => ($url = $record->getUrl($this->activeLocale)) && filled($url) ? $url : null,
             'children' => collect($record->children)->map(fn ($child) => $this->transformRecordIntoNode($child))->toArray(),
+
+            '__visibleActions' => $visibleActions,
         ];
     }
 
@@ -211,9 +223,25 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
         ];
     }
 
+    #[Renderless]
+    public function getNodeItemActionsHtml($id)
+    {
+        $node = $this->getNodeById($id);
+
+        $actions = $this->getNodeItemActions();
+
+        if ($node) {
+            $actions = static::retrieveNodeActions($node, $actions);
+        }
+
+        return collect($actions)
+            ->map(fn (Action|ActionGroup $action) => $action->toHtml())
+            ->all();
+    }
+
     protected function getTreeQuery(): Builder
     {
-        return $this->getModel()::scoped(['category' => $this->category])
+        return static::getModel()::scoped(['category' => $this->category])
             ->withDepth()
             ->with([
                 'content' => fn ($q) => $q->withTrashed(),
@@ -222,7 +250,7 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
             ->defaultOrder();
     }
 
-    protected function getModel(): string
+    protected static function getModel(): string
     {
         return InspireCmsConfig::getNavigationModelClass();
     }
@@ -233,5 +261,100 @@ class NavigationTree extends \SolutionForest\InspireCms\Support\TreeNode\Livewir
     protected function getResource(): string
     {
         return InspireCmsConfig::getFilamentResource('navigation', NavigationResource::class);
+    }
+
+    protected function getNodeById($id)
+    {
+        foreach ($this->nodes as $node) {
+            if ($node['id'] == $id) {
+                return $node;
+            }
+
+            if (!empty($node['children'])) {
+                $childNode = $this->getNodeByIdRecursive($node['children'], $id);
+                if ($childNode) {
+                    return $childNode;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    protected function getNodeByIdRecursive($nodes, $id)
+    {
+        foreach ($nodes as $node) {
+            if ($node['id'] == $id) {
+                return $node;
+            }
+
+            if (!empty($node['children'])) {
+                $childNode = $this->getNodeByIdRecursive($node['children'], $id);
+                if ($childNode) {
+                    return $childNode;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * @param array $node
+     * @param array<Action|ActionGroup> $livewireActions
+     * @return array<Action|ActionGroup>
+     */
+    protected static function retrieveNodeActions(array $node, array $livewireActions, bool $applyRecord = true): array
+    {
+        $actionNames = $node['__visibleActions'] ?? [];
+
+        if (empty($actionNames)) {
+            return [];
+        }
+
+        $nodeId = $node['id'] ?? null;
+        if (! $nodeId && $applyRecord) {
+            throw new \Exception('Node ID is missing');
+        }
+
+        /**
+         * @var array<int,Action|ActionGroup>
+         */
+        $filteredActions = [];
+
+        foreach ($livewireActions as $action) {
+            if ($action instanceof Action) {
+                if (in_array($action->getName(), $actionNames)) {
+
+                    if ($applyRecord) {
+                        $action = $action
+                            ->arguments(['nodeId' => $nodeId])
+                            ->record($nodeId)
+                            ->model(static::getModel())
+                            ->resolveRecordUsing(function ($arguments, $key, $model) {
+                                if ($key instanceof Model) {
+                                    return $key;
+                                }
+                                $recordKey = $arguments['nodeId'] ?? $key ?? null;
+                                if (is_null($recordKey) || empty($recordKey)) {
+                                    return null;
+                                }
+                                return ($model ?? static::getModel())::find($recordKey);
+                            });
+                    }
+
+                    $filteredActions[] = $action;
+                }
+            } elseif ($action instanceof ActionGroup) {
+
+                // Check if any actions in the group are visible for this node
+                $groupActions = static::retrieveNodeActions($node, $action->getActions(), $applyRecord);
+                if (!empty($groupActions)) {
+                    $filteredActions[] = $action->actions($groupActions);
+                }
+            }
+        }
+
+        return $filteredActions;
     }
 }
