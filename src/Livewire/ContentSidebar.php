@@ -58,7 +58,7 @@ class ContentSidebar extends BaseContentTreeNode
                 AdjustChildOrderAction::make()
                     ->after(fn () => $this->refreshTree()),
 
-            ])->dropdownPlacement('right-top'),
+            ])->dropdownPlacement('right-start'),
 
         ];
     }
@@ -109,7 +109,7 @@ class ContentSidebar extends BaseContentTreeNode
 
                 ])->dropdown(false),
 
-            ])->dropdownPlacement('right-top'),
+            ])->dropdownPlacement('right-start'),
         ];
     }
 
