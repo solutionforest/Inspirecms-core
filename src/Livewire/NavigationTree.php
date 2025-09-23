@@ -29,7 +29,7 @@ class NavigationTree extends SortableTreeComponent
         getModel as protected getBaseModel;
         getElquentQuery as protected getBaseElquentQuery;
     }
-    
+
     protected static bool $showToolbarActions = true;
 
     protected static bool $searchable = true;

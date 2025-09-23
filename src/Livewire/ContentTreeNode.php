@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCms\Livewire;
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Locked;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
-use SolutionForest\InspireCms\Livewire\BaseContentTreeNode;
 
 class ContentTreeNode extends BaseContentTreeNode
 {

@@ -24,7 +24,7 @@ class ContentSidebar extends BaseContentTreeNode
     protected static bool $enableNodeUrls = true;
 
     public ?int $maxSelections = 1; // Maximum number of selections allowed (null = unlimited)
-    
+
     public ?string $filamentPage = null;
 
     protected $listeners = [

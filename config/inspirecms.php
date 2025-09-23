@@ -236,7 +236,6 @@ return [
             'enabled' => false,
             'polling_interval' => '30s',
         ],
-        
 
         'background_image' => 'https://random.danielpetrica.com/api/random?format=regular',
 

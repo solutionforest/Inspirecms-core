@@ -113,7 +113,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
 
         $hasChildren = $record->children_count > 0;
 
-        if (static::$skipChildrenIfTableView 
+        if (static::$skipChildrenIfTableView
             && ($documentType = $record?->documentType)
             && $documentType->show_as_table === true
         ) {
