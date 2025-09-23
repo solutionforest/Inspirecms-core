@@ -12,6 +12,7 @@
 @import './components/markdown-editor.css';
 
 @import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
+@import "../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css";
 
 @source "../../src/Filament/**/*.php";
 @source "../views/**/*.blade.php";

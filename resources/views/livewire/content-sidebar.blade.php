@@ -56,7 +56,7 @@
 
     <!-- Static sidebar for desktop -->
     <div class="hidden lg:fixed lg:top-16 lg:bottom-0 lg:flex lg:w-72 lg:flex-col content-sidebar_desktop">
-        <div class="flex grow flex-col gap-y-5 overflow-y-auto border-r border-gray-200 bg-white py-2 dark:bg-gray-900 dark:border-gray-700">
+        <div class="flex grow flex-col gap-y-5 overflow-y-auto border-e border-gray-200 bg-white py-2 dark:bg-gray-900 dark:border-gray-700">
             <x-inspirecms-support::tree-node.service-side-tree
                 :nodes="$nodes"
                 :livewire="$this"
