@@ -221,12 +221,12 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         // Testing
         Testable::mixin(new TestsInspireCms);
 
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::BODY_END,
-            function (array $scopes) {
-                return view('inspirecms::filament.forms.components.content-picker.modal');
-            },
-        );
+        // FilamentView::registerRenderHook(
+        //     PanelsRenderHook::BODY_END,
+        //     function (array $scopes) {
+        //         return view('inspirecms::filament.forms.components.content-picker.modal');
+        //     },
+        // );
     }
 
     protected function getAssetPackageName(): ?string
