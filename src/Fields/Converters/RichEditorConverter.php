@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Fields\Converters;
 use Filament\Forms\Components\RichEditor\RichContentRenderer;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Fields\Configs\RichEditor as RichEditorFieldConfig;
+use SolutionForest\InspireCms\Filament\Forms\Components\RichEditor\ContentPickerRichPlugin;
 
 class RichEditorConverter extends BaseConverter
 {
@@ -38,6 +39,9 @@ class RichEditorConverter extends BaseConverter
             ->fileAttachmentsDisk($disk)
             ->fileAttachmentsVisibility($visibility)
             ->plugins($plugins)
+            ->plugins([
+                ContentPickerRichPlugin::make(),
+            ])
             ->toHtml();
 
         return str($rawHtml)->toHtmlString();

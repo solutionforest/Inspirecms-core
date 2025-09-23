@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
 use Closure;
 use Filament\Actions\Action;
+use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
 use Filament\Support\Components\Attributes\ExposedLivewireMethod;
@@ -12,14 +13,19 @@ use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\InteractsWithContentTreeModal;
+use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\WithContentTreeNode;
 
 use function Filament\Forms\array_move_after;
 use function Filament\Forms\array_move_before;
 
 class ContentPicker extends Field
 {
+    use CanLimitItemsLength;
     use HasPlaceholder;
-    use InteractsWithContentTreeModal;
+    use InteractsWithContentTreeModal {
+        getContentTreeModalConfig as protected traitGetContentTreeModalConfig;
+    }
+    use WithContentTreeNode;
 
     /**
      * @var view-string
@@ -64,7 +70,17 @@ class ContentPicker extends Field
     #[ExposedLivewireMethod]
     public function updateSelected($ids)
     {
-        ray($ids);
+        if (! is_array($ids)) {
+            $ids = is_null($ids) || empty($ids) ? [] : [$ids];
+        }
+        // Filter out any null or empty values
+        $ids = array_filter($ids);
+        // Filter out any duplicate values
+        $ids = array_values(array_unique($ids));
+        // Filter out if exceed limits
+        if ($this->getMaxItems() && count($ids) > $this->getMaxItems()) {
+            $ids = array_slice($ids, 0, $this->getMaxItems());
+        }
         $this->rawState($ids);
     }
 
@@ -212,5 +228,19 @@ class ContentPicker extends Field
             ->iconButton()
             ->size(Size::Small)
             ->visible(fn (ContentPicker $component): bool => $component->isDeletable());
+    }
+
+    public function getContentTreeModalConfig(): array
+    {
+        $config = $this->traitGetContentTreeModalConfig();
+
+        $config['filter'] = $this->getFilter()->toLivewire();
+        $config['filteringByPermission'] = $this->isFilteringByPermission();
+        $config['startNode'] = $this->getStartNode();
+
+        $config['limits']['min'] = $this->getMinItems();
+        $config['limits']['max'] = $this->getMaxItems();
+
+        return $config;
     }
 }

@@ -30,6 +30,9 @@
 .content-sidebar_desktop {
     z-index: 1;
 }
+.content-sidebar .server-side-tree .tree-toolbar .fi-ac-select-action {
+    @apply flex-1;
+}
 
 /* Content History */
 .content-history .publish-time-badge {

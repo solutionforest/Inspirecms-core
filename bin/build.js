@@ -60,6 +60,21 @@ compile({
 })
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/rich-editor-enhancement.js'],
-    outfile: './resources/dist/rich-editor-enhancement.js',
+    entryPoints: ['./resources/js/rich-content-plugins/content-picker-extension.js'],
+    outfile: './resources/dist/rich-content-plugins/content-picker-extension.js',
+})
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/rich-content-plugins/content-picker-mark.js'],
+    outfile: './resources/dist/rich-content-plugins/content-picker-mark.js',
+})
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/rich-content-plugins/media-picker-extension.js'],
+    outfile: './resources/dist/rich-content-plugins/media-picker-extension.js',
+})
+compile({
+    ...defaultOptions,
+    entryPoints: ['./resources/js/rich-content-plugins/media-picker-mark.js'],
+    outfile: './resources/dist/rich-content-plugins/media-picker-mark.js',
 })

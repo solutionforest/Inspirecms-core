@@ -2,10 +2,11 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
-use Closure;
-use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\RichEditor as BaseRichEditor;
+use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Forms\Components\RichEditor\ContentPickerRichPlugin;
+use SolutionForest\InspireCms\Filament\Forms\Components\RichEditor\MediaPickerRichPlugin;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\InteractsWithMediaLibraryModal;
@@ -16,89 +17,82 @@ class RichEditor extends BaseRichEditor
 {
     use InteractsWithMediaLibraryModal;
 
-    /**
-     * @var view-string
-     */
-    protected string $view = 'inspirecms::filament.forms.components.rich-editor';
-
-    /**
-     * @var array<string>
-     */
-    protected array | Closure $toolbarButtons = [
-        'attachFiles',
-        'blockquote',
-        'bold',
-        'bulletList',
-        'codeBlock',
-        'h2',
-        'h3',
-        'italic',
-        'link',
-        'orderedList',
-        'redo',
-        'strike',
-        'underline',
-        'undo',
-        'contentPicker',
-        'mediaPicker',
-    ];
-
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->extraAlpineAttributes([
-            'x-init' => $this->getExtraTrixActionsRegEvent(),
+        $this->plugins([
+            ContentPickerRichPlugin::make(),
+            MediaPickerRichPlugin::make(),
         ]);
 
-        $this->registerActions([
-            Action::make('selectContent')
-                ->slideOver()
-                ->fillForm(['selection' => []])
-                ->form([
-                    ContentTree::make('selection')->hiddenLabel(),
-                ])
-                ->action(function (array $data, self $component) {
-                    $component->getLivewire()->dispatch(
-                        'content-picker-trix-appead',
-                        statePath: $component->getStatePath(),
-                        data: $component->formatContentPickerState($data['selection']),
-                    );
-                }),
-        ]);
-
-        $this->registerListeners([
-            'mediaPicker::select' => [
-                function (self $component, string $statePath, $ids = null, $callback = null) {
-                    if ($statePath === $component->getStatePath() && ! empty($ids)) {
-                        $component->getLivewire()->dispatch(
-                            'media-picker-trix-appead',
-                            statePath: $statePath,
-                            data: $component->formatMediaPickerState($ids),
-                        );
-                    }
-                },
-            ],
+        $this->extraInputAttributes(fn (self $component) => [
+            'x-fi-fo-key' => $component->getKey(),
+            'x-on:update-content-picker-selection.window' => <<<'JS'
+                const key = $el.getAttribute('x-fi-fo-key');
+                if ($event?.detail?.key !== key) {
+                    return;
+                }
+                const editor = $getEditor() || null;
+                if (!editor) {
+                    console.warn('Editor instance not found');
+                    return;
+                }
+                $wire
+                    .callSchemaComponentMethod(
+                        key,
+                        'appendFromContentPicker',
+                        { ids: $event.detail?.data || [] },
+                    )
+                    .then((urls) => {
+                        if (urls && urls.length > 0) {
+                            editor?.chain()?.focus()?.insertContentPickerLinks(urls)?.run();
+                        }
+                    });
+            JS,
+            'x-on:update-media-picker-selection.window' => <<<'JS'
+                const key = $el.getAttribute('x-fi-fo-key');
+                if ($event?.detail?.key !== key) {
+                    return;
+                }
+                const editor = $getEditor() || null;
+                if (!editor) {
+                    console.warn('Editor instance not found');
+                    return;
+                }
+                $wire
+                    .callSchemaComponentMethod(
+                        key,
+                        'appendFromMediaPicker',
+                        { ids: $event.detail?.data || [] },
+                    )
+                    .then((urls) => {
+                        if (urls && urls.length > 0) {
+                            editor?.chain()?.focus()?.insertMediaPickerLinks(urls)?.run();
+                        }
+                    });
+            JS,
         ]);
     }
 
-    protected function getExtraTrixActionsRegEvent()
+    #[ExposedLivewireMethod]
+    public function appendFromContentPicker($ids)
     {
-        return <<<'JS'
-            document.addEventListener("trix-action-invoke", function(event) {
-                const { target, invokingElement, actionName } = event
-                switch (actionName) {
-                    case 'x-content-picker':
-                        $dispatch('content-picker-trix-click');
-                        break;
-                    case 'x-media-picker':
-                        $dispatch('media-picker-trix-click');
-                        break;
-                    default:
-                        break;
-                }
-            });
-        JS;
+        if (! empty($ids)) {
+            return $this->formatContentPickerState($ids);
+        }
+
+        return '';
+    }
+
+    #[ExposedLivewireMethod]
+    public function appendFromMediaPicker($ids)
+    {
+        if (! empty($ids)) {
+            return $this->formatMediaPickerState($ids);
+        }
+
+        return '';
     }
 
     public function formatMediaPickerState($state)
@@ -143,11 +137,11 @@ class RichEditor extends BaseRichEditor
         $title = $media?->title ?? $mediaAsset->title;
 
         $data = [
-            'contentType' => $media?->mime_type,
+            'mimeType' => $media?->mime_type,
+            'mediaId' => $mediaAsset->getKey(),
             'filename' => $media?->file_name,
             'href' => $mediaUrl,
             'url' => $mediaUrl,
-            'id' => $mediaAsset->getKey(),
             'title' => $title,
             'caption' => $mediaAsset->caption,
             'description' => $mediaAsset->description,
@@ -187,17 +181,17 @@ class RichEditor extends BaseRichEditor
                 })
                 ->implode(', ');
 
-            // Create responsive image HTML with srcset
-            $content = sprintf(
-                '<img src="%s" alt="%s" srcset="%s" sizes="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker">',
-                htmlspecialchars($mediaUrl),
-                htmlspecialchars($title),
-                htmlspecialchars($srcset),
-                $sizesAttr
-            );
+            // // Create responsive image HTML with srcset
+            // $content = sprintf(
+            //     '<img src="%s" alt="%s" srcset="%s" sizes="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker">',
+            //     htmlspecialchars($mediaUrl),
+            //     htmlspecialchars($title),
+            //     htmlspecialchars($srcset),
+            //     $sizesAttr
+            // );
 
             $data['sizes'] = $conversionUrls;
-            $data['content'] = $content;
+            // $data['content'] = $content;
             $data['srcset'] = $srcset;
         }
 
@@ -236,14 +230,11 @@ class RichEditor extends BaseRichEditor
             ->prepend('/')
             ->toString();
 
-        $template = ' <a href="%s" class="trix-attachment-contentpicker" data-id="%s" data-slug="%s">%s</a> ';
-
-        return sprintf(
-            $template,
-            htmlspecialchars($relativeUrl),
-            htmlspecialchars($content->getKey()),
-            htmlspecialchars($content->slug),
-            htmlspecialchars($content->title)
-        );
+        return [
+            'url' => $relativeUrl,
+            'title' => $content->title,
+            'key' => $content->getKey(),
+            'slug' => $content->slug,
+        ];
     }
 }
