@@ -18,13 +18,3 @@ document.addEventListener('peek:modal-opened', () => {
         });
     }
 });
-
-document.addEventListener('alpine:init', () => {
-    window.Alpine.store('contentSidebar', {
-        isOpen: Alpine.$persist(false).as('contentSidebar_on'),
-        reset: function () {
-            console.log('resetting sidebar state');
-            this.isOpen = false;
-        },
-    });
-});

@@ -33,6 +33,24 @@
 .content-sidebar .server-side-tree .tree-toolbar .fi-ac-select-action {
     @apply flex-1;
 }
+.content-sidebar-modal > .fi-modal-window-ctn > .fi-modal-window {
+    @apply me-auto! ms-[unset]!;
+    >.fi-modal-header > .tree-toolbar {
+        @apply pe-10;
+    }
+    >.fi-modal-content {
+        @apply mt-2;
+    }
+    &.fi-transition-enter-start,
+    &.fi-transition-leave-end {
+        @apply -translate-x-full! rtl:-translate-x-full!;
+    }
+
+    &.fi-transition-enter-end,
+    &.fi-transition-leave-start {
+        @apply translate-x-0!;
+    }
+}
 
 /* Content History */
 .content-history .publish-time-badge {
