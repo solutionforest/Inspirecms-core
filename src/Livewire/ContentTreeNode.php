@@ -11,6 +11,8 @@ class ContentTreeNode extends BaseContentTreeNode
 {
     protected static bool $showNavigationHeader = false;
 
+    protected static bool $skipChildrenIfTableView = false;
+
     public ?string $search = null;
 
     public array $limits = [];

@@ -133,6 +133,8 @@ class BaseContentTreeNode extends ServerSideTreeComponent
             '__content_document_type_cat' => $record?->documentType?->category,
             '__content_tree_id' => $record?->nestableTree?->getKey(),
 
+            '__content_is_default' => $record->is_default === true,
+
             'url' => $url,
             '__fi_resource_page' => $resourcePage,
 
