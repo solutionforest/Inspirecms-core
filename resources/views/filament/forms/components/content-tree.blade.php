@@ -6,7 +6,6 @@
 
     $limit = $getLimits();
     $maxSelections = $limit['max'] ?? null;
-    $multipleSelection = $maxSelections > 1;
 @endphp
 <x-dynamic-component
     :component="$getFieldWrapperView()"
@@ -17,7 +16,6 @@
             lazy
             :startNodeId="$startNode"
             :filter="$getFilter()"
-            :multipleSelection="$multipleSelection"
             :maxSelections="$maxSelections"
             :isDisabled="$isDisabled()"
             :filterByPermission="$isFilteringByPermission()"

@@ -15,15 +15,23 @@ use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Support\Helpers\TreeNodeActionHelper;
+use SolutionForest\InspireCms\Support\TreeNode\Concerns\CanCacheRecords;
 use SolutionForest\InspireCms\Support\TreeNode\Livewire\ServerSideTreeComponent;
 
 class BaseContentTreeNode extends ServerSideTreeComponent
 {
+    use CanCacheRecords {
+        getModel as protected getBaseModel;
+        getElquentQuery as protected getBaseElquentQuery;
+    }
+
     protected static bool $showNodeActions = false;
 
-    public ?string $activeLocale = null;
+    protected static bool $enableSelection = true;
 
-    protected array $nodeRecordsCache = []; // Cache model records by node ID
+    protected static bool $skipChildrenIfTableView = true;
+
+    public ?string $activeLocale = null;
 
     public array $redirectUrlParameters = []; // Additional URL parameters for resource links
 
@@ -37,21 +45,6 @@ class BaseContentTreeNode extends ServerSideTreeComponent
             $this->activeLocale = collect(InspireCms::getAllAvailableLanguages())->keys()->first();
         }
     }
-
-    // public function getExtraAlpineAttributes()
-    // {
-    //     $attributes = [];
-
-    //     if ($this->isContentPickerModal()) {
-    //         if (isset($this->modalConfig['modelable']) && is_array($this->modalConfig['modelable'])) {
-
-    //             $attributes['x-modelable'] = array_key_first($this->modalConfig['modelable']);
-    //             $attributes['x-model'] = Arr::first($this->modalConfig['modelable']);
-    //         }
-    //     }
-
-    //     return new \Illuminate\View\ComponentAttributeBag($attributes);
-    // }
 
     protected function getRootNodes(): array
     {
@@ -118,11 +111,20 @@ class BaseContentTreeNode extends ServerSideTreeComponent
             );
         }
 
+        $hasChildren = $record->children_count > 0;
+
+        if (static::$skipChildrenIfTableView 
+            && ($documentType = $record?->documentType)
+            && $documentType->show_as_table === true
+        ) {
+            $hasChildren = false;
+        }
+
         $node = [
             'id' => $record->getKey(),
             'name' => $record->title,
             'icon' => $record->documentType?->icon,
-            'has_children' => $record->children_count > 0,
+            'has_children' => $hasChildren,
             'parent_id' => $record->getParentId(),
             'depth' => $depth,
 
@@ -169,7 +171,9 @@ class BaseContentTreeNode extends ServerSideTreeComponent
 
         if ($recordKey && $resolvedAction && is_null($resolvedAction->getRecord())) {
 
-            $resolvedAction = $resolvedAction->record($this->retrieveRecordById($recordKey));
+            $record = $this->retrieveRecordById($recordKey);
+
+            $resolvedAction->getRootGroup()?->record($record) ?? $resolvedAction->record($record);
 
         }
 
@@ -191,6 +195,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                     ->all(),
                 livewireActions: $actions,
                 model: $this->getModel(),
+                livewire: $this,
                 resolveRecordUsing: function ($arguments, $key) {
                     if ($key instanceof Model) {
                         return $key;
@@ -215,7 +220,8 @@ class BaseContentTreeNode extends ServerSideTreeComponent
     public function getNodeLabel($node): array
     {
         $currentLocale = $this->activeLocale;
-        $currentLocaleTitle = $node['translatable']['title'][$currentLocale] ?? null;
+        $fallbackLocale = InspireCms::getFallbackLanguage()?->code ?? app()->getLocale();
+        $currentLocaleTitle = $node['translatable']['title'][$currentLocale] ?? $node['translatable']['title'][$fallbackLocale] ?? null;
 
         return [
             'title' => $currentLocaleTitle ?? $node['title'] ?? 'Untitled',
@@ -239,52 +245,6 @@ class BaseContentTreeNode extends ServerSideTreeComponent
         }
 
         return $node['url'] ?? null;
-    }
-
-    protected function cacheRecordAppend($record, $key = null)
-    {
-        $key = $key ?? $record->getKey();
-        if (! isset($this->nodeRecordsCache[$key])) {
-            $this->nodeRecordsCache[$key] = $record;
-        }
-    }
-
-    protected function retrieveRecordById($recordKey)
-    {
-        if (isset($this->nodeRecordsCache[$recordKey])) {
-            return $this->nodeRecordsCache[$recordKey];
-        }
-
-        $record = $this->getElquentQuery()->find($recordKey);
-
-        $this->cacheRecordAppend($record);
-
-        return $record;
-    }
-
-    /**
-     * Clear all caches - useful when data changes
-     */
-    public function clearRecordCaches(): void
-    {
-        $this->nodeRecordsCache = [];
-    }
-
-    /**
-     * Clear cache for specific nodes
-     */
-    public function clearNodeRecordCache(array $nodeIds): void
-    {
-        // Clear record cache for specific nodes
-        foreach ($nodeIds as $nodeId) {
-            unset($this->nodeRecordsCache[$nodeId]);
-        }
-    }
-
-    public function refreshTree(): void
-    {
-        $this->clearRecordCaches(); // Clear record caches when refreshing
-        parent::refreshTree();
     }
 
     /**

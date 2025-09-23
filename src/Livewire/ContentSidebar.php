@@ -23,6 +23,10 @@ class ContentSidebar extends BaseContentTreeNode
 
     protected static bool $enableNodeUrls = true;
 
+    public ?int $maxSelections = 1; // Maximum number of selections allowed (null = unlimited)
+    
+    public ?string $filamentPage = null;
+
     protected $listeners = [
         'updatedActiveLocale' => '$refresh',
     ];
@@ -83,9 +87,11 @@ class ContentSidebar extends BaseContentTreeNode
 
                 ActionGroup::make([
 
-                    SetDefaultContentPageAction::make(),
+                    SetDefaultContentPageAction::make()
+                        ->after(fn () => $this->refreshTree()),
 
-                    UpdateContentRouteAction::make(),
+                    UpdateContentRouteAction::make()
+                        ->after(fn () => $this->refreshTree()),
 
                     ActionGroup::make([
 
@@ -102,7 +108,8 @@ class ContentSidebar extends BaseContentTreeNode
                         ->color('gray')
                         ->iconPosition(IconPosition::After)
                         ->icon(Heroicon::ArrowRight)
-                        ->label(__('inspirecms::buttons.move_to.label')),
+                        ->label(__('inspirecms::buttons.move_to.label'))
+                        ->dropdownPlacement('right-start'),
 
                     DeleteAction::make()
                         ->after(fn () => $this->refreshTree()),

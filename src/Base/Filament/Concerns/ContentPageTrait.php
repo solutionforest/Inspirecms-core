@@ -25,7 +25,7 @@ trait ContentPageTrait
                 $livewireData = $this->getLivewireData();
 
                 return Blade::render(<<<'Blade'
-                    <livewire:inspirecms::content-sidebar :data="$livewireData" />
+                    @livewire('inspirecms::content-sidebar', $livewireData)
                 Blade, [
                     'livewireData' => $livewireData,
                 ]);
@@ -151,28 +151,24 @@ trait ContentPageTrait
 
     protected function getLivewireData(): array
     {
-        $selectedModelItemKey = null;
-        $expandedModelItemKeys = [];
+        $selectedKey = null;
+        $expandedKeys = [];
 
         if ($this instanceof EditRecord || $this instanceof ViewRecord) {
             $record = $this->getRecord();
-            $selectedModelItemKey = $record->getKey();
-            $expandedModelItemKeys[] = $record->parent_id;
+
+            $selectedKey = $record->getKey();
+            $expandedKeys = $record?->ancestorsAndSelf?->map(fn ($r) => $r->getKey())->all() ?? [];
         } elseif ($this instanceof BaseContentCreatePage) {
-            $selectedModelItemKey = $this->parent;
+            $selectedKey = $this->parent;
         }
 
         return [
             'redirectUrlParameters' => $this->getRedirectUrlParameters(),
             'activeLocale' => $this->activeLocale, // from queryString
-            'selectedModelItemKeys' => array_filter([$selectedModelItemKey]),
-            'expandedModelItemKeys' => $expandedModelItemKeys,
-            'pageName' => match (true) {
-                $this instanceof EditRecord => 'edit',
-                $this instanceof ViewRecord => 'view',
-                $this instanceof BaseContentCreatePage => 'create',
-                default => 'index',
-            },
+            'selectedNodes' => array_filter([$selectedKey]),
+            'expandedNodes' => $expandedKeys,
+            'filamentPage' => get_class($this),
         ];
     }
 

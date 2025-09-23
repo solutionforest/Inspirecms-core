@@ -18,7 +18,6 @@
         :autofocus="false"
         alignment="center"
         :close-button="true"
-        header=" "
     >
         <x-slot name="trigger">
             <div class="fixed top-16 right-0 z-10 px-2 py-2 lg:hidden">

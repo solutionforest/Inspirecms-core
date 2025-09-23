@@ -20,10 +20,16 @@ use SolutionForest\InspireCms\Filament\Resources\NavigationResource;
 use SolutionForest\InspireCms\Helpers\FilamentResourceHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Helpers\TreeNodeActionHelper;
+use SolutionForest\InspireCms\Support\TreeNode\Concerns\CanCacheRecords;
 use SolutionForest\InspireCms\Support\TreeNode\Livewire\SortableTreeComponent;
 
 class NavigationTree extends SortableTreeComponent
 {
+    use CanCacheRecords {
+        getModel as protected getBaseModel;
+        getElquentQuery as protected getBaseElquentQuery;
+    }
+    
     protected static bool $showToolbarActions = true;
 
     protected static bool $searchable = true;
@@ -63,7 +69,7 @@ class NavigationTree extends SortableTreeComponent
     {
         $data = collect($this->nodes)->map(fn ($node) => $this->transformNodeIntoRecord($node))->toArray();
 
-        $this->getTreeQuery()->rebuildTree($data);
+        $this->getElquentQuery()->rebuildTree($data);
 
         Notification::make()
             ->title('Tree Updated')
@@ -78,7 +84,7 @@ class NavigationTree extends SortableTreeComponent
     {
         // Implement the logic to refresh the nodes, e.g., fetch from database
         // $this->nodes = ...;
-        $records = $this->getTreeQuery()->get()->toTree();
+        $records = $this->getElquentQuery()->get()->toTree();
 
         $this->nodes = collect($records)->map(fn ($record) => $this->transformRecordIntoNode($record))->toArray();
     }
@@ -154,27 +160,18 @@ class NavigationTree extends SortableTreeComponent
         return null;
     }
 
-    protected function resolveRecursiveTreeNodeAction(array $action, array $parentActions): ?Action
+    protected function resolveTreeNodeAction(array $action, array $parentActions): ?Action
     {
-        $resolvedAction = parent::resolveRecursiveTreeNodeAction($action, $parentActions);
+        $resolvedAction = $this->resolveBaseAction($action, $parentActions);
 
-        if ($resolvedAction) {
+        $recordKey = $action['context']['recordKey'] ?? $action['arguments']['node']['id'] ?? null;
 
-            $resolvedAction->model($this->getModel());
+        if ($recordKey && $resolvedAction && is_null($resolvedAction->getRecord())) {
 
-            $record = ($action['context']['recordKey'] ?? null) ? $this->getTreeQuery()->find($action['context']['recordKey']) : null;
+            $record = $this->retrieveRecordById($recordKey);
 
             $resolvedAction->getRootGroup()?->record($record) ?? $resolvedAction->record($record);
 
-            if (($url = $this->getDefaultActionUrl($resolvedAction)) &&
-                filled($url)
-            ) {
-
-                redirect($url);
-
-                // Avoid modal opening before redirect
-                return null;
-            }
         }
 
         return $resolvedAction;
@@ -244,16 +241,19 @@ class NavigationTree extends SortableTreeComponent
                 node: $node,
                 livewireActions: $actions,
                 model: $this->getModel(),
+                livewire: $this,
                 resolveRecordUsing: function ($arguments, $key) {
                     if ($key instanceof Model) {
                         return $key;
                     }
+
                     $recordKey = $arguments['nodeId'] ?? $key ?? null;
+
                     if (is_null($recordKey) || empty($recordKey)) {
                         return null;
                     }
 
-                    return $this->getTreeQuery()->find($recordKey);
+                    return $this->retrieveRecordById($recordKey);
                 },
             );
         }
@@ -263,7 +263,7 @@ class NavigationTree extends SortableTreeComponent
             ->all();
     }
 
-    protected function getTreeQuery(): Builder
+    protected function getElquentQuery(): Builder
     {
         return $this->getModel()::scoped(['category' => $this->category])
             ->withDepth()

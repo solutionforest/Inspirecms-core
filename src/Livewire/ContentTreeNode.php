@@ -4,15 +4,12 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Illuminate\Support\Arr;
 use Livewire\Attributes\Locked;
-use Livewire\Attributes\On;
-use Livewire\Attributes\Renderless;
 use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection;
+use SolutionForest\InspireCms\Livewire\BaseContentTreeNode;
 
 class ContentTreeNode extends BaseContentTreeNode
 {
     protected static bool $showNavigationHeader = false;
-
-    protected static bool $enableSelection = true;
 
     public ?string $search = null;
 
