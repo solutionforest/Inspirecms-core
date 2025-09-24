@@ -22,7 +22,7 @@ trait ContentPageTrait
             PanelsRenderHook::CONTENT_BEFORE,
             function () {
 
-                $livewireData = $this->getLivewireData();
+                $livewireData = $this->getSidebarLivewireData();
 
                 return Blade::render(<<<'Blade'
                     @livewire('inspirecms::content-sidebar', $livewireData)
@@ -144,12 +144,12 @@ trait ContentPageTrait
     protected function getRedirectUrlParameters(): array
     {
         return [
-            // 'activeRelationManager' => 0,
+            // 'relation' => 0, 
             'locale' => $this->activeLocale,
         ];
     }
 
-    protected function getLivewireData(): array
+    protected function getSidebarLivewireData(): array
     {
         $selectedKey = null;
         $expandedKeys = [];
