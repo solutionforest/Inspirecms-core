@@ -12,6 +12,7 @@ class BuilderFilter extends BaseFilter
     public function toLivewire()
     {
         return [
+            ... parent::toLivewire(),
             'scopeMethod' => $this->scopeMethod,
             'scopeParameters' => $this->scopeParameters,
         ];

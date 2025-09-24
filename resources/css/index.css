@@ -6,13 +6,14 @@
 @import './forms.css';
 @import './tree.css';
 @import './layout.css';
+@import './cms-content.css';
 
 @import './components/alert.css';
 @import './components/code-editor.css';
 @import './components/markdown-editor.css';
 
 @import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
-@import "../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css";
+@import '../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css';
 
 @source "../../src/Filament/**/*.php";
 @source "../views/**/*.blade.php";
@@ -27,58 +28,17 @@
     }
 }
 
-/* Content Sidebar */
-.content-sidebar_desktop {
-    z-index: 1;
-}
-.content-sidebar .server-side-tree .tree-toolbar .fi-ac-select-action {
-    @apply flex-1;
-}
-.content-sidebar-modal > .fi-modal-window-ctn > .fi-modal-window {
-    @apply me-auto! ms-[unset]!;
-    >.fi-modal-header > .tree-toolbar {
-        @apply pe-10;
-    }
-    >.fi-modal-content {
-        @apply mt-2;
-    }
-    &.fi-transition-enter-start,
-    &.fi-transition-leave-end {
-        @apply -translate-x-full! rtl:-translate-x-full!;
-    }
-
-    &.fi-transition-enter-end,
-    &.fi-transition-leave-start {
-        @apply translate-x-0!;
-    }
-}
-
-/* Content History */
-.content-history .publish-time-badge {
-    @apply bg-color-50 dark:bg-color-400/10 ring-1 ring-color-600 ring-color-600/10;
-    @apply rounded-md px-2 py-1;
-    @apply text-xs font-medium;
-    @apply flex items-center justify-center gap-1;
-}
-.version-diff .version-diff-item {
-    @apply text-sm;
-}
-.version-diff .version-diff-item .version-diff-item-title .version-diff .version-diff-item .diff-viewer {
-    font-family: 'Courier New', monospace;
-}
-.version-diff .version-diff-item > div {
-    @apply p-3;
-}
-
 /* Top Alert */
 .fi-body .top-alert.alert-dialog {
     @apply sticky top-0 z-20;
 
-    ~ .fi-layout .fi-topbar, ~ .fi-simple-layout > .absolute {
+    ~ .fi-layout .fi-topbar,
+    ~ .fi-simple-layout > .absolute {
         @apply top-10!;
     }
 
-    ~ .fi-layout .content-sidebar .icon-btn, ~ .fi-layout .content-sidebar .content-sidebar_desktop {
+    ~ .fi-layout .content-sidebar .icon-btn,
+    ~ .fi-layout .content-sidebar .content-sidebar_desktop {
         @apply top-26!;
     }
 }

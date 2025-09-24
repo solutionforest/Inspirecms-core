@@ -225,7 +225,9 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     null;
             })
             // display deleted content
-            ->where(new ContentPickerFilters\WithoutGlobalScope(SoftDeletingScope::class));
+            ->where(new ContentPickerFilters\WithoutGlobalScope(SoftDeletingScope::class))
+            // only display web page content
+            ->where(new ContentPickerFilters\BuilderFilter('whereIsWebPage'));
     }
 
     /**

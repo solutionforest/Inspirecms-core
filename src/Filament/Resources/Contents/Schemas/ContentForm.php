@@ -80,13 +80,24 @@ class ContentForm
                 Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
-                    ->tabs(function (ContractsContentForm $livewire) {
+                    ->tabs(function ($livewire, $record) {
 
-                        $documentType = $livewire->getDocumentType();
+                        $documentType = $record?->documentType ?? 
+                            ($livewire instanceof ContractsContentForm ?
+                                $livewire->getDocumentType() : 
+                                null);
+                        
+                        $tabs = [];
 
-                        $tabs[] = ContentPropertyDataGroup::make(isTab: true);
+                        if (
+                            ($propGrpTab = ContentPropertyDataGroup::make(isTab: true)) &&
+                            $propGrpTab instanceof Tab
+                        ) {
+                            $tabs[] = $propGrpTab;
+                        }
 
-                        if ($documentType->display_category != DocumentTypeCategory::Data) {
+
+                        if ($documentType && $documentType->display_category == DocumentTypeCategory::Web) {
                             $tabs[] = Tab::make('seo')
                                 ->label(__('inspirecms::resources/content.tabs.seo'))
                                 ->columns(['default' => 1])
@@ -124,21 +135,21 @@ class ContentForm
                                     ->columnSpan(2)
                                     ->schema([
                                         ...(
-                                            $documentType->display_category != DocumentTypeCategory::Data ?
-                                            [] :
+                                            $documentType && $documentType->display_category != DocumentTypeCategory::Web ?
                                             [
                                                 Section::make([
                                                     static::getTitleFormComponent(),
                                                     static::getSlugFormComponent(),
                                                 ]),
-                                            ]
+                                            ]: 
+                                            []
                                         ),
                                         Section::make([
                                             static::getDisplayDocumentTypeTextEntry(),
                                             static::getDisplayParentTextEntry(),
                                             static::getDisplayIdTextEntry(),
                                             static::getDisplayUrlTextEntry()
-                                                ->visible($documentType->display_category != DocumentTypeCategory::Data),
+                                                ->visible($documentType && $documentType->display_category == DocumentTypeCategory::Web),
                                         ]),
                                         Group::make()
                                             ->visible(fn ($record) => $record != null)
@@ -166,13 +177,15 @@ class ContentForm
             ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.title.placeholder'))
             ->helperText(__('inspirecms::resources/content.title.instructions'))
-            ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) {
+            ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, $livewire) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', ContentSlugFactory::create()->generate($state));
                 }
-                $locale = $livewire->getActiveActionsLocale();
-                $set("webSetting.seo.meta_title.{$locale}", $state);
+                if ($livewire instanceof ContractsContentForm) {
+                    $locale = $livewire->getActiveActionsLocale();
+                    $set("webSetting.seo.meta_title.{$locale}", $state);
+                }
             })
             ->autofocus()
             ->required()
@@ -194,17 +207,15 @@ class ContentForm
             ->afterStateUpdated(function ($component, $state) {
                 return $component->state(ContentSlugFactory::create()->generate($state));
             })
-            ->unique(table: InspireCmsConfig::getContentModelClass(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (Unique $rule, callable $get, ContractsContentForm $livewire, string $operation) {
-                $model = new (InspireCmsConfig::getContentModelClass());
-
+            ->unique(table: InspireCmsConfig::getContentModelClass(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (Unique $rule, callable $get, $livewire, string $operation) {
                 $parentId = $get('parent_id') ?? null;
 
-                if ($operation === 'create') {
+                if ($operation === 'create' && $livewire instanceof ContractsContentForm) {
                     $parentId = $livewire->getParentKey() ?? $parentId;
                 }
 
                 if (! filled($parentId)) {
-                    $parentId = $model->getRootLevelParentId();
+                    $parentId = app(InspireCmsConfig::getContentModelClass())->getRootLevelParentId();
                 }
 
                 return $rule
@@ -222,9 +233,14 @@ class ContentForm
 
         return Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function (ContractsContentForm $livewire, $operation, null | Model | ModelsContent $record) use ($fallbackParentId) {
+            ->dehydrateStateUsing(function ( $livewire, $operation, null | Model | ModelsContent $record) use ($fallbackParentId) {
                 if ($operation === 'create') {
-                    return $livewire->getParentKey() ?? $fallbackParentId;
+                    return 
+                    (
+                        $livewire instanceof ContractsContentForm ?
+                            $livewire->getParentKey() :
+                            null
+                    ) ?? $fallbackParentId;
                 }
 
                 return $record?->parent_id ?? $fallbackParentId;
@@ -240,8 +256,10 @@ class ContentForm
             ->label(__('inspirecms::resources/content.template.label'))
             ->validationAttribute(__('inspirecms::resources/content.template.validation_attribute'))
             ->helperText(__('inspirecms::resources/content.template.instructions'))
-            ->options(function (ContractsContentForm $livewire) {
-                $documentType = $livewire->getDocumentType()?->loadMissing('templates');
+            ->options(function ($livewire) {
+                $documentType = $livewire instanceof ContractsContentForm ?
+                    $livewire->getDocumentType()?->loadMissing('templates'):
+                    null;
                 if (! $documentType) {
                     return [];
                 }
@@ -285,8 +303,16 @@ class ContentForm
         return Hidden::make('document_type_id')
             ->validationAttribute(__('inspirecms::resources/content.document_type.validation_attribute'))
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function (ContractsContentForm $livewire, null | Model | ModelsContent $record) {
-                return $record?->document_type_id ?? $livewire->getDocumentType()?->getKey();
+            ->dehydrateStateUsing(function ($livewire, null | Model | ModelsContent $record) {
+                if ($record) {
+                    return $record->document_type_id;
+                }
+
+                if ($livewire instanceof ContractsContentForm) {
+                    return $livewire->getDocumentType()?->getKey();
+                }
+
+                return null;
             });
     }
 
@@ -299,11 +325,12 @@ class ContentForm
             ->label(__('inspirecms::resources/content.document_type.label'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::inspirecms.n/a'))
-            ->state(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
-                return ($record?->documentType ?? $livewire->getDocumentType())?->title;
+            ->state(function (Model | ModelsContent | null $record, $livewire) {
+                $documentType = $record?->documentType ?? ($livewire instanceof ContractsContentForm ? $livewire->getDocumentType() : null);
+                return $documentType?->title;
             })
-            ->url(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
-                $documentType = $record?->documentType ?? $livewire->getDocumentType();
+            ->url(function (Model | ModelsContent | null $record, $livewire) {
+                $documentType = $record?->documentType ?? ($livewire instanceof ContractsContentForm ? $livewire->getDocumentType() : null);
                 if (! $documentType) {
                     return null;
                 }
@@ -503,13 +530,15 @@ class ContentForm
         return TextEntry::make('display_url')
             ->label(__('inspirecms::resources/content.url.label'))
             ->inlineLabel()
-            ->state(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
+            ->state(function (Model | ModelsContent | null $record, $livewire) {
                 if (is_null($record)) {
                     return null;
                 }
 
-                $code = $livewire->getActiveActionsLocale();
-                $lang = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->code === $code);
+                $lang = $livewire instanceof ContractsContentForm ?
+                    collect(InspireCms::getAllAvailableLanguages())
+                            ->firstWhere(fn (LanguageDto $language) => $language->code === $livewire->getActiveActionsLocale()) : 
+                    InspireCms::getFallbackLanguage();
 
                 $url = $record->getUrl($lang);
 
@@ -540,7 +569,15 @@ class ContentForm
 
                 $components[] = $createFieldUsing(
                     $field::make($locale)
-                        ->visible(fn (ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
+                        ->visible(function ($livewire) use ($langs, $locale) {
+                            if (count($langs) <= 1) {
+                                return true;
+                            }
+
+                            return $livewire instanceof ContractsContentForm ?
+                                $livewire->getActiveActionsLocale() == $locale :
+                                true;
+                        })
                         ->translatable()
                 );
             }

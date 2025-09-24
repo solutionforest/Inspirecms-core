@@ -7,12 +7,10 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Concerns\CanLimitItemsLength;
 use Filament\Forms\Components\Concerns\HasPlaceholder;
 use Filament\Forms\Components\Field;
-use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Filament\Support\Enums\Size;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
-use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\InteractsWithContentTreeModal;
 use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\WithContentTreeNode;
 
 use function Filament\Forms\array_move_after;
@@ -22,15 +20,12 @@ class ContentPicker extends Field
 {
     use CanLimitItemsLength;
     use HasPlaceholder;
-    use InteractsWithContentTreeModal {
-        getContentTreeModalConfig as protected traitGetContentTreeModalConfig;
-    }
     use WithContentTreeNode;
 
     /**
      * @var view-string
      */
-    protected string $view = 'inspirecms::filament.forms.components.content-picker.index';
+    protected string $view = 'inspirecms::filament.forms.components.content-picker';
 
     protected ?Closure $recordTitleUsing = null;
 
@@ -55,33 +50,12 @@ class ContentPicker extends Field
         });
 
         $this->registerActions([
-            $this->getMoveUpAction(),
-            $this->getMoveDownAction(),
-            $this->getDeleteAction(),
+            fn (self $component): Action => $component->getSelectAction(),
+            fn (self $component): Action => $component->getClearAction(),
+            fn (self $component): Action => $component->getMoveUpAction(),
+            fn (self $component): Action => $component->getMoveDownAction(),
+            fn (self $component): Action => $component->getDeleteAction(),
         ]);
-    }
-
-    #[ExposedLivewireMethod]
-    public function clearSelected()
-    {
-        $this->rawState([]);
-    }
-
-    #[ExposedLivewireMethod]
-    public function updateSelected($ids)
-    {
-        if (! is_array($ids)) {
-            $ids = is_null($ids) || empty($ids) ? [] : [$ids];
-        }
-        // Filter out any null or empty values
-        $ids = array_filter($ids);
-        // Filter out any duplicate values
-        $ids = array_values(array_unique($ids));
-        // Filter out if exceed limits
-        if ($this->getMaxItems() && count($ids) > $this->getMaxItems()) {
-            $ids = array_slice($ids, 0, $this->getMaxItems());
-        }
-        $this->rawState($ids);
     }
 
     public function recordTitleUsing(Closure $callback): static
@@ -167,6 +141,77 @@ class ContentPicker extends Field
         return boolval($this->evaluate($this->isDeletable));
     }
 
+    public function getSelectAction(): Action
+    {
+        return Action::make('select')
+            ->label(__('inspirecms::buttons.select.label'))
+            ->modalWidth('5xl')
+            ->slideOver()
+            ->stickyModalHeader()
+            ->stickyModalFooter()
+            ->modalSubmitActionLabel(__('inspirecms::buttons.choose.label'))
+            ->fillForm(['selection' => $this->getState()])
+            ->schema(function () {
+                $selector = ContentTree::make('selection')
+                    ->hiddenLabel()
+                    // todo: add translations
+                    ->validationAttribute('selection')
+                    ->filter($this->getFilter()->toArray())
+                    ->filteringByPermission($this->isFilteringByPermission());
+
+                if ($this->minItems != null) {
+                    $selector->minItems($this->minItems);
+                }
+
+                if ($this->maxItems != null) {
+                    $selector->maxItems($this->maxItems);
+                }
+
+                if ($this->startNode != null) {
+                    $selector->startNode($this->startNode);
+                }
+
+                if ($this->modifySelectActionSelectorUsing) {
+                    $selector = $this->evaluate($this->modifySelectActionSelectorUsing, [
+                        'selector' => $selector,
+                    ]) ?? $selector;
+                }
+
+                return [$selector];
+            })
+            ->action(function (array $data, $action) {
+                
+                $ids = $data['selection'] ?? [];
+
+                if (! is_array($ids)) {
+                    $ids = is_null($ids) || empty($ids) ? [] : [$ids];
+                }
+                // Filter out any null or empty values
+                $ids = array_filter($ids);
+                // Filter out any duplicate values
+                $ids = array_values(array_unique($ids));
+                
+                // Filter out if exceed limits
+                if (($max = $this->getMaxItems()) && 
+                    count($ids) > $max
+                ) {
+                    $ids = array_slice($ids, 0, $max);
+                }
+
+                return $this->state($ids)->callAfterStateUpdated();
+            });
+    }
+
+    public function getClearAction(): Action
+    {
+        return Action::make('clear')
+            ->label(__('inspirecms::buttons.clear.label'))
+            ->color('gray')
+            ->action(function () {
+                $this->state([]);
+            });
+    }
+
     public function getMoveUpAction(): Action
     {
         return Action::make('moveUp')
@@ -228,19 +273,5 @@ class ContentPicker extends Field
             ->iconButton()
             ->size(Size::Small)
             ->visible(fn (ContentPicker $component): bool => $component->isDeletable());
-    }
-
-    public function getContentTreeModalConfig(): array
-    {
-        $config = $this->traitGetContentTreeModalConfig();
-
-        $config['filter'] = $this->getFilter()->toLivewire();
-        $config['filteringByPermission'] = $this->isFilteringByPermission();
-        $config['startNode'] = $this->getStartNode();
-
-        $config['limits']['min'] = $this->getMinItems();
-        $config['limits']['max'] = $this->getMaxItems();
-
-        return $config;
     }
 }

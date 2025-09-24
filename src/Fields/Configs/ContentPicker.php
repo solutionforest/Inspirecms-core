@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
+use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Components\Component;
@@ -34,6 +35,10 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
     public ?string $documentType = null;
 
     public ?string $startNode = null;
+
+    public ?bool $isReorderable = null;
+
+    public ?bool $isDeletable = null;
 
     public function getFormSchema(): array
     {
@@ -90,6 +95,16 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->dehydrateStateUsing(function ($state) {
                                     return collect($state)->filter()->first();
                                 }),
+
+                            Checkbox::make('isReorderable')
+                                ->inlineLabel()
+                                ->default(true)
+                                ->helperText('Allow reordering the selected items in the picker'),
+
+                            Checkbox::make('isDeletable')
+                                ->inlineLabel()
+                                ->default(true)
+                                ->helperText('Allow deleting the selected items in the picker'),
                         ]),
                 ]),
         ];
@@ -113,6 +128,14 @@ class ContentPicker extends FieldTypeBaseConfig implements FieldTypeConfig
 
             if ($this->startNode) {
                 $component->startNode($this->startNode);
+            }
+
+            if ($this->isReorderable !== null) {
+                $component->reorderable($this->isReorderable);
+            }
+
+            if ($this->isDeletable !== null) {
+                $component->deletable($this->isDeletable);
             }
         }
     }
