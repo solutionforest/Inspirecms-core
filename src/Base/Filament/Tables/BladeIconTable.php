@@ -15,7 +15,7 @@ class BladeIconTable
     public static function configure(Table $table): Table
     {
         return $table
-            ->records(function (int $page, int $recordsPerPage) use ($table) {
+            ->records(function (int $page, int $recordsPerPage, $search, $filters) use ($table) {
 
                 $arguments = $table->getArguments();
                 $selected = $arguments['selected'] ?? null;
@@ -29,6 +29,23 @@ class BladeIconTable
                         return [$icon => $icons->pull($icon)];
                     });
                     $icons = $selectedIcons->merge($icons);
+                }
+                
+                if ($search && filled($search)) {
+                    $icons = $icons->filter(function ($icon) use ($search) {
+                        return str_contains($icon['key'], $search);
+                    });
+                }
+                
+                if ($filters && is_array($filters)) {
+                    if (
+                        ($setFilter = $filters['set']['value'] ?? null) && filled($setFilter)
+                    ) {
+                        // dd($setFilter, $icons);
+                        $icons = $icons->filter(function ($icon) use ($setFilter) {
+                            return $icon['set'] === $setFilter;
+                        });
+                    }
                 }
 
                 $records = $icons->forPage($page, $recordsPerPage);
@@ -54,8 +71,25 @@ class BladeIconTable
                         ->size(TextSize::ExtraSmall)
                         ->alignCenter()
                         ->verticallyAlignEnd(),
+                    TextColumn::make('set')
+                        ->size(TextSize::ExtraSmall)
+                        ->color('gray')
+                        ->badge()
+                        ->alignCenter()
+                        ->verticallyAlignEnd(),
                 ]),
+            ])
+            ->filters([
+                \Filament\Tables\Filters\SelectFilter::make('set')
+                    ->options(fn () => static::getAvailableSets())
             ]);
+    }
+
+    private static function getAvailableSets()
+    {
+        return collect(app(Factory::class)->all())
+            ->mapWithKeys(fn ($data, $set) => [$set => $set])
+            ->all();
     }
 
     private static function getAvailableIcons()
