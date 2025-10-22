@@ -11,7 +11,7 @@ class WithoutGlobalScope extends BaseFilter
     public function toLivewire()
     {
         return [
-            ... parent::toLivewire(),
+            ...parent::toLivewire(),
             'scopeClass' => $this->scopeClass,
         ];
     }

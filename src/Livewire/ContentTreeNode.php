@@ -51,17 +51,17 @@ class ContentTreeNode extends BaseContentTreeNode
      */
     protected function getSearchRecords()
     {
-        if (!$this->isFilteringBySearch()) {
+        if (! $this->isFilteringBySearch()) {
             return null;
         }
 
         $query = $this->getElquentQuery();
-        
+
         // Apply search filter to the query
         $query->where(function (Builder $q) {
             $searchTerm = '%' . $this->search . '%';
             $q->where('title', 'like', $searchTerm)
-              ->orWhere('slug', 'like', $searchTerm);
+                ->orWhere('slug', 'like', $searchTerm);
         });
 
         return $query->paginate($this->paginationPageSize);

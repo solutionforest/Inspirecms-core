@@ -180,7 +180,7 @@ class ContentPicker extends Field
                 return [$selector];
             })
             ->action(function (array $data, $action) {
-                
+
                 $ids = $data['selection'] ?? [];
 
                 if (! is_array($ids)) {
@@ -190,9 +190,9 @@ class ContentPicker extends Field
                 $ids = array_filter($ids);
                 // Filter out any duplicate values
                 $ids = array_values(array_unique($ids));
-                
+
                 // Filter out if exceed limits
-                if (($max = $this->getMaxItems()) && 
+                if (($max = $this->getMaxItems()) &&
                     count($ids) > $max
                 ) {
                     $ids = array_slice($ids, 0, $max);

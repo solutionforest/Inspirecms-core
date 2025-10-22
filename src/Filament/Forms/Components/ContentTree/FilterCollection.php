@@ -17,14 +17,14 @@ class FilterCollection extends Collection implements Wireable
 
                 if ($item instanceof BaseFilter) {
                     return [$item->toLivewire()];
-                } 
-                
-                if (is_array($item) && 
+                }
+
+                if (is_array($item) &&
                     Arr::first($item) instanceof BaseFilter
                 ) {
 
                     return [Arr::first($item)->toLivewire()];
-                    
+
                 }
 
                 return [$item];
@@ -37,29 +37,29 @@ class FilterCollection extends Collection implements Wireable
         $items = collect(is_array($value) ? $value : [])
             ->map(function ($item) {
 
-                if (!$item) {
+                if (! $item) {
                     return null;
                 }
 
                 if ($item instanceof BaseFilter) {
                     return $item;
                 }
-                
+
                 $convertArrayToBaseFilter = function ($fqcn, $data) {
                     return $fqcn::fromLivewire($data);
                 };
-                
+
                 if (is_array($item)) {
                     if (
                         ($firstItem = Arr::first($item)) &&
                         is_array($firstItem) &&
-                        isset($firstItem['__fqcn']) && 
+                        isset($firstItem['__fqcn']) &&
                         is_a($firstItem['__fqcn'], BaseFilter::class, true)
                     ) {
                         return $convertArrayToBaseFilter($firstItem['__fqcn'], $firstItem);
 
                     } elseif (
-                        isset($item['__fqcn']) && 
+                        isset($item['__fqcn']) &&
                         is_a($item['__fqcn'], BaseFilter::class, true)
                     ) {
                         return $convertArrayToBaseFilter($item['__fqcn'], $item);

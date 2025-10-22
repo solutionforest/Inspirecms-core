@@ -62,14 +62,14 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->action(function (array $arguments, array $data, self $component) {
 
                 $ids = $data['selection'] ?? [];
-                
+
                 if (empty($ids)) {
                     return;
                 }
 
                 $key = $this->getKey();
                 $livewire = $this->getLivewire();
-                
+
                 $items = $this->formatContentPickerState($ids);
 
                 $livewire->dispatch(
@@ -103,14 +103,14 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->action(function (array $arguments, array $data, self $component) {
 
                 $ids = $data['selection'] ?? [];
-                
+
                 if (empty($ids)) {
                     return;
                 }
 
                 $key = $this->getKey();
                 $livewire = $this->getLivewire();
-                
+
                 $items = $this->formatMediaPickerState($ids);
 
                 $livewire->dispatch(

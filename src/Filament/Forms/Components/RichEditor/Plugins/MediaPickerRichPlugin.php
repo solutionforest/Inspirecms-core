@@ -78,7 +78,7 @@ class MediaPickerRichPlugin implements RichContentPlugin
                 ->schema([
                     MediaSelect::make('selection')
                         ->hiddenLabel()
-                        ->columnSpan('full')
+                        ->columnSpan('full'),
                 ])
                 ->action(function (array $arguments, array $data, RichEditor $component) {
 

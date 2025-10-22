@@ -63,14 +63,14 @@ class CmsMediaAssetExtension extends Node
      */
     public function renderHTML($node, array $HTMLAttributes = []): array
     {
-        $thumb = $node->attrs?->thumbnailUrl && str_starts_with($node->attrs?->mimeType ?? '', 'image/') && !str_ends_with($node->attrs?->mimeType ?? '', '.svg') 
+        $thumb = $node->attrs?->thumbnailUrl && str_starts_with($node->attrs?->mimeType ?? '', 'image/') && ! str_ends_with($node->attrs?->mimeType ?? '', '.svg')
             ? sprintf(
                 '<img src="%s" alt="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker-img">',
                 htmlspecialchars($node->attrs?->thumbnailUrl ?? ''),
                 htmlspecialchars($node->attrs?->title ?? ''),
-            ) 
+            )
             : null;
-        
+
         $innerContent = sprintf(
             '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link">%s</a>',
             htmlspecialchars($node->attrs?->url ?? ''),
@@ -80,17 +80,17 @@ class CmsMediaAssetExtension extends Node
         $content = sprintf(
             '<div %s>%s</div>',
             collect(HTML::mergeAttributes(
-                $this->options['HTMLAttributes'], 
+                $this->options['HTMLAttributes'],
                 [
-                    ...$HTMLAttributes, 
-                    'data-mediaasset-id' => $node->attrs?->id ?? null
+                    ...$HTMLAttributes,
+                    'data-mediaasset-id' => $node->attrs?->id ?? null,
                 ]
             ))->map(fn ($value, $key) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)))->implode(' '),
             $innerContent
         );
 
         return [
-            'content' => $content
+            'content' => $content,
         ];
 
     }

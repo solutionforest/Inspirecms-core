@@ -144,7 +144,7 @@ trait ContentPageTrait
     protected function getRedirectUrlParameters(): array
     {
         return [
-            // 'relation' => 0, 
+            // 'relation' => 0,
             'locale' => $this->activeLocale,
         ];
     }

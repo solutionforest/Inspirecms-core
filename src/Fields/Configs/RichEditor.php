@@ -179,10 +179,9 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                                     ->icon(Heroicon::OutlinedBookOpen)
                                     ->color('primary')
                                     ->openUrlInNewTab()
-                                    ->link()
+                                    ->link(),
                             ]),
 
-                            
                             Repeater::make('plugins')
                                 ->label('Plugins')
                                 ->simple(
@@ -211,11 +210,11 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                                 ->cloneable(),
                         ])
                         ->columnSpanFull(),
-                    
+
                     Tab::make('Text Color Plugin Settings')
                         ->visible(fn () => self::isFilamentVersion41())
                         ->schema(function () {
-                                
+
                             $components[] = Flex::make([
 
                                 Text::make(str(<<<'EOT'
@@ -231,7 +230,7 @@ class RichEditor extends FieldTypeBaseConfig implements FieldTypeConfig
                                     ->icon(Heroicon::OutlinedBookOpen)
                                     ->color('primary')
                                     ->openUrlInNewTab()
-                                    ->link()
+                                    ->link(),
                             ]);
 
                             $components[] = Toggle::make('useDefaultTextColors')

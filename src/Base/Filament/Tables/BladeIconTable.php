@@ -30,13 +30,13 @@ class BladeIconTable
                     });
                     $icons = $selectedIcons->merge($icons);
                 }
-                
+
                 if ($search && filled($search)) {
                     $icons = $icons->filter(function ($icon) use ($search) {
                         return str_contains($icon['key'], $search);
                     });
                 }
-                
+
                 if ($filters && is_array($filters)) {
                     if (
                         ($setFilter = $filters['set']['value'] ?? null) && filled($setFilter)
@@ -81,7 +81,7 @@ class BladeIconTable
             ])
             ->filters([
                 \Filament\Tables\Filters\SelectFilter::make('set')
-                    ->options(fn () => static::getAvailableSets())
+                    ->options(fn () => static::getAvailableSets()),
             ]);
     }
 

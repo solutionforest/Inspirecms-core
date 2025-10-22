@@ -2,10 +2,8 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
-use Composer\InstalledVersions;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Component;
-use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Icons\Heroicon;

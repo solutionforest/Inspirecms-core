@@ -71,12 +71,12 @@ class CmsContentLinkExtension extends Node
         $content = sprintf(
             '<a %s>%s</a>',
             collect(HTML::mergeAttributes(
-                $this->options['HTMLAttributes'], 
+                $this->options['HTMLAttributes'],
                 [
-                    ...$HTMLAttributes, 
+                    ...$HTMLAttributes,
                     'data-content-id' => $node->attrs?->id ?? null,
                     'data-content-slug' => $node->attrs?->slug ?? null,
-                    ... $linkAttrs,
+                    ...$linkAttrs,
                 ]
             ))->map(fn ($value, $key) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)))->implode(' '),
             $title ?: 'Content Link'
