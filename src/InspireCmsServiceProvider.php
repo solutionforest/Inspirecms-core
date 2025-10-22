@@ -234,11 +234,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             Theme::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.css'),
             Js::make('inspirecms', __DIR__ . '/../resources/dist/inspirecms.js'),
 
-            Js::make('rich-content-plugins/content-picker-extension', __DIR__ . '/../resources/dist/rich-content-plugins/content-picker-extension.js'),
-            Js::make('rich-content-plugins/content-picker-mark', __DIR__ . '/../resources/dist/rich-content-plugins/content-picker-mark.js'),
-
-            Js::make('rich-content-plugins/media-picker-extension', __DIR__ . '/../resources/dist/rich-content-plugins/media-picker-extension.js'),
-            Js::make('rich-content-plugins/media-picker-mark', __DIR__ . '/../resources/dist/rich-content-plugins/media-picker-mark.js'),
+            Js::make('rich-content-plugins/extension-cms-content-link', __DIR__ . '/../resources/dist/components/rich-content-plugins/extension-cms-content-link.js')->loadedOnRequest(),
+            Js::make('rich-content-plugins/extension-cms-media-link', __DIR__ . '/../resources/dist/components/rich-content-plugins/extension-cms-media-link.js')->loadedOnRequest(),
 
             Css::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.css')->loadedOnRequest(),
             AlpineComponent::make('filament-code-editor', __DIR__ . '/../resources/dist/components/code-editor.js')->loadedOnRequest(),

@@ -20,9 +20,14 @@
     <div
         {{
             $attributes
+                ->merge([
+                    'id' => $id,
+                ], escape: false)
                 ->merge($getExtraAttributes(), escape: false)
                 ->class([
                     'fi-fo-content-picker',
+                    'fi-fo-content-picker-disabled' => $isDisabled,
+                    'fi-fo-content-picker-multiple' => $isMultiple,
                 ])
         }}
     >

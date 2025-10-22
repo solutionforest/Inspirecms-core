@@ -2,21 +2,18 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components;
 
+use Filament\Actions\Action;
 use Filament\Forms\Components\MarkdownEditor as BaseMarkdownEditor;
-use Filament\Support\Components\Attributes\ExposedLivewireMethod;
 use Illuminate\Database\Eloquent\Model;
-use SolutionForest\InspireCms\Filament\Forms\Components\Concerns\InteractsWithContentTreeModal;
+use SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BuilderFilter;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content;
-use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\Concerns\InteractsWithMediaLibraryModal;
+use SolutionForest\InspireCms\Support\MediaLibrary\Forms\Components\MediaSelect;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class MarkdownEditor extends BaseMarkdownEditor
 {
-    use InteractsWithContentTreeModal;
-    use InteractsWithMediaLibraryModal;
-
     /**
      * @var view-string
      */
@@ -37,24 +34,93 @@ class MarkdownEditor extends BaseMarkdownEditor
         ];
     }
 
-    #[ExposedLivewireMethod]
-    public function appendFromMediaLibrary($ids)
+    protected function setUp(): void
     {
-        if (! empty($ids)) {
-            return $this->formatMediaPickerState($ids);
-        }
+        parent::setUp();
 
-        return '';
+        $this->registerActions([
+            fn (self $component) => $component->getContentPickerAction(),
+            fn (self $component) => $component->getMediaPickerAction(),
+        ]);
     }
 
-    #[ExposedLivewireMethod]
-    public function appendFromContentPicker($ids)
+    public function getContentPickerAction()
     {
-        if (! empty($ids)) {
-            return $this->formatContentPickerState($ids);
-        }
+        return Action::make('contentPicker')
+            ->label('Attach from content picker')
+            ->slideOver()
+            ->modalWidth('5xl')
+            ->stickyModalHeader()
+            ->stickyModalFooter()
+            ->schema([
+                ContentTree::make('selection')
+                    ->hiddenLabel()
+                    ->columnSpan('full')
+                    ->where(new BuilderFilter(scopeMethod: 'whereIsWebPage'))
+                    ->maxItems(1),
+            ])
+            ->action(function (array $arguments, array $data, self $component) {
 
-        return '';
+                $ids = $data['selection'] ?? [];
+                
+                if (empty($ids)) {
+                    return;
+                }
+
+                $key = $this->getKey();
+                $livewire = $this->getLivewire();
+                
+                $items = $this->formatContentPickerState($ids);
+
+                $livewire->dispatch(
+                    'append-custom-links-to-markdown-editor',
+                    awaitSchemaComponent: $key,
+                    livewireId: $livewire->getId(),
+                    key: $key,
+                    data: $items,
+                );
+            });
+    }
+
+    public function getMediaPickerAction()
+    {
+        return Action::make('mediaPicker')
+            ->label('Attach from media library')
+            ->slideOver()
+            ->modalWidth('screen')
+            ->stickyModalHeader()
+            ->stickyModalFooter()
+            ->extraModalWindowAttributes([
+                'class' => 'media-library-browser-modal-content',
+            ])
+            ->modalSubmitActionLabel(__('inspirecms-support::media-library.buttons.select.label'))
+            ->modalCancelActionLabel(__('inspirecms-support::media-library.buttons.cancel.label'))
+            ->schema([
+                MediaSelect::make('selection')
+                    ->hiddenLabel()
+                    ->columnSpan('full'),
+            ])
+            ->action(function (array $arguments, array $data, self $component) {
+
+                $ids = $data['selection'] ?? [];
+                
+                if (empty($ids)) {
+                    return;
+                }
+
+                $key = $this->getKey();
+                $livewire = $this->getLivewire();
+                
+                $items = $this->formatMediaPickerState($ids);
+
+                $livewire->dispatch(
+                    'append-custom-links-to-markdown-editor',
+                    awaitSchemaComponent: $key,
+                    livewireId: $livewire->getId(),
+                    key: $key,
+                    data: $items,
+                );
+            });
     }
 
     public function formatMediaPickerState($state)
@@ -89,7 +155,7 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->filter(fn ($record) => $record instanceof Content)
             ->sortBy(fn (Model $record) => array_search($record->getKey(), $state))
             ->map(fn (Model | Content $record) => $this->mutateContentPickerState($record))
-            ->implode(' ');
+            ->implode("\r\n");
     }
 
     protected function mutateMediaPickerState(Model | MediaAsset $mediaAsset)
@@ -146,7 +212,7 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->prepend('/')
             ->toString();
 
-        $template = '[%s](%s){data-cmscontent-id="%s" data-cmscontent-slug="%s"}';
+        $template = '[%s](%s){data-content-id="%s" data-content-slug="%s"}';
 
         return sprintf(
             $template,
@@ -155,22 +221,5 @@ class MarkdownEditor extends BaseMarkdownEditor
             htmlspecialchars($content->getKey()),
             htmlspecialchars($content->slug),
         );
-    }
-
-    public function getContentTreeModalConfig(): array
-    {
-        $config = [];
-        $config['filter'] ??= [];
-        $config['filter'][] = \SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\FilterCollection::make([
-            [
-                (new \SolutionForest\InspireCms\Filament\Forms\Components\ContentTree\Filter\BuilderFilter(
-                    scopeMethod: 'whereIsWebPage',
-                ))->toLivewire(),
-                null,
-                null,
-            ],
-        ]);
-
-        return $config;
     }
 }

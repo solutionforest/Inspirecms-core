@@ -60,7 +60,7 @@ class FieldGroupFieldsRepeater
                         ->disabled()->saveRelationshipsWhenDisabled()->dehydrated()
                         ->columnSpanFull(),
                     Section::make()
-                        ->heading(__('inspirecms::resources/field-group.sections.details.heading'))
+                        ->description(__('inspirecms::resources/field-group.sections.details.heading'))
                         ->columnSpanFull()
                         ->extraAttributes(['class' => 'field-group-field-details-section'])
                         ->aside()

@@ -6,6 +6,7 @@
     $extraAttributeBag = $getExtraAttributeBag();
     $key = $getKey();
     $statePath = $getStatePath();
+    $livewireId = $getLivewire()->getId();
 
     $trixFieldIconMapper = collect([
         'contentPicker' => FilamentIcon::resolve('inspirecms::content_picker'),
@@ -19,11 +20,30 @@
     })
     ->all();
 
-    $contentTreeModalId = $getContentTreeModalId();
-    $contentTreeModalConfig = $getContentTreeModalConfig();
+    $contentPickerAction = $getAction('contentPicker');
+    $contentPickerActionJsHandler = $contentPickerAction ? 
+        (
+            (
+                ($contentPickerActionLivewireHandler = $contentPickerAction->getLivewireClickHandler())
+                ? '$wire.'.$contentPickerActionLivewireHandler.';'
+                : null
+            ) 
+            ?? $contentPickerAction->getAlpineClickHandler()
+        ) : 
+        null;
 
-    $mediaPickerModalId = $getMediaLibraryModalId();
-    $mediaPickerModalConfig = $getMediaLibraryModalConfig([]);
+    $mediaPickerAction = $getAction('mediaPicker');
+    $mediaPickerActionJsHandler = $mediaPickerAction ? 
+        (
+            (
+                ($mediaPickerActionLivewireHandler = $mediaPickerAction->getLivewireClickHandler())
+                ? '$wire.'.$mediaPickerActionLivewireHandler.';'
+                : null
+            ) 
+            ?? $mediaPickerAction->getAlpineClickHandler()
+        ) : 
+        null;
+
 @endphp
 
 <x-dynamic-component :component="$fieldWrapperView" :field="$field">
@@ -80,13 +100,9 @@
                                         title: 'Content Picker',
                                         icon: @js($trixFieldIconMapper['contentPicker']),
                                         action: (action) => {
-                                            $dispatch('x-content-picker-modal-setup', { 
-                                                selected: [],
-                                                key: @js($key),
-                                                config: @js($contentTreeModalConfig),
-                                                modalId: @js($contentTreeModalId),
-                                                openModal: true,
-                                            });
+                                            @if ($contentPickerActionJsHandler)
+                                            {!! $contentPickerActionJsHandler !!}
+                                            @endif
                                         },
                                     };
                                 }
@@ -97,13 +113,9 @@
                                         title: 'Media Picker',
                                         icon: @js($trixFieldIconMapper['mediaPicker']),
                                         action: (action) => {
-                                            $dispatch('x-media-picker-modal-setup', { 
-                                                selected: [],
-                                                key: @js($key),
-                                                config: @js($mediaPickerModalConfig),
-                                                modalId: @js($mediaPickerModalId),
-                                                openModal: true,
-                                            });
+                                            @if ($mediaPickerActionJsHandler)
+                                            {!! $mediaPickerActionJsHandler !!}
+                                            @endif
                                         },
                                     };
                                 }
@@ -112,73 +124,33 @@
                             },
                         })"
                 wire:ignore
-                @if ($hasToolbarButton('mediaPicker'))
-                    x-on:update-media-picker-selection.window="
-                        if ($event.detail.key !== @js($key)) {
-                            return;
-                        }
-                        if (!editor) {
-                            return;
-                        }
+                x-on:append-custom-links-to-markdown-editor.window="() => {
+                    if ($event.detail.key !== @js($key)
+                        || $event.detail.livewireId !== @js($livewireId)
+                    ) {
+                        return;
+                    }
 
-                        if ($event.detail.id === @js($mediaPickerModalId)) {
-                            $wire
-                                .callSchemaComponentMethod(
-                                    @js($key),
-                                    'appendFromMediaLibrary',
-                                    { ids: $event.detail?.data || [] },
-                                )
-                                .then((urls) => {
-                                    if (urls && urls.length > 0) {
-                                        var cm = editor.codemirror;
-                                        
-                                        var startPoint = cm.getCursor('start')
-                                        var endPoint = cm.getCursor('end')
-                                        cm.replaceRange(
-                                            urls,
-                                            startPoint,
-                                            endPoint,
-                                        );
-                                    }
-                                });
-                        }
-                    "
-                @endif
-                @if ($hasToolbarButton('contentPicker'))
-                    x-on:update-content-picker-selection.window="
-                        if ($event.detail.key !== @js($key)) {
-                            return;
-                        }
-                        if (!editor) {
-                            return;
-                        }
+                    if (!editor) {
+                        return;
+                    }
 
-                        $wire
-                            .callSchemaComponentMethod(
-                                @js($key),
-                                'appendFromContentPicker',
-                                { ids: $event.detail?.data || [] },
-                            )
-                            .then((urls) => {
-                                if (urls && urls.length > 0) {
-                                    var cm = editor.codemirror;
-                                    
-                                    var startPoint = cm.getCursor('start')
-                                    var endPoint = cm.getCursor('end')
-                                    cm.replaceRange(
-                                        urls,
-                                        startPoint,
-                                        endPoint,
-                                    );
-                                }
-                            });
-                    "
-                @endif
+                    var cm = editor.codemirror;
+
+                    const urls = $event.detail.data || '';
+
+                    var startPoint = cm.getCursor('start')
+                    var endPoint = cm.getCursor('end')
+                    cm.replaceRange(
+                        urls,
+                        startPoint,
+                        endPoint,
+                    );
+                }"
                 {{ $getExtraAlpineAttributeBag() }}
             >
                 <textarea x-ref="editor" x-cloak></textarea>
             </div>
         </x-filament::input.wrapper>
-
     @endif
 </x-dynamic-component>

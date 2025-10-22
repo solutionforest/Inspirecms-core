@@ -25,22 +25,31 @@ const defaultOptions = {
     treeShaking: true,
     target: ['es2020'],
     minify: !isDev,
-    plugins: [{
-        name: 'watchPlugin',
-        setup: function (build) {
-            build.onStart(() => {
-                console.log(`Build started at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`)
-            })
+    plugins: [
+        {
+            name: 'watchPlugin',
+            setup: function (build) {
+                build.onStart(() => {
+                    console.log(
+                        `Build started at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`,
+                    )
+                })
 
-            build.onEnd((result) => {
-                if (result.errors.length > 0) {
-                    console.log(`Build failed at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`, result.errors)
-                } else {
-                    console.log(`Build finished at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`)
-                }
-            })
-        }
-    }],
+                build.onEnd((result) => {
+                    if (result.errors.length > 0) {
+                        console.log(
+                            `Build failed at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`,
+                            result.errors,
+                        )
+                    } else {
+                        console.log(
+                            `Build finished at ${new Date(Date.now()).toLocaleTimeString()}: ${build.initialOptions.outfile}`,
+                        )
+                    }
+                })
+            },
+        },
+    ],
 }
 
 compile({
@@ -60,21 +69,17 @@ compile({
 })
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/rich-content-plugins/content-picker-extension.js'],
-    outfile: './resources/dist/rich-content-plugins/content-picker-extension.js',
+    entryPoints: [
+        './resources/js/components/rich-content-plugins/extension-cms-content-link.js',
+    ],
+    outfile:
+        './resources/dist/components/rich-content-plugins/extension-cms-content-link.js',
 })
 compile({
     ...defaultOptions,
-    entryPoints: ['./resources/js/rich-content-plugins/content-picker-mark.js'],
-    outfile: './resources/dist/rich-content-plugins/content-picker-mark.js',
-})
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/rich-content-plugins/media-picker-extension.js'],
-    outfile: './resources/dist/rich-content-plugins/media-picker-extension.js',
-})
-compile({
-    ...defaultOptions,
-    entryPoints: ['./resources/js/rich-content-plugins/media-picker-mark.js'],
-    outfile: './resources/dist/rich-content-plugins/media-picker-mark.js',
+    entryPoints: [
+        './resources/js/components/rich-content-plugins/extension-cms-media-link.js',
+    ],
+    outfile:
+        './resources/dist/components/rich-content-plugins/extension-cms-media-link.js',
 })

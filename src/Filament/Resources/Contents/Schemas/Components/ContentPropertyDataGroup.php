@@ -35,7 +35,7 @@ class ContentPropertyDataGroup
             return collect($documentType->fieldGroups)->sortBy('pivot.order')->values();
         };
 
-        $getFieldGroupsFromLivewireOrRecord = function (ContractsContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromDocumentType) {
+        $getFieldGroupsFromLivewireOrRecord = function ($livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromDocumentType) {
             if ($record) { // edit/view page
                 $record->documentType?->loadMissing('fieldGroups.fields');
                 $fieldGroups = collect($record->documentType->fieldGroups)->sortBy('pivot.order')->values();
@@ -50,7 +50,7 @@ class ContentPropertyDataGroup
             return $fieldGroups;
         };
 
-        $schema = function (ContractsContentForm | BuilderEditor $livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromLivewireOrRecord) {
+        $schema = function ($livewire, null | Model | ModelsContent $record) use ($getFieldGroupsFromLivewireOrRecord) {
             $fieldGroups = $getFieldGroupsFromLivewireOrRecord($livewire, $record);
 
             $groupComponents = [];
@@ -68,11 +68,11 @@ class ContentPropertyDataGroup
 
             return Tab::make('content')
                 ->label(__('inspirecms::resources/content.tabs.content'))
-                ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
                 ->key('propertyData')
                 ->statePath('propertyData')
                 ->dehydratedWhenHidden()
                 ->dehydrateStateUsing(fn ($component) => $component->getState())
+                ->visible(fn ($livewire, $record) => count($getFieldGroupsFromLivewireOrRecord($livewire, $record)) > 0)
                 ->schema($schema);
         }
 

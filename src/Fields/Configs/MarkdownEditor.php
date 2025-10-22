@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Fields\Configs;
 
+use Composer\InstalledVersions;
 use Filament\Actions\Action;
 use Filament\Schemas\Components\Component;
 use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Support\Icons\Heroicon;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\ConfigName;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Attributes\DbType;
@@ -30,37 +33,44 @@ class MarkdownEditor extends FieldTypeBaseConfig implements FieldTypeConfig
     public function getFormSchema(): array
     {
         return [
-            Section::make()
-                ->schema([
-                    static::getEditorBasicTraitComponent('toolbarButtonType'),
+            Tabs::make('Advanced')
+                ->columnSpanFull()
+                ->extraAttributes([
+                    'style' => 'min-height: 700px;',
+                ])
+                ->tabs([
+                    Tab::make('Toolbar')
+                        ->schema([
+                            static::getEditorBasicTraitComponent('toolbarButtonType'),
 
-                    static::getEditorBasicTraitComponent('toolbarButtons')
-                        ->hintAction(
-                            Action::make('doc')
-                                ->label('Available buttons')
-                                ->url(self::$toolbarBtnDocUrl)
-                                ->icon(Heroicon::OutlinedBookOpen)
-                                ->color('primary')
-                                ->openUrlInNewTab(),
-                        )
-                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttons'),
+                            static::getEditorBasicTraitComponent('toolbarButtons')
+                                ->hintAction(
+                                    Action::make('doc')
+                                        ->label('Available buttons')
+                                        ->url(self::$toolbarBtnDocUrl)
+                                        ->icon(Heroicon::OutlinedBookOpen)
+                                        ->color('primary')
+                                        ->openUrlInNewTab(),
+                                )
+                                ->visible(fn ($get) => $get('toolbarButtonType') === 'buttons'),
 
-                    static::getEditorBasicTraitComponent('toolbarButtonGroups')
-                        ->hintAction(
-                            Action::make('doc')
-                                ->label('Available buttons')
-                                ->url(self::$toolbarBtnDocUrl)
-                                ->icon(Heroicon::OutlinedBookOpen)
-                                ->color('primary')
-                                ->openUrlInNewTab(),
-                        )
-                        ->visible(fn ($get) => $get('toolbarButtonType') === 'buttonGroups'),
-                ]),
-            Section::make('File Attachments')
-                ->schema([
-                    static::getEditorBasicTraitComponent('fileAttachmentsDisk'),
-                    static::getEditorBasicTraitComponent('fileAttachmentsDirectory'),
-                    // static::getEditorBasicTraitComponent('fileAttachmentsVisibility'),
+                            static::getEditorBasicTraitComponent('toolbarButtonGroups')
+                                ->hintAction(
+                                    Action::make('doc')
+                                        ->label('Available buttons')
+                                        ->url(self::$toolbarBtnDocUrl)
+                                        ->icon(Heroicon::OutlinedBookOpen)
+                                        ->color('primary')
+                                        ->openUrlInNewTab(),
+                                )
+                                ->visible(fn ($get) => $get('toolbarButtonType') === 'buttonGroups'),
+                        ]),
+                    Tab::make('File Attachments')
+                        ->schema([
+                            static::getEditorBasicTraitComponent('fileAttachmentsDisk'),
+                            static::getEditorBasicTraitComponent('fileAttachmentsDirectory'),
+                            // static::getEditorBasicTraitComponent('fileAttachmentsVisibility'),
+                        ]),
                 ]),
         ];
     }

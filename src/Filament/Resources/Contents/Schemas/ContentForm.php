@@ -80,24 +80,13 @@ class ContentForm
                 Tabs::make()
                     ->persistTabInQueryString()
                     ->contained(false)
-                    ->tabs(function ($livewire, $record) {
+                    ->tabs(function (ContractsContentForm $livewire) {
 
-                        $documentType = $record?->documentType ?? 
-                            ($livewire instanceof ContractsContentForm ?
-                                $livewire->getDocumentType() : 
-                                null);
-                        
-                        $tabs = [];
+                        $documentType = $livewire->getDocumentType();
 
-                        if (
-                            ($propGrpTab = ContentPropertyDataGroup::make(isTab: true)) &&
-                            $propGrpTab instanceof Tab
-                        ) {
-                            $tabs[] = $propGrpTab;
-                        }
+                        $tabs[] = ContentPropertyDataGroup::make(isTab: true);
 
-
-                        if ($documentType && $documentType->display_category == DocumentTypeCategory::Web) {
+                        if ($documentType->display_category != DocumentTypeCategory::Data) {
                             $tabs[] = Tab::make('seo')
                                 ->label(__('inspirecms::resources/content.tabs.seo'))
                                 ->columns(['default' => 1])
@@ -135,21 +124,21 @@ class ContentForm
                                     ->columnSpan(2)
                                     ->schema([
                                         ...(
-                                            $documentType && $documentType->display_category != DocumentTypeCategory::Web ?
+                                            $documentType->display_category != DocumentTypeCategory::Data ?
+                                            [] :
                                             [
                                                 Section::make([
                                                     static::getTitleFormComponent(),
                                                     static::getSlugFormComponent(),
                                                 ]),
-                                            ]: 
-                                            []
+                                            ]
                                         ),
                                         Section::make([
                                             static::getDisplayDocumentTypeTextEntry(),
                                             static::getDisplayParentTextEntry(),
                                             static::getDisplayIdTextEntry(),
                                             static::getDisplayUrlTextEntry()
-                                                ->visible($documentType && $documentType->display_category == DocumentTypeCategory::Web),
+                                                ->visible($documentType->display_category != DocumentTypeCategory::Data),
                                         ]),
                                         Group::make()
                                             ->visible(fn ($record) => $record != null)
@@ -177,15 +166,13 @@ class ContentForm
             ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
             ->placeholder(__('inspirecms::resources/content.title.placeholder'))
             ->helperText(__('inspirecms::resources/content.title.instructions'))
-            ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, $livewire) {
+            ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) {
                 // Fill slug if empty / operation is create
                 if ($operation === 'create' || empty($get('slug'))) {
                     $set('slug', ContentSlugFactory::create()->generate($state));
                 }
-                if ($livewire instanceof ContractsContentForm) {
-                    $locale = $livewire->getActiveActionsLocale();
-                    $set("webSetting.seo.meta_title.{$locale}", $state);
-                }
+                $locale = $livewire->getActiveActionsLocale();
+                $set("webSetting.seo.meta_title.{$locale}", $state);
             })
             ->autofocus()
             ->required()
@@ -207,15 +194,17 @@ class ContentForm
             ->afterStateUpdated(function ($component, $state) {
                 return $component->state(ContentSlugFactory::create()->generate($state));
             })
-            ->unique(table: InspireCmsConfig::getContentModelClass(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (Unique $rule, callable $get, $livewire, string $operation) {
+            ->unique(table: InspireCmsConfig::getContentModelClass(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (Unique $rule, callable $get, ContractsContentForm $livewire, string $operation) {
+                $model = new (InspireCmsConfig::getContentModelClass());
+
                 $parentId = $get('parent_id') ?? null;
 
-                if ($operation === 'create' && $livewire instanceof ContractsContentForm) {
+                if ($operation === 'create') {
                     $parentId = $livewire->getParentKey() ?? $parentId;
                 }
 
                 if (! filled($parentId)) {
-                    $parentId = app(InspireCmsConfig::getContentModelClass())->getRootLevelParentId();
+                    $parentId = $model->getRootLevelParentId();
                 }
 
                 return $rule
@@ -233,14 +222,9 @@ class ContentForm
 
         return Hidden::make('parent_id')
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function ( $livewire, $operation, null | Model | ModelsContent $record) use ($fallbackParentId) {
+            ->dehydrateStateUsing(function (ContractsContentForm $livewire, $operation, null | Model | ModelsContent $record) use ($fallbackParentId) {
                 if ($operation === 'create') {
-                    return 
-                    (
-                        $livewire instanceof ContractsContentForm ?
-                            $livewire->getParentKey() :
-                            null
-                    ) ?? $fallbackParentId;
+                    return $livewire->getParentKey() ?? $fallbackParentId;
                 }
 
                 return $record?->parent_id ?? $fallbackParentId;
@@ -256,10 +240,8 @@ class ContentForm
             ->label(__('inspirecms::resources/content.template.label'))
             ->validationAttribute(__('inspirecms::resources/content.template.validation_attribute'))
             ->helperText(__('inspirecms::resources/content.template.instructions'))
-            ->options(function ($livewire) {
-                $documentType = $livewire instanceof ContractsContentForm ?
-                    $livewire->getDocumentType()?->loadMissing('templates'):
-                    null;
+            ->options(function (ContractsContentForm $livewire) {
+                $documentType = $livewire->getDocumentType()?->loadMissing('templates');
                 if (! $documentType) {
                     return [];
                 }
@@ -303,16 +285,8 @@ class ContentForm
         return Hidden::make('document_type_id')
             ->validationAttribute(__('inspirecms::resources/content.document_type.validation_attribute'))
             ->dehydratedWhenHidden()
-            ->dehydrateStateUsing(function ($livewire, null | Model | ModelsContent $record) {
-                if ($record) {
-                    return $record->document_type_id;
-                }
-
-                if ($livewire instanceof ContractsContentForm) {
-                    return $livewire->getDocumentType()?->getKey();
-                }
-
-                return null;
+            ->dehydrateStateUsing(function (ContractsContentForm $livewire, null | Model | ModelsContent $record) {
+                return $record?->document_type_id ?? $livewire->getDocumentType()?->getKey();
             });
     }
 
@@ -325,12 +299,11 @@ class ContentForm
             ->label(__('inspirecms::resources/content.document_type.label'))
             ->inlineLabel()
             ->placeholder(__('inspirecms::inspirecms.n/a'))
-            ->state(function (Model | ModelsContent | null $record, $livewire) {
-                $documentType = $record?->documentType ?? ($livewire instanceof ContractsContentForm ? $livewire->getDocumentType() : null);
-                return $documentType?->title;
+            ->state(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
+                return ($record?->documentType ?? $livewire->getDocumentType())?->title;
             })
-            ->url(function (Model | ModelsContent | null $record, $livewire) {
-                $documentType = $record?->documentType ?? ($livewire instanceof ContractsContentForm ? $livewire->getDocumentType() : null);
+            ->url(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
+                $documentType = $record?->documentType ?? $livewire->getDocumentType();
                 if (! $documentType) {
                     return null;
                 }
@@ -530,15 +503,13 @@ class ContentForm
         return TextEntry::make('display_url')
             ->label(__('inspirecms::resources/content.url.label'))
             ->inlineLabel()
-            ->state(function (Model | ModelsContent | null $record, $livewire) {
+            ->state(function (Model | ModelsContent | null $record, ContractsContentForm $livewire) {
                 if (is_null($record)) {
                     return null;
                 }
 
-                $lang = $livewire instanceof ContractsContentForm ?
-                    collect(InspireCms::getAllAvailableLanguages())
-                            ->firstWhere(fn (LanguageDto $language) => $language->code === $livewire->getActiveActionsLocale()) : 
-                    InspireCms::getFallbackLanguage();
+                $code = $livewire->getActiveActionsLocale();
+                $lang = collect(InspireCms::getAllAvailableLanguages())->firstWhere(fn (LanguageDto $language) => $language->code === $code);
 
                 $url = $record->getUrl($lang);
 
@@ -569,15 +540,7 @@ class ContentForm
 
                 $components[] = $createFieldUsing(
                     $field::make($locale)
-                        ->visible(function ($livewire) use ($langs, $locale) {
-                            if (count($langs) <= 1) {
-                                return true;
-                            }
-
-                            return $livewire instanceof ContractsContentForm ?
-                                $livewire->getActiveActionsLocale() == $locale :
-                                true;
-                        })
+                        ->visible(fn (ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
                         ->translatable()
                 );
             }
@@ -605,89 +568,91 @@ class ContentForm
             ->relationship('webSetting')
             ->columns(['default' => 1])
             ->schema([
-                Section::make()
-                    ->aside()
-                    ->heading(str('&nbsp;')->toHtmlString())
+                Group::make()
                     ->statePath('seo')
-                    ->schema(function () use ($createSeoField) {
-                        $attribtues = [
-                            'meta_title' => [
-                                'field' => TextInput::class,
-                                'callback' => fn (TextInput $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.meta_title.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_title.validation_attribute'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
-                                    ->limitLengthWithHint(60),
-                            ],
-                            'meta_description' => [
-                                'field' => Textarea::class,
-                                'callback' => fn (Textarea $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.meta_description.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_description.validation_attribute'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
-                                    ->limitLengthWithHint(120),
-                            ],
-                            'meta_keywords' => [
-                                'field' => TagsInput::class,
-                                'callback' => fn (TagsInput $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.meta_keywords.validation_attribute'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
-                            ],
-                        ];
+                    ->schema([
+                        Section::make()
+                            ->aside()
+                            ->heading(str('&nbsp;')->toHtmlString())
+                            ->schema(function () use ($createSeoField) {
+                                $attribtues = [
+                                    'meta_title' => [
+                                        'field' => TextInput::class,
+                                        'callback' => fn (TextInput $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.meta_title.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.meta_title.validation_attribute'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.meta_title.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.meta_title.instructions'))
+                                            ->limitLengthWithHint(60),
+                                    ],
+                                    'meta_description' => [
+                                        'field' => Textarea::class,
+                                        'callback' => fn (Textarea $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.meta_description.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.meta_description.validation_attribute'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.meta_description.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.meta_description.instructions'))
+                                            ->limitLengthWithHint(120),
+                                    ],
+                                    'meta_keywords' => [
+                                        'field' => TagsInput::class,
+                                        'callback' => fn (TagsInput $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.meta_keywords.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.meta_keywords.validation_attribute'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.meta_keywords.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.meta_keywords.instructions')),
+                                    ],
+                                ];
 
-                        $components = [];
-                        foreach ($attribtues as $key => $attribute) {
-                            $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
-                        }
+                                $components = [];
+                                foreach ($attribtues as $key => $attribute) {
+                                    $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
+                                }
 
-                        return $components;
-                    }),
-                Section::make()
-                    ->heading(__('inspirecms::resources/content.sections.seo_og.heading'))
-                    ->aside()
-                    ->statePath('seo')
-                    ->schema(function () use ($createSeoField) {
-                        $attribtues = [
-                            'og_title' => [
-                                'field' => TextInput::class,
-                                'callback' => fn (TextInput $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og_title.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_title.validation_attribute'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.og_title.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og_title.instructions'))
-                                    ->limitLengthWithHint(60),
-                            ],
-                            'og_description' => [
-                                'field' => Textarea::class,
-                                'callback' => fn (Textarea $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og_description.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_description.validation_attribute'))
-                                    ->placeholder(__('inspirecms::resources/content.seo.og_description.placeholder'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og_description.instructions'))
-                                    ->limitLengthWithHint(120),
-                            ],
-                            'og_image' => [
-                                'field' => MediaPicker::class,
-                                'callback' => fn (MediaPicker $field) => $field
-                                    ->label(__('inspirecms::resources/content.seo.og_image.label'))
-                                    ->validationAttribute(__('inspirecms::resources/content.seo.og_image.validation_attribute'))
-                                    ->helperText(__('inspirecms::resources/content.seo.og_image.instructions'))
-                                    ->image()
-                                    ->max(1),
-                            ],
-                        ];
+                                return $components;
+                            }),
+                        Section::make()
+                            ->heading(__('inspirecms::resources/content.sections.seo_og.heading'))
+                            ->aside()
+                            ->schema(function () use ($createSeoField) {
+                                $attribtues = [
+                                    'og_title' => [
+                                        'field' => TextInput::class,
+                                        'callback' => fn (TextInput $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.og_title.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.og_title.validation_attribute'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.og_title.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.og_title.instructions'))
+                                            ->limitLengthWithHint(60),
+                                    ],
+                                    'og_description' => [
+                                        'field' => Textarea::class,
+                                        'callback' => fn (Textarea $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.og_description.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.og_description.validation_attribute'))
+                                            ->placeholder(__('inspirecms::resources/content.seo.og_description.placeholder'))
+                                            ->helperText(__('inspirecms::resources/content.seo.og_description.instructions'))
+                                            ->limitLengthWithHint(120),
+                                    ],
+                                    'og_image' => [
+                                        'field' => MediaPicker::class,
+                                        'callback' => fn (MediaPicker $field) => $field
+                                            ->label(__('inspirecms::resources/content.seo.og_image.label'))
+                                            ->validationAttribute(__('inspirecms::resources/content.seo.og_image.validation_attribute'))
+                                            ->helperText(__('inspirecms::resources/content.seo.og_image.instructions'))
+                                            ->image()
+                                            ->max(1),
+                                    ],
+                                ];
 
-                        $components = [];
-                        foreach ($attribtues as $key => $attribute) {
-                            $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
-                        }
+                                $components = [];
+                                foreach ($attribtues as $key => $attribute) {
+                                    $components[] = $createSeoField($key, $attribute['field'], $attribute['callback']);
+                                }
 
-                        return $components;
-                    }),
+                                return $components;
+                            }),
+                    ]),
                 Section::make()
                     ->heading(__('inspirecms::resources/content.sections.robots.heading'))
                     ->aside()
