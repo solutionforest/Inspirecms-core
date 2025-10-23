@@ -47,6 +47,8 @@ class TemplatePropertyTypeInstructionsEntry
 
                             return Section::make()
                                 ->collapsible()
+                                ->collapsed()
+                                ->persistCollapsed()
                                 ->icon(function () use ($icon) {
                                     if (is_string($icon) && filled($icon) && str_starts_with($icon, 'inspirecms::')) {
                                         return FilamentIcon::resolve($icon);
@@ -57,6 +59,7 @@ class TemplatePropertyTypeInstructionsEntry
                                 ->iconSize('md')
                                 ->compact()
                                 ->heading($fieldKey)
+                                ->secondary()
                                 ->afterHeader(Schema::between([
                                     ...($translatable ? [Icon::make(Heroicon::OutlinedLanguage)->color('gray')] : []),
                                     Text::make(__('inspirecms::resources/template.property_type_instructions.field'))
