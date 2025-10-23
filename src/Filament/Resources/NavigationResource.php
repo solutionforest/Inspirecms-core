@@ -265,6 +265,8 @@ class NavigationResource extends Resource implements ClusterSectionResource
                     $set('is_active', true);
                 }
             })
+            // avoid dirty state issue for model
+            ->dehydrateStateUsing(fn ($state) => $state instanceof \BackedEnum ? $state->value : $state)
             ->inline()->grouped();
     }
 

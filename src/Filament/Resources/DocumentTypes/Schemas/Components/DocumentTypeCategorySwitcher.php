@@ -21,7 +21,7 @@ class DocumentTypeCategorySwitcher
             ->options($enumClass)
             ->default($enumClass::getDefaultValue()->value)
             // avoid dirty state issue for model
-            ->dehydrateStateUsing(fn ($state) => $state instanceof DocumentTypeCategory ? $state->value : $state)
+            ->dehydrateStateUsing(fn ($state) => $state instanceof \BackedEnum ? $state->value : $state)
             ->required()
             ->live()
             ->colors(collect($enumClass::cases())->mapWithKeys(fn (DocumentTypeCategory $enumClass): array => [$enumClass->value => $enumClass->getColor()])->all())
