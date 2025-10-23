@@ -14,6 +14,7 @@
 
 @import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
 @import '../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css';
+@import '../../vendor/pboivin/filament-peek/resources/css/plugin.css';
 
 @source "../../src/Filament/**/*.php";
 @source "../views/**/*.blade.php";
@@ -65,4 +66,9 @@
 /* Icon */
 .fi-icon > svg.custom-icon {
     stroke: currentColor;
+}
+
+/* Hot-fix for Filament Peek spacing issue */
+.filament-peek-modal {
+    --spacing: 0.25rem;
 }

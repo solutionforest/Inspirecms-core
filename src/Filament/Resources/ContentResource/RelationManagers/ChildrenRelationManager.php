@@ -20,7 +20,9 @@ use SolutionForest\InspireCms\Models\Contracts\Content;
 class ChildrenRelationManager extends BaseChildrenRelationManager implements ContentForm
 {
     use ContentFormTrait;
-    use Translatable;
+    use Translatable {
+        ContentFormTrait::updatedActiveLocale insteadof Translatable;
+    }
 
     #[Reactive]
     public ?string $activeLocale = null;
