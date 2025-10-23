@@ -26,7 +26,16 @@ class FieldGroupInfolist
                             ->columnSpan(1)
                             ->hiddenLabel()
                             ->state(fn ($record) => $record->field_type_config[0]['name'] ?? null)
-                            ->icon(fn ($record) => $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle'),
+                            ->afterContent(function ($record) {
+                                $icon = $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle';
+                                if (filled($icon) && str_starts_with($icon, 'inspirecms::')) {
+                                    return \Filament\Support\Facades\FilamentIcon::resolve($icon);
+                                } else if (filled($icon)) {
+                                    return \Filament\Schemas\Components\Icon::make($icon)
+                                        ->color('gray');
+                                }
+                                return null;
+                            }),
 
                         Group::make([
 
