@@ -3,7 +3,6 @@
 namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
 use Filament\Actions\Action;
-use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
 use Pboivin\FilamentPeek\Facades\Peek;
 use Pboivin\FilamentPeek\Support\Concerns\SetsInitialPreviewModalData;

@@ -30,10 +30,11 @@ class FieldGroupInfolist
                                 $icon = $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle';
                                 if (filled($icon) && str_starts_with($icon, 'inspirecms::')) {
                                     return \Filament\Support\Facades\FilamentIcon::resolve($icon);
-                                } else if (filled($icon)) {
+                                } elseif (filled($icon)) {
                                     return \Filament\Schemas\Components\Icon::make($icon)
                                         ->color('gray');
                                 }
+
                                 return null;
                             }),
 
