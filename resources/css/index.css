@@ -72,3 +72,12 @@
 .filament-peek-modal {
     --spacing: 0.25rem;
 }
+
+/* Content Sidebar Dropdown Fix */
+.content-sidebar_desktop {
+    .tree-node-item {
+        .tree-node-actions .tree-node-action {
+            @apply fixed! -ms-5!;
+        }
+    }
+}
