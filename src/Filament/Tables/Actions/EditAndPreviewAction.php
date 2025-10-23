@@ -29,14 +29,6 @@ class EditAndPreviewAction extends Action
             ->label(__('inspirecms::buttons.edit_and_preview.label'))
             ->icon(FilamentIcon::resolve('inspirecms::edit'))
             ->color('primary')
-            ->successNotification(
-                fn (Notification $notification) => $notification
-                    ->title(__('inspirecms::buttons.edit_and_preview.messages.success.title'))
-            )
-            ->failureNotification(
-                fn (Notification $notification) => $notification
-                    ->title(__('inspirecms::buttons.edit_and_preview.messages.failure.title'))
-            )
             ->action(function ($livewire) {
                 Peek::ensurePluginIsLoaded();
 
@@ -45,7 +37,7 @@ class EditAndPreviewAction extends Action
                 if ($this->builderField) {
                     Peek::ensurePageSupportsBuilderPreview($livewire);
 
-                    $livewire->openPreviewModalForBuidler($this->builderField);
+                    $livewire->openPreviewModalForBuilder($this->builderField);
                 } else {
                     $livewire->initialPreviewModalData(
                         $this->evaluate($this->previewModalData)
