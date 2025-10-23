@@ -100,7 +100,6 @@ class DocumentTypeForm
             ->label(__('inspirecms::resources/document-type.show_as_table.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.show_as_table.validation_attribute'))
             ->inlineLabel()
-            ->default(false)
-            ->live();
+            ->default(false);
     }
 }
