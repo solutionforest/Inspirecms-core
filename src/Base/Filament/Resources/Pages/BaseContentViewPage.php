@@ -143,7 +143,7 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
 
     protected function mutatePreviewModalData(array $data): array
     {
-        $locale = $this->getActiveFormsLocale();
+        $locale = $this->getActiveActionsLocale();
         $content = $this->getRecord();
 
         $data['propertyData'] = $content->getLatestPublishedPropertyData();
@@ -167,7 +167,7 @@ abstract class BaseContentViewPage extends BaseViewRecord implements ContentForm
             return $content->toPreviewDto(
                 $content,
                 $content->getLatestPublishedPropertyData(),
-                $this->getActiveFormsLocale(),
+                $this->getActiveActionsLocale(),
                 $content->documentType,
             );
         }
