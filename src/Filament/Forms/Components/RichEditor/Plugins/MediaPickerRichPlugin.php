@@ -130,7 +130,7 @@ class MediaPickerRichPlugin implements RichContentPlugin
         $media = $mediaAsset->getFirstMedia();
         $mediaUrl = $mediaAsset->getUrl(isAbsolute: false);
         $thumbnailUrl = $mediaAsset->getThumbnailUrl(isAbsolute: false);
-        $title = $media?->title ?? $mediaAsset->title;
+        $title = $media?->file_name ?? $media?->title ?? $mediaAsset->title;
 
         return [
             'id' => $mediaAsset->getKey(),
@@ -139,6 +139,12 @@ class MediaPickerRichPlugin implements RichContentPlugin
             'title' => $title,
             'filename' => $media?->file_name,
             'mimeType' => $media?->mime_type,
+            ... ($mediaAsset->isImage() ? [
+                'responsive' => collect($mediaAsset->getResponsiveImages(isAbsolute: false))
+                    ->flatten(1)
+                    ->pluck('url', 'width')
+                    ->all(),
+            ] : []),
         ];
     }
 }

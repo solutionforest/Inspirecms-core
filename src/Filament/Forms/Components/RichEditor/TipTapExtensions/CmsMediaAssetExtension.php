@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\RichEditor\TipTapExtensions;
 
+use Illuminate\Support\Arr;
 use Tiptap\Core\Node;
 use Tiptap\Utils\HTML;
 
@@ -47,10 +48,10 @@ class CmsMediaAssetExtension extends Node
     public function addAttributes(): array
     {
         return [
-            'data-mediaasset-id' => [
-                'parseHTML' => fn ($DOMNode) => $DOMNode->getAttribute('data-mediaasset-id'),
+            'data-cmsmediaasset-id' => [
+                'parseHTML' => fn ($DOMNode) => $DOMNode->getAttribute('data-cmsmediaasset-id'),
             ],
-            'data-mime-type' => [
+            'data-media-mime-type' => [
                 'parseHTML' => fn ($DOMNode) => $DOMNode->getAttribute('data-mime-type'),
             ],
         ];
@@ -63,19 +64,39 @@ class CmsMediaAssetExtension extends Node
      */
     public function renderHTML($node, array $HTMLAttributes = []): array
     {
-        $thumb = $node->attrs?->thumbnailUrl && str_starts_with($node->attrs?->mimeType ?? '', 'image/') && ! str_ends_with($node->attrs?->mimeType ?? '', '.svg')
-            ? sprintf(
-                '<img src="%s" alt="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker-img">',
-                htmlspecialchars($node->attrs?->thumbnailUrl ?? ''),
-                htmlspecialchars($node->attrs?->title ?? ''),
-            )
-            : null;
-
-        $innerContent = sprintf(
-            '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link">%s</a>',
-            htmlspecialchars($node->attrs?->url ?? ''),
-            $thumb ?? htmlspecialchars($node->attrs?->title ?? '')
-        );
+        $innerContent = match (true) {
+            str_starts_with($node->attrs?->mimeType ?? '', 'image/') =>
+            !str_ends_with($node->attrs?->filename ?? '', '.svg')
+                ? sprintf(
+                    '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link"><img src="%s" alt="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker-img" %s></a>',
+                    htmlspecialchars($node->attrs?->url ?? ''),
+                    htmlspecialchars($node->attrs?->thumbnailUrl ?? $node->attrs?->url ?? ''),
+                    htmlspecialchars($node->attrs?->title ?? ''),
+                    implode(' ', $this->convertResponsiveAttributes($node->attrs?->responsive ?? []))
+                )
+                : sprintf(
+                    '<img src="%s" alt="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker-img">',
+                    htmlspecialchars($node->attrs?->thumbnailUrl ?? $node->attrs?->url ?? ''),
+                    htmlspecialchars($node->attrs?->title ?? ''),
+                ),
+            str_starts_with($node->attrs?->mimeType ?? '', 'video/') =>
+                sprintf(
+                    '<video controls src="%s" alt="%s" loading="lazy" class="trix-attachment-video trix-attachment-mediapicker-video"></video>',
+                    htmlspecialchars($node->attrs?->url ?? ''),
+                    htmlspecialchars($node->attrs?->title ?? ''),
+                ),
+            str_starts_with($node->attrs?->mimeType ?? '', 'audio/') =>
+                sprintf(
+                    '<audio controls src="%s" alt="%s" loading="lazy" class="trix-attachment-audio trix-attachment-mediapicker-audio"></audio>',
+                    htmlspecialchars($node->attrs?->url ?? ''),
+                    htmlspecialchars($node->attrs?->title ?? ''),
+                ),
+            default => sprintf(
+                '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link">%s</a>',
+                htmlspecialchars($node->attrs?->url ?? ''),
+                htmlspecialchars($node->attrs?->title ?? '')
+            ),
+        };
 
         $content = sprintf(
             '<div %s>%s</div>',
@@ -83,7 +104,6 @@ class CmsMediaAssetExtension extends Node
                 $this->options['HTMLAttributes'],
                 [
                     ...$HTMLAttributes,
-                    'data-mediaasset-id' => $node->attrs?->id ?? null,
                 ]
             ))->map(fn ($value, $key) => sprintf('%s="%s"', htmlspecialchars($key), htmlspecialchars($value)))->implode(' '),
             $innerContent
@@ -93,5 +113,22 @@ class CmsMediaAssetExtension extends Node
             'content' => $content,
         ];
 
+    }
+
+    private function convertResponsiveAttributes($elements)
+    {
+        $responsiveData = [];
+        if ($elements instanceof \stdClass) {
+            $elements = json_decode(json_encode($elements), true);
+        } else if (is_string($elements)) {
+            $elements = json_decode($elements, true);
+        } 
+        if (!is_array($elements)) {
+            return $responsiveData;
+        }
+        foreach ($elements as $key => $value) {
+            $responsiveData["data-image-responsive__{$key}"] = $value;
+        }
+        return $responsiveData;
     }
 }

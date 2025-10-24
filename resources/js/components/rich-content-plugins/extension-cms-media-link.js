@@ -1,5 +1,25 @@
 import { mergeAttributes, Node, Extension } from '@tiptap/core'
 
+const convertResponsiveAttributes = (element) => {
+    const responsiveData = {}
+    // Ensure the element is an object, key-value pairs, key is breakpoint, value is URL
+    // If it's an array, convert to object
+    if (Array.isArray(element)) {
+        element.forEach((item) => {
+            const { breakpoint, url } = item
+            responsiveData[`data-responsive_${breakpoint}`] = url
+        })
+    }
+    // If it's already an object
+    else if (typeof element === 'object' && element !== null) {
+        Object.keys(element).forEach((breakpoint) => {
+            responsiveData[`data-responsive__${breakpoint}`] =
+                element[breakpoint]
+        })
+    }
+    return responsiveData
+}
+
 export default Node.create({
     name: 'cmsMediaAsset',
 
@@ -12,10 +32,10 @@ export default Node.create({
             id: {
                 default: null,
                 parseHTML: (element) =>
-                    element.getAttribute('data-mediaasset-id'),
+                    element.getAttribute('data-cmsmediaasset-id'),
                 renderHTML: (attributes) => {
                     if (!attributes.id) return {}
-                    return { 'data-mediaasset-id': attributes.id }
+                    return { 'data-cmsmediaasset-id': attributes.id }
                 },
             },
             url: {
@@ -59,6 +79,14 @@ export default Node.create({
                     return { 'data-filename': attributes.filename }
                 },
             },
+            responsive: {
+                default: [],
+                renderHTML: (attributes) => {
+                    return convertResponsiveAttributes(
+                        attributes.responsive || [],
+                    )
+                },
+            },
         }
     },
 
@@ -71,20 +99,35 @@ export default Node.create({
     },
 
     renderHTML({ HTMLAttributes, node }) {
-        const { thumbnailUrl, title, url, mimeType, filename } = node.attrs
+        const {
+            title,
+            url,
+            mimeType,
+            filename,
+            thumbnailUrl = null,
+        } = node.attrs
+
+        const getType = () => {
+            if (mimeType) {
+                if (mimeType.startsWith('image/')) {
+                    return 'img'
+                } else if (mimeType.startsWith('video/')) {
+                    return 'video'
+                } else if (mimeType.startsWith('audio/')) {
+                    return 'audio'
+                }
+            }
+            return 'file'
+        }
 
         // Build the inner content as proper HTML elements
         let innerContent
-        if (
-            thumbnailUrl &&
-            mimeType.startsWith('image/') &&
-            !filename.endsWith('.svg')
-        ) {
+        if (getType(mimeType) === 'img') {
             // Create img element
             innerContent = [
                 'img',
                 {
-                    src: thumbnailUrl,
+                    src: thumbnailUrl ?? url,
                     alt: title || 'Media Asset',
                 },
             ]
@@ -93,15 +136,33 @@ export default Node.create({
             innerContent = title || 'Media Asset'
         }
 
+        let mediaTypeAttribute = {}
+        if (getType(mimeType) !== 'img') {
+            mediaTypeAttribute = { style: 'text-decoration: underline;' }
+        } else {
+            if (!filename.endsWith('.svg')) {
+                mediaTypeAttribute = {
+                    ...convertResponsiveAttributes(node.attrs.responsive || []),
+                }
+            }
+        }
+
         return [
             'span',
-            mergeAttributes(HTMLAttributes, {
-                class: 'trix-attachment-mediapicker',
-                'data-mediaasset-id': node.attrs.id,
-                'data-url': url,
-                'data-mime-type': mimeType,
-                'data-filename': filename,
-            }),
+            mergeAttributes(
+                HTMLAttributes,
+                {
+                    class: 'trix-attachment-mediapicker',
+                    'data-mediaasset-id': node.attrs.id,
+                    'data-url': url,
+                    'data-mime-type': mimeType,
+                    'data-filename': filename,
+                },
+                mediaTypeAttribute,
+                thumbnailUrl && {
+                    'data-thumbnail-url': thumbnailUrl,
+                },
+            ),
             innerContent,
         ]
     },

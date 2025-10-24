@@ -150,35 +150,19 @@
                         if (!attributes || typeof attributes !== 'string' || attributes.trim() === '') {
                             return '';
                         }
-                        
+                            
+                        // markdown attribute format
                         return `{${attributes}}`;
-                    };
-
-                    // Helper function to convert item object to markdown
-                    const itemToMarkdown = (item) => {
-                        if (typeof item === 'string') {
-                            return item; // Fallback for old format
-                        }
-                        
-                        const { url, title, tag, attributes } = item;
-                        let markdown = '';
-                        
-                        if (tag === 'img') {
-                            markdown = `![${title}](${url})`;
-                        } else {
-                            markdown = `[${title}](${url})`;
-                        }
-                        
-                        // Add attributes using helper function
-                        markdown += formatAttributes(attributes);
-                        
-                        return markdown;
                     };
 
                     if (pickerName === 'contentPicker' && selectedText && dataArray.length > 0) {
                         // For contentPicker with selected text, toggle as link
                         const item = dataArray[0];
-                        const { url, attributes } = item;
+
+                        console.log('item for link', item);
+
+                        console.log('item for link', item);
+                        const { url, attributes = '' } = item;
                         
                         let linkMarkdown = `[${selectedText}](${url})`;
                         
@@ -192,10 +176,39 @@
                         );
                     } else {
                         // Default behavior: insert the content
-                        const markdownItems = dataArray.map(itemToMarkdown);
+                        const markdownItems = dataArray.map((item) => {
+
+                            const { url, title, type, attributes = '', content = null } = item;
+                            
+                            let markdown = '';
+                            if (content?.length > 0) {
+                                markdown = content || '';
+                            } else {
+                                if (type === 'img') {
+                                    markdown = `![${title}](${url})`;
+                                } else {
+                                    markdown = `[${title}](${url})`;
+                                }
+
+                                // Add attributes 
+                                markdown += formatAttributes(attributes);
+                            }
+                            
+                            return markdown;
+                        });
+                        
+                        let content;
+                        if (pickerName === 'mediaPicker') {
+                            // For media picker, check if we have videos - they need line breaks
+                            const hasVideos = dataArray.some(item => item.type === 'video');
+                            content = hasVideos ? markdownItems.join('\r\n\r\n') : markdownItems.join(' ');
+                        } else {
+                            // For content picker and others, join with white space
+                            content = markdownItems.join(' ');
+                        }
                         
                         cm.replaceRange(
-                            markdownItems.join(' '),
+                            content,
                             startPoint,
                             endPoint,
                         );
