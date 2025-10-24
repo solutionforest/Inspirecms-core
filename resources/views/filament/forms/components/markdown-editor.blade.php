@@ -137,15 +137,69 @@
 
                     var cm = editor.codemirror;
 
-                    const urls = $event.detail.data || '';
+                    // Convert data to array if it's not already
+                    const dataArray = Array.isArray($event.detail.data) ? $event.detail.data : [$event.detail.data || ''];
+                    const pickerName = $event.detail.name;
 
-                    var startPoint = cm.getCursor('start')
-                    var endPoint = cm.getCursor('end')
-                    cm.replaceRange(
-                        urls,
-                        startPoint,
-                        endPoint,
-                    );
+                    var startPoint = cm.getCursor('start');
+                    var endPoint = cm.getCursor('end');
+                    var selectedText = cm.getSelection();
+
+                    // Helper function to format attributes string
+                    const formatAttributes = (attributes) => {
+                        if (!attributes || typeof attributes !== 'string' || attributes.trim() === '') {
+                            return '';
+                        }
+                        
+                        return `{${attributes}}`;
+                    };
+
+                    // Helper function to convert item object to markdown
+                    const itemToMarkdown = (item) => {
+                        if (typeof item === 'string') {
+                            return item; // Fallback for old format
+                        }
+                        
+                        const { url, title, tag, attributes } = item;
+                        let markdown = '';
+                        
+                        if (tag === 'img') {
+                            markdown = `![${title}](${url})`;
+                        } else {
+                            markdown = `[${title}](${url})`;
+                        }
+                        
+                        // Add attributes using helper function
+                        markdown += formatAttributes(attributes);
+                        
+                        return markdown;
+                    };
+
+                    if (pickerName === 'contentPicker' && selectedText && dataArray.length > 0) {
+                        // For contentPicker with selected text, toggle as link
+                        const item = dataArray[0];
+                        const { url, attributes } = item;
+                        
+                        let linkMarkdown = `[${selectedText}](${url})`;
+                        
+                        // Add attributes using helper function
+                        linkMarkdown += formatAttributes(attributes);
+                        
+                        cm.replaceRange(
+                            linkMarkdown,
+                            startPoint,
+                            endPoint,
+                        );
+                    } else {
+                        // Default behavior: insert the content
+                        const markdownItems = dataArray.map(itemToMarkdown);
+                        
+                        cm.replaceRange(
+                            markdownItems.join(' '),
+                            startPoint,
+                            endPoint,
+                        );
+                    }
                 }"
                 {{ $getExtraAlpineAttributeBag() }}
             >

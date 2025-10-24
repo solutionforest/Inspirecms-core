@@ -74,6 +74,7 @@ class MarkdownEditor extends BaseMarkdownEditor
 
                 $livewire->dispatch(
                     'append-custom-links-to-markdown-editor',
+                    name: 'contentPicker',
                     awaitSchemaComponent: $key,
                     livewireId: $livewire->getId(),
                     key: $key,
@@ -115,6 +116,7 @@ class MarkdownEditor extends BaseMarkdownEditor
 
                 $livewire->dispatch(
                     'append-custom-links-to-markdown-editor',
+                    name: 'mediaPicker',
                     awaitSchemaComponent: $key,
                     livewireId: $livewire->getId(),
                     key: $key,
@@ -138,7 +140,7 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->filter(fn ($record) => $record instanceof MediaAsset)
             ->sortBy(fn (Model $record) => array_search($record->getKey(), $state))
             ->map(fn (Model | MediaAsset $record) => $this->mutateMediaPickerState($record))
-            ->implode(' ');
+            ->toArray();
     }
 
     public function formatContentPickerState($state)
@@ -155,7 +157,7 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->filter(fn ($record) => $record instanceof Content)
             ->sortBy(fn (Model $record) => array_search($record->getKey(), $state))
             ->map(fn (Model | Content $record) => $this->mutateContentPickerState($record))
-            ->implode("\r\n");
+            ->toArray();
     }
 
     protected function mutateMediaPickerState(Model | MediaAsset $mediaAsset)
@@ -165,19 +167,21 @@ class MarkdownEditor extends BaseMarkdownEditor
         $mediaUrl = $mediaAsset->getUrl(isAbsolute: false);
         $title = $media?->title ?? $mediaAsset->title;
 
-        if ($mediaAsset->isImage()) {
-            $template = '![%s](%s)';
-        } else {
-            $template = '[%s](%s)';
-        }
-        $template .= '{data-cmsmediaasset-id="%s"}';
+        $attributes = [
+            'data-cmsmediaasset-id' => $mediaAsset->getKey(),
+        ];
 
-        return sprintf(
-            $template,
-            htmlspecialchars($title),
-            htmlspecialchars($mediaUrl),
-            htmlspecialchars($mediaAsset->getKey()),
-        );
+        // Convert attributes array to string
+        $attributesString = collect($attributes)
+            ->map(fn($value, $key) => "{$key}=\"{$value}\"")
+            ->join(' ');
+
+        return [
+            'url' => $mediaUrl,
+            'title' => $title,
+            'tag' => $mediaAsset->isImage() ? 'img' : 'a',
+            'attributes' => $attributesString,
+        ];
     }
 
     protected function mutateContentPickerState(Model | Content $content)
@@ -212,14 +216,21 @@ class MarkdownEditor extends BaseMarkdownEditor
             ->prepend('/')
             ->toString();
 
-        $template = '[%s](%s){data-content-id="%s" data-content-slug="%s"}';
+        $attributes = [
+            'data-content-id' => $content->getKey(),
+            'data-content-slug' => $content->slug,
+        ];
 
-        return sprintf(
-            $template,
-            htmlspecialchars($content->title),
-            htmlspecialchars($relativeUrl),
-            htmlspecialchars($content->getKey()),
-            htmlspecialchars($content->slug),
-        );
+        // Convert attributes array to string
+        $attributesString = collect($attributes)
+            ->map(fn($value, $key) => "{$key}=\"{$value}\"")
+            ->join(' ');
+
+        return [
+            'url' => $relativeUrl,
+            'title' => $content->title,
+            'tag' => 'a',
+            'attributes' => $attributesString,
+        ];
     }
 }
