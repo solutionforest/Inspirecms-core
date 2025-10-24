@@ -97,6 +97,7 @@ class ContentPickerRichPlugin implements RichContentPlugin
                             ],
                             editorSelection: $arguments['editorSelection'],
                         );
+
                         return;
                     }
 
@@ -107,7 +108,7 @@ class ContentPickerRichPlugin implements RichContentPlugin
                         'target' => $data['shouldOpenInNewTab'] ? '_blank' : null,
                     ];
 
-                    if (!$isSingleCharacterSelection && ($arguments['editorSelection']['type'] ?? '') === 'text') {
+                    if (! $isSingleCharacterSelection && ($arguments['editorSelection']['type'] ?? '') === 'text') {
                         // Convert selected text to cmsContentLink
                         $component->runCommands(
                             [
