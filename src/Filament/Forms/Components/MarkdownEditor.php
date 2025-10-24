@@ -173,7 +173,7 @@ class MarkdownEditor extends BaseMarkdownEditor
 
         // Convert attributes array to string
         $attributesString = collect($attributes)
-            ->map(fn($value, $key) => "{$key}=\"{$value}\"")
+            ->map(fn ($value, $key) => "{$key}=\"{$value}\"")
             ->join(' ');
 
         return [
@@ -223,7 +223,7 @@ class MarkdownEditor extends BaseMarkdownEditor
 
         // Convert attributes array to string
         $attributesString = collect($attributes)
-            ->map(fn($value, $key) => "{$key}=\"{$value}\"")
+            ->map(fn ($value, $key) => "{$key}=\"{$value}\"")
             ->join(' ');
 
         return [
