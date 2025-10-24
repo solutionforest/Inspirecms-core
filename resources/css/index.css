@@ -11,6 +11,7 @@
 @import './components/alert.css';
 @import './components/code-editor.css';
 @import './components/markdown-editor.css';
+@import './components/version-diff.css';
 
 @import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
 @import '../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css';

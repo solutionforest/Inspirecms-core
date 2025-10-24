@@ -1,0 +1,107 @@
+/* Version Diff Component Styles */
+.version-diff {
+    /* Base container styles are handled by Tailwind classes */
+}
+
+.version-diff-content {
+    padding: 1rem 1.5rem;
+}
+
+.version-diff-items {
+    /* Spacing and layout handled by Tailwind classes */
+}
+
+.version-diff-item {
+    position: relative;
+}
+
+/* Nested content improvements */
+.version-diff-nested-content {
+    position: relative;
+}
+
+/* Hover effects for better UX */
+.version-diff-item:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
+
+.dark .version-diff-item:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+/* Better text selection and readability */
+.version-diff-item-key {
+    user-select: text;
+    word-break: break-word;
+    hyphens: auto;
+}
+
+.version-diff-item-value {
+    user-select: text;
+    word-break: break-word;
+    hyphens: auto;
+    line-height: 1.5;
+}
+
+/* Improved nested level indicators */
+.version-diff-items[class*="ml-4"] {
+    position: relative;
+}
+
+.version-diff-items[class*="ml-4"]::before {
+    content: '';
+    position: absolute;
+    left: -1px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(to bottom, 
+        theme('colors.gray.200') 0%,
+        theme('colors.gray.100') 100%);
+}
+
+.dark .version-diff-items[class*="ml-4"]::before {
+    background: linear-gradient(to bottom, 
+        theme('colors.gray.600') 0%,
+        theme('colors.gray.700') 100%);
+}
+
+/* Type badges */
+.version-diff-item-type {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.025em;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+    .version-diff-content {
+        padding: 0.75rem 1rem;
+    }
+    
+    .version-diff-item-key,
+    .version-diff-item-value {
+        font-size: 0.875rem;
+    }
+    
+    .version-diff-items[class*="ml-4"] {
+        margin-left: 1rem;
+        padding-left: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .version-diff {
+        border: 1px solid #e5e7eb;
+        box-shadow: none;
+    }
+    
+    .version-diff-item:hover {
+        background-color: transparent;
+    }
+    
+    button {
+        display: none;
+    }
+}

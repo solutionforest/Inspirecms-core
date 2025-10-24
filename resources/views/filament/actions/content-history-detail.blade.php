@@ -4,12 +4,15 @@
 @endphp
 <div class="content-history-details flex flex-col gap-4">
     <x-inspirecms::version-diff 
+        class="overflow-x-auto"
         :heading="__('inspirecms::resources/content-version.content_history_detail.general_info')"
         :items="$basicDiff" 
     />
     <x-inspirecms::version-diff 
-        class="content-property-data"
+        class="content-property-data overflow-x-auto"
         :heading="__('inspirecms::resources/content-version.content_history_detail.property_data')"
-        :items="$propertyData" 
+        :items="$propertyData"
+        :itemsCollapsible="true"
+        :defaultCollapsedLevel="2"
     />
 </div>
