@@ -83,30 +83,61 @@ class ContentPickerRichPlugin implements RichContentPlugin
                 ])
                 ->action(function (array $arguments, array $data, RichEditor $component, $livewire) {
 
-                    $ids = $data['selection'] ?? [];
+                    $isSingleCharacterSelection = ($arguments['editorSelection']['head'] ?? null) === ($arguments['editorSelection']['anchor'] ?? null);
 
-                    if (empty($ids)) {
+                    $id = collect($data['selection'] ?? [])->filter()->last();
+
+                    if (empty($id)) {
+
+                        $component->runCommands(
+                            [
+                                EditorCommand::make(
+                                    'toggleCmsContentLink',
+                                ),
+                            ],
+                            editorSelection: $arguments['editorSelection'],
+                        );
                         return;
                     }
 
-                    $ids = [end($ids)];
-                    $item = Arr::first($this->formatContentPickerState($ids, $livewire));
+                    $item = Arr::first($this->formatContentPickerState($id, $livewire));
 
-                    $component->runCommands(
-                        [
-                            EditorCommand::make(
-                                'insertContent',
-                                arguments: [[
-                                    'type' => 'cmsContentLink',
-                                    'attrs' => [
-                                        ...$item,
-                                        'target' => $data['shouldOpenInNewTab'] ? '_blank' : null,
-                                    ],
-                                ]],
-                            ),
-                        ],
-                        editorSelection: $arguments['editorSelection'],
-                    );
+                    $attrs = [
+                        ...$item,
+                        'target' => $data['shouldOpenInNewTab'] ? '_blank' : null,
+                    ];
+
+                    if (!$isSingleCharacterSelection && ($arguments['editorSelection']['type'] ?? '') === 'text') {
+                        // Convert selected text to cmsContentLink
+                        $component->runCommands(
+                            [
+                                EditorCommand::make(
+                                    'toggleCmsContentLink',
+                                    arguments: [[
+                                        'attributes' => $attrs,
+                                    ]],
+                                ),
+                            ],
+                            editorSelection: $arguments['editorSelection'],
+                        );
+
+                    } else {
+                        // Insert new cmsContentLink with title as content
+                        $textContent = $item['title'] ?? 'Content Link';
+
+                        $component->runCommands(
+                            [
+                                EditorCommand::make(
+                                    'insertCmsContentLink',
+                                    arguments: [[
+                                        'attributes' => $attrs,
+                                        'content' => $textContent,
+                                    ]],
+                                ),
+                            ],
+                            editorSelection: $arguments['editorSelection'],
+                        );
+                    }
                 }),
         ];
     }
