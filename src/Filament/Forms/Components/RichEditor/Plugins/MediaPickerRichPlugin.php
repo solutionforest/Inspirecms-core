@@ -139,7 +139,7 @@ class MediaPickerRichPlugin implements RichContentPlugin
             'title' => $title,
             'filename' => $media?->file_name,
             'mimeType' => $media?->mime_type,
-            ... ($mediaAsset->isImage() ? [
+            ...($mediaAsset->isImage() ? [
                 'responsive' => collect($mediaAsset->getResponsiveImages(isAbsolute: false))
                     ->flatten(1)
                     ->pluck('url', 'width')

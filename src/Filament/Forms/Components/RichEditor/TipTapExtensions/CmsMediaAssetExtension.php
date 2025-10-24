@@ -2,7 +2,6 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\RichEditor\TipTapExtensions;
 
-use Illuminate\Support\Arr;
 use Tiptap\Core\Node;
 use Tiptap\Utils\HTML;
 
@@ -65,8 +64,7 @@ class CmsMediaAssetExtension extends Node
     public function renderHTML($node, array $HTMLAttributes = []): array
     {
         $innerContent = match (true) {
-            str_starts_with($node->attrs?->mimeType ?? '', 'image/') =>
-            !str_ends_with($node->attrs?->filename ?? '', '.svg')
+            str_starts_with($node->attrs?->mimeType ?? '', 'image/') => ! str_ends_with($node->attrs?->filename ?? '', '.svg')
                 ? sprintf(
                     '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link"><img src="%s" alt="%s" loading="lazy" class="trix-attachment-image trix-attachment-mediapicker-img" %s></a>',
                     htmlspecialchars($node->attrs?->url ?? ''),
@@ -79,18 +77,16 @@ class CmsMediaAssetExtension extends Node
                     htmlspecialchars($node->attrs?->thumbnailUrl ?? $node->attrs?->url ?? ''),
                     htmlspecialchars($node->attrs?->title ?? ''),
                 ),
-            str_starts_with($node->attrs?->mimeType ?? '', 'video/') =>
-                sprintf(
-                    '<video controls src="%s" alt="%s" loading="lazy" class="trix-attachment-video trix-attachment-mediapicker-video"></video>',
-                    htmlspecialchars($node->attrs?->url ?? ''),
-                    htmlspecialchars($node->attrs?->title ?? ''),
-                ),
-            str_starts_with($node->attrs?->mimeType ?? '', 'audio/') =>
-                sprintf(
-                    '<audio controls src="%s" alt="%s" loading="lazy" class="trix-attachment-audio trix-attachment-mediapicker-audio"></audio>',
-                    htmlspecialchars($node->attrs?->url ?? ''),
-                    htmlspecialchars($node->attrs?->title ?? ''),
-                ),
+            str_starts_with($node->attrs?->mimeType ?? '', 'video/') => sprintf(
+                '<video controls src="%s" alt="%s" loading="lazy" class="trix-attachment-video trix-attachment-mediapicker-video"></video>',
+                htmlspecialchars($node->attrs?->url ?? ''),
+                htmlspecialchars($node->attrs?->title ?? ''),
+            ),
+            str_starts_with($node->attrs?->mimeType ?? '', 'audio/') => sprintf(
+                '<audio controls src="%s" alt="%s" loading="lazy" class="trix-attachment-audio trix-attachment-mediapicker-audio"></audio>',
+                htmlspecialchars($node->attrs?->url ?? ''),
+                htmlspecialchars($node->attrs?->title ?? ''),
+            ),
             default => sprintf(
                 '<a href="%s" target="_blank" rel="noopener noreferrer" class="trix-attachment-mediapicker-link">%s</a>',
                 htmlspecialchars($node->attrs?->url ?? ''),
@@ -120,15 +116,16 @@ class CmsMediaAssetExtension extends Node
         $responsiveData = [];
         if ($elements instanceof \stdClass) {
             $elements = json_decode(json_encode($elements), true);
-        } else if (is_string($elements)) {
+        } elseif (is_string($elements)) {
             $elements = json_decode($elements, true);
-        } 
-        if (!is_array($elements)) {
+        }
+        if (! is_array($elements)) {
             return $responsiveData;
         }
         foreach ($elements as $key => $value) {
             $responsiveData["data-image-responsive__{$key}"] = $value;
         }
+
         return $responsiveData;
     }
 }

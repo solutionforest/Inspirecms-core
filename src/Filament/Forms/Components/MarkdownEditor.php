@@ -176,7 +176,7 @@ class MarkdownEditor extends BaseMarkdownEditor
 
         // Determine media type and tag
         $type = 'link'; // Default to link
-        
+
         if ($mediaAsset->isImage()) {
             $type = 'img';
 
@@ -188,11 +188,11 @@ class MarkdownEditor extends BaseMarkdownEditor
                 });
 
             $attributes['data-media-thumbnail'] = $thumbnail;
-        } 
+        }
         // Video handling
         elseif ($mimeType && str_starts_with($mimeType, 'video/')) {
             $type = 'video';
-            
+
             // Add video-specific attributes
             $attributes['data-media-type'] = 'video';
             $attributes['controls'] = 'controls';
@@ -203,7 +203,7 @@ class MarkdownEditor extends BaseMarkdownEditor
         // Audio handling
         elseif ($mimeType && str_starts_with($mimeType, 'audio/')) {
             $type = 'audio';
-            
+
             // Add audio-specific attributes
             $attributes['data-media-type'] = 'audio';
             $attributes['controls'] = 'controls';
@@ -212,8 +212,8 @@ class MarkdownEditor extends BaseMarkdownEditor
 
         // Convert attributes array to string
         $attributesString = collect($attributes)
-            ->filter(fn($value) => !is_null($value) && $value !== '')
-            ->map(fn($value, $key) => in_array($value, ['controls', 'metadata']) ? $key : "{$key}=\"{$value}\"")
+            ->filter(fn ($value) => ! is_null($value) && $value !== '')
+            ->map(fn ($value, $key) => in_array($value, ['controls', 'metadata']) ? $key : "{$key}=\"{$value}\"")
             ->join(' ');
 
         $content = match ($type) {
