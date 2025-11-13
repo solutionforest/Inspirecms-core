@@ -31,6 +31,12 @@ class ContentSidebar extends BaseContentTreeNode
         'updatedActiveLocale' => '$refresh',
     ];
 
+    public function updatedActiveLocale()
+    {
+        // Notify the parent page / other listeners to change their locale
+        $this->dispatch('changeActiveLocale', $this->activeLocale);
+    }
+
     protected function queryString()
     {
         return [
