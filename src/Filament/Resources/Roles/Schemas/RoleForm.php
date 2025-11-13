@@ -24,6 +24,7 @@ class RoleForm
         return $schema
             ->components([
                 Section::make()
+                    ->columnSpanFull()->columns(1)
                     ->schema([
                         RoleNameInput::make(),
                         Hidden::make('guard_name')

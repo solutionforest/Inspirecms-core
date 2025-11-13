@@ -16,6 +16,10 @@ class EditContentRecord extends BaseContentEditPage
 
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
+        if (empty($this->getRelationManagers())) {
+            return false;
+        }
+
         return true;
     }
 

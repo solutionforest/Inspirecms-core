@@ -33,6 +33,10 @@ class ViewContentRecord extends BaseContentViewPage
 
     public function hasCombinedRelationManagerTabsWithContent(): bool
     {
+        if (empty($this->getRelationManagers())) {
+            return false;
+        }
+        
         return true;
     }
 
