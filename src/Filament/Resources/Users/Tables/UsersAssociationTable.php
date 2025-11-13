@@ -21,7 +21,8 @@ class UsersAssociationTable
 {
     public static function configure(Table $table): Table
     {
-        return UsersTable::configure($table)
+        return $table
+            ->defaultSort('name')
             ->columns([
 
                 Grid::make(['default' => 4])
@@ -48,7 +49,7 @@ class UsersAssociationTable
                                 'email',
                             ];
 
-                            $getOptions = fn (RelationManager $livewire, $search = null) => SearchHelper::getAttachOptions(
+                            $getOptions = fn(RelationManager $livewire, $search = null) => SearchHelper::getAttachOptions(
                                 relationship: $livewire->getRelationship(),
                                 inverseRelationshipName: 'roles',
                                 optionsLimit: 50,
@@ -71,8 +72,8 @@ class UsersAssociationTable
 
                             return $select
                                 ->allowHtml()
-                                ->options(fn ($livewire) => $getOptions($livewire))
-                                ->getSearchResultsUsing(fn ($search, $livewire) => $getOptions($livewire, $search));
+                                ->options(fn($livewire) => $getOptions($livewire))
+                                ->getSearchResultsUsing(fn($search, $livewire) => $getOptions($livewire, $search));
                         }
                     )
                     ->multiple(),

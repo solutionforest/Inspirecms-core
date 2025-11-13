@@ -21,30 +21,27 @@ class MediaAssetPolicy extends BasePolicy
 
     /**
      * @param  Authenticatable|User|Model  $user
-     * @param  MediaAsset&Model  $asset
      * @return bool
      */
-    public function update($user, $asset)
+    public function update($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, MediaAsset::class));
     }
 
     /**
      * @param  Authenticatable|User|Model  $user
-     * @param  MediaAsset&Model  $asset
      * @return bool
      */
-    public function view($user, $asset)
+    public function view($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, MediaAsset::class));
     }
 
     /**
      * @param  Authenticatable|User|Model  $user
-     * @param  MediaAsset&Model  $asset
      * @return bool
      */
-    public function delete($user, $asset)
+    public function delete($user)
     {
         return $user?->can(static::guessPermissionName(__FUNCTION__, MediaAsset::class));
     }
