@@ -36,7 +36,7 @@ class ViewContentRecord extends BaseContentViewPage
         if (empty($this->getRelationManagers())) {
             return false;
         }
-        
+
         return true;
     }
 
