@@ -64,7 +64,7 @@ class CreateContentAction extends Action
         $this->modalCancelAction(false);
 
         $this
-            ->fillForm(fn() => [])
+            ->fillForm(fn () => [])
             ->schema([
                 TableSelect::make('selection')
                     ->hiddenLabel()
