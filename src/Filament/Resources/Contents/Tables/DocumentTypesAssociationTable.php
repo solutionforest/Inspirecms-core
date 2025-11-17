@@ -47,6 +47,11 @@ class DocumentTypesAssociationTable
                     translatableLocale: $translatableLocale
                 );
             })
+            // Ensure checkbox for bulk actions is not shown
+            ->toolbarActions([])
+            ->disabledSelection()
+            ->selectable(false)
+            ->checkIfRecordIsSelectableUsing(fn ($record) => false)
             ->searchable()
             ->searchPlaceholder(__('inspirecms::inspirecms.search.placeholder'))
             ->emptyStateHeading(__('inspirecms::inspirecms.search.no_results'))

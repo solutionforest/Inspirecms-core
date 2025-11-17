@@ -60,8 +60,11 @@ class CreateContentAction extends Action
             return __('inspirecms::buttons.create_content.heading', ['title' => $title]);
         });
 
+        $this->modalSubmitAction(false);
+        $this->modalCancelAction(false);
+
         $this
-            ->fillForm(fn () => [])
+            ->fillForm(fn() => [])
             ->schema([
                 TableSelect::make('selection')
                     ->hiddenLabel()
