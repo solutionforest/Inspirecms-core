@@ -136,8 +136,6 @@ class UpdateContentRouteAction extends Action
             ])
             ->action(function (null | Model | Content $record, array $data, $action) {
 
-                dd($record, $data);
-
                 if (! $record || ! $record->isWebPage() || empty($data['data'] ?? [])) {
                     return;
                 }

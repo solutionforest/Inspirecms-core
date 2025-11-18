@@ -29,7 +29,19 @@ class ThrowableHelper
                 $traceItem['type'] ?? '',
                 $traceItem['function'] ?? 'unknown',
                 implode(', ', array_map(function ($argument) {
-                    return is_string($argument) ? "'$argument'" : $argument;
+                    if (is_string($argument)) {
+                        return "'" . $argument . "'";
+                    }
+                    if (is_object($argument)) {
+                        return 'object(' . get_class($argument) . ')';
+                    }
+                    if (is_array($argument)) {
+                        return 'array(' . implode(', ', array_map(function ($v) {
+                            return is_scalar($v) ? var_export($v, true) : (is_object($v) ? 'object('.get_class($v).')' : gettype($v));
+                        }, array_slice($argument, 0, 3))) . (count($argument) > 3 ? ', ...' : '') . ')';
+                    }
+
+                    return var_export($argument, true);
                 }, $traceItem['args'] ?? []))
             );
 
