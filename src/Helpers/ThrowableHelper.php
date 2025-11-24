@@ -37,7 +37,7 @@ class ThrowableHelper
                     }
                     if (is_array($argument)) {
                         return 'array(' . implode(', ', array_map(function ($v) {
-                            return is_scalar($v) ? var_export($v, true) : (is_object($v) ? 'object('.get_class($v).')' : gettype($v));
+                            return is_scalar($v) ? var_export($v, true) : (is_object($v) ? 'object(' . get_class($v) . ')' : gettype($v));
                         }, array_slice($argument, 0, 3))) . (count($argument) > 3 ? ', ...' : '') . ')';
                     }
 
