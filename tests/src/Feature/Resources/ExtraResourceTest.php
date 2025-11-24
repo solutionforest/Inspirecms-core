@@ -2,6 +2,7 @@
 
 use SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource\Pages\ListPosts;
 use SolutionForest\InspireCms\Tests\TestCase;
+
 use function Pest\Livewire\livewire;
 
 uses(TestCase::class);

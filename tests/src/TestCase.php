@@ -2,31 +2,14 @@
 
 namespace SolutionForest\InspireCms\Tests;
 
-use BladeUI\Heroicons\BladeHeroiconsServiceProvider;
-use BladeUI\Icons\BladeIconsServiceProvider;
-use Filament\Actions\ActionsServiceProvider;
-use Filament\FilamentServiceProvider;
-use Filament\Forms\FormsServiceProvider;
-use Filament\Infolists\InfolistsServiceProvider;
-use Filament\Notifications\NotificationsServiceProvider;
-use Filament\Schemas\SchemasServiceProvider;
-use Filament\Support\SupportServiceProvider;
-use Filament\Tables\TablesServiceProvider;
-use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Khatabwedaa\BladeCssIcons\BladeCssIconsServiceProvider;
-use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
-use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
-use SolutionForest\InspireCms\InspireCmsServiceProvider;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
-use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Tests\Models\Content;
 use SolutionForest\InspireCms\Tests\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\Models\Field;
