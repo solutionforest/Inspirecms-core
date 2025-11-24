@@ -26,7 +26,9 @@ it('renders_content_version_history_component', function () {
         publishState: 'publish'
     );
     Livewire::test('inspirecms::content-version-history', getLivewireParams($content))
-        ->assertSee(__('inspirecms::resources/content-version.tables.search_placeholder'));
+        // The translation contains an apostrophe which may be escaped in the HTML output.
+        // Disable escaping in the assertion so the raw string is matched.
+        ->assertSee(__('inspirecms::resources/content-version.tables.search_placeholder'), $escape = false);
 });
 
 test('rollback_content_version', function () {

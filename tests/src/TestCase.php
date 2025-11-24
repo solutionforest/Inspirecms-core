@@ -53,38 +53,34 @@ abstract class TestCase extends Orchestra
     protected function getPackageProviders($app)
     {
         return [
-            ActionsServiceProvider::class,
-            BladeCaptureDirectiveServiceProvider::class,
-            BladeHeroiconsServiceProvider::class,
-            BladeIconsServiceProvider::class,
-            BladeCssIconsServiceProvider::class,
+            \BladeUI\Heroicons\BladeHeroiconsServiceProvider::class,
+            \BladeUI\Icons\BladeIconsServiceProvider::class,
 
-            FilamentServiceProvider::class,
-            FormsServiceProvider::class,
-            InfolistsServiceProvider::class,
-            LivewireServiceProvider::class,
-            NotificationsServiceProvider::class,
-            SchemasServiceProvider::class,
-            SupportServiceProvider::class,
-            TablesServiceProvider::class,
-            WidgetsServiceProvider::class,
-
-            \Spatie\Permission\PermissionServiceProvider::class,
-
-            FilamentFieldGroupServiceProvider::class,
-
-            \Staudenmeir\LaravelAdjacencyList\IdeHelperServiceProvider::class,
-            \Kirschbaum\PowerJoins\PowerJoinsServiceProvider::class,
+            \Filament\Actions\ActionsServiceProvider::class,
+            \Filament\FilamentServiceProvider::class,
+            \Filament\Forms\FormsServiceProvider::class,
+            \Filament\Infolists\InfolistsServiceProvider::class,
+            \Filament\Notifications\NotificationsServiceProvider::class,
+            \Filament\Schemas\SchemasServiceProvider::class,
+            \Filament\Support\SupportServiceProvider::class,
+            \Filament\Tables\TablesServiceProvider::class,
+            \Filament\Widgets\WidgetsServiceProvider::class,
 
             \Kalnoy\Nestedset\NestedSetServiceProvider::class,
+            \Khatabwedaa\BladeCssIcons\BladeCssIconsServiceProvider::class,
+            \Kirschbaum\PowerJoins\PowerJoinsServiceProvider::class,
+
+            \Livewire\LivewireServiceProvider::class,
 
             \Pboivin\FilamentPeek\FilamentPeekServiceProvider::class,
+            \RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider::class,
 
-            InspireCmsSupportServiceProvider::class,
-
-            InspireCmsServiceProvider::class,
-
+            \SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider::class,
             \SolutionForest\InspireCms\CmsPanelProvider::class,
+            \SolutionForest\InspireCms\InspireCmsServiceProvider::class,
+            \SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider::class,
+
+            \Spatie\Permission\PermissionServiceProvider::class,
         ];
     }
 

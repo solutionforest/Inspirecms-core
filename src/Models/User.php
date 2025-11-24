@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Filament\Panel;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Concerns\CmsUserTrait;
@@ -47,5 +48,10 @@ class User extends BaseAuthenticatableModel implements UserContract
                 $model->uuid = (string) Str::uuid7();
             }
         });
+    }
+
+    public function canAccessPanel(Panel $panel): bool
+    {
+        return true;
     }
 }

@@ -2,7 +2,11 @@
 
 namespace SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources;
 
+use BackedEnum;
 use Filament\Resources\Resource;
+use Filament\Support\Icons\Heroicon;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Table;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
@@ -15,7 +19,7 @@ class PostResource extends Resource implements ClusterSectionResource
 
     protected static ?string $model = Post::class;
 
-    protected static null | \BackedEnum | string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
     protected static ?string $cluster = Settings::class;
 
@@ -24,5 +28,15 @@ class PostResource extends Resource implements ClusterSectionResource
         return [
             'index' => ListPosts::route('/'),
         ];
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            // ->query(Post::query())
+            // ->recordKey('id')
+            ->columns([
+                TextColumn::make('id')->label('ID')->sortable(),
+            ]);
     }
 }
