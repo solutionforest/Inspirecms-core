@@ -174,23 +174,23 @@ class ContentForm
 
                 $components[] =
                     TextInput::make($locale)
-                    ->label(__('inspirecms::resources/content.title.label'))
-                    ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
-                    ->placeholder(__('inspirecms::resources/content.title.placeholder'))
-                    ->helperText(__('inspirecms::resources/content.title.instructions'))
-                    ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire, $locale) {
-                        // Fill slug if empty / operation is create
-                        if ($operation === 'create' || empty($get('slug'))) {
-                            $set('slug', ContentSlugFactory::create()->generate($state));
-                        }
-                        $set("webSetting.seo.meta_title.{$locale}", $state);
-                    })
-                    ->autofocus()
-                    ->required()
-                    ->limitLengthWithHint(60)
-                    ->formatStateUsing(fn($record) => $record?->getTranslations('title')[$locale] ?? null)
-                    ->visible(fn(ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
-                    ->translatable();
+                        ->label(__('inspirecms::resources/content.title.label'))
+                        ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
+                        ->placeholder(__('inspirecms::resources/content.title.placeholder'))
+                        ->helperText(__('inspirecms::resources/content.title.instructions'))
+                        ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire, $locale) {
+                            // Fill slug if empty / operation is create
+                            if ($operation === 'create' || empty($get('slug'))) {
+                                $set('slug', ContentSlugFactory::create()->generate($state));
+                            }
+                            $set("webSetting.seo.meta_title.{$locale}", $state);
+                        })
+                        ->autofocus()
+                        ->required()
+                        ->limitLengthWithHint(60)
+                        ->formatStateUsing(fn ($record) => $record?->getTranslations('title')[$locale] ?? null)
+                        ->visible(fn (ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
+                        ->translatable();
             }
 
             return $components;
