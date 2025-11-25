@@ -155,11 +155,34 @@ trait ContentFormTrait
 
         $translatableAttributes = $this->getTranslatableAttributesForContent();
 
-        $this->otherLocaleData[$this->oldActiveLocale] = Arr::only($this->data, $translatableAttributes);
+        // Handle nested title structure
+        $dataToStore = [];
+        foreach ($translatableAttributes as $attribute) {
+            if ($attribute === 'title' && isset($this->data['title']) && is_array($this->data['title'])) {
+                // Extract only the old locale's value from the nested title array
+                $dataToStore['title'] = $this->data['title'][$this->oldActiveLocale] ?? '';
+            } else {
+                $dataToStore[$attribute] = $this->data[$attribute] ?? null;
+            }
+        }
+
+        $this->otherLocaleData[$this->oldActiveLocale] = $dataToStore;
+
+        // Prepare data for new locale
+        $newLocaleData = $this->otherLocaleData[$this->activeLocale] ?? [];
+        
+        // Handle nested title structure for new locale
+        if (isset($this->data['title']) && is_array($this->data['title'])) {
+            // If we have a stored value for the new locale, put it back in the array
+            if (isset($newLocaleData['title'])) {
+                $this->data['title'][$this->activeLocale] = $newLocaleData['title'];
+                unset($newLocaleData['title']);
+            }
+        }
 
         $this->data = $this->mutuateDataWhileUpdatedActiveLocale(
             Arr::except($this->data, $translatableAttributes),
-            $this->otherLocaleData[$this->activeLocale] ?? []
+            $newLocaleData
         );
 
         unset($this->otherLocaleData[$this->activeLocale]);
@@ -174,15 +197,33 @@ trait ContentFormTrait
         $record = $this->getRecord();
         $translatableAttributes = static::getResource()::getTranslatableAttributes();
 
+        // Initialize title with all translations for the nested structure
+        $allTitleTranslations = [];
+        if (in_array('title', $translatableAttributes)) {
+            foreach ($this->getTranslatableLocales() as $locale) {
+                $allTitleTranslations[$locale] = $record->getTranslation('title', $locale, useFallbackLocale: false);
+            }
+        }
+
         foreach ($this->getTranslatableLocales() as $locale) {
             $translatedData = [];
 
             foreach ($translatableAttributes as $attribute) {
-                $translatedData[$attribute] = $record->getTranslation($attribute, $locale, useFallbackLocale: false);
+                if ($attribute === 'title') {
+                    // For title, use the complete translations array
+                    $translatedData[$attribute] = $allTitleTranslations;
+                } else {
+                    $translatedData[$attribute] = $record->getTranslation($attribute, $locale, useFallbackLocale: false);
+                }
             }
 
             if ($locale !== $this->activeLocale) {
-                $this->otherLocaleData[$locale] = $this->mutateFormDataBeforeFill($translatedData);
+                // For otherLocaleData, store individual locale values (not the full array)
+                $storedData = $translatedData;
+                if (isset($storedData['title']) && is_array($storedData['title'])) {
+                    $storedData['title'] = $storedData['title'][$locale] ?? '';
+                }
+                $this->otherLocaleData[$locale] = $this->mutateFormDataBeforeFill($storedData);
 
                 continue;
             }
@@ -554,5 +595,6 @@ trait ContentFormTrait
             ->color('gray')
             ->action(fn (array $data, $action) => $this->publish($data, $action, true));
     }
+
     // endregion Actions
 }

@@ -50,6 +50,18 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         }
     }
 
+    public function mountTranslatable(): void
+    {
+        // Call trait implementation (if trait provides it)
+        if (method_exists($this, 'traitMountTranslatable')) {
+            $this->traitMountTranslatable();
+        } 
+        // Ensure query string param takes precedence if present
+        if ($locale = request()->query('activeLocale')) {
+            $this->activeLocale = $locale;
+        }
+    }
+
     protected function getHeaderActions(): array
     {
         return [
@@ -63,36 +75,36 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
                     ViewAction::make(),
 
                     DeleteAction::make()
-                        ->visible(fn (Model $record) => ! $record->isLocked()),
+                        ->visible(fn(Model $record) => ! $record->isLocked()),
 
                     RestoreAction::make(),
 
                     ForceDeleteAction::make(),
 
                     LockContentAction::make()
-                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+                        ->successRedirectUrl(fn($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
 
                     UnlockContentAction::make()
-                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+                        ->successRedirectUrl(fn($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn(ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 
                 ActionGroup::make([
                     UpdateContentRouteAction::make(),
                     ContentHistoryAction::make(),
                     AdjustChildOrderAction::make()
-                        ->nodeParentId(fn (Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
+                        ->nodeParentId(fn(Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
                         ->hidden(
-                            fn (?Model $record) => ! $record instanceof Content ||
-                            $record->trashed()
+                            fn(?Model $record) => ! $record instanceof Content ||
+                                $record->trashed()
                         )
                         ->successRedirectUrl(function ($record) {
                             return $this->getUrl(['record' => $record, ...$this->getRedirectUrlParameters()]);
                         }),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn(ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }
@@ -132,7 +144,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         $record->fill(Arr::except($data, $translatableAttributes));
 
         $currentFieldsForType = $record instanceof Content
-            ? $record->documentType?->fieldGroups->whereInstanceOf(FieldGroup::class)->mapWithKeys(fn (FieldGroup $fg) => [$fg->name => $fg->fields->pluck('name')->all()])->all()
+            ? $record->documentType?->fieldGroups->whereInstanceOf(FieldGroup::class)->mapWithKeys(fn(FieldGroup $fg) => [$fg->name => $fg->fields->pluck('name')->all()])->all()
             : [];
         // Limit the propertyData to the current fields for the type
         $propertyData = Arr::only($data['propertyData'] ?? [], array_keys($currentFieldsForType));
@@ -151,14 +163,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         $record->setTranslation('propertyData', '', $propertyData);
 
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
-            // Handle nested locale arrays (e.g., title.en, title.fr from Group with statePath)
-            if (is_array($value) && $key === 'title') {
-                foreach ($value as $locale => $localizedValue) {
-                    $record->setTranslation($key, $locale, $localizedValue);
-                }
-            } else {
-                $record->setTranslation($key, $this->activeLocale, $value);
-            }
+            $record->setTranslation($key, $this->activeLocale, $value);
         }
 
         $originalData = $this->data;
@@ -167,7 +172,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
         foreach ($this->otherLocaleData as $locale => $localeData) {
             $existingLocales ??= collect($translatableAttributes)
-                ->map(fn (string $attribute): array => array_keys($record->getTranslations($attribute)))
+                ->map(fn(string $attribute): array => array_keys($record->getTranslations($attribute)))
                 ->flatten()
                 ->unique()
                 ->all();
@@ -196,14 +201,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
             $localeData = $this->mutateFormDataBeforeSave($localeData);
 
             foreach (Arr::only($localeData, $translatableAttributes) as $key => $value) {
-                // Handle nested locale arrays for otherLocaleData as well
-                if (is_array($value) && $key === 'title') {
-                    foreach ($value as $otherLoc => $localizedValue) {
-                        $record->setTranslation($key, $otherLoc, $localizedValue);
-                    }
-                } else {
-                    $record->setTranslation($key, $locale, $value);
-                }
+                $record->setTranslation($key, $locale, $value);
             }
         }
 

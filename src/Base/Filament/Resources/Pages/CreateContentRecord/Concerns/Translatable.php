@@ -43,14 +43,7 @@ trait Translatable
         $record->fill(Arr::except($data, $translatableAttributes));
 
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
-            // Handle nested locale arrays (e.g., title.en, title.fr from Group with statePath)
-            if (is_array($value) && $key === 'title') {
-                foreach ($value as $locale => $localizedValue) {
-                    $record->setTranslation($key, $locale, $localizedValue);
-                }
-            } else {
-                $record->setTranslation($key, $this->activeLocale, $value);
-            }
+            $record->setTranslation($key, $this->activeLocale, $value);
         }
 
         $originalData = $this->data;
@@ -70,14 +63,7 @@ trait Translatable
             $localeData = $this->mutateFormDataBeforeCreate($localeData);
 
             foreach (Arr::only($localeData, $translatableAttributes) as $key => $value) {
-                // Handle nested locale arrays for otherLocaleData as well
-                if (is_array($value) && $key === 'title') {
-                    foreach ($value as $otherLoc => $localizedValue) {
-                        $record->setTranslation($key, $otherLoc, $localizedValue);
-                    }
-                } else {
-                    $record->setTranslation($key, $locale, $value);
-                }
+                $record->setTranslation($key, $locale, $value);
             }
         }
 

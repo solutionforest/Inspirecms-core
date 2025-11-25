@@ -171,14 +171,15 @@ class ContentForm
             foreach ($langs as $lang) {
 
                 $locale = $lang->code;
-
+                
                 $components[] =
                     TextInput::make($locale)
                     ->label(__('inspirecms::resources/content.title.label'))
                     ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
                     ->placeholder(__('inspirecms::resources/content.title.placeholder'))
                     ->helperText(__('inspirecms::resources/content.title.instructions'))
-                    ->live(true, 5000)->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire, $locale) {
+                    ->live(true, 5000)
+                    ->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) use ($locale) {
                         // Fill slug if empty / operation is create
                         if ($operation === 'create' || empty($get('slug'))) {
                             $set('slug', ContentSlugFactory::create()->generate($state));
@@ -188,7 +189,6 @@ class ContentForm
                     ->autofocus()
                     ->required()
                     ->limitLengthWithHint(60)
-                    ->formatStateUsing(fn($record) => $record?->getTranslations('title')[$locale] ?? null)
                     ->visible(fn(ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
                     ->translatable();
             }
@@ -198,13 +198,20 @@ class ContentForm
 
         return Group::make()
             ->statePath($key)
-            ->dehydrated()
-            ->saveRelationshipsUsing(function (Model $record, $state, ContractsContentForm $livewire) {
-                if (is_array($state)) {
-                    foreach ($state as $locale => $value) {
-                        $record->setTranslation('title', $locale, $value);
-                    }
+            ->afterStateHydrated(function (Group $component, ?Model $record, $state) {
+                if ($record) {
+                    // Load all translations into the group state
+                    $component->state($record->getTranslations('title'));
                 }
+            })
+            ->mutateDehydratedStateUsing(function ($state, ContractsContentForm $livewire) {
+                // When dehydrating, only return the value for the active locale
+                // This makes it compatible with the Translatable trait's handling
+                if (is_array($state)) {
+                    $activeLocale = $livewire->getActiveActionsLocale();
+                    return $state[$activeLocale] ?? '';
+                }
+                return $state;
             })
             ->schema($configureTranslatableComponents);
     }
