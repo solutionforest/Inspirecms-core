@@ -170,7 +170,7 @@ trait ContentFormTrait
 
         // Prepare data for new locale
         $newLocaleData = $this->otherLocaleData[$this->activeLocale] ?? [];
-        
+
         // Handle nested title structure for new locale
         if (isset($this->data['title']) && is_array($this->data['title'])) {
             // If we have a stored value for the new locale, put it back in the array

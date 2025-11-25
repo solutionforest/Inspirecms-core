@@ -55,7 +55,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         // Call trait implementation (if trait provides it)
         if (method_exists($this, 'traitMountTranslatable')) {
             $this->traitMountTranslatable();
-        } 
+        }
         // Ensure query string param takes precedence if present
         if ($locale = request()->query('activeLocale')) {
             $this->activeLocale = $locale;
@@ -75,28 +75,28 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
                     ViewAction::make(),
 
                     DeleteAction::make()
-                        ->visible(fn(Model $record) => ! $record->isLocked()),
+                        ->visible(fn (Model $record) => ! $record->isLocked()),
 
                     RestoreAction::make(),
 
                     ForceDeleteAction::make(),
 
                     LockContentAction::make()
-                        ->successRedirectUrl(fn($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
 
                     UnlockContentAction::make()
-                        ->successRedirectUrl(fn($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
+                        ->successRedirectUrl(fn ($record) => $this->getUrl(array_merge(['record' => $record], $this->getRedirectUrlParameters()))),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn(ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
 
                 ActionGroup::make([
                     UpdateContentRouteAction::make(),
                     ContentHistoryAction::make(),
                     AdjustChildOrderAction::make()
-                        ->nodeParentId(fn(Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
+                        ->nodeParentId(fn (Content | Model $record) => $record->nestable_tree_id ?? ($record->nestableTree?->getKey() ?? 0))
                         ->hidden(
-                            fn(?Model $record) => ! $record instanceof Content ||
+                            fn (?Model $record) => ! $record instanceof Content ||
                                 $record->trashed()
                         )
                         ->successRedirectUrl(function ($record) {
@@ -104,7 +104,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
                         }),
                 ])
                     ->dropdown(false)
-                    ->hidden(fn(ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
+                    ->hidden(fn (ActionGroup $action) => FilamentActionHelper::isAnyVisibleActionInActionGroup($action)),
             ]),
         ];
     }
@@ -144,7 +144,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         $record->fill(Arr::except($data, $translatableAttributes));
 
         $currentFieldsForType = $record instanceof Content
-            ? $record->documentType?->fieldGroups->whereInstanceOf(FieldGroup::class)->mapWithKeys(fn(FieldGroup $fg) => [$fg->name => $fg->fields->pluck('name')->all()])->all()
+            ? $record->documentType?->fieldGroups->whereInstanceOf(FieldGroup::class)->mapWithKeys(fn (FieldGroup $fg) => [$fg->name => $fg->fields->pluck('name')->all()])->all()
             : [];
         // Limit the propertyData to the current fields for the type
         $propertyData = Arr::only($data['propertyData'] ?? [], array_keys($currentFieldsForType));
@@ -172,7 +172,7 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
 
         foreach ($this->otherLocaleData as $locale => $localeData) {
             $existingLocales ??= collect($translatableAttributes)
-                ->map(fn(string $attribute): array => array_keys($record->getTranslations($attribute)))
+                ->map(fn (string $attribute): array => array_keys($record->getTranslations($attribute)))
                 ->flatten()
                 ->unique()
                 ->all();

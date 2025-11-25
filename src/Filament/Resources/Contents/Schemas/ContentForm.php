@@ -171,26 +171,26 @@ class ContentForm
             foreach ($langs as $lang) {
 
                 $locale = $lang->code;
-                
+
                 $components[] =
                     TextInput::make($locale)
-                    ->label(__('inspirecms::resources/content.title.label'))
-                    ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
-                    ->placeholder(__('inspirecms::resources/content.title.placeholder'))
-                    ->helperText(__('inspirecms::resources/content.title.instructions'))
-                    ->live(true, 5000)
-                    ->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) use ($locale) {
-                        // Fill slug if empty / operation is create
-                        if ($operation === 'create' || empty($get('slug'))) {
-                            $set('slug', ContentSlugFactory::create()->generate($state));
-                        }
-                        $set("webSetting.seo.meta_title.{$locale}", $state);
-                    })
-                    ->autofocus()
-                    ->required()
-                    ->limitLengthWithHint(60)
-                    ->visible(fn(ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
-                    ->translatable();
+                        ->label(__('inspirecms::resources/content.title.label'))
+                        ->validationAttribute(__('inspirecms::resources/content.title.validation_attribute'))
+                        ->placeholder(__('inspirecms::resources/content.title.placeholder'))
+                        ->helperText(__('inspirecms::resources/content.title.instructions'))
+                        ->live(true, 5000)
+                        ->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) use ($locale) {
+                            // Fill slug if empty / operation is create
+                            if ($operation === 'create' || empty($get('slug'))) {
+                                $set('slug', ContentSlugFactory::create()->generate($state));
+                            }
+                            $set("webSetting.seo.meta_title.{$locale}", $state);
+                        })
+                        ->autofocus()
+                        ->required()
+                        ->limitLengthWithHint(60)
+                        ->visible(fn (ContractsContentForm $livewire) => $livewire->getActiveActionsLocale() == $locale)
+                        ->translatable();
             }
 
             return $components;
@@ -209,8 +209,10 @@ class ContentForm
                 // This makes it compatible with the Translatable trait's handling
                 if (is_array($state)) {
                     $activeLocale = $livewire->getActiveActionsLocale();
+
                     return $state[$activeLocale] ?? '';
                 }
+
                 return $state;
             })
             ->schema($configureTranslatableComponents);
