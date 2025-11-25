@@ -151,7 +151,14 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
         $record->setTranslation('propertyData', '', $propertyData);
 
         foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
-            $record->setTranslation($key, $this->activeLocale, $value);
+            // Handle nested locale arrays (e.g., title.en, title.fr from Group with statePath)
+            if (is_array($value) && $key === 'title') {
+                foreach ($value as $locale => $localizedValue) {
+                    $record->setTranslation($key, $locale, $localizedValue);
+                }
+            } else {
+                $record->setTranslation($key, $this->activeLocale, $value);
+            }
         }
 
         $originalData = $this->data;
@@ -189,7 +196,14 @@ abstract class BaseContentEditPage extends BaseEditRecord implements ContentForm
             $localeData = $this->mutateFormDataBeforeSave($localeData);
 
             foreach (Arr::only($localeData, $translatableAttributes) as $key => $value) {
-                $record->setTranslation($key, $locale, $value);
+                // Handle nested locale arrays for otherLocaleData as well
+                if (is_array($value) && $key === 'title') {
+                    foreach ($value as $otherLoc => $localizedValue) {
+                        $record->setTranslation($key, $otherLoc, $localizedValue);
+                    }
+                } else {
+                    $record->setTranslation($key, $locale, $value);
+                }
             }
         }
 
