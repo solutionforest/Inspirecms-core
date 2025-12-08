@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.0.beta.1 - 2025-12-08
+
+<!-- Release notes generated using configuration in .github/release.yml at 4.0.0.beta.1 -->
+### What's Changed
+
+#### Other Changes
+
+* Bump actions/checkout from 4 to 5 by @dependabot[bot] in https://github.com/solutionforest/Inspirecms-core/pull/8
+* Merge missing changes from v1 by @cklei-carly in https://github.com/solutionforest/Inspirecms-core/pull/9
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.2.3...4.0.0.beta.1
+
 ## 1.2.3 - 2025-08-20
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
@@ -21,6 +33,7 @@ All notable changes to `inspirecms-core` will be documented in this file.
 composer require solution-forest/inspirecms-core:^1.2.2
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -34,6 +47,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -64,6 +78,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -83,6 +98,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
