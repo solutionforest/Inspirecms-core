@@ -13,9 +13,9 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
         with:
-          ref: 1.x
+          ref: 4.x
 
       - name: Update Changelog
         uses: stefanzweifel/changelog-updater-action@v1
@@ -24,8 +24,8 @@ jobs:
           release-notes: ${{ github.event.release.body }}
 
       - name: Commit updated CHANGELOG
-        uses: stefanzweifel/git-auto-commit-action@v7
+        uses: stefanzweifel/git-auto-commit-action@v6
         with:
-          branch: 1.x
+          branch: 4.x
           commit_message: Update CHANGELOG
           file_pattern: CHANGELOG.md
