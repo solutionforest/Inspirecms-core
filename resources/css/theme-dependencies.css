@@ -7,3 +7,6 @@
 @source "../../vendor/filament/**/*.blade.php";
 @source "../../vendor/solution-forest/inspirecms-support/resources/views/**/*.blade.php";
 @source "../../vendor/pboivin/filament-peek/resources/views/**/*.blade.php";
+
+@source "../../views/filament/forms/components/code-editor.blade.php";
+@source "../../views/components/alert/*.blade.php";

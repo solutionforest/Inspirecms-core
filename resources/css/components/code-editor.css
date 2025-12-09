@@ -1,15 +1,9 @@
-@reference 'tailwindcss' source(base);
-
-@import "../../../vendor/solution-forest/inspirecms-support/resources/css/filament-base-theme.css";
-
-@source "../../views/filament/forms/components/code-editor.blade.php";
-
 .cm-scroller {
     min-height: inherit !important;
     height: 70vh;
 }
 
-.cm-gutter{
+.cm-gutter {
     overflow: visible !important;
 }
 

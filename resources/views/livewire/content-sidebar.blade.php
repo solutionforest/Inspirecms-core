@@ -55,7 +55,7 @@
     </x-filament::modal>
 
     <!-- Static sidebar for desktop -->
-    <div class="content-sidebar_desktop">
+    <div class="content-sidebar_desktop hidden lg:fixed lg:top-16 lg:left-0 lg:w-72 lg:flex lg:flex-col z-40 h-svh">
         <div class="flex grow flex-col gap-y-5 overflow-y-auto overflow-x-visible border-e border-gray-200 bg-white py-2 dark:bg-gray-900 dark:border-gray-700">
             <x-inspirecms-support::tree-node.service-side-tree
                 :nodes="$nodes"
