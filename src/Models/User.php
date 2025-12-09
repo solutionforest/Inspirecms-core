@@ -49,9 +49,4 @@ class User extends BaseAuthenticatableModel implements UserContract
             }
         });
     }
-
-    public function canAccessPanel(Panel $panel): bool
-    {
-        return true;
-    }
 }
