@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.3 - 2025-12-09
+
+### What's Changed in 4.0.3
+
+#### 🔧 Other Changes
+
+- Refactor CSS imports and update theme sources (7168742)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.2...4.0.3
+
 ## 4.0.2 - 2025-12-09
 
 ### What's Changed in 4.0.2
@@ -53,6 +65,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -66,6 +79,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -100,6 +114,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -119,6 +134,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
