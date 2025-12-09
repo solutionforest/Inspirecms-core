@@ -2,6 +2,19 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.2 - 2025-12-09
+
+### What's Changed in 4.0.2
+
+#### 🔧 Other Changes
+
+- Refactor theme CSS imports and add dependencies file (334ef89)
+- Make content sidebar fixed on large screens (126b949)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.1...4.0.2
+
 ## 4.0.1 - 2025-12-09
 
 ### What's Changed in 4.0.1
@@ -39,6 +52,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -52,6 +66,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -84,6 +99,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -103,6 +119,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
