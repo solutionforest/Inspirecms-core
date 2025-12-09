@@ -2,6 +2,23 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.1 - 2025-12-09
+
+### What's Changed in 4.0.1
+
+#### 🔧 Other Changes
+
+- Bump actions/checkout from 5 to 6 (b57033d)
+- Bump actions/checkout from 4 to 6 (8899d03)
+- Bump stefanzweifel/git-auto-commit-action from 6 to 7 (71bb6af)
+- Move canAccessPanel method to test User model (e9bdb8d)
+- Add !important to desktop sidebar classes (e485cd5)
+- Refactor CSS imports and update Tailwind version (1c68167)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.0...4.0.1
+
 ## 1.2.3 - 2025-08-20
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
@@ -21,6 +38,7 @@ All notable changes to `inspirecms-core` will be documented in this file.
 composer require solution-forest/inspirecms-core:^1.2.2
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -34,6 +52,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -64,6 +83,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -87,14 +107,13 @@ composer require solution-forest/inspirecms-core:^1.1.2
 
 
 
-```
 
+```
 **Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.1.1...1.1.2
 
 ## 1.1.1 - 2025-08-06
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
-
 ### What's Changed
 
 #### Other Changes
@@ -111,7 +130,6 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.1.0 - 2025-07-23
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
-
 ### 🚀 New features
 
 - Add "Rollback" action for content versioning (Pro tier only)
@@ -136,7 +154,6 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.4 - 2025-07-15
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
-
 ### 🐛 Bug fixes
 
 - Fix: get root while call `getParent` for ContentDto
@@ -147,7 +164,6 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.3 - 2025-07-11
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
-
 ### 🐛 Bug fixes
 
 - Fix typo
@@ -161,7 +177,6 @@ composer require solution-forest/inspirecms-core:^1.1.2
 ## 1.0.2 - 2025-07-10
 
 <!-- Release notes generated using configuration in .github/release.yml at 1.x -->
-
 - Add test case for template render
 - fix content sidebar: ensure a after "notification & before "trix" & "filament button"
 
