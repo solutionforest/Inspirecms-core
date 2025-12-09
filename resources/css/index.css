@@ -3,3 +3,4 @@
 @import '../../vendor/filament/filament/resources/css/theme.css';
 
 @import './theme.css';
+@import './theme-dependencies.css';

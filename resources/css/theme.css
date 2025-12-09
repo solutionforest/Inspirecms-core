@@ -9,16 +9,6 @@
 @import './components/markdown-editor.css';
 @import './components/version-diff.css';
 
-@import '../../vendor/solution-forest/inspirecms-support/resources/css/diff-viewer.css';
-@import '../../vendor/solution-forest/inspirecms-support/resources/dist/components/tree-node.css';
-@import '../../vendor/pboivin/filament-peek/resources/css/plugin.css';
-
-@source "../../src/Filament/**/*.php";
-@source "../views/**/*.blade.php";
-@source "../../vendor/filament/**/*.blade.php";
-@source "../../vendor/solution-forest/inspirecms-support/resources/views/**/*.blade.php";
-@source "../../vendor/pboivin/filament-peek/resources/views/**/*.blade.php";
-
 /* Media Library */
 .fi-body:has(.top-alert) {
     .fi-page :not(.media-library-browser-modal) .media-library__header {
