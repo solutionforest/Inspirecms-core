@@ -1,0 +1,483 @@
+/**
+ * Visual Editor - Block Styles for Frontend
+ *
+ * Styles for rendered blocks on the public-facing frontend.
+ * These are minimal, non-intrusive styles that provide
+ * sensible defaults while allowing customization.
+ */
+
+/* ============================================
+   Base Block Styles
+   ============================================ */
+.ve-block {
+    box-sizing: border-box;
+}
+
+.ve-block * {
+    box-sizing: border-box;
+}
+
+/* ============================================
+   Layout Wrapper
+   ============================================ */
+.ve-layout {
+    width: 100%;
+}
+
+/* ============================================
+   Container Block
+   ============================================ */
+.ve-container {
+    width: 100%;
+}
+
+.ve-container--full-width {
+    max-width: 100%;
+}
+
+.ve-container__inner {
+    width: 100%;
+}
+
+/* ============================================
+   Section Block
+   ============================================ */
+.ve-section {
+    width: 100%;
+    position: relative;
+}
+
+.ve-section--full {
+    /* Full width section */
+}
+
+.ve-section--boxed .ve-section__content {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.ve-section--narrow .ve-section__content {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.ve-section--align-top {
+    /* Default alignment */
+}
+
+.ve-section--align-center {
+    display: flex;
+    align-items: center;
+}
+
+.ve-section--align-bottom {
+    display: flex;
+    align-items: flex-end;
+}
+
+/* ============================================
+   Grid Block
+   ============================================ */
+.ve-grid {
+    display: grid;
+    width: 100%;
+}
+
+.ve-grid--cols-1 { grid-template-columns: repeat(1, 1fr); }
+.ve-grid--cols-2 { grid-template-columns: repeat(2, 1fr); }
+.ve-grid--cols-3 { grid-template-columns: repeat(3, 1fr); }
+.ve-grid--cols-4 { grid-template-columns: repeat(4, 1fr); }
+.ve-grid--cols-5 { grid-template-columns: repeat(5, 1fr); }
+.ve-grid--cols-6 { grid-template-columns: repeat(6, 1fr); }
+
+/* Responsive grid */
+@media (max-width: 1024px) {
+    .ve-grid--cols-5,
+    .ve-grid--cols-6 {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .ve-grid--cols-4 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .ve-grid--cols-3,
+    .ve-grid--cols-4,
+    .ve-grid--cols-5,
+    .ve-grid--cols-6 {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .ve-grid--cols-2,
+    .ve-grid--cols-3,
+    .ve-grid--cols-4,
+    .ve-grid--cols-5,
+    .ve-grid--cols-6 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   Column Block
+   ============================================ */
+.ve-column {
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevent overflow issues */
+}
+
+.ve-column--span-1 { grid-column: span 1; }
+.ve-column--span-2 { grid-column: span 2; }
+.ve-column--span-3 { grid-column: span 3; }
+.ve-column--span-4 { grid-column: span 4; }
+.ve-column--span-5 { grid-column: span 5; }
+.ve-column--span-6 { grid-column: span 6; }
+
+/* Vertical alignment */
+.ve-column--v-start { justify-content: flex-start; }
+.ve-column--v-center { justify-content: center; }
+.ve-column--v-end { justify-content: flex-end; }
+.ve-column--v-stretch { justify-content: stretch; }
+
+/* Horizontal alignment */
+.ve-column--h-start { align-items: flex-start; }
+.ve-column--h-center { align-items: center; }
+.ve-column--h-end { align-items: flex-end; }
+.ve-column--h-stretch { align-items: stretch; }
+
+/* ============================================
+   Heading Block
+   ============================================ */
+.ve-heading {
+    margin: 0;
+    padding: 0;
+    line-height: 1.3;
+}
+
+.ve-heading--h1 { font-size: 2.5rem; }
+.ve-heading--h2 { font-size: 2rem; }
+.ve-heading--h3 { font-size: 1.75rem; }
+.ve-heading--h4 { font-size: 1.5rem; }
+.ve-heading--h5 { font-size: 1.25rem; }
+.ve-heading--h6 { font-size: 1rem; }
+
+.ve-heading--align-left { text-align: left; }
+.ve-heading--align-center { text-align: center; }
+.ve-heading--align-right { text-align: right; }
+
+/* Responsive heading sizes */
+@media (max-width: 768px) {
+    .ve-heading--h1 { font-size: 2rem; }
+    .ve-heading--h2 { font-size: 1.75rem; }
+    .ve-heading--h3 { font-size: 1.5rem; }
+    .ve-heading--h4 { font-size: 1.25rem; }
+}
+
+/* ============================================
+   Text Block
+   ============================================ */
+.ve-text {
+    line-height: 1.6;
+}
+
+.ve-text--align-left { text-align: left; }
+.ve-text--align-center { text-align: center; }
+.ve-text--align-right { text-align: right; }
+.ve-text--align-justify { text-align: justify; }
+
+/* Multi-column text */
+.ve-text--columns-2 { column-count: 2; }
+.ve-text--columns-3 { column-count: 3; }
+.ve-text--columns-4 { column-count: 4; }
+
+@media (max-width: 768px) {
+    .ve-text--columns-3,
+    .ve-text--columns-4 {
+        column-count: 2;
+    }
+}
+
+@media (max-width: 480px) {
+    .ve-text--columns-2,
+    .ve-text--columns-3,
+    .ve-text--columns-4 {
+        column-count: 1;
+    }
+}
+
+/* Drop cap */
+.ve-text--drop-cap::first-letter {
+    float: left;
+    font-size: 3.5em;
+    line-height: 0.8;
+    padding-right: 0.1em;
+    font-weight: bold;
+}
+
+/* Basic typography within text blocks */
+.ve-text p {
+    margin: 0 0 1em;
+}
+
+.ve-text p:last-child {
+    margin-bottom: 0;
+}
+
+.ve-text a {
+    color: inherit;
+    text-decoration: underline;
+}
+
+.ve-text a:hover {
+    text-decoration: none;
+}
+
+.ve-text ul,
+.ve-text ol {
+    margin: 0 0 1em;
+    padding-left: 1.5em;
+}
+
+.ve-text li {
+    margin-bottom: 0.25em;
+}
+
+.ve-text blockquote {
+    margin: 1em 0;
+    padding-left: 1em;
+    border-left: 4px solid currentColor;
+    opacity: 0.8;
+}
+
+/* ============================================
+   Button Block
+   ============================================ */
+.ve-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5em;
+    padding: 0.75em 1.5em;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ve-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.3);
+}
+
+/* Button variants */
+.ve-button--primary {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: white;
+}
+
+.ve-button--primary:hover {
+    background: #4f46e5;
+    border-color: #4f46e5;
+}
+
+.ve-button--secondary {
+    background: #64748b;
+    border-color: #64748b;
+    color: white;
+}
+
+.ve-button--secondary:hover {
+    background: #475569;
+    border-color: #475569;
+}
+
+.ve-button--outline {
+    background: transparent;
+    border-color: currentColor;
+    color: #6366f1;
+}
+
+.ve-button--outline:hover {
+    background: #6366f1;
+    border-color: #6366f1;
+    color: white;
+}
+
+.ve-button--ghost {
+    background: transparent;
+    border-color: transparent;
+    color: #6366f1;
+}
+
+.ve-button--ghost:hover {
+    background: rgba(99, 102, 241, 0.1);
+}
+
+/* Button sizes */
+.ve-button--small {
+    padding: 0.5em 1em;
+    font-size: 0.875rem;
+}
+
+.ve-button--medium {
+    padding: 0.75em 1.5em;
+    font-size: 1rem;
+}
+
+.ve-button--large {
+    padding: 1em 2em;
+    font-size: 1.125rem;
+}
+
+/* Full width button */
+.ve-button--full-width {
+    display: flex;
+    width: 100%;
+}
+
+/* Button with icon */
+.ve-button--has-icon {
+    /* Inherits from base */
+}
+
+.ve-button__icon {
+    display: inline-flex;
+    flex-shrink: 0;
+}
+
+.ve-button__icon svg {
+    width: 1em;
+    height: 1em;
+}
+
+.ve-button__text {
+    /* Button text */
+}
+
+/* ============================================
+   Image Block
+   ============================================ */
+.ve-image {
+    display: block;
+    width: 100%;
+}
+
+.ve-image__img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+}
+
+.ve-image__link {
+    display: block;
+}
+
+.ve-image__caption {
+    margin-top: 0.5em;
+    font-size: 0.875em;
+    color: #64748b;
+    text-align: center;
+}
+
+/* Image alignment */
+.ve-image--align-left {
+    margin-right: auto;
+}
+
+.ve-image--align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.ve-image--align-right {
+    margin-left: auto;
+}
+
+/* Object fit */
+.ve-image--fit-contain .ve-image__img { object-fit: contain; }
+.ve-image--fit-cover .ve-image__img { object-fit: cover; }
+.ve-image--fit-fill .ve-image__img { object-fit: fill; }
+.ve-image--fit-none .ve-image__img { object-fit: none; }
+.ve-image--fit-scale-down .ve-image__img { object-fit: scale-down; }
+
+/* Rounded image */
+.ve-image--rounded {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.ve-image--rounded .ve-image__img {
+    border-radius: inherit;
+}
+
+/* ============================================
+   Spacer Block
+   ============================================ */
+.ve-spacer {
+    display: block;
+    width: 100%;
+}
+
+/* ============================================
+   Divider Block
+   ============================================ */
+.ve-divider {
+    border: none;
+    margin: 0;
+}
+
+.ve-divider--solid { border-top-style: solid; }
+.ve-divider--dashed { border-top-style: dashed; }
+.ve-divider--dotted { border-top-style: dotted; }
+.ve-divider--double { border-top-style: double; }
+
+.ve-divider--align-left { margin-right: auto; margin-left: 0; }
+.ve-divider--align-center { margin-left: auto; margin-right: auto; }
+.ve-divider--align-right { margin-left: auto; margin-right: 0; }
+
+/* ============================================
+   Utility Classes
+   ============================================ */
+
+/* Text alignment */
+.ve-text-left { text-align: left; }
+.ve-text-center { text-align: center; }
+.ve-text-right { text-align: right; }
+
+/* Display */
+.ve-hidden { display: none; }
+
+/* Responsive visibility */
+@media (max-width: 768px) {
+    .ve-hidden-mobile { display: none !important; }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .ve-hidden-tablet { display: none !important; }
+}
+
+@media (min-width: 1025px) {
+    .ve-hidden-desktop { display: none !important; }
+}
+
+/* Clearfix */
+.ve-clearfix::after {
+    content: '';
+    display: table;
+    clear: both;
+}

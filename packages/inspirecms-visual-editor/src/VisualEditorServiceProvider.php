@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace SolutionForest\InspireCmsVisualEditor;
 
-use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
+use Filament\Support\Assets\Js;
 use Filament\Support\Facades\FilamentAsset;
 use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
@@ -132,8 +132,8 @@ class VisualEditorServiceProvider extends PackageServiceProvider
     protected function registerAssets(): void
     {
         FilamentAsset::register([
-            Css::make('visual-editor-styles', __DIR__ . '/../resources/dist/visual-editor.css')->loadedOnRequest(),
-            AlpineComponent::make('visual-editor-canvas', __DIR__ . '/../resources/dist/visual-editor.js')->loadedOnRequest(),
+            Css::make('visual-editor-styles', __DIR__ . '/../resources/dist/visual-editor.css'),
+            Js::make('visual-editor-scripts', __DIR__ . '/../resources/dist/visual-editor.js'),
         ], 'solution-forest/inspirecms-visual-editor');
     }
 }

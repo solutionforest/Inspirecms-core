@@ -1,0 +1,1044 @@
+/**
+ * Visual Editor - Editor UI Styles
+ *
+ * Styles for the visual editor interface including:
+ * - Main editor layout
+ * - Block panel (left sidebar)
+ * - Canvas (center)
+ * - Settings panel (right sidebar)
+ * - Layers panel
+ * - Toolbar
+ */
+
+/* ============================================
+   CSS Variables
+   ============================================ */
+:root {
+    /* Editor colors */
+    --ve-primary: #6366f1;
+    --ve-primary-hover: #4f46e5;
+    --ve-primary-light: #e0e7ff;
+    --ve-secondary: #64748b;
+    --ve-success: #22c55e;
+    --ve-warning: #f59e0b;
+    --ve-danger: #ef4444;
+
+    /* UI colors */
+    --ve-bg: #f8fafc;
+    --ve-bg-panel: #ffffff;
+    --ve-bg-canvas: #f1f5f9;
+    --ve-bg-hover: #f1f5f9;
+    --ve-bg-active: #e2e8f0;
+    --ve-border: #e2e8f0;
+    --ve-border-focus: #6366f1;
+
+    /* Text colors */
+    --ve-text: #1e293b;
+    --ve-text-muted: #64748b;
+    --ve-text-light: #94a3b8;
+
+    /* Spacing */
+    --ve-panel-width: 280px;
+    --ve-toolbar-height: 48px;
+    --ve-spacing-xs: 4px;
+    --ve-spacing-sm: 8px;
+    --ve-spacing-md: 16px;
+    --ve-spacing-lg: 24px;
+    --ve-spacing-xl: 32px;
+
+    /* Transitions */
+    --ve-transition: 150ms ease;
+    --ve-transition-slow: 300ms ease;
+
+    /* Shadows */
+    --ve-shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --ve-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    --ve-shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --ve-shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+
+    /* Border radius */
+    --ve-radius-sm: 4px;
+    --ve-radius: 6px;
+    --ve-radius-md: 8px;
+    --ve-radius-lg: 12px;
+}
+
+/* Dark mode support */
+.dark {
+    --ve-bg: #0f172a;
+    --ve-bg-panel: #1e293b;
+    --ve-bg-canvas: #0f172a;
+    --ve-bg-hover: #334155;
+    --ve-bg-active: #475569;
+    --ve-border: #334155;
+    --ve-text: #f1f5f9;
+    --ve-text-muted: #94a3b8;
+    --ve-text-light: #64748b;
+}
+
+/* ============================================
+   Main Editor Layout
+   ============================================ */
+.ve-editor {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100%;
+    background: var(--ve-bg);
+    overflow: hidden;
+}
+
+.ve-editor__main {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+/* ============================================
+   Toolbar
+   ============================================ */
+.ve-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: var(--ve-toolbar-height);
+    padding: 0 var(--ve-spacing-md);
+    background: var(--ve-bg-panel);
+    border-bottom: 1px solid var(--ve-border);
+    gap: var(--ve-spacing-md);
+}
+
+.ve-toolbar__left,
+.ve-toolbar__center,
+.ve-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+}
+
+.ve-toolbar__center {
+    flex: 1;
+    justify-content: center;
+}
+
+.ve-toolbar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: none;
+    border-radius: var(--ve-radius);
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-toolbar__btn:hover {
+    background: var(--ve-bg-hover);
+    color: var(--ve-text);
+}
+
+.ve-toolbar__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.ve-toolbar__btn--active {
+    background: var(--ve-primary-light);
+    color: var(--ve-primary);
+}
+
+.ve-toolbar__btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.ve-toolbar__divider {
+    width: 1px;
+    height: 24px;
+    background: var(--ve-border);
+    margin: 0 var(--ve-spacing-xs);
+}
+
+/* Viewport switcher */
+.ve-viewport-switcher {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-xs);
+    padding: var(--ve-spacing-xs);
+    background: var(--ve-bg-hover);
+    border-radius: var(--ve-radius);
+}
+
+.ve-viewport-switcher__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--ve-radius-sm);
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-viewport-switcher__btn:hover {
+    color: var(--ve-text);
+}
+
+.ve-viewport-switcher__btn--active {
+    background: var(--ve-bg-panel);
+    color: var(--ve-primary);
+    box-shadow: var(--ve-shadow-sm);
+}
+
+.ve-viewport-switcher__btn svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* ============================================
+   Panels (Left & Right Sidebars)
+   ============================================ */
+.ve-panel {
+    display: flex;
+    flex-direction: column;
+    width: var(--ve-panel-width);
+    background: var(--ve-bg-panel);
+    border-right: 1px solid var(--ve-border);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.ve-panel--right {
+    border-right: none;
+    border-left: 1px solid var(--ve-border);
+}
+
+.ve-panel--collapsed {
+    width: 48px;
+}
+
+.ve-panel__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border-bottom: 1px solid var(--ve-border);
+    min-height: 44px;
+}
+
+.ve-panel__title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ve-text);
+    margin: 0;
+}
+
+.ve-panel__content {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.ve-panel__footer {
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border-top: 1px solid var(--ve-border);
+}
+
+/* Panel tabs */
+.ve-panel__tabs {
+    display: flex;
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-panel__tab {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ve-spacing-xs);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border: none;
+    background: transparent;
+    color: var(--ve-text-muted);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-panel__tab:hover {
+    color: var(--ve-text);
+    background: var(--ve-bg-hover);
+}
+
+.ve-panel__tab--active {
+    color: var(--ve-primary);
+    border-bottom: 2px solid var(--ve-primary);
+    margin-bottom: -1px;
+}
+
+.ve-panel__tab svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* ============================================
+   Block Panel (Left Sidebar)
+   ============================================ */
+.ve-block-panel__search {
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-block-panel__search-input {
+    width: 100%;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    background: var(--ve-bg);
+    color: var(--ve-text);
+    font-size: 13px;
+    transition: border-color var(--ve-transition);
+}
+
+.ve-block-panel__search-input:focus {
+    outline: none;
+    border-color: var(--ve-border-focus);
+}
+
+.ve-block-panel__search-input::placeholder {
+    color: var(--ve-text-light);
+}
+
+/* Block categories */
+.ve-block-category {
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-block-category:last-child {
+    border-bottom: none;
+}
+
+.ve-block-category__header {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    background: transparent;
+    border: none;
+    width: 100%;
+    color: var(--ve-text);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background var(--ve-transition);
+}
+
+.ve-block-category__header:hover {
+    background: var(--ve-bg-hover);
+}
+
+.ve-block-category__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--ve-text-muted);
+}
+
+.ve-block-category__chevron {
+    width: 14px;
+    height: 14px;
+    margin-left: auto;
+    color: var(--ve-text-light);
+    transition: transform var(--ve-transition);
+}
+
+.ve-block-category--collapsed .ve-block-category__chevron {
+    transform: rotate(-90deg);
+}
+
+.ve-block-category__blocks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--ve-spacing-sm);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    padding-top: 0;
+}
+
+.ve-block-category--collapsed .ve-block-category__blocks {
+    display: none;
+}
+
+/* Block items */
+.ve-block-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ve-spacing-xs);
+    padding: var(--ve-spacing-md) var(--ve-spacing-sm);
+    background: var(--ve-bg);
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    cursor: grab;
+    transition: all var(--ve-transition);
+}
+
+.ve-block-item:hover {
+    border-color: var(--ve-primary);
+    background: var(--ve-primary-light);
+}
+
+.ve-block-item:active {
+    cursor: grabbing;
+}
+
+.ve-block-item__icon {
+    width: 24px;
+    height: 24px;
+    color: var(--ve-text-muted);
+}
+
+.ve-block-item:hover .ve-block-item__icon {
+    color: var(--ve-primary);
+}
+
+.ve-block-item__label {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ve-text-muted);
+    text-align: center;
+    line-height: 1.2;
+}
+
+.ve-block-item:hover .ve-block-item__label {
+    color: var(--ve-primary);
+}
+
+/* ============================================
+   Canvas (Center)
+   ============================================ */
+.ve-canvas-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--ve-bg-canvas);
+}
+
+.ve-canvas-container {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: var(--ve-spacing-lg);
+    overflow: auto;
+}
+
+.ve-canvas {
+    width: 100%;
+    max-width: 1200px;
+    min-height: 600px;
+    background: var(--ve-bg-panel);
+    border-radius: var(--ve-radius-lg);
+    box-shadow: var(--ve-shadow-lg);
+    transition: max-width var(--ve-transition-slow);
+}
+
+/* Responsive canvas sizes */
+.ve-canvas--tablet {
+    max-width: 768px;
+}
+
+.ve-canvas--mobile {
+    max-width: 375px;
+}
+
+.ve-canvas__content {
+    min-height: 100%;
+    padding: var(--ve-spacing-md);
+}
+
+/* Empty canvas state */
+.ve-canvas__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    padding: var(--ve-spacing-xl);
+    text-align: center;
+}
+
+.ve-canvas__empty-icon {
+    width: 64px;
+    height: 64px;
+    color: var(--ve-text-light);
+    margin-bottom: var(--ve-spacing-md);
+}
+
+.ve-canvas__empty-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--ve-text);
+    margin: 0 0 var(--ve-spacing-sm);
+}
+
+.ve-canvas__empty-description {
+    font-size: 14px;
+    color: var(--ve-text-muted);
+    margin: 0;
+}
+
+/* ============================================
+   Block in Canvas (Editor Mode)
+   ============================================ */
+.ve-canvas-block {
+    position: relative;
+    min-height: 40px;
+    border: 1px dashed transparent;
+    border-radius: var(--ve-radius);
+    transition: all var(--ve-transition);
+}
+
+.ve-canvas-block:hover {
+    border-color: var(--ve-primary);
+}
+
+.ve-canvas-block--selected {
+    border-color: var(--ve-primary);
+    border-style: solid;
+    box-shadow: 0 0 0 2px var(--ve-primary-light);
+}
+
+.ve-canvas-block--dragging {
+    opacity: 0.5;
+}
+
+.ve-canvas-block--drop-target {
+    border-color: var(--ve-success);
+    background: rgba(34, 197, 94, 0.1);
+}
+
+/* Block label */
+.ve-canvas-block__label {
+    position: absolute;
+    top: -20px;
+    left: 0;
+    padding: 2px 6px;
+    background: var(--ve-primary);
+    color: white;
+    font-size: 10px;
+    font-weight: 500;
+    border-radius: var(--ve-radius-sm) var(--ve-radius-sm) 0 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ve-transition);
+}
+
+.ve-canvas-block:hover .ve-canvas-block__label,
+.ve-canvas-block--selected .ve-canvas-block__label {
+    opacity: 1;
+}
+
+/* Block actions */
+.ve-canvas-block__actions {
+    position: absolute;
+    top: -32px;
+    right: 0;
+    display: flex;
+    gap: 2px;
+    padding: 2px;
+    background: var(--ve-bg-panel);
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    box-shadow: var(--ve-shadow);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ve-transition);
+}
+
+.ve-canvas-block--selected .ve-canvas-block__actions {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.ve-canvas-block__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: none;
+    border-radius: var(--ve-radius-sm);
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-canvas-block__action:hover {
+    background: var(--ve-bg-hover);
+    color: var(--ve-text);
+}
+
+.ve-canvas-block__action--danger:hover {
+    background: #fef2f2;
+    color: var(--ve-danger);
+}
+
+.ve-canvas-block__action svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Container block placeholder */
+.ve-canvas-block__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 80px;
+    border: 2px dashed var(--ve-border);
+    border-radius: var(--ve-radius);
+    color: var(--ve-text-light);
+    font-size: 13px;
+}
+
+.ve-canvas-block__placeholder--active {
+    border-color: var(--ve-primary);
+    background: var(--ve-primary-light);
+    color: var(--ve-primary);
+}
+
+/* ============================================
+   Layers Panel
+   ============================================ */
+.ve-layers {
+    padding: var(--ve-spacing-sm) 0;
+}
+
+.ve-layer-item {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+    padding: var(--ve-spacing-xs) var(--ve-spacing-md);
+    cursor: pointer;
+    transition: background var(--ve-transition);
+}
+
+.ve-layer-item:hover {
+    background: var(--ve-bg-hover);
+}
+
+.ve-layer-item--selected {
+    background: var(--ve-primary-light);
+}
+
+.ve-layer-item--dragging {
+    opacity: 0.5;
+}
+
+.ve-layer-item__indent {
+    display: flex;
+    padding-left: calc(var(--depth, 0) * 16px);
+}
+
+.ve-layer-item__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+    transition: transform var(--ve-transition);
+}
+
+.ve-layer-item__toggle--collapsed {
+    transform: rotate(-90deg);
+}
+
+.ve-layer-item__toggle svg {
+    width: 12px;
+    height: 12px;
+}
+
+.ve-layer-item__icon {
+    width: 16px;
+    height: 16px;
+    color: var(--ve-text-muted);
+}
+
+.ve-layer-item--selected .ve-layer-item__icon {
+    color: var(--ve-primary);
+}
+
+.ve-layer-item__label {
+    flex: 1;
+    font-size: 13px;
+    color: var(--ve-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ve-layer-item--selected .ve-layer-item__label {
+    color: var(--ve-primary);
+    font-weight: 500;
+}
+
+.ve-layer-item__actions {
+    display: flex;
+    gap: 2px;
+    opacity: 0;
+    transition: opacity var(--ve-transition);
+}
+
+.ve-layer-item:hover .ve-layer-item__actions {
+    opacity: 1;
+}
+
+.ve-layer-item__action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: var(--ve-radius-sm);
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+}
+
+.ve-layer-item__action:hover {
+    background: var(--ve-bg-active);
+    color: var(--ve-text);
+}
+
+.ve-layer-item__action svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* ============================================
+   Settings Panel (Right Sidebar)
+   ============================================ */
+.ve-settings {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ve-settings__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ve-spacing-xl);
+    text-align: center;
+    color: var(--ve-text-muted);
+}
+
+.ve-settings__empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--ve-spacing-md);
+    opacity: 0.5;
+}
+
+.ve-settings__group {
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-settings__group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    background: var(--ve-bg-hover);
+}
+
+.ve-settings__group-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--ve-text-muted);
+}
+
+.ve-settings__group-content {
+    padding: var(--ve-spacing-md);
+}
+
+/* ============================================
+   AI Assistant Panel
+   ============================================ */
+.ve-ai-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ve-ai-panel__messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--ve-spacing-md);
+}
+
+.ve-ai-panel__input {
+    padding: var(--ve-spacing-md);
+    border-top: 1px solid var(--ve-border);
+}
+
+.ve-ai-prompt {
+    display: flex;
+    gap: var(--ve-spacing-sm);
+}
+
+.ve-ai-prompt__input {
+    flex: 1;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    background: var(--ve-bg);
+    color: var(--ve-text);
+    font-size: 13px;
+    resize: none;
+}
+
+.ve-ai-prompt__input:focus {
+    outline: none;
+    border-color: var(--ve-border-focus);
+}
+
+.ve-ai-prompt__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border: none;
+    border-radius: var(--ve-radius);
+    background: var(--ve-primary);
+    color: white;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background var(--ve-transition);
+}
+
+.ve-ai-prompt__btn:hover {
+    background: var(--ve-primary-hover);
+}
+
+.ve-ai-prompt__btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* AI message */
+.ve-ai-message {
+    padding: var(--ve-spacing-md);
+    margin-bottom: var(--ve-spacing-sm);
+    border-radius: var(--ve-radius);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.ve-ai-message--user {
+    background: var(--ve-primary-light);
+    color: var(--ve-primary);
+}
+
+.ve-ai-message--assistant {
+    background: var(--ve-bg);
+    color: var(--ve-text);
+}
+
+.ve-ai-message--loading {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+}
+
+.ve-ai-message__typing {
+    display: flex;
+    gap: 4px;
+}
+
+.ve-ai-message__typing span {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ve-text-muted);
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.ve-ai-message__typing span:nth-child(1) { animation-delay: 0s; }
+.ve-ai-message__typing span:nth-child(2) { animation-delay: 0.2s; }
+.ve-ai-message__typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typing {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-4px); }
+}
+
+/* ============================================
+   Drag & Drop
+   ============================================ */
+.ve-drag-ghost {
+    position: fixed;
+    z-index: 9999;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    background: var(--ve-primary);
+    color: white;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: var(--ve-radius);
+    box-shadow: var(--ve-shadow-lg);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.ve-drop-indicator {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--ve-primary);
+    pointer-events: none;
+    z-index: 100;
+}
+
+.ve-drop-indicator::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: -3px;
+    width: 8px;
+    height: 8px;
+    background: var(--ve-primary);
+    border-radius: 50%;
+}
+
+/* ============================================
+   Context Menu
+   ============================================ */
+.ve-context-menu {
+    position: fixed;
+    z-index: 9999;
+    min-width: 180px;
+    padding: var(--ve-spacing-xs) 0;
+    background: var(--ve-bg-panel);
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    box-shadow: var(--ve-shadow-lg);
+}
+
+.ve-context-menu__item {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    width: 100%;
+    border: none;
+    background: transparent;
+    color: var(--ve-text);
+    font-size: 13px;
+    text-align: left;
+    cursor: pointer;
+    transition: background var(--ve-transition);
+}
+
+.ve-context-menu__item:hover {
+    background: var(--ve-bg-hover);
+}
+
+.ve-context-menu__item--danger {
+    color: var(--ve-danger);
+}
+
+.ve-context-menu__item--danger:hover {
+    background: #fef2f2;
+}
+
+.ve-context-menu__item svg {
+    width: 14px;
+    height: 14px;
+    color: var(--ve-text-muted);
+}
+
+.ve-context-menu__item--danger svg {
+    color: var(--ve-danger);
+}
+
+.ve-context-menu__divider {
+    height: 1px;
+    margin: var(--ve-spacing-xs) 0;
+    background: var(--ve-border);
+}
+
+.ve-context-menu__shortcut {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ve-text-light);
+}
+
+/* ============================================
+   Utilities
+   ============================================ */
+.ve-scrollbar::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+.ve-scrollbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.ve-scrollbar::-webkit-scrollbar-thumb {
+    background: var(--ve-border);
+    border-radius: 3px;
+}
+
+.ve-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: var(--ve-text-light);
+}
+
+/* Loading spinner */
+.ve-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--ve-border);
+    border-top-color: var(--ve-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Fade transitions */
+.ve-fade-enter-active,
+.ve-fade-leave-active {
+    transition: opacity var(--ve-transition);
+}
+
+.ve-fade-enter-from,
+.ve-fade-leave-to {
+    opacity: 0;
+}
