@@ -71,12 +71,12 @@ interface BlockInterface
     /**
      * Render the block for the canvas/preview.
      */
-    public function render(array $props, array $children = [], array $styles = []): View|string;
+    public function render(array $props, array $children = [], array $styles = []): View | string;
 
     /**
      * Render the block for the frontend.
      */
-    public function renderFrontend(array $props, array $children = [], array $styles = []): View|string;
+    public function renderFrontend(array $props, array $children = [], array $styles = []): View | string;
 
     /**
      * Validate the block's properties.

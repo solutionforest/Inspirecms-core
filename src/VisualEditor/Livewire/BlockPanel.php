@@ -54,7 +54,7 @@ class BlockPanel extends Component
         return BlockTemplate::query()
             ->where(function ($query) {
                 $query->where('is_public', true)
-                      ->orWhere('created_by', auth()->id());
+                    ->orWhere('created_by', auth()->id());
             })
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', "%{$this->search}%");

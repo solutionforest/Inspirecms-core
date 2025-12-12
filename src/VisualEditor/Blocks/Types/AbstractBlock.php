@@ -294,7 +294,7 @@ abstract class AbstractBlock implements BlockInterface
         return $this->getBaseStyleSchema();
     }
 
-    public function render(array $props, array $children = [], array $styles = []): View|string
+    public function render(array $props, array $children = [], array $styles = []): View | string
     {
         $viewName = $this->getViewName();
 
@@ -311,7 +311,7 @@ abstract class AbstractBlock implements BlockInterface
         return $this->renderDefault($props, $children, $styles, true);
     }
 
-    public function renderFrontend(array $props, array $children = [], array $styles = []): View|string
+    public function renderFrontend(array $props, array $children = [], array $styles = []): View | string
     {
         $viewName = $this->getFrontendViewName();
 

@@ -82,7 +82,7 @@ class BlockRegistry
      *
      * @return Collection<string, BlockInterface>
      */
-    public static function byCategory(BlockCategory|string $category): Collection
+    public static function byCategory(BlockCategory | string $category): Collection
     {
         $categoryValue = $category instanceof BlockCategory ? $category->value : $category;
 
