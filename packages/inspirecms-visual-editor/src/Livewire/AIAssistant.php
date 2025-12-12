@@ -113,7 +113,7 @@ class AIAssistant extends Component
             ]);
 
             if ($result['success']) {
-                $this->dispatch('apply-ai-layout', layoutData: $result['layout'])->to("visual-editor");
+                $this->dispatch('apply-ai-layout', layoutData: $result['layout'])->to('visual-editor');
 
                 Notification::make()
                     ->title('Layout generated successfully')
@@ -190,7 +190,7 @@ class AIAssistant extends Component
 
     public function applySuggestion(array $suggestion): void
     {
-        $this->dispatch('add-block-data', blockData: $suggestion['blockData'])->to("visual-editor");
+        $this->dispatch('add-block-data', blockData: $suggestion['blockData'])->to('visual-editor');
 
         Notification::make()
             ->title('Block added')
@@ -203,7 +203,7 @@ class AIAssistant extends Component
         $item = AIGenerationHistory::find($historyId);
 
         if ($item && isset($item->result['layout'])) {
-            $this->dispatch('apply-ai-layout', layoutData: $item->result['layout'])->to("visual-editor");
+            $this->dispatch('apply-ai-layout', layoutData: $item->result['layout'])->to('visual-editor');
 
             Notification::make()
                 ->title('Layout applied from history')

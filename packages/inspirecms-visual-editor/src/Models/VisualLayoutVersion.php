@@ -7,7 +7,6 @@ namespace SolutionForest\InspireCmsVisualEditor\Models;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use SolutionForest\InspireCms\InspireCmsConfig;
 
 class VisualLayoutVersion extends Model
 {

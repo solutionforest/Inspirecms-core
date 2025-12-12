@@ -104,7 +104,7 @@ class SettingsPanel extends Component implements HasForms
         $this->dispatch('update-block', blockId: $this->blockId, updates: [
             'props' => $this->formData['props'] ?? [],
             'styles' => $this->formData['styles'] ?? [],
-        ])->to("visual-editor");
+        ])->to('visual-editor');
     }
 
     public function deleteBlock(): void
@@ -113,7 +113,7 @@ class SettingsPanel extends Component implements HasForms
             return;
         }
 
-        $this->dispatch('delete-block', blockId: $this->blockId)->to("visual-editor");
+        $this->dispatch('delete-block', blockId: $this->blockId)->to('visual-editor');
         $this->blockId = null;
         $this->blockData = null;
         $this->blockType = null;
@@ -126,7 +126,7 @@ class SettingsPanel extends Component implements HasForms
             return;
         }
 
-        $this->dispatch('duplicate-block', blockId: $this->blockId)->to("visual-editor");
+        $this->dispatch('duplicate-block', blockId: $this->blockId)->to('visual-editor');
     }
 
     public function render(): View

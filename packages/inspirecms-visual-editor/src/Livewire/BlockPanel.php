@@ -75,7 +75,7 @@ class BlockPanel extends Component
 
     public function addBlock(string $type): void
     {
-        $this->dispatch('add-block', type: $type)->to("visual-editor");
+        $this->dispatch('add-block', type: $type)->to('visual-editor');
     }
 
     public function addTemplate(string $templateId): void
@@ -84,7 +84,7 @@ class BlockPanel extends Component
 
         if ($template) {
             $blockData = $template->createInstance();
-            $this->dispatch('add-block-data', blockData: $blockData)->to("visual-editor");
+            $this->dispatch('add-block-data', blockData: $blockData)->to('visual-editor');
         }
     }
 

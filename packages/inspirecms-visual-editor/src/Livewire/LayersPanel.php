@@ -82,28 +82,28 @@ class LayersPanel extends Component
     public function selectBlock(string $blockId): void
     {
         $this->selectedBlockId = $blockId;
-        $this->dispatch('select-block', blockId: $blockId)->to("visual-editor");
+        $this->dispatch('select-block', blockId: $blockId)->to('visual-editor');
     }
 
     public function hoverBlock(?string $blockId): void
     {
         $this->hoveredBlockId = $blockId;
-        $this->dispatch('hover-block', blockId: $blockId)->to("visual-editor");
+        $this->dispatch('hover-block', blockId: $blockId)->to('visual-editor');
     }
 
     public function deleteBlock(string $blockId): void
     {
-        $this->dispatch('delete-block', blockId: $blockId)->to("visual-editor");
+        $this->dispatch('delete-block', blockId: $blockId)->to('visual-editor');
     }
 
     public function duplicateBlock(string $blockId): void
     {
-        $this->dispatch('duplicate-block', blockId: $blockId)->to("visual-editor");
+        $this->dispatch('duplicate-block', blockId: $blockId)->to('visual-editor');
     }
 
     public function moveBlock(string $blockId, string $newParentId, int $position): void
     {
-        $this->dispatch('move-block', blockId: $blockId, newParentId: $newParentId, position: $position)->to("visual-editor");
+        $this->dispatch('move-block', blockId: $blockId, newParentId: $newParentId, position: $position)->to('visual-editor');
     }
 
     public function render(): View

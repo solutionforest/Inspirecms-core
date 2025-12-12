@@ -9,7 +9,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
 
 class VisualLayout extends Model
