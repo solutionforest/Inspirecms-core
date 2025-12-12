@@ -475,4 +475,68 @@ return [
         'available_locales' => ['en', 'fr', 'zh_CN', 'zh_TW', 'es', 'ja', 'de'],
         'user_preferred_locales' => ['en', 'zh_CN', 'zh_TW'],
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Visual Editor Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Settings for the visual page builder with AI-powered layout generation.
+    |
+    */
+    'visual_editor' => [
+
+        /**
+         * Whether the visual editor feature is enabled
+         */
+        'enabled' => true,
+
+        /**
+         * AI Provider Configuration
+         *
+         * Configure AI providers for layout generation.
+         * Supported providers: 'openai', 'anthropic'
+         */
+        'ai' => [
+            'provider' => env('INSPIRECMS_AI_PROVIDER', 'anthropic'),
+
+            'openai' => [
+                'api_key' => env('OPENAI_API_KEY'),
+                'base_url' => env('OPENAI_BASE_URL', 'https://api.openai.com/v1'),
+                'model' => env('OPENAI_MODEL', 'gpt-4-turbo-preview'),
+            ],
+
+            'anthropic' => [
+                'api_key' => env('ANTHROPIC_API_KEY'),
+                'base_url' => env('ANTHROPIC_BASE_URL', 'https://api.anthropic.com/v1'),
+                'model' => env('ANTHROPIC_MODEL', 'claude-3-sonnet-20240229'),
+            ],
+        ],
+
+        /**
+         * Additional custom block types to register
+         *
+         * Add your custom block classes here.
+         * Each class must implement BlockInterface.
+         */
+        'blocks' => [
+            // \App\VisualEditor\Blocks\CustomBlock::class,
+        ],
+
+        /**
+         * Block templates storage
+         */
+        'block_templates' => [
+            'disk' => 'public',
+            'directory' => 'visual-editor/templates',
+        ],
+
+        /**
+         * Media storage for visual editor
+         */
+        'media' => [
+            'disk' => 'public',
+            'directory' => 'visual-editor',
+        ],
+    ],
 ];

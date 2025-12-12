@@ -87,6 +87,7 @@ use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
+use SolutionForest\InspireCms\VisualEditor\VisualEditorServiceProvider;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 use Throwable;
@@ -134,6 +135,11 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         // Register support package first
         $this->app->register(InspireCmsSupportServiceProvider::class);
+
+        // Register Visual Editor if enabled
+        if (InspireCmsConfig::get('visual_editor.enabled', true)) {
+            $this->app->register(VisualEditorServiceProvider::class);
+        }
     }
 
     public function packageRegistered(): void
@@ -341,6 +347,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'update_sessions_table', // uuid enhance
             'update_inspirecms-cms-users_table',
             'hotfix_inspirecms_users_table',
+            'create_visual_editor_tables', // visual editor tables
         ];
     }
 
