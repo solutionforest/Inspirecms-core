@@ -7,12 +7,14 @@ namespace SolutionForest\InspireCmsVisualEditor;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Css;
 use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Blade;
 use Livewire\Livewire;
 use SolutionForest\InspireCmsVisualEditor\AI\Contracts\AIProviderInterface;
 use SolutionForest\InspireCmsVisualEditor\AI\Providers\AnthropicProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Providers\OpenAIProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Services\LayoutGeneratorService;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
+use SolutionForest\InspireCmsVisualEditor\Rendering\BlockRenderer;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
@@ -49,6 +51,9 @@ class VisualEditorServiceProvider extends PackageServiceProvider
 
     public function packageRegistered(): void
     {
+        // Register Block Renderer
+        $this->app->singleton(BlockRenderer::class);
+
         // Register AI providers
         $this->app->singleton(OpenAIProvider::class);
         $this->app->singleton(AnthropicProvider::class);
@@ -73,6 +78,20 @@ class VisualEditorServiceProvider extends PackageServiceProvider
         $this->registerBlocks();
         $this->registerLivewireComponents();
         $this->registerAssets();
+        $this->registerBladeDirectives();
+    }
+
+    protected function registerBladeDirectives(): void
+    {
+        // @visualLayout($layoutData) - Render a complete layout
+        Blade::directive('visualLayout', function ($expression) {
+            return "<?php echo render_visual_layout({$expression}); ?>";
+        });
+
+        // @visualBlock($blockData) - Render a single block
+        Blade::directive('visualBlock', function ($expression) {
+            return "<?php echo render_visual_block({$expression}); ?>";
+        });
     }
 
     protected function registerBlocks(): void

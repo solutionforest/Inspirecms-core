@@ -36,6 +36,9 @@
         "pestphp/pest": "^3.0"
     },
     "autoload": {
+        "files": [
+            "src/helpers.php"
+        ],
         "psr-4": {
             "SolutionForest\\InspireCmsVisualEditor\\": "src/"
         }
@@ -58,7 +61,10 @@
         "laravel": {
             "providers": [
                 "SolutionForest\\InspireCmsVisualEditor\\VisualEditorServiceProvider"
-            ]
+            ],
+            "aliases": {
+                "VisualEditor": "SolutionForest\\InspireCmsVisualEditor\\Facades\\VisualEditor"
+            }
         }
     },
     "minimum-stability": "stable",
