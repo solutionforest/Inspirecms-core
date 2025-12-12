@@ -136,4 +136,51 @@ class BlockTemplate extends Model
             'created_by' => auth()->id(),
         ]);
     }
+
+    /**
+     * Get available template categories.
+     */
+    public static function getCategories(): array
+    {
+        return [
+            'custom' => __('visual-editor::visual-editor.templates.categories.custom'),
+            'layout' => __('visual-editor::visual-editor.templates.categories.layout'),
+            'content' => __('visual-editor::visual-editor.templates.categories.content'),
+            'cta' => __('visual-editor::visual-editor.templates.categories.cta'),
+            'hero' => __('visual-editor::visual-editor.templates.categories.hero'),
+            'feature' => __('visual-editor::visual-editor.templates.categories.feature'),
+            'testimonial' => __('visual-editor::visual-editor.templates.categories.testimonial'),
+            'pricing' => __('visual-editor::visual-editor.templates.categories.pricing'),
+            'team' => __('visual-editor::visual-editor.templates.categories.team'),
+            'footer' => __('visual-editor::visual-editor.templates.categories.footer'),
+        ];
+    }
+
+    /**
+     * Scope to templates accessible by a user.
+     */
+    public function scopeAccessibleBy($query, ?int $userId = null)
+    {
+        return $query->where(function ($q) use ($userId) {
+            $q->where('is_public', true);
+            if ($userId) {
+                $q->orWhere('created_by', $userId);
+            }
+        });
+    }
+
+    /**
+     * Scope search by name or description.
+     */
+    public function scopeSearch($query, ?string $search)
+    {
+        if (empty($search)) {
+            return $query;
+        }
+
+        return $query->where(function ($q) use ($search) {
+            $q->where('name', 'like', "%{$search}%")
+              ->orWhere('description', 'like', "%{$search}%");
+        });
+    }
 }

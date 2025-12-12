@@ -1042,3 +1042,455 @@
 .ve-fade-leave-to {
     opacity: 0;
 }
+
+/* ============================================
+   Templates Panel
+   ============================================ */
+.ve-templates-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+.ve-templates-panel__search {
+    padding: var(--ve-spacing-md);
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-templates-panel__categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ve-spacing-xs);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-category-chip {
+    padding: var(--ve-spacing-xs) var(--ve-spacing-sm);
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius-pill);
+    background: var(--ve-bg);
+    color: var(--ve-text-muted);
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-category-chip:hover {
+    border-color: var(--ve-border-focus);
+    color: var(--ve-text);
+}
+
+.ve-category-chip--active {
+    background: var(--ve-primary);
+    border-color: var(--ve-primary);
+    color: white;
+}
+
+.ve-templates-panel__grid {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--ve-spacing-md);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--ve-spacing-md);
+    align-content: start;
+}
+
+.ve-templates-panel__empty {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ve-spacing-xl);
+    text-align: center;
+    color: var(--ve-text-muted);
+}
+
+.ve-templates-panel__empty svg {
+    margin-bottom: var(--ve-spacing-md);
+    opacity: 0.5;
+}
+
+.ve-templates-panel__empty p {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: var(--ve-spacing-xs);
+}
+
+.ve-templates-panel__empty-hint {
+    font-size: 12px;
+    color: var(--ve-text-light);
+}
+
+/* Template Card */
+.ve-template-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    background: var(--ve-bg);
+    overflow: hidden;
+    transition: all var(--ve-transition);
+}
+
+.ve-template-card:hover {
+    border-color: var(--ve-border-focus);
+    box-shadow: var(--ve-shadow);
+}
+
+.ve-template-card__thumbnail {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background: var(--ve-bg-hover);
+    overflow: hidden;
+}
+
+.ve-template-card__thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.ve-template-card__placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    color: var(--ve-text-light);
+}
+
+.ve-template-card__badges {
+    position: absolute;
+    top: var(--ve-spacing-xs);
+    left: var(--ve-spacing-xs);
+    display: flex;
+    gap: var(--ve-spacing-xs);
+}
+
+.ve-badge {
+    padding: 2px 6px;
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-radius: var(--ve-radius-sm);
+}
+
+.ve-badge--info {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.ve-badge--success {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.ve-template-card__overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ve-spacing-sm);
+    background: rgba(0, 0, 0, 0.6);
+    opacity: 0;
+    transition: opacity var(--ve-transition);
+}
+
+.ve-template-card:hover .ve-template-card__overlay {
+    opacity: 1;
+}
+
+.ve-template-card__actions {
+    display: flex;
+    gap: var(--ve-spacing-xs);
+}
+
+.ve-template-card__info {
+    padding: var(--ve-spacing-sm);
+}
+
+.ve-template-card__name {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ve-text);
+    margin: 0 0 var(--ve-spacing-xs) 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ve-template-card__description {
+    font-size: 11px;
+    color: var(--ve-text-muted);
+    margin: 0 0 var(--ve-spacing-xs) 0;
+    line-height: 1.4;
+}
+
+.ve-template-card__meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    color: var(--ve-text-light);
+}
+
+.ve-template-card__type {
+    text-transform: capitalize;
+}
+
+/* Buttons */
+.ve-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ve-spacing-xs);
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    font-size: 13px;
+    font-weight: 500;
+    border: 1px solid transparent;
+    border-radius: var(--ve-radius);
+    cursor: pointer;
+    transition: all var(--ve-transition);
+}
+
+.ve-btn--sm {
+    padding: var(--ve-spacing-xs) var(--ve-spacing-sm);
+    font-size: 12px;
+}
+
+.ve-btn--primary {
+    background: var(--ve-primary);
+    color: white;
+}
+
+.ve-btn--primary:hover {
+    background: var(--ve-primary-hover);
+}
+
+.ve-btn--ghost {
+    background: transparent;
+    color: white;
+}
+
+.ve-btn--ghost:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.ve-btn--icon {
+    padding: var(--ve-spacing-xs);
+    width: 28px;
+    height: 28px;
+}
+
+.ve-btn--danger {
+    color: var(--ve-danger);
+}
+
+.ve-btn--danger:hover {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+/* Modal */
+.ve-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ve-spacing-md);
+}
+
+.ve-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.ve-modal__content {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    max-height: 90vh;
+    background: var(--ve-bg-panel);
+    border-radius: var(--ve-radius-lg);
+    box-shadow: var(--ve-shadow-lg);
+    display: flex;
+    flex-direction: column;
+}
+
+.ve-modal--lg .ve-modal__content {
+    max-width: 640px;
+}
+
+.ve-modal__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--ve-spacing-md) var(--ve-spacing-lg);
+    border-bottom: 1px solid var(--ve-border);
+}
+
+.ve-modal__header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.ve-modal__close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: var(--ve-radius);
+    background: transparent;
+    color: var(--ve-text-muted);
+    cursor: pointer;
+}
+
+.ve-modal__close:hover {
+    background: var(--ve-bg-hover);
+    color: var(--ve-text);
+}
+
+.ve-modal__body {
+    flex: 1;
+    overflow-y: auto;
+    padding: var(--ve-spacing-lg);
+}
+
+.ve-modal__footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--ve-spacing-sm);
+    padding: var(--ve-spacing-md) var(--ve-spacing-lg);
+    border-top: 1px solid var(--ve-border);
+}
+
+/* Form Elements */
+.ve-form-group {
+    margin-bottom: var(--ve-spacing-md);
+}
+
+.ve-label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ve-text);
+    margin-bottom: var(--ve-spacing-xs);
+}
+
+.ve-input,
+.ve-textarea,
+.ve-select {
+    width: 100%;
+    padding: var(--ve-spacing-sm) var(--ve-spacing-md);
+    font-size: 13px;
+    border: 1px solid var(--ve-border);
+    border-radius: var(--ve-radius);
+    background: var(--ve-bg);
+    color: var(--ve-text);
+    transition: border-color var(--ve-transition);
+}
+
+.ve-input:focus,
+.ve-textarea:focus,
+.ve-select:focus {
+    outline: none;
+    border-color: var(--ve-border-focus);
+}
+
+.ve-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.ve-select {
+    cursor: pointer;
+}
+
+.ve-error {
+    display: block;
+    font-size: 12px;
+    color: var(--ve-danger);
+    margin-top: var(--ve-spacing-xs);
+}
+
+.ve-form-row {
+    display: flex;
+    gap: var(--ve-spacing-lg);
+    margin-bottom: var(--ve-spacing-md);
+}
+
+.ve-checkbox {
+    display: flex;
+    align-items: center;
+    gap: var(--ve-spacing-sm);
+    font-size: 13px;
+    color: var(--ve-text);
+    cursor: pointer;
+}
+
+.ve-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--ve-primary);
+    cursor: pointer;
+}
+
+/* Preview */
+.ve-preview {
+    background: var(--ve-bg-hover);
+    border-radius: var(--ve-radius);
+    overflow: hidden;
+    margin-bottom: var(--ve-spacing-md);
+}
+
+.ve-preview__image {
+    width: 100%;
+    height: auto;
+}
+
+.ve-preview__placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--ve-spacing-xl);
+    color: var(--ve-text-light);
+}
+
+.ve-preview__placeholder p {
+    margin-top: var(--ve-spacing-sm);
+    font-size: 13px;
+}
+
+.ve-preview__details {
+    font-size: 13px;
+}
+
+.ve-preview__description {
+    color: var(--ve-text);
+    margin-bottom: var(--ve-spacing-md);
+    line-height: 1.5;
+}
+
+.ve-preview__meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ve-spacing-xs);
+    color: var(--ve-text-muted);
+}
+
+.ve-preview__meta strong {
+    color: var(--ve-text);
+}

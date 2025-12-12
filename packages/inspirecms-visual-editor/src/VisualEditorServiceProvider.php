@@ -14,20 +14,27 @@ use SolutionForest\InspireCmsVisualEditor\AI\Providers\AnthropicProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Providers\OpenAIProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Services\LayoutGeneratorService;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\AccordionBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\AccordionItemBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\DividerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\EmbedBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ImageBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SectionBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SpacerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TabPanelBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TabsBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\VideoBlock;
 use SolutionForest\InspireCmsVisualEditor\Livewire\AIAssistant;
 use SolutionForest\InspireCmsVisualEditor\Livewire\BlockPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\LayersPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\SettingsPanel;
+use SolutionForest\InspireCmsVisualEditor\Livewire\TemplatesPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\VisualEditor;
 use SolutionForest\InspireCmsVisualEditor\Rendering\BlockRenderer;
 use Spatie\LaravelPackageTools\Package;
@@ -111,6 +118,16 @@ class VisualEditorServiceProvider extends PackageServiceProvider
             TextBlock::class,
             ButtonBlock::class,
             ImageBlock::class,
+
+            // Media blocks
+            VideoBlock::class,
+            EmbedBlock::class,
+
+            // Interactive blocks
+            TabsBlock::class,
+            TabPanelBlock::class,
+            AccordionBlock::class,
+            AccordionItemBlock::class,
         ]);
 
         // Allow additional blocks to be registered via config
@@ -127,6 +144,7 @@ class VisualEditorServiceProvider extends PackageServiceProvider
         Livewire::component('visual-editor-settings-panel', SettingsPanel::class);
         Livewire::component('visual-editor-layers-panel', LayersPanel::class);
         Livewire::component('visual-editor-ai-assistant', AIAssistant::class);
+        Livewire::component('visual-editor-templates-panel', TemplatesPanel::class);
     }
 
     protected function registerAssets(): void
