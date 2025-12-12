@@ -2,9 +2,9 @@
 
 use Livewire\Livewire;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Livewire\SettingsPanel;
 
 beforeEach(function () {

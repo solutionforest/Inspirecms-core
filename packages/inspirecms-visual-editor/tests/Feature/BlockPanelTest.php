@@ -2,11 +2,11 @@
 
 use Livewire\Livewire;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SpacerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
 use SolutionForest\InspireCmsVisualEditor\Livewire\BlockPanel;
 
 beforeEach(function () {

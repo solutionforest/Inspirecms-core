@@ -2,11 +2,11 @@
 
 use Livewire\Livewire;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
 use SolutionForest\InspireCmsVisualEditor\Livewire\VisualEditor;
 
 beforeEach(function () {
@@ -234,7 +234,7 @@ describe('VisualEditor Livewire Component', function () {
             ->call('addBlock', 'heading', null, 'inside')
             ->call('undo')
             ->call('redo')
-            ->assertSet('layoutData', fn ($data) => !empty($data));
+            ->assertSet('layoutData', fn ($data) => ! empty($data));
     });
 
     it('dispatches events on block operations', function () {

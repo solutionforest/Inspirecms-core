@@ -86,12 +86,12 @@ class TemplatesPanel extends Component
     #[Computed]
     public function previewTemplate(): ?array
     {
-        if (!$this->previewTemplateId) {
+        if (! $this->previewTemplateId) {
             return null;
         }
 
         $template = BlockTemplate::find($this->previewTemplateId);
-        if (!$template) {
+        if (! $template) {
             return null;
         }
 
