@@ -2,21 +2,21 @@
 
 use SolutionForest\InspireCmsVisualEditor\Blocks\Contracts\BlockInterface;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Contracts\ContainerBlockInterface;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SectionBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ImageBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SpacerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\DividerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ImageBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SectionBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SpacerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
 use SolutionForest\InspireCmsVisualEditor\Enums\BlockCategory;
 
 describe('Layout Blocks', function () {
     describe('ContainerBlock', function () {
-        beforeEach(fn () => $this->block = new ContainerBlock());
+        beforeEach(fn () => $this->block = new ContainerBlock);
 
         it('implements BlockInterface', function () {
             expect($this->block)->toBeInstanceOf(BlockInterface::class);
@@ -58,7 +58,7 @@ describe('Layout Blocks', function () {
     });
 
     describe('SectionBlock', function () {
-        beforeEach(fn () => $this->block = new SectionBlock());
+        beforeEach(fn () => $this->block = new SectionBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('section');
@@ -74,7 +74,7 @@ describe('Layout Blocks', function () {
     });
 
     describe('GridBlock', function () {
-        beforeEach(fn () => $this->block = new GridBlock());
+        beforeEach(fn () => $this->block = new GridBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('grid');
@@ -95,7 +95,7 @@ describe('Layout Blocks', function () {
     });
 
     describe('ColumnBlock', function () {
-        beforeEach(fn () => $this->block = new ColumnBlock());
+        beforeEach(fn () => $this->block = new ColumnBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('column');
@@ -113,7 +113,7 @@ describe('Layout Blocks', function () {
 
 describe('Basic Blocks', function () {
     describe('HeadingBlock', function () {
-        beforeEach(fn () => $this->block = new HeadingBlock());
+        beforeEach(fn () => $this->block = new HeadingBlock);
 
         it('implements BlockInterface', function () {
             expect($this->block)->toBeInstanceOf(BlockInterface::class);
@@ -146,7 +146,7 @@ describe('Basic Blocks', function () {
     });
 
     describe('TextBlock', function () {
-        beforeEach(fn () => $this->block = new TextBlock());
+        beforeEach(fn () => $this->block = new TextBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('text');
@@ -169,7 +169,7 @@ describe('Basic Blocks', function () {
     });
 
     describe('ButtonBlock', function () {
-        beforeEach(fn () => $this->block = new ButtonBlock());
+        beforeEach(fn () => $this->block = new ButtonBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('button');
@@ -198,7 +198,7 @@ describe('Basic Blocks', function () {
     });
 
     describe('ImageBlock', function () {
-        beforeEach(fn () => $this->block = new ImageBlock());
+        beforeEach(fn () => $this->block = new ImageBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('image');
@@ -224,7 +224,7 @@ describe('Basic Blocks', function () {
 
 describe('Utility Blocks', function () {
     describe('SpacerBlock', function () {
-        beforeEach(fn () => $this->block = new SpacerBlock());
+        beforeEach(fn () => $this->block = new SpacerBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('spacer');
@@ -247,7 +247,7 @@ describe('Utility Blocks', function () {
     });
 
     describe('DividerBlock', function () {
-        beforeEach(fn () => $this->block = new DividerBlock());
+        beforeEach(fn () => $this->block = new DividerBlock);
 
         it('has correct type', function () {
             expect($this->block->getType())->toBe('divider');
@@ -265,7 +265,7 @@ describe('Utility Blocks', function () {
 
 describe('Block prop validation', function () {
     it('validates required props', function () {
-        $block = new HeadingBlock();
+        $block = new HeadingBlock;
         $errors = $block->validateProps([]);
 
         // Content should be required
@@ -273,7 +273,7 @@ describe('Block prop validation', function () {
     });
 
     it('passes validation with valid props', function () {
-        $block = new HeadingBlock();
+        $block = new HeadingBlock;
         $errors = $block->validateProps([
             'content' => 'Valid Heading',
             'level' => 2,

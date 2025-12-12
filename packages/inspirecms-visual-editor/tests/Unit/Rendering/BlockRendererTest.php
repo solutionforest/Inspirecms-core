@@ -2,16 +2,16 @@
 
 use Illuminate\Support\HtmlString;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\DividerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\GridBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\HeadingBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ImageBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SectionBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\SpacerBlock;
-use SolutionForest\InspireCmsVisualEditor\Blocks\Types\DividerBlock;
+use SolutionForest\InspireCmsVisualEditor\Blocks\Types\TextBlock;
 use SolutionForest\InspireCmsVisualEditor\Rendering\BlockRenderer;
 
 beforeEach(function () {
@@ -29,7 +29,7 @@ beforeEach(function () {
         DividerBlock::class,
     ]);
 
-    $this->renderer = new BlockRenderer();
+    $this->renderer = new BlockRenderer;
 });
 
 describe('BlockRenderer', function () {
