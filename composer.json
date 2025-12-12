@@ -106,6 +106,15 @@
                     "solution-forest/inspirecms-support": "dev-main"
                 }
             }
+        },
+        {
+            "type": "path",
+            "url": "./packages/inspirecms-api",
+            "options": {
+                "versions": {
+                    "solution-forest/inspirecms-api": "dev-main"
+                }
+            }
         }
     ]
 }
