@@ -1,0 +1,66 @@
+{
+    "name": "solution-forest/inspirecms-visual-editor",
+    "description": "Visual page builder with AI-powered layout generation for InspireCMS. Build beautiful pages with drag-and-drop blocks, similar to Elementor, Builder.io, and Webflow.",
+    "keywords": [
+        "solution-forest",
+        "laravel",
+        "filament",
+        "inspirecms",
+        "visual-editor",
+        "page-builder",
+        "drag-drop",
+        "ai",
+        "layout-generator"
+    ],
+    "homepage": "https://github.com/solutionforest/inspirecms-visual-editor",
+    "support": {
+        "issues": "https://github.com/solutionforest/inspirecms-visual-editor/issues",
+        "source": "https://github.com/solutionforest/inspirecms-visual-editor"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Solution Forest",
+            "email": "info@solutionforest.net"
+        }
+    ],
+    "require": {
+        "php": ">=8.2",
+        "filament/filament": "^3.3",
+        "laravel/framework": "^11.0|^12.0",
+        "livewire/livewire": "^3.0",
+        "spatie/laravel-package-tools": "^1.15.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "SolutionForest\\InspireCmsVisualEditor\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SolutionForest\\InspireCmsVisualEditor\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "pest"
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "pestphp/pest-plugin": true
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SolutionForest\\InspireCmsVisualEditor\\VisualEditorServiceProvider"
+            ]
+        }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

@@ -30,6 +30,7 @@
         "phiki/phiki": "^1.1",
         "solution-forest/filament-field-group": "^2.0",
         "solution-forest/inspirecms-support": "self.version",
+        "solution-forest/inspirecms-visual-editor": "self.version",
         "spatie/laravel-package-tools": "^1.15.0",
         "spatie/laravel-permission": "^6.0"
     },
@@ -104,6 +105,15 @@
             "options": {
                 "versions": {
                     "solution-forest/inspirecms-support": "dev-main"
+                }
+            }
+        },
+        {
+            "type": "path",
+            "url": "packages/inspirecms-visual-editor",
+            "options": {
+                "versions": {
+                    "solution-forest/inspirecms-visual-editor": "dev-main"
                 }
             }
         }
