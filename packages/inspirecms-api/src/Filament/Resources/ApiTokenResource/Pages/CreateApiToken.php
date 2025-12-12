@@ -5,7 +5,6 @@ namespace SolutionForest\InspireCmsApi\Filament\Resources\ApiTokenResource\Pages
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord;
 use SolutionForest\InspireCmsApi\Filament\Resources\ApiTokenResource;
-use SolutionForest\InspireCmsApi\Models\ApiToken;
 
 class CreateApiToken extends CreateRecord
 {

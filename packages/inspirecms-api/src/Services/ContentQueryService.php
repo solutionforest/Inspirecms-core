@@ -178,20 +178,25 @@ class ContentQueryService
         switch ($sqlOperator) {
             case 'like':
                 $query->where($field, 'like', "%{$value}%");
+
                 break;
             case 'in':
                 $values = is_array($value) ? $value : explode(',', $value);
                 $query->whereIn($field, $values);
+
                 break;
             case 'not_in':
                 $values = is_array($value) ? $value : explode(',', $value);
                 $query->whereNotIn($field, $values);
+
                 break;
             case 'null':
                 $query->whereNull($field);
+
                 break;
             case 'not_null':
                 $query->whereNotNull($field);
+
                 break;
             default:
                 $query->where($field, $sqlOperator, $value);

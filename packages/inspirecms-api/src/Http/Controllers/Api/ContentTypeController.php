@@ -25,7 +25,7 @@ class ContentTypeController extends Controller
      *
      * GET /api/v1/{type}
      */
-    public function index(Request $request, string $type): JsonResponse|ContentCollection
+    public function index(Request $request, string $type): JsonResponse | ContentCollection
     {
         $documentType = $this->resolveDocumentType($type);
 
@@ -48,7 +48,7 @@ class ContentTypeController extends Controller
      *
      * GET /api/v1/{type}/{id}
      */
-    public function show(Request $request, string $type, string $id): JsonResponse|ContentResource
+    public function show(Request $request, string $type, string $id): JsonResponse | ContentResource
     {
         $documentType = $this->resolveDocumentType($type);
 
@@ -79,7 +79,7 @@ class ContentTypeController extends Controller
      *
      * GET /api/v1/{type}/slug/{slug}
      */
-    public function showBySlug(Request $request, string $type, string $slug): JsonResponse|ContentResource
+    public function showBySlug(Request $request, string $type, string $slug): JsonResponse | ContentResource
     {
         $documentType = $this->resolveDocumentType($type);
 
@@ -110,7 +110,7 @@ class ContentTypeController extends Controller
      *
      * POST /api/v1/{type}
      */
-    public function store(Request $request, string $type): JsonResponse|ContentResource
+    public function store(Request $request, string $type): JsonResponse | ContentResource
     {
         $documentType = $this->resolveDocumentType($type);
 
@@ -160,7 +160,7 @@ class ContentTypeController extends Controller
      *
      * PUT /api/v1/{type}/{id}
      */
-    public function update(Request $request, string $type, string $id): JsonResponse|ContentResource
+    public function update(Request $request, string $type, string $id): JsonResponse | ContentResource
     {
         $documentType = $this->resolveDocumentType($type);
 

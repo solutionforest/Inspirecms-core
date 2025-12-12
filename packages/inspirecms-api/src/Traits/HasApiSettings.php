@@ -2,8 +2,6 @@
 
 namespace SolutionForest\InspireCmsApi\Traits;
 
-use Illuminate\Database\Eloquent\Casts\Attribute;
-
 /**
  * Trait for models that have API settings.
  *
