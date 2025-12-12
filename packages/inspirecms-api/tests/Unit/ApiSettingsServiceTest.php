@@ -1,11 +1,11 @@
 <?php
 
-use SolutionForest\InspireCmsApi\Services\ApiSettingsService;
 use Illuminate\Database\Eloquent\Model;
 use Mockery;
+use SolutionForest\InspireCmsApi\Services\ApiSettingsService;
 
 beforeEach(function () {
-    $this->service = new ApiSettingsService();
+    $this->service = new ApiSettingsService;
 });
 
 test('returns defaults when no api_settings', function () {

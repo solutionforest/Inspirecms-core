@@ -1,10 +1,7 @@
 <?php
 
-use SolutionForest\InspireCmsApi\Filament\Forms\Components\ApiSettingsForm;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Section;
+use SolutionForest\InspireCmsApi\Filament\Forms\Components\ApiSettingsForm;
 
 test('document type schema returns array of components', function () {
     $schema = ApiSettingsForm::getDocumentTypeSchema();

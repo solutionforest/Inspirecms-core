@@ -1,7 +1,6 @@
 <?php
 
 use SolutionForest\InspireCmsApi\Services\ApiRouteGenerator;
-use SolutionForest\InspireCmsApi\Services\ApiSettingsService;
 
 beforeEach(function () {
     // Mock the ApiRouteGenerator to return test data

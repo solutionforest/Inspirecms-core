@@ -1,7 +1,7 @@
 <?php
 
-use SolutionForest\InspireCmsApi\Models\ApiToken;
 use Illuminate\Support\Facades\Hash;
+use SolutionForest\InspireCmsApi\Models\ApiToken;
 
 beforeEach(function () {
     // Run API token migration

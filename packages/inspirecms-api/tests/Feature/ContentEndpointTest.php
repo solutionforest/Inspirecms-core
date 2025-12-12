@@ -1,11 +1,11 @@
 <?php
 
+use Illuminate\Database\Eloquent\Model;
+use Mockery;
 use SolutionForest\InspireCmsApi\Models\ApiToken;
 use SolutionForest\InspireCmsApi\Services\ApiRouteGenerator;
 use SolutionForest\InspireCmsApi\Services\ApiSettingsService;
 use SolutionForest\InspireCmsApi\Services\ContentQueryService;
-use Illuminate\Database\Eloquent\Model;
-use Mockery;
 
 beforeEach(function () {
     $this->artisan('migrate', ['--database' => 'testing']);
@@ -119,7 +119,7 @@ test('authenticated user can access private content', function () {
     });
 
     // Mock the query service to return empty results
-    $this->mock(ContentQueryService::class, function ($mock) use ($mockDocumentType) {
+    $this->mock(ContentQueryService::class, function ($mock) {
         $mock->shouldReceive('buildQuery')
             ->andReturn(Mockery::mock(\Illuminate\Database\Eloquent\Builder::class));
         $mock->shouldReceive('paginate')
