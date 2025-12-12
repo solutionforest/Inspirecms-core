@@ -9,7 +9,6 @@ if (! function_exists('render_visual_layout')) {
      *
      * @param  array  $layoutData  The layout data (JSON decoded)
      * @param  array  $context  Additional context to pass to block templates
-     * @return HtmlString
      */
     function render_visual_layout(array $layoutData, array $context = []): HtmlString
     {
@@ -26,7 +25,6 @@ if (! function_exists('render_visual_block')) {
      *
      * @param  array  $blockData  The block data
      * @param  array  $context  Additional context to pass to block template
-     * @return string
      */
     function render_visual_block(array $blockData, array $context = []): string
     {

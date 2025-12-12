@@ -14,7 +14,6 @@ use SolutionForest\InspireCmsVisualEditor\AI\Providers\AnthropicProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Providers\OpenAIProvider;
 use SolutionForest\InspireCmsVisualEditor\AI\Services\LayoutGeneratorService;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Registry\BlockRegistry;
-use SolutionForest\InspireCmsVisualEditor\Rendering\BlockRenderer;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ButtonBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ColumnBlock;
 use SolutionForest\InspireCmsVisualEditor\Blocks\Types\ContainerBlock;
@@ -30,6 +29,7 @@ use SolutionForest\InspireCmsVisualEditor\Livewire\BlockPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\LayersPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\SettingsPanel;
 use SolutionForest\InspireCmsVisualEditor\Livewire\VisualEditor;
+use SolutionForest\InspireCmsVisualEditor\Rendering\BlockRenderer;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
 

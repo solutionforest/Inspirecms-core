@@ -35,7 +35,7 @@ class BlockRenderer
      */
     public function renderBlock(array $blockData, array $context = []): string
     {
-        if (empty($blockData) || !isset($blockData['type'])) {
+        if (empty($blockData) || ! isset($blockData['type'])) {
             return '';
         }
 
@@ -51,7 +51,7 @@ class BlockRenderer
             $blockType = $blockData['type'];
             $block = BlockRegistry::get($blockType);
 
-            if (!$block) {
+            if (! $block) {
                 return $this->renderUnknownBlock($blockData);
             }
 
@@ -60,14 +60,14 @@ class BlockRenderer
 
             // Prepare children HTML
             $childrenHtml = '';
-            if (!empty($blockData['children']) && is_array($blockData['children'])) {
+            if (! empty($blockData['children']) && is_array($blockData['children'])) {
                 $childrenHtml = $this->renderChildren($blockData['children'], $context);
             }
 
             // Determine the view to use
             $viewName = $this->getBlockViewName($blockType);
 
-            if (!View::exists($viewName)) {
+            if (! View::exists($viewName)) {
                 return $this->renderFallback($blockData, $attributes, $childrenHtml);
             }
 
@@ -128,11 +128,11 @@ class BlockRenderer
         // Add CSS classes
         $classes = ['ve-block', "ve-block-{$blockData['type']}"];
 
-        if (!empty($settings['cssClass'])) {
+        if (! empty($settings['cssClass'])) {
             $classes[] = $settings['cssClass'];
         }
 
-        if (!empty($settings['className'])) {
+        if (! empty($settings['className'])) {
             $classes[] = $settings['className'];
         }
 
@@ -140,14 +140,14 @@ class BlockRenderer
 
         // Build inline styles
         $inlineStyles = $this->buildInlineStyles($styles);
-        if (!empty($inlineStyles)) {
+        if (! empty($inlineStyles)) {
             $attributes['style'] = $inlineStyles;
         }
 
         // Add data attributes
         $attributes['data-block-type'] = $blockData['type'];
 
-        if (!empty($blockData['id'])) {
+        if (! empty($blockData['id'])) {
             $attributes['data-block-id'] = $blockData['id'];
         }
 
@@ -162,165 +162,165 @@ class BlockRenderer
         $cssProperties = [];
 
         // Spacing
-        if (!empty($styles['margin'])) {
+        if (! empty($styles['margin'])) {
             $cssProperties[] = "margin: {$styles['margin']}";
         }
-        if (!empty($styles['marginTop'])) {
+        if (! empty($styles['marginTop'])) {
             $cssProperties[] = "margin-top: {$styles['marginTop']}";
         }
-        if (!empty($styles['marginRight'])) {
+        if (! empty($styles['marginRight'])) {
             $cssProperties[] = "margin-right: {$styles['marginRight']}";
         }
-        if (!empty($styles['marginBottom'])) {
+        if (! empty($styles['marginBottom'])) {
             $cssProperties[] = "margin-bottom: {$styles['marginBottom']}";
         }
-        if (!empty($styles['marginLeft'])) {
+        if (! empty($styles['marginLeft'])) {
             $cssProperties[] = "margin-left: {$styles['marginLeft']}";
         }
 
-        if (!empty($styles['padding'])) {
+        if (! empty($styles['padding'])) {
             $cssProperties[] = "padding: {$styles['padding']}";
         }
-        if (!empty($styles['paddingTop'])) {
+        if (! empty($styles['paddingTop'])) {
             $cssProperties[] = "padding-top: {$styles['paddingTop']}";
         }
-        if (!empty($styles['paddingRight'])) {
+        if (! empty($styles['paddingRight'])) {
             $cssProperties[] = "padding-right: {$styles['paddingRight']}";
         }
-        if (!empty($styles['paddingBottom'])) {
+        if (! empty($styles['paddingBottom'])) {
             $cssProperties[] = "padding-bottom: {$styles['paddingBottom']}";
         }
-        if (!empty($styles['paddingLeft'])) {
+        if (! empty($styles['paddingLeft'])) {
             $cssProperties[] = "padding-left: {$styles['paddingLeft']}";
         }
 
         // Background
-        if (!empty($styles['backgroundColor'])) {
+        if (! empty($styles['backgroundColor'])) {
             $cssProperties[] = "background-color: {$styles['backgroundColor']}";
         }
-        if (!empty($styles['backgroundImage'])) {
+        if (! empty($styles['backgroundImage'])) {
             $cssProperties[] = "background-image: url('{$styles['backgroundImage']}')";
         }
-        if (!empty($styles['backgroundSize'])) {
+        if (! empty($styles['backgroundSize'])) {
             $cssProperties[] = "background-size: {$styles['backgroundSize']}";
         }
-        if (!empty($styles['backgroundPosition'])) {
+        if (! empty($styles['backgroundPosition'])) {
             $cssProperties[] = "background-position: {$styles['backgroundPosition']}";
         }
-        if (!empty($styles['backgroundRepeat'])) {
+        if (! empty($styles['backgroundRepeat'])) {
             $cssProperties[] = "background-repeat: {$styles['backgroundRepeat']}";
         }
 
         // Border
-        if (!empty($styles['borderWidth'])) {
+        if (! empty($styles['borderWidth'])) {
             $cssProperties[] = "border-width: {$styles['borderWidth']}";
         }
-        if (!empty($styles['borderStyle'])) {
+        if (! empty($styles['borderStyle'])) {
             $cssProperties[] = "border-style: {$styles['borderStyle']}";
         }
-        if (!empty($styles['borderColor'])) {
+        if (! empty($styles['borderColor'])) {
             $cssProperties[] = "border-color: {$styles['borderColor']}";
         }
-        if (!empty($styles['borderRadius'])) {
+        if (! empty($styles['borderRadius'])) {
             $cssProperties[] = "border-radius: {$styles['borderRadius']}";
         }
 
         // Typography
-        if (!empty($styles['color'])) {
+        if (! empty($styles['color'])) {
             $cssProperties[] = "color: {$styles['color']}";
         }
-        if (!empty($styles['fontSize'])) {
+        if (! empty($styles['fontSize'])) {
             $cssProperties[] = "font-size: {$styles['fontSize']}";
         }
-        if (!empty($styles['fontWeight'])) {
+        if (! empty($styles['fontWeight'])) {
             $cssProperties[] = "font-weight: {$styles['fontWeight']}";
         }
-        if (!empty($styles['fontFamily'])) {
+        if (! empty($styles['fontFamily'])) {
             $cssProperties[] = "font-family: {$styles['fontFamily']}";
         }
-        if (!empty($styles['lineHeight'])) {
+        if (! empty($styles['lineHeight'])) {
             $cssProperties[] = "line-height: {$styles['lineHeight']}";
         }
-        if (!empty($styles['letterSpacing'])) {
+        if (! empty($styles['letterSpacing'])) {
             $cssProperties[] = "letter-spacing: {$styles['letterSpacing']}";
         }
-        if (!empty($styles['textAlign'])) {
+        if (! empty($styles['textAlign'])) {
             $cssProperties[] = "text-align: {$styles['textAlign']}";
         }
-        if (!empty($styles['textTransform'])) {
+        if (! empty($styles['textTransform'])) {
             $cssProperties[] = "text-transform: {$styles['textTransform']}";
         }
-        if (!empty($styles['textDecoration'])) {
+        if (! empty($styles['textDecoration'])) {
             $cssProperties[] = "text-decoration: {$styles['textDecoration']}";
         }
 
         // Layout
-        if (!empty($styles['width'])) {
+        if (! empty($styles['width'])) {
             $cssProperties[] = "width: {$styles['width']}";
         }
-        if (!empty($styles['maxWidth'])) {
+        if (! empty($styles['maxWidth'])) {
             $cssProperties[] = "max-width: {$styles['maxWidth']}";
         }
-        if (!empty($styles['minWidth'])) {
+        if (! empty($styles['minWidth'])) {
             $cssProperties[] = "min-width: {$styles['minWidth']}";
         }
-        if (!empty($styles['height'])) {
+        if (! empty($styles['height'])) {
             $cssProperties[] = "height: {$styles['height']}";
         }
-        if (!empty($styles['maxHeight'])) {
+        if (! empty($styles['maxHeight'])) {
             $cssProperties[] = "max-height: {$styles['maxHeight']}";
         }
-        if (!empty($styles['minHeight'])) {
+        if (! empty($styles['minHeight'])) {
             $cssProperties[] = "min-height: {$styles['minHeight']}";
         }
 
         // Flexbox
-        if (!empty($styles['display'])) {
+        if (! empty($styles['display'])) {
             $cssProperties[] = "display: {$styles['display']}";
         }
-        if (!empty($styles['flexDirection'])) {
+        if (! empty($styles['flexDirection'])) {
             $cssProperties[] = "flex-direction: {$styles['flexDirection']}";
         }
-        if (!empty($styles['justifyContent'])) {
+        if (! empty($styles['justifyContent'])) {
             $cssProperties[] = "justify-content: {$styles['justifyContent']}";
         }
-        if (!empty($styles['alignItems'])) {
+        if (! empty($styles['alignItems'])) {
             $cssProperties[] = "align-items: {$styles['alignItems']}";
         }
-        if (!empty($styles['flexWrap'])) {
+        if (! empty($styles['flexWrap'])) {
             $cssProperties[] = "flex-wrap: {$styles['flexWrap']}";
         }
-        if (!empty($styles['gap'])) {
+        if (! empty($styles['gap'])) {
             $cssProperties[] = "gap: {$styles['gap']}";
         }
 
         // Grid
-        if (!empty($styles['gridTemplateColumns'])) {
+        if (! empty($styles['gridTemplateColumns'])) {
             $cssProperties[] = "grid-template-columns: {$styles['gridTemplateColumns']}";
         }
-        if (!empty($styles['gridTemplateRows'])) {
+        if (! empty($styles['gridTemplateRows'])) {
             $cssProperties[] = "grid-template-rows: {$styles['gridTemplateRows']}";
         }
-        if (!empty($styles['gridGap'])) {
+        if (! empty($styles['gridGap'])) {
             $cssProperties[] = "grid-gap: {$styles['gridGap']}";
         }
 
         // Effects
-        if (!empty($styles['boxShadow'])) {
+        if (! empty($styles['boxShadow'])) {
             $cssProperties[] = "box-shadow: {$styles['boxShadow']}";
         }
-        if (!empty($styles['opacity'])) {
+        if (! empty($styles['opacity'])) {
             $cssProperties[] = "opacity: {$styles['opacity']}";
         }
-        if (!empty($styles['overflow'])) {
+        if (! empty($styles['overflow'])) {
             $cssProperties[] = "overflow: {$styles['overflow']}";
         }
-        if (!empty($styles['zIndex'])) {
+        if (! empty($styles['zIndex'])) {
             $cssProperties[] = "z-index: {$styles['zIndex']}";
         }
 
         // Position
-        if (!empty($styles['position'])) {
+        if (! empty($styles['position'])) {
             $cssProperties[] = "position: {$styles['position']}";
         }
         if (isset($styles['top'])) {
