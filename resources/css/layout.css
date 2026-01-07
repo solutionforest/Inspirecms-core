@@ -9,6 +9,9 @@
 .dynamic-bg-body .theme-switcher-ctn {
     @apply fixed top-4 left-4 z-50;
 }
+.dynamic-bg-body:has(.alert-dialog) .theme-switcher-ctn {
+    @apply top-14!;
+}
 .dynamic-bg-body .theme-switcher-ctn .fi-theme-switcher {
     @apply bg-white/20 rounded-lg;
 }
