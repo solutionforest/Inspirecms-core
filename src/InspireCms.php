@@ -156,13 +156,17 @@ class InspireCms
                             : [];
 
                         foreach ($customFrontendRoutes as $index => $item) {
-                            Route::any($item['uri'], CmsControllers\FrontendController::class)
+                            // Temp fix Livewire 404 not found
+                            Route::get($item['uri'], CmsControllers\FrontendController::class)
+                            // Route::any($item['uri'], CmsControllers\FrontendController::class)
                                 ->where($item['regex_constraints'] ?? [])
                                 ->name($item['alias'] ?? 'content_' . $index);
                         }
 
                         // default route
-                        Route::any($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
+                        // Temp fix Livewire 404 not found
+                        Route::get($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
+                        // Route::any($factory->getDefaultRoutePattern(), CmsControllers\FrontendController::class)
                             ->where($factory->getDefaultRouteConstraints())
                             ->name('default');
                     });
