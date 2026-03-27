@@ -154,7 +154,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                 return [];
             })
             ->whereInstanceOf(Action::class)
-            ->map(fn (Action $action) => $action->arguments(['node' => $node]))
+            ->map(fn (Action $action) => $action(['node' => $node]))
             ->where(fn (Action $action) => $action->isVisible())
             ->map(fn (Action $action) => $action->getName())
             ->values()
