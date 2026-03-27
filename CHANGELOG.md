@@ -2,6 +2,24 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.7 - 2026-03-27
+
+### What's Changed in 4.0.7
+
+#### 🐛 Bug fixes
+
+- Fix: 'slug' & 'meta title' not update after content's title changes (904d362)
+- Bug Fix - Invalidate Document Type While Createing Content (8c45718)
+
+#### 🔧 Other Changes
+
+- Merge remote-tracking branch 'origin/HEAD' into 4.x (da7df0f)
+- Hotfix: 'Publish' action no effect (39ffaa1)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.6...4.0.7
+
 ## 4.0.6 - 2026-03-27
 
 <!-- Release notes generated using configuration in .github/release.yml at 4.x -->
@@ -103,6 +121,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -116,6 +135,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -158,6 +178,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -177,6 +198,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 

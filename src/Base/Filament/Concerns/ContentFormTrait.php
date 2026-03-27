@@ -28,9 +28,30 @@ use Throwable;
 
 use function Filament\Support\is_app_url;
 
+/**
+ * Marker trait — enables Filament's cacheTraitActions() to call
+ * cacheHasContentFormActions() before cacheMountedActions() runs,
+ * so extra status actions are in cachedActions in time.
+ */
+trait HasContentFormActions {}
+
 trait ContentFormTrait
 {
+    use HasContentFormActions;
+
     protected ?string $publishOperation = null;
+
+    /**
+     * Called by Filament's cacheTraitActions() during bootedInteractsWithActions(),
+     * BEFORE cacheMountedActions() resolves the mounted action. This ensures the
+     * extra status form actions are in cachedActions in time for resolution.
+     */
+    public function cacheHasContentFormActions(): void
+    {
+        foreach (inspirecms_content_statuses()->getFormActions() as $action) {
+            $this->cacheAction($action);
+        }
+    }
 
     public function bootedContentFormTrait(): void
     {
@@ -537,7 +558,7 @@ trait ContentFormTrait
 
     // region Actions
 
-    protected function publishAction()
+    protected function publishAction(): Action
     {
         return Action::make('publish')
             ->label(__('inspirecms::buttons.publish.label'))
@@ -548,21 +569,22 @@ trait ContentFormTrait
             ->color('primary')
             ->button()
             ->schema(fn (Schema $schema) => PublishContentForm::configure($schema))
-            ->beforeFormValidated(function () {
+            ->fillForm(fn () => ['published_at' => now()])
+            ->beforeFormFilled(function (Action $action) {
                 try {
-
                     $this->validatePublishableData();
-
-                } catch (Throwable $e) {
+                } catch (ValidationException $e) {
                     Notification::make()
                         ->title(__('inspirecms::notification.form_check_error.title'))
                         ->danger()
                         ->send();
 
-                    throw $e;
+                    $action->halt();
                 }
             })
-            ->action(fn ($data, $action) => $this->publish($data, $action))
+            ->action(function (array $data, Action $action) {
+                $this->publish($data, $action);
+            })
             ->model(InspireCmsConfig::getContentModelClass())
             ->authorize('publish')
             // Cannot publish if the parent is not published
@@ -584,7 +606,7 @@ trait ContentFormTrait
             });
     }
 
-    protected function publishDescendantsAndSelfAction()
+    protected function publishDescendantsAndSelfAction(): Action
     {
         return $this->publishAction()
             ->name('publishDescendantsAndSelf')
