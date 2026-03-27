@@ -182,9 +182,9 @@ class ContentForm
                         ->afterStateUpdated(function ($state, $get, $set, $operation, ContractsContentForm $livewire) use ($locale) {
                             // Fill slug if empty / operation is create
                             if ($operation === 'create' || empty($get('slug'))) {
-                                $set('slug', ContentSlugFactory::create()->generate($state));
+                                $set('../slug', ContentSlugFactory::create()->generate($state), shouldCallUpdatedHooks: true);
                             }
-                            $set("webSetting.seo.meta_title.{$locale}", $state);
+                            $set("../webSetting.seo.meta_title.{$locale}", $state, shouldCallUpdatedHooks: true);
                         })
                         ->autofocus()
                         ->required()
