@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
@@ -154,7 +155,7 @@ class BaseContentTreeNode extends ServerSideTreeComponent
                 return [];
             })
             ->whereInstanceOf(Action::class)
-            ->map(fn (Action $action) => $action->arguments(['node' => $node]))
+            ->map(fn (Action $action) => $action(['node' => $node]))
             ->where(fn (Action $action) => $action->isVisible())
             ->map(fn (Action $action) => $action->getName())
             ->values()

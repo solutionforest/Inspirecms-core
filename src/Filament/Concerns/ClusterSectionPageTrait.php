@@ -88,8 +88,8 @@ trait ClusterSectionPageTrait
     }
 
     /**
-     * @param  \Filament\Navigation\NavigationItem  $navigationItem
-     * @return \Filament\Navigation\NavigationItem
+     * @param  NavigationItem  $navigationItem
+     * @return NavigationItem
      */
     public static function configurePageKeyOnNavigationItem($navigationItem)
     {

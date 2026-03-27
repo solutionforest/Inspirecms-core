@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
+use SolutionForest\InspireCms\Services\ContentServiceInterface;
 use SolutionForest\InspireCms\Tests\Models\Content;
 use SolutionForest\InspireCms\Tests\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\TestCase;
@@ -146,7 +147,7 @@ test('content is unpublished when latest version is not published', function () 
     ];
 
     $validateContent = function (Content $content, bool $validatePublished) use ($contentData) {
-        $contentService = app(\SolutionForest\InspireCms\Services\ContentServiceInterface::class);
+        $contentService = app(ContentServiceInterface::class);
         $contentUri = "/{$contentData['slug']}";
         $contentParentPath = 'home';
         $contentRealPath = "{$contentParentPath}/{$contentData['slug']}";

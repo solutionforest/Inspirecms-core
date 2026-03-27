@@ -4,8 +4,10 @@ namespace SolutionForest\InspireCms\Database\Seeders;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Fields\Configs\RichEditor;
 use SolutionForest\InspireCms\Helpers\ModelHelper;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\ImportData\Entities as ImportDataEntities;
@@ -14,6 +16,7 @@ use SolutionForest\InspireCms\Services\ContentServiceInterface;
 use SolutionForest\InspireCms\Services\ImportDataServiceInterface;
 use SolutionForest\InspireCms\Support\Dtos\MediaAssetDto;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
 class SampleSeeder extends Seeder
 {
@@ -117,7 +120,7 @@ class SampleSeeder extends Seeder
 
     protected function addSampleTemplates(): void
     {
-        $allTemplates = app(\Illuminate\Filesystem\Filesystem::class)->allFiles(__DIR__ . '/../../stubs/SampleTemplates');
+        $allTemplates = app(Filesystem::class)->allFiles(__DIR__ . '/../../stubs/SampleTemplates');
 
         $getContent = function (string $slug, string $theme) use ($allTemplates) {
             try {
@@ -152,7 +155,7 @@ class SampleSeeder extends Seeder
 
     protected function getSampleFields(): array
     {
-        $toolbarButtonsForRichEditor = array_keys(\SolutionForest\InspireCms\Fields\Configs\RichEditor::getAllAvailableToolbarButtons());
+        $toolbarButtonsForRichEditor = array_keys(RichEditor::getAllAvailableToolbarButtons());
         $extraConfigForRichEditor = [
             'fileAttachmentsDisk' => 'public',
             'fileAttachmentsVisibility' => 'public',
@@ -564,7 +567,7 @@ class SampleSeeder extends Seeder
     protected function makeSampleMedia(): void
     {
         $mediaAssetModel = InspireCmsConfig::getMediaAssetModelClass();
-        $mediaModel = config('media-library.media_model', \Spatie\MediaLibrary\MediaCollections\Models\Media::class);
+        $mediaModel = config('media-library.media_model', Media::class);
 
         if (! $this->isTableExists($mediaAssetModel) || ! $this->isTableExists($mediaModel)) {
             return;

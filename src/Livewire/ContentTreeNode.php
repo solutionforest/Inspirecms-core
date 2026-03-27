@@ -67,7 +67,7 @@ class ContentTreeNode extends BaseContentTreeNode
         return $query->paginate($this->paginationPageSize);
     }
 
-    protected function getElquentQuery(): \Illuminate\Database\Eloquent\Builder
+    protected function getElquentQuery(): Builder
     {
         $query = parent::getElquentQuery();
 

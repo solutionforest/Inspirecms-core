@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Tests\Models\Import;
@@ -37,7 +39,7 @@ describe('import command', function () {
 function createImportJobWithFakeFile($filename)
 {
     $jobDiskName = 'local';
-    /** @var Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter */
+    /** @var Filesystem|FilesystemAdapter */
     $jobDisk = Storage::disk($jobDiskName);
 
     if (pathinfo($filename, PATHINFO_EXTENSION) == 'zip') {

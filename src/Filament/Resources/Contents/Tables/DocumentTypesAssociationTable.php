@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\Contents\Tables;
 use Filament\Tables\Columns\Layout\Split;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Tables\Columns\BladeIconColumn;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -41,7 +42,7 @@ class DocumentTypesAssociationTable
                 $parentContentId = $arguments['parentContentId'] ?? null;
                 $translatableLocale = $arguments['translatableLocale'] ?? null;
 
-                return \SolutionForest\InspireCms\Filament\Resources\Contents\Actions\CreateContentAction::generateCreateContentUrl(
+                return CreateContentAction::generateCreateContentUrl(
                     documentType: $record,
                     parentContent: $parentContentId,
                     translatableLocale: $translatableLocale

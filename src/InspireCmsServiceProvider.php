@@ -397,7 +397,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                 'driver' => 'eloquent',
                 'model' => ModelManifest::get(
                     User::class,
-                    \SolutionForest\InspireCms\Models\User::class,
+                    Models\User::class,
                 ),
             ]), ['driver', 'model']);
 

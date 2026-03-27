@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Fields\Converters;
 
 use Illuminate\Support\Arr;
+use League\CommonMark\Extension\Attributes\AttributesExtension;
 use Throwable;
 
 class MarkdownConverter extends BaseConverter
@@ -74,7 +75,7 @@ class MarkdownConverter extends BaseConverter
         $extensions = $this->mdExtensions;
 
         $defaultExtensions = [
-            app(\League\CommonMark\Extension\Attributes\AttributesExtension::class),
+            app(AttributesExtension::class),
         ];
 
         foreach ($defaultExtensions as $extension) {
