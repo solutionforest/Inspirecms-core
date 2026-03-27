@@ -35,7 +35,7 @@ trait CanAuthorizeResource
         return parent::canAccess();
     }
 
-    public static function getAuthorizationResponse(UnitEnum|string $action, ?Model $record = null): Response
+    public static function getAuthorizationResponse(UnitEnum | string $action, ?Model $record = null): Response
     {
         if (! static::skipAccessRightPermissionChecking()) {
 

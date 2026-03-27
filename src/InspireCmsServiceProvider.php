@@ -61,7 +61,6 @@ use SolutionForest\InspireCms\Listeners\Content\ProcessContentRoute;
 use SolutionForest\InspireCms\Listeners\Content\ProcessContentVersion;
 use SolutionForest\InspireCms\Listeners\Content\UnpubilshChildren;
 use SolutionForest\InspireCms\Listeners\UserAuthActivityListener;
-
 use SolutionForest\InspireCms\Models\Contracts\User;
 use SolutionForest\InspireCms\Models\Field;
 use SolutionForest\InspireCms\Models\FieldGroup;

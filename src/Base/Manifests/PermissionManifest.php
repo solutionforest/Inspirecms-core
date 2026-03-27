@@ -249,7 +249,7 @@ class PermissionManifest implements PermissionManifestInterface
         return implode('.', [$this->getPermissionNameForModel($ability, $model), $id]);
     }
 
-    public function authorizeModel(UnitEnum|string $ability, string $model, bool $checkExist = true, $id = null): ?bool
+    public function authorizeModel(UnitEnum | string $ability, string $model, bool $checkExist = true, $id = null): ?bool
     {
         $ability = $ability instanceof UnitEnum ? $ability->name : $ability;
         $modelShortName = class_basename($model);
