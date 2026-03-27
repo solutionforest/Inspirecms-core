@@ -2,6 +2,28 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.6 - 2026-03-27
+
+<!-- Release notes generated using configuration in .github/release.yml at 4.x -->
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.5...4.0.6
+
+## 4.0.5 - 2026-01-15
+
+### What's Changed in 4.0.5
+
+#### 🐛 Bug fixes
+
+- Change frontend routes to GET to fix Livewire 404 (86f90f1)
+
+#### 🔧 Other Changes
+
+- Bump dependabot/fetch-metadata from 2.4.0 to 2.5.0 (b624924)
+- Merge remote-tracking branch 'origin/HEAD' into 4.x (5d0f6b4)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.4...4.0.5
+
 ## 4.0.4 - 2026-01-07
 
 ### What's Changed in 4.0.4
@@ -79,6 +101,8 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -92,6 +116,8 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
+
 
 
 
@@ -130,6 +156,8 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -149,6 +177,8 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
+
 
 
 
