@@ -17,6 +17,7 @@ use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
+use LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentCreatePage;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\CreateContentRecord\Concerns\Translatable as CmsCreateContentRecordsTranslatable;
 use SolutionForest\InspireCms\Filament\Resources\Contents\Schemas\PublishContentForm;
@@ -347,7 +348,7 @@ trait ContentFormTrait
 
             $isLivewireHandleTranslatable = collect(class_uses_recursive($this))
                 ->where(fn ($traitClass) => in_array($traitClass, [
-                    \LaraZeus\SpatieTranslatable\Resources\Pages\CreateRecord\Concerns\Translatable::class,
+                    Translatable::class,
                     CmsCreateContentRecordsTranslatable::class,
                 ]))
                 ->isNotEmpty();

@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\NavigationResource\Concer
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Resources\Pages\Page;
 use Filament\Resources\Pages\PageRegistration;
 use Filament\Support\Enums\IconPosition;
 use Filament\Support\Facades\FilamentView;
@@ -27,10 +28,10 @@ trait NavigationListPageTrait
                     ->all();
 
                 $pageActions = collect($pageFqcn)
-                    ->where(fn ($fqcn) => is_a($fqcn, \Filament\Resources\Pages\Page::class, true))
+                    ->where(fn ($fqcn) => is_a($fqcn, Page::class, true))
                     ->map(function (string $fqcn, $type) use ($resource) {
 
-                        /** @var class-string<\Filament\Resources\Pages\Page> $fqcn */
+                        /** @var class-string<Page> $fqcn */
 
                         return Action::make("{$type}-page")
                             ->label($fqcn::getNavigationLabel())

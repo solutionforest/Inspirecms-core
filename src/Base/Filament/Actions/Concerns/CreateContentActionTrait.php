@@ -6,6 +6,7 @@ use Closure;
 use Filament\Forms\Components\TableSelect;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Filament\Resources\Contents\Actions\CreateContentAction;
 use SolutionForest\InspireCms\Filament\Resources\Contents\Tables\DocumentTypesAssociationTable;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -76,7 +77,7 @@ trait CreateContentActionTrait
                     }),
             ])
             ->action(function (array $data, $livewire) {
-                $url = \SolutionForest\InspireCms\Filament\Resources\Contents\Actions\CreateContentAction::generateCreateContentUrl(
+                $url = CreateContentAction::generateCreateContentUrl(
                     documentType: $data['selection'],
                     parentContent: $this->getParentContentKey(),
                     translatableLocale: isset($livewire->activeLocale) ? $livewire->activeLocale : null

@@ -16,7 +16,7 @@ class FieldTypeHelper
      * Perform form field creation from configuration.
      *
      * @param  string  $typeName  The type name of the form field.
-     * @param  callable(\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig,string,array)  $createFieldUsing  A closure that creates the form field.
+     * @param  callable(FieldTypeConfig,string,array)  $createFieldUsing  A closure that creates the form field.
      * @param  array  $config  Optional configuration array for the form field.
      * @return mixed The created form field.
      */

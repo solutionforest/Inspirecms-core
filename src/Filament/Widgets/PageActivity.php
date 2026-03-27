@@ -61,7 +61,7 @@ class PageActivity extends BaseWidget
                         return $record->getLatestPublishedTime();
                     })
                     ->placeholder(__('inspirecms::inspirecms.n/a'))
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => ($state && $state instanceof \DateTimeInterface) ? $state->diffForHumans(now()) : null)
+                    ->formatStateUsing(fn (?Carbon $state) => ($state && $state instanceof \DateTimeInterface) ? $state->diffForHumans(now()) : null)
                     ->tooltip(fn ($state) => ($state && $state instanceof \DateTimeInterface) ? $state->toDateTimeString() : null)
                     ->width('5%'),
                 TextColumn::make('updated_at')

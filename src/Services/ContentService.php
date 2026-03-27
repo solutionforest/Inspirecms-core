@@ -188,7 +188,7 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param  \Closure(\Illuminate\Database\Eloquent\Builder)  $routeQueryCallback
+     * @param  Closure(Builder)  $routeQueryCallback
      * @return Builder
      */
     protected function buildFindWithRouteQuery(Closure $routeQueryCallback)
