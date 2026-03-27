@@ -17,6 +17,7 @@ use SolutionForest\InspireCms\Filament\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
+use UnitEnum;
 
 class PermissionManifest implements PermissionManifestInterface
 {
@@ -248,8 +249,9 @@ class PermissionManifest implements PermissionManifestInterface
         return implode('.', [$this->getPermissionNameForModel($ability, $model), $id]);
     }
 
-    public function authorizeModel(string $ability, string $model, bool $checkExist = true, $id = null): ?bool
+    public function authorizeModel(UnitEnum|string $ability, string $model, bool $checkExist = true, $id = null): ?bool
     {
+        $ability = $ability instanceof UnitEnum ? $ability->name : $ability;
         $modelShortName = class_basename($model);
 
         if ($checkExist) {

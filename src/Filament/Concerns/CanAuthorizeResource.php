@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use SolutionForest\InspireCms\Facades\PermissionManifest;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use UnitEnum;
 
 trait CanAuthorizeResource
 {
@@ -34,7 +35,7 @@ trait CanAuthorizeResource
         return parent::canAccess();
     }
 
-    public static function getAuthorizationResponse(string $action, ?Model $record = null): Response
+    public static function getAuthorizationResponse(UnitEnum|string $action, ?Model $record = null): Response
     {
         if (! static::skipAccessRightPermissionChecking()) {
 

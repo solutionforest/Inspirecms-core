@@ -27,7 +27,6 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use LaraZeus\SpatieTranslatable\SpatieTranslatablePlugin;
-use Livewire\Livewire;
 use Pboivin\FilamentPeek\FilamentPeekPlugin;
 use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 use Pboivin\FilamentPeek\Pages\Actions\PreviewAction;
@@ -300,9 +299,7 @@ class CmsPanelProvider extends PanelProvider
         return $panel->livewireComponents([
             ListImportNExport::class,
             NavigationTree::class,
-        ])->bootUsing(function () {
-            Livewire::component('inspirecms::navigation-tree', NavigationTree::class);
-        });
+        ]);
     }
 
     protected function configureFilamentActions(Panel $panel): Panel

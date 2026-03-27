@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Facades;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
+use UnitEnum;
 
 /**
  * @method static string getSuperAdminRoleName()
@@ -19,7 +20,7 @@ use SolutionForest\InspireCms\Base\Manifests\PermissionManifestInterface;
  * @method static string getPermissionNameForModel(string $ability, string $model)
  * @method static string getTieredPermissionNameForModel(string $ability, string $model, $id)
  * @method static ?string getModelForTieredPermission(string $label)
- * @method static ?bool authorizeModel(string $ability, string $model, bool $checkExist = true, $id = null)
+ * @method static ?bool authorizeModel(UnitEnum|string $ability, string $model, bool $checkExist = true, $id = null)
  * @method static ?bool authorizeAction(string $actionFqcn)
  * @method static ?bool authorizeWidget(string $widgetFqcn)
  * @method static bool isTieredPermissionGranted(string $model)

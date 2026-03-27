@@ -61,10 +61,7 @@ use SolutionForest\InspireCms\Listeners\Content\ProcessContentRoute;
 use SolutionForest\InspireCms\Listeners\Content\ProcessContentVersion;
 use SolutionForest\InspireCms\Listeners\Content\UnpubilshChildren;
 use SolutionForest\InspireCms\Listeners\UserAuthActivityListener;
-use SolutionForest\InspireCms\Livewire\ContentSidebar;
-use SolutionForest\InspireCms\Livewire\ContentTreeNode;
-use SolutionForest\InspireCms\Livewire\ContentVersionHistory;
-use SolutionForest\InspireCms\Livewire\TableReleatedLivewireComponent;
+
 use SolutionForest\InspireCms\Models\Contracts\User;
 use SolutionForest\InspireCms\Models\Field;
 use SolutionForest\InspireCms\Models\FieldGroup;
@@ -187,10 +184,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->configureFilamentForm();
 
-        Livewire::component(TableReleatedLivewireComponent::class);
-        Livewire::component('inspirecms::content-version-history', ContentVersionHistory::class);
-        Livewire::component('inspirecms::content-sidebar', ContentSidebar::class);
-        Livewire::component('inspirecms::content-tree-node', ContentTreeNode::class);
+        Livewire::addNamespace('inspirecms', classNamespace: 'SolutionForest\\InspireCms\\Livewire');
 
         // Asset Registration
         FilamentAsset::register(
