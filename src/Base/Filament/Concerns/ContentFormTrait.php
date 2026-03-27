@@ -38,6 +38,7 @@ trait HasContentFormActions {}
 trait ContentFormTrait
 {
     use HasContentFormActions;
+
     protected ?string $publishOperation = null;
 
     /**
