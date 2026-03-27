@@ -9,7 +9,7 @@ uses(TestCase::class);
 pest()->group('unit', 'model');
 
 it('throws an exception when deleting a document type with content', function () {
-    $this->expectException(\Exception::class);
+    $this->expectException(Exception::class);
     $this->expectExceptionMessage('Cannot delete this document type because it has content.');
 
     $documentType = DocumentType::factory(['category' => 'web'])->create();

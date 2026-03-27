@@ -174,7 +174,7 @@ class Register extends \Filament\Auth\Pages\Register
 
     // region Form field(s)/component(s)
     /**
-     * @return Field|\Filament\Schemas\Components\Component
+     * @return Field|Component
      */
     protected function getNameFormComponent(): Component
     {
@@ -186,7 +186,7 @@ class Register extends \Filament\Auth\Pages\Register
     }
 
     /**
-     * @return Field|\Filament\Schemas\Components\Component
+     * @return Field|Component
      */
     protected function getEmailFormComponent(): Component
     {
@@ -198,7 +198,7 @@ class Register extends \Filament\Auth\Pages\Register
     }
 
     /**
-     * @return Field|\Filament\Schemas\Components\Component
+     * @return Field|Component
      */
     protected function getPasswordFormComponent(): Component
     {
@@ -209,7 +209,7 @@ class Register extends \Filament\Auth\Pages\Register
     }
 
     /**
-     * @return Field|\Filament\Schemas\Components\Component
+     * @return Field|Component
      */
     protected function getPasswordConfirmationFormComponent(): Component
     {

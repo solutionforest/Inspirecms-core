@@ -6,7 +6,9 @@ use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Group;
+use Filament\Schemas\Components\Icon;
 use Filament\Schemas\Schema;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Models\Contracts\Field;
@@ -29,9 +31,9 @@ class FieldGroupInfolist
                             ->afterContent(function ($record) {
                                 $icon = $record->field_type_config[0]['icon'] ?? 'heroicon-o-minus-circle';
                                 if (filled($icon) && str_starts_with($icon, 'inspirecms::')) {
-                                    return \Filament\Support\Facades\FilamentIcon::resolve($icon);
+                                    return FilamentIcon::resolve($icon);
                                 } elseif (filled($icon)) {
-                                    return \Filament\Schemas\Components\Icon::make($icon)
+                                    return Icon::make($icon)
                                         ->color('gray');
                                 }
 

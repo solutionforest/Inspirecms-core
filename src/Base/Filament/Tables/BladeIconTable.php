@@ -6,6 +6,7 @@ use BladeUI\Icons\Factory;
 use Filament\Support\Enums\TextSize;
 use Filament\Tables\Columns\Layout\Stack;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Pagination\LengthAwarePaginator;
 use SolutionForest\InspireCms\Filament\Tables\Columns\BladeIconColumn;
@@ -80,7 +81,7 @@ class BladeIconTable
                 ]),
             ])
             ->filters([
-                \Filament\Tables\Filters\SelectFilter::make('set')
+                SelectFilter::make('set')
                     ->options(fn () => static::getAvailableSets()),
             ]);
     }

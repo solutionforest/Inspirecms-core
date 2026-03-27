@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;

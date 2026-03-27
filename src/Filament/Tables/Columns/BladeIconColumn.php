@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Tables\Columns;
 
 use BackedEnum;
+use BladeUI\Icons\Svg;
 use Filament\Tables\Columns\IconColumn;
 
 class BladeIconColumn extends IconColumn
@@ -28,7 +29,7 @@ class BladeIconColumn extends IconColumn
         }
 
         try {
-            if (is_string($icon) && svg($icon) instanceof \BladeUI\Icons\Svg) {
+            if (is_string($icon) && svg($icon) instanceof Svg) {
                 return $icon;
             }
         } catch (\Throwable $th) {

@@ -41,7 +41,7 @@ it('can delete related content routes', function () {
 });
 
 it('throws exception for default language when deleting', function () {
-    $this->expectException(\Exception::class);
+    $this->expectException(Exception::class);
     $this->expectExceptionMessage('Cannot delete default language');
 
     $language = Language::factory()->create(['is_default' => true]);

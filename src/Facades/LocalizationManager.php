@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use SolutionForest\InspireCms\Base\Manifests\LocaleManifest;
 use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
 
 /**
@@ -13,7 +14,7 @@ use SolutionForest\InspireCms\Base\Manifests\LocaleManifestInterface;
  * @method static array getLocaleLabelsFor(array $locales, ?string $displayLocale = null)
  * @method static string getLocaleLabel(string $locale, ?string $displayLocale = null)
  *
- * @see \SolutionForest\InspireCms\Base\Manifests\LocaleManifest
+ * @see LocaleManifest
  */
 class LocalizationManager extends Facade
 {

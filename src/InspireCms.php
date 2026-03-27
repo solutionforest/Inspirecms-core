@@ -372,7 +372,7 @@ class InspireCms
 
                     break;
                 case class_uses_recursive($navigation, HasTranslations::class) &&
-                in_array($attribute, $navigation->getTranslatableAttributes()):
+                    in_array($attribute, $navigation->getTranslatableAttributes()):
                     $value = collect($allLanguages)
                         ->mapWithKeys(fn ($language) => [
                             $language->code => $navigation->getTranslation($attribute, $language->code),
