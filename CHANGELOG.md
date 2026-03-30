@@ -2,6 +2,18 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.8 - 2026-03-30
+
+### What's Changed in 4.0.8
+
+#### 🔧 Other Changes
+
+- Extract HasContentFormActions into separate file (d0c54ab)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.7...4.0.8
+
 ## 4.0.7 - 2026-03-27
 
 ### What's Changed in 4.0.7
@@ -122,6 +134,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -135,6 +148,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -179,6 +193,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -198,6 +213,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
