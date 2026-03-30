@@ -31,7 +31,7 @@ use function Filament\Support\is_app_url;
 trait ContentFormTrait
 {
     use HasContentFormActions;
-    
+
     protected ?string $publishOperation = null;
 
     /**
