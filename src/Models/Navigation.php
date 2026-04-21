@@ -121,6 +121,7 @@ class Navigation extends BaseModel implements NavigationContract
             },
         );
     }
+
     // endregion Attribute(s)
     public static function getNavigationTypeEnumClass()
     {

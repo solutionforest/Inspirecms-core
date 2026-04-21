@@ -248,6 +248,7 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             },
         );
     }
+
     // endregion Attribute(s)
     /**
      * @return class-string<DocumentTypeCategoryEnum>

@@ -65,6 +65,9 @@ use SolutionForest\InspireCms\Livewire\ContentSidebar;
 use SolutionForest\InspireCms\Livewire\ContentTreeNode;
 use SolutionForest\InspireCms\Livewire\ContentVersionHistory;
 use SolutionForest\InspireCms\Livewire\TableReleatedLivewireComponent;
+use SolutionForest\InspireCms\Models\Contracts\User;
+use SolutionForest\InspireCms\Models\Field;
+use SolutionForest\InspireCms\Models\FieldGroup;
 use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Observers\ContentPathObserver;
 use SolutionForest\InspireCms\Observers\ContentRouteObserver;
@@ -80,9 +83,6 @@ use SolutionForest\InspireCms\Observers\LanguageObserver;
 use SolutionForest\InspireCms\Observers\NavigationObserver;
 use SolutionForest\InspireCms\Observers\SitemapObserver;
 use SolutionForest\InspireCms\Observers\TemplateObserver;
-use SolutionForest\InspireCms\Models\Contracts\User;
-use SolutionForest\InspireCms\Models\Field;
-use SolutionForest\InspireCms\Models\FieldGroup;
 use SolutionForest\InspireCms\Resolvers\PublishedContentResolverInterface;
 use SolutionForest\InspireCms\Services\AssetService;
 use SolutionForest\InspireCms\Services\AssetServiceInterface;
@@ -322,7 +322,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'fields' => 'css-edit-flip-h',
             'templates' => 'css-template',
             'document_type' => 'css-collage',
-            
+
             // 'fields' => view('inspirecms::icons.fields'),
             // 'templates' => view('inspirecms::icons.templates'),
             // 'document_type' => view('inspirecms::icons.document-type'),
