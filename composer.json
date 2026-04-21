@@ -23,9 +23,9 @@
     ],
     "require": {
         "php": ">=8.2",
-        "khatabwedaa/blade-css-icons": "^1.5",
+        "khatabwedaa/blade-css-icons": "^1.5|^1.6",
         "lara-zeus/spatie-translatable": "^1.0",
-        "laravel/framework": "^11.0|^12.0",
+        "laravel/framework": "^11.0|^12.0|^13.0",
         "pboivin/filament-peek": "^3.0",
         "phiki/phiki": "^1.1",
         "solution-forest/filament-field-group": "^2.0",

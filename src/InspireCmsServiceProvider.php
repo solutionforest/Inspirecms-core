@@ -65,6 +65,21 @@ use SolutionForest\InspireCms\Livewire\ContentSidebar;
 use SolutionForest\InspireCms\Livewire\ContentTreeNode;
 use SolutionForest\InspireCms\Livewire\ContentVersionHistory;
 use SolutionForest\InspireCms\Livewire\TableReleatedLivewireComponent;
+use SolutionForest\InspireCms\Observers\ContentObserver;
+use SolutionForest\InspireCms\Observers\ContentPathObserver;
+use SolutionForest\InspireCms\Observers\ContentRouteObserver;
+use SolutionForest\InspireCms\Observers\ContentVersionObserver;
+use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
+use SolutionForest\InspireCms\Observers\ExportObserver;
+use SolutionForest\InspireCms\Observers\FieldGroupableObserver;
+use SolutionForest\InspireCms\Observers\FieldObserver;
+use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
+use SolutionForest\InspireCms\Observers\ImportObserver;
+use SolutionForest\InspireCms\Observers\KeyValueObserver;
+use SolutionForest\InspireCms\Observers\LanguageObserver;
+use SolutionForest\InspireCms\Observers\NavigationObserver;
+use SolutionForest\InspireCms\Observers\SitemapObserver;
+use SolutionForest\InspireCms\Observers\TemplateObserver;
 use SolutionForest\InspireCms\Models\Contracts\User;
 use SolutionForest\InspireCms\Models\Field;
 use SolutionForest\InspireCms\Models\FieldGroup;
@@ -84,6 +99,8 @@ use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Facades\ResolverRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
+use SolutionForest\InspireCms\Support\Observers\BelongsToNestableTreeObserver;
+use SolutionForest\InspireCms\Support\Observers\HasRecursiveRelationshipsObserver;
 use SolutionForest\InspireCms\Support\Resolvers\UserResolverInterface;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -173,6 +190,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     public function bootingPackage(): void
     {
+        $this->registerModelObservers();
+
         ModelManifest::registerMorphMap();
         ModelManifest::registerPolices();
 
@@ -303,6 +322,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             'fields' => 'css-edit-flip-h',
             'templates' => 'css-template',
             'document_type' => 'css-collage',
+            
+            // 'fields' => view('inspirecms::icons.fields'),
+            // 'templates' => view('inspirecms::icons.templates'),
+            // 'document_type' => view('inspirecms::icons.document-type'),
 
             'content_picker' => view('inspirecms::icons.content-picker'),
             'media_picker' => view('inspirecms::icons.media-picker'),
@@ -464,6 +487,29 @@ class InspireCmsServiceProvider extends PackageServiceProvider
         Event::listen(DispatchContentVersion::class, ProcessContentVersion::class);
         Event::listen(GenerateSitemap::class, GenerateContentSitemap::class);
         // endregion Content
+    }
+
+    protected function registerModelObservers(): void
+    {
+        InspireCmsConfig::getContentModelClass()::observe(ContentObserver::class);
+        InspireCmsConfig::getContentPathModelClass()::observe(ContentPathObserver::class);
+        InspireCmsConfig::getContentRouteModelClass()::observe(ContentRouteObserver::class);
+        InspireCmsConfig::getContentVersionModelClass()::observe(ContentVersionObserver::class);
+        InspireCmsConfig::getDocumentTypeModelClass()::observe(DocumentTypeObserver::class);
+        InspireCmsConfig::getExportModelClass()::observe(ExportObserver::class);
+        InspireCmsConfig::getFieldGroupableModelClass()::observe(FieldGroupableObserver::class);
+        InspireCmsConfig::getFieldModelClass()::observe(FieldObserver::class);
+        InspireCmsConfig::getImportModelClass()::observe(ImportObserver::class);
+        InspireCmsConfig::getKeyValueModelClass()::observe(KeyValueObserver::class);
+        InspireCmsConfig::getLanguageModelClass()::observe(LanguageObserver::class);
+        InspireCmsConfig::getNavigationModelClass()::observe(NavigationObserver::class);
+        InspireCmsConfig::getSitemapModelClass()::observe(SitemapObserver::class);
+        InspireCmsConfig::getTemplateModelClass()::observe(TemplateObserver::class);
+
+        $contentModel = InspireCmsConfig::getContentModelClass();
+        $contentModel::observe(HasContentVersionsObserver::class);
+        $contentModel::observe(BelongsToNestableTreeObserver::class);
+        $contentModel::observe(HasRecursiveRelationshipsObserver::class);
     }
 
     protected function configureFilamentForm(): void

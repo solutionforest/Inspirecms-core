@@ -18,7 +18,6 @@ use SolutionForest\InspireCms\Models\Concerns\HasContentWebSetting;
 use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
 use SolutionForest\InspireCms\Models\Concerns\HasTranslations;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
-use SolutionForest\InspireCms\Observers\ContentObserver;
 use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
@@ -400,11 +399,4 @@ class Content extends BaseModel implements ContentContract
         ];
     }
     // endregion ContentVersion
-
-    protected static function boot()
-    {
-        parent::boot();
-
-        static::observe(ContentObserver::class);
-    }
 }

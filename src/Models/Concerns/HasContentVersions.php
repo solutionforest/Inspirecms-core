@@ -6,8 +6,6 @@ use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
-use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
-use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
 use Spatie\Translatable\HasTranslations;
 use Throwable;
 
@@ -23,11 +21,6 @@ trait HasContentVersions
     protected array $preloadContentVersionData = [];
 
     protected array $publishableData = [];
-
-    public static function bootHasContentVersions()
-    {
-        static::observe(new HasContentVersionsObserver);
-    }
 
     /** {@inheritDoc} */
     public function contentVersions()
