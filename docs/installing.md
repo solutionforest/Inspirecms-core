@@ -4,13 +4,23 @@ slug: installing
 path: docs/v1/installing
 uri: /docs/v1/installing
 heading: Installing
-brief: 
+brief:
 quick_links: []
 ---
 
 ## Prerequisites
 
 Before beginning installation, ensure your environment meets the [system requirements](./requirements){.doc-link}.
+
+---
+
+## Version Compatibility
+
+| Filament Version | Plugin Version |
+| ---------------- | -------------- |
+| v3               | 1.x.x          |
+| v4               | 4.x.x          |
+| v5               | 5.x.x          |
 
 ---
 
@@ -85,8 +95,8 @@ InspireCMS requires queue workers and scheduled jobs for image conversion, backg
 
 For development, you can run these commands manually in separate terminals:
 
--   `php artisan queue:work` (for background jobs)
--   `php artisan schedule:work` (for scheduled tasks)
+- `php artisan queue:work` (for background jobs)
+- `php artisan schedule:work` (for scheduled tasks)
 
 For detailed configuration options, refer to the [Laravel Queue documentation](https://laravel.com/docs/queues) and [Task Scheduling documentation](https://laravel.com/docs/scheduling).
 
