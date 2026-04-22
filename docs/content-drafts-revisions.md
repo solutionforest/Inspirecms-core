@@ -43,9 +43,9 @@ Drafts are visible only in the admin panel and not on your live site.
 
 Drafts are clearly marked in the content list:
 
--   Status indicator shows "Draft"
--   Often color-coded differently from published content
--   Show an editing icon
+- Status indicator shows "Draft"
+- Often color-coded differently from published content
+- Show an editing icon
 
 ### Editing Drafts
 
