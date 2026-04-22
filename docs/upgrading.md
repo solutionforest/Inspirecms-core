@@ -4,11 +4,9 @@ slug: upgrading
 path: docs/v1/upgrading
 uri: /docs/v1/upgrading
 heading: Upgrading
-brief: 
+brief:
 quick_links: []
 ---
-
-
 
 ## Before Upgrading
 
@@ -89,6 +87,46 @@ php artisan inspirecms:repair-permissions
 ```bash
 php artisan inspirecms:import-default-data
 ```
+
+---
+
+## Laravel 12 and 13 Compatibility
+
+InspireCMS v4 supports both Laravel 12 and Laravel 13.
+
+### What changed
+
+To avoid Laravel 13 model boot recursion errors (for example: `bootIfNotBooted` called while a model is still booting), observer registration was changed from using `Model::observe()` to direct event listener registration within trait boot methods.
+
+Event listeners are now registered directly in trait boot methods instead of using `Model::observe()`.
+
+### If you use traits with observer patterns
+
+When using traits that register observers, register event listeners directly in the trait's boot method instead of using `Model::observe()`.
+
+Example migration pattern:
+
+Before (using observe):
+
+```php
+public static function bootYourTrait()
+{
+	static::observe(YourObserver::class);
+}
+```
+
+After (using event listeners):
+
+```php
+public static function bootYourTrait()
+{
+	static::created(fn ($model) => (new YourObserver)->created($model));
+	static::updated(fn ($model) => (new YourObserver)->updated($model));
+	static::deleted(fn ($model) => (new YourObserver)->deleted($model));
+}
+```
+
+If your model has multiple trait-boot observers, register each trait's listeners separately in its own boot method.
 
 ---
 

@@ -12,12 +12,12 @@ quick_links: []
 
 The InspireCMS admin panel is built on [Filament](https://filamentphp.com/), a powerful admin panel framework for Laravel applications. This integration allows you to:
 
--   Create custom admin pages
--   Add new resources for managing database models
--   Organize related functionality into clusters
--   Define custom dashboard widgets
--   Extend existing admin functionality
--   Customize the look and feel of the admin panel
+- Create custom admin pages
+- Add new resources for managing database models
+- Organize related functionality into clusters
+- Define custom dashboard widgets
+- Extend existing admin functionality
+- Customize the look and feel of the admin panel
 
 ---
 
@@ -846,7 +846,7 @@ class StatsOverview extends BaseWidget
 
 ## Further Resources
 
--   [Filament Documentation](https://filamentphp.com/docs)
--   [Laravel Documentation](https://laravel.com/docs)
+- [Filament Documentation](https://filamentphp.com/docs)
+- [Laravel Documentation](https://laravel.com/docs)
 
 With these tools and techniques, you can extend and customize the InspireCMS admin panel to suit your specific requirements while maintaining a consistent and user-friendly interface.

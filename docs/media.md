@@ -19,17 +19,17 @@ The media library is accessible from: **Admin Panel** > **Media**
 
 The media library interface includes:
 
--   **Folders**: Organize media in a hierarchical structure
--   **Search**: Find media by filename, type, or metadata
--   **Filters**: Filter by date, file type, or custom attributes
--   **Sorting**: Arrange files by name, date or size
+- **Folders**: Organize media in a hierarchical structure
+- **Search**: Find media by filename, type, or metadata
+- **Filters**: Filter by date, file type, or custom attributes
+- **Sorting**: Arrange files by name, date or size
 
 ### File Details
 
 Click on a file to view detailed information:
 
--   **Properties**: Technical information (dimensions, format, size)
--   **Actions**: Download, edit, move, or delete
+- **Properties**: Technical information (dimensions, format, size)
+- **Actions**: Download, edit, move, or delete
 
 ---
 
@@ -148,13 +148,13 @@ Generate responsive image variants:
 
 Every media file includes standard metadata:
 
--   Filename
--   File type and extension
--   File size
--   Upload date
--   Uploader
--   Dimensions (for images)
--   Duration (for audio/video)
+- Filename
+- File type and extension
+- File size
+- Upload date
+- Uploader
+- Dimensions (for images)
+- Duration (for audio/video)
 
 ### Custom Metadata
 
@@ -291,9 +291,9 @@ class MediaAssetPolicy extends BasePolicy
 
 ## Best Practices
 
--   **Organize Logically**: Use a consistent folder structure
--   **Meaningful Filenames**: Use descriptive, URL-friendly filenames
--   **Complete Metadata**: Add alt text and descriptions for accessibility
--   **Optimize Images**: Use appropriate file formats and compression
--   **Responsive Images**: Use responsive techniques for different screen sizes
--   **Accessibility**: Ensure all media has appropriate alt text
+- **Organize Logically**: Use a consistent folder structure
+- **Meaningful Filenames**: Use descriptive, URL-friendly filenames
+- **Complete Metadata**: Add alt text and descriptions for accessibility
+- **Optimize Images**: Use appropriate file formats and compression
+- **Responsive Images**: Use responsive techniques for different screen sizes
+- **Accessibility**: Ensure all media has appropriate alt text

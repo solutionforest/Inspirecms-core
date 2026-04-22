@@ -210,11 +210,11 @@ $paginatedContentDto = inspirecms_content()->getPaginatedByDocumentType(document
 
 ## Best Practices
 
--   Use `inspirecms_content()` helper for retrieving content instead of direct database queries
--   Always check if properties exist before using them
--   Cache frequent content queries for better performance
--   For large content sets, use pagination to improve page load times
--   Use property directives in Blade templates for cleaner syntax
+- Use `inspirecms_content()` helper for retrieving content instead of direct database queries
+- Always check if properties exist before using them
+- Cache frequent content queries for better performance
+- For large content sets, use pagination to improve page load times
+- Use property directives in Blade templates for cleaner syntax
 
 > [!note]
 >
