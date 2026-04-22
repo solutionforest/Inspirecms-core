@@ -2,6 +2,29 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 4.0.11 - 2026-04-22
+
+### What's Changed in 4.0.11
+
+#### 📘 Documentation updates
+
+- Add test matrix workflow, update Laravel compatibility, and enhance upgrade documentation (7269db9)
+- Docs: switch to trait-level event listeners (de5086b)
+
+#### 🔧 Other Changes
+
+- Bump dependabot/fetch-metadata from 3.0.0 to 3.1.0 (225e2b8)
+- Move model observers to model booted hooks (d301ac7)
+- Use GITHUB_TOKEN instead of INSPIRECMS_PAT (f0461bb)
+- Add alignment for path repository version in CI workflow (614c256)
+- Refactor path repository version alignment in CI workflow (d631196)
+- Add --no-coverage flag to Pest test command in CI workflow (954149e)
+- Refactor CI workflow to remove dependency matrix and update actions/checkout version (0a88116)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/4.0.10...4.0.11
+
 ## 4.0.10 - 2026-03-31
 
 ### What's Changed in 4.0.10
@@ -161,6 +184,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -174,6 +198,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -224,6 +249,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -243,6 +269,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
