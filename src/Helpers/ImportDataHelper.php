@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -423,7 +425,7 @@ class ImportDataHelper
     /**
      * Get the temporary disk filesystem instance.
      *
-     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     * @return Filesystem|FilesystemAdapter
      */
     public function getTempDisk()
     {

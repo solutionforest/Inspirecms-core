@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\RelationManagers;
 
 use Filament\Forms;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -63,7 +64,7 @@ class TemplatesRelationManager extends RelationManager
             ]);
     }
 
-    public static function getBuilderEditorSchema(string $builderName): \Filament\Forms\Components\Component | array
+    public static function getBuilderEditorSchema(string $builderName): Component | array
     {
         return [
             Forms\Components\Hidden::make('record_id'),
@@ -106,7 +107,7 @@ class TemplatesRelationManager extends RelationManager
                         'icon' => FilamentIcon::resolve('inspirecms::theme'),
                     ])
                     ->disabled(),
-                Tables\Actions\CreateAction::make(),
+                CreateAction::make(),
                 Tables\Actions\AttachAction::make()
                     ->slideOver()
                     ->preloadRecordSelect(),

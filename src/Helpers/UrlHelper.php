@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Filament\Pages\Page;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
 /**
@@ -77,7 +78,7 @@ class UrlHelper
 
             $panelId = InspireCmsConfig::getPanelId();
 
-            if (is_a($target, \Filament\Pages\Page::class, true)) {
+            if (is_a($target, Page::class, true)) {
                 return $target::getUrl(parameters: $parameters, panel: $panelId);
             }
 

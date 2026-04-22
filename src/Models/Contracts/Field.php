@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use SolutionForest\FilamentFieldGroup\Models\Contracts\Field as BaseContract;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 
@@ -16,8 +18,8 @@ use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
  * @property bool $mandatory
  * @property ?string $state_path
  * @property ?array $config
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  */
 interface Field extends BaseContract, HasDtoModel
 {
@@ -31,16 +33,16 @@ interface Field extends BaseContract, HasDtoModel
     /**
      * Scope a query to only include fields of a given group.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeByGroup($query, string $group);
 
     /**
      * Scope a query to include fields with a group name.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWithGroupName($query);
 }

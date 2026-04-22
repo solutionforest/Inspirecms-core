@@ -2,12 +2,15 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
+use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\BelongsToNestableTree;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasDtoModel;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
@@ -23,10 +26,10 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property int $status
  * @property bool $is_default
  * @property int $document_type_id
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
- * @property ?\Carbon\CarbonInterface $deleted_at
- * @property-read null|\SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption $display_status
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
+ * @property ?CarbonInterface $deleted_at
+ * @property-read null|ContentStatusOption $display_status
  * @property-read null | Model & ContentPath $path
  * @property-read null | Model & DocumentType $documentType
  * @property-read null | Model & Sitemap $sitemap
@@ -116,18 +119,18 @@ interface Content extends Base\CanLockContent, Base\HasContentVersions, Base\Has
     /**
      * Scope a query to only include web pages.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  bool  $condition  Whether to include web pages or not.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeWhereIsWebPage($query, bool $condition = true);
 
     /**
      * Scope a query to only include default content.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  bool  $condition  Whether to include default content or not.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeWhereIsDefault($query, bool $condition = true);
 }

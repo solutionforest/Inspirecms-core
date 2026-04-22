@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Base\Commnads\Concerns\WithPixelArt;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -134,7 +135,7 @@ class CacheStatsCommand extends Command
                     // DynamoDB store requires a connection and table name
                     $connection = config('database.connections.' . $cacheStore->getConnectionName());
                     $table = $cacheStore->getTable();
-                    $query = \Illuminate\Support\Facades\DB::connection($connection)->table($table)->pluck('key')->toArray();
+                    $query = DB::connection($connection)->table($table)->pluck('key')->toArray();
 
                     return array_map(function ($key) {
                         return str_replace('inspire_key_value_', '', $key);

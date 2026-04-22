@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Support\Facades\FilamentIcon;
@@ -114,12 +115,12 @@ class FieldGroupResource extends BaseResource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::inspirecms.last_updated_at'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
             ])
             // Sync action formats

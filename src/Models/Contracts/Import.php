@@ -2,6 +2,10 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Filesystem\FilesystemAdapter;
 use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\CanPrunable;
 use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
@@ -11,19 +15,19 @@ use SolutionForest\InspireCms\Support\Models\Contracts\HasAuthor;
  * @property string $file_disk
  * @property string $file_name
  * @property ?string $payload
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $available_at
- * @property ?\Carbon\CarbonInterface $finished_at
- * @property ?\Carbon\CarbonInterface $failed_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $available_at
+ * @property ?CarbonInterface $finished_at
+ * @property ?CarbonInterface $failed_at
  * @property-read ?ImportStatus $display_status
- * @property-read ?\Carbon\CarbonInterface $clear_at
+ * @property-read ?CarbonInterface $clear_at
  */
 interface Import extends CanPrunable, HasAuthor
 {
     /**
      * Get the storage and file path for the import job.
      *
-     * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string}
+     * @return array{0:Filesystem|FilesystemAdapter,1:string}
      *
      * @throws \Exception if the disk is not set for the import job.
      */
@@ -48,32 +52,32 @@ interface Import extends CanPrunable, HasAuthor
     /**
      * Scope a query to only include pending import jobs.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWherePending($query, bool $condition = true);
 
     /**
      * Scope a query to only include completed jobs.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereCompleted($query);
 
     /**
      * Scope a query to only include failed jobs.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereFailed($query);
 
     /**
      * Scope a query to only include records that can be cleared.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereCanClear($query);
 }

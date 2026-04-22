@@ -4,9 +4,10 @@ namespace SolutionForest\InspireCms\Filament\Tables\Actions;
 
 use Filament\Notifications\Notification;
 use Filament\Support\Facades\FilamentIcon;
+use Filament\Tables\Actions\Action;
 use Pboivin\FilamentPeek\Support;
 
-class EditAndPreviewAction extends \Filament\Tables\Actions\Action
+class EditAndPreviewAction extends Action
 {
     use Support\Concerns\SetsInitialPreviewModalData;
 

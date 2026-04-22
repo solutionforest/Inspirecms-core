@@ -50,7 +50,7 @@ class InheritedDocumentTypesRelationManager extends RelationManager
             ->recordUrl(fn ($record) => $this->getRecordUrl($record))
             ->openRecordUrlInNewTab()
             ->headerActions([
-                Tables\Actions\AttachAction::make()
+                AttachAction::make()
                     ->preloadRecordSelect()
                     ->recordSelectOptionsQuery(fn ($query) => $query->canBeInherited()),
             ])

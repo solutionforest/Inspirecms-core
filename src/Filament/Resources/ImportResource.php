@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -17,6 +18,7 @@ use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
 use SolutionForest\InspireCms\Filament\Infolists\Components\Actions\DownloadAction;
+use SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -115,7 +117,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ))
                     ->copyable()->copyableState(fn ($record) => $record->author?->email),
 
-                \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload')
+                JsonEntry::make('payload')
                     ->columnSpanFull()
                     ->label(__('inspirecms::resources/import.payload.label')),
             ]);
@@ -209,7 +211,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('clear_at')
                     ->label(__('inspirecms::resources/import.clear_at.label'))
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans()),
                 Tables\Columns\TextColumn::make('created_by')
                     ->label(__('inspirecms::inspirecms.created_by'))
                     ->getStateUsing(fn ($record) => $record->author?->email)
@@ -261,7 +263,7 @@ class ImportResource extends Resource implements ClusterSectionResource
                 $currentUser = auth()->user();
 
                 return $query
-                    ->when(! has_super_admin_role($currentUser), fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
+                    ->when(! has_super_admin_role($currentUser), fn (Builder $q) => $q->whereMorphedTo('author', $currentUser));
             });
     }
 

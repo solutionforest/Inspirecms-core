@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
@@ -176,7 +177,7 @@ class ContentService implements ContentServiceInterface
 
     // region Helpers
     /**
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function buildBaseQuery()
     {
@@ -186,8 +187,8 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param  \Closure(\Illuminate\Database\Eloquent\Builder)  $routeQueryCallback
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  \Closure(Builder)  $routeQueryCallback
+     * @return Builder
      */
     protected function buildFindWithRouteQuery(\Closure $routeQueryCallback)
     {
@@ -231,9 +232,9 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  array<string, string>  $sorting
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function applySortingAndLimit($query, array $sorting, ?int $limit = null)
     {
@@ -262,9 +263,9 @@ class ContentService implements ContentServiceInterface
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  array<string,mixed>  $where
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function applyScopeFilters($query, $where)
     {

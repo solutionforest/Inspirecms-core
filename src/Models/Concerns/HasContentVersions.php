@@ -8,6 +8,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
 use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
 use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
+use Spatie\Translatable\HasTranslations;
 
 trait HasContentVersions
 {
@@ -282,7 +283,7 @@ trait HasContentVersions
 
     protected function prepareContentVersionData(): array
     {
-        $modelIsTranslatable = in_array(\Spatie\Translatable\HasTranslations::class, class_uses_recursive($this));
+        $modelIsTranslatable = in_array(HasTranslations::class, class_uses_recursive($this));
 
         return collect($this->getContentVersioningAttributes())
             ->map(function ($attribute) use ($modelIsTranslatable): array {

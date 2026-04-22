@@ -175,7 +175,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
 
     /**
      * @param  int|Model|null  $template
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     protected function findTemplate($template)
     {
@@ -191,7 +191,7 @@ class DefaultPreviewProvider implements PreviewProviderInterface
 
     /**
      * @param  int|Model|null  $documentType
-     * @return \Illuminate\Database\Eloquent\Model|null
+     * @return Model|null
      */
     protected function findDocumentType($documentType)
     {

@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Services;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseModelSerivce
@@ -20,7 +21,7 @@ abstract class BaseModelSerivce
     /**
      * Begin querying the model.
      *
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function getQuery()
     {

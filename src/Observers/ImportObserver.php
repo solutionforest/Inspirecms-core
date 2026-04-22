@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Observers;
 use Filament\Notifications\Actions\Action;
 use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Model;
+use SolutionForest\InspireCms\Events\Import\Completed;
 use SolutionForest\InspireCms\Filament\Pages\Export;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
@@ -44,7 +45,7 @@ class ImportObserver
      */
     protected function dispatchComplete($model)
     {
-        event(new \SolutionForest\InspireCms\Events\Import\Completed($model->withoutRelations()));
+        event(new Completed($model->withoutRelations()));
 
         try {
             // Notify the user that the import job has completed

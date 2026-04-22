@@ -5,8 +5,13 @@ namespace SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\Conc
 use Filament\Resources\Pages\EditRecord;
 use Filament\Resources\Pages\ViewRecord;
 use Filament\Widgets\WidgetConfiguration;
+use Illuminate\Database\Eloquent\Model;
 use Pboivin\FilamentPeek\Pages\Concerns\HasPreviewModal;
+use Pboivin\FilamentPeek\Support\Page;
+use Pboivin\FilamentPeek\Support\Panel;
+use Pboivin\FilamentPeek\Support\View;
 use SolutionForest\InspireCms\Filament\Resources\DocumentTypeResource\Widgets\AlertOverview;
+use SolutionForest\InspireCms\Models\Contracts\DocumentType;
 
 trait DocumentTypeDetailTrait
 {
@@ -14,10 +19,10 @@ trait DocumentTypeDetailTrait
 
     public function bootDocumentTypeDetailTrait()
     {
-        \Pboivin\FilamentPeek\Support\Panel::ensurePluginIsLoaded();
-        \Pboivin\FilamentPeek\Support\Page::ensurePreviewModalSupport($this);
-        \Pboivin\FilamentPeek\Support\View::setupPreviewModal();
-        \Pboivin\FilamentPeek\Support\View::setupBuilderEditor();
+        Panel::ensurePluginIsLoaded();
+        Page::ensurePreviewModalSupport($this);
+        View::setupPreviewModal();
+        View::setupBuilderEditor();
     }
 
     protected function getHeaderWidgets(): array
@@ -28,7 +33,7 @@ trait DocumentTypeDetailTrait
             $widgetProperties = $widget instanceof WidgetConfiguration ? $widget->getProperties() : [];
             if (is_a($widgetFqcn, AlertOverview::class, true) && ($this instanceof EditRecord || $this instanceof ViewRecord)) {
                 /**
-                 * @var \SolutionForest\InspireCms\Models\Contracts\DocumentType&\Illuminate\Database\Eloquent\Model
+                 * @var DocumentType&Model
                  */
                 $ownerRecord = $this->getRecord();
 

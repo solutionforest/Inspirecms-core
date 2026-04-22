@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\RelationManagers\RelationGroup;
@@ -9,6 +10,7 @@ use Filament\Resources\Resource;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Guava\FilamentIconPicker\Forms\IconPicker;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -147,12 +149,12 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::inspirecms.created_at'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::inspirecms.last_updated_at'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
             ])
             ->actions([
@@ -257,7 +259,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     public static function canDelete(Model $record): bool
     {
         if ($record instanceof DocumentType) {
-            return ! ($record->content()->withoutGlobalScopes([\Illuminate\Database\Eloquent\SoftDeletingScope::class])->count() > 0);
+            return ! ($record->content()->withoutGlobalScopes([SoftDeletingScope::class])->count() > 0);
         }
 
         return parent::canDelete($record);
@@ -588,7 +590,7 @@ class DocumentTypeResource extends Resource implements ClusterSectionResource
     /** @return Forms\Components\Field | Forms\Components\Component*/
     protected static function getIconFormComponent()
     {
-        return \Guava\FilamentIconPicker\Forms\IconPicker::make('icon')
+        return IconPicker::make('icon')
             ->label(__('inspirecms::resources/document-type.icon.label'))
             ->validationAttribute(__('inspirecms::resources/document-type.icon.validation_attribute'))
             ->preload()

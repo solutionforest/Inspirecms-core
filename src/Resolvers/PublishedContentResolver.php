@@ -2,9 +2,12 @@
 
 namespace SolutionForest\InspireCms\Resolvers;
 
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\Dtos\PublishedContentDto;
+use SolutionForest\InspireCms\Dtos\TemplateDto;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -25,7 +28,7 @@ class PublishedContentResolver implements PublishedContentResolverInterface
     public function resolve(...$args)
     {
         /**
-         * @var null | \Illuminate\Http\Request $request
+         * @var null | Request $request
          */
         $request = $args[0] ?? request() ?? null;
 
@@ -112,8 +115,8 @@ class PublishedContentResolver implements PublishedContentResolverInterface
     }
 
     /**
-     * @param  null|\SolutionForest\InspireCms\Models\Contracts\Content & \Illuminate\Database\Eloquent\Model  $content
-     * @return null|\SolutionForest\InspireCms\Dtos\TemplateDto
+     * @param  null|Content & Model  $content
+     * @return null|TemplateDto
      */
     protected function getDefaultTemplateForContent($content)
     {

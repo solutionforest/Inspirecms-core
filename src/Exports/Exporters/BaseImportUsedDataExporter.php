@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -140,9 +141,9 @@ abstract class BaseImportUsedDataExporter extends BaseExporter
     }
 
     /**
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  string  $type
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     protected function buildExportingQueryForImportUsed($query, $type)
     {

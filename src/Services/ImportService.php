@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Services;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\Helpers\FileHelper;
@@ -137,7 +139,7 @@ class ImportService implements ImportServiceInterface
     }
 
     /**
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance.
      * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType
      * @return array|null Error message for the file or null
@@ -230,7 +232,7 @@ class ImportService implements ImportServiceInterface
     /**
      * Duplicates view files from the specified folder path.
      *
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance.
      * @param  string  $folder  The path to the folder containing the view files to duplicate.
      * @param  string  $forType  The type of view files to duplicate.
      * @return array|null Error message for the file or null
@@ -279,9 +281,9 @@ class ImportService implements ImportServiceInterface
     /**
      * Processes files in a specified folder and applies a callback function to each file.
      *
-     * @param  \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter  $fs  The filesystem instance to use for file operations.
+     * @param  Filesystem|FilesystemAdapter  $fs  The filesystem instance to use for file operations.
      * @param  string  $folder  The path to the folder containing the files to process.
-     * @param  callable(\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter, string, string): void  $callback  The callback function to apply to each file.
+     * @param  callable(Filesystem|FilesystemAdapter, string, string): void  $callback  The callback function to apply to each file.
      * @param  bool  $includeSubFolders  Whether to include subfolders in the essing. Default is false.
      * @param  array  $neededExtensions  The file extension to filter files by. If empty, all files are processed.
      * @return array|null Error message for the file or null

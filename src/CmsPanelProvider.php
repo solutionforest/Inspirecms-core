@@ -15,6 +15,7 @@ use Filament\Navigation\MenuItem;
 use Filament\Navigation\NavigationGroup;
 use Filament\Panel;
 use Filament\PanelProvider;
+use Filament\SpatieLaravelTranslatablePlugin;
 use Filament\Support\Enums\Alignment;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Support\Facades\FilamentView;
@@ -186,7 +187,7 @@ class CmsPanelProvider extends PanelProvider
             ->overrideResources([])
             ->fieldTypeConfigs(InspireCmsConfig::get('custom_fields.extra_config'), false);
 
-        $translatablePlugin = \Filament\SpatieLaravelTranslatablePlugin::make();
+        $translatablePlugin = SpatieLaravelTranslatablePlugin::make();
         $translatablePlugin->getLocaleLabelUsing(function ($locale, $displayLocale) {
 
             $lang = data_get(inspirecms()->getAllAvailableLanguages(), $locale);

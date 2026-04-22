@@ -44,7 +44,7 @@ interface ContentForm
      * @param  array  $publishableData  The data to set for the publishable state.
      * @param  bool  $isCreating  Indicates if the record is being created (true) or updated (false).
      * @param  string  $publishableAction  The action to set for the publishable state (default is 'draft').
-     * @return \Illuminate\Database\Eloquent\Model The created or updated record.
+     * @return Model The created or updated record.
      */
     public function handlePublishableRecordCreateOrUpdate(array $data, array $publishableData, bool $isCreating): Model;
 }

@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\UserResource\Pages;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Auth\Authenticatable;
 use SolutionForest\InspireCms\Base\Filament\Pages\Concerns\ProfilePageTrait;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseCreateRecord;
 use SolutionForest\InspireCms\Filament\Resources\UserResource;
@@ -49,7 +50,7 @@ class CreateUser extends BaseCreateRecord
     {
         $user = $this->record;
 
-        if ($user && $user instanceof \Illuminate\Contracts\Auth\Authenticatable) {
+        if ($user && $user instanceof Authenticatable) {
             event(new Registered($user));
         }
     }

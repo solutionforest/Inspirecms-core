@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
@@ -154,7 +155,7 @@ class Import extends BaseModel implements ImportContract
     /**
      * Get the storage disk used for the import job.
      *
-     * @return \Illuminate\Contracts\Filesystem\Filesystem The storage disk instance.
+     * @return Filesystem The storage disk instance.
      *
      * @throws \Exception if the disk is not set for the import job.
      */

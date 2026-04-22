@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Licensing;
 
+use Illuminate\Contracts\Cache\Repository;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
@@ -304,7 +305,7 @@ class LicenseManager
     }
 
     /**
-     * @return \Illuminate\Contracts\Cache\Repository
+     * @return Repository
      */
     private function cache()
     {

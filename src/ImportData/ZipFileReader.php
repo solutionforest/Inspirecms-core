@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\ImportData;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Helpers\FileHelper;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
@@ -12,7 +14,7 @@ class ZipFileReader
      * Extracts the contents of a ZIP file.
      *
      * @param  string  $zipFilePath  The path to the ZIP file to be extracted.
-     * @return array{0:\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,1:string}|null The filesystem instance, the relative path to the folder, or null if the file does not exist or is not a ZIP file.
+     * @return array{0:Filesystem|FilesystemAdapter,1:string}|null The filesystem instance, the relative path to the folder, or null if the file does not exist or is not a ZIP file.
      */
     public function extractFromZip(string $zipFilePath)
     {
@@ -40,7 +42,7 @@ class ZipFileReader
     /**
      * Get the temporary disk filesystem instance.
      *
-     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     * @return Filesystem|FilesystemAdapter
      */
     public function getTempDisk()
     {
@@ -51,7 +53,7 @@ class ZipFileReader
      * Generates a folder for extraction.
      *
      * @param  string  $folderName  The name of the folder to be created for extraction.
-     * @return array{\Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter,string,string} The filesystem instance, the full path to the folder, and the relative path to the folder.
+     * @return array{Filesystem|FilesystemAdapter,string,string} The filesystem instance, the full path to the folder, and the relative path to the folder.
      */
     public function generateFolderForExtraction($folderName)
     {

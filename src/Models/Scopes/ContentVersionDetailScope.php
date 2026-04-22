@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models\Scopes;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Scope;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Support\Facades\DB;
 use SolutionForest\InspireCms\Models\Contracts\Content;
@@ -37,7 +38,7 @@ class ContentVersionDetailScope implements Scope
             $cvPublishedFK = $cvModel->publishLog()->getForeignKeyName();
 
             /**
-             * @var \Illuminate\Database\Query\Builder Content Version Query group by content_id (fetch latest version id `joined_version_id`)
+             * @var Builder Content Version Query group by content_id (fetch latest version id `joined_version_id`)
              */
             $baseQ = DB::table($cvModel->getTable())
                 ->groupBy($cvFK)

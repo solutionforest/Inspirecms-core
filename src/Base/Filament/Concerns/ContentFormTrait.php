@@ -8,6 +8,7 @@ use Filament\Facades\Filament;
 use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Resources\Pages\CreateRecord\Concerns\Translatable;
+use Filament\Resources\Pages\Page;
 use Filament\Support\Exceptions\Halt;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Database\Eloquent\Model;
@@ -207,7 +208,7 @@ trait ContentFormTrait
 
             $record->setPublishableState($publishableAction);
 
-            if ($this instanceof \Filament\Resources\Pages\Page) {
+            if ($this instanceof Page) {
                 if (
                     static::getResource()::isScopedToTenant() &&
                     ($tenant = Filament::getTenant())

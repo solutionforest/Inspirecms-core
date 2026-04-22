@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Exports\Exporters;
 
 use Filament\Forms\Components\CheckboxList;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
@@ -91,7 +92,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
     }
 
     /**
-     * @return array{0:string,1:array,2:\Illuminate\Pagination\LengthAwarePaginator,3:int,4:int}
+     * @return array{0:string,1:array,2:LengthAwarePaginator,3:int,4:int}
      */
     private function getRecordsToExport()
     {
@@ -243,7 +244,7 @@ class ImportUsedExporter extends BaseImportUsedDataExporter
     }
 
     /**
-     * @return ?\Illuminate\Database\Eloquent\Builder
+     * @return ?Builder
      */
     protected static function getBaseQueryForModel(string $type)
     {

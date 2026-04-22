@@ -2,7 +2,10 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use SolutionForest\InspireCms\Base\Enums\Interfaces\NavigationType as NavigationTypeEnumInterface;
 use SolutionForest\InspireCms\Base\Models\Interfaces\ActivableEntity;
 use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
@@ -19,8 +22,8 @@ use SolutionForest\InspireCms\Base\Models\Interfaces\HasLocaleUrl;
  * @property int $_lft
  * @property int $_rgt
  * @property ?int $parent_id
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
  * @property-read null | (NavigationTypeEnumInterface & \BackedEnum) $display_type
  * @property-read null | Model & Content $content
  */
@@ -29,7 +32,7 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
     /**
      * Get the content associated with the navigation.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function content();
 
@@ -60,16 +63,16 @@ interface Navigation extends ActivableEntity, HasLocaleUrl
     /**
      * Scope a query to only include navigation items of a given category type.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeCategory($query, string $type);
 
     /**
      * Scope a query to only include active records.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeWhereIsActive($query, bool $condition = true);
 }

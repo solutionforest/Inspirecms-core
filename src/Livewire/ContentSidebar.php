@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Livewire;
 
 use Filament\Actions\Action;
+use Filament\Actions\LocaleSwitcher;
 use Filament\Support\Enums\IconPosition;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
@@ -56,9 +57,9 @@ class ContentSidebar extends BaseContentTreeNode
     }
 
     // region Locale config
-    public function localeSwitcher(): \Filament\Actions\Action
+    public function localeSwitcher(): Action
     {
-        return \Filament\Actions\LocaleSwitcher::make();
+        return LocaleSwitcher::make();
     }
 
     public function getTranslatableLocales(): array

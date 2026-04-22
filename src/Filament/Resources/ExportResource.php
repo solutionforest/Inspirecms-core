@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists;
@@ -18,6 +19,7 @@ use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Filament\Clusters\Settings;
 use SolutionForest\InspireCms\Filament\Concerns\ClusterSectionResourceTrait;
 use SolutionForest\InspireCms\Filament\Contracts\ClusterSectionResource;
+use SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry;
 use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Helpers\UIHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -118,7 +120,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                             ->label(__('inspirecms::resources/export.exporter.label'))
                             ->inlineLabel(),
 
-                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('message')
+                        JsonEntry::make('message')
                             ->label(__('inspirecms::resources/export.message.label'))
                             ->getStateUsing(function ($record) {
                                 $payload = $record->payload;
@@ -129,7 +131,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                                 return Arr::except($payload, ['result']);
                             }),
 
-                        \SolutionForest\InspireCms\Filament\Infolists\Components\JsonEntry::make('payload.result')
+                        JsonEntry::make('payload.result')
                             ->label(__('inspirecms::resources/export.result.label')),
                     ]),
             ]);
@@ -199,7 +201,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                     ->copyable(),
                 Tables\Columns\TextColumn::make('clear_at')
                     ->label(__('inspirecms::resources/export.clear_at.label'))
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans()),
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans()),
             ])
             ->recordAction('view')
             ->headerActions([
@@ -262,7 +264,7 @@ class ExportResource extends Resource implements ClusterSectionResource
                 $currentUser = auth()->user();
 
                 return $query
-                    ->when(! has_super_admin_role($currentUser), fn (\Illuminate\Database\Eloquent\Builder $q) => $q->whereMorphedTo('author', $currentUser));
+                    ->when(! has_super_admin_role($currentUser), fn (Builder $q) => $q->whereMorphedTo('author', $currentUser));
             });
     }
 

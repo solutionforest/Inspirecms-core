@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Resources\Helpers;
 use Filament\Forms;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Str;
+use SolutionForest\InspireCms\Filament\Forms\Components\CodeEditor;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 
@@ -38,7 +39,7 @@ class TemplateResourceHelper
      */
     public static function getContentFormComponent($name = 'content')
     {
-        return \SolutionForest\InspireCms\Filament\Forms\Components\CodeEditor::make($name)
+        return CodeEditor::make($name)
             ->minHeight('48rem');
     }
 

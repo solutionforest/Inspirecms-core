@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Base\Manifests;
 
+use Filament\Actions\Action;
 use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 
@@ -52,7 +53,7 @@ interface ContentStatusManifestInterface
      * Get the form actions, excluding specified actions.
      *
      * @param  array  $excepts  An array of actions to exclude from the result.
-     * @return array<int,\Filament\Actions\Action> The form actions after excluding the specified actions.
+     * @return array<int,Action> The form actions after excluding the specified actions.
      */
     public function getFormActions(array $excepts = []);
 }

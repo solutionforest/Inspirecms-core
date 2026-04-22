@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Facades;
 
 use Illuminate\Support\Facades\Facade;
+use SolutionForest\InspireCms\Base\TemplateManager;
 use SolutionForest\InspireCms\Base\TemplateManagerInterface;
 
 /**
@@ -19,7 +20,7 @@ use SolutionForest\InspireCms\Base\TemplateManagerInterface;
  * @method static void assignDefaultTemplateIfNotSet(\SolutionForest\InspireCms\Models\Contracts\Base\HasTemplates & \Illuminate\Database\Eloquent\Model $templateable, $template)
  * @method static void exportTemplate(\Illuminate\Database\Eloquent\Model & \SolutionForest\InspireCms\Models\Contracts\Template $template, ?string $theme = null)
  *
- * @see \SolutionForest\InspireCms\Base\TemplateManager
+ * @see TemplateManager
  */
 class Templates extends Facade
 {

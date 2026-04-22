@@ -13,11 +13,16 @@ use Filament\Support\SupportServiceProvider;
 use Filament\Tables\TablesServiceProvider;
 use Filament\Widgets\WidgetsServiceProvider;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Eloquent\Model;
+use Kalnoy\Nestedset\NestedSetServiceProvider;
 use Khatabwedaa\BladeCssIcons\BladeCssIconsServiceProvider;
+use Kirschbaum\PowerJoins\PowerJoinsServiceProvider;
 use Livewire\LivewireServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
+use Pboivin\FilamentPeek\FilamentPeekServiceProvider;
 use RyanChandler\BladeCaptureDirective\BladeCaptureDirectiveServiceProvider;
 use SolutionForest\FilamentFieldGroup\FilamentFieldGroupServiceProvider;
+use SolutionForest\InspireCms\CmsPanelProvider;
 use SolutionForest\InspireCms\Facades\ModelManifest;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\PermissionHelper;
@@ -26,6 +31,7 @@ use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\InspireCmsServiceProvider;
 use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\InspireCmsSupportServiceProvider;
+use SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource;
 use SolutionForest\InspireCms\Tests\Models\Content;
 use SolutionForest\InspireCms\Tests\Models\DocumentType;
 use SolutionForest\InspireCms\Tests\Models\Field;
@@ -34,6 +40,8 @@ use SolutionForest\InspireCms\Tests\Models\KeyValue;
 use SolutionForest\InspireCms\Tests\Models\Language;
 use SolutionForest\InspireCms\Tests\Models\Template;
 use SolutionForest\InspireCms\Tests\Models\User;
+use Spatie\Permission\PermissionServiceProvider;
+use Staudenmeir\LaravelAdjacencyList\IdeHelperServiceProvider;
 
 abstract class TestCase extends Orchestra
 {
@@ -67,22 +75,22 @@ abstract class TestCase extends Orchestra
             TablesServiceProvider::class,
             WidgetsServiceProvider::class,
 
-            \Spatie\Permission\PermissionServiceProvider::class,
+            PermissionServiceProvider::class,
 
             FilamentFieldGroupServiceProvider::class,
 
-            \Staudenmeir\LaravelAdjacencyList\IdeHelperServiceProvider::class,
-            \Kirschbaum\PowerJoins\PowerJoinsServiceProvider::class,
+            IdeHelperServiceProvider::class,
+            PowerJoinsServiceProvider::class,
 
-            \Kalnoy\Nestedset\NestedSetServiceProvider::class,
+            NestedSetServiceProvider::class,
 
-            \Pboivin\FilamentPeek\FilamentPeekServiceProvider::class,
+            FilamentPeekServiceProvider::class,
 
             InspireCmsSupportServiceProvider::class,
 
             InspireCmsServiceProvider::class,
 
-            \SolutionForest\InspireCms\CmsPanelProvider::class,
+            CmsPanelProvider::class,
         ];
     }
 
@@ -107,7 +115,7 @@ abstract class TestCase extends Orchestra
         ]);
 
         // Extra resources
-        $app['config']->set('inspirecms.admin.resources.custom_post', \SolutionForest\InspireCms\Tests\Fixtures\Filament\Resources\PostResource::class);
+        $app['config']->set('inspirecms.admin.resources.custom_post', PostResource::class);
 
         ModelManifest::register();
         ModelManifest::registerMorphMap();
@@ -196,7 +204,7 @@ abstract class TestCase extends Orchestra
 
     protected function getTable($table)
     {
-        if ($table instanceof \Illuminate\Database\Eloquent\Model || is_string($table) && class_exists($table)) {
+        if ($table instanceof Model || is_string($table) && class_exists($table)) {
             return parent::getTable($table);
         }
 

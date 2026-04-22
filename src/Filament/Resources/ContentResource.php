@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Filament\Resources;
 
+use Carbon\Carbon;
 use Closure;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -17,7 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\HtmlString;
+use Illuminate\Validation\Rules\Unique;
+use Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction;
 use Pboivin\FilamentPeek\Livewire\BuilderEditor;
+use SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory;
 use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Base\Filament\Contracts\ContentForm;
 use SolutionForest\InspireCms\Base\Filament\Resources\Pages\BaseContentListTrashPage;
@@ -120,7 +124,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             })
             ->schema([
                 Forms\Components\Actions::make([
-                    \Pboivin\FilamentPeek\Forms\Actions\InlinePreviewAction::make()
+                    InlinePreviewAction::make()
                         ->label(__('inspirecms::buttons.preview.label'))
                         ->builderName('propertyData'),
                 ])
@@ -141,7 +145,7 @@ class ContentResource extends Resource implements ClusterSectionResource
 
                         $tabs[] = static::getPropertyDataValueComponent(isTab: true);
 
-                        if ($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data) {
+                        if ($documentType->display_category != DocumentTypeCategory::Data) {
                             $tabs[] = Forms\Components\Tabs\Tab::make('seo')
                                 ->label(__('inspirecms::resources/content.tabs.seo'))
                                 ->schema([
@@ -178,7 +182,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                                     ->columnSpan(2)
                                     ->schema([
                                         ...(
-                                            $documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data ?
+                                            $documentType->display_category != DocumentTypeCategory::Data ?
                                             [] :
                                             [
                                                 Forms\Components\Section::make([
@@ -191,7 +195,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                                             static::getDisplayDocumentTypeComponent(),
                                             static::getDisplayParentFormComponent(),
                                             static::getDisplayKeyFormComponent(),
-                                            static::getDisplayUrlFormComponent()->visible($documentType->display_category != \SolutionForest\InspireCms\Base\Enums\DocumentTypeCategory::Data),
+                                            static::getDisplayUrlFormComponent()->visible($documentType->display_category != DocumentTypeCategory::Data),
                                         ]),
                                         Forms\Components\Group::make()
                                             ->visible(fn ($record) => $record != null)
@@ -282,7 +286,7 @@ class ContentResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('deleted_at')
                     ->label(__('inspirecms::resources/content.deleted_at.label'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->visibleOn([BaseContentListTrashPage::class])
                     ->width('5%'),
 
@@ -349,12 +353,12 @@ class ContentResource extends Resource implements ClusterSectionResource
                 Tables\Columns\TextColumn::make('created_at')
                     ->label(__('inspirecms::resources/content.created_at.label'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label(__('inspirecms::resources/content.updated_at.label'))
                     ->sortable()
-                    ->formatStateUsing(fn (?\Carbon\Carbon $state) => $state?->diffForHumans())
+                    ->formatStateUsing(fn (?Carbon $state) => $state?->diffForHumans())
                     ->width('5%'),
             ])
             ->actions([
@@ -550,7 +554,7 @@ class ContentResource extends Resource implements ClusterSectionResource
             ->afterStateUpdated(function ($component, $state) {
                 return $component->state(ContentSlugFactory::create()->generate($state));
             })
-            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (\Illuminate\Validation\Rules\Unique $rule, callable $get, ContentForm $livewire, string $operation) {
+            ->unique(table: static::getModel(), column: 'slug', ignoreRecord: true, modifyRuleUsing: function (Unique $rule, callable $get, ContentForm $livewire, string $operation) {
                 $model = new (static::getModel());
 
                 $parentId = $get('parent_id') ?? null;

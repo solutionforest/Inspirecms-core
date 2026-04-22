@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Fields\Converters;
 
+use Carbon\Carbon;
+
 class DateTimeConverter extends BaseConverter
 {
     public function toDisplayValue(mixed $sourceValue, ?string $locale, ?string $fallbackLocale)
@@ -14,7 +16,7 @@ class DateTimeConverter extends BaseConverter
 
         if (is_string($value) && filled($value)) {
 
-            return \Carbon\Carbon::parse($value);
+            return Carbon::parse($value);
 
         } elseif ($value instanceof \DateTimeInterface) {
 

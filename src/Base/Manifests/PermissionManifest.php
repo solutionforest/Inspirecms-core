@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Base\Manifests;
 
+use Filament\Clusters\Cluster;
+use Filament\Resources\Resource;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection;
@@ -13,6 +15,7 @@ use SolutionForest\InspireCms\Filament\Contracts\GuardWidget;
 use SolutionForest\InspireCms\Filament\Resources\ExportResource;
 use SolutionForest\InspireCms\Filament\Resources\ImportResource;
 use SolutionForest\InspireCms\InspireCmsConfig;
+use SolutionForest\InspireCms\Support\Facades\ModelRegistry;
 use SolutionForest\InspireCms\Support\Models\Contracts\MediaAsset;
 
 class PermissionManifest implements PermissionManifestInterface
@@ -46,7 +49,7 @@ class PermissionManifest implements PermissionManifestInterface
     {
         return collect(InspireCms::getSections())
             ->map(fn (ClusterSection $section) => $section->getFqcn())
-            ->where(fn ($fqcn) => is_subclass_of($fqcn, \Filament\Clusters\Cluster::class))
+            ->where(fn ($fqcn) => is_subclass_of($fqcn, Cluster::class))
             ->where(fn ($fqcn) => in_array(\SolutionForest\InspireCms\Filament\Contracts\ClusterSection::class, class_implements($fqcn)))
             ->mapWithKeys(fn ($fqcn) => [$fqcn::getAccessRightPermissionName() => $fqcn::getNavigationLabel()])
             ->sortKeys()
@@ -91,7 +94,7 @@ class PermissionManifest implements PermissionManifestInterface
             // add MediaAsset model permissions
             ->merge([
                 [
-                    'model' => \SolutionForest\InspireCms\Support\Facades\ModelRegistry::get(MediaAsset::class),
+                    'model' => ModelRegistry::get(MediaAsset::class),
                     'permissionPrefixes' => ['view', 'create', 'update', 'delete', 'delete_any'],
                 ],
             ])

@@ -15,11 +15,13 @@ use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Dtos\NavigationDto;
 use SolutionForest\InspireCms\Dtos\SeoDto;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
+use SolutionForest\InspireCms\Filament\Pages\Export;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
 use SolutionForest\InspireCms\Helpers\UrlHelper;
 use SolutionForest\InspireCms\Http\Controllers as CmsControllers;
 use SolutionForest\InspireCms\Http\Middleware as CmsMiddlewares;
 use SolutionForest\InspireCms\Models\Contracts\Language;
+use Spatie\Translatable\HasTranslations;
 
 class InspireCms
 {
@@ -83,7 +85,7 @@ class InspireCms
     {
         try {
 
-            $page = InspireCmsConfig::getFilamentPage('export', \SolutionForest\InspireCms\Filament\Pages\Export::class);
+            $page = InspireCmsConfig::getFilamentPage('export', Export::class);
 
             $panel = Filament::getPanel(InspireCmsConfig::getPanelId());
 
@@ -100,7 +102,7 @@ class InspireCms
 
     /**
      * @param  string  ...$names
-     * @return \Illuminate\Support\Collection<\SolutionForest\InspireCms\DataTypes\Manifest\ClusterSection>
+     * @return Collection<ClusterSection>
      */
     public function getSections(...$names)
     {
@@ -172,7 +174,7 @@ class InspireCms
     }
 
     /**
-     * @return array<string,\SolutionForest\InspireCms\Dtos\LanguageDto>
+     * @return array<string,LanguageDto>
      */
     public function getAllAvailableLanguages(): array
     {
@@ -364,8 +366,8 @@ class InspireCms
                         ->all();
 
                     break;
-                case class_uses_recursive($navigation, \Spatie\Translatable\HasTranslations::class) &&
-                in_array($attribute, $navigation->getTranslatableAttributes()):
+                case class_uses_recursive($navigation, HasTranslations::class) &&
+                    in_array($attribute, $navigation->getTranslatableAttributes()):
                     $value = collect($allLanguages)
                         ->mapWithKeys(fn ($language) => [
                             $language->code => $navigation->getTranslation($attribute, $language->code),

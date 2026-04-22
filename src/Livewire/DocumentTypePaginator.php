@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Livewire;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\Paginator;
 use Livewire\Attributes\Locked;
 use Livewire\Component;
 use Livewire\WithoutUrlPagination;
@@ -101,7 +102,7 @@ class DocumentTypePaginator extends Component
     }
 
     /**
-     * @return \Illuminate\Pagination\Paginator
+     * @return Paginator
      */
     protected function getDocumentTypes()
     {

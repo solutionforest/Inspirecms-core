@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use SolutionForest\InspireCms\Dtos\TemplateDto;
 use SolutionForest\InspireCms\Events\Template\UpdateContent;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -93,7 +94,7 @@ class Template extends BaseModel implements TemplateContract
 
     public static function getDtoClass()
     {
-        return \SolutionForest\InspireCms\Dtos\TemplateDto::class;
+        return TemplateDto::class;
     }
     // endregion Dto
 

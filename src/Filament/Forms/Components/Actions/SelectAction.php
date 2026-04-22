@@ -2,11 +2,12 @@
 
 namespace SolutionForest\InspireCms\Filament\Forms\Components\Actions;
 
+use Filament\Actions\Concerns\HasSelect;
 use Filament\Forms\Components\Actions\Action;
 
 class SelectAction extends Action
 {
-    use \Filament\Actions\Concerns\HasSelect;
+    use HasSelect;
 
     protected function setUp(): void
     {

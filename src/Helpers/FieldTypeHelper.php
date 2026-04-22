@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Helpers;
 
+use Filament\Forms\Components\Field;
 use Illuminate\Support\Arr;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
 use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig;
@@ -13,7 +14,7 @@ class FieldTypeHelper
      * Perform form field creation from configuration.
      *
      * @param  string  $typeName  The type name of the form field.
-     * @param  callable(\SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Contracts\FieldTypeConfig,string,array)  $createFieldUsing  A closure that creates the form field.
+     * @param  callable(FieldTypeConfig,string,array)  $createFieldUsing  A closure that creates the form field.
      * @param  array  $config  Optional configuration array for the form field.
      * @return mixed The created form field.
      */
@@ -51,7 +52,7 @@ class FieldTypeHelper
      * @param  string|null  $helperText  The helper text for the field.
      * @param  bool  $required  Whether the field is required.
      * @param  string|null  $groupName  The name of the group the field belongs to.
-     * @return ?\Filament\Forms\Components\Field The built filament form field.
+     * @return ?Field The built filament form field.
      */
     public static function buildFieldForFieldType($fieldTypeName, $fieldTypeConfig, $name, $label, $helperText, $required, $groupName)
     {
@@ -61,7 +62,7 @@ class FieldTypeHelper
             typeName: $fieldTypeName,
             config: $fieldTypeConfig,
             createFieldUsing: function ($fieldType, $fiFormComponentFQCN, $config) use ($name, $label, $helperText, $required, $groupName) {
-                if (is_subclass_of($fiFormComponentFQCN, \Filament\Forms\Components\Field::class)) {
+                if (is_subclass_of($fiFormComponentFQCN, Field::class)) {
 
                     $fiFormComponent = $fiFormComponentFQCN::make($name);
 

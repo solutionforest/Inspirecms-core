@@ -179,7 +179,7 @@ trait ProfilePageTrait
                     ->content(fn (User | Model $record) => $record->last_logged_in_at),
 
                 Actions::make([
-                    Actions\Action::make('resetLockout')
+                    Action::make('resetLockout')
                         ->label(__('inspirecms::resources/user.buttons.reset_lockout.label'))
                         ->requiresConfirmation()
                         ->color('gray')

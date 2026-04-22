@@ -2,6 +2,9 @@
 
 namespace SolutionForest\InspireCms;
 
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\Toggle;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse as RegistrationResponseContract;
 use Filament\Support\Assets\AlpineComponent;
 use Filament\Support\Assets\Asset;
@@ -11,6 +14,7 @@ use Filament\Support\Assets\Theme;
 use Filament\Support\Facades\FilamentAsset;
 use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Auth\Events as AuthEvents;
+use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Foundation\Console\AboutCommand;
 use Illuminate\Support\Arr;
@@ -18,10 +22,15 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Str;
 use Livewire\Features\SupportTesting\Testable;
+use Livewire\Livewire;
 use SolutionForest\FilamentFieldGroup\Facades\FilamentFieldGroup;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File;
+use SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image;
 use SolutionForest\InspireCms\Base as InspireCmsBase;
 use SolutionForest\InspireCms\Base\Manifests as BaseManifests;
 use SolutionForest\InspireCms\Factories\PreviewFactory;
+use SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformer;
 use SolutionForest\InspireCms\Fields\PropertyValueTransformerInterface;
 use SolutionForest\InspireCms\Helpers\AuthHelper;
@@ -29,6 +38,13 @@ use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\Http\Middleware\CmsAuthenticate;
 use SolutionForest\InspireCms\Http\Responses\Auth\RegistrationResponse;
 use SolutionForest\InspireCms\Licensing\LicenseManager;
+use SolutionForest\InspireCms\Livewire\ContentSidebar;
+use SolutionForest\InspireCms\Livewire\ContentTreeNode;
+use SolutionForest\InspireCms\Livewire\ContentVersionHistory;
+use SolutionForest\InspireCms\Livewire\DocumentTypePaginator;
+use SolutionForest\InspireCms\Models\Field;
+use SolutionForest\InspireCms\Models\FieldGroup;
+use SolutionForest\InspireCms\Models\User;
 use SolutionForest\InspireCms\Support\Models as SupportModels;
 use SolutionForest\InspireCms\Testing\TestsInspireCms;
 use SolutionForest\InspireCms\View\Components as ViewComponents;
@@ -101,7 +117,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
         $this->app->singleton(PropertyValueTransformerInterface::class, PropertyValueTransformer::class);
 
-        \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\FieldTypeBaseConfig::mixin(new \SolutionForest\InspireCms\Fields\Mixins\FieldTypeDefinition);
+        FieldTypeBaseConfig::mixin(new FieldTypeDefinition);
 
         $this->app->bind(RegistrationResponseContract::class, RegistrationResponse::class);
 
@@ -131,10 +147,10 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         $this->configureFilamentForm();
 
-        \Livewire\Livewire::component('inspirecms::content-version-history', \SolutionForest\InspireCms\Livewire\ContentVersionHistory::class);
-        \Livewire\Livewire::component('inspirecms::content-sidebar', \SolutionForest\InspireCms\Livewire\ContentSidebar::class);
-        \Livewire\Livewire::component('inspirecms::content-tree-node', \SolutionForest\InspireCms\Livewire\ContentTreeNode::class);
-        \Livewire\Livewire::component('inspirecms::document-type-paginator', \SolutionForest\InspireCms\Livewire\DocumentTypePaginator::class);
+        Livewire::component('inspirecms::content-version-history', ContentVersionHistory::class);
+        Livewire::component('inspirecms::content-sidebar', ContentSidebar::class);
+        Livewire::component('inspirecms::content-tree-node', ContentTreeNode::class);
+        Livewire::component('inspirecms::document-type-paginator', DocumentTypePaginator::class);
 
         // Asset Registration
         FilamentAsset::register(
@@ -147,7 +163,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             $this->getAssetPackageName()
         );
 
-        \Livewire\Livewire::addPersistentMiddleware([
+        Livewire::addPersistentMiddleware([
             CmsAuthenticate::class,
         ]);
 
@@ -306,19 +322,19 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
             // override field group models
             FilamentFieldGroup::setFieldGroupModelClass(
-                \SolutionForest\InspireCms\Models\FieldGroup::class
+                FieldGroup::class
             );
             FilamentFieldGroup::setFieldModelClass(
-                \SolutionForest\InspireCms\Models\Field::class
+                Field::class
             );
 
             // customizing the config form schema
             FilamentFieldGroup::configureFieldTypeConfigFormUsing(
-                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\File::class,
+                File::class,
                 fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
             FilamentFieldGroup::configureFieldTypeConfigFormUsing(
-                \SolutionForest\FilamentFieldGroup\FieldTypes\Configs\Image::class,
+                Image::class,
                 fn ($field, array $schema) => static::configureFileFieldTypeConfigFormSchema($schema)
             );
         }
@@ -343,8 +359,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
             $providerConfig = Arr::only(InspireCmsConfig::get('auth.provider', [
                 'driver' => 'eloquent',
                 'model' => Facades\ModelManifest::get(
-                    \SolutionForest\InspireCms\Models\Contracts\User::class,
-                    \SolutionForest\InspireCms\Models\User::class,
+                    Models\Contracts\User::class,
+                    User::class,
                 ),
             ]), ['driver', 'model']);
 
@@ -508,7 +524,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
 
     protected function registerScheduleCommands(): void
     {
-        $schedule = $this->app[\Illuminate\Console\Scheduling\Schedule::class];
+        $schedule = $this->app[Schedule::class];
 
         $tasks = InspireCmsConfig::get('scheduled_tasks', []);
 
@@ -659,7 +675,7 @@ class InspireCmsServiceProvider extends PackageServiceProvider
     {
         return array_map(function ($component) {
 
-            if ($component instanceof \Filament\Forms\Components\Toggle
+            if ($component instanceof Toggle
                 && $component->getName() === 'multiple'
             ) {
                 // Force the multiple toggle to be always on
@@ -670,8 +686,8 @@ class InspireCmsServiceProvider extends PackageServiceProvider
                     ->afterStateHydrated(function ($component) {
                         $component->state(true);
                     });
-            } elseif ($component instanceof \Filament\Forms\Components\Tabs
-                || $component instanceof \Filament\Forms\Components\Tabs\Tab
+            } elseif ($component instanceof Tabs
+                || $component instanceof Tab
             ) {
                 $component->childComponents(static::configureFileFieldTypeConfigFormSchema($component->getChildComponents()));
             }

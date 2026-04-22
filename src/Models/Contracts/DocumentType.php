@@ -2,6 +2,16 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Carbon\CarbonInterface;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory;
+
 /**
  * @property int|string $id
  * @property string $title
@@ -11,73 +21,73 @@ namespace SolutionForest\InspireCms\Models\Contracts;
  * @property bool $show_at_root
  * @property ?string $icon
  * @property int|string|null $parent_id
- * @property ?\Carbon\CarbonInterface $created_at
- * @property ?\Carbon\CarbonInterface $updated_at
- * @property-read null | (\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory & \BackedEnum) $display_category
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&Field> $fields
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroup> $fieldGroups
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&FieldGroupable> $fieldGroupables
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritedDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $inheritingDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $allowedDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&DocumentType> $allowingDocumentTypes
- * @property-read \Illuminate\Database\Eloquent\Collection<Model&Content> $content
+ * @property ?CarbonInterface $created_at
+ * @property ?CarbonInterface $updated_at
+ * @property-read null | (DocumentTypeCategory & \BackedEnum) $display_category
+ * @property-read Collection<Model&Field> $fields
+ * @property-read Collection<Model&FieldGroup> $fieldGroups
+ * @property-read Collection<Model&FieldGroupable> $fieldGroupables
+ * @property-read Collection<Model&DocumentType> $inheritedDocumentTypes
+ * @property-read Collection<Model&DocumentType> $inheritingDocumentTypes
+ * @property-read Collection<Model&DocumentType> $allowedDocumentTypes
+ * @property-read Collection<Model&DocumentType> $allowingDocumentTypes
+ * @property-read Collection<Model&Content> $content
  */
 interface DocumentType extends Base\HasTemplates
 {
     /**
      * Get the fields associated with the document type through fieldGroups and fieldGroupables.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
+     * @return HasManyThrough
      */
     public function fields();
 
     /**
      * Get the field groups associated with the document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany The field groups associated with the document type.
+     * @return MorphToMany The field groups associated with the document type.
      */
     public function fieldGroups();
 
     /**
      * Get the morph field groups associated with the document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany The morph field groups associated with the document type.
+     * @return MorphMany The morph field groups associated with the document type.
      */
     public function fieldGroupables();
 
     /**
      * Get the document types that are inherited by this document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     * @return BelongsToMany
      */
     public function inheritedDocumentTypes();
 
     /**
      * Get the document types that inherit from this document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
+     * @return BelongsToMany The relationship instance.
      */
     public function inheritingDocumentTypes();
 
     /**
      * Retrieve the document types that are allowed by the current document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
+     * @return BelongsToMany The relationship instance.
      */
     public function allowedDocumentTypes();
 
     /**
      * Retrieve the document types that allow the current document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany The relationship instance.
+     * @return BelongsToMany The relationship instance.
      */
     public function allowingDocumentTypes();
 
     /**
      * Get the content associated with the document type.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function content();
 
@@ -98,7 +108,7 @@ interface DocumentType extends Base\HasTemplates
     /**
      * Get the class name of the type enumeration.
      *
-     * @return enum-string<\SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory> & class-string<\BackedEnum> The class name of the type enumeration.
+     * @return enum-string<DocumentTypeCategory> & class-string<\BackedEnum> The class name of the type enumeration.
      */
     public static function getCategoryEnumClass();
 
@@ -137,27 +147,27 @@ interface DocumentType extends Base\HasTemplates
     /**
      * Scope a query to only include document types that can be inherited.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  bool  $condition  The condition to check for inheritance.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeCanBeInherited($query, bool $condition = true);
 
     /**
      * Scope a query to only include web page document types.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  bool  $condition  The condition to check for web page types.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeWhereIsWebPage($query, bool $condition = true);
 
     /**
      * Scope a query to only include content that can be used.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
+     * @param  Builder  $query
      * @param  bool  $condition  The condition to check for content.
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @return Builder
      */
     public function scopeWhereCanBeContent($query, bool $condition = true);
 }

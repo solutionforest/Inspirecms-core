@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Dtos;
 
+use Carbon\CarbonInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection as SupportCollection;
 use SolutionForest\InspireCms\Base\Dtos\Concerns\HasPropertyGroup;
@@ -35,7 +36,7 @@ class ContentDto extends BaseTranslatableModelDto
     public $type;
 
     /**
-     * @var ?\Carbon\CarbonInterface
+     * @var ?CarbonInterface
      */
     public $publishAt;
 
@@ -85,7 +86,7 @@ class ContentDto extends BaseTranslatableModelDto
      * @param  Content  $model
      * @param  string  $locale
      */
-    public static function make($model, array $propertyData, $locale, ?\Carbon\CarbonInterface $publishAt = null)
+    public static function make($model, array $propertyData, $locale, ?CarbonInterface $publishAt = null)
     {
         $availableLanguages = inspirecms()->getAllAvailableLanguages();
 
@@ -278,7 +279,7 @@ class ContentDto extends BaseTranslatableModelDto
 
     // region Helpers
     /**
-     * @param  Model | \SolutionForest\InspireCms\Models\Contracts\Content  $record
+     * @param  Model | Content  $record
      */
     protected static function prepareDtoParameters(Model $record, array $propertyData, array $availableLanguages): array
     {

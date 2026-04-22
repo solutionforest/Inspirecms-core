@@ -2,6 +2,7 @@
 
 namespace SolutionForest\InspireCms\Models\Contracts;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 /**
@@ -22,8 +23,8 @@ interface Templateable
     /**
      * Scope a query to only include default templates.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param  Builder  $query
+     * @return Builder
      */
     public function scopeIsDefault($query);
 }

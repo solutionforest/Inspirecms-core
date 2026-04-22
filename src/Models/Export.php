@@ -2,9 +2,11 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Prunable;
+use Illuminate\Filesystem\FilesystemAdapter;
 use Illuminate\Support\Facades\Storage;
 use SolutionForest\InspireCms\Base\Enums\ExportStatus;
 use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
@@ -86,7 +88,7 @@ class Export extends BaseModel implements ExportContract
     }
 
     /**
-     * @return \Illuminate\Contracts\Filesystem\Filesystem|\Illuminate\Filesystem\FilesystemAdapter
+     * @return Filesystem|FilesystemAdapter
      *
      * @throws \Exception if the disk is not set for the import job.
      */

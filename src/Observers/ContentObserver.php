@@ -2,7 +2,9 @@
 
 namespace SolutionForest\InspireCms\Observers;
 
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Query\Builder;
 use SolutionForest\InspireCms\Content\SegmentProviderInterface;
 use SolutionForest\InspireCms\Events\Content\ChangeStatus;
 use SolutionForest\InspireCms\Events\Content\UpsertRoute;
@@ -234,8 +236,8 @@ class ContentObserver
     }
 
     /**
-     * @param  \SolutionForest\InspireCms\Models\Contracts\Content|\Illuminate\Database\Eloquent\Model  $original
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  Content|Model  $original
+     * @return Collection
      */
     protected function getOtherDefaultContent($original)
     {
@@ -249,7 +251,7 @@ class ContentObserver
     /**
      * Get the total count of default content based on the provided query.
      *
-     * @param  \Illuminate\Database\Query\Builder  $query  The query builder instance.
+     * @param  Builder  $query  The query builder instance.
      * @return int The total count of default content.
      */
     protected function getTotalDefaultContent($query)

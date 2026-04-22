@@ -3,6 +3,7 @@
 namespace SolutionForest\InspireCms\Content;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Routing\Route;
 use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 
@@ -61,7 +62,7 @@ interface SegmentProviderInterface
     /**
      * Get the URL segment from the default route.
      *
-     * @param  \Illuminate\Routing\Route  $route  The route instance.
+     * @param  Route  $route  The route instance.
      * @return string The URL segment derived from the default route.
      */
     public function getUrlSegmentFromDefaultRoute($route);
@@ -69,7 +70,7 @@ interface SegmentProviderInterface
     /**
      * Retrieve the locale from the default route.
      *
-     * @param  \Illuminate\Routing\Route  $route  The route instance.
+     * @param  Route  $route  The route instance.
      * @return string The locale extracted from the route.
      */
     public function getLocaleFromDefaultRoute($route);

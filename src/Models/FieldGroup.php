@@ -2,6 +2,8 @@
 
 namespace SolutionForest\InspireCms\Models;
 
+use Filament\Forms\Components\Component;
+use Filament\Forms\Components\Section;
 use SolutionForest\FilamentFieldGroup\Models\FieldGroup as BaseModel;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
@@ -22,7 +24,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
     }
 
     /**
-     * @return \Filament\Forms\Components\Component
+     * @return Component
      */
     public function toFilamentComponent()
     {
@@ -47,7 +49,7 @@ class FieldGroup extends BaseModel implements FieldGroupContract
             $schema[] = $fiFormComponent;
         }
 
-        return \Filament\Forms\Components\Section::make($this->title)
+        return Section::make($this->title)
             ->collapsible()
             ->schema($schema);
     }

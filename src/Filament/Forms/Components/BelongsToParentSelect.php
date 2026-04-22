@@ -5,6 +5,7 @@ namespace SolutionForest\InspireCms\Filament\Forms\Components;
 use Closure;
 use Filament\Forms\Components\Select;
 use SolutionForest\InspireCms\Support\Base\Models\Interfaces\HasRecursiveRelationshipsInterface;
+use Staudenmeir\LaravelAdjacencyList\Eloquent\Builder;
 
 class BelongsToParentSelect extends Select
 {
@@ -20,7 +21,7 @@ class BelongsToParentSelect extends Select
                 $descendantIds = $record->descendants()->get()->map(fn ($item) => $item->getKey())->toArray();
 
                 $baseQuery = $query;
-                if ($query instanceof \Staudenmeir\LaravelAdjacencyList\Eloquent\Builder) {
+                if ($query instanceof Builder) {
                     $query->whereNot(fn ($q) => $q->whereKey($descendantIds));
                 } else {
                     $baseQuery->whereKeyNotIn($descendantIds);

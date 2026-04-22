@@ -6,12 +6,14 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use SolutionForest\InspireCms\Collection\ContentCollection;
 use SolutionForest\InspireCms\Dtos\ContentDto;
 use SolutionForest\InspireCms\Facades\ContentStatusManifest;
 use SolutionForest\InspireCms\Factories\ContentSegmentFactory;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Content as ContentContract;
 use SolutionForest\InspireCms\Observers\ContentObserver;
+use SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 use SolutionForest\InspireCms\Support\Models\Concerns\BelongsToNestableTree;
@@ -63,7 +65,7 @@ class Content extends BaseModel implements ContentContract
 
     public function newCollection(array $models = [])
     {
-        return new \SolutionForest\InspireCms\Collection\ContentCollection($models);
+        return new ContentCollection($models);
     }
 
     public function path()
@@ -147,7 +149,7 @@ class Content extends BaseModel implements ContentContract
     }
 
     /**
-     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     * @return BaseTranslatableModelDto | ContentDto
      */
     public function toDto(...$args)
     {
@@ -166,7 +168,7 @@ class Content extends BaseModel implements ContentContract
     }
 
     /**
-     * @return \SolutionForest\InspireCms\Support\Base\Dtos\BaseTranslatableModelDto | ContentDto
+     * @return BaseTranslatableModelDto | ContentDto
      */
     public static function toPreviewDto($record, $propertyData, $locale = null, $documentType = null)
     {
