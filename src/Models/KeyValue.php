@@ -26,9 +26,9 @@ class KeyValue extends BaseModel implements KeyValueContract
         return static::query()->updateOrCreate(['key' => $key], ['value' => $value]);
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(KeyValueObserver::class);
     }

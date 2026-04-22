@@ -115,9 +115,9 @@ class Sitemap extends BaseModel implements SitemapContract
         }
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(SitemapObserver::class);
     }

@@ -98,9 +98,9 @@ class Template extends BaseModel implements TemplateContract
     }
     // endregion Dto
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(TemplateObserver::class);
     }

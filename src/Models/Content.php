@@ -401,9 +401,9 @@ class Content extends BaseModel implements ContentContract
     }
     // endregion ContentVersion
 
-    protected static function boot()
+    protected static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ContentObserver::class);
     }

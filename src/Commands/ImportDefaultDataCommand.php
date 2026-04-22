@@ -17,7 +17,7 @@ use Throwable;
 #[AsCommand(name: 'inspirecms:import-default-data')]
 class ImportDefaultDataCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         // canbe null, true, or false
         $this->addOption('skip-samples', 's', InputArgument::OPTIONAL, 'Skip importing sample data');

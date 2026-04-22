@@ -26,7 +26,16 @@ trait HasContentVersions
 
     public static function bootHasContentVersions()
     {
-        static::observe(new HasContentVersionsObserver);
+        // Instead of observe(), register the each event listener separately for support Laravel 13
+        static::saving(fn ($model) => (new HasContentVersionsObserver)->saving($model));
+        static::saved(fn ($model) => (new HasContentVersionsObserver)->saved($model));
+        static::deleting(fn ($model) => (new HasContentVersionsObserver)->deleting($model));
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive(static::class))) {
+            static::forceDeleting(fn ($model) => (new HasContentVersionsObserver)->forceDeleting($model));
+            static::restoring(fn ($model) => (new HasContentVersionsObserver)->restoring($model));
+            static::restored(fn ($model) => (new HasContentVersionsObserver)->restored($model));
+        }
+        // static::observe(new HasContentVersionsObserver);
     }
 
     /** {@inheritDoc} */

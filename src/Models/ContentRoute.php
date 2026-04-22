@@ -33,9 +33,9 @@ class ContentRoute extends BaseModel implements ContentRouteContract
         return $query->where('is_default_pattern', $condition);
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ContentRouteObserver::class);
     }

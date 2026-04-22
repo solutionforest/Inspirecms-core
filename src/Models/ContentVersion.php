@@ -81,9 +81,9 @@ class ContentVersion extends BaseModel implements ContentVersionContract
     }
     // endregion Prunable
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ContentVersionObserver::class);
     }

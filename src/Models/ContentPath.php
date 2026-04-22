@@ -18,9 +18,9 @@ class ContentPath extends BaseModel implements ContentPathContract
         return $this->belongsTo(InspireCmsConfig::getContentModelClass(), 'key');
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ContentPathObserver::class);
     }

@@ -38,9 +38,9 @@ class FieldGroupable extends BaseMorphPivotModel implements FieldGroupableContra
         return $this->morphTo();
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(FieldGroupableObserver::class);
     }

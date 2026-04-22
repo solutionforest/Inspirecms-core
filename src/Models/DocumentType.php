@@ -249,11 +249,12 @@ class DocumentType extends BaseModel implements DocumentTypeContract
             },
         );
     }
+
     // endregion Attribute(s)
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(DocumentTypeObserver::class);
     }
