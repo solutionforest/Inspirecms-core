@@ -96,50 +96,37 @@ InspireCMS v4 supports both Laravel 12 and Laravel 13.
 
 ### What changed
 
-To avoid Laravel 13 model boot recursion errors (for example: `bootIfNotBooted` called while a model is still booting), model observer registration was centralized in service providers.
+To avoid Laravel 13 model boot recursion errors (for example: `bootIfNotBooted` called while a model is still booting), observer registration was changed from using `Model::observe()` to direct event listener registration within trait boot methods.
 
-Observer registration now happens in:
+Event listeners are now registered directly in trait boot methods instead of using `Model::observe()`.
 
-- `InspireCmsServiceProvider::registerModelObservers()` (core models)
-- `InspireCmsSupportServiceProvider::registerModelObservers()` (support models)
+### If you use traits with observer patterns
 
-### If you override model classes
-
-If you override model classes via InspireCMS config/model manifest, keep observer registration in the provider layer. Avoid registering observers inside model `boot()`, `booted()`, or trait boot methods for the same model.
+When using traits that register observers, register event listeners directly in the trait's boot method instead of using `Model::observe()`.
 
 Example migration pattern:
 
-Before (model-level registration):
+Before (using observe):
 
 ```php
-protected static function booted()
+public static function bootYourTrait()
 {
-	static::observe(ContentObserver::class);
+	static::observe(YourObserver::class);
 }
 ```
 
-After (provider-level registration):
+After (using event listeners):
 
 ```php
-protected function registerModelObservers(): void
+public static function bootYourTrait()
 {
-	InspireCmsConfig::getContentModelClass()::observe(ContentObserver::class);
+	static::created(fn ($model) => (new YourObserver)->created($model));
+	static::updated(fn ($model) => (new YourObserver)->updated($model));
+	static::deleted(fn ($model) => (new YourObserver)->deleted($model));
 }
 ```
 
-If your custom model uses traits that previously registered observers in trait boot methods, move those observer registrations to the same provider method as well.
-
-### Recommended dependency constraints
-
-Use composer constraints that allow both versions:
-
-```json
-"laravel/framework": "^12.0|^13.0"
-```
-
-### Recommended CI matrix
-
-Run your package test suite against both Laravel versions, ideally with both lowest and stable dependency sets, to catch compatibility regressions early.
+If your model has multiple trait-boot observers, register each trait's listeners separately in its own boot method.
 
 ---
 
