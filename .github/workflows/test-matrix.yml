@@ -27,7 +27,7 @@ jobs:
         with:
           repository: solutionforest/inspirecms-support
           path: inspirecms-support
-          token: ${{ secrets.INSPIRECMS_PAT }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Prepare local path dependency
         run: |
