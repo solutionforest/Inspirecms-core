@@ -206,9 +206,9 @@ class Export extends BaseModel implements ExportContract
         );
     }
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ExportObserver::class);
     }

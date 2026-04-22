@@ -23,28 +23,25 @@
     ],
     "require": {
         "php": ">=8.2",
-        "khatabwedaa/blade-css-icons": "^1.5",
-        "lara-zeus/spatie-translatable": "^2.0",
+        "khatabwedaa/blade-css-icons": "^1.5|^1.6",
+        "lara-zeus/spatie-translatable": "^1.0|^2.0",
         "laravel/framework": "^11.0|^12.0|^13.0",
         "pboivin/filament-peek": "^3.0|^4.0",
-        "phiki/phiki": "^1.1|^2.0",
+        "phiki/phiki": "^1.1",
         "solution-forest/filament-field-group": "^3.0",
         "solution-forest/inspirecms-support": "self.version",
         "spatie/laravel-package-tools": "^1.15.0",
-        "spatie/laravel-permission": "^6.0"
+        "spatie/laravel-permission": "^6.0|^7.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^8.0",
         "orchestra/testbench": "^9.0|^10.0|^11.0",
-        "pestphp/pest": "^3.0|^4.0",
+        "pestphp/pest": "^3.7|^4.0",
         "pestphp/pest-plugin-arch": "^3.0|^4.0",
         "pestphp/pest-plugin-laravel": "^3.0|^4.0",
         "pestphp/pest-plugin-livewire": "^3.0|^4.0",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^2.0",
-        "phpstan/phpstan-phpunit": "^2.0",
         "rector/rector": "^2.0",
         "spatie/laravel-ray": "^1.26"
     },

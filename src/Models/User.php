@@ -38,9 +38,9 @@ class User extends BaseAuthenticatableModel implements UserContract
         return $this->hasMany(InspireCmsConfig::getUserLoginActivityModelClass(), 'user_id');
     }
 
-    protected static function boot()
+    protected static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::creating(function ($model) {
             if (empty($model->uuid)) {

@@ -144,11 +144,12 @@ class Import extends BaseModel implements ImportContract
             ->wherePending(false)
             ->where('created_at', '<', now()->subDays(ImportDataHelper::retrieveClearanceDaysInterval()));
     }
+
     // endregion Scope(s)
 
-    public static function boot()
+    public static function booted()
     {
-        parent::boot();
+        parent::booted();
 
         static::observe(ImportObserver::class);
     }

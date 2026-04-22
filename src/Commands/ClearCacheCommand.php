@@ -17,7 +17,7 @@ class ClearCacheCommand extends Command
         'offline_licenses' => 'offline licenses',
     ];
 
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('all', null, InputOption::VALUE_NONE, 'Clear all caches');
         foreach (static::CACHE_TYPES as $option => $description) {

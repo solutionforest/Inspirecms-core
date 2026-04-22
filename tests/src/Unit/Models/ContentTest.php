@@ -23,6 +23,21 @@ beforeEach(function () {
     $this->ensureDefaultLanguage();
 });
 
+it('boots content lifecycle without recursive boot errors', function () {
+    $content = Content::factory()->create([
+        'slug' => 'boot-lifecycle-test',
+    ])->refresh();
+
+    $content->title = 'Boot Lifecycle Updated';
+    $content->save();
+
+    $content->delete();
+    $content->restore();
+    $content->forceDelete();
+
+    expect(true)->toBeTrue();
+});
+
 it('creates content version and nestable tree after content creation', function () {
     // Act
     $content = Content::factory()->havePropertyData([

@@ -16,7 +16,7 @@ use Symfony\Component\Console\Input\InputArgument;
 #[AsCommand(name: 'inspirecms:import', description: 'Execute pending import jobs.')]
 class ExecuteImportCommand extends Command
 {
-    protected function configure()
+    protected function configure(): void
     {
         $this->addOption('limit', 'l', InputArgument::OPTIONAL, 'Limit the number of jobs to execute.', null);
     }
