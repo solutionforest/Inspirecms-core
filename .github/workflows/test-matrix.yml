@@ -53,8 +53,27 @@ jobs:
 
       - name: Align path repository version
         run: |
-          SUPPORT_DEV_VERSION="dev-${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
-          composer config --json repositories.0.options.versions "{\"solution-forest/inspirecms-support\":\"${SUPPORT_DEV_VERSION}\"}"
+          php -r '
+            $file = "composer.json";
+            $branch = getenv("GITHUB_HEAD_REF") ?: getenv("GITHUB_REF_NAME");
+            $version = "dev-" . $branch;
+            $content = file_get_contents($file);
+            $composer = json_decode($content, true, 512, JSON_THROW_ON_ERROR);
+
+            if (isset($composer["repositories"]) && is_array($composer["repositories"])) {
+                foreach ($composer["repositories"] as &$repository) {
+                    if (($repository["type"] ?? null) === "path" && ($repository["url"] ?? null) === "../inspirecms-support") {
+                        $repository["options"] = $repository["options"] ?? [];
+                        $repository["options"]["versions"] = $repository["options"]["versions"] ?? [];
+                        $repository["options"]["versions"]["solution-forest/inspirecms-support"] = $version;
+                    }
+                }
+                unset($repository);
+            }
+
+            file_put_contents($file, json_encode($composer, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
+          '
+          composer validate --strict
 
       - name: Configure Laravel version
         run: composer require "laravel/framework:${{ matrix.laravel }}" --no-update --with-all-dependencies
