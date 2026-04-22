@@ -7,6 +7,7 @@ use SolutionForest\InspireCms\Events\Template\UpdateContent;
 use SolutionForest\InspireCms\Helpers\TemplateHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Template as TemplateContract;
+use SolutionForest\InspireCms\Observers\TemplateObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class Template extends BaseModel implements TemplateContract
@@ -96,4 +97,11 @@ class Template extends BaseModel implements TemplateContract
         return TemplateDto::class;
     }
     // endregion Dto
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(TemplateObserver::class);
+    }
 }

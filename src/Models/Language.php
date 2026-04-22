@@ -4,6 +4,7 @@ namespace SolutionForest\InspireCms\Models;
 
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\Language as LanguageContract;
+use SolutionForest\InspireCms\Observers\LanguageObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class Language extends BaseModel implements LanguageContract
@@ -38,5 +39,12 @@ class Language extends BaseModel implements LanguageContract
     public function isDefault()
     {
         return $this->is_default;
+    }
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(LanguageObserver::class);
     }
 }

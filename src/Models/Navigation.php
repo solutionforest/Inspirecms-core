@@ -11,6 +11,7 @@ use SolutionForest\InspireCms\Dtos\LanguageDto;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Concerns\HasTranslations;
 use SolutionForest\InspireCms\Models\Contracts\Navigation as NavigationContract;
+use SolutionForest\InspireCms\Observers\NavigationObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Helpers\KeyHelper;
 
@@ -123,6 +124,14 @@ class Navigation extends BaseModel implements NavigationContract
     }
 
     // endregion Attribute(s)
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(NavigationObserver::class);
+    }
+
     public static function getNavigationTypeEnumClass()
     {
         $class = NavigationTypeEnum::class;

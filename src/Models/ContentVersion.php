@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Prunable;
 use SolutionForest\InspireCms\Helpers\DiffHelper;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion as ContentVersionContract;
+use SolutionForest\InspireCms\Observers\ContentVersionObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 
@@ -79,4 +80,11 @@ class ContentVersion extends BaseModel implements ContentVersionContract
             ->where('created_at', '<', $dayAfter);
     }
     // endregion Prunable
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(ContentVersionObserver::class);
+    }
 }

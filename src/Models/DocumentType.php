@@ -9,6 +9,7 @@ use SolutionForest\InspireCms\Base\Enums\Interfaces\DocumentTypeCategory as Docu
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Concerns\HasTemplates;
 use SolutionForest\InspireCms\Models\Contracts\DocumentType as DocumentTypeContract;
+use SolutionForest\InspireCms\Observers\DocumentTypeObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use Throwable;
 
@@ -250,6 +251,14 @@ class DocumentType extends BaseModel implements DocumentTypeContract
     }
 
     // endregion Attribute(s)
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(DocumentTypeObserver::class);
+    }
+
     /**
      * @return class-string<DocumentTypeCategoryEnum>
      */

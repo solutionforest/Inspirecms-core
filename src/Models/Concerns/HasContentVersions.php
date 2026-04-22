@@ -6,6 +6,8 @@ use Illuminate\Support\Collection;
 use SolutionForest\InspireCms\DataTypes\Manifest\ContentStatusOption;
 use SolutionForest\InspireCms\InspireCmsConfig;
 use SolutionForest\InspireCms\Models\Contracts\ContentVersion;
+use SolutionForest\InspireCms\Models\Scopes\ContentVersionDetailScope;
+use SolutionForest\InspireCms\Observers\HasContentVersionsObserver;
 use Spatie\Translatable\HasTranslations;
 use Throwable;
 
@@ -21,6 +23,20 @@ trait HasContentVersions
     protected array $preloadContentVersionData = [];
 
     protected array $publishableData = [];
+
+    public static function bootHasContentVersions()
+    {
+        // Instead of observe(), register the each event listener separately for support Laravel 13
+        static::saving(fn ($model) => (new HasContentVersionsObserver)->saving($model));
+        static::saved(fn ($model) => (new HasContentVersionsObserver)->saved($model));
+        static::deleting(fn ($model) => (new HasContentVersionsObserver)->deleting($model));
+        if (in_array('Illuminate\Database\Eloquent\SoftDeletes', class_uses_recursive(static::class))) {
+            static::forceDeleting(fn ($model) => (new HasContentVersionsObserver)->forceDeleting($model));
+            static::restoring(fn ($model) => (new HasContentVersionsObserver)->restoring($model));
+            static::restored(fn ($model) => (new HasContentVersionsObserver)->restored($model));
+        }
+        // static::observe(new HasContentVersionsObserver);
+    }
 
     /** {@inheritDoc} */
     public function contentVersions()

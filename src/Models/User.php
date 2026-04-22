@@ -40,6 +40,8 @@ class User extends BaseAuthenticatableModel implements UserContract
 
     protected static function booted()
     {
+        parent::booted();
+
         static::creating(function ($model) {
             if (empty($model->uuid)) {
                 $model->uuid = (string) Str::uuid7();

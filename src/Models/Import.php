@@ -12,6 +12,7 @@ use SolutionForest\InspireCms\Base\Enums\ImportStatus;
 use SolutionForest\InspireCms\Helpers\ImportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\Models\Contracts\Import as ImportContract;
+use SolutionForest\InspireCms\Observers\ImportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use Throwable;
@@ -145,6 +146,14 @@ class Import extends BaseModel implements ImportContract
     }
 
     // endregion Scope(s)
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(ImportObserver::class);
+    }
+
     // region Helper(s)
     /**
      * Get the storage disk used for the import job.

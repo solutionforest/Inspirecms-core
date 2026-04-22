@@ -6,6 +6,7 @@ use SolutionForest\InspireCms\Base\Enums\SitemapChangeFrequency;
 use SolutionForest\InspireCms\Facades\InspireCms;
 use SolutionForest\InspireCms\Models\Contracts\Content;
 use SolutionForest\InspireCms\Models\Contracts\Sitemap as SitemapContract;
+use SolutionForest\InspireCms\Observers\SitemapObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 
 class Sitemap extends BaseModel implements SitemapContract
@@ -112,5 +113,12 @@ class Sitemap extends BaseModel implements SitemapContract
         if ($save) {
             $this->save();
         }
+    }
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(SitemapObserver::class);
     }
 }

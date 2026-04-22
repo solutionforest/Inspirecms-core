@@ -6,6 +6,7 @@ use SolutionForest\FilamentFieldGroup\Models\Field as BaseModel;
 use SolutionForest\InspireCms\Dtos\PropertyTypeDto;
 use SolutionForest\InspireCms\Helpers\FieldTypeHelper;
 use SolutionForest\InspireCms\Models\Contracts\Field as FieldContract;
+use SolutionForest\InspireCms\Observers\FieldObserver;
 use SolutionForest\InspireCms\Support\Helpers\RelationshipHelper;
 
 class Field extends BaseModel implements FieldContract
@@ -64,4 +65,11 @@ class Field extends BaseModel implements FieldContract
         return RelationshipHelper::joinRelationshipAs($query, $relationName, $as, $joinType);
     }
     // endregion Scope(s)
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(FieldObserver::class);
+    }
 }

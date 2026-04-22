@@ -14,6 +14,7 @@ use SolutionForest\InspireCms\Exports\Exporters\BaseExporter;
 use SolutionForest\InspireCms\Helpers\ExportDataHelper;
 use SolutionForest\InspireCms\Helpers\ThrowableHelper;
 use SolutionForest\InspireCms\Models\Contracts\Export as ExportContract;
+use SolutionForest\InspireCms\Observers\ExportObserver;
 use SolutionForest\InspireCms\Support\Base\Models\BaseModel;
 use SolutionForest\InspireCms\Support\Models\Concerns\HasAuthor;
 use Throwable;
@@ -204,6 +205,14 @@ class Export extends BaseModel implements ExportContract
             }
         );
     }
+
+    public static function booted()
+    {
+        parent::booted();
+
+        static::observe(ExportObserver::class);
+    }
+
     // region Helper(s)
 
     /**
