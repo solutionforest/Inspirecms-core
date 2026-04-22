@@ -78,7 +78,7 @@ class HasContentVersionsObserver
      * @param  HasContentVersions&Model  $model
      * @return void
      */
-    public function resotred($model)
+    public function restored($model)
     {
         // Once the model is restored, we need to put everything back
         // as before, in case a legitimate update event is fired
