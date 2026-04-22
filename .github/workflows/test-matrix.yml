@@ -51,6 +51,11 @@ jobs:
       - name: Set Composer root version
         run: echo "COMPOSER_ROOT_VERSION=dev-${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}" >> $GITHUB_ENV
 
+      - name: Align path repository version
+        run: |
+          SUPPORT_DEV_VERSION="dev-${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          composer config --json repositories.0.options.versions "{\"solution-forest/inspirecms-support\":\"${SUPPORT_DEV_VERSION}\"}"
+
       - name: Configure Laravel version
         run: composer require "laravel/framework:${{ matrix.laravel }}" --no-update --with-all-dependencies
 
