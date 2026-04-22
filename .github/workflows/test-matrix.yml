@@ -15,18 +15,17 @@ jobs:
       matrix:
         php: ['8.2', '8.3']
         laravel: ['^12.0', '^13.0']
-        dependencies: ['stable', 'lowest']
         exclude:
           - php: '8.2'
             laravel: '^13.0'
 
-    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependencies }} deps
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - name: Checkout support package for local path repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: solutionforest/inspirecms-support
           ref: ${{ github.head_ref || github.ref_name }}
@@ -78,13 +77,8 @@ jobs:
       - name: Configure Laravel version
         run: composer require "laravel/framework:${{ matrix.laravel }}" --no-update --with-all-dependencies
 
-      - name: Install dependencies (stable)
-        if: matrix.dependencies == 'stable'
+      - name: Install dependencies
         run: composer update --prefer-dist --no-interaction --no-progress --with-all-dependencies
-
-      - name: Install dependencies (lowest)
-        if: matrix.dependencies == 'lowest'
-        run: composer update --prefer-lowest --prefer-stable --no-interaction --no-progress --with-all-dependencies
 
       - name: Run tests
         run: vendor/bin/pest --no-coverage
