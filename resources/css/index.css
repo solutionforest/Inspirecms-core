@@ -27,6 +27,10 @@
         @apply top-24 !important;
     }
 }
+.fi-modal[data-fi-modal-id="media-library-picker-modal"] > div > div {
+    /* Ensure the media library modal is before preview peek modal in z-index stacking context */
+    z-index: 9001 !important;
+}
 
 /* Content Sidebar */
 .content-sidebar_desktop {
