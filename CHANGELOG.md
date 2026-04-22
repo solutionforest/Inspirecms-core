@@ -2,6 +2,24 @@
 
 All notable changes to `inspirecms-core` will be documented in this file.
 
+## 1.2.4 - 2026-04-22
+
+### What's Changed in 1.2.4
+
+#### 🐛 Bug fixes
+
+- Fix typo in 'resotred' method name to 'restored' (4577dba)
+
+#### 🔧 Other Changes
+
+- Bump actions/checkout from 4 to 5 (bc81ec8)
+- Bump stefanzweifel/git-auto-commit-action from 6 to 7 (74c602d)
+- Raise media-library modal z-index; update editor (6b7b9b2)
+
+### Installation
+
+**Full Changelog**: https://github.com/solutionforest/Inspirecms-core/compare/1.2.3...1.2.4
+
 ## 4.0.0.beta.1 - 2025-12-08
 
 <!-- Release notes generated using configuration in .github/release.yml at 4.0.0.beta.1 -->
@@ -34,6 +52,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 
 
+
 ```
 ## 1.2.1 - 2025-08-19
 
@@ -47,6 +66,7 @@ composer require solution-forest/inspirecms-core:^1.2.2
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.2.1
+
 
 
 
@@ -79,6 +99,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 
 
+
 ```
 ## 1.1.3 - 2025-08-12
 
@@ -98,6 +119,7 @@ composer require solution-forest/inspirecms-core:^1.2.0
 
 ```bash
 composer require solution-forest/inspirecms-core:^1.1.2
+
 
 
 
