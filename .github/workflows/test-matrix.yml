@@ -22,10 +22,10 @@ jobs:
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Checkout support package for local path repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v7
         with:
           repository: solutionforest/inspirecms-support
           ref: ${{ github.head_ref || github.ref_name }}
